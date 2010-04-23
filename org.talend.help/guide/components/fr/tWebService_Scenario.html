@@ -4,124 +4,151 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 17:32:38">
+    <meta name="LASTUPDATED" content="04/23/10 10:18:18">
     <title>Scénario&#160;: Extraire une liste de noms à l&#39;aide d&#39;un service Web</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tWebService_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWebServiceInput_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tWebService_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWebServiceInput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2766481"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772430"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2766491"> </a><h2 class="pHeading2">
+<a name="wp2772440"> </a><h2 class="pHeading2">
 Scénario&#160;: Extraire une liste de noms à l&#39;aide d&#39;un service Web
 </h2>
-<a name="wp2766495"> </a><p class="pIndented1">
+<a name="wp2772444"> </a><p class="pIndented1">
 Ce scénario décrit un Job à trois composants utilisant un service Web pour récupérer la liste des défenseurs de l&#39;équipe de football d&#39;un pays donnée.
 </p>
-<a name="wp2766505"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772454"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService1.png" id="wp2766501" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766516"> </a><div class="pSmartList1"><li>A partir de la <b class="cBold">Palette</b>, cliquez-glissez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tWebService</b> et <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp2766538"> </a><div class="pSmartList1"><li>Reliez les composants à l&#39;aide de liens de type <b class="cBold">Main Row</b>.</li></div>
-<a name="wp2766546"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tFixedFlowInput</b> pour paramétrer ses propriétés dans la vue <b class="cBold">Component</b>.</li></div>
-</ul></div>
-<a name="wp2766561"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tWebService2.png" id="wp2766557" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService1.png" id="wp2772450" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766576"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à coté du champ <b class="cBold">Edit schema</b> pour définir le schéma du composant d&#39;entrée.</li></div>
-<a name="wp2766589"> </a><div class="pSmartList1"><li>Dans la boîte de dialogue Schema<b class="cBold"> of tFixedFlowInput</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une colonne au schéma.</li></div>
-<a name="wp2766599"> </a><div class="pSmartList1"><li>Renommez cette colonne <em class="cEmphasis">Country</em>.</li></div>
-<a name="wp2766608"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b> pour valider.</li></div>
-<a name="wp2766616"> </a><div class="pSmartList1"><li>Dans le tableau <b class="cBold">Values</b>, saisissez la valeur d&#39;entrée. Dans ce scénario, saisissez la valeur <em class="cEmphasis">&quot;ITALY&quot;</em> pour récupérer la liste des défenseurs de l&#39;équipe d&#39;Italie.</li></div>
-<a name="wp2766629"> </a><div class="pSmartList1"><li>Double-cliquez sur le composant <b class="cBold">tWebService</b> pour ouvrir l&#39;interface dédiée ou cliquez sur le bouton <b class="cBold">[...]</b> de l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772465"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez-glissez les composants suivants dans l&#39;espace de modélisation&#160;: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tWebService</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp2772487"> </a><div class="pSmartList2"><li>Reliez les composants à l&#39;aide de liens de type <b class="cBold">Main Row</b>.</li></div>
+<a name="wp2772495"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFixedFlowInput</b> pour paramétrer ses propriétés dans la vue <b class="cBold">Component</b>.</li></div>
 </ul></div>
-<a name="wp2766652"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</ul></div>
+<a name="wp2772510"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService3.png" id="wp2766648" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService2.png" id="wp2772506" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2766661"> </a><p class="pIndented1">
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772525"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour définir le schéma du composant d&#39;entrée.</li></div>
+<a name="wp2772538"> </a><div class="pSmartList2"><li>Dans la boîte de dialogue Schema<b class="cBold"> of tFixedFlowInput</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une colonne au schéma.</li></div>
+<a name="wp2772548"> </a><div class="pSmartList2"><li>Renommez cette colonne <em class="cEmphasis">Country</em>.</li></div>
+<a name="wp2772557"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider.</li></div>
+<a name="wp2772565"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Values</b>, saisissez la valeur d&#39;entrée. Dans ce scénario, saisissez la valeur <em class="cEmphasis">&quot;ITALY&quot;</em> pour récupérer la liste des défenseurs de l&#39;équipe d&#39;Italie.</li></div>
+<a name="wp2772578"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tWebService</b> pour ouvrir l&#39;interface dédiée ou cliquez sur le bouton <b class="cBold">[...]</b> de l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2772601"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tWebService3.png" id="wp2772597" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2772610"> </a><p class="pIndented1">
 Dans l&#39;onglet <b class="cBold">WSDL</b>, connectez-vous au service Web à utiliser dans le Job.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766672"> </a><div class="pSmartList1"><li>Dans le champ <b class="cBold">WSDL</b>, saisissez l&#39;adresse WSDL du service Web que vous souhaitez utiliser ou cliquez sur le bouton <b class="cBold">Browse...</b> pour sélectionner un WSDL stocké localement.</li></div>
-<a name="wp2766685"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Refresh</b> pour récupérer la description du WSDL dans les champs suivants.</li></div>
-<a name="wp2766694"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Port Name</b>, sélectionnez le port que vous souhaitez utiliser. Ici, nous sélectionnons le port <b class="cBold">FootballPoolWebServiceSoap</b>.</li></div>
-<a name="wp2766707"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Operation</b>, sélectionnez le service que vous souhaitez utiliser. Ici, nous sélectionnons le service <b class="cBold">AllDefenders(parameters):ArrayOfString</b>.</li></div>
-<a name="wp2766722"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Next</b> pour passer à l&#39;étape suivante.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772621"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">WSDL</b>, saisissez l&#39;adresse WSDL du service Web que vous souhaitez utiliser ou cliquez sur le bouton <b class="cBold">Browse...</b> pour sélectionner un WSDL stocké localement.</li></div>
+<a name="wp2772634"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Refresh</b> pour récupérer la description du WSDL dans les champs suivants.</li></div>
+<a name="wp2772643"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Port Name</b>, sélectionnez le port que vous souhaitez utiliser. Ici, nous sélectionnons le port <b class="cBold">FootballPoolWebServiceSoap</b>.</li></div>
+<a name="wp2772656"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Operation</b>, sélectionnez le service que vous souhaitez utiliser. Ici, nous sélectionnons le service <b class="cBold">AllDefenders(parameters):ArrayOfString</b>.</li></div>
+<a name="wp2772671"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Next</b> pour passer à l&#39;étape suivante.</li></div>
 </ul></div>
-<a name="wp2766730"> </a><p class="pIndented1">
+</ul></div>
+<a name="wp2772679"> </a><p class="pIndented1">
 Dans l&#39;onglet <b class="cBold">Input mapping</b>, faites la correspondance entre le schéma du composant de début et le service Web.
 </p>
-<a name="wp2766740"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772689"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService4.png" id="wp2766736" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService4.png" id="wp2772685" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2766744"> </a><p class="pIndented1">
+<a name="wp2772693"> </a><p class="pIndented1">
 Dans la zone de droite, le paramètre d&#39;entrée du service apparaît automatiquement. Vous avez la possibilité d&#39;ajouter d&#39;autres paramètres en sélectionnant l&#39;élément <b class="cBold">[-] parameters</b> de la zone de droite, en cliquant sur le bouton <b class="cBold">[+]</b>, et en sélectionnant les paramètres souhaités dans la boîte de dialogue <b class="cBold">[Parameter Tree]</b>.<br />Le service Web utilisé dans ce scénario ne comporte qu&#39;un seul paramètre d&#39;entrée&#160;: <b class="cBold">sCountryName</b>.
 </p>
-<a name="wp2766766"> </a><p class="pIndented1">
+<a name="wp2772715"> </a><p class="pIndented1">
 Vous avez cependant la possibilité
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766777"> </a><div class="pSmartList1"><li>Dans la liste <b class="cBold">Column</b>, sélectionnez la colonne du schéma d&#39;entrée que vous souhaitez mettre en correspondance avec le paramètre de sortie du service Web et glissez-la dans le paramètre correspondant dans la zone de droite.</li></div>
-<a name="wp2766788"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">Next</b>.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772726"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Column</b>, sélectionnez la colonne du schéma d&#39;entrée que vous souhaitez mettre en correspondance avec le paramètre de sortie du service Web et glissez-la dans le paramètre correspondant dans la zone de droite.</li></div>
+<a name="wp2772737"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Next</b>.</li></div>
 </ul></div>
-<a name="wp2766796"> </a><p class="pIndented1">
+</ul></div>
+<a name="wp2772745"> </a><p class="pIndented1">
 Dans l&#39;onglet <b class="cBold">Output mapping</b>, faites la correspondance entre le paramètre de sortie du service Web et le schéma du composant de sortie.
 </p>
-<a name="wp2766806"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772755"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService7.png" id="wp2766802" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService7.png" id="wp2772751" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2766814"> </a><p class="pIndented1">
-Dans la liste <b class="cBold">Element</b> à gauche de l&#39;éditeur, le paramètre de sortie du service Web apparaît automatiquement. Vous avez la possibilité d&#39;ajouter d&#39;autres paramètres en sélectionnant l&#39;élément <b class="cBold">[+] parameters</b> de la liste <b class="cBold">Element</b> à gauche de l&#39;éditeur, en cliquant sur le bouton <b class="cBold">[+]</b>, et en sélectionnant les paramètres souhaités dans la boîte de dialogue <b class="cBold">[Parameter Tree]</b>.<br />Le service Web utilisé dans ce scénario ne comporte qu&#39;un seul paramètre d&#39;entrée&#160;: <b class="cBold">AllDefendersResult.string</b>.
+<a name="wp2772763"> </a><p class="pIndented1">
+Dans la liste <b class="cBold">Element</b> à gauche de l&#39;éditeur, le paramètre de sortie du service Web apparaît automatiquement. Vous avez la possibilité d&#39;ajouter d&#39;autres paramètres en sélectionnant l&#39;élément <b class="cBold">[+] parameters</b> de la liste <b class="cBold">Element</b> à gauche de l&#39;éditeur, en cliquant sur le bouton <b class="cBold">[+]</b>, et en sélectionnant les paramètres souhaités dans la boîte de dialogue <b class="cBold">[Parameter Tree]</b>.<br />Le service Web utilisé dans ce scénario ne comporte qu&#39;un seul paramètre de sortie&#160;: <b class="cBold">AllDefendersResult.string</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766850"> </a><div class="pSmartList1"><li>Dans la zone de droite, cliquez sur le bouton <b class="cBold">[...]</b> du champ <b class="cBold">Edit Schema</b> pour définir le schéma de sortie.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772799"> </a><div class="pSmartList2"><li>Dans la zone de droite, cliquez sur le bouton <b class="cBold">[...]</b> du champ <b class="cBold">Edit Schema</b> pour définir le schéma de sortie.</li></div>
 </ul></div>
-<a name="wp2766861"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</ul></div>
+<a name="wp2772810"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService6.png" id="wp2766857" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService6.png" id="wp2772806" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766876"> </a><div class="pSmartList1"><li>Dans la zone <b class="cBold">Output</b> à droite de la boîte de dialogue, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une colonne au schéma de sortie.</li></div>
-<a name="wp2766886"> </a><div class="pSmartList1"><li>Nommez cette colonne <em class="cEmphasis">Name</em>. Elle récupèrera les noms des défenseurs.</li></div>
-<a name="wp2766896"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
-<a name="wp2766907"> </a><div class="pSmartList1"><li>Dans l&#39;éditeur du <b class="cBold">tWebService</b>, sélectionnez l&#39;élément <b class="cBold">parameters.AllDefendersResult.string</b> à gauche et glissez-le dans le champ correspondant à la colonne <b class="cBold">Name</b> dans la zone de droite.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772825"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Output</b> à droite de la boîte de dialogue, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une colonne au schéma de sortie.</li></div>
+<a name="wp2772835"> </a><div class="pSmartList2"><li>Nommez cette colonne <em class="cEmphasis">Name</em>. Elle récupèrera les noms des défenseurs.</li></div>
+<a name="wp2772845"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp2772856"> </a><div class="pSmartList2"><li>Dans l&#39;éditeur du <b class="cBold">tWebService</b>, sélectionnez l&#39;élément <b class="cBold">parameters.AllDefendersResult.string</b> à gauche et glissez-le dans le champ correspondant à la colonne <b class="cBold">Name</b> dans la zone de droite.</li></div>
 </ul></div>
-<a name="wp2766926"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</ul></div>
+<a name="wp2772875"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tWebService5.png" id="wp2766922" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tWebService5.png" id="wp2772871" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
-<a name="wp2766937"> </a><div class="pSmartList1"><li>Sélectionnez  cette ligne dans la zone de droite et cliquez sur le bouton <b class="cBold">Denormalize</b> pour dénormaliser les données retournées.</li></div>
-<a name="wp2766946"> </a><div class="pSmartList1"><li>Ajoutez le code <code class="cCode">[*]</code> après le paramètre pour obtenir le code suivant&#160;: <code class="cCode">denormalize(parameters.AllDefendersResult.string[*],&quot;:&quot;)</code> permettant de récupérer la totalité des données séparée par deux points <code class="cCode">&quot;:&quot;</code>.</li></div>
-<a name="wp2766964"> </a><div class="pSmartList1"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
-<a name="wp2766972"> </a><div class="pSmartList1"><li>Dans l&#39;espace de modélisation, double-cliquez sur le composant <b class="cBold">tLogRow</b> pour paramétrer ses propriétés dans la vue <b class="cBold">Component</b>.</li></div>
-<a name="wp2766985"> </a><div class="pSmartList1"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent.</li></div>
-<a name="wp2766996"> </a><div class="pSmartList1"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2772886"> </a><div class="pSmartList2"><li>Sélectionnez  cette ligne dans la zone de droite et cliquez sur le bouton <b class="cBold">Denormalize</b> pour dénormaliser les données retournées.</li></div>
+<a name="wp2772895"> </a><div class="pSmartList2"><li>Ajoutez le code <code class="cCode">[*]</code> après le paramètre pour obtenir le code suivant&#160;: <code class="cCode">denormalize(parameters.AllDefendersResult.string[*],&quot;:&quot;)</code> permettant de récupérer la totalité des données séparée par deux points <code class="cCode">&quot;:&quot;</code>.</li></div>
+<a name="wp2772913"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp2772921"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, double-cliquez sur le composant <b class="cBold">tLogRow</b> pour paramétrer ses propriétés dans la vue <b class="cBold">Component</b>.</li></div>
+<a name="wp2772934"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent.</li></div>
+<a name="wp2772945"> </a><div class="pSmartList2"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
-<a name="wp2767000"> </a><p class="pIndented1">
-Les noms des défenseurs italien sont retournés et affichés dans la console de <b class="cBold">Talend Open Studio</b>.
+</ul></div>
+<a name="wp2772951"> </a><p class="pIndented1">
+Les noms des défenseurs italien sont retournés et affichés dans la console de <b class="cBold">Talend Integration Suite</b>.
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -130,10 +157,11 @@ Les noms des défenseurs italien sont retournés et affichés dans la console de <b
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tWebService_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWebServiceInput_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tWebService_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWebServiceInput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

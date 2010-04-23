@@ -4,128 +4,141 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:03">
-    <title>Scenario: Checking the data in multiple columns against the given patterns </title>
+    <meta name="LASTUPDATED" content="04/23/10 10:14:26">
+    <title>Scénario&#160;: Vérifier les données dans des colonnes multiples par rapport aux modèles donnés</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMultiPatternCheck_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMultiPatternCheck_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2889889"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2990825"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2964544"> </a><h2 class="pHeading2">
-Scenario: Checking the data in multiple columns against the given patterns 
+<a name="wp2990830"> </a><h2 class="pHeading2">
+Scénario&#160;: Vérifier les données dans des colonnes multiples par rapport aux modèles donnés
 </h2>
-<a name="wp2965309"> </a><p class="pIndented1">
-This Java scenario describes a four-component Job that checks customers&#39; code, zipcode and email against the relevant patterns. It lists the data that matches the selected pattern and the data that does not.
+<a name="wp2990835"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job comprenant quatre composants, qui vérifie le code des clients, leur code postal et leur adresse e-mail par rapport aux modèles donnés. Il liste les données correspondant au modèle sélectionné, et celles qui ne correspondent pas.
 </p>
-<a name="wp2964578"> </a><p class="pIndented1">
-The check results are written in two output files: the first for the values that match the selected pattern and the second for the values that do not match the selected pattern. 
+<a name="wp2990839"> </a><p class="pIndented1">
+Les résultats de la vérification sont écrits dans deux fichiers de sortie&#160;: le premier pour les valeurs correspondant aux modèles sélectionnés, et le second pour les valeurs qui ne correspondent pas aux modèles sélectionnés.
 </p>
-<a name="wp2964583"> </a><p class="pIndented1">
-In this scenario, we have already stored the main input schema in the Repository. For more information about storing schema metadata in the Repository, see <em class="cEmphasis">Setting up a DB connection</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<a name="wp2990843"> </a><p class="pIndented1">
+Dans ce scénario, nous avons déjà stocké les principaux schémas d&#39;entrée dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations à propos du stockage de métadonnées de schéma dans le <b class="cBold">Repository</b>, consultez <em class="cEmphasis">Configurer un schéma File Excel</em> du <b class="cBold">Guide Utilisateur </b><b class="cBold">Talend Integration Suite</b>.
 </p>
-<a name="wp2964627"> </a><p class="pIndented1">
-The main input table contains six columns: <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_name</em>, <em class="cEmphasis">ref_address</em>, <em class="cEmphasis">ref_zipcode</em>, <em class="cEmphasis">ref_city</em>, and <em class="cEmphasis">ref_email</em>. We want to check the entries in the <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> and <em class="cEmphasis">ref_email</em> columns against the given patterns.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2964655"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> - <b class="cBold">DB Connections</b> where you have stored the main input schema and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays with the corresponding component selected by default.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2964670"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tRecordMatching.png" id="wp2964666" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2964685"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to drop the <b class="cBold">tMysqlInput</b> component onto the workspace. <br />The input table used in this scenario is called <em class="cEmphasis">customer</em>. It holds several columns including the three columns <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> and <em class="cEmphasis">ref_email</em> against which we want to do a pattern check.</li></div>
-<a name="wp2964715"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMultiPatternCheck</b> and <b class="cBold">tLogRow</b> (x2).</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2964734"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMultiPatternCheck.png" id="wp2964730" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2964749"> </a><div class="pSmartList2"><li>Connect the main input components to <b class="cBold">tMultiPatternCheck</b> using a <b class="cBold">Main</b> link.</li></div>
-<a name="wp2964777"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMultiPatternCheck</b> to the two <b class="cBold">tLogrow </b>components using the <b class="cBold">Matches</b>, and <b class="cBold">Non Matches</b> links.</li></div>
-<a name="wp2964790"> </a><div class="pSmartList2"><li>Double-click the main input database component to display its <b class="cBold">Basic settings</b> views.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2964832"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMultiPatternCheck1.png" id="wp2964828" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<a name="wp2964840"> </a><p class="pIndented1">
-The property fields for <b class="cBold">tMusqlInput </b>are automatically filled in. If you do not define your input schema locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Schema</b> and <b class="cBold">Property Type</b> fields.
+<a name="wp2990871"> </a><p class="pIndented1">
+La table principale d&#39;entrée contient six colonnes&#160;: <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_name</em>, <em class="cEmphasis">ref_address</em>, <em class="cEmphasis">ref_zipcode</em>, <em class="cEmphasis">ref_city</em>, et <em class="cEmphasis">ref_email</em>. Nous voulons vérifier les entrées dans les colonnes <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> et <em class="cEmphasis">ref_email</em> par rapport aux modèles donnés.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2964870"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMultiPatternCheck</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp2990898"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Repository</b>, cliquez sur <b class="cBold">Metadata</b> &gt; <b class="cBold">DB Connections</b> où vous avez stocké les principaux schémas d&#39;entrée, et glissez le fichier correspondant dans l&#39;espace de modélisation graphique.<br />La boîte de dialogue <b class="cBold">[Components]</b> s&#39;ouvre alors, avec le composant correspondant, sélectionné par défaut.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2964879"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2990910"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMultiPatternCheck2.png" id="wp2964875" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2964890"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to open a dialog box. Here you can define the data you want to pass to the output components.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2964901"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMultiPatternCheck3.png" id="wp2964897" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<a name="wp2965710"> </a><p class="pIndented1">
-In this example we want to pass to the <b class="cBold">tMultiPatternCheck</b> component all the columns in the main input columns.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2965720"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box and proceed to the next step.</li></div>
-<a name="wp2965726"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Check Pattern</b> column and select from the list the pattern against which you want to check the data in the <em class="cEmphasis">ref_code</em> column, <em class="cEmphasis">Numeric</em> in this example.</li></div>
-<a name="wp2965742"> </a><div class="pSmartList2"><li>Do the same to select patterns for the <em class="cEmphasis">ref_zipcode</em> and <em class="cEmphasis">ref_email</em> columns.<br />In this example, we want to check if all the data in the <em class="cEmphasis">ref_zipcode</em> column are correct French postal codes and if customers&#39; emails in the <em class="cEmphasis">ref_email</em> column are valid addresses.</li></div>
-<a name="wp2965755"> </a><div class="pSmartList2"><li>In the <b class="cBold">Is Case Sensitive</b> column, select the check boxes next to the column name where you want to consider, when doing the pattern check, the lower and upper cases.</li></div>
-<a name="wp2965762"> </a><div class="pSmartList2"><li>In the <b class="cBold">Check </b>column, select the check boxes next to the column names you want to check against the defined patterns, <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> and <em class="cEmphasis">ref_email</em> in this example.</li></div>
-<a name="wp2965848"> </a><div class="pSmartList2"><li>Double-click the first <b class="cBold">tLogRow </b>component to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2965791"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMultiPatternCheck4.png" id="wp2965788" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tRecordMatching.png" id="wp2990907" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2965804"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mode</b> area, select the <b class="cBold">Table</b> option to print results in a table.</li></div>
-<a name="wp2965109"> </a><div class="pSmartList2"><li>Do the same for the other <b class="cBold">tLogRow</b> component.</li></div>
-<a name="wp2965119"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp2990921"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour déposer un composant <b class="cBold">tMysqlInput</b> dans l&#39;espace de modélisation graphique.<br />La table d&#39;entrée utilisée dans ce scénario est appelée <em class="cEmphasis">customer</em>. Elle contient plusieurs colonnes, dont les trois colonnes <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> et <em class="cEmphasis">ref_email</em> par rapport auxquelles nous voulons vérifier le modèle.</li></div>
+<a name="wp2991776"> </a><div class="pSmartList2"><li>Glissez un <b class="cBold">tMultiPatternCheck</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique, ainsi que deux <b class="cBold">tLogRow</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2965123"> </a><p class="pIndented1">
-Two output tables are written on the console. The first lists the data entries in the three defined columns that match the given pattern. The second lists non match entries in the three columns according to the used patterns.
-</p>
-<a name="wp2965129"> </a><p class="pIndented1">
-The figure below illustrates extractions of the two output tables.
-</p>
-<a name="wp2965141"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2990955"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Components-05-24-126.jpg" height="420" width="981" id="wp2965134" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMultiPatternCheck.png" id="wp2990952" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2990967"> </a><div class="pSmartList2"><li>Connectez le composant d&#39;entrée principal au <b class="cBold">tMultiPatternCheck</b> à l&#39;aide d&#39;un lien <b class="cBold">Row Main</b>.</li></div>
+<a name="wp2990979"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tMultiPatternCheck</b> aux deux composants <b class="cBold">tLogRow </b>à l&#39;aide des liens <b class="cBold">Matches</b> et <b class="cBold">Non Matches</b>.</li></div>
+<a name="wp2991889"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant de base de données d&#39;entrée afin d&#39;afficher sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2990998"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMultiPatternCheck1.png" id="wp2990995" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2991004"> </a><p class="pIndented1">
+Les champs des propriétés du <b class="cBold">tMysqlInput </b>sont automatiquement remplis. Si vous n&#39;avez pas stocké localement votre schéma d&#39;entrée dans le Repository, remplissez les informations manuellement, après avoir sélectionné <b class="cBold">Built-in</b> dans les listes <b class="cBold">Schema</b> et <b class="cBold">Property Type</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2991025"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMultiPatternCheck</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2991034"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMultiPatternCheck2.png" id="wp2991031" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2991042"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue. Vous pouvez définir les données que vous souhaitez passer aux composants de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2991051"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMultiPatternCheck3.png" id="wp2991048" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2991057"> </a><p class="pIndented1">
+Dans cet exemple, nous voulons passer au composant <b class="cBold">tMultiPatternCheck</b> toutes les colonnes des d&#39;entrée.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2991067"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue et procéder à l&#39;étape suivante.</li></div>
+<a name="wp2991073"> </a><div class="pSmartList2"><li>Cliquez sur la colonne <b class="cBold">Check Pattern</b> et sélectionnez dans la liste le modèle par rapport auquel vérifier les données de la colonne <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">Numeric</em> dans cet exemple.</li></div>
+<a name="wp2991089"> </a><div class="pSmartList2"><li>Répétez l&#39;opération afin de sélectionner les modèles pour les colonnes <em class="cEmphasis">ref_zipcode</em> et <em class="cEmphasis">ref_email</em>.<br />Dans cet exemple, nous voulons vérifier que toutes les données de la colonne <em class="cEmphasis">ref_zipcode</em>  sont des codes postaux français valides, et que les adresses e-mail des clients de la colonne <em class="cEmphasis">ref_email</em> sont des adresses valides.</li></div>
+<a name="wp2991102"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Is Case Sensitive</b>, cochez les cases en face des colonnes sur lesquelles vous voulez prendre en compte la casse durant la vérification des modèles.</li></div>
+<a name="wp2991109"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Check</b>, cochez les cases en face des colonnes que vous voulez vérifier par rapport aux modèles définis, <em class="cEmphasis">ref_code</em>, <em class="cEmphasis">ref_zipcode</em> et <em class="cEmphasis">ref_email</em> dans cet exemple.</li></div>
+<a name="wp2991128"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier composant <b class="cBold">tLogRow </b>afin d&#39;afficher sa vue Component et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2991137"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMultiPatternCheck4.png" id="wp2991134" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2991149"> </a><div class="pSmartList2"><li>Dans la zone<b class="cBold"> Mode</b>, sélectionnez l&#39;option <b class="cBold">Table</b> pour afficher les résultats sous forme de tableau.</li></div>
+<a name="wp2991156"> </a><div class="pSmartList2"><li>Répétez l&#39;opération pour le second composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp2991164"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> afin de l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2991167"> </a><p class="pIndented1">
+Deux tables de sorties s&#39;affichent dans la console. La première liste les données d&#39;entrée dans les trois colonnes définies, qui correspondent au modèle donné. La seconde liste les entrées qui ne correspondent pas aux modèles sélectionnés.
+</p>
+<a name="wp2991172"> </a><p class="pIndented1">
+La capture d&#39;écran ci-dessous illustre les extractions de deux tables de sortie.
+</p>
+<a name="wp2991182"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Components-07-24-126.jpg" height="420" width="981" id="wp2991176" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -134,10 +147,11 @@ The figure below illustrates extractions of the two output tables.
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMultiPatternCheck_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMultiPatternCheck_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

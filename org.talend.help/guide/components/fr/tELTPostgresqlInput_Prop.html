@@ -4,171 +4,178 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:18:58">
+    <meta name="LASTUPDATED" content="04/23/10 10:17:56">
     <title>tELTPostgresqlInput</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tELTOracleOutput_Scenario.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTPostgresqlInput_Scenario.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tELTOracleOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTPostgresqlInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2978451"> </a><h2 class="pHeading1">
+<a name="wp2972340"> </a><h2 class="pHeading1">
 tELTPostgresqlInput
 </h2>
-<a name="wp2978463"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2972350"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tELTPostgresqlInput_icon32.png" id="wp2978456" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tELTPostgresqlInput_icon32_white.png" id="wp2972345" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2978473"> </a><h2 class="pHeading2">
-tELTPostgresqlInput properties
+<a name="wp2972360"> </a><h2 class="pHeading2">
+Propriétés de tELTPostgresqlInput
 </h2>
-<a name="wp2978477"> </a><p class="pIndented1">
-The three ELT Postgresql components are closely related, in terms of their operating conditions. These components should be used to handle Postgresql DB schemas to generate Insert statements, including clauses, which are to be executed in the DB output table defined.
+<a name="wp2972376"> </a><p class="pIndented1">
+Les composants <b class="cBold">tELTPostgresqlInput</b>, <b class="cBold">tELTPostgresqlOutput</b>, et <b class="cBold">tELTPostgresqlMap</b> sont très proches dans leurs conditions de fonctionnement. En effet, ces trois composants sont conçus pour manipuler des schémas de données d&#39;une base Postgresql afin de générer des commandes Insert, y compris des clauses, qui devront être exécutées dans la table de sortie définie.
 </p>
-<a name="wp2978687"> </a><p class="pBodyRelative">
+<a name="wp2972581"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp2978490table2978482">
+<table border="1" id="wp2972389table2972381">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2978490"> </a><div class="pCellBody">
-<b class="cBold">Component family</b>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2972389"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
 </div>
 </td>
-    <td><a name="wp2978493"> </a><div class="pCellBody">
+    <td><a name="wp2972392"> </a><div class="pCellBody">
 ELT
 </div>
 </td>
-    <td><a name="wp2978505"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/java_iconfn.png" id="wp2978500" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2972403"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_icongg.png" id="wp2972399" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2978513"> </a><div class="pCellBody">
-<b class="cBold">Function</b>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2972411"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2978516"> </a><div class="pCellBody">
-Provides the table schema to be used for the SQL statement to execute.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2978527"> </a><div class="pCellBody">
-<b class="cBold">Purpose</b>
-</div>
-</td>
-    <td colspan="2" rowspan="1"><a name="wp2978530"> </a><div class="pCellBody">
-Allows you to add as many Input tables as required for the most complicated Insert statement.
+    <td colspan="2" rowspan="1"><a name="wp2972414"> </a><div class="pCellBody">
+Fournit le schéma de la table d&#39;entrée à la commande SQL qui sera exécutée.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2978541"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2972425"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2972428"> </a><div class="pCellBody">
+Permet d&#39;ajouter autant de tables que nécessaires dans une commande Insert qui peut être complexe.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2972439"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2978551"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2972449"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp2978555"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the nature and number of fields to be processed. The schema is either built-in or remotely stored in the Repository. The Schema defined is then passed on to the ELT Mapper to be included to the Insert SQL statement.<br />Click <b class="cBold">Edit Schema</b> to modify the schema. Note that if you make the modifcation, the schema switches automatically to the <b class="cBold">Built-in</b> mode.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2978559"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2978562"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2978569"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp2972453"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités. Le schéma est soit local (built-in) soit distant dans le Repository. Le schéma défini est ensuite passé au composant ELT Mapper afin de l&#39;utiliser dans la commande SQL Insert<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma. Notez que si vous modifiez le schéma, il devient automatiquement built-in.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2978584"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2972461"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2978587"> </a><div class="pCellBody">
+    <td><a name="wp2972464"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2978594"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp2972471"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite Studio</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2978609"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2972482"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2978616"> </a><div class="pCellHeading">
+    <td><a name="wp2972485"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2972492"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2972503"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2972510"> </a><div class="pCellHeading">
 <em class="cEmphasis">Default Table Name</em>
 </div>
 </td>
-    <td><a name="wp2978619"> </a><div class="pCellBody">
-Type in the default table name.
+    <td><a name="wp2972513"> </a><div class="pCellBody">
+Saisissez le nom de la table par défaut.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2978623"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2972517"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2978630"> </a><div class="pCellHeading">
+    <td><a name="wp2972524"> </a><div class="pCellHeading">
 <em class="cEmphasis">Default Schema Name</em>
 </div>
 </td>
-    <td><a name="wp2978633"> </a><div class="pCellBody">
-Type in the default schema name.
+    <td><a name="wp2972527"> </a><div class="pCellBody">
+Saisissez le nom du schéma par défaut.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2978641"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2972535"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2978648"> </a><div class="pCellHeading">
+    <td><a name="wp2972542"> </a><div class="pCellHeading">
 <em class="cEmphasis">tStatCatcher Statistics</em>
 </div>
 </td>
-    <td><a name="wp2978651"> </a><div class="pCellBody">
-Select this check box to gather the job processing metadata at a job level as well as at each component level.
+    <td><a name="wp2972545"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2978659"> </a><div class="pCellBody">
-<b class="cBold">Usage</b>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2972553"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2978670"> </a><div class="pCellBody">
-<b class="cBold">tELTPostgresqlInput</b> is to be used along with the <b class="cBold">tELTPostgresqlMap</b>. Note that the Output link to be used with these components must correspond strictly to the syntax of the table name 
+    <td colspan="2" rowspan="1"><a name="wp2972560"> </a><div class="pCellBody">
+L&#39;utilisation du composant <b class="cBold">tELTPostgresqlInput</b> est étroitement liée à celle du <b class="cBold">tELTPostrgesqlMap</b>. Notez que le lien de sortie (output) à utiliser avec ces deux composants doit respecter strictement la syntaxe du nom de la table. 
 </div>
-<a name="wp2978678"> </a><p class="pBodyRelative">
+<a name="wp2972572"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../en/images/bulb_small.png" align="left" id="wp2978675" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-Note that the ELT components do not handle actual data flow but only schema information.
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2972569" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Les composants ELT ne traitent pas le flux de données lui-même mais uniquement les informations du schéma.
 </p>
 </td>
 </tr>
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -177,10 +184,11 @@ Note that the ELT components do not handle actual data flow but only schema info
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tELTOracleOutput_Scenario.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTPostgresqlInput_Scenario.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tELTOracleOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tELTPostgresqlInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

@@ -4,126 +4,501 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:19:45">
-    <title>Scenario: Aggregating data from a large file</title>
+    <meta name="LASTUPDATED" content="04/23/10 10:14:04">
+    <title>tFSAggregate </title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFSAggregate_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSCheck_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="File%20Scale_group_intro.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSCheck_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2843748"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<a name="wp2843751"> </a><h2 class="pHeading2">
-Scenario: Aggregating data from a large file
+<a name="wp2516611"> </a><h2 class="pHeading1">
+tFSAggregate 
 </h2>
-<a name="wp2514272"> </a><p class="pIndented1">
-This Java scenario describes a Job that uses the <b class="cBold">tFSAggregate </b>component to aggregate, in high speed, very big customers&#39; data according to the States in which they are based, calculating the number of customers that have been aggregated for each State and the average of their incomes.
-</p>
-<a name="wp2515024"> </a><p class="pBodyRelative">
-</p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../en/images/warning_small.png" align="left" id="wp2515021" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-Make sure that you have already saved locally the executable file mostly suited to your system to be able to assign it in <span style="font-style: normal">Talend Integration Suite Studio</span> to the STSort path.
-</p>
-<a name="wp2515081"> </a><p class="pIndented1">
-In this scenario, we have already stored the input schemas of the large input file in the Repository. For more information about storing schema metadata in the Repository, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">Dropping components from the Metadata node</em> in Talend Integration Suite Studio <b class="cBold">User Guide</b>.
-</p>
-<a name="wp2515144"> </a><p class="pIndented1">
-The input file contains nine columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em>, <em class="cEmphasis">idState</em>, <em class="cEmphasis">id2</em>, <em class="cEmphasis">RegTime</em>, <em class="cEmphasis">RegisterTime</em>, <em class="cEmphasis">Sum1</em> and <em class="cEmphasis">Sum2</em>.
-</p>
-<a name="wp2514343"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2516620"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFSAggregate1.png" id="wp2514340" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tFSAggregate_icon32.png" id="wp2516615" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2516629"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2516624" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Ce composant n&#39;est disponible dans la Palette que si vous avez souscrit à <b class="cBold">Talend Integration Suite MP</b>x.
+</div>
+<a name="wp2516637"> </a><h2 class="pHeading2">
+Propriétés du tFSAggregate
+</h2>
+<a name="wp2516953"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp2516645table2516640">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516645"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp2516647"> </a><div class="pCellBody">
+FileScale
+</div>
+</td>
+    <td><a name="wp2516655"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_icongg.png" id="wp2516652" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516660"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2516665"> </a><div class="pCellBody">
+Le composant <b class="cBold">tFSAggregate</b> effectue une agrégation basée sur une ou plusieurs colonnes. Pour chacune des lignes en sortie, une clé d&#39;agrégation est fournie, ainsi que le résultat de l&#39;opération d&#39;agrégation correspondant (count, avg et sum).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516672"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2516677"> </a><div class="pCellBody">
+<b class="cBold">tFSAggregate</b> permet d&#39;établir des métriques et des statistiques basées sur des valeurs ou des calculs.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516690"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2516697"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2516700"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma.
+</div>
+<a name="wp2516709"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2516707" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Si vous modifiez le schéma, il devient automatiquement built-in.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516712"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516714"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516719"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516730"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516732"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516737"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du Guide Utilisateur de <b class="cBold">Talend Integration Suite</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516748"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516753"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp2516755"> </a><div class="pCellBody">
+Peut être Built-in ou Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516757"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516759"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516764"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516766"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516768"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516773"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516778"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516783"> </a><div class="pCellHeading">
+<em class="cEmphasis">Input File Name</em>
+</div>
+</td>
+    <td><a name="wp2516785"> </a><div class="pCellBody">
+Nom du fichier contenant les données que vous souhaitez agréger.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516790"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516795"> </a><div class="pCellHeading">
+<em class="cEmphasis">Output File Name</em>
+</div>
+</td>
+    <td><a name="wp2516797"> </a><div class="pCellBody">
+Nom du fichier dans lequel vous souhaitez écrire les données agrégées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516799"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516804"> </a><div class="pCellHeading">
+<em class="cEmphasis">Record separator</em> (char)
+</div>
+</td>
+    <td><a name="wp2516806"> </a><div class="pCellBody">
+Caractère, chaîne ou expression régulière séparant les lignes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516808"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516813"> </a><div class="pCellHeading">
+<em class="cEmphasis">Field separator</em> (char)
+</div>
+</td>
+    <td><a name="wp2516815"> </a><div class="pCellBody">
+Caractère, chaîne ou expression régulière séparant les champs.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516817"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516822"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp2516824"> </a><div class="pCellBody">
+Nombre de lignes d&#39;en-tête à ignorer en début de fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516826"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516831"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp2516833"> </a><div class="pCellBody">
+Nombre de lignes à ignorer en fin de fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516835"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516840"> </a><div class="pCellHeading">
+<em class="cEmphasis">Group by</em>
+</div>
+</td>
+    <td><a name="wp2516845"> </a><div class="pCellBody">
+<b class="cBold">Column&#160;</b>: Liste des colonnes du fichier d&#39;entrée.<br /><b class="cBold">Key Attribute</b>&#160;: Cochez la case correspondant au nom de la colonne à utiliser pour regrouper les données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516850"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516855"> </a><div class="pCellHeading">
+<em class="cEmphasis">Operations</em>
+</div>
+</td>
+    <td><a name="wp2516860"> </a><div class="pCellBody">
+<b class="cBold">Additional Output Column</b>&#160;: Saisissez le nom que vous souhaitez donner à la colonne contenant le résultat de l&#39;opération d&#39;agrégation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516862"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516864"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516869"> </a><div class="pCellBody">
+<b class="cBold">Function</b>&#160;: Sélectionnez le type d&#39;opérations d&#39;agrégation à effectuer.<br /><b class="cBold">count</b>&#160;: calcule le nombre de lignes,<br /><b class="cBold">avg</b>&#160;: calcule la moyenne,<br /><b class="cBold">sum</b>&#160;: calcule la somme.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516880"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516882"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516887"> </a><div class="pCellBody">
+<b class="cBold">Input Column</b>&#160;: Sélectionnez la colonne d&#39;entrée à partir de laquelle les valeurs sont collectées pour l&#39;agrégation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516892"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2516896"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generate FSLang File</em>
+</div>
+</td>
+    <td><a name="wp2516899"> </a><div class="pCellBody">
+Cochez cette case pour générer le fichier FSLang correspondant à votre Job et cliquez sur le bouton [...] à coté du champ <b class="cBold">FSLang File Name</b> pour spécifier son chemin d&#39;accès.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516904"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516908"> </a><div class="pCellHeading">
+<em class="cEmphasis">Assign FileScale Path</em>
+</div>
+</td>
+    <td><a name="wp2516911"> </a><div class="pCellBody">
+Cochez cette case puis cliquez sur le bouton [...] à coté du champ <b class="cBold">FileScale Path</b> pour sélectionner le fichier exécutable correspondant au programme FileScale permettant d&#39;exécuter le composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2843271"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2843278"> </a><div class="pCellHeading">
+<em class="cEmphasis">Sort results</em>
+</div>
+</td>
+    <td><a name="wp2843281"> </a><div class="pCellBody">
+Cochez cette case afin de trier les résultats.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2843253"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2843259"> </a><div class="pCellHeading">
+<em class="cEmphasis">Custom FileScale Parameter (separated by ,)</em>
+</div>
+</td>
+    <td><a name="wp2843263"> </a><div class="pCellBody">
+Saisissez les paramètres de personnalisation, en les séparant par une virgule. Pour plus d&#39;informations concernant les paramètres personnalisables, consultez l&#39;annexe <a href="Components03-1.html"><em class="cEmphasis">Langage de programmation FileScale</em></a> (en anglais).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516916"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516920"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify Number of Process Child</em>
+</div>
+</td>
+    <td><a name="wp2516923"> </a><div class="pCellBody">
+Cochez cette case et saisissez le nombre de process fils à utiliser pour l&#39;exécution de l&#39;agrégation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516925"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2516929"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp2516932"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2516937"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2516939"> </a><div class="pCellBody">
+Ce composant traite des fichiers, ainsi il ne nécessite pas de flux de données en entrée ou en sortie. Il est utilisé pour agréger les données de fichiers volumineux.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2516946"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2516948"> </a><div class="pCellBody">
+La limitation dépend des limites de la mémoire physique et de l&#39;architecture du processeur. Par exemple, la taille totale des fichiers traités ne peut pas excéder la limite du système de fichiers pour supporter les fichiers très volumineux (maximum de la valeur 64&#160;bits signée).
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp2516960"> </a><h2 class="pHeading2">
+Scénario&#160;: Agréger les données d&#39;un fichier volumineux
+</h2>
+<a name="wp2517591"> </a><p class="pIndented1">
+Ce scénario a été créé en Java et décrit un Job agrégant, très rapidemement, un fichier volumineux contenant des données clients en fonction de l&#39;Etat dans lequel ils sont basés, calculant le nombre de clients ayant été agrégés pour chaque Etat et faisant une moyenne de leurs bénéfices grâce au composant <b class="cBold">tFSAggregate</b>.
+</p>
+<a name="wp2517601"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2517599" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Assurez-vous d&#39;avoir bien enregistré localement le fichier exécutable correspondant à votre système d&#39;exploitation afin de pouvoir indiquer son chemin d&#39;accès dans <b class="cBold">Talend Integration Suite</b>. 
+</p>
+<a name="wp2517608"> </a><p class="pIndented1">
+Dans ce scénario, nous avons déjà centralisé le schéma du fichier dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations concernant la création et l&#39;utilisation de métadonnées de schémas dans le Repository, consultez les sections <em class="cEmphasis">Configurer un schéma File Delimited</em> et <em class="cEmphasis">Déposer des composants du répertoire Metadata</em> du Guide Utilisateur de Talend Integration Suite.
+</p>
+<a name="wp2517639"> </a><p class="pIndented1">
+Le fichier contient neuf colonnes&#160;: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em>, <em class="cEmphasis">idState</em>, <em class="cEmphasis">id2</em>, <em class="cEmphasis">RegTime</em>, <em class="cEmphasis">RegisterTime</em>, <em class="cEmphasis">Sum1</em> et <em class="cEmphasis">Sum2</em>. 
+</p>
+<a name="wp2511848"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFSAggregate1.png" id="wp2511845" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2515216"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant metadata onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
+<a name="wp2511886"> </a><div class="pSmartList2"><li>Dans le <b class="cBold">Repository</b>, développez le noeud <b class="cBold">Metadata</b> et le noeud de la métadonnée que vous venez de créer contenant le schéma d&#39;entrée et glissez ce noeud dans le Job designer.<br />La boîte de dialogue <b class="cBold">[Components]</b> apparaît. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2514366"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2511916"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFSSort2.png" id="wp2514363" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFSSort2.png" id="wp2511895" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2514377"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFSAggregate</b> from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFSAggregate</b> component displays in the design workspace.</li></div>
-<a name="wp2514387"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFSAggregate</b> to display its <b class="cBold">Basic settings</b> view. </li></div>
+<a name="wp2511999"> </a><div class="pSmartList2"><li>Sélectionnez le composant <b class="cBold">tFSAggregate</b> dans la liste et cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.<br />Le composant <b class="cBold">tFSAggregate</b> apparaît dans le Job designer.</li></div>
+<a name="wp2512025"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFSAggregate</b> pour paramétrer ses propriétés dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b>. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2514402"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2512066"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFSAggregate2.png" id="wp2514399" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFSAggregate2.png" id="wp2512063" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2515326"> </a><p class="pIndented1">
-All <b class="cBold">tFSAggregate</b> property fields are automatically filled in. If you did not define your input schemas locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Schema Type</b> and <b class="cBold">Property Type</b> fields.
+<a name="wp2512110"> </a><p class="pIndented1">
+Tous les champs de propriétés du <b class="cBold">tFSAggregate</b> sont automatiquement renseignés. Si vous n&#39;avez pas défini le schéma dans les métadonnées du <b class="cBold">Repository</b>, renseignez manuellement ces informations après avoir sélectionné le mode <b class="cBold">Built-in</b> dans les listes <b class="cBold">Schema Type</b> et <b class="cBold">Property Type</b>. 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2514429"> </a><div class="pSmartList2"><li>In the <b class="cBold">Output File Name</b> field, browse to the output file you want to write the aggregated data in. </li></div>
-<a name="wp2515721"> </a><div class="pSmartList2"><li>In the <b class="cBold">Group by </b>area, select the check box(es) next to the column name(s) you want to use to regroup the data. You can select multiple columns as aggregation set if you want to regroup data based on multiple criteria. For this scenario, we want to use the <em class="cEmphasis">idState</em> column to regroup the data.</li></div>
+<a name="wp2512159"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Output File Name</b>, indiquez le nom et le chemin d&#39;accès du fichier de sortie contenant les données agrégées. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2515565"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2512174"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFSAggregate3.png" id="wp2515562" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2516037"> </a><div class="pSmartList2"><li>In the <b class="cBold">Operations</b> area, click the plus button to add two columns that will hold the results of the aggregation operation.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2516046"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tFSAggregate4.png" id="wp2516043" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFSAggregate3.png" id="wp2512171" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2516053"> </a><div class="pSmartList2"><li>In the first line of the <b class="cBold">Additional Output column</b> list, enter a name for the first additional output column, <em class="cEmphasis">count</em> in this scenario. </li></div>
-<a name="wp2516068"> </a><div class="pSmartList2"><li>Click in the first line of the <b class="cBold">Function</b> list and select the aggregation operation you want to perform, <b class="cBold">count</b> in this scenario. </li></div>
-<a name="wp2516282"> </a><div class="pSmartList2"><li>Click in the first line of the <b class="cBold">Input Column</b> list and select the column from which the input values are to be taken, <em class="cEmphasis">id</em> in this scenario.</li></div>
+<a name="wp2512187"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Group by</b>, cochez la case correspondant à la colonne sur laquelle effectuer l&#39;opération de regroupement. Vous pouvez sélectionner plusieurs colonnes afin d&#39;effectuer des regroupements sur plusieurs critères. Pour ce scénario, regroupez les données de la colonne <em class="cEmphasis">idState</em>. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2516326"> </a><p class="pIndented1">
-Thus, the column <em class="cEmphasis">count</em> will be added to the output file and will contain the number of the <em class="cEmphasis">id</em> of the customers regrouped by State.
+<a name="wp2512198"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFSAggregate4.png" id="wp2512195" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2512211"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Operations</b>, cliquez sur le bouton (+) pour ajouter deux colonnes contenant le résultat des opérations d&#39;agrégation.</li></div>
+<a name="wp2512271"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Additional Output column</b> de la première ligne, saisissez un nom pour la première colonne supplémentaire, <em class="cEmphasis">count</em> pour ce scénario.</li></div>
+<a name="wp2514640"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Function</b>, sélectionnez l&#39;opération d&#39;agrégation que vous souhaitez exécuter, <b class="cBold">count</b> pour ce scénario.</li></div>
+<a name="wp2514659"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Input Column</b>, sélectionnez la colonne dont la valeur d&#39;entrée sera récupérée pour l&#39;opération d&#39;agrégation, <em class="cEmphasis">id</em> pour ce scénario.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2514823"> </a><p class="pIndented1">
+Ainsi, la colonne <em class="cEmphasis">count</em> sera ajoutée au fichier de sortie et contiendra le nombre d&#39;<em class="cEmphasis">id</em> des clients regroupés par Etat.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2516584"> </a><div class="pSmartList2"><li>In the second line of the <b class="cBold">Additional Output column</b> list, enter a name for the second additional output column, <em class="cEmphasis">avg</em> in this scenario.</li></div>
-<a name="wp2516597"> </a><div class="pSmartList2"><li>Click in the second line of the <b class="cBold">Function</b> list and select the aggregation operation you want to perform, <b class="cBold">avg</b> in this scenario.</li></div>
-<a name="wp2516610"> </a><div class="pSmartList2"><li>Click in the second line of the <b class="cBold">Input Column</b> list and select the column from which the input values are to be taken, <em class="cEmphasis">Sum1</em> in this scenario.</li></div>
+<a name="wp2514827"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Additional Output column</b> de la deuxième ligne,  saisissez le nom de la deuxième colonne supplémentaire, <em class="cEmphasis">avg</em>.</li></div>
+<a name="wp2514860"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Function</b>, sélectionnez l&#39;opération d&#39;agrégation que vous souhaitez exécuter, <b class="cBold">avg</b> pour ce scénario.</li></div>
+<a name="wp2514877"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Input Column</b>, sélectionnez la colonne dont la valeur d&#39;entrée sera récupérée pour l&#39;opération d&#39;agrégation, <em class="cEmphasis">Sum1</em> pour ce scénario.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2516664"> </a><p class="pIndented1">
-Thus, the column <em class="cEmphasis">avg</em> will be added to the output file and will contain the average of the <em class="cEmphasis">Sum1</em> of the customers.
+<a name="wp2514988"> </a><p class="pIndented1">
+Ainsi, la colonne <em class="cEmphasis">avg</em> sera ajoutée au fichier de sortie et fera la moyenne des <em class="cEmphasis">Sum1</em> des clients par Etat.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2516668"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view and then select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the executable file mostly suited to your system.</li></div>
-<a name="wp2516349"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. </li></div>
+<a name="wp2514992"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour paramétrer les propriétés avancées du composant et cochez la case <b class="cBold">Assign FileScale Path</b> et dans le champ <b class="cBold">FileScale Path</b>, indiquez le chemin d&#39;accès au fichier exécutable correspondant à votre système d&#39;exploitation.</li></div>
+<a name="wp2514959"> </a><div class="pSmartList2"><li>Enregistrez le Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2515597"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2514918"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFSAggregate5.png" id="wp2515594" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFSAggregate5.png" id="wp2513076" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2516714"> </a><p class="pIndented1">
-A progress bar displays below the <b class="cBold">tFSAggregate</b> component in the design workspace to show the completed percentage of the aggregation operation. This progress bar will make it evident how the huge input data is aggregated at a very high speed.
+<a name="wp2513085"> </a><p class="pIndented1">
+Une barre de progression apparaît sous le composant <b class="cBold">tFSAggregate</b> dans le Job designer pour montrer le pourcentage de progression de l&#39;opération d&#39;agrégation. Cette barre de progression vous montrera la rapidité de l&#39;exécution de l&#39;agrégation.
 </p>
-<a name="wp2519010"> </a><p class="pIndented1">
-When the percentage progress bar reaches 100%, the specified data is regrouped and written in the two new defined output columns.
+<a name="wp2512780"> </a><p class="pIndented1">
+Lorsque le pourcentage de progression atteint les 100%, les données sélectionnées sont regroupées et transmises en sortie, ainsi que les deux nouvelles colonnes contenant le compte des <em class="cEmphasis">id</em> des données regoupées et la moyenne des <em class="cEmphasis">Sum1</em>.
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -132,10 +507,11 @@ When the percentage progress bar reaches 100%, the specified data is regrouped a
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFSAggregate_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSCheck_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="File%20Scale_group_intro.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSCheck_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

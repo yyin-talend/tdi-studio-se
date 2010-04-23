@@ -4,96 +4,107 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:03">
-    <title>Scenario: Reading email addresses from a DB table and extracting invalid rows</title>
+    <meta name="LASTUPDATED" content="04/23/10 10:14:26">
+    <title>Scénario&#160;: Lire des adresses e-mail d&#39;une table d&#39;une base de données, et extraire les lignes invalides</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlValidRows_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlValidRows_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2863617"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2983469"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2863625"> </a><h2 class="pHeading2">
-Scenario: Reading email addresses from a DB table and extracting invalid rows
+<a name="wp2983504"> </a><h2 class="pHeading2">
+Scénario&#160;: Lire des adresses e-mail d&#39;une table d&#39;une base de données, et extraire les lignes invalides
 </h2>
-<a name="wp2863634"> </a><p class="pIndented1">
-This Java scenario is a two-component Job created in <b class="cBold">Talend Integration Suite Studio</b>. In this Job, <b class="cBold">tMySQLInvalidRows</b> reads the email address column from a MySQL database table, checks the email column value against the given <b class="cBold">Talend Data Quality</b> email pattern and finally extracts the invalid rows and displays them on the console.
+<a name="wp2983514"> </a><p class="pIndented1">
+Ce scénario Java est un Job à deux composants créé dans <b class="cBold">Talend Integration Suite</b>. Dans ce Job, le <b class="cBold">tMySQLInvalidRows</b> lit la colonne des adresses e-mail d&#39;une table d&#39;une base de données MySQL, vérifie la valeur de la colonne des e-mails, par rapport aux modèles de <b class="cBold">Talend Data Quality</b> donnés, et extrait les lignes invalides, puis les affiche dans la console.
 </p>
-<a name="wp2863651"> </a><p class="pIndented1">
-Below is the database table we use in this example, the <em class="cEmphasis">Email</em> column contains some invalid data that should be corrected.
+<a name="wp2983526"> </a><p class="pIndented1">
+Ci-dessous est la table de la base de données que nous utilisons dans l&#39;exemple, la colonne <em class="cEmphasis">Email</em> contient des données invalides qui doivent être corrigées.
 </p>
-<a name="wp2863661"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2983540"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMysqlInvalidRows.png" id="wp2863657" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlInvalidRows.png" id="wp2983536" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2863665"> </a><p class="pIndented1">
-In this scenario, we have already stored the schemas of the input table in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a DB connection</em> and <em class="cEmphasis">Dropping components from the Metadata node</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2863700"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand in succession <b class="cBold">Metadata</b> and the <b class="cBold">DB Connections</b> node where you have stored the input schemas and drop the relevant connection onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2863719"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMysqlInvalidRows2.png" id="wp2863715" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2863734"> </a><div class="pSmartList2"><li>Select <b class="cBold">tMySQLInvalidRows </b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tMySQLInvalidRows</b> component displays on the workspace. The MySQL table used in this scenario is called <em class="cEmphasis">employees</em>. It holds the employees&#39; <em class="cEmphasis">ID, FirstName, Initial </em>and <em class="cEmphasis">Email</em>.</li></div>
-<a name="wp2863764"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
-<a name="wp2863774"> </a><div class="pSmartList2"><li>Connect the two components together using the <b class="cBold">Main</b> link.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2863783"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMysqlInvalidRows1.png" id="wp2863779" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2863798"> </a><div class="pSmartList2"><li>.Double-click <b class="cBold">tMySQLInvalid Rows</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2863809"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMysqlInvalidRows3.png" id="wp2863805" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<a name="wp2863813"> </a><p class="pIndented1">
-All database connection fields are automatically filled in. If you do not define your input files in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field
+<a name="wp2983587"> </a><p class="pIndented1">
+Dans ce scénario, nous avons déjà stocké les schémas de la table d&#39;entrée dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations sur le stockage des schémas de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Integration Suite</b> (en anglais).
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2863833"> </a><div class="pSmartList2"><li>In the <b class="cBold">Analyzed column</b> list, select the column you want to analyze, <em class="cEmphasis">Email </em>in this example.</li></div>
-<a name="wp2863849"> </a><div class="pSmartList2"><li>In the <b class="cBold">Patterns list</b>, select the <b class="cBold">Talend Data Quality</b> database pattern against which you want to check the <em class="cEmphasis">Email</em> column, <em class="cEmphasis">Email Address</em> in this example.</li></div>
-<a name="wp2863871"> </a><p class="pBodyRelative">
+<a name="wp2983605"> </a><div class="pSmartList2"><li>Dans l&#39;arborescence du <b class="cBold">Repository</b>, développez les noeuds <b class="cBold">Metadata </b>et <b class="cBold">Db Connections</b> où vous avez stocké les schémas d&#39;input, puis glissez la métadonnée de connexion correspondant  dans l&#39;espace de modélisation graphique.<br />La boîte de dialogue <b class="cBold">[Components]</b> s&#39;ouvre.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2983621"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlInvalidRows2.png" id="wp2983617" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2983636"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">tMySQLInvalidRows </b>dans la liste, et cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.<br />Le composant <b class="cBold">tMySQLInvalidRows</b> apparaît dans l&#39;espace de modélisation graphique. La table MySQL utilisée dans ce scénario est appelée <em class="cEmphasis">employees</em>. Elle contient l&#39;<em class="cEmphasis">ID, FirstName, Initial </em>et <em class="cEmphasis">Email</em> (ID, Prénom, Initiales et E-mail) des employés.</li></div>
+<a name="wp2983666"> </a><div class="pSmartList2"><li>Glissez le <b class="cBold">tLogRow</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp2983676"> </a><div class="pSmartList2"><li>Connectez les deux composants à l&#39;aide d&#39;un lien <b class="cBold">Main Row</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2983685"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlInvalidRows1.png" id="wp2983681" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2983700"> </a><div class="pSmartList2"><li>.Double-cliquez sur le <b class="cBold">tMySQLInvalid Rows</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2983711"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlInvalidRows3.png" id="wp2983707" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2983715"> </a><p class="pIndented1">
+Tous les champs relatifs à la connexion sont automatiquement renseignés. Si vous ne définissez pas vos fichiers d&#39;entrée dans le <b class="cBold">Repository</b>,  remplissez les champs manuellement, après avoir sélectionné <b class="cBold">Built-in</b> dans le champ <b class="cBold">Property Type</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2983739"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Analyzed column</b>, sélectionnez la colonne que vous souhaitez analyser, <em class="cEmphasis">Email </em>dans cet exemple.</li></div>
+<a name="wp2983754"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Patterns list</b>, sélectionnez le modèle de base de données <b class="cBold">Talend Data Quality</b> par rapport auquel vous voulez vérifier la colonne <em class="cEmphasis">Email</em>, <em class="cEmphasis">Email Address</em> dans cet exemple.</li></div>
+<a name="wp2983777"> </a><p class="pBodyRelative">
 <br />
-<img src="../en/images/bulb_small.png" align="left" id="wp2863864" border="0" hspace="0" vspace="0"/><br />
-If you select the <b class="cBold">Custom pattern</b> check box, you can customize the regular expression against which the data is to be checked.
+<img src="images/bulb_small.png" align="left" id="wp2983770" border="0" hspace="0" vspace="0"/><br />
+Si vous cochez la case <b class="cBold">Custom pattern</b>, vous pouvez personnaliser l&#39;expression régluière par rapport à laquelle vos données seront vérifiées.
 </p>
-<a name="wp2863887"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tLogRow</b> to open its <b class="cBold">Basic settings</b> view and define its properties as needed.</li></div>
-<a name="wp2863898"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp2983793"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tLogRow</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés comme nécessaire.</li></div>
+<a name="wp2983804"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2863907"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2983813"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMysqlInvalidRows4.png" id="wp2863903" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMysqlInvalidRows4.png" id="wp2983809" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2863919"> </a><p class="pIndented1">
-The <b class="cBold">tMySQLInvalidRows</b> component analyzed the <em class="cEmphasis">Email</em> column in the MySQL table against the selected SQL pattern (<em class="cEmphasis">Email Address</em>), and then it extracted all invalid data that should be corrected.
+<a name="wp2983543"> </a><p class="pIndented1">
+Le composant <b class="cBold">tMySQLInvalidRows</b> a analysé la colonne <em class="cEmphasis">Email</em> de la table MySQL en la comparant avec le modèle SQL sélectionné (<em class="cEmphasis">Email Address</em>), puis a extrait toutes les données invalides devant être corrigées.
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -102,10 +113,11 @@ The <b class="cBold">tMySQLInvalidRows</b> component analyzed the <em class="cEm
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlValidRows_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMysqlInvalidRows_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlValidRows_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

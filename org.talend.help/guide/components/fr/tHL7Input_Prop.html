@@ -4,31 +4,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:14:55">
+    <meta name="LASTUPDATED" content="04/23/10 10:14:16">
     <title>tHL7Input</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tCentricCRMOutput_Scenario.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHL7Input_Scenario.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tCentricCRMOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHL7Input_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2944960"> </a><h2 class="pHeading1">
 tHL7Input
 </h2>
 <a name="wp2944972"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tHL7Input_icon32_white.png" id="wp2944965" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tHL7Input_icon32_white.png" id="wp2944965" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2944982"> </a><h2 class="pHeading2">
 tHL7Input Properties
 </h2>
-<a name="wp2945350"> </a><p class="pBodyRelative">
+<a name="wp2946624"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2944994table2944986">
@@ -42,25 +47,25 @@ Business
 </div>
 </td>
     <td><a name="wp2945008"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/java_iconfn.png" id="wp2945004" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongg.png" id="wp2945004" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2945016"> </a><div class="pCellBody">
-<b class="cBold">Function</b>
+<b class="cBold">Fonction</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2945019"> </a><div class="pCellBody">
-Connects to an entity of Microsoft CRM database via the relevant webservice.
+Lit un fichier de structure HL7 et extrait des données ligne par ligne.
 </div>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2945030"> </a><div class="pCellBody">
-<b class="cBold">Purpose</b>
+<b class="cBold">Objectif</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2945033"> </a><div class="pCellBody">
-Allows to extract data from a MicrosoftCRM DB based on conditions set on specific columns.
+Ce composant lit un fichie HL7 structuré ou un flux de données ligne par ligne pour le scinder en champs et envoie les champs tel que définis dans le schéma au composant suivant du Job via une connexion <b class="cBold">Row</b>.
 </div>
 </td>
 </tr>
@@ -68,12 +73,12 @@ Allows to extract data from a MicrosoftCRM DB based on conditions set on specifi
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2945051"> </a><div class="pCellHeading">
+    <td><a name="wp2949081"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp2945062"> </a><div class="pCellBody">
-Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>:
+    <td><a name="wp2949084"> </a><div class="pCellBody">
+Peut être Built-in ou Repository.
 </div>
 </td>
 </tr>
@@ -81,12 +86,12 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>:
 &#160;
 </div>
 </td>
-    <td><a name="wp2945077"> </a><div class="pCellHeading">
+    <td><a name="wp2949091"> </a><div class="pCellHeading">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945084"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: No property data stored centrally.
+    <td><a name="wp2949098"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
 </div>
 </td>
 </tr>
@@ -94,12 +99,12 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>:
 &#160;
 </div>
 </td>
-    <td><a name="wp2945091"> </a><div class="pCellBody">
+    <td><a name="wp2949101"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945098"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp2949108"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier où sont stockées les propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
 </div>
 </td>
 </tr>
@@ -107,63 +112,63 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>:
 &#160;
 </div>
 </td>
-    <td><a name="wp2946411"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/Save_Icon.png" id="wp2946407" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2949150"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Save_Icon.png" id="wp2949146" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
-    <td><a name="wp2946414"> </a><div class="pCellBody">
-Click this icon to open a connection wizard and store the Excel file connection parameters you set in the component <b class="cBold">Basic settings </b>view.<br />For more information about setting up and storing file connection parameters, see <em class="cEmphasis">Setting up a File XML schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp2949153"> </a><div class="pCellBody">
+Cliquez sur cette icône pour ouvrir l&#39;assistant connexion de base de données et enregistrer les paramètres de connexion que vous avez définis dans la vue <b class="cBold">Basic settings </b>du composant. <br />Pour plus d&#39;informations sur comment définir et stocker des paramètres de connexion de base de données, consultez le chapitre <em class="cEmphasis">Configurer une connexion DB</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2945106"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2946435"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945112"> </a><div class="pCellHeading">
+    <td><a name="wp2946440"> </a><div class="pCellHeading">
 <em class="cEmphasis">Multi Schemas Editor</em>
 </div>
 </td>
-    <td><a name="wp2945116"> </a><div class="pCellBody">
-The <span style="font-weight: bold">[Multi Schema Editor] </span>helps to build and configure the data flow in a multi-structure delimited file to associate one schema per output.
+    <td><a name="wp2946442"> </a><div class="pCellBody">
+L&#39;éditeur <span style="font-weight: bold">[Multi Schema Editor] </span>vous permet de construire et de configurer le flux de données dans un fichier délimité multi-structure, pour associer un schéma par sortie.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2945120"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946444"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945127"> </a><div class="pCellBody">
-<em class="cEmphasis">Segment List</em>
+    <td><a name="wp2946446"> </a><div class="pCellBody">
+<em class="cEmphasis">Segment Lists</em>
 </div>
 </td>
-    <td><a name="wp2945130"> </a><div class="pCellBody">
-<b class="cBold">Connection</b>: The columns are automatically retrieved from the input file. The column name is the segment name.<br /><b class="cBold">Column Mapping</b>:. The mapping in this array is retrieved from the mapping you have done in the editor.
+    <td><a name="wp2946459"> </a><div class="pCellBody">
+<b class="cBold">Connection</b>&#160;: Les colonnes sont automatiquement récupérées à partir du fichier d&#39;entrée. Le nom de la colonne est le nom du segment.<br /><b class="cBold">Column Mapping</b>&#160;:. Dans ce tableau, le mapping est récupéré de celui que vous avez défini dans l&#39;éditeur.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2945134"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2946468"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945141"> </a><div class="pCellHeading">
+    <td><a name="wp2946500"> </a><div class="pCellHeading">
 <em class="cEmphasis">Not Validate HL7 Message</em>
 </div>
 </td>
-    <td><a name="wp2945148"> </a><div class="pCellBody">
-Select this check box if you do not want to validate HL7 messages.
+    <td><a name="wp2946503"> </a><div class="pCellBody">
+Cochez cette case si vous ne souhaitez pas valider les messgaes HL7.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946529"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946510"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2946536"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+    <td><a name="wp2946520"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 <em class="cEmphasis">Advanced separator (for numbers)</em>
 </div>
 </td>
-    <td><a name="wp2946539"> </a><div class="pCellBody">
+    <td><a name="wp2946524"> </a><div class="pCellBody">
 Cochez cette option pour modifier les séparateurs utilisés pour les nombres&#160;:<br /><b class="cBold">Thousands separator</b>&#160;: définissez le séparateur utilisé pour les milliers.<br /><b class="cBold">Decimal separator</b>&#160;: définissez le séparateur utilisé pour les décimaux. 
 </div>
 </td>
@@ -177,37 +182,37 @@ Cochez cette option pour modifier les séparateurs utilisés pour les nombres&#160
 </div>
 </td>
     <td><a name="wp2946586"> </a><div class="pCellBody">
-Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory.
+Sélectionnez le type d&#39;encodage à partir de la liste ou choisissez l&#39;option <b class="cBold">Custom</b> pour le définir manuellement. Ce champ doit obligatoirement être renseigné.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2945307"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946596"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2945314"> </a><div class="pCellHeading">
+    <td><a name="wp2946601"> </a><div class="pCellHeading">
 <em class="cEmphasis">tStatCatcher Statistics</em>
 </div>
 </td>
-    <td><a name="wp2945317"> </a><div class="pCellBody">
-Select this check box to gather the job processing metadata at a job level as well as at each component level.
+    <td><a name="wp2946603"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2945325"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2946608"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2945328"> </a><div class="pCellBody">
-Usually used as a Start component. An output component is required. 
+    <td colspan="2" rowspan="1"><a name="wp2946610"> </a><div class="pCellBody">
+Généralement utilisé en tant que composant d&#39;entrée. Un composant de sortie est requis. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2945339"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946617"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2945342"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp2946619"> </a><div class="pCellBody">
 n/a
 </div>
 </td>
@@ -215,13 +220,15 @@ n/a
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -230,10 +237,11 @@ n/a
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tCentricCRMOutput_Scenario.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHL7Input_Scenario.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tCentricCRMOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHL7Input_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

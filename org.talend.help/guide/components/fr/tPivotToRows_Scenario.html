@@ -4,107 +4,111 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:18">
-    <title>Scenario: Concatenating a list of columns in a table by using the other table columns as pivot </title>
+    <meta name="LASTUPDATED" content="04/23/10 10:18:50">
+    <title>Scénario&#160;: Concaténer une liste de colonnes à partir d&#39;une table en utilisant les autres colonnes comme pivot </title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tPivotToRows_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplace_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tPivotToRows_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplace_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2526716"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523257"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2526721"> </a><h2 class="pHeading2">
-Scenario: Concatenating a list of columns in a table by using the other table columns as pivot 
+<a name="wp2523262"> </a><h2 class="pHeading2">
+Scénario&#160;: Concaténer une liste de colonnes à partir d&#39;une table en utilisant les autres colonnes comme pivot 
 </h2>
-<a name="wp2526726"> </a><p class="pIndented1">
-This Perl scenario describes a four-component Job that allows to concatenate in a single line the information distributed in a list of columns by using the other columns in the table as pivot. 
+<a name="wp2523267"> </a><p class="pIndented1">
+Le scénario suivant est un Job Perl à quatre composants permettant de concaténer sur une même ligne les informations de plusieurs colonnes d&#39;une table, en utilisant les autres colonnes comme pivot. 
 </p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2529038"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tPivotToRows</b> and <b class="cBold">tLogRow</b> (x2).</li></div>
-<a name="wp2529060"> </a><div class="pSmartList2"><li>Connect the four components using <b class="cBold">Row Main</b> links.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2529026"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523275"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow1.png" id="wp2526731" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tUnpivotRow1.png" id="wp2523272" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2529337"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view where you can define its properties.</li></div>
+<a name="wp2523283"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez-déposez les composants suivants dans l&#39;éditeur graphique&#160;: le <b class="cBold">tFileInputDelimited</b>, le <b class="cBold">tPivotToRows</b> et deux <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp2523300"> </a><div class="pSmartList2"><li>Connectez les quatre composants à l&#39;aide de liens <b class="cBold">Row Main</b> comme ci-dessus.</li></div>
+<a name="wp2523307"> </a><div class="pSmartList2"><li>Dans l&#39;espace graphique, cliquez sur le composant <b class="cBold">tFileInputDelimited</b>.</li></div>
+<a name="wp2523316"> </a><div class="pSmartList2"><li>Cliquez sur la vue <b class="cBold">Component</b> pour configurer les paramètres de base (<b class="cBold">Basic settings</b>) du <b class="cBold">tFileInputDelimited</b>. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2529346"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523328"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow2.png" id="wp2529343" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2529354"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select:<br />-<b class="cBold">Repository</b> if you have already stored the metadata of your input file in the Repository, the fields that follow are filled in with the stored information automatically, or<br />-select <b class="cBold">Built-In</b> and fill in the fields that follow manually.<br />For this example, we use the <b class="cBold">Built-In</b> mode.</li></div>
-<a name="wp2529370"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">File Name</b> field and browse to the input file. In this example, our source file is <em class="cEmphasis">use_case_tunpivotrow</em> and it holds eight columns. The five columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName, CustomerAddress</em>, <em class="cEmphasis">id2</em> and <em class="cEmphasis">RegisterTime</em> are to be concatenated, while the other three columns: <em class="cEmphasis">Sum1</em>, <em class="cEmphasis">Sum2</em> and <em class="cEmphasis">Sum3</em> are to be used as pivot.</li></div>
-<a name="wp2529565"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view of <b class="cBold">tFileInputDelimited</b>, define in the corresponding fields the row and field separators used in the source file.</li></div>
-<a name="wp2529582"> </a><div class="pSmartList2"><li>If needed, set <b class="cBold">Header</b>, <b class="cBold">Footer</b> and <b class="cBold">Limit</b>.  <br />In this example, set <b class="cBold">Header</b> to 1 since the first row that holds columns&#39; names is to be ignored. <b class="cBold">Footer</b> and <b class="cBold">Limit</b> for the number of processed rows are not set.</li></div>
-<a name="wp2529610"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema</b> field, set schema to <b class="cBold">Built in</b> then click the three-dot button next to the <b class="cBold">Edit Schema </b>field to define the data to be passed to the following component. In this example, the source schema consists of the eight columns of the source file <em class="cEmphasis">use_case_tunpivotrow</em>.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2526888"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow3.png" id="wp2526885" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tUnpivotRow2.png" id="wp2523325" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2526900"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tPivotToRows</b> to display its <b class="cBold">Basic settings</b> view where you can define the component properties.</li></div>
-<a name="wp2526919"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema from the preceding component.</li></div>
-<a name="wp2529724"> </a><p class="pBodyRelative">
-<br />
-<img src="../en/images/bulb_small.png" align="left" id="wp2529721" border="0" hspace="0" vspace="0"/><br />
-<br />You can click the three-dot button next to <b class="cBold">Edit schema</b> to check the retrieved schema.
-</p>
-<a name="wp2529864"> </a><div class="pSmartList2"><li>Click the plus button to add in the <b class="cBold">Row keys</b> area as many lines as the columns to concatenate. In this example, we add five lines. </li></div>
+<a name="wp2523339"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Property Type</b>, sélectionnez le mode <b class="cBold">Repository</b>  si vous avez stocké les informations du fichier délimité sous le noeud <b class="cBold">Metadata</b> du <b class="cBold">Repository</b> ou sélectionnez le mode <b class="cBold">Built-In</b> pour les définir manuellement. Dans ce scénario, on utilise le mode <b class="cBold">Built-In</b>.</li></div>
+<a name="wp2523358"> </a><div class="pSmartList2"><li>Renseignez le chemin d&#39;accès au fichier à traiter dans le champ <b class="cBold">File Name</b>. Dans cet exemple, on utilise le fichier <em class="cEmphasis">use_case_tunpivotrow</em>, qui comporte huit colonnes&#160;: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName, CustomerAddress</em>, <em class="cEmphasis">id2</em> et <em class="cEmphasis">RegisterTime</em> qui sont destinées à être concaténées, ainsi que <em class="cEmphasis">Sum1</em>, <em class="cEmphasis">Sum2</em> et <em class="cEmphasis">Sum3</em> qui serviront de pivot.</li></div>
+<a name="wp2523391"> </a><div class="pSmartList2"><li>Définissez si nécessaire les séparateurs de lignes (<b class="cBold">Row separator</b>) et de champs (<b class="cBold">Field separator</b>), l&#39;en-tête (<b class="cBold">Header</b>) et le pied-de-page (<b class="cBold">Footer</b>), ainsi que le nombre de lignes à traiter (<b class="cBold">Limit</b>). La première ligne, qui porte le nom des colonnes, est ignorée dans cet exemple, c&#39;est pourquoi le champ <b class="cBold">Header</b> est défini à &quot;1&quot;.  </li></div>
+<a name="wp2523417"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Schema</b>, sélectionnez le mode <b class="cBold">Built in</b> puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit Schema </b>pour définir les données à passer au composant suivant. Dans cet exemple, le schéma est constitué des huit colonnes du fichier d&#39;entrée <em class="cEmphasis">use_case_tunpivotrow</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2529785"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523429"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow4.png" id="wp2526938" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tUnpivotRow3.png" id="wp2523426" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2530043"> </a><div class="pSmartList2"><li>Click in each of the lines of the <b class="cBold">Input column</b> list and select the name of the column to be concatenated. The input schema columns that are not selected will be used as pivot.</li></div>
-<a name="wp2530050"> </a><div class="pSmartList2"><li>In the <b class="cBold">Row key concatenate delimiter</b>field, define a character to separate the data of the various columns once the concatenation is completed.</li></div>
-<a name="wp2530060"> </a><div class="pSmartList2"><li>Double-click the first <b class="cBold">tLogRow</b> component to display its <b class="cBold">Basic settings</b> view and define its properties. </li></div>
+<a name="wp2523441"> </a><div class="pSmartList2"><li>Dans l&#39;espace graphique, cliquez sur le composant <b class="cBold">tPivotToRows</b>.</li></div>
+<a name="wp2523450"> </a><div class="pSmartList2"><li>Cliquez sur la vue <b class="cBold">Component</b> pour configurer les paramètres de base (<b class="cBold">Basic settings</b>) du <b class="cBold">tPivotToRow</b>s.</li></div>
+<a name="wp2523460"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent. Vous pouvez cliquer sur le bouton [...] à coté du champ <b class="cBold">Edit schema</b> pour consulter le schéma.</li></div>
+<a name="wp2523473"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> pour insérer dans la zone <b class="cBold">Row keys</b> autant de lignes qu&#39;il y a de colonnes à concaténer. Dans cet exemple, on a ajouté cinq lignes. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2530072"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523482"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow5.png" id="wp2530069" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tUnpivotRow4.png" id="wp2523479" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2530082"> </a><div class="pSmartList2"><li>In the mode area, select <b class="cBold">Table</b> to display the source file and the <b class="cBold">tPivotToRows</b> results together to be able to compare them. </li></div>
-<a name="wp2527015"> </a><div class="pSmartList2"><li>Do the same for the second <b class="cBold">tLogRow</b> component</li></div>
-<a name="wp2527023"> </a><div class="pSmartList2"><li>save the Job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp2523490"> </a><div class="pSmartList2"><li>A partir de la liste déroulante du champ <b class="cBold">Input column</b>, sélectionnez pour chaque ligne l&#39;intitulé de la colonne à concaténer. Les colonnes du schéma d&#39;entrée qui ne seront pas sélectionnées serviront de pivot. <br />Dans cet exemple, les colonnes <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName, CustomerAddress</em>, <em class="cEmphasis">id2</em> et <em class="cEmphasis">RegisterTime</em> sont sélectionnées pour la concaténation alors que les colonnes <em class="cEmphasis">Sum1</em>, <em class="cEmphasis">Sum2</em> et <em class="cEmphasis">Sum3</em> sont laissées de côté pour servir de pivot.</li></div>
+<a name="wp2523518"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Row key concatenate delimiter</b>, définissez un caractère pour séparer les données des différentes colonnes une fois la concaténation achevée. </li></div>
+<a name="wp2523528"> </a><div class="pSmartList2"><li>Cliquez sur un des composants <b class="cBold">tLogRow</b> puis cliquez sur la vue <b class="cBold">Component</b> pour configurer leurs paramètres de base (<b class="cBold">Basic settings</b>). </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2527030"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2523540"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tUnpivotRow6.png" id="wp2527027" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tUnpivotRow5.png" id="wp2523537" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2527036"> </a><p class="pIndented1">
-The console shows the results of the two <b class="cBold">tLogRow</b> components. Table <em class="cEmphasis">tLogRow_1</em> gives an outline of the source file and table <em class="cEmphasis">tLogRow_2</em> shows the concatenation of the columns <em class="cEmphasis">id, CustomerName, CustomerAddress, id2 </em>and <em class="cEmphasis">RegisterTime </em>as well as the transformation of the columns <em class="cEmphasis">Sum1</em>, <em class="cEmphasis">Sum2</em> and <em class="cEmphasis">Sum3</em> as pivot.   
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2523551"> </a><div class="pSmartList2"><li>Choisissez le mode <b class="cBold">Table</b> pour visualiser le fichier de départ et le résultat du <b class="cBold">tPivotToRows</b> au même format et ainsi pouvoir les comparer. </li></div>
+<a name="wp2523556"> </a><div class="pSmartList2"><li>Utilisez les mêmes paramètres pour le second composant <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp2523564"> </a><div class="pSmartList2"><li>Enregistrez le Job puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2523571"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tUnpivotRow6.png" id="wp2523568" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2523577"> </a><p class="pIndented1">
+La console de log présente les résultats des deux composants <b class="cBold">tLogRow</b>. Le tableau tLogRow_1 donne un aperçu du fichier de départ  et le tableau tLogRow_2 montre la concaténation des colonnes <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName, CustomerAddress</em>, <em class="cEmphasis">id2</em> et <em class="cEmphasis">RegisterTime</em> ainsi que la transformation des colonnes <em class="cEmphasis">Sum1</em>, <em class="cEmphasis">Sum2</em> et <em class="cEmphasis">Sum3</em> en pivot.   
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -113,10 +117,11 @@ The console shows the results of the two <b class="cBold">tLogRow</b> components
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tPivotToRows_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplace_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tPivotToRows_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tReplace_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

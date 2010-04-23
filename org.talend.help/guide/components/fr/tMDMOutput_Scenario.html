@@ -4,141 +4,156 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:45">
-    <title>Scenario: Writing data in an MDM database</title>
+    <meta name="LASTUPDATED" content="04/23/10 10:14:07">
+    <title>Scénario&#160;: Ecrire des données dans une base de données MDM</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMDMOutput_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMReceive_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMDMOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMReceive_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2942519"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772387"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2942526"> </a><h2 class="pHeading2">
-Scenario: Writing data in an MDM database
+<a name="wp2772394"> </a><h2 class="pHeading2">
+Scénario&#160;: Ecrire des données dans une base de données MDM
 </h2>
-<a name="wp2942529"> </a><p class="pIndented1">
-This scenario describes a two-component Job that generates data, transforms it into XML and loads it into an MDM database.
+<a name="wp2772397"> </a><p class="pIndented1">
+Ce scénario décrit un Job à deux composants qui génère des données, les transforme en XML et les charge dans la base de données MDM.
 </p>
-<a name="wp2942537"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772405"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput1.png" id="wp2942534" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942552"> </a><div class="pSmartList2"><li>From the <b class="cBold">Palette</b>, drop <b class="cBold">tFixedFlowInput</b> and <b class="cBold">tMDMOutput</b> onto the design workspace</li></div>
-<a name="wp2942559"> </a><div class="pSmartList2"><li>Connect the components using a <b class="cBold">Row Main</b> link.</li></div>
-<a name="wp2942571"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFixedFlowInput</b> to view its <b class="cBold">Basic settings</b>, in the <b class="cBold">Component</b> tab and set the component properties.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2942580"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput2.png" id="wp2942577" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput1.png" id="wp2772402" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942594"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema Type</b> list, select <b class="cBold">Built-in</b> and click the three-dot button next to <b class="cBold">Edit schema</b> to open a dialog box in which you can define the structure of the data you want to write in the MDM database.</li></div>
+<a name="wp2772419"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, glissez les composants <b class="cBold">tFixedFlowInput</b> de la famille <b class="cBold">Misc</b>, et <b class="cBold">tMDMOutput</b> de la famille <b class="cBold">Talend MDM</b> dans l&#39;espace de modélisation.</li></div>
+<a name="wp2772430"> </a><div class="pSmartList2"><li>Reliez-les via des liens de type <b class="cBold">Row Main</b>.</li></div>
+<a name="wp2772439"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFixedFlowInput</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> et paramétrer ses propriétés.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2942603"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772451"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput3.png" id="wp2942600" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942611"> </a><div class="pSmartList2"><li>Click the plus button and add three columns of the type <b class="cBold">String</b>. Name the columns: <em class="cEmphasis">ISO2Code</em>, <em class="cEmphasis">Name</em>, <em class="cEmphasis">Currency</em>. Click <b class="cBold">OK</b>.</li></div>
-<a name="wp2942631"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your changes and close the dialog box.</li></div>
-<a name="wp2942638"> </a><div class="pSmartList2"><li>In the <b class="cBold">Number of rows</b> field, enter the number of rows you want to generate.</li></div>
-<a name="wp2942648"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mode</b> zone, select the mode <b class="cBold">Use Single Table</b> to generate just one table.</li></div>
-<a name="wp2942654"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> fields, enter the values which correspond to each of the schema columns, between inverted commas.</li></div>
-<a name="wp2942664"> </a><div class="pSmartList2"><li>In the design workspace, click <b class="cBold">tMDMOutput</b> to open its <b class="cBold">Basic settings</b> view in the <b class="cBold">Component</b> tab and set the properties. </li></div>
-</ul></div>
-</ul></div>
-<a name="wp2942676"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput8.png" id="wp2942673" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput2.png" id="wp2772448" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942687"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type</b> list, select <b class="cBold">Built-in</b> and complete the fields manually. If you have saved the MDM connection information under <b class="cBold">Metadata</b> in the repository, select Repository from the list and the fields which follow will be completed automatically. </li></div>
-<a name="wp2942702"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema Type</b> list, select <b class="cBold">Built-in</b> and click on the three dot button next to the <b class="cBold">Edit Schema</b> field to describe the structure of the data you want to load in the MDM database.</li></div>
+<a name="wp2772465"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema Type</b>, sélectionnez <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour décrire la structure des données que vous souhaitez charger dans la base de données MDM.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2942712"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772477"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput4.png" id="wp2942709" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942720"> </a><div class="pSmartList2"><li>Click the plus button to the right to add one column of the type <b class="cBold">String</b>. Name this column <em class="cEmphasis">xmlOutput</em>. Click <b class="cBold">OK</b>.</li></div>
-<a name="wp2942734"> </a><div class="pSmartList2"><li>The <b class="cBold">XML Field</b> list is automatically filled in with the output column that you created.</li></div>
-<a name="wp2942741"> </a><div class="pSmartList2"><li>In the <b class="cBold">URL</b> field, enter the URL required to connect to the MDM database.</li></div>
-<a name="wp2942750"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, enter the authentication information required to connect to the database.</li></div>
-<a name="wp2942757"> </a><div class="pSmartList2"><li>In the <b class="cBold">Version</b> field, enter the name of the perspective you want to access, between inverted commas. Leave the field blank to access the default perspective.</li></div>
-<a name="wp2942764"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Model</b> field, enter the name of the model on which the information to be written is based, between inverted commas.</li></div>
-<a name="wp2942771"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Container</b>, enter the name of the directory into which the information is to be written and saved.</li></div>
-<a name="wp2942783"> </a><div class="pSmartList2"><li>In the <b class="cBold">Component</b> view, click on the <b class="cBold">Advanced settings</b> tab to set the advanced parameters.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2942790"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput10.png" id="wp2942787" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput3.png" id="wp2772474" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942800"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">Configure Xml Tree</b> to open the component editor. </li></div>
+<a name="wp2772488"> </a><div class="pSmartList2"><li>Ajoutez trois colonnes de type <b class="cBold">String</b> en cliquant sur le bouton <b class="cBold">[+]</b>. Nommez ces colonnes <em class="cEmphasis">ISO2Code</em>, <em class="cEmphasis">Name</em>, <em class="cEmphasis">Currency</em>. Cliquez sur <b class="cBold">OK. </b></li></div>
+<a name="wp2772508"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Number of rows</b>, saisissez le nombre de lignes que vous souhaitez générer. Ici, nous souhaitons générer qu&#39;une seule ligne.</li></div>
+<a name="wp2777045"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Mode</b>, sélectionnez le mode <b class="cBold">Use Single Table</b> pour ne générer qu&#39;un seul jeu de données.</li></div>
+<a name="wp2772514"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Values</b>, saisissez entre guillemets, dans chaque champ <b class="cBold">Value</b>, la valeur correspondant à chaque colonne du schéma.</li></div>
+<a name="wp2779188"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, double-cliquez sur le composant <b class="cBold">tMDMOutput</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> et paramétrer ses propriétés.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2942807"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2778915"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput6.png" id="wp2942804" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942819"> </a><div class="pSmartList2"><li>In the <b class="cBold">Link target</b> area to the right, click in the <b class="cBold">Xml Tree</b> field.</li></div>
-<a name="wp2942829"> </a><div class="pSmartList2"><li> Select <b class="cBold">rootTag</b> and replace it with &quot;<em class="cEmphasis">Country</em>&quot;.</li></div>
-<a name="wp2942838"> </a><div class="pSmartList2"><li>In the <b class="cBold">Linker source</b> area, select your three schema columns and drop them on the <b class="cBold">Country</b> node.<br />The <b class="cBold">[Selection]</b> dialog box displays.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2942850"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput7.png" id="wp2942847" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput8.png" id="wp2772698" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942858"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Create as sub-element of target node</b> option so that the three columns are linked to the three XML sub-elements of the <b class="cBold">Country</b> node and then click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp2777772"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Property Type</b>, sélectionnez <b class="cBold">Built-in</b> et renseignez les champs manuellement. Si vous avez stocké les informations de connexion au MDM dans les métadonnées du Repository, sélectionnez <b class="cBold">Repository</b> dans la liste et les champs suivants seront renseignés automatiquement.</li></div>
+<a name="wp2778190"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema Type</b>, sélectionnez <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour décrire la structure des données que vous souhaitez charger dans la base de données MDM.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2942873"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2778202"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput5.png" id="wp2942870" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput4.png" id="wp2778199" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2942884"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">Currency</b>, in the Link Target area and select <b class="cBold">Set as Loop Element</b> in the contextual menu. </li></div>
-<a name="wp2942892"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your changes and close the dialog box.</li></div>
-<a name="wp2942900"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to run it.</li></div>
+<a name="wp2778213"> </a><div class="pSmartList2"><li>Dans la zone de droite, ajoutez une colonne de type <b class="cBold">String</b> en cliquant sur le bouton <b class="cBold">[+]</b>. Nommez cette colonne <em class="cEmphasis">xmlOutput</em>. Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp2778226"> </a><div class="pSmartList2"><li>La liste <b class="cBold">XML Field</b> est automatiquement renseignée avec la colonne de sortie que vous venez de créer.</li></div>
+<a name="wp2778243"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">URL</b>, saisissez, entre guillemets, l&#39;URL de connexion à la base de données MDM.</li></div>
+<a name="wp2778253"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Username</b> et <b class="cBold">Password</b>, saisissez l&#39;identifiant et le mot de passe de connexion à la base de données.</li></div>
+<a name="wp2778260"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Version</b>, saisissez entre guillemets le nom de la perspective à laquelle vous avez accès. Laissez le champ vide pour afficher la perspective par défaut.</li></div>
+<a name="wp2778267"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Data Model</b>, saisissez entre guillemets, le nom du modèle dans lequel vous souhaitez écrire.</li></div>
+<a name="wp2778274"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Data Container</b>, saisissez, entre guillemets, le nom du répertoire de sauvegarde dans lequel vous souhaitez écrire.</li></div>
+<a name="wp2778280"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b>, cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour paramétrer les paramètres avancées du composant.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2942907"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2778290"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMOutput9.png" id="wp2942904" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMOutput10.png" id="wp2778720" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2942913"> </a><p class="pIndented1">
-The new country is created and is added to the MDM database.
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2778957"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> du champ <b class="cBold">Configure Xml Tree</b> pour ouvrir l&#39;éditeur du composant.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2779292"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMDMOutput6.png" id="wp2778954" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2778969"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Link target</b> à droite, cliquez dans le champ <b class="cBold">Xml Tree</b>.</li></div>
+<a name="wp2778979"> </a><div class="pSmartList2"><li>Sélectionnez le texte <b class="cBold">rootTag</b> et remplacez-le par &quot;<em class="cEmphasis">Country</em>&quot;.</li></div>
+<a name="wp2778985"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Linker source</b>, sélectionnez les trois colonnes de votre schéma et glissez les sur le noeud <b class="cBold">Country</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2778997"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMDMOutput7.png" id="wp2778994" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2779008"> </a><div class="pSmartList2"><li>Dans la boîte de dialogue <b class="cBold">[Selection]</b>, sélectionnez <b class="cBold">Create as sub-element of target node</b> pour que vos trois colonnes correspondent à trois sous-éléments du noeud <b class="cBold">Country</b> en XML. Cliquez sur <b class="cBold">OK</b></li></div>
+</ul></div>
+</ul></div>
+<a name="wp2779023"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMDMOutput5.png" id="wp2779020" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2779035"> </a><div class="pSmartList2"><li>Cliquez-droit sur l&#39;élément <b class="cBold">Currency</b> dans la zone <b class="cBold">Link target</b>, et sélectionnez <b class="cBold">Set as Loop Element</b> dans le menu. </li></div>
+<a name="wp2779042"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer l&#39;éditeur.</li></div>
+<a name="wp2779406"> </a><div class="pSmartList2"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2778297"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMDMOutput9.png" id="wp2778294" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2772782"> </a><p class="pIndented1">
+Le nouveau pays créé est ajouté à la base de données MDM. 
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -147,10 +162,11 @@ The new country is created and is added to the MDM database.
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMDMOutput_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMReceive_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMDMOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMReceive_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

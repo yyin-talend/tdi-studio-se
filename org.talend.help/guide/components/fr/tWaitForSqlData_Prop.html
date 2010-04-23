@@ -4,26 +4,31 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="10/19/09 17:33:24">
+    <meta name="LASTUPDATED" content="04/23/10 10:18:38">
     <title>tWaitForSqlData</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForSqlData_Scenario.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tWaitForSocket_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForSqlData_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp1575305"> </a><h2 class="pHeading1">
+<a name="wp2937208"> </a><h2 class="pHeading1">
 tWaitForSqlData
 </h2>
 <a name="wp1575313"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tWaitForSqlData_icon32_white.png" id="wp1575309" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tWaitForSqlData_icon32_white.png" id="wp1575309" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp1575320"> </a><h2 class="pHeading2">
 Propriété du tWaitForSqlData
@@ -41,8 +46,8 @@ Propriété du tWaitForSqlData
 Orchestration
 </div>
 </td>
-    <td><a name="wp1575339"> </a><div class="pCellBody">
-<img src="images/Components-13-23-04.jpg" height="59" width="112" id="wp1575335" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp1575339"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-14-28-04.jpg" height="59" width="112" id="wp1575335" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -82,11 +87,11 @@ Paramétrez en secondes l&#39;intervalle de temps entre chaque vérification.
 </div>
 </td>
     <td><a name="wp1575381"> </a><div class="pCellHeading">
-<em class="cEmphasis">Max. iterations (infinite if empty)</em>
+<em class="cEmphasis">Max. iterations (infinite loop if empty)</em>
 </div>
 </td>
     <td><a name="wp1575384"> </a><div class="pCellBody">
-Nombre de vérifications à effectuer avant que le Job ne s&#39;arrête.
+Nombre de vérifications à effectuer avant que le Job ne s&#39;arrête (si vous ne saisissez rien, la boucle sera infinie).
 </div>
 </td>
 </tr>
@@ -125,11 +130,24 @@ Nom de la table à vérifier.
 </div>
 </td>
     <td><a name="wp1575411"> </a><div class="pCellBody">
-Sélectionnez la condition à rencontrer pour exécuter l&#39;action&#160;:<br /><b class="cBold">Equal to</b>&#160;: égale à <br /><b class="cBold">Not Equal to</b>&#160;: différent de<br /><b class="cBold">Greater than</b>&#160;: supérieur à <br /><b class="cBold">Lower than</b>&#160;: inférieur à <br /><b class="cBold">Greater or equal to</b>&#160;: supérieur ou égal à<br /><b class="cBold">Lower or equal to</b>&#160;:inférieur ou égal à
+Sélectionnez la condition à rencontrer pour exécuter l&#39;action&#160;:<br /><b class="cBold">Equal to</b>&#160;: égal à <br /><b class="cBold">Not Equal to</b>&#160;: différent de<br /><b class="cBold">Greater than</b>&#160;: supérieur à <br /><b class="cBold">Lower than</b>&#160;: inférieur à <br /><b class="cBold">Greater or equal to</b>&#160;: supérieur ou égal à<br /><b class="cBold">Lower or equal to</b>&#160;:inférieur ou égal à.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1575431"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2934070"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2934073"> </a><div class="pCellHeading">
+<em class="cEmphasis">Value</em>
+</div>
+</td>
+    <td><a name="wp2934076"> </a><div class="pCellBody">
+Définissez la valeur à prendre en compte.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1575431"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -138,11 +156,11 @@ Sélectionnez la condition à rencontrer pour exécuter l&#39;action&#160;:<br /><b
 </div>
 </td>
     <td><a name="wp1575438"> </a><div class="pCellBody">
-Sélectionnez l&#39;action à effectuer lorsque la condition est rencontrée&#160;: soit arrêter la boucle, soit continuer la boucle jusqu&#39;à ce que le nombre d&#39;itération maximum soit atteint.
+Sélectionnez l&#39;action à effectuer lorsque la condition est rencontrée&#160;: soit arrêter la boucle (<b class="cBold">exit loop</b>), soit continuer la boucle jusqu&#39;à ce que le nombre d&#39;itération maximum soit atteint (<b class="cBold">continue loop</b>).
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1575443"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1575443"> </a><div class="pCellBody">
 <b class="cBold">Utilisation</b>
 </div>
 </td>
@@ -151,7 +169,7 @@ Bien que ce composant ait besoin d&#39;un composant de connexion pour ouvrir l&#
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1575452"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1575452"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
@@ -163,13 +181,15 @@ n/a
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -178,10 +198,11 @@ n/a
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForSqlData_Scenario.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tWaitForSocket_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForSqlData_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

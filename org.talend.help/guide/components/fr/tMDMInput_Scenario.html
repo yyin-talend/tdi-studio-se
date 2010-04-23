@@ -4,89 +4,101 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:45">
-    <title>Scenario: Reading data in an MDM database</title>
+    <meta name="LASTUPDATED" content="04/23/10 10:14:07">
+    <title>Scénario&#160;: Lire les données d&#39;une base de données MDM</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMDMInput_Prop.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMOutput_Prop.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMDMInput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2765435"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2860050"> </a><h2 class="pHeading2">
-Scenario: Reading data in an MDM database
+<a name="wp2765443"> </a><h2 class="pHeading2">
+Scénario&#160;: Lire les données d&#39;une base de données MDM
 </h2>
-<a name="wp2860053"> </a><p class="pIndented1">
-This scenario describes a two-component Job that reads data in an XML file in an MDM database. The data is fetched and displayed in the log console.
+<a name="wp2765446"> </a><p class="pIndented1">
+Ce scénario décrit un Job à deux composants qui lit et extrait les données contenues dans un fichier XML de la base de données MDM et les affiche dans la console de log.
 </p>
-<a name="wp2860061"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2765454"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMInput1.png" id="wp2860058" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMInput1.png" id="wp2765451" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2860074"> </a><div class="pSmartList2"><li>From the <b class="cBold">Palette,</b> drop <b class="cBold">tMDMInput</b> and <b class="cBold">tLogRow</b> onto the design workspace.</li></div>
-<a name="wp2765464"> </a><div class="pSmartList2"><li>Connect the components together using <b class="cBold">Row Main</b> links.</li></div>
-<a name="wp2765467"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMDMInput</b> to open the <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+<a name="wp2765459"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, glissez les composants <b class="cBold">tMDMInput</b> de la famille <b class="cBold">Talend MDM</b>, et <b class="cBold">tLogRow</b> de la famille <b class="cBold">Logs &amp; Errors</b> dans l&#39;espace de modélisation.</li></div>
+<a name="wp2765464"> </a><div class="pSmartList2"><li>Reliez-les via un lien de type <b class="cBold">Row Main</b>.</li></div>
+<a name="wp2765467"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMDMInput</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> et paramétrer ses propriétés.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2765476"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMInput2.png" id="wp2765473" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMInput2.png" id="wp2765473" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2765481"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type</b> list, select <b class="cBold">Built-in </b>to complete the fields manually. If you have stored the MDM connection information in the repository metadata, select <b class="cBold">Repository</b> from the list and the fields will be completed automatically.</li></div>
-<a name="wp2934249"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema Type</b> list, select <b class="cBold">Built-in</b> and click the three-dot button next to <b class="cBold">Edit schema</b> to open a dialog box in which you can define the structure of the data you want to read in the MDM database.</li></div>
+<a name="wp2765481"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Property Type</b>, sélectionnez <b class="cBold">Built-in</b> et renseignez les champs manuellement. Si vous avez stocké les informations de connexion au MDM dans les métadonnées du Repository, sélectionnez <b class="cBold">Repository</b> dans la liste et les champs suivants seront renseignés automatiquement.</li></div>
+<a name="wp2775581"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema Type</b>, sélectionnez <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour décrire la structure des données que vous souhaitez récupérer dans la base de données MDM.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2765490"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMInput3.png" id="wp2765487" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMInput3.png" id="wp2765487" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2935060"> </a><div class="pSmartList2"><li>The data is collected in a three column schema of the type <b class="cBold">String</b>: <em class="cEmphasis">ISO2Code</em>, <em class="cEmphasis">Name</em> and <em class="cEmphasis">Currency</em>. Click <b class="cBold">OK</b>.</li></div>
-<a name="wp2935074"> </a><div class="pSmartList2"><li>In the <b class="cBold">URL</b> field, enter the MDM database URL, between inverted commas.</li></div>
-<a name="wp2935083"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, enter your login and password to connect to the MDM database.</li></div>
-<a name="wp2935090"> </a><div class="pSmartList2"><li>In the <b class="cBold">Version</b> field, enter the name of the perspective you want to access, between inverted commas. Leave this field empty to display the default perspective.</li></div>
-<a name="wp2765828"> </a><div class="pSmartList2"><li>In the <b class="cBold">Entity</b> field, enter the name of the entity that holds the data you want to read, between inverted commas.</li></div>
-<a name="wp2935215"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Container</b> field, enter the name of the directory that holds the data you want to read, between inverted commas.</li></div>
-<a name="wp2935225"> </a><div class="pSmartList2"><li>In the <b class="cBold">Component</b> view, click on <b class="cBold">Advanced settings</b> to set the advanced parameters.</li></div>
+<a name="wp2765495"> </a><div class="pSmartList2"><li>Les données sont récupérées dans un schéma à trois colonnes de type <b class="cBold">String</b>&#160;: <em class="cEmphasis">ISO2Code</em>, <em class="cEmphasis">Name</em>, <em class="cEmphasis">Currency</em>. Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp2765503"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">URL</b>, saisissez entre guillemets l&#39;URL de connexion à la base de données MDM.</li></div>
+<a name="wp2782452"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Username</b> et <b class="cBold">Password</b>, saisissez l&#39;identifiant et le mot de passe de connexion à la base de données.</li></div>
+<a name="wp2782459"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Version</b>, saisissez entre guillemets le nom de la perspective à laquelle vous avez accès. Laissez le champ vide pour afficher la perspective par défaut.</li></div>
+<a name="wp2765828"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Entity</b>, saisissez entre guillemets le nom de l&#39;entité contenant les données que vous souhaitez lire.</li></div>
+<a name="wp2765838"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Data Container</b>, saisissez entre guillemets le nom du répertoire de sauvegarde contenant les données que vous souhaitez lire.</li></div>
+<a name="wp2776025"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b>, cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour paramétrer les propriétés avancées du composant.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2765875"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/Use_Case_tMDMInput4.png" id="wp2765872" border="0" hspace="0" vspace="0"/>
+</div>
+<div align="center"><img src="images/Use_Case_tMDMInput4.png" id="wp2776134" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2765936"> </a><div class="pSmartList2"><li>In the <b class="cBold">Loop XPath query</b> field, enter the structure and the name of the XML node on which the loop is to be carried out, between inverted commas.</li></div>
-<a name="wp2935748"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mapping</b> area and in the <b class="cBold">XPath query</b> column, enter the name of the XML tag in which you want to collect the data, between inverted commas, next to the corresponding output column name.</li></div>
-<a name="wp2935601"> </a><div class="pSmartList2"><li>In the design workspace, click on the <b class="cBold">tLogRow</b> component to display the <b class="cBold">Basic settings</b> in the <b class="cBold">Component</b> view and set the properties.</li></div>
-<a name="wp2935671"> </a><div class="pSmartList2"><li>Click on <b class="cBold">Edit Schema</b> and ensure that the schema has been collected from the previous component. If not, click <b class="cBold">Sync Columns</b> to fetch the schema from the component.</li></div>
-<a name="wp2935888"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to run it.</li></div>
+<a name="wp2776137"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Loop XPath query</b>, saisissez entre guillemets l&#39;arborescence et le nom du noeud XML sur lequel effectuer la boucle.</li></div>
+<a name="wp2776425"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Mapping</b>, les colonnes du schéma du composant apparaissent sous la colonne Column. Saisissez entre guillemets le nom de la balise XML dans laquelle récupérer les données dans le champ <b class="cBold">XPath query</b> correspondant à la colonne du schéma de sortie.</li></div>
+<a name="wp2766285"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation, double-cliquez sur le composant <b class="cBold">tLogRow</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> et paramétrer ses propriétés.</li></div>
+<a name="wp2766313"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema</b> et assurez-vous que le schéma est récupéré du composant précédent. Sinon, cliquez sur <b class="cBold">Sync Columns</b> pour récupérer le schéma du composant.</li></div>
+<a name="wp2772126"> </a><div class="pSmartList2"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2935992"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2772135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tMDMInput6.png" id="wp2935988" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMDMInput6.png" id="wp2772130" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2773056"> </a><p class="pIndented1">
-The list of different countries along with their codes and currencies is displayed on the console of the <b class="cBold">Run</b> view.
+La liste des différents pays, ansi que leur code et devise est retournée dans la console de la vue <b class="cBold">Run</b>.
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -95,10 +107,11 @@ The list of different countries along with their codes and currencies is display
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tMDMInput_Prop.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMOutput_Prop.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tMDMInput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

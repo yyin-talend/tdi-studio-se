@@ -4,244 +4,264 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="04/23/10 10:14:50">
     <title>tPostgresPlusOutputBulk </title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tPostgresPlusOutput_Scenario.html"><img id="LongDescNotReq1" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresPlusOutputBulk_Scenario.html"><img id="LongDescNotReq2" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tPostgresPlusOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresPlusOutputBulk_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
-    <!--img src="../en/images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2884369"> </a><h2 class="pHeading1">
+<a name="wp2929201"> </a><h2 class="pHeading1">
 tPostgresPlusOutputBulk 
 </h2>
-<a name="wp2884379"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2865901"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tPostgresPlusOutputBulk_icon32_white.png" id="wp2884374" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tPostgresPlusOutputBulk_icon32_white.png" id="wp2865896" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2884389"> </a><h2 class="pHeading2">
-tPostgresPlusOutputBulk properties
+<a name="wp2865911"> </a><h2 class="pHeading2">
+Propriétés du tPostgresPlusOutputBulk
 </h2>
-<a name="wp2884401"> </a><p class="pBodyRelative">
-<b class="cBold">tPostgresplusOutputBulk</b> and <b class="cBold">tPostgresplusBulkExec</b> components are used together to first output the file that will be then used as parameter to execute the SQL query stated. These two steps compose the <b class="cBold">tPostgresPlusOutputBulkExec</b> component, detailed in a separate section. The interest in having two separate elements lies in the fact that it allows transformations to be carried out before the data loading. 
+<a name="wp2886806"> </a><p class="pIndented1">
+Les composants <b class="cBold">tPostgresPlusOutputBulk</b> et <b class="cBold">tPostgresPlusBulkExec</b> sont généralement utilisés ensemble pour d&#39;une part générer en sortie le fichier qui sera d&#39;autre part utilisé comme paramètre dans l&#39;exécution de la requête SQL énoncée. Cette exécution en deux étapes est unifiée dans le composant <b class="cBold">tPostgresPlusOutputBulkExec</b>, détaillé dans une section séparée. L&#39;intérêt de proposer deux composants séparés réside dans le fait que cela permet de procéder à des transformations avant le chargement des données dans la base de données.
 </p>
-<a name="wp2884680"> </a><p class="pBodyRelative">
+<a name="wp2866228"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp2884418table2884410">
+<table border="1" id="wp2865936table2865932">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884418"> </a><div class="pCellBody">
-<b class="cBold">Component famil</b>y
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2865936"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
 </div>
 </td>
-    <td><a name="wp2884421"> </a><div class="pCellBody">
+    <td><a name="wp2865939"> </a><div class="pCellBody">
 Databases/PostgresPlus
 </div>
 </td>
-    <td><a name="wp2884432"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/java_iconfn.png" id="wp2884428" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp2865950"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_icongg.png" id="wp2865946" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884440"> </a><div class="pCellBody">
-<b class="cBold">Function</b>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2865958"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2884443"> </a><div class="pCellBody">
-Writes a file with columns based on the defined delimiter and the PostgresPlus standards 
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884454"> </a><div class="pCellBody">
-<b class="cBold">Purpose</b>
-</div>
-</td>
-    <td colspan="2" rowspan="1"><a name="wp2884457"> </a><div class="pCellBody">
-Prepares the file to be used as parameter in the INSERT query to feed the PostgresPlus database.
+    <td colspan="2" rowspan="1"><a name="wp2865961"> </a><div class="pCellBody">
+Ecrit un fichier composé de colonnes et basé sur le délimiteur défini et sur les standards Postgresql.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884468"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2865972"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2865975"> </a><div class="pCellBody">
+Prépare le fichier à utiliser comme paramètre dans la requête INSERT servant à alimenter une base de données Postgresql.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2865986"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2884475"> </a><div class="pCellHeading">
+    <td><a name="wp2865993"> </a><div class="pCellHeading">
 <em class="cEmphasis">Property type</em>
 </div>
 </td>
-    <td><a name="wp2884478"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+    <td><a name="wp2865996"> </a><div class="pCellBody">
+Peut être Built-in ou Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884482"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866000"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884485"> </a><div class="pCellBody">
+    <td><a name="wp2866003"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884492"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: No property data stored centrally.
+    <td><a name="wp2866010"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Propriétés utilisées ponctuellement.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884496"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866014"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884499"> </a><div class="pCellBody">
+    <td><a name="wp2866017"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884506"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+    <td><a name="wp2866024"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884510"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866028"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884517"> </a><div class="pCellHeading">
+    <td><a name="wp2866035"> </a><div class="pCellHeading">
 <em class="cEmphasis">File Name</em>
 </div>
 </td>
-    <td><a name="wp2884520"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp2866038"> </a><div class="pCellBody">
+Nom du fichier à traiter.<br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884531"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866053"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884538"> </a><div class="pCellHeading">
-<em class="cEmphasis">Field separator</em>
-</div>
-</td>
-    <td><a name="wp2884541"> </a><div class="pCellBody">
-Character, string or regular expression to separate fields.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884545"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884552"> </a><div class="pCellHeading">
-<em class="cEmphasis">Row separator</em>
-</div>
-</td>
-    <td><a name="wp2884555"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix) to distinguish rows.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884559"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884566"> </a><div class="pCellHeading">
+    <td><a name="wp2866060"> </a><div class="pCellHeading">
 <em class="cEmphasis">Append</em>
 </div>
 </td>
-    <td><a name="wp2884569"> </a><div class="pCellBody">
-Select this check box to add the new rows at the end of the file
+    <td><a name="wp2866063"> </a><div class="pCellBody">
+Cochez cette option pour ajouter des nouvelles lignes à la fin du fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884573"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866067"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884580"> </a><div class="pCellHeading">
+    <td><a name="wp2866077"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2866081"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <span style="font-weight: bold">Repository</span>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866085"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866088"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866095"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Integration Suite</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866110"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866113"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866120"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Integration Suite</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866139"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp2866146"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp2866149"> </a><div class="pCellBody">
+Chaîne (ex&#160;: &quot;\n&quot; sous Unix) séparant les lignes.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866153"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866160"> </a><div class="pCellHeading">
+<em class="cEmphasis">Field separator</em>
+</div>
+</td>
+    <td><a name="wp2866163"> </a><div class="pCellBody">
+Caractère, chaîne ou expression régulière séparant les champs.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866167"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2866174"> </a><div class="pCellHeading">
 <em class="cEmphasis">Include header</em>
 </div>
 </td>
-    <td><a name="wp2884583"> </a><div class="pCellBody">
-Select this check box to include the column header to the file. 
+    <td><a name="wp2866177"> </a><div class="pCellBody">
+Cochez cette case pour inclure l&#39;en-tête des colonnes dans le fichier.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884587"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866181"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2884597"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
-</div>
-</td>
-    <td><a name="wp2884601"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. 
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884605"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884608"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884615"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884626"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884629"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884636"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2884647"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2884654"> </a><div class="pCellHeading">
+    <td><a name="wp2866188"> </a><div class="pCellHeading">
 <em class="cEmphasis">Encoding Type</em>
 </div>
 </td>
-    <td><a name="wp2884657"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling. 
+    <td><a name="wp2866191"> </a><div class="pCellBody">
+Sélectionnez l&#39;encodage à partir de la liste ou sélectionnez Custom et définissez-le manuellement. Ce champ est obligatoire pour la manipulation des données de base de données.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2884665"> </a><div class="pCellBody">
-<b class="cBold">Usage</b>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2866195"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2884672"> </a><div class="pCellBody">
-This component is to be used along with <b class="cBold">tPostgresPlusBulkExec</b> component. Used together they offer gains in performance while feeding a PostgresPlus database.
+    <td><a name="wp2866202"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><span style="font-style: italic">Catcher Statistics</span>
+</div>
+</td>
+    <td><a name="wp2866205"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2866213"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp2866216"> </a><div class="pCellBody">
+Ce composant est généralement utilisé avec le composant <b class="cBold">tPostgresPlusBulkExec</b>. Ensemble ils offrent un gain de performance important pour l&#39;alimentation d&#39;une base de données PostgresPlus. 
 </div>
 </td>
 </tr>
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
-          <a href="http://www.webworks.com"><img src="../en/images/webworks.gif" width="150" height="20" border="0"></a><br>
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
             Quadralay Corporation<br>
             http://www.webworks.com<br>
             Voice: (512) 719-3399<br>
@@ -250,10 +270,11 @@ This component is to be used along with <b class="cBold">tPostgresPlusBulkExec</
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tPostgresPlusOutput_Scenario.html"><img id="LongDescNotReq3" src="../en/images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresPlusOutputBulk_Scenario.html"><img id="LongDescNotReq4" src="../en/images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tPostgresPlusOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPostgresPlusOutputBulk_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
