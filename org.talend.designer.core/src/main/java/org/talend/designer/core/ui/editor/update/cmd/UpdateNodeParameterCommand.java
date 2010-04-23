@@ -174,9 +174,13 @@ public class UpdateNodeParameterCommand extends Command {
                             if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
+                            IMetadataTable table = null;
+                            if (!node.getMetadataList().isEmpty()) {
+                                table = node.getMetadataList().get(0);
+                            }
                             Object objectValue = RepositoryToComponentProperty.getValue(
                                     (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                    repositoryValue, node.getMetadataList().get(0));
+                                    repositoryValue, table);
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())) {
                                 //
                                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE

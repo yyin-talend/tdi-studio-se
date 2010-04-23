@@ -949,12 +949,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath
-                                    || node.getMetadataList().isEmpty()) {
+                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
+                            IMetadataTable table = null;
+                            if (!node.getMetadataList().isEmpty()) {
+                                table = node.getMetadataList().get(0);
+                            }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
-                                    node.getMetadataList().get(0));
+                                    table);
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())
                                     && item instanceof DatabaseConnectionItem) {
                                 if (PluginChecker.isCDCPluginLoaded()) {
