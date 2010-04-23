@@ -1403,7 +1403,9 @@ if(!isVirtualOut) { // T_TM_M_320
             	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !("").equals(outputTable.getExpressionFilter().trim());
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
-                    allNotRejectTablesHaveFilter = false;
+                    if(!isErrorReject(outputTable)){
+                    	allNotRejectTablesHaveFilter = false;
+                    }
                 }
                 if (outputTable.isReject()) {
                     atLeastOneReject = true;
