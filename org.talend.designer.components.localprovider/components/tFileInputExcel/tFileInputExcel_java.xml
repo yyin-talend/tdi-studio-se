@@ -141,12 +141,14 @@
 			<IMPORT NAME="Java_Excel" MODULE="jxl.jar" REQUIRED="true" />
 			
 			<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-			<IMPORT NAME="jsr173" MODULE="jsr173_1.0_api.jar" REQUIRED="true" />
-			<IMPORT NAME="log4j" MODULE="log4j-1.2.9.jar" REQUIRED="true" />
-			<IMPORT NAME="ooxml-schemas" MODULE="ooxml-schemas-1.0.jar" REQUIRED="true" />
-			<IMPORT NAME="poi" MODULE="poi-3.5-FINAL-20090928.jar" REQUIRED="true" />
-			<IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.5-FINAL-20090928.jar" REQUIRED="true" />
-			<IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
+		    <IMPORT NAME="geronimo-stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.jar" REQUIRED="true" />
+		    <IMPORT NAME="log4j" MODULE="log4j-1.2.13.jar" REQUIRED="true" />
+		    <IMPORT NAME="poi" MODULE="poi-3.6-20091214.jar" REQUIRED="true" />
+		    <IMPORT NAME="poi-contrib" MODULE="poi-contrib-3.6-20091214.jar" REQUIRED="true" />
+		    <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.6-20091214.jar" REQUIRED="true" />
+		    <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.6-20091214.jar" REQUIRED="true" />
+		    <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.6-20091214.jar" REQUIRED="true" />
+		    <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

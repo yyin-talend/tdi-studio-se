@@ -16,7 +16,8 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+boolean version07 = ("true").equals(ElementParameterParser.getValue(node,"__VERSION_2007__"));
+	
 boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 
@@ -25,6 +26,7 @@ String sheetname = ElementParameterParser.getValue(node, "__SHEETNAME__");
 boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
 String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
+boolean keepCellFormating = ("true").equals(ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__"));
 String font = ElementParameterParser.getValue(node, "__FONT__");
 boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
@@ -36,7 +38,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     	List<IMetadataColumn> columns = metadata.getListColumns();
-    	
+    	if(!version07){//version judgement
 %>
 		int nb_line_<%=cid%> = 0;
 
@@ -227,7 +229,48 @@ if(isIncludeHeader){
 }
 %>
 		
+<%	
+		}else{ //version judgement /***excel 2007 xlsx*****/
+%>	
+		int nb_line_<%=cid%> = 0;
+		org.talend.ExcelTool xlsxTool_<%=cid%> = new org.talend.ExcelTool();
+		xlsxTool_<%=cid%>.setSheet(<%=sheetname%>);
+		xlsxTool_<%=cid%>.setAppend(<%=isAppendFile%>,<%=isAppendSheet%>);
+		xlsxTool_<%=cid%>.setXY(<%=firstCellYAbsolute%>,<%=firstCellXStr%>,<%=firstCellYStr%>,<%=keepCellFormating%>);
+		<%if(!useStream){%>
+		xlsxTool_<%=cid%>.prepareXlsxFile(<%=filename%>);
+		<%}else{%>
+		xlsxTool_<%=cid%>.prepareStream();
+		<%}%>
+		xlsxTool_<%=cid%>.setFont("<%=font%>");
+		<%
+		if(isIncludeHeader){
+			if(isDeleteEmptyFile){
+		%>
+		boolean needDel_<%=cid %> = false;
+		<%
+			}
+		%>
+		xlsxTool_<%=cid%>.addRow();
+		<%
+			for (int i = 0; i < columns.size(); i++) {
+				IMetadataColumn column = columns.get(i);
+		%>
+		xlsxTool_<%=cid%>.addCellValue("<%=column.getLabel()%>");
+		<%
+			}
+			if(isDeleteEmptyFile){
+		%>
+		needDel_<%=cid %> = true;
+		<%		
+			}
+		%>
+		nb_line_<%=cid %>++;
+		<%	
+		}	
+		%>
 <%
+		}
     }
 }
 %>

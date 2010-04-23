@@ -17,6 +17,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
+boolean version07 = ("true").equals(ElementParameterParser.getValue(node,"__VERSION_2007__"));
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -33,7 +34,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
 		List<IMetadataColumn> columns = metadata.getListColumns();
-
+		
+		if(!version07){//version judgement
+    	
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -168,6 +171,73 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			nb_line_<%=cid %>++;
     <%
     		}
+    	}
+    	}else{ //version judgement /***excel 2007 xlsx*****/
+
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			int sizeColumns = columns.size();
+%>
+				xlsxTool_<%=cid%>.addRow();
+<%
+    			for (int i = 0; i < sizeColumns; i++) {
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) {
+    				%>   				
+	    				if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+    				<%
+    				} 
+    				%>
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel() %>, <%=pattern%>);
+<%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>					
+							xlsxTool_<%=cid%>.addCellValue(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString());
+<%
+					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+							xlsxTool_<%=cid%>.addCellValue(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>));				
+							<% } else { %>
+							xlsxTool_<%=cid%>.addCellValue(FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>));
+							<% } %>
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>		
+							xlsxTool_<%=cid%>.addCellValue((<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>).doubleValue());
+<%
+					}else if (javaType == JavaTypesManager.BOOLEAN){
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+					}else if (javaType == JavaTypesManager.DOUBLE){
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%						
+					}else{	
+%>
+							xlsxTool_<%=cid%>.addCellValue(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>));
+<%				
+					}
+					if(!isPrimitive) {
+    				%>
+	    				} 
+					<%
+    				} 
+    			}
+    			%>
+    			nb_line_<%=cid %>++;
+<%
+    		}
+    	}
+
     	}
     }
 }
