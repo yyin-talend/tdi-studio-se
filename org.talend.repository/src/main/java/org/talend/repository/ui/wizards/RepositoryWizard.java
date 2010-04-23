@@ -215,4 +215,9 @@ public abstract class RepositoryWizard extends Wizard {
     public ConnectionItem getConnectionItem() {
         return null;
     }
+
+    public boolean isCreation() {
+        return this.creation;
+    }
+
 }

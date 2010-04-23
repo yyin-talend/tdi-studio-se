@@ -170,6 +170,10 @@ public class DatabaseForm extends AbstractForm {
 
     private Button mappingSelectButton;
 
+    private boolean isCreation;
+
+    private boolean first = true;
+
     /**
      * Constructor to use by a Wizard to create a new database connection.
      * 
@@ -179,9 +183,10 @@ public class DatabaseForm extends AbstractForm {
      * @param Wizard
      * @param ISelection
      */
-    public DatabaseForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
+    public DatabaseForm(Composite parent, ConnectionItem connectionItem, String[] existingNames, boolean isCreation) {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
+        this.isCreation = isCreation;
         setConnectionItem(connectionItem); // must be first.
         setupForm(true);
         addStringConnectionControls();
@@ -228,14 +233,18 @@ public class DatabaseForm extends AbstractForm {
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
-        button1.setSelection(getConnection().isSQLMode());
-        button2.setSelection(!getConnection().isSQLMode());
+        setSqlModelFields();
         checkAS400SpecificCase();
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL
         // Syntax (need by SQL Editor)
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
+    }
+
+    private void setSqlModelFields() {
+        button1.setSelection(getConnection().isSQLMode());
+        button2.setSelection(!getConnection().isSQLMode());
     }
 
     /**
@@ -1128,10 +1137,10 @@ public class DatabaseForm extends AbstractForm {
                     if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.INFORMIX.getDBDisplayName())) {
                         datasourceText.setLabelText(Messages.getString("DatabaseForm.informixInstance"));
                     }
+                    checkAndSetIniSQLModel();
                     checkAS400SpecificCase();
                     checkFieldsValue();
                     hideDbVersion();
-
                     // see bug 0005237: Create DB Connection issue.
                     if (!schemaText.getEditable()) {
                         schemaText.setText(""); //$NON-NLS-1$
@@ -1256,6 +1265,20 @@ public class DatabaseForm extends AbstractForm {
         // }
         // });
 
+    }
+
+    /**
+     * 
+     * ggu Comment method "checkAndSetIniSQLModel".
+     * 
+     * bug 12811
+     */
+    private void checkAndSetIniSQLModel() {
+        if (isCreation && first) {
+            getConnection().setSQLMode(false);
+            setSqlModelFields();
+            first = false;
+        }
     }
 
     /**
@@ -1443,13 +1466,16 @@ public class DatabaseForm extends AbstractForm {
         sqlModeLabel.setVisible(isTeradata);
         button1.setVisible(isTeradata);
         button2.setVisible(isTeradata);
-        if (isTeradata) {
-            button1.setSelection(!isTeradata);
-            button2.setSelection(isTeradata);
-        } else {
-            button1.setSelection(getConnection().isSQLMode());
-            button2.setSelection(!getConnection().isSQLMode());
-        }
+        /*
+         * commet by bug 12811
+         */
+        // if (isTeradata) {
+        // button1.setSelection(!isTeradata);
+        // button2.setSelection(isTeradata);
+        // } else {
+        // button1.setSelection(getConnection().isSQLMode());
+        // button2.setSelection(!getConnection().isSQLMode());
+        // }
 
         if (isContextMode()) {
             return true;

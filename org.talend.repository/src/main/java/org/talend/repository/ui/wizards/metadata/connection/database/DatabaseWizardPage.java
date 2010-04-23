@@ -16,8 +16,8 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
  * DatabaseWizard present the DatabaseForm. Use to Use to manage the metadata connection. Page allows setting a
@@ -53,7 +53,11 @@ public class DatabaseWizardPage extends WizardPage {
      * @see IDialogPage#createControl(Composite)
      */
     public void createControl(final Composite parent) {
-        databaseForm = new DatabaseForm(parent, connectionItem, existingNames);
+        boolean isCreation = false;
+        if (this.getWizard() instanceof RepositoryWizard) {
+            isCreation = ((RepositoryWizard) getWizard()).isCreation();
+        }
+        databaseForm = new DatabaseForm(parent, connectionItem, existingNames, isCreation);
         databaseForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
