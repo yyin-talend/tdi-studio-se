@@ -305,7 +305,7 @@ public class DatabaseTableForm extends AbstractForm {
             typeText.setText(Messages.getString("DatabaseTableForm.typeTable")); //$NON-NLS-1$
         }
         String sourceName = metadataTable.getSourceName();
-        tableCombo.setReadOnly(sourceName != null);
+        // tableCombo.setReadOnly(sourceName != null);
         tableCombo.setText(sourceName);
         updateRetreiveSchemaButton();
         nameText.forceFocus();
@@ -600,6 +600,21 @@ public class DatabaseTableForm extends AbstractForm {
                             if (prePage instanceof SelectorTableWizardPage) {
                                 ((SelectorTableWizardPage) prePage).restoreCheckItems();
                             }
+                            int size = tableNavigator.getItems().length;
+                            int index = 0;
+                            if (size >= 1) {
+                                index = size - 1;
+                                String tableName = tableNavigator.getItem(index).getText();
+                                for (Object obj : getConnection().getTables()) {
+                                    if (obj instanceof MetadataTable) {
+                                        if (((MetadataTable) obj).getLabel().equals(tableName)) {
+                                            metadataTable = (MetadataTable) obj;
+                                        }
+                                    }
+                                }
+                                initMetadataForm();
+                            }
+
                         }
                     }
                 } else {
@@ -643,7 +658,7 @@ public class DatabaseTableForm extends AbstractForm {
         tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
         if (metadataTable != null) {
             String sourceName = this.metadataTable.getSourceName();
-            tableCombo.setReadOnly(sourceName != null);
+            // tableCombo.setReadOnly(sourceName != null);
         } else {
             tableCombo.setReadOnly(true);
         }
@@ -710,15 +725,19 @@ public class DatabaseTableForm extends AbstractForm {
                                     // tables exist
                                     String[] items = null;
                                     if (itemTableName != null && !itemTableName.isEmpty()) {
-                                        items = new String[itemTableName.size()];
-                                        tableCombo.setVisibleItemCount(itemTableName.size());
-                                        // fill the combo
-                                        for (int i = 0; i < itemTableName.size(); i++) {
-                                            tableCombo.add(itemTableName.get(i));
-                                            if (itemTableName.get(i).equals(metadataTable.getSourceName())) {
-                                                tableCombo.select(i);
+                                        List<String> filterTableNames = ExtractMetaDataFromDataBase.getFilterTablesName();
+                                        if (filterTableNames != null && !filterTableNames.isEmpty()) {
+                                            items = new String[filterTableNames.size()];
+                                            tableCombo.setVisibleItemCount(filterTableNames.size());
+                                            // fill the combo
+                                            for (int i = 0; i < filterTableNames.size(); i++) {
+                                                tableCombo.add(filterTableNames.get(i));
+                                                if (filterTableNames.get(i).equals(metadataTable.getSourceName())) {
+                                                    tableCombo.select(i);
+                                                }
                                             }
                                         }
+
                                     }
                                     if (displayMessageBox) {
                                         String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
