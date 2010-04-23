@@ -32,6 +32,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -65,6 +66,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -266,7 +268,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         } else {
             // path = new Path(destinationFile);
-            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+            IPreferenceStore store = RepositoryManager.getPreferenceStore();
+            if (store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
+                path = new Path(destinationFile);
+            } else {
+                path = path.append(this.getDefaultFileName().get(0)
+                        + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+            }
         }
 
         setDestinationValue(path.toOSString());

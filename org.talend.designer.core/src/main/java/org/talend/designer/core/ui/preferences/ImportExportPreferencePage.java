@@ -12,11 +12,31 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.designer.core.DesignerPlugin;
 
 public class ImportExportPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+    private boolean isSaveUsed = true;
+
+    private CheckBoxFieldEditor isUsedCheckButton;
+
+    public ImportExportPreferencePage() {
+
+        super(GRID);
+
+        IPreferenceStore store = getPreferenceStore();
+        setPreferenceStore(store);
+
+    }
 
     /*
      * (non-Javadoc)
@@ -26,7 +46,29 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage implem
     @Override
     protected void createFieldEditors() {
         // TODO Auto-generated method stub
+        isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE,
+                "Use recent file name to save, Wwen export job script.", getFieldEditorParent());
+        addField(isUsedCheckButton);
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
+        isSaveUsed = store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE);
+
+        isUsedCheckButton.getCheckbox().setSelection(isSaveUsed);
+        SelectionListener listener = new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                store.setValue(IRepositoryPrefConstants.USE_EXPORT_SAVE, ((Button) e.getSource()).getSelection());
+            }
+
+        };
+        isUsedCheckButton.getCheckbox().addSelectionListener(listener);
     }
 
     /*

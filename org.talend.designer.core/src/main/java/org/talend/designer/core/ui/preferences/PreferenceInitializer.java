@@ -122,6 +122,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
+        store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         if (!CommonsPlugin.isHeadless()) {
             Display display = Display.getCurrent();
             if (display == null) {
