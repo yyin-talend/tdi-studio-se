@@ -22,12 +22,6 @@ import org.talend.core.model.metadata.IMetadataColumn;
  */
 public interface ISalesforceModuleParser {
 
-    /**
-     * DOC YeXiaowei Comment method "login".
-     */
-    ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost, String proxyPort,
-            String proxyUsername, String proxyPassword) throws Exception;
-
     ArrayList login(String endPoint, String username, String password) throws Exception;
 
     void describeGlobalSample();

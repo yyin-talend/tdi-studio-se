@@ -77,9 +77,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private UtilsButton cancelButton = null;
 
-    final String useProxy = "useProxyBtn";//$NON-NLS-1$
-
-    final String useHttp = "useHttpBtn";//$NON-NLS-1$
+    //    final String useProxy = "useProxyBtn";//$NON-NLS-1$
+    //
+    //    final String useHttp = "useHttpBtn";//$NON-NLS-1$
 
     /*
      * 
@@ -420,16 +420,21 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
+                String proxy = null;
                 if (useProxyBtn.getSelection()) {
-                    loginOk = checkSalesfoceLogin(useProxy, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
-                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
+                    proxy = SalesforceModuleParseAPI.USE_SOCKS_PROXY;
                 } else if (useHttpBtn.getSelection()) {
-                    loginOk = checkSalesfoceLogin(useHttp, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
+                    proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
+                }
+                if (proxy != null) {
+                    loginOk = checkSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
                             .getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
                 } else {
-                    loginOk = checkSalesfoceLogin(null, endPoint, username, pwd, null, null, null, null);
+                    loginOk = checkSalesfoceLogin(endPoint, username, pwd);
                 }
-                connectFromCustomModuleName();
+                if (loginOk) {
+                    connectFromCustomModuleName();
+                }
 
             }
         });
@@ -473,14 +478,36 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$ 
                 // testSalesforceLogin();
-                SalesforceModuleParseAPI checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
+                String proxy = null;
+                if (useProxyBtn.getSelection()) {
+                    proxy = SalesforceModuleParseAPI.USE_SOCKS_PROXY;
+                } else if (useHttpBtn.getSelection()) {
+                    proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
+                }
+                SalesforceModuleParseAPI checkSalesfoceLogin = null;
+                if (proxy != null) {
+                    checkSalesfoceLogin = toCheckSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText.getText(),
+                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
+                } else {
+                    checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
+                }
+
                 preparModuleInit();
                 String[] types = null;
                 DescribeGlobalResult describeGlobalResult = null;
                 com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
                 monitorWrap.worked(50);
-
+                boolean socksProxy = false;
+                boolean httpProxy = false;
+                if (SalesforceModuleParseAPI.USE_SOCKS_PROXY.equals(proxy)) {
+                    socksProxy = true;
+                }
+                if (SalesforceModuleParseAPI.USE_HTTP_PROXY.equals(proxy)) {
+                    httpProxy = true;
+                }
                 try {
+                    salesforceAPI.setProxy(proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
+                            proxyPasswordText.getText(), httpProxy, socksProxy);
                     if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
                         describeGlobalResult = describeGlobal();
                         if (describeGlobalResult != null) {
@@ -492,6 +519,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                             types = describeGlobalPartner.getTypes();
                         }
                     }
+                    salesforceAPI.resetProxy();
                     INode node = getSalesforceNode();
 
                     List list = new ArrayList();

@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 
@@ -44,6 +45,24 @@ public class SalesforceModuleParseAPI {
 
     public static final String HTTP_PROXY_SET = "http.proxySet";//$NON-NLS-1$
 
+    public static final String USE_SOCKS_PROXY = "useProxyBtn";
+
+    public static final String USE_HTTP_PROXY = "useHttpBtn";
+
+    private String oldProxyHost;
+
+    private String oldProxyPort;
+
+    private String oldProxyUser;
+
+    private String oldProxyPwd;
+
+    private String oldHttpProxySet;
+
+    private boolean socksProxy;
+
+    private boolean httpProxy;
+
     private boolean login;
 
     private ISalesforceModuleParser currentAPI;
@@ -51,25 +70,18 @@ public class SalesforceModuleParseAPI {
     /**
      * DOC YeXiaowei Comment method "login".
      */
-    public ArrayList login(String theProxy, String endPoint, String username, String password, String proxyHost,
-            String proxyPort, String proxyUsername, String proxyPassword) throws Exception {
+    public ArrayList login(String endPoint, String username, String password) throws Exception {
         ArrayList returnValues;
         currentAPI = new SalesforceModuleParseEnterprise();
         currentAPI.setLogin(login);
         try {
-            returnValues = currentAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername,
-                    proxyPassword);
+            returnValues = currentAPI.login(endPoint, username, password);
         } catch (IOException e) {
             currentAPI = new SalesforceModuleParserPartner();
             currentAPI.setLogin(login);
-            returnValues = currentAPI.login(theProxy, endPoint, username, password, proxyHost, proxyPort, proxyUsername,
-                    proxyPassword);
+            returnValues = currentAPI.login(endPoint, username, password);
         }
         return returnValues;
-    }
-
-    public ArrayList login(String endPoint, String username, String password) throws Exception {
-        return login(null, endPoint, username, password, null, null, null, null);
     }
 
     /**
@@ -142,6 +154,56 @@ public class SalesforceModuleParseAPI {
 
     public ISalesforceModuleParser getCurrentAPI() {
         return this.currentAPI;
+    }
+
+    public void setProxy(String proxyHost, String proxyPort, String proxyUsername, String proxyPassword, boolean httpProxy,
+            boolean socksProxy) {
+        Properties properties = System.getProperties();
+        this.socksProxy = false;
+        this.httpProxy = false;
+        if (socksProxy && proxyHost != null && proxyPort != null) { //$NON-NLS-1$ 
+            this.socksProxy = true;
+            oldProxyHost = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_HOST);
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_HOST, proxyHost);
+            oldProxyPort = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_PORT);
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PORT, proxyPort);
+            oldProxyUser = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_USERNAME);
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_USERNAME, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+            oldProxyPwd = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_PASSWORD);
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+        } else if (httpProxy && proxyHost != null && proxyPort != null) { //$NON-NLS-1$ 
+            this.httpProxy = true;
+            oldHttpProxySet = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_SET);
+            oldProxyHost = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_HOST);
+            oldProxyPort = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_PORT);
+            oldProxyUser = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_USER);
+            oldProxyPwd = (String) properties.get(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD);
+
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, "true"); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, proxyHost);
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, proxyPort);
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+        }
+    }
+
+    public void resetProxy() {
+        Properties properties = System.getProperties();
+        if (socksProxy) {
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+        }
+
+        if (httpProxy) {
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+        }
+
     }
 
 }

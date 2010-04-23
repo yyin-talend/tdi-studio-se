@@ -573,7 +573,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
         processDescription.setSchema(tableSchema);
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
+        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$  
         if (tableGet != null) {
             moduleViewer.getTable().clearAll();
             if (useAlphbet) {

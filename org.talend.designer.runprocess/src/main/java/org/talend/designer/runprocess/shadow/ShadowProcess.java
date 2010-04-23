@@ -129,22 +129,31 @@ public class ShadowProcess<T extends IProcessDescription> {
         SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
         if (salesforceSchemaBean != null) {
             boolean uesHttp = salesforceSchemaBean.isUesHttp();
+            boolean useProxy = salesforceSchemaBean.isUseProxy();
 
-            if (uesHttp) {
+            if (uesHttp || useProxy) {
                 this.proxyParameters = new String[] {};
-                // String proxyHost = salesforceSchemaBean.getProxyHost();
-                // String proxyPort = salesforceSchemaBean.getProxyPort();
-                // String userName = salesforceSchemaBean.getProxyUsername();
-                // String password = salesforceSchemaBean.getProxyPassword();
-                // if (proxyHost != null && userName == null && password == null) {
-                // this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" +
-                // proxyPort };
-                // }
-                // if (proxyHost != null && userName != null && password != null) {
-                // this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" +
-                // proxyPort,
-                // "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
-                // }
+                String proxyHost = salesforceSchemaBean.getProxyHost();
+                String proxyPort = salesforceSchemaBean.getProxyPort();
+                String userName = salesforceSchemaBean.getProxyUsername();
+                String password = salesforceSchemaBean.getProxyPassword();
+                if (uesHttp) {
+                    if (proxyHost != null && userName == null && password == null) {
+                        this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort };
+                    }
+                    if (proxyHost != null && userName != null && password != null) {
+                        this.proxyParameters = new String[] { "-Dhttp.proxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
+                                "-Dhttp.proxyUsername=" + userName, "-Dhttp.proxyPassword=" + password };
+                    }
+                } else {
+                    if (proxyHost != null && userName == null && password == null) {
+                        this.proxyParameters = new String[] { "-DsocksProxyHost=" + proxyHost, "-DsocksProxyPort=" + proxyPort };
+                    }
+                    if (proxyHost != null && userName != null && password != null) {
+                        this.proxyParameters = new String[] { "-DsocksProxyHost=" + proxyHost, "-Dhttp.proxyPort=" + proxyPort,
+                                "-Djava.net.socks.username=" + userName, "-Djava.net.socks.password=" + password };
+                    }
+                }
             }
         }
     }
