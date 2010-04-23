@@ -113,7 +113,7 @@ if(useExistingConn) {
     <%
 } else {
     %>
-    java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+    java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
     String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;

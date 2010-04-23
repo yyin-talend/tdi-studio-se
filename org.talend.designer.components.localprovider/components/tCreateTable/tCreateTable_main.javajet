@@ -994,7 +994,7 @@ class TeradataManager extends Manager {
         this.port = port;
     }
     protected String getDriver() {
-        return "com.ncr.teradata.TeraDriver";
+        return "com.teradata.jdbc.TeraDriver";
     }
     public String getConnectionURL() {
         return "\"jdbc:teradata://\" + " + host;

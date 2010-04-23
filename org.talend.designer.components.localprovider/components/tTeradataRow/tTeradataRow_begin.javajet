@@ -34,7 +34,7 @@ imports="
 		<%
 	} else {
 	    %>
-	    java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+	    java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
 	    String dbProperties_<%=cid%> = <%=dbproperties%>;
 		String url_<%=cid%> = null;
 		if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {

@@ -458,7 +458,6 @@
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc_v037_nested.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />		
 		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssjava.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
