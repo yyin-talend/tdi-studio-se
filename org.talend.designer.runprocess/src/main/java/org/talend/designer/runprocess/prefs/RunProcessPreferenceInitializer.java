@@ -30,11 +30,11 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences() {
         IPreferenceStore prefs = getPluginPreferenceStore();
+        prefs.setDefault(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, "3334"); //$NON-NLS-1$
+        prefs.setDefault(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333"); //$NON-NLS-1$
+        prefs.setDefault(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334"); //$NON-NLS-1$
+        prefs.setDefault(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333"); //$NON-NLS-1$
 
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, "3334"); //$NON-NLS-1$
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333"); //$NON-NLS-1$
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334"); //$NON-NLS-1$
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333"); //$NON-NLS-1$
         // added by wzhang for feature 7428.
         prefs.setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         prefs.setDefault(RunProcessPrefsConstants.ISSAVEBEFORERUN, true);
