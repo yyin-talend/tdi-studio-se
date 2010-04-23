@@ -971,7 +971,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             designerEditor.getProperty().eAdapters().remove(dirtyListener);
-            repFactory.unlock(designerEditor.getProperty().getItem());
+            Property property = designerEditor.getProperty();
+            if (property.getItem().eResource() == null) {
+                property = repFactory.getUptodateProperty(property);
+            }
+            repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             // e.printStackTrace();
