@@ -83,14 +83,20 @@ imports="
 %>
 	int nb_line_<%=cid %> = 0;
 <%
-    	    for(IConnection conn : conns) {
-    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            String firstConnName = "";	
+            for(IConnection conn : conns) {
+                if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+             		firstConnName = conn.getName();
+             		break;
+                }
+            }
+    	    if(firstConnName!=null && !firstConnName.equals("")){//XXX
 %>
-	List<<%=conn.getName()%>Struct> cacheList_<%=cid %> = new java.util.ArrayList<<%=conn.getName()%>Struct>();
+	List<<%=firstConnName%>Struct> cacheList_<%=cid %> = new java.util.ArrayList<<%=firstConnName%>Struct>();
 <%    	        	
     	            for(Map<String, String> tableValue : inTableValues) {
 %>
-	<%=conn.getName()%> = new <%=conn.getName()%>Struct();
+	<%=firstConnName%> = new <%=firstConnName%>Struct();
 <%
     	            	for(IMetadataColumn column: metadata.getListColumns()){
     	            		String label = column.getLabel();
@@ -99,26 +105,25 @@ imports="
 	    	            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 	    	            		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 %>        	            	
-    <%=conn.getName()%>.<%=label %> = <%=defaultValue %>;        	            	
+    <%=firstConnName%>.<%=label %> = <%=defaultValue %>;        	            	
 <%
         	            	}else{
 %>        	            	
-	<%=conn.getName()%>.<%=label %> = <%=value %>;
+	<%=firstConnName%>.<%=label %> = <%=value %>;
 <%
         	            	}
         	            }
 %>
-	cacheList_<%=cid %>.add(<%=conn.getName()%>);
+	cacheList_<%=cid %>.add(<%=firstConnName%>);
 <%
     	            }
 %>
 	for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
-		for(<%=conn.getName()%>Struct tmpRow_<%=cid %> : cacheList_<%=cid %>){
+		for(<%=firstConnName%>Struct tmpRow_<%=cid %> : cacheList_<%=cid %>){
 	
 			nb_line_<%=cid %> ++;		
-			<%=conn.getName()%> = tmpRow_<%=cid %>;
+			<%=firstConnName%> = tmpRow_<%=cid %>;
 <%
-    	        }
     	    }
 		}
 //********************the new part end*****************************************************

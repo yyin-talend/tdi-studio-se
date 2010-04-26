@@ -42,8 +42,14 @@ imports="
 //********************the new part*****************************************************    	
     }else if(use_inTable){
     	if(inTableValues != null && inTableValues.size() > 0 && conns != null && conns.size() > 0) {
+    		String firstConnName = null;
     	    for(IConnection conn : conns) {
-    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+             		firstConnName = conn.getName();
+             		break;
+                }
+            }
+            if(firstConnName!=null && !firstConnName.equals("")){
 %>
 		}
 	}
@@ -51,7 +57,6 @@ imports="
 	cacheList_<%=cid %>.clear();
 	globalMap.put("NB_LINE", nb_line_<%=cid %>);
 <%
-    	        }
     	    }
     	}
 //********************the new part*****************************************************
