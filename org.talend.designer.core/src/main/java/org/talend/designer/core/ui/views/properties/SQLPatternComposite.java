@@ -70,6 +70,8 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -776,8 +778,20 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
     private void addReferencedSQLTemplate(List<IRepositoryObject> list, Project project) {
         try {
+            Context ctx = CorePlugin.getContext();
+            if (ctx == null) {
+                return;
+            }
+            RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            String parentBranch = repositoryContext.getFields().get(
+                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
+
             List<ProjectReference> referencedProjects = (List<ProjectReference>) project.getEmfProject().getReferencedProjects();
             for (ProjectReference referenced : referencedProjects) {
+                if (referenced.getBranch() != null && !parentBranch.equals(referenced.getBranch())) {
+                    continue;
+                }
+
                 org.talend.core.model.properties.Project referencedEmfProject = referenced.getReferencedProject();
                 EList refeInRef = referencedEmfProject.getReferencedProjects();
                 Project newProject = new Project(referencedEmfProject);

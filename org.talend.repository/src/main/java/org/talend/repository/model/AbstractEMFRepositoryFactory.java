@@ -874,8 +874,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             allVersion.addAll(getAllVersion(project, property.getId()));
         }
         if (allVersion.size() == 0 && project.getEmfProject().getReferencedProjects().size() > 0) {
+            String parentBranch = getRepositoryContext().getFields().get(
+                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
+
             for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
                     .getReferencedProjects()) {
+                if (refProject.getBranch() != null && !parentBranch.equals(refProject.getBranch())) {
+                    continue;
+                }
                 org.talend.core.model.properties.Project emfProject = refProject.getReferencedProject();
                 getAllVersions(new Project(emfProject), property, allVersion);
                 if (allVersion.size() > 0) {

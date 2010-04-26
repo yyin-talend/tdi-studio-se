@@ -42,6 +42,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -266,8 +268,19 @@ public class DeleteAction extends AContextualAction {
     private static boolean calcParentProjects(Project curProject, Project parentProject, Set<Project> refParentProjects) {
         boolean found = false;
         if (curProject != null && parentProject != null) {
+            Context ctx = CorePlugin.getContext();
+            if (ctx == null) {
+                return false;
+            }
+            RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            String parentBranch = repositoryContext.getFields().get(
+                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + parentProject.getTechnicalLabel());
+
             EList referencedProjects = parentProject.getEmfProject().getReferencedProjects();
             for (ProjectReference pRef : (List<ProjectReference>) referencedProjects) {
+                if (pRef.getBranch() != null && !parentBranch.equals(pRef.getBranch())) {
+                    continue;
+                }
                 final String technicalLabel = pRef.getReferencedProject().getTechnicalLabel();
                 if (technicalLabel != null) {
                     final Project project = new Project(pRef.getReferencedProject());
