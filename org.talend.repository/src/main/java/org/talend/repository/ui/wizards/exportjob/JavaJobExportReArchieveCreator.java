@@ -132,6 +132,8 @@ public class JavaJobExportReArchieveCreator {
                 changedContent.append(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }
+            if (line == null)
+                line = "";
             // get java command line
             String line1 = line.trim();
             String[] strs = line1.split("\\s"); //$NON-NLS-1$
