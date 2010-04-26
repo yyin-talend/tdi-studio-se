@@ -296,7 +296,7 @@ public interface IRepositoryFactory {
      */
     List<ContextItem> getContextItem(Project project) throws PersistenceException;
 
-    public List<org.talend.core.model.properties.Project> getReferencedProjects();
+    public List<org.talend.core.model.properties.Project> getReferencedProjects(Project project);
 
     public Boolean hasChildren(Object parent);
 

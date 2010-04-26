@@ -1472,8 +1472,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return obj.getProperty().getItem();
     }
 
-    public List<org.talend.core.model.properties.Project> getReferencedProjects() {
-        return this.repositoryFactoryFromProvider.getReferencedProjects();
+    public List<org.talend.core.model.properties.Project> getReferencedProjects(Project project) {
+        return this.repositoryFactoryFromProvider.getReferencedProjects(project);
     }
 
     public void removeContextFiles(IProcess process, IContext context) throws Exception {
