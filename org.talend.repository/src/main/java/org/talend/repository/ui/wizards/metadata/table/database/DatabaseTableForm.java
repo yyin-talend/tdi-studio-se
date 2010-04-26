@@ -64,6 +64,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -82,6 +83,7 @@ import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -977,6 +979,10 @@ public class DatabaseTableForm extends AbstractForm {
         String tableName = tableCombo.getText();
         CsvArray array;
         try {
+            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, tableName);
+            if (table == null) {
+                return;
+            }
             array = designerService.convertNode(connectionItem, tableName);
             tableEditorView.getMetadataEditor().removeAll();
 
