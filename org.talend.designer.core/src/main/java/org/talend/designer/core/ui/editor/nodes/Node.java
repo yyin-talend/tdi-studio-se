@@ -2404,9 +2404,17 @@ public class Node extends Element implements INode {
                 }
             }
         }
-        if (isJoblet) {
-            String typeName = "Row"; //$NON-NLS-1$
+        if (isJoblet) { // bug 12764
             List<? extends IConnection> outgoingConnections = this.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+            for (IConnection con : outgoingConnections) {
+                INodeConnector connector = this.getConnectorFromName(con.getConnectorName());
+                if (connector == null && con instanceof Connection) { // connector is lost.
+                    ((Connection) con).disconnect();
+                }
+            }
+
+            String typeName = "Row"; //$NON-NLS-1$
+            outgoingConnections = this.getOutgoingConnections(EConnectionType.FLOW_MAIN);
             if (outgoingConnections.size() > jobletBuildConnectorNum) {
                 String errorMessage = Messages.getString("Node.tooMuchTypeOutput", typeName); //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
