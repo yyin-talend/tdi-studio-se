@@ -493,7 +493,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getReferencedProjects()) {
             String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
                     IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
-            if (refProject.getBranch() != null && refProject.getBranch().equals(parentBranch)) {
+            if (refProject.getReferencedProject().getUrl().startsWith("teneo") || refProject.getBranch() != null
+                    && refProject.getBranch().equals(parentBranch)) {
                 Project p = refProject.getReferencedProject();
                 List<Project> list = nodeAndProject.get(parent);
                 if (list == null) {
