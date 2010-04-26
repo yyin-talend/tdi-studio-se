@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -219,7 +220,8 @@ public class DropContextAnalyzer {
             return false;
         }
 
-        if (zoneTarget == Zone.OUTPUTS && mapperManager.ERROR_REJECT.equals(dataMapTableViewTarget.getDataMapTable().getName())) {
+        IDataMapTable dataMapTable = dataMapTableViewTarget.getDataMapTable();
+        if (zoneTarget == Zone.OUTPUTS && ((OutputTable) dataMapTable).isErrorRejectTable()) {
             if (currentTableTarget != null && event != null) {
                 if (event.item instanceof TableItem) {
                     Object data = event.item.getData();

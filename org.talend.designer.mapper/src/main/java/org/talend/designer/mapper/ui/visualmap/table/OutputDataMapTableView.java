@@ -419,7 +419,8 @@ public class OutputDataMapTableView extends DataMapTableView {
         public boolean canModify(Object element, String property) {
             if (element instanceof OutputColumnTableEntry) {
                 OutputColumnTableEntry outputColumn = (OutputColumnTableEntry) element;
-                if (getMapperManager() != null && getMapperManager().ERROR_REJECT.equals(outputColumn.getParentName())) {
+                if (outputColumn.getParent() instanceof OutputTable
+                        && ((OutputTable) outputColumn.getParent()).isErrorRejectTable()) {
                     IMetadataColumn metadataColumn = outputColumn.getMetadataColumn();
                     if (metadataColumn != null
                             && (getMapperManager().ERROR_REJECT_MESSAGE.equals(metadataColumn.getLabel()) || getMapperManager().ERROR_REJECT_STACK_TRACE

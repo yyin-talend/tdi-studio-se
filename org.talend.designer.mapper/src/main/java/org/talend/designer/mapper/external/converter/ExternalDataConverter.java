@@ -390,6 +390,7 @@ public class ExternalDataConverter {
         fillExternalTableWithCommonsData(table, externalMapperTable);
         externalMapperTable.setReject(table.isReject());
         externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
+        externalMapperTable.setErrorRejectTable(table.isErrorRejectTable());
         externalMapperTable.setIsJoinTableOf(table.getIsJoinTableOf());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
         externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null

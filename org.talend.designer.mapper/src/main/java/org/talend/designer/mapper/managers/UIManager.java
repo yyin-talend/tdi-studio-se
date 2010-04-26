@@ -215,7 +215,7 @@ public class UIManager extends AbstractUIManager {
     public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand, boolean selectAllEntries) {
         // reject table readonly
         IDataMapTable dataMapTable = dataMapTableView.getDataMapTable();
-        if (dataMapTable instanceof OutputTable && mapperManager.ERROR_REJECT.equals(dataMapTable.getName())) {
+        if (dataMapTable instanceof OutputTable && ((OutputTable) dataMapTable).isErrorRejectTable()) {
             OutputTable table = (OutputTable) dataMapTable;
             if (table.getMetadataTable() != null) {
                 for (IMetadataColumn column : table.getMetadataTable().getListColumns()) {
@@ -459,7 +459,8 @@ public class UIManager extends AbstractUIManager {
         } else if (currentZone == Zone.OUTPUTS) {
             toolbar = getOutputsZone().getToolbar();
             ((ToolbarOutputZone) toolbar).setEnabledRemoveTableButton(currentSelectedOutputTableView != null
-                    && !mapperManager.ERROR_REJECT.equals(currentSelectedOutputTableView.getDataMapTable().getName()));
+                    && currentSelectedOutputTableView.getDataMapTable() instanceof OutputTable
+                    && !((OutputTable) currentSelectedOutputTableView.getDataMapTable()).isErrorRejectTable());
             toolbar.setEnabledMinimizeTablesButton(mapperManager.getUiManager().getOutputsTablesView().size() > 0);
         }
         toolbar.setEnabledMoveTableButton(true, isTableViewMoveable(currentZone, true));

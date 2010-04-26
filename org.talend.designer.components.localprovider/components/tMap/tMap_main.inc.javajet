@@ -1403,7 +1403,7 @@ if(!isVirtualOut) { // T_TM_M_320
             	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !("").equals(outputTable.getExpressionFilter().trim());
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
-                    if(!isErrorReject(outputTable)){
+                    if(!outputTable.isErrorRejectTable()){
                     	allNotRejectTablesHaveFilter = false;
                     }
                 }
@@ -1458,7 +1458,7 @@ if(!isVirtualOut) { // T_TM_M_320
             
             //add for feature:2445
             if (!dieonerror){
-                if(isErrorReject(outputTable)){
+                if(outputTable.isErrorRejectTable()){
                 	continue;
                 }
             }
@@ -1729,7 +1729,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(!isErrorReject(outputTable)){
+                    if(!outputTable.isErrorRejectTable()){
                     	continue;
                     }
                 }
@@ -1847,7 +1847,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(isErrorReject(outputTable)){
+                    if(outputTable.isErrorRejectTable()){
                     	continue;
                     }
                 }
@@ -1881,7 +1881,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 
                 //add for feature:2445
                 if (!dieonerror){
-                    if(isErrorReject(outputTable)){
+                    if(outputTable.isErrorRejectTable()){
                     	continue;
                     }
                 }

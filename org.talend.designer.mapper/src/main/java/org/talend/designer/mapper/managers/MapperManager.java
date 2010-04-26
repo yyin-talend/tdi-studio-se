@@ -594,9 +594,14 @@ public class MapperManager extends AbstractMapperManager {
     }
 
     public void addRejectOutput() {
-        String tableName = ERROR_REJECT;
+        String baseName = ERROR_REJECT;
 
         IProcess process = getAbstractMapComponent().getProcess();
+        String tableName = baseName;
+        if (!process.checkValidConnectionName(baseName)) {
+            final String uniqueName = process.generateUniqueConnectionName("row");
+            tableName = uniqueName + "_" + baseName;
+        }
         if (process instanceof IProcess2) {
             ((IProcess2) process).addUniqueConnectionName(tableName, false);
         }
@@ -623,6 +628,7 @@ public class MapperManager extends AbstractMapperManager {
         metadataTable.getListColumns().add(errorStackTrace);
 
         OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        abstractDataMapTable.setErrorRejectTable(true);
         abstractDataMapTable.initFromExternalData(null);
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView rejectDataMapTableView = uiManager.createNewOutputTableView(null, abstractDataMapTable,
@@ -650,9 +656,10 @@ public class MapperManager extends AbstractMapperManager {
         if (tables == null || tables.size() == 0) {
             return false;
         }
-        OutputTable outputTable = tables.get(0);
-        if (ERROR_REJECT.equals(outputTable.getName())) {
-            return true;
+        for (OutputTable outputTable : tables) {
+            if (outputTable.isErrorRejectTable()) {
+                return true;
+            }
         }
         return false;
 
@@ -661,10 +668,13 @@ public class MapperManager extends AbstractMapperManager {
     public void removeRejectOutput() {
         List<DataMapTableView> outputsTablesView = uiManager.getOutputsTablesView();
         Iterator<DataMapTableView> iterator = outputsTablesView.iterator();
+        DataMapTableView outputTable = null;
         DataMapTableView toRemove = null;
         while (iterator.hasNext()) {
-            toRemove = iterator.next();
-            if (ERROR_REJECT.equals(toRemove.getDataMapTable().getName())) {
+            outputTable = iterator.next();
+            if (outputTable.getDataMapTable() instanceof OutputTable
+                    && ((OutputTable) outputTable.getDataMapTable()).isErrorRejectTable()) {
+                toRemove = outputTable;
                 iterator.remove();
                 break;
             }

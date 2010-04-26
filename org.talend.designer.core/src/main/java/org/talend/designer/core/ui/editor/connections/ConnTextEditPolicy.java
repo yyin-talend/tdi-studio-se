@@ -16,6 +16,8 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
@@ -46,6 +48,17 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
                 MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages
                         .getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
                 return null;
+            } else {
+                final IMetadataTable metadataTable = connec.getMetadataTable();
+                if (connec.getSource() != null && connec.getSource().getComponent() != null && metadataTable != null) {
+                    IComponent comp = connec.getSource().getComponent();
+                    if ("tMap".equals(comp.getName()) && metadataTable.getTableName().endsWith("ErrorReject")) {//$NON-NLS-1$//$NON-NLS-1$
+                        MessageDialog.openInformation(getHost().getViewer().getControl().getShell(), "Infor",
+                                "Can't rename tMap ErrorReject");
+                        return null;
+                    }
+                }
+
             }
         }
 

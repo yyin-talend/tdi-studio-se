@@ -42,6 +42,10 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
 
     private List<ExternalMapperTableEntry> globalMapKeysValues;
 
+    private static final String ERROR_REJECT_MESSAGE = "errorMessage";//$NON-NLS-1$
+
+    private static final String ERROR_REJECT_STACK_TRACE = "errorStackTrace";//$NON-NLS-1$
+
     private String name;
 
     private boolean minimized;
@@ -57,6 +61,11 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      * Used only for outputs.
      */
     private boolean rejectInnerJoin;
+
+    /**
+     * Used only for output errorReject.
+     */
+    private boolean isErrorRejectTable;
 
     /**
      * Used only for outputs.
@@ -418,4 +427,38 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
     public void setIsJoinTableOf(String isJoinTableOf) {
         this.isJoinTableOf = isJoinTableOf;
     }
+
+    public boolean isErrorRejectTable() {
+        // new system for error reject
+        if (isErrorRejectTable) {
+            return isErrorRejectTable;
+        }
+        // only for compatibility for 4.0.0
+        if (isErrorRejectTableFor400(this)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setErrorRejectTable(boolean isErrorRejectTable) {
+        this.isErrorRejectTable = isErrorRejectTable;
+    }
+
+    private boolean isErrorRejectTableFor400(ExternalMapperTable table) {
+        boolean errorCode = false;
+        boolean errorMessage = false;
+        for (ExternalMapperTableEntry entry : table.getMetadataTableEntries()) {
+            if (ERROR_REJECT_MESSAGE.equals(entry.getName())) {
+                errorMessage = true;
+            } else if (ERROR_REJECT_STACK_TRACE.equals(entry.getName())) {
+                errorCode = true;
+            }
+        }
+        if (errorCode && errorMessage) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

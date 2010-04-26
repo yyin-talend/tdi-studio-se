@@ -69,7 +69,7 @@ public class TableManager {
             metadataTableToAbstractDataMapTable.put(data.getMetadataTable(), data);
         }
         if (tableData.getMapperManager() != null)
-            if (tableData.getMapperManager().ERROR_REJECT.equals(tableData.getName())) {
+            if (tableData instanceof OutputTable && ((OutputTable) tableData).isErrorRejectTable()) {
                 getMatchedList(tableData).add(0, tableData);
             } else {
                 getMatchedList(tableData).add(tableData);
