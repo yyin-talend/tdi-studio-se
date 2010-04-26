@@ -544,22 +544,26 @@ public class Connection extends Element implements IConnection, IPerformance {
         int outputId = getOutputId();
 
         boolean updateName = false;
+        INodeConnector sourceNodeConnector = getSourceNodeConnector();
+        if (sourceNodeConnector == null) {
+            return;
+        }
         if (getLineStyle().equals(EConnectionType.TABLE)) {
             if (outputId >= 0) {
                 labelText += " (" + metaName + ", order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
-                labelText += " (" + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MAIN) || getLineStyle().equals(EConnectionType.FLOW_REF)) {
-            if (getSourceNodeConnector().getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
+            if (sourceNodeConnector.getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + getSourceNodeConnector().getLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
-                    labelText += " (" + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } else if (getSourceNodeConnector().getName().equals(EConnectionType.FLOW_MAIN.getName())) {
+            } else if (sourceNodeConnector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
                 // link
                 if (outputId >= 0) {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -568,10 +572,10 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             } else {
                 if (outputId >= 0) {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + getSourceNodeConnector().getLinkName() //$NON-NLS-1$ //$NON-NLS-2$
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() //$NON-NLS-1$ //$NON-NLS-2$
                             + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
             updateName = true;
@@ -583,9 +587,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!getSourceNodeConnector().getLinkName().equals(name))) {
+        } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!sourceNodeConnector.getLinkName().equals(name))) {
             // if "RunIf" got a custom name
-            labelText = getSourceNodeConnector().getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             // bug 8087
             if (outputId >= 0) {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -596,7 +600,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             IElementParameter numberParam = this.getElementParameter(NUMBER_PARALLEL);
             // for feature 4505
             boolean special = (outputId >= 0);
-            String linkName = getSourceNodeConnector().getLinkName();
+            String linkName = sourceNodeConnector.getLinkName();
             if (getUniqueName() != null && special) {
                 linkName = getUniqueName();
             }
