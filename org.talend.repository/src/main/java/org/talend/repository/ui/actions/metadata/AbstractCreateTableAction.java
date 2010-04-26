@@ -721,8 +721,11 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     }
 
                     boolean check = managerConnection.check(metadataConnection);
-                    List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
-
+                    List<String> itemTableName = null;
+                    // modified by nma, open schema editor even failed to connect
+                    if (check != false) {
+                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+                    }
                     boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
 
                     if (noTableExistInDB) {

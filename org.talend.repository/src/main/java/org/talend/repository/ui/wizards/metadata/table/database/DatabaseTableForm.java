@@ -352,7 +352,8 @@ public class DatabaseTableForm extends AbstractForm {
                 bean.setDefaultValue(returnValue);
             } else if (bean.getTalendType().equals(JavaTypesManager.BOOLEAN.getId())) {
                 String returnBoolean = TalendTextUtils.removeQuotes(returnValue);
-                if (returnBoolean.getBytes()[0] == 1) {
+                // modified by nma, there maybe null pb.
+                if (!returnBoolean.equals("") && returnBoolean.getBytes()[0] == 1) {
                     returnValue = TalendTextUtils.addQuotes("1");
                     bean.setDefaultValue(returnValue);
                 }
