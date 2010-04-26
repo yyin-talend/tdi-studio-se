@@ -192,7 +192,12 @@ public class ExportItemUtil {
             // global resource
             for (Item tobeRemoved : otherVersions) {
                 Resource eResource = tobeRemoved.eResource();
-                eResource.getResourceSet().getResources().remove(eResource);
+                if (eResource.getResourceSet() == null) {
+                    // resourceSet not filled in all case
+                    continue;
+                } else {
+                    eResource.getResourceSet().getResources().remove(eResource);
+                }
             }
         }
     }
