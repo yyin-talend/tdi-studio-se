@@ -33,6 +33,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -178,7 +179,18 @@ public class UpdateJobletNodeCommand extends Command {
             }
         }
         parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-        parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
+        List<? extends INodeConnector> listConnectors = node.getListConnector();
+        List<? extends INodeConnector> newConnectors = newComponent.createConnectors(new Node(newComponent));
+        for (INodeConnector connector : newConnectors) {
+            for (INodeConnector oldConnector : listConnectors) {
+                if (connector.getName().equals(oldConnector.getName())) {
+                    connector.setCurLinkNbInput(oldConnector.getCurLinkNbInput());
+                    connector.setCurLinkNbOutput(oldConnector.getCurLinkNbOutput());
+                }
+            }
+        }
+        parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, newConnectors);
 
         return parameters;
     }

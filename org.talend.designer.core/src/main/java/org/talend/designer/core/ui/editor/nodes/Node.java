@@ -2347,6 +2347,7 @@ public class Node extends Element implements INode {
                 }
             }
         }
+        int jobletBuildConnectorNum = 0;
         for (INodeConnector nodeConnector : listConnector) {
             if (!nodeConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.USE_HASH)
                     && nodeConnector.getDefaultConnectionType() != EConnectionType.FLOW_MERGE) {
@@ -2365,30 +2366,19 @@ public class Node extends Element implements INode {
                 String typeName = nodeConnector.getMenuName();
                 if (nodeConnector.getDefaultConnectionType() == EConnectionType.FLOW_MAIN) {
                     typeName = "Row"; //$NON-NLS-1$
+                    if (isJoblet) {
+                        if (nodeConnector.isBuiltIn()) {
+                            jobletBuildConnectorNum++;
+                        }
+                        continue;
+                    }
                 }
-
                 if (nbMaxOut != -1) {
                     if (curLinkOut > nbMaxOut) {
                         String errorMessage = Messages.getString("Node.tooMuchTypeOutput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
-                // ingore input warning
-                if (PluginChecker.isJobLetPluginLoaded()) {
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
-                    if (service != null && service.isJobletComponent(this)) {
-                        continue;
-                    }
-                }
-
-                if (nbMaxIn != -1) {
-                    if (curLinkIn > nbMaxIn) {
-                        String errorMessage = Messages.getString("Node.tooMuchTypeInput", typeName); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
-                    }
-                }
-
                 if (nbMinOut != 0) {
                     if (curLinkOut < nbMinOut) {
                         String errorMessage = Messages.getString("Node.notEnoughTypeOutput", typeName); //$NON-NLS-1$
@@ -2396,12 +2386,33 @@ public class Node extends Element implements INode {
                     }
                 }
 
-                if (nbMinIn != 0) {
-                    if (curLinkIn < nbMinIn) {
-                        String errorMessage = Messages.getString("Node.notEnoughTypeInput", typeName); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                // ingore input warning
+                if (!isJoblet) {
+                    if (nbMaxIn != -1) {
+                        if (curLinkIn > nbMaxIn) {
+                            String errorMessage = Messages.getString("Node.tooMuchTypeInput", typeName); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                        }
+                    }
+
+                    if (nbMinIn != 0) {
+                        if (curLinkIn < nbMinIn) {
+                            String errorMessage = Messages.getString("Node.notEnoughTypeInput", typeName); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                        }
                     }
                 }
+            }
+        }
+        if (isJoblet) {
+            String typeName = "Row"; //$NON-NLS-1$
+            List<? extends IConnection> outgoingConnections = this.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+            if (outgoingConnections.size() > jobletBuildConnectorNum) {
+                String errorMessage = Messages.getString("Node.tooMuchTypeOutput", typeName); //$NON-NLS-1$
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
+            } else if (outgoingConnections.size() < jobletBuildConnectorNum) {
+                String errorMessage = Messages.getString("Node.notEnoughTypeOutput", typeName); //$NON-NLS-1$
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
     }
@@ -2999,26 +3010,36 @@ public class Node extends Element implements INode {
             }
             getExternalNode().initialize();
         }
-
-        obj = parameters.get(INode.RELOAD_PARAMETER_CONNECTORS);
-        if (obj != null) {
-            List<? extends INodeConnector> oldConnectors = (List<? extends INodeConnector>) obj;
-            for (INodeConnector currentConnector : listConnector) {
-                for (INodeConnector oldConnector : oldConnectors) {
-                    if (currentConnector.getName().equals(oldConnector.getName())) {
-                        currentConnector.setCurLinkNbInput(oldConnector.getCurLinkNbInput());
-                        currentConnector.setCurLinkNbOutput(oldConnector.getCurLinkNbOutput());
-                        break;
-                    }
-
-                }
-            }
-
-        }
+        boolean isJobletNode = false;
         if (PluginChecker.isJobLetPluginLoaded()) {
             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                     IJobletProviderService.class);
             if (service != null && service.isJobletComponent(this)) {
+                isJobletNode = true;
+            }
+        }
+        obj = parameters.get(INode.RELOAD_PARAMETER_CONNECTORS);
+        if (obj != null) {
+            List<? extends INodeConnector> connectors = (List<? extends INodeConnector>) obj;
+            if (isJobletNode) {
+                listConnector = connectors;
+            } else {
+                for (INodeConnector currentConnector : listConnector) {
+                    for (INodeConnector connector : connectors) {
+                        if (currentConnector.getName().equals(connector.getName())) {
+                            currentConnector.setCurLinkNbInput(connector.getCurLinkNbInput());
+                            currentConnector.setCurLinkNbOutput(connector.getCurLinkNbOutput());
+                            break;
+                        }
+
+                    }
+                }
+            }
+        }
+        if (isJobletNode) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
                 service.reloadJobletProcess(this);
             }
         }

@@ -898,10 +898,13 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public IMetadataTable getMetadataTable() {
         if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            if (getSourceNodeConnector().isMultiSchema()) {
-                return source.getMetadataTable(metaName);
-            } else {
-                return source.getMetadataFromConnector(getSourceNodeConnector().getName());
+            INodeConnector sourceNodeConnector = getSourceNodeConnector();
+            if (sourceNodeConnector != null) {
+                if (sourceNodeConnector.isMultiSchema()) {
+                    return source.getMetadataTable(metaName);
+                } else {
+                    return source.getMetadataFromConnector(sourceNodeConnector.getName());
+                }
             }
         }
         return null;
