@@ -47,7 +47,7 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage implem
     protected void createFieldEditors() {
         // TODO Auto-generated method stub
         isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE,
-                "Use recent file name to save, Wwen export job script.", getFieldEditorParent());
+                "Use recent file name to save, When export job script.", getFieldEditorParent());
         addField(isUsedCheckButton);
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
