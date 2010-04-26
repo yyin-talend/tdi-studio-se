@@ -1140,7 +1140,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
         String selectedFileName = dialog.open();
-        if (!selectedFileName.endsWith(this.getOutputSuffix()))
+        if (selectedFileName != null && !selectedFileName.endsWith(this.getOutputSuffix()))
             selectedFileName += this.getOutputSuffix();
 
         // when user change the name of job,will add the version auto
