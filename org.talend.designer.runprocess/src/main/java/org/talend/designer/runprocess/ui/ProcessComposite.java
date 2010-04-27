@@ -103,6 +103,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
@@ -1487,20 +1488,30 @@ public class ProcessComposite extends Composite {
                 Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
+                    List<Node> runjobList = getTRunjobList(processContext.getProcess());
                     String[] allwords = linemess.split("\\s"); //$NON-NLS-1$
                     String componentName = allwords[allwords.length - 1];
-                    int currentI = i;
-                    if (currentI < linesMess.length - 1) {
-                        do {
-                            tRunJobName = linesMess[++currentI];
-                        } while ((tRunJobName.lastIndexOf("(") == -1 || tRunJobName.lastIndexOf(".java") == -1)
-                                && currentI < linesMess.length - 1);
-                        if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
-                            tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
-                                    .lastIndexOf(".java"));
-                        else
-                            tRunJobName = currenctJobName;
+                    if (runjobList.size() > 0) {
+                        int currentI = i;
+                        if (currentI + 1 < linesMess.length - 1) {
+                            // do {
+                            // tRunJobName = linesMess[currentI++];
+                            // } while ((tRunJobName.lastIndexOf("(") == -1 || tRunJobName.lastIndexOf(".java") == -1)
+                            // && currentI < linesMess.length - 1);
+                            for (int j = currentI + 1; j < linesMess.length - 1; j++) {
+                                tRunJobName = linesMess[j];
+                                if ((tRunJobName.contains(componentName))) {
+                                    break;
+                                }
+                            }
+                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
+                                        .lastIndexOf(".java"));
+                            else
+                                tRunJobName = currenctJobName;
+                        }
                     }
+
                     if (tRunJobName != null && tRunJobName.equals(currenctJobName)) {
                         if (i == 0) {
                             errorMessMap.put(componentName, psMess);
@@ -1674,6 +1685,22 @@ public class ProcessComposite extends Composite {
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    private List<Node> getTRunjobList(org.talend.core.model.process.IProcess process) {
+        List<Node> trunjobList = new ArrayList<Node>();
+        if (!(process instanceof Process)) {
+            return trunjobList;
+        }
+        List<INode> nodeList = (List<INode>) ((Process) process).getGraphicalNodes();
+        for (INode node : nodeList) {
+            if (node.getComponent().getName().equals("tRunJob")) {
+                if (node instanceof Node) {
+                    trunjobList.add((Node) node);
+                }
+            }
+        }
+        return trunjobList;
     }
 
 }
