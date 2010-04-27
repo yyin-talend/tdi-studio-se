@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.util.HashMap;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -148,6 +150,8 @@ public class CodeGenInit implements IApplication {
     private void initLocalRepository() throws PersistenceException {
         RepositoryContext repositoryContext = new RepositoryContext();
         repositoryContext.setUser(createUser());
+        HashMap<String, String> fields = new HashMap<String, String>();
+        repositoryContext.setFields(fields);
 
         Context ctx = CorePlugin.getContext();
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
