@@ -7,9 +7,7 @@
     <meta name="LASTUPDATED" content="04/23/10 10:14:11">
     <title>tMysqlSCD</title>
   </head>
-
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
-
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -17,18 +15,15 @@
         </td>
       </tr>
     </table-->
-
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
-
     <blockquote>
 <a name="wp2081103"> </a><h2 class="pHeading1">
 tMysqlSCD
 </h2>
 <a name="wp1549995"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tMysqlSCD_icon32_white.png" id="wp1549991" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
+<div align="left"><img src="../en/images/tMysqlSCD_icon32_white.png" id="wp1549991" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <a name="wp1550002"> </a><h2 class="pHeading2">
 Propriétés du tMysqlSCD
@@ -315,7 +310,6 @@ Ce composant est un composant de sortie. Par conséquent, il requiert un composan
 </table>
 </div>
 <p class="pBodyRelative">
-
 </p>
 <a name="wp2060090"> </a><h3 class="pHeading3">
 Méthodologie de gestion du SCD
@@ -328,8 +322,7 @@ La figure ci-dessous représente l&#39;éditeur SCD.
 </p>
 <a name="wp2060105"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/SCD_Editor.png" id="wp2060102" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
+<div align="center"><img src="../en/images/SCD_Editor.png" id="wp2060102" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <a name="wp2060115"> </a><h4 class="pHeading4">
 Clés SCD
@@ -371,7 +364,6 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
 ·	<b class="cBold">Type 1</b>&#160;: aucun historique n&#39;est stocké dans la base de données. Les nouvelles données écrase les anciennes. Utilisez ce type si vous n&#39;avez pas besoin de traquer les changements. Ce type de SCD convient lorsque vous corrigez certaines fautes, par exemple l&#39;orthographe des mots.
 </div>
 <a name="wp2078642"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
 </div>
 <a name="wp2078648"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
 ·	<b class="cBold">Type2</b>&#160;: l&#39;intégralité de l&#39;historique est stockée dans la base de données. Ce type de SCD traque les données d&#39;historique en enregistrant un nouvel enregistrement dans la table de dimension avec une nouvelle clé à chaque fois qu&#39;un changement est effectué. Ce type de SCD convient lorsque l&#39;on traque les mises à jour, par exemple.<br /><br />Le principe du SCD <b class="cBold">Type 2</b> réside dans le fait qu&#39;un nouvel enregistrement est ajouté à la table SCD lorsqu&#39;un changement est détecté dans les colonnes sélectionnées. Notez que bien que plusieurs changements peuvent être effectués au même enregistrement sur plusieurs colonnes paramétrées en <b class="cBold">Type 2</b>, une seule ligne traquant ces changements est ajoutée à la table SCD.<br /><br />Le schéma du SCD Type 2 devrait inclure des colonnes spécifiques au SCD contenant les informations de log standard, notamment&#160;:<br />-<b class="cBold">start&#160;</b>: ajoute une colonne au schéma de la table SCD contenant la date de début d&#39;un enregistrement. Vous pouvez sélectionner une des colonnes du schéma d&#39;entrée comme date de départ pour la table SCD.<br />-<b class="cBold">end</b>&#160;: ajoute une colonne au schéma de la table SCD contenant la date de fin d&#39;un enregistrement. Lorsque l&#39;enregistrement est en cours, la date de fin est de valeur <b class="cBold">NULL</b> , sinon vous pouvez utiliser une année fixe en sélectionnant <b class="cBold">Fixed Year Value</b> dans la liste et renseignez l&#39;année fictive dans la cellule d&#39;à coté pour éviter d&#39;avoir une valeur nulle dans le champ <b class="cBold">end</b>.<br />-<b class="cBold">version</b>&#160;: ajoute une colonne au schéma de la table SCD contenant le numéro de version de l&#39;enregistrement.<br />-<b class="cBold">active</b>&#160;: ajoute une colonne au schéma de la table SCD contenant les statuts <b class="cBold">true</b> ou <b class="cBold">false</b>. Cette colonne permet de repérer facilement les enregistrements actifs.
@@ -381,7 +373,6 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
 </div>
     </blockquote>
     <hr>
-
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -394,7 +385,6 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
         </font></td>
       </tr>
     </table-->
-
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
