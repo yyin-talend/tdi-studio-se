@@ -14,9 +14,12 @@ package org.talend.repository.ui.actions.metadata;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -85,6 +88,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
     protected static final int WIZARD_WIDTH = 800;
 
     protected static final int WIZARD_HEIGHT = 495;
+
+    private static Logger log = Logger.getLogger(AbstractCreateTableAction.class);
 
     /**
      * DOC mhelleboid Comment method "handleWizard".
@@ -764,6 +769,14 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             };
         };
         job.setUser(true);
+        job.addJobChangeListener(new JobChangeAdapter() {
+
+            public void done(IJobChangeEvent event) {
+                if (!event.getResult().isOK()) {
+                    log.error(event.getResult().getMessage(), event.getResult().getException());
+                } // else eveything is fine so do not log anything
+            }
+        });
         job.schedule();
 
     }
