@@ -129,11 +129,24 @@
       FIELD="FILE"
       NUM_ROW="14"
       REQUIRED="true"
+      SHOW_IF="EXECUTION == 'UNIX'" 
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/error.log"</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
+
+   <ADVANCED_PARAMETERS>
+   
+   	<PARAMETER
+      NAME="CHECK_POINT"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>1000000</DEFAULT>
+    </PARAMETER>
+   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
   </CODEGENERATION>

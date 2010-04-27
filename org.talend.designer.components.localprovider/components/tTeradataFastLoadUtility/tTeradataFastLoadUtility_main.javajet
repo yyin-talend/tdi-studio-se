@@ -28,6 +28,8 @@ String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
 
+String checkPoint= ElementParameterParser.getValue(node, "__CHECK_POINT__");
+
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
@@ -52,9 +54,9 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 <%//build script---------------------------------------------------------%>
 
 StringBuilder script_<%=cid%> = new StringBuilder();
-fw_<%=cid %>.write(".SESSIONS 8;\r\n");
-fw_<%=cid %>.write(".SET RECORD VARTEXT \""+<%=separator%>+"\";\r\n");
-fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
+fw_<%=cid %>.write("SESSIONS 8;\r\n");
+fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";\r\n");
+fw_<%=cid %>.write("LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 fw_<%=cid %>.write("DEFINE \r\n");
 <%//Layout---------------------------------------------------------------%>
 <%
@@ -73,7 +75,7 @@ if(columnList!=null){
 }
 %>
 fw_<%=cid %>.write("FILE="+<%=loadFile%>+";\r\n");
-fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" ERRORFILES "+ <%=dbname%> + "." + <%=table%>+"_ERR1, "+ <%=dbname%> + "." + <%=table%>+"_ERR2 CHECKPOINT 1000000;\r\n");
+fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" ERRORFILES "+ <%=dbname%> + "." + <%=table%>+"_ERR1, "+ <%=dbname%> + "." + <%=table%>+"_ERR2 CHECKPOINT <%=checkPoint%>;\r\n");
 <%//SQL statements-------------------------------------------------------%>
 <%
 StringBuilder insertColSQL = new StringBuilder();
@@ -94,15 +96,26 @@ if(columnList!=null){
 	}
 }
 %>
+fw_<%=cid %>.write("INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=insertColSQL.toString()%>) VALUES (<%=insertValueSQL.toString()%>);\r\n");
 <%//Import file----------------------------------------------------------%>
-fw_<%=cid %>.write(".END LOADING;\r\n");
-fw_<%=cid %>.write(".LOGOFF;\r\n");
+fw_<%=cid %>.write("END LOADING;\r\n");
+fw_<%=cid %>.write("LOGOFF;\r\n");
 
 <%//write script to file-------------------------------------------------%>
 fw_<%=cid %>.close();
 
 <%//run fastload command----------------------------------------------------%>
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+<%
+if (("Windows").equals(execution)) {
+%>
+String sb_<%=cid%> = new String("cmd /c fastload < "+<%=scriptPath%>+<%=table%>+".script");
+<%
+} else {
+%>
+String sb_<%=cid%> = new String("fastload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+<%
+}
+%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
     public void run() {
