@@ -312,16 +312,8 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
         List<DbDefaultLengthAndPrecision> dlpList = dbmsD.getDefaultLengthPrecision();
         for (DbDefaultLengthAndPrecision dlp : dlpList) {
             if (dlp.getDbTypeName().equals(bean.getSourceType())) {
-                if (dlp.getDefaultLength() == null) {
-                    bean.setLength(0);
-                } else {
-                    bean.setLength(dlp.getDefaultLength());
-                }
-                if (dlp.getDefaultPrecision() == null) {
-                    bean.setPrecision(0);
-                } else {
-                    bean.setPrecision(dlp.getDefaultPrecision());
-                }
+                bean.setLength(dlp.getDefaultLength());
+                bean.setPrecision(dlp.getDefaultPrecision());
             }
         }
 

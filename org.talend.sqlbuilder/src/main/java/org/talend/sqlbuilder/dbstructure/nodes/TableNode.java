@@ -376,8 +376,7 @@ public class TableNode extends AbstractNode {
 
         for (int i = 0, size = columns.size(); i < size; i++) {
             MetadataColumnImpl column = (MetadataColumnImpl) columns.get(i);
-            if (!allNodes.keySet().contains(column.getLabel())
-                    && !allNodes.keySet().contains(column.getOriginalField())) {
+            if (!allNodes.keySet().contains(column.getLabel()) && !allNodes.keySet().contains(column.getOriginalField())) {
                 allNodes.put(column.getLabel(), convert2ColumnNode(this, column));
             } else {
                 ColumnNode cNode = (ColumnNode) allNodes.get(column.getOriginalField());
@@ -411,15 +410,13 @@ public class TableNode extends AbstractNode {
         // Retrive metadataColumns from Database
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                getLabelText());
+        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, getLabelText());
         Iterator iterate = metadataColumns.iterator();
 
         while (iterate.hasNext()) {
             MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
             for (TableColumnInfo info : tableColumnInfo) {
-                if (metadataColumn.getLabel().equals(node.getLabelText())
-                        && info.getColumnName().equals(node.getLabelText())) {
+                if (metadataColumn.getLabel().equals(node.getLabelText()) && info.getColumnName().equals(node.getLabelText())) {
                     boolean divergency = isEquivalent(metadataColumn, column);
                     metadataColumn.setDivergency(divergency);
                     return divergency;
@@ -442,7 +439,7 @@ public class TableNode extends AbstractNode {
         // if (!info.getLabel().equals(column.getLabel())) {
         // return false;
         // }
-        if (info.getLength() != column.getLength()) {
+        if (info.getLength() != null && !info.getLength().equals(column.getLength())) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
@@ -458,18 +455,16 @@ public class TableNode extends AbstractNode {
         if (info.isKey() != column.isKey()) {
             return false;
         }
-        if (info.getPrecision() != column.getPrecision()) {
+        if (info.getPrecision() != null && !info.getPrecision().equals(column.getPrecision())) {
             return false;
         }
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {
             return false;
         }
-        if (info.getComment() != null && info.getComment().length() != 0
-                && !info.getComment().equals(column.getComment())) {
+        if (info.getComment() != null && info.getComment().length() != 0 && !info.getComment().equals(column.getComment())) {
             return false;
         }
-        if (column.getComment() != null && column.getComment().length() != 0
-                && !column.getComment().equals(info.getComment())) {
+        if (column.getComment() != null && column.getComment().length() != 0 && !column.getComment().equals(info.getComment())) {
             return false;
         }
 

@@ -358,7 +358,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         column.setWeight(10);
         column.setMinimumWidth(10);
         column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()), CellEditorValueAdapterFactory
-                .getPositiveIntAdapter());
+                .getPositiveIntAdapter(true));
     }
 
     /**

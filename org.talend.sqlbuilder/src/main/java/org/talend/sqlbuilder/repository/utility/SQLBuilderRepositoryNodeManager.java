@@ -1169,7 +1169,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     private boolean isEquivalent(MetadataColumn info, MetadataColumn column) {
 
-        if (info.getLength() != column.getLength()) {
+        if (info.getLength() != null && !info.getLength().equals(column.getLength())) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
@@ -1185,7 +1185,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (info.isKey() != column.isKey()) {
             return false;
         }
-        if (info.getPrecision() != column.getPrecision()) {
+        if (info.getPrecision() != null && !info.getPrecision().equals(column.getPrecision())) {
             return false;
         }
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {

@@ -517,7 +517,7 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);
                 } else {
-                    metadataColumn.setPrecision(0);
+                    metadataColumn.setPrecision(null);
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
