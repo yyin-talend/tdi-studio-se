@@ -57,6 +57,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -91,6 +93,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
@@ -1648,6 +1651,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, metaname,
                         cType.getLabel(), cType.getMetaname(), monitorConnection);
             } else {
+                if (PluginChecker.isJobLetPluginLoaded()) { // bug 12764
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null && service.isJobletComponent(source)) {
+                        continue;
+                    }
+                }
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
                 connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname, cType
                         .getLabel(), cType.getMetaname(), monitorConnection);
