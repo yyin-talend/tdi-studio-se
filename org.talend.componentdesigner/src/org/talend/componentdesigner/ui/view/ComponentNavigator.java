@@ -18,4 +18,5 @@ package org.talend.componentdesigner.ui.view;
  */
 public class ComponentNavigator extends org.eclipse.ui.navigator.CommonNavigator {
 
+    public static final String ID = "org.talend.componentdesigner.ui.view.ComponentNavigator";
 }

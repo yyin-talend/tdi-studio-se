@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.componentdesigner.ui;
 
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.talend.componentdesigner.ui.view.ComponentNavigator;
 
 /**
  * The class define for the amc perspective. <br/>
@@ -26,7 +28,10 @@ public class Perspective implements IPerspectiveFactory {
     public static final String ID = "org.talend.componentdesigner.perspective"; //$NON-NLS-1$
 
     public void createInitialLayout(IPageLayout layout) {
-        layout.setEditorAreaVisible(true);
+        layout.setEditorAreaVisible(false);
+        IFolderLayout leftTopLayout = layout.createFolder("navigatorLayout", IPageLayout.LEFT, new Float(0.3), //$NON-NLS-1$
+                IPageLayout.ID_EDITOR_AREA);
+        leftTopLayout.addView(ComponentNavigator.ID);
     }
 
 }
