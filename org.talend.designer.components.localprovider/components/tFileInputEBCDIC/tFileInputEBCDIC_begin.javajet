@@ -60,7 +60,7 @@ for(Map<String, String> schemaMap : schemas) {//------AAA
 	if(conns != null && conns.size() > 0){
 		for(IConnection conn : conns){
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				if(schemaName.equals(conn.getName())){
+				if(schemaName.equals(conn.getMetadataTable().getLabel())){
 					justConn = conn;
 					break;
 				}
@@ -75,14 +75,14 @@ if(justConn != null){//------BBB
 %>
 	if(inrecord_<%=cid %>.get(0).equals("<%=code %>") || recdefs_<%=cid %>.size() == 1 ){
 	
-		<%=schemaName %> = new <%=schemaName %>Struct();
+		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
 <%		
 		int sizeListColumns = justColumnList.size();
 		for (int valueN=0; valueN<sizeListColumns; valueN++) {
 			IMetadataColumn column = justColumnList.get(valueN);
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 %>				
-		<%=schemaName %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
+		<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
 		}
 %>	
