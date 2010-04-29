@@ -833,7 +833,7 @@ public class JobSettingsManager {
                 final String quoteByDBType = TalendTextUtils.getQuoteByDBType(dbType, false);
                 EDatabaseTypeName dbTypeName = EDatabaseTypeName.getTypeFromDbType(dbType);
                 if (dbTypeName == EDatabaseTypeName.MSSQL) {
-                    query = query.replaceAll("(?i)\\bkey\\b", //$NON-NLS-1$ 
+                    query = query.replaceAll("(?i)\bkey\b", //$NON-NLS-1$ 
                             "\\\\" + quoteByDBType + "key\\\\" + quoteByDBType); //$NON-NLS-1$  //$NON-NLS-2$ 
                 }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
