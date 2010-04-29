@@ -411,19 +411,38 @@ public class ConnectionManager {
             if (connectionName.equals("")) { //$NON-NLS-1$
                 canRename = false;
             } else {
-                List<? extends IConnection> cons = target.getIncomingConnections();
-                for (Iterator iter = cons.iterator(); iter.hasNext();) {
-                    Connection conn = (Connection) iter.next();
-                    if (conn.getName().equals(connectionName) || KeywordsValidator.isKeyword(connectionName)
-                            || KeywordsValidator.isSqlKeyword(connectionName)
-                            || !source.getProcess().checkValidConnectionName(connectionName, canRename)) {
-                        canRename = false;
-                        break;
+                canRename = checkConnectionValue(connectionName);
+                if (canRename) {
+                    List<? extends IConnection> cons = target.getIncomingConnections();
+                    for (Iterator iter = cons.iterator(); iter.hasNext();) {
+                        Connection conn = (Connection) iter.next();
+                        if (conn.getName().equals(connectionName)) {
+                            canRename = false;
+                            break;
+                        }
                     }
                 }
             }
         }
         return canRename;
+    }
+
+    private static boolean checkConnectionValue(String value) {
+        if (KeywordsValidator.isKeyword(value) || KeywordsValidator.isSqlKeyword(value)) {
+            return false;
+        }
+        if (value.contains(".")) { //$NON-NLS-1$
+            int indexOf = value.indexOf("."); //$NON-NLS-1$
+            String preString = value.substring(0, indexOf);
+            if (KeywordsValidator.isKeyword(preString) || KeywordsValidator.isSqlKeyword(preString)) {
+                return false;
+            } else {
+                String postString = value.substring(indexOf + 1);
+                return checkConnectionValue(postString);
+            }
+        }
+        return true;
+
     }
 
     /**
