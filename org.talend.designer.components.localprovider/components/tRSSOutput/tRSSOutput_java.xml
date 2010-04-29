@@ -58,12 +58,23 @@
       <DEFAULT>"UTF-8"</DEFAULT>
     </PARAMETER>
     
+	<PARAMETER NAME="RSS" FIELD="RADIO" REQUIRED="true"
+		NUM_ROW="3" GROUP="MODE">
+		<DEFAULT>true</DEFAULT>
+	</PARAMETER>
+
+	<PARAMETER NAME="ATOM" FIELD="RADIO" REQUIRED="true"
+		NUM_ROW="3" GROUP="MODE">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+    
     <PARAMETER 
     NAME="TITLE" 
     FIELD="TEXT" 
     REQUIRED="true"
     GROUP="CHANNEL"
-    NUM_ROW="3"> 
+    NUM_ROW="11"
+    SHOW_IF="RSS=='true'"> 
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
@@ -72,7 +83,8 @@
     FIELD="TEXT" 
     REQUIRED="true"
     GROUP="CHANNEL"
-    NUM_ROW="4"> 
+    NUM_ROW="12"
+    SHOW_IF="RSS=='true'"> 
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
@@ -81,7 +93,8 @@
     FIELD="TEXT" 
     REQUIRED="true"
     GROUP="CHANNEL"
-    NUM_ROW="5"> 
+    NUM_ROW="13"
+    SHOW_IF="RSS=='true'"> 
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
@@ -90,15 +103,66 @@
     FIELD="TEXT" 
     REQUIRED="true"
     GROUP="CHANNEL"
-    NUM_ROW="6"> 
+    NUM_ROW="14"
+    SHOW_IF="RSS=='true'"> 
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
+    <PARAMETER 
+    NAME="aTITLE" 
+    FIELD="TEXT" 
+    REQUIRED="true"
+    GROUP="FEED"
+    NUM_ROW="11"
+    SHOW_IF="ATOM=='true'"> 
+    <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+    NAME="aLINK" 
+    FIELD="TEXT" 
+    REQUIRED="true"
+    GROUP="FEED"
+    NUM_ROW="12"
+    SHOW_IF="ATOM=='true'"> 
+    <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+    NAME="aID" 
+    FIELD="TEXT" 
+    REQUIRED="true"
+    GROUP="FEED"
+    NUM_ROW="13"
+    SHOW_IF="ATOM=='true'"> 
+    <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+    NAME="aUPDATED" 
+    FIELD="TEXT" 
+    REQUIRED="true"
+    GROUP="FEED"
+    NUM_ROW="14"
+    SHOW_IF="ATOM=='true'"> 
+    <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+    NAME="aAUTHOR" 
+    FIELD="TEXT" 
+    REQUIRED="true"
+    GROUP="FEED"
+    NUM_ROW="15"
+    SHOW_IF="ATOM=='true'"> 
+    <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ELEMENTS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="7"
+      NUM_ROW="20"
       NB_LINES="8"
     >
       <ITEMS>
@@ -111,7 +175,14 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="8">
+      NUM_ROW="30">
+      	<TABLE IF="ATOM=='true'">
+      		<COLUMN KEY="false" LENGTH="50" NAME="id" TYPE="id_String" NULLABLE="true" READONLY="true"/>
+      		<COLUMN KEY="false" LENGTH="30" NAME="title" TYPE="id_String" NULLABLE="true" READONLY="true"/>
+      		<COLUMN KEY="false" LENGTH="100" NAME="link" TYPE="id_String" NULLABLE="true" READONLY="true"/>
+      		<COLUMN KEY="false" NAME="updated" TYPE="id_Date" NULLABLE="true" READONLY="true"/>
+      		<COLUMN KEY="false" LENGTH="200" NAME="summary" TYPE="id_String" NULLABLE="true" READONLY="true"/>
+      	</TABLE>
      </PARAMETER>
   </PARAMETERS>
  <CODEGENERATION>
