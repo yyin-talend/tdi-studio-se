@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,13 +23,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -147,4 +153,42 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
     // qli modified to fix the bug 5400 and 6185.
     public abstract void renameRoutineClass(RoutineItem routineItem);
 
+    /**
+     * bug 12582 by ggu.
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, List<URI>> getUserRoutineModules() {
+        Map<String, List<URI>> modules = new HashMap<String, List<URI>>();
+
+        try {
+            for (IRepositoryObject ro : getRoutines()) {
+                Item item = ro.getProperty().getItem();
+                if (item instanceof RoutineItem) {
+                    EList imports = ((RoutineItem) item).getImports();
+                    for (Object o : imports) {
+                        if (o instanceof IMPORTType) {
+                            String urlPath = ((IMPORTType) o).getUrlPath();
+                            if (urlPath != null && !"".equals(urlPath)) { //$NON-NLS-1$
+                                File file = new File(urlPath);
+                                if (file.exists()) {
+                                    URI uri = file.toURI();
+                                    List<URI> list = modules.get(ro.getLabel());
+                                    if (list == null) {
+                                        list = new ArrayList<URI>();
+                                        modules.put(ro.getLabel(), list);
+                                    }
+                                    if (!list.contains(uri)) {
+                                        list.add(uri);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        }
+        return modules;
+    }
 }
