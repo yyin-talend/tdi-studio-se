@@ -108,21 +108,21 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private final char pwdEhcoChar = '*';
 
-    // private List<String> moduleNames = null;
-
-    // private LabelledCombo customModuleCombo = null;
-
-    // private CCombo customModuleCombo;
-
-    // private Button clearButton;
-
-    // private Button useCostomModuleButton;
-
     private SalesforceModuleParseAPI salesforceAPI = new SalesforceModuleParseAPI();
 
     Object[] modulename = null;
 
     Object[] standardModulename = null;
+
+    private SalesforceModuleParseAPI salesforceModuleParseAPI = null;
+
+    public SalesforceModuleParseAPI getSalesforceModuleParseAPI() {
+        return this.salesforceModuleParseAPI;
+    }
+
+    public void setSalesforceModuleParseAPI(SalesforceModuleParseAPI salesforceModuleParseAPI) {
+        this.salesforceModuleParseAPI = salesforceModuleParseAPI;
+    }
 
     /**
      * DOC YeXiaowei SalesforceStep1Form constructor comment.
@@ -426,12 +426,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 } else if (useHttpBtn.getSelection()) {
                     proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
                 }
-                if (proxy != null) {
-                    loginOk = checkSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText.getText(), proxyPortText
-                            .getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
-                } else {
-                    loginOk = checkSalesfoceLogin(endPoint, username, pwd);
+                SalesforceModuleParseAPI checkSalesfoceLogin = checkSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText
+                        .getText(), proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
+                if (checkSalesfoceLogin != null) {
+                    setSalesforceModuleParseAPI(checkSalesfoceLogin);
+                    loginOk = checkSalesfoceLogin.getCurrentAPI().isLogin();
                 }
+
                 if (loginOk) {
                     connectFromCustomModuleName();
                 }
@@ -477,87 +478,92 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$ 
-                // testSalesforceLogin();
-                String proxy = null;
-                if (useProxyBtn.getSelection()) {
-                    proxy = SalesforceModuleParseAPI.USE_SOCKS_PROXY;
-                } else if (useHttpBtn.getSelection()) {
-                    proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
-                }
-                SalesforceModuleParseAPI checkSalesfoceLogin = null;
-                if (proxy != null) {
-                    checkSalesfoceLogin = toCheckSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText.getText(),
-                            proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
-                } else {
-                    checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
-                }
+                testSalesforceLogin();
+                // String proxy = null;
+                // if (useProxyBtn.getSelection()) {
+                // proxy = SalesforceModuleParseAPI.USE_SOCKS_PROXY;
+                // } else if (useHttpBtn.getSelection()) {
+                // proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
+                // }
+                // SalesforceModuleParseAPI checkSalesfoceLogin = null;
+                // if (proxy != null) {
+                // checkSalesfoceLogin = toCheckSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText.getText(),
+                // proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
+                // }
+
+                // else {
+                // checkSalesfoceLogin = toCheckSalesfoceLogin(endPoint, username, pwd);
+                // }
 
                 preparModuleInit();
-                String[] types = null;
-                DescribeGlobalResult describeGlobalResult = null;
-                com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
-                monitorWrap.worked(50);
-                boolean socksProxy = false;
-                boolean httpProxy = false;
-                if (SalesforceModuleParseAPI.USE_SOCKS_PROXY.equals(proxy)) {
-                    socksProxy = true;
-                }
-                if (SalesforceModuleParseAPI.USE_HTTP_PROXY.equals(proxy)) {
-                    httpProxy = true;
-                }
-                try {
-                    salesforceAPI.setProxy(proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
-                            proxyPasswordText.getText(), httpProxy, socksProxy);
-                    if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
-                        describeGlobalResult = describeGlobal();
-                        if (describeGlobalResult != null) {
-                            types = describeGlobalResult.getTypes();
-                        }
-                    } else {
-                        describeGlobalPartner = describeGlobalPartner();
-                        if (describeGlobalPartner != null) {
-                            types = describeGlobalPartner.getTypes();
-                        }
+                SalesforceModuleParseAPI checkSalesfoceLogin = getSalesforceModuleParseAPI();
+                if (checkSalesfoceLogin != null) {
+                    String[] types = null;
+                    DescribeGlobalResult describeGlobalResult = null;
+                    com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
+                    monitorWrap.worked(50);
+                    boolean socksProxy = false;
+                    boolean httpProxy = false;
+                    if (useProxyBtn.getSelection()) {
+                        socksProxy = true;
+                    } else if (useHttpBtn.getSelection()) {
+                        httpProxy = true;
                     }
-                    salesforceAPI.resetProxy();
-                    INode node = getSalesforceNode();
-
-                    List list = new ArrayList();
-                    if (node == null) {
-                        moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
-                    } else {
-                        IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
-                        modulename = modulesNameParam.getListItemsValue();
-                        if (modulename != null && modulename.length > 1) {
-                            for (int i = 0; i < modulename.length - 1; i++) {
-                                list.add(i, modulename[i]);
+                    try {
+                        salesforceAPI.setProxy(proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
+                                proxyPasswordText.getText(), httpProxy, socksProxy);
+                        if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
+                            describeGlobalResult = describeGlobal();
+                            if (describeGlobalResult != null) {
+                                types = describeGlobalResult.getTypes();
+                            }
+                        } else {
+                            describeGlobalPartner = describeGlobalPartner();
+                            if (describeGlobalPartner != null) {
+                                types = describeGlobalPartner.getTypes();
                             }
                         }
-                        if (types != null && types.length > 0) {
-                            for (int j = 0; j < types.length; j++) {
-                                if (!list.contains(types[j])) {
-                                    list.add(types[j]);
+                        monitorWrap.worked(50);
+
+                        salesforceAPI.resetProxy();
+                        INode node = getSalesforceNode();
+
+                        List list = new ArrayList();
+                        if (node == null) {
+                            moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
+                        } else {
+                            IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
+                            modulename = modulesNameParam.getListItemsValue();
+                            if (modulename != null && modulename.length > 1) {
+                                for (int i = 0; i < modulename.length - 1; i++) {
+                                    list.add(i, modulename[i]);
                                 }
                             }
-                        }
-                        modulename = list.toArray();
+                            if (types != null && types.length > 0) {
+                                for (int j = 0; j < types.length; j++) {
+                                    if (!list.contains(types[j])) {
+                                        list.add(types[j]);
+                                    }
+                                }
+                            }
+                            modulename = list.toArray();
 
-                        if (modulename == null || modulename.length <= 0) {
-                            return;
-                        }
-                        moduleNameCombo.removeAll(); // First clear
+                            if (modulename == null || modulename.length <= 0) {
+                                return;
+                            }
+                            moduleNameCombo.removeAll(); // First clear
 
-                        for (Object module : modulename) {
-                            moduleNameCombo.add(module.toString());
+                            for (Object module : modulename) {
+                                moduleNameCombo.add(module.toString());
+                            }
                         }
+                        monitorWrap.done();
+                    } catch (Exception ex) {
+                        ExceptionHandler.process(ex);
                     }
-                    monitorWrap.done();
-                } catch (Exception ex) {
-                    ExceptionHandler.process(ex);
+                    moduleNameCombo.select(0);
                 }
-                moduleNameCombo.select(0);
             }
-
         };
         try {
             progressDialog.executeProcess();

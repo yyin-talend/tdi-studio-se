@@ -131,10 +131,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
             String betchSize, boolean useProxy, boolean useHttp, String proxyHost, String proxyPort, String proxyUsername,
             String proxyPassword, boolean update) {
-        // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
-        // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
-        // endPoint = DEFAULT_WEB_SERVICE_URL;
-        // }
+
         IMetadataTable result = null;
         String proxy = null;
         if (useProxy) {
@@ -143,24 +140,16 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;//$NON-NLS-1$
         }
         if (!moduleName.equals(salesforceAPI.getCurrentModuleName())) {
-            if (proxy != null) {
-                result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
-                        proxyUsername, proxyPassword);
-            } else {
-                result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, null, null, null, null, null);
-            }
+            result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
+                    proxyUsername, proxyPassword);
             if (result == null) {
                 result = getMetadataTableFromConfigFile(moduleName);
             }
             return result;
         } else {
             if (update) {
-                if (proxy != null) {
-                    result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
-                            proxyUsername, proxyPassword);
-                } else {
-                    result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, null, null, null, null, null);
-                }
+                result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
+                        proxyUsername, proxyPassword);
                 if (result == null) {
                     result = getMetadataTableFromConfigFile(moduleName);
                 }
@@ -171,7 +160,6 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                 return metadataTable;
             }
         }
-
     }
 
     private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user, final String pass,
@@ -200,19 +188,20 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         httpProxy = true;
                     }
                     salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy);
-                    try {
 
-                        ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
-                        for (int i = 0; i < loginList.size(); i++) {
-                            if (loginList.get(i) instanceof SoapBindingStub) {
-                                binding = (SoapBindingStub) loginList.get(i);
-                            } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
-                                bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
-                            }
-                        }
-                    } catch (Throwable e) {
-                        ExceptionHandler.process(e);
-                    }
+                    // try {
+                    //
+                    // ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
+                    // for (int i = 0; i < loginList.size(); i++) {
+                    // if (loginList.get(i) instanceof SoapBindingStub) {
+                    // binding = (SoapBindingStub) loginList.get(i);
+                    // } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
+                    // bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
+                    // }
+                    // }
+                    // } catch (Throwable e) {
+                    // ExceptionHandler.process(e);
+                    // }
                     salesforceAPI.fetchMetaDataColumns(moduleName);
                     salesforceAPI.resetProxy();
                     monitor.done();
@@ -232,47 +221,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return metadataTable;
     }
 
-    protected SalesforceModuleParseAPI toCheckSalesfoceLogin(final String proxy, final String endPoint, final String username,
-            final String password, final String proxyHost, final String proxyPort, final String proxyUsername,
-            final String proxyPassword) {
-
-        salesforceAPI.setLogin(false);
-        boolean socksProxy = false;
-        boolean httpProxy = false;
-        if (SalesforceModuleParseAPI.USE_SOCKS_PROXY.equals(proxy)) {
-            socksProxy = true;
-        }
-        if (SalesforceModuleParseAPI.USE_HTTP_PROXY.equals(proxy)) {
-            httpProxy = true;
-        }
-        salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy);
-        try {
-            ArrayList loginList = salesforceAPI.login(endPoint, username, password);
-            for (int i = 0; i < loginList.size(); i++) {
-                if (loginList.get(i) instanceof SoapBindingStub) {
-                    binding = (SoapBindingStub) loginList.get(i);
-                } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
-                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
-                }
-            }
-            salesforceAPI.resetProxy();
-            salesforceAPI.setLogin(true);
-        } catch (Throwable e) {
-            ExceptionHandler.process(e);
-        }
-
-        return salesforceAPI;
-    }
-
-    protected SalesforceModuleParseAPI toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
-        return toCheckSalesfoceLogin(null, endPoint, username, password, null, null, null, null);
-    }
-
-    protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
-        return checkSalesfoceLogin(null, endPoint, username, password, null, null, null, null);
-    }
-
-    protected boolean checkSalesfoceLogin(final String proxy, final String endPoint, final String username,
+    protected SalesforceModuleParseAPI checkSalesfoceLogin(final String proxy, final String endPoint, final String username,
             final String password, final String proxyHost, final String proxyPort, final String proxyUsername,
             final String proxyPassword) {
         final List<String> errors = new ArrayList<String>();
@@ -346,7 +295,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
         }
 
-        return salesforceAPI.isLogin();
+        return salesforceAPI;
     }
 
     protected DescribeGlobalResult describeGlobal() throws UnexpectedErrorFault, RemoteException {

@@ -17,7 +17,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.rpc.ServiceException;
 
@@ -166,33 +165,6 @@ public class SalesforceModuleParseEnterprise implements ISalesforceModuleParser 
         arrayList.add(binding);
 
         return arrayList;
-    }
-
-    /**
-     * DOC zli Comment method "resetSocksParameters".
-     * 
-     * @param oldProxyHost
-     * @param oldProxyPort
-     * @param oldProxyUser
-     * @param oldProxyPwd
-     */
-    private void resetSocksParameters(String oldProxyHost, String oldProxyPort, String oldProxyUser, String oldProxyPwd) {
-        Properties properties = System.getProperties();
-        properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_USERNAME, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
-    }
-
-    private void resetHTTPParameters(String oldProxyHost, String oldProxyPort, String oldHttpProxySet, String oldProxyUser,
-            String oldProxyPwd) {
-        Properties properties = System.getProperties();
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
-        properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
-
     }
 
     private void doGetAccounts() {
