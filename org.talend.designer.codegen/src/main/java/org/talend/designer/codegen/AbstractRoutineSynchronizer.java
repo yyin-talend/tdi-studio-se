@@ -12,10 +12,10 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -45,7 +46,8 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
             routineNames.add(obj.getProperty().getLabel());
         }
 
-        List<IRepositoryObject> refRoutines = getReferencedProjectRoutine();
+        List<IRepositoryObject> refRoutines = new ArrayList<IRepositoryObject>();
+        getReferencedProjectRoutine(refRoutines, ProjectManager.getInstance().getReferencedProjects());
         for (IRepositoryObject obj : refRoutines) {
             String name = obj.getProperty().getLabel();
             // it does not have a routine with same name
@@ -70,21 +72,29 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
         return routines;
     }
 
-    private List<IRepositoryObject> getReferencedProjectRoutine() throws SystemException {
-        List<Project> projects = ProjectManager.getInstance().getReferencedProjects();
+    private void getReferencedProjectRoutine(List<IRepositoryObject> routines, List projects) throws SystemException {
+        if (projects == null || projects.isEmpty()) {
+            return;
+        }
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
-
-        List<IRepositoryObject> routines = new LinkedList<IRepositoryObject>();
-        for (Project project : projects) {
-            try {
-                routines.addAll(repositoryFactory.getAll(project, ERepositoryObjectType.ROUTINES));
-            } catch (PersistenceException e) {
-                throw new SystemException(e);
+        for (Object obj : projects) {
+            Project project = null;
+            if (obj instanceof Project) {
+                project = (Project) obj;
+            } else if (obj instanceof ProjectReference) {
+                project = new Project(((ProjectReference) obj).getReferencedProject());
+            }
+            if (project != null) {
+                try {
+                    routines.addAll(repositoryFactory.getAll(project, ERepositoryObjectType.ROUTINES));
+                } catch (PersistenceException e) {
+                    throw new SystemException(e);
+                }
+                getReferencedProjectRoutine(routines, project.getEmfProject().getReferencedProjects());
             }
         }
 
-        return routines;
     }
 
     public void syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {

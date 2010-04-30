@@ -474,7 +474,7 @@ class FakeRepositoryView extends RepositoryView {
     }
 
     private RepositoryNode getInput() {
-        // getViewer().expandAll();
+        getViewer().expandAll();
         RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
         return typeProcessor.getInputRoot(contentProvider);
     }
@@ -548,21 +548,27 @@ class JobTypeProcessor implements ITypeProcessor {
         }
 
         RepositoryNode mainJobs = contentProvider.getProcessNode();
+        getReferencedInputRoot(mainJobs, refProjects);
+        return mainJobs;
+    }
+
+    private void getReferencedInputRoot(RepositoryNode mainJob, List<RepositoryNode> refProjects) {
         if (!refProjects.isEmpty()) {
             List<RepositoryNode> list = new ArrayList<RepositoryNode>();
-
             for (RepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
                 newProject.getChildren().add(refProject.getProcessNode());
                 list.add(newProject);
+                if (refProject.getReferenceProjectNode() != null && !refProject.getReferenceProjectNode().getChildren().isEmpty()) {
+                    getReferencedInputRoot(newProject, refProject.getReferenceProjectNode().getChildren());
+                }
             }
 
             // add the referenced projects' jobs
-            mainJobs.getChildren().addAll(list);
+            mainJob.getChildren().addAll(list);
         }
-        return mainJobs;
+
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
