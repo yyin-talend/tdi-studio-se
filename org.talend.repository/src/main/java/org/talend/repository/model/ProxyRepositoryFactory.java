@@ -1360,7 +1360,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
 
         ERepositoryStatus status = getStatus(item);
-        if (status.isPotentiallyEditable()) {
+        if (status.isPotentiallyEditable() && !item.getState().isRunningFromRep()) {
             try {
                 lock(item);
             } catch (PersistenceException e) {
