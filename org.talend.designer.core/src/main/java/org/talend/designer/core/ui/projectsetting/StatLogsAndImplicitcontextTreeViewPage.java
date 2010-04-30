@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.projectsetting;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.Command;
@@ -24,6 +26,7 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -40,7 +43,13 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -48,12 +57,17 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.designer.core.utils.DetectContextVarsUtils;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -65,6 +79,7 @@ import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.views.RepositoryNameSorter;
+import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 
 /**
  * DOC achen class global comment. Detailled comment
@@ -100,6 +115,12 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     private List<RepositoryNode> statRemovedObjects = new ArrayList<RepositoryNode>();
 
     private WidgetFactory widgetFactory = new WidgetFactory();
+
+    private boolean statsLogAddContextModel = false;
+
+    private boolean implicitAddContextModel = false;
+
+    private boolean addContext = false;
 
     private IEditorReference[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
             .getEditorReferences();
@@ -434,7 +455,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         return super.performOk();
     }
 
-    private void saveProcess(RepositoryNode node, String paramName, Boolean isUseProjectSettings, IProgressMonitor monitor) {
+    private void saveProcess(RepositoryNode node, String paramName, Boolean isUseProjectSettings, boolean addContextModel,
+            Map<String, Set<String>> contextVars, IProgressMonitor monitor) {
         Property property = node.getObject().getProperty();
         ProcessItem pItem = (ProcessItem) property.getItem();
         ParametersType pType = pItem.getProcess().getParameters();
@@ -443,29 +465,68 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             Process process = getProcess(opendProcess, node);
             LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, paramName, isUseProjectSettings);
             exeCommand(process, command);
+            Element elem = null;
+            String propertyName = "";
+            String propertyTypeName = "";
+            if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                elem = pro.getInitialContextLoad();
+                propertyName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
+                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
+                        + EParameterName.PROPERTY_TYPE.getName();
+            } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                elem = pro.getStatsAndLog();
+                propertyName = EParameterName.PROPERTY_TYPE.getName() + ':' + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                propertyTypeName = EParameterName.PROPERTY_TYPE.getName() + ':' + EParameterName.PROPERTY_TYPE.getName();
+            }
+            IElementParameter ptParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (ptParam != null) {
+                IElementParameter propertyElem = ptParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+                Object proValue = propertyElem.getValue();
+                if (proValue instanceof String && ((String) proValue).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
+                    IElementParameter repositoryElem = ptParam.getChildParameters().get(
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    String value = (String) repositoryElem.getValue();
+                    ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+                    if (connectionItem != null) {
+                        Connection connection = connectionItem.getConnection();
+                        ChangeValuesFromRepository cmd = new ChangeValuesFromRepository(process, connection,
+                                addContextModel ? propertyName : propertyTypeName, value);
+                        cmd.ignoreContextMode(true);
+                        exeCommand(process, cmd);
+                    }
+                }
+            }
+
             monitor.worked(100);
         } else {
             ElementParameter2ParameterType.setParameterValue(pType, paramName, isUseProjectSettings);
             if (isUseProjectSettings) {
-                try {
-                    if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                        ProjectSettingManager.reloadImplicitValuesFromProjectSettings(pType, ProjectManager.getInstance()
-                                .getCurrentProject());
-                    } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(pType, ProjectManager.getInstance()
-                                .getCurrentProject());
-                    }
-                    factory.save(pItem);
-                    monitor.worked(100);
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
+                if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                    ProjectSettingManager.reloadImplicitValuesFromProjectSettings(pType, ProjectManager.getInstance()
+                            .getCurrentProject());
+                } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+                    ProjectSettingManager.reloadStatsAndLogFromProjectSettings(pType, ProjectManager.getInstance()
+                            .getCurrentProject());
                 }
+            }
+
+            if (addContextModel && contextVars != null && !contextVars.isEmpty() && ContextUtils.getAllContextItem() != null) {
+                ContextUtils.addInContextModelForProcessItem(pItem, contextVars, ContextUtils.getAllContextItem());
+            }
+
+            try {
+                factory.save(pItem);
+                monitor.worked(100);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
         }
 
     }
 
-    private void saveChangedNode(String paramName, IProgressMonitor monitor) {
+    private void saveChangedNode(String paramName, boolean addContextModel, Map<String, Set<String>> contextVars,
+            IProgressMonitor monitor) {
         List<RepositoryNode> checked = new ArrayList<RepositoryNode>();
         List<RepositoryNode> unChecked = new ArrayList<RepositoryNode>();
         if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
@@ -476,10 +537,10 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             unChecked = statRemovedObjects;
         }
         for (RepositoryNode node : checked) {
-            saveProcess(node, paramName, Boolean.TRUE, monitor);
+            saveProcess(node, paramName, Boolean.TRUE, addContextModel, contextVars, monitor);
         }
         for (RepositoryNode node : unChecked) {
-            saveProcess(node, paramName, Boolean.FALSE, monitor);
+            saveProcess(node, paramName, Boolean.FALSE, addContextModel, contextVars, monitor);
         }
     }
 
@@ -494,9 +555,54 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 monitor
                         .beginTask(
                                 Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (addedObjects.size() + statAddedObjects.size()) * 100); //$NON-NLS-1$                
+                addContext = false;
+                statsLogAddContextModel = false;
+                implicitAddContextModel = false;
+                Map<String, Set<String>> implicitContextVars = null;
+                Map<String, Set<String>> statsLogContextVars = null;
 
-                saveChangedNode(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), monitor);
-                saveChangedNode(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), monitor);
+                // if add some object to use project setting ,check context model
+                if (!addedObjects.isEmpty()) {
+                    if (pro != null) {
+                        Element implicitContextLoad = pro.getInitialContextLoad();
+                        implicitContextVars = DetectContextVarsUtils.detectByPropertyType(implicitContextLoad, true);
+
+                    }
+                }
+                if (!statAddedObjects.isEmpty()) {
+                    if (pro != null) {
+                        Element statsAndLog = pro.getStatsAndLog();
+                        statsLogContextVars = DetectContextVarsUtils.detectByPropertyType(statsAndLog, true);
+                    }
+                }
+                // if statslog and implicit use the same connection only show add context dialog one time
+                if (implicitContextVars != null && statsLogContextVars != null && !implicitContextVars.isEmpty()
+                        && !statsLogContextVars.isEmpty()
+                        && implicitContextVars.keySet().toArray()[0].equals(statsLogContextVars.keySet().toArray()[0])) {
+                    showAddContextDialog(implicitContextVars);
+                    if (addContext) {
+                        statsLogAddContextModel = true;
+                        implicitAddContextModel = true;
+                    }
+                } else {
+                    if (implicitContextVars != null && !implicitContextVars.isEmpty()) {
+                        showAddContextDialog(implicitContextVars);
+                        if (addContext) {
+                            implicitAddContextModel = true;
+                        }
+                    }
+                    if (statsLogContextVars != null && !statsLogContextVars.isEmpty()) {
+                        showAddContextDialog(statsLogContextVars);
+                        if (addContext) {
+                            statsLogAddContextModel = true;
+                        }
+                    }
+                }
+
+                saveChangedNode(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), implicitAddContextModel,
+                        implicitContextVars, monitor);
+                saveChangedNode(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), statsLogAddContextModel,
+                        statsLogContextVars, monitor);
 
                 monitor.done();
             }
@@ -511,6 +617,25 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    private void showAddContextDialog(Map<String, Set<String>> vars) {
+        final Map<String, Set<String>> contextVars = vars;
+        Display disp = Display.getCurrent();
+        if (disp == null) {
+            disp = Display.getDefault();
+        }
+        if (disp != null) {
+            disp.syncExec(new Runnable() {
+
+                public void run() {
+                    ShowAddedContextdialog showDialog = new ShowAddedContextdialog(contextVars, true);
+                    if (showDialog.open() == Window.OK) {
+                        addContext = true;
+                    }
+                }
+            });
+        }
     }
 
     private org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess> list, RepositoryNode p) {
