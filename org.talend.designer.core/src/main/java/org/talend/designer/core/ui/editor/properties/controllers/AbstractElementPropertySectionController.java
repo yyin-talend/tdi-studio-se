@@ -463,7 +463,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             IElementParameter param = elem.getElementParameter(parameterName);
             if (param != null && !param.isNoContextAssist() && !param.isReadOnly() && !(control instanceof ReconcilerStyledText)) {
 
-                IProcess process = getProcess(elem, part);
+                final IProcess process = getProcess(elem, part);
 
                 if (elem instanceof INode) {
                     this.extendedProposal = TalendProposalUtils.installOn(control, process, (INode) elem);
@@ -478,9 +478,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                     public void proposalAccepted(IContentProposal proposal) {
                         if (control instanceof Text) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText(),
+                                    (Process) process);
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText(),
+                                    (Process) process);
                         }
                     }
                 });

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -97,7 +98,7 @@ public final class ContextParameterExtractor {
                                 ((Text) text).insert(replaceCode);
 
                             }
-                            saveContext(parameterName, elem, ((Text) text).getText());
+                            saveContext(parameterName, elem, ((Text) text).getText(), process);
                         } else {
                             if (text instanceof StyledText) {
                                 if (((StyledText) text).getSelectionCount() == 0) {
@@ -106,10 +107,10 @@ public final class ContextParameterExtractor {
                                     ((StyledText) text).insert(replaceCode);
 
                                 }
-                                saveContext(parameterName, elem, ((StyledText) text).getText());
+                                saveContext(parameterName, elem, ((StyledText) text).getText(), process);
                             }
                         }
-                        process.getEditor().getTalendEditor().setDirty(true);
+                        // process.getEditor().getTalendEditor().setDirty(true);
                     }
                 }
             }
@@ -124,9 +125,19 @@ public final class ContextParameterExtractor {
      * @param elem
      * @param replaceCode
      */
-    public static void saveContext(final String parameterName, final Element elem, String replaceCode) {
+    public static void saveContext(final String parameterName, final Element elem, String replaceCode, Process process) {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, parameterName, replaceCode);
-        cmd.execute();
+        boolean exe = false;
+        if (process != null) {
+            final CommandStack commandStack = process.getCommandStack();
+            if (commandStack != null) {
+                commandStack.execute(cmd);
+                exe = true;
+            }
+        }
+        if (!exe) {
+            cmd.execute();
+        }
 
         // note that no undo will be available
     }
