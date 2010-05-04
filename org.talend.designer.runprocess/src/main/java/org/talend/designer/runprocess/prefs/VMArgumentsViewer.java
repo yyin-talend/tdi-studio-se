@@ -231,6 +231,7 @@ public class VMArgumentsViewer extends TableEditor {
             } else {
                 arg = item;
             }
+            setShellStyle(getShellStyle() | SWT.RESIZE | SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX);
         }
 
         /*
@@ -257,6 +258,8 @@ public class VMArgumentsViewer extends TableEditor {
             addLabel.setText(Messages.getString("VMArgumentsViewer.argumentcolon")); //$NON-NLS-1$
             argText = new Text(container, SWT.BORDER);
             GridData gridData = new GridData(GridData.FILL_BOTH);
+            gridData.heightHint = 50;
+            gridData.widthHint = 200;
             argText.setLayoutData(gridData);
             argText.setText(arg);
 
