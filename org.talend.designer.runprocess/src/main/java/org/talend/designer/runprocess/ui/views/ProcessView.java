@@ -83,6 +83,8 @@ public class ProcessView extends ViewPart {
 
     private IProcessViewHelper processViewHelper;
 
+    private boolean canRun = true;
+
     public static ProcessView findProcessView() {
         try {
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -293,6 +295,10 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
+            if (!canRun) {
+                return;
+            }
+            canRun = false;
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
             try {
@@ -308,6 +314,7 @@ public class ProcessView extends ViewPart {
                 processComposite.setCurRunMode(EXEC_ID);
                 processComposite.exec();
             }
+            canRun = true;
         }
 
     }
