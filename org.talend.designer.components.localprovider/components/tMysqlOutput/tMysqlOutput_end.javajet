@@ -68,7 +68,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
-	int numPerInsert = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__"));
+	String numPerInsert = ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__");
     
 	String incomingConnName = null;
     List<IMetadataColumn> columnList = getColumnList(node);
@@ -310,7 +310,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%	
 		} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
   			//////////batch execute by batch size///////
-    		if(numPerInsert != 0) {
+    		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
     		%>
                 <%if ( (rejectConnName==null) && ("INSERT").equals(dataAction)) {
                 %>                                                

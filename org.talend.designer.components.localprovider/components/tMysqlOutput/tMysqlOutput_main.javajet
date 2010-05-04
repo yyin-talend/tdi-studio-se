@@ -49,7 +49,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         	extendedInsert = false;
         }    
     
-    int numPerInsert = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__"));
+    String numPerInsert = ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
 	//feature:2880
@@ -340,7 +340,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		    		pstmt_<%=cid %>.addBatch();
 		    		nb_line_<%=cid%>++;    		 
 					
-		    		  <%if (numPerInsert != 0) {
+		    		  <%if (!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
 		    		  %>
 		    		  batchSizeCounter_<%=cid%>++;
 		    		  <%
@@ -1122,7 +1122,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }	
         	//////////batch execute by batch size///////
     	if (extendedInsert && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && ("INSERT").equals(dataAction)) {
-    		if(numPerInsert != 0) {
+    		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
                 <%if ( (rejectConnName==null)) {
