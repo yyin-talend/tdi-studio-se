@@ -12,140 +12,28 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import java.util.List;
-
-import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
-import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.connections.ConnectionPart;
-import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
 
 /**
- * hwang class global comment. Detailled comment
+ * ggu class global comment. Detailled comment
  */
-public class TraceEnableAction extends SelectionAction {
-
-    private static final String SET_TRACE_ENABLE = Messages.getString("TraceEnableAction.TraceEnableDesc"); //$NON-NLS-1$
-
-    private static final String TRACE_ENABLE = Messages.getString("TraceEnableAction.TraceEnableTitle"); //$NON-NLS-1$
-
-    public boolean enable = false;
+public class TraceEnableAction extends AbstractTraceAction {
 
     public TraceEnableAction(IWorkbenchPart part) {
-        super(part);
-        setText(TRACE_ENABLE);
-        setToolTipText(SET_TRACE_ENABLE);
-        setDescription(SET_TRACE_ENABLE);
+        super(part, Messages.getString("TraceEnableAction.TraceEnableTitle"), //$NON-NLS-1$
+                Messages.getString("TraceEnableAction.TraceEnableDesc"),//$NON-NLS-1$
+                Messages.getString("TraceEnableAction.TraceEnableDesc"));//$NON-NLS-1$
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
+     * @see org.talend.designer.core.ui.action.AbstractTraceAction#isEnableAction()
      */
     @Override
-    protected boolean calculateEnabled() {
-        List parts = getSelectedObjects();
-        if (parts.size() != 1) {
-            return false;
-        }
-        Object input = parts.get(0);
-        if (input instanceof ConnectionPart) {
-            ConnectionPart connPart = (ConnectionPart) input;
-            List childParts = connPart.getChildren();
-            for (Object part : childParts) {
-                if (part != null && part instanceof ConnectionTraceEditPart) {
-                    Connection conn = (Connection) connPart.getModel();
-                    if (conn.enableTraces()) {
-                        IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
-                        Boolean flag = (Boolean) element.getValue();
-                        if (flag == false) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        if (input instanceof ConnLabelEditPart) {
-            ConnLabelEditPart labelPart = (ConnLabelEditPart) input;
-            ConnectionPart connPart = (ConnectionPart) labelPart.getParent();
-            List childParts = connPart.getChildren();
-            for (Object part : childParts) {
-                if (part != null && part instanceof ConnectionTraceEditPart) {
-                    Connection conn = (Connection) connPart.getModel();
-                    if (conn.enableTraces()) {
-                        IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
-                        Boolean flag = (Boolean) element.getValue();
-                        if (flag == false) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        if (input instanceof ConnectionTraceEditPart) {
-            ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) input;
-
-            ConnectionPart connPart = (ConnectionPart) tracePart.getParent();
-            Connection conn = (Connection) connPart.getModel();
-            if (conn.enableTraces()) {
-                IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
-                Boolean flag = (Boolean) element.getValue();
-                if (flag == false) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void run() {
-        List selection = getSelectedObjects();
-
-        Object input = selection.get(0);
-        if (input instanceof ConnectionPart) {
-            ConnectionPart connPart = (ConnectionPart) input;
-            List childParts = connPart.getChildren();
-            for (Object part : childParts) {
-                if (part != null && part instanceof ConnectionTraceEditPart) {
-                    ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
-                    Connection conn = (Connection) connPart.getModel();
-                    execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), true));
-                    tracePart.refresh();
-                    break;
-                }
-            }
-        }
-        if (input instanceof ConnLabelEditPart) {
-            ConnLabelEditPart labelPart = (ConnLabelEditPart) input;
-            ConnectionPart connPart = (ConnectionPart) labelPart.getParent();
-            List childParts = connPart.getChildren();
-            for (Object part : childParts) {
-                if (part != null && part instanceof ConnectionTraceEditPart) {
-                    ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) part;
-                    Connection conn = (Connection) connPart.getModel();
-                    execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), true));
-                    tracePart.refresh();
-                    break;
-                }
-            }
-        }
-        if (input instanceof ConnectionTraceEditPart) {
-            ConnectionTraceEditPart tracePart = (ConnectionTraceEditPart) input;
-
-            ConnectionPart connPart = (ConnectionPart) tracePart.getParent();
-            Connection conn = (Connection) connPart.getModel();
-
-            execute(new PropertyChangeCommand(conn, EParameterName.TRACES_CONNECTION_ENABLE.getName(), true));
-
-            tracePart.refresh();
-        }
+    protected boolean isEnableAction() {
+        return true;
     }
 
 }

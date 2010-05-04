@@ -248,6 +248,25 @@ public class RunProcessContext {
     }
 
     /**
+     * 
+     * ggu Comment method "hasConnectionTrace".
+     * 
+     * bug 11227
+     */
+    protected boolean hasConnectionTrace() {
+        for (INode node : process.getGraphicalNodes()) {
+            List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+            for (IConnection conn : outgoingConnections) {
+                if (conn.isActivate() && conn.isTraceConnection()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    /**
      * Getter for running.
      * 
      * @return the running
@@ -410,7 +429,7 @@ public class RunProcessContext {
                             processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
 
                             ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                    getTracesPort() != IProcessor.NO_TRACES, true, progressMonitor);
+                                    getTracesPort() != IProcessor.NO_TRACES && hasConnectionTrace(), true, progressMonitor);
                             final boolean[] refreshUiAndWait = new boolean[1];
                             refreshUiAndWait[0] = true;
                             final Display display = shell.getDisplay();

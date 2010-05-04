@@ -92,7 +92,7 @@ public class FilterTraceColumnAction extends SelectionAction {
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces();
+                    return connection.enableTraces() && connection.checkTraceShowEnable();
                 }
             }
         }
@@ -103,7 +103,7 @@ public class FilterTraceColumnAction extends SelectionAction {
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces();
+                    return connection.enableTraces() && connection.checkTraceShowEnable();
                 }
             }
         }
@@ -112,7 +112,7 @@ public class FilterTraceColumnAction extends SelectionAction {
             if (connTrace.getParent() instanceof ConnectionPart) {
                 ConnectionPart connPart = (ConnectionPart) connTrace.getParent();
                 connection = (Connection) connPart.getModel();
-                return connection.enableTraces();
+                return connection.enableTraces() && connection.checkTraceShowEnable();
             }
         }
         return false;
