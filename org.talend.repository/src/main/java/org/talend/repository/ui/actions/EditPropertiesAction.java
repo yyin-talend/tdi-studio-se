@@ -61,7 +61,6 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
@@ -278,12 +277,6 @@ public class EditPropertiesAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
-                    if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
-                        canWork = false;
-                    }
-                    // if (canWork && !isLastVersion(node)) {
-                    // canWork = false;
-                    // }
                 }
             }
         }

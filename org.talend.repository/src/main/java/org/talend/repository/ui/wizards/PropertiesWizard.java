@@ -30,13 +30,13 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.expressionbuilder.ExpressionPersistance;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -63,12 +63,34 @@ public class PropertiesWizard extends Wizard {
 
     public PropertiesWizard(RepositoryNode node, IPath path) {
         super();
-        this.object = node.getObject();
+
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROPERTIES_WIZ));
+        // properties wizard editable status not working for ref items ,because econtainer is null;
+        if (node.getObject() != null && node.getObject().getProperty() != null) {
+            Property property = node.getObject().getProperty();
+            Item item = property.getItem();
+            if (property.eResource() == null || item != null && item.eContainer() == null) {
+                IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                        .getProxyRepositoryFactory();
+                try {
+                    ItemState state = item.getState();
+                    if (state != null && state.getPath() != null) {
+                        this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId(), state
+                                .getPath(), node.getObject().getType());
+                    } else {
+                        this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId());
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
+        if (this.object == null) {
+            this.object = node.getObject();
+        }
         this.originaleObjectLabel = this.object.getLabel();
         this.originalVersion = this.object.getVersion();
         this.path = path;
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROPERTIES_WIZ));
-
         lockObject();
     }
 
@@ -229,25 +251,8 @@ public class PropertiesWizard extends Wizard {
     public boolean performCancel() {
         if (!alreadyEditedByUser) {
             try {
-                Property property = object.getProperty();
-                if (property == null || property.getItem() == null) {
-                    return false;
-                }
-                // sometimes after operating on version composite eResource will lost
-                if (property.eResource() != null) {
-                    reloadProperty();
-                } else {
-                    ItemState state = property.getItem().getState();
-                    IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                            .getProxyRepositoryFactory();
-                    if (state != null && state.getPath() != null) {
-                        IRepositoryObject lastVersion = repositoryFactory.getLastVersion(ProjectManager.getInstance()
-                                .getCurrentProject(), property.getId(), state.getPath(), object.getType());
-                        lastVersion.setRepositoryNode(object.getRepositoryNode());
-                        object = lastVersion;
-                    }
+                reloadProperty();
 
-                }
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
             }
