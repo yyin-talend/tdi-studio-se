@@ -147,6 +147,7 @@ public class SubjobContainerFigure extends Figure {
         titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
         Dimension preferedSize = titleFigure.getPreferredSize();
         preferedSize = preferedSize.getExpanded(0, 2);
+        rectangle.width += 32;
         titleFigure.setSize(rectangle.width - preferedSize.height, preferedSize.height);
         titleFigure.setLocation(location);
         titleFigure.setVisible(showTitle);
