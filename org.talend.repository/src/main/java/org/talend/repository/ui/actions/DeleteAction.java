@@ -166,13 +166,13 @@ public class DeleteAction extends AContextualAction {
                     CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
                 }
 
+                if (!deleteActionCache.isDocRefresh()) { // not refresh in JobDeleteListener
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.DOCUMENTATION);
+                }
+                deleteActionCache.revertParameters();
             }
         });
 
-        if (!deleteActionCache.isDocRefresh()) { // not refresh in JobDeleteListener
-            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.DOCUMENTATION);
-        }
-        deleteActionCache.revertParameters();
     }
 
     /**
@@ -542,13 +542,7 @@ public class DeleteAction extends AContextualAction {
                 }
                 if (confirm) {
 
-                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                    for (IEditorReference editors : page.getEditorReferences()) {
-                        String nameInEditor = editors.getName();
-                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$
-                            page.closeEditor(editors.getEditor(false), false);
-                        }
-                    }
+                    deleteActionCache.closeOpenedEditor(objToDelete);
 
                     factory.deleteObjectPhysical(objToDelete);
                     ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());

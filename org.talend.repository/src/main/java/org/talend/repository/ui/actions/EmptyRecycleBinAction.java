@@ -12,17 +12,28 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -51,12 +62,13 @@ public class EmptyRecycleBinAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_EMPTY_ICON));
     }
 
+    @SuppressWarnings("restriction")
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+        final RepositoryNode node = (RepositoryNode) obj;
 
-        String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
+        final String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
         String message = null;
 
         if (node.getChildren().size() == 0) {
@@ -68,40 +80,137 @@ public class EmptyRecycleBinAction extends AContextualAction {
             message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
         }
-        if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
+        final Shell shell = getShell();
+        if (!(MessageDialog.openQuestion(shell, title, message))) {
             return;
         }
 
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        for (RepositoryNode child : node.getChildren()) {
-            IRepositoryObject objToDelete = child.getObject();
-            try {
-                if (objToDelete instanceof ISubRepositoryObject) {
-                    ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
-                    if (!isRootNodeDeleted(child)) {
-                        subRepositoryObject.removeFromParent();
-                        factory.save(subRepositoryObject.getProperty().getItem());
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask(title, node.getChildren().size() + 10);
+                Display disp = Display.getCurrent();
+                if (disp == null) {
+                    disp = Display.getDefault();
+                }
+                // for JobDeleteListener
+                DeleteActionCache deleteActionCache = DeleteActionCache.getInstance();
+                deleteActionCache.setDocRefresh(false);
+
+                // if multi sub object in one item, only save it in one time.
+                Map<String, Item> needSaveItems = new HashMap<String, Item>();
+
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                for (RepositoryNode child : node.getChildren()) {
+                    final IRepositoryObject objToDelete = child.getObject();
+                    try { // if on item is error, will continue.
+                        if (objToDelete instanceof ISubRepositoryObject) {
+                            ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
+                            if (!isRootNodeDeleted(child)) {
+                                subRepositoryObject.removeFromParent();
+                                needSaveItems.put(subRepositoryObject.getProperty().getId(), subRepositoryObject.getProperty()
+                                        .getItem());
+                            }
+                            if (subRepositoryObject.getAbstractMetadataObject() != null) {
+                                monitor.subTask(subRepositoryObject.getAbstractMetadataObject().getLabel());
+                            }
+                        } else {
+                            monitor.subTask(objToDelete.getLabel());
+                            deleteActionCache.closeOpenedEditor(objToDelete);
+
+                            if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
+                                    && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
+                                factory.deleteObjectPhysical(objToDelete);
+                            monitor.worked(1);
+                        }
+                    } catch (Exception e) {
+                        MessageBoxExceptionHandler.process(e);
                     }
-                } else {
-                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                    for (IEditorReference editors : page.getEditorReferences()) {
-                        String nameInEditor = editors.getName();
-                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$
-                            page.closeEditor(editors.getEditor(false), false);
+                }
+                if (!needSaveItems.isEmpty()) {
+                    // save item
+                    monitor.subTask("Save items....");
+                    for (String id : needSaveItems.keySet()) {
+                        Item item = needSaveItems.get(id);
+                        if (item != null) {
+                            try { // if on item is error, will continue.
+                                factory.save(item);
+                            } catch (Exception e) {
+                                MessageBoxExceptionHandler.process(e);
+                            }
+                            monitor.worked(1);
                         }
                     }
-                    if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
-                            && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
-                        factory.deleteObjectPhysical(objToDelete);
                 }
-            } catch (Exception e) {
-                MessageBoxExceptionHandler.process(e);
+                if (disp != null) {
+                    disp.syncExec(new Runnable() {
+
+                        public void run() {
+                            refreshRelations();
+                        }
+                    });
+                } else {
+                    refreshRelations();
+                }
+                monitor.done();
+                deleteActionCache.revertParameters();
+            }
+
+        };
+
+        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(shell);
+        try {
+            dialog.run(true, false, runnable);
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    private Shell getShell() {
+        Shell shell = null;
+
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            shell = activeWorkbenchWindow.getShell();
+        }
+        if (shell == null) {
+            Display dis = Display.getCurrent();
+            if (dis == null) {
+                dis = Display.getDefault();
+            }
+            if (dis != null) {
+                shell = dis.getActiveShell();
             }
         }
+        if (shell == null) {
+            shell = new Shell();
+        }
+        return shell;
+    }
+
+    /**
+     * 
+     * ggu Comment method "refreshRelations".
+     * 
+     * bug 12883
+     */
+    private void refreshRelations() {
+        // refresh
+        if (!DeleteActionCache.getInstance().isDocRefresh()) { // not refresh in JobDeleteListener
+            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.DOCUMENTATION);
+        }
         RepositoryManager.refreshDeletedNode(null);
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        for (IEditorReference editors : page.getEditorReferences()) {
-            CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+            if (page != null) {
+                for (IEditorReference editors : page.getEditorReferences()) {
+                    CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+                }
+            }
         }
     }
 

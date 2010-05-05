@@ -16,13 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.map.MultiKeyMap;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -208,5 +217,57 @@ public final class DeleteActionCache {
 
         }
         return (List<IRepositoryObject>) result;
+    }
+
+    /**
+     * 
+     * ggu Comment method "closeRelations".
+     * 
+     * bug 12883
+     */
+    public void closeOpenedEditor(final IRepositoryObject objToDelete) {
+        if (objToDelete != null) {
+            Display disp = Display.getCurrent();
+            if (disp == null) {
+                disp = Display.getDefault();
+            }
+            if (disp != null) {
+                disp.syncExec(new Runnable() {
+
+                    public void run() {
+                        closeEditor(objToDelete);
+                    }
+                });
+            } else {
+                closeEditor(objToDelete);
+            }
+        }
+    }
+
+    private void closeEditor(final IRepositoryObject objToDelete) {
+        if (objToDelete != null) {
+            IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (activeWorkbenchWindow != null) {
+                IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+                if (page != null) {
+                    for (IEditorReference editors : page.getEditorReferences()) {
+                        IEditorPart editor = editors.getEditor(false);
+                        if (editor != null) {
+                            IEditorInput editorInput = editor.getEditorInput();
+                            String id = null;
+                            if (editorInput != null && editorInput instanceof RepositoryEditorInput) {
+                                Item item = ((RepositoryEditorInput) editorInput).getItem();
+                                if (item != null) {
+                                    id = item.getProperty().getId();
+                                }
+                            }
+                            if (objToDelete.getId() != null && objToDelete.getId().equals(id)) {
+                                page.closeEditor(editor, false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
