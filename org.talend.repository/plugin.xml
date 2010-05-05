@@ -1077,6 +1077,13 @@
              id="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
              name="Support 3 versions tJavaFlex for bug11754">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
+             description="SalesforceTimeoutMigrationTask"
+             id="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
+             name="SalesforceTimeoutMigrationTask">
+       </projecttask>
    </extension>
    
    <extension
