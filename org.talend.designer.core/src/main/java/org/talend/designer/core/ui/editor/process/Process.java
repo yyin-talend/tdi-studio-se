@@ -2659,10 +2659,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if this node is not anymore a subjob start, then set it back to the element list.
             // this one will be reaffected to a new subjob after
             if (node == null || !node.isDesignSubjobStartNode()) {
-                elem.addAll(sjc.getNodeContainers());
-                sjc.getNodeContainers().clear();
-                elem.remove(sjc);
-                subjobContainers.remove(sjc);
+                if (!node.isELTComponent()) {
+                    elem.addAll(sjc.getNodeContainers());
+                    sjc.getNodeContainers().clear();
+                    elem.remove(sjc);
+                    subjobContainers.remove(sjc);
+                }
                 // subjob are never removed from the map, so if the user do any "undo"
                 // the name of the subjob or configuration will be kept.
             } else {
