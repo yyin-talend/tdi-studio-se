@@ -19,6 +19,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -325,6 +326,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
         GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
         try {
+            List<Integer> indexsForSameNamedColumn = new ArrayList<Integer>();
             CsvArray array = gsp.run();
             List<String[]> schemaContent = array.getRows();
 
@@ -335,6 +337,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 int numbOfColumn = schemaContent.get(0).length;
 
                 for (int i = 1; i <= numbOfColumn; i++) {
+                    indexsForSameNamedColumn.clear();
                     Boolean b = false;
                     IMetadataColumn oneColum = new MetadataColumn();
                     // get the column name from the temp file genenrated by GuessSchemaProcess.java
@@ -352,7 +355,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         labelName = "_" + labelName;
                         b = true;
                     }
-                    oneColum.setLabel(MetadataTool.validateColumnName(labelName, i));
+                    findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
                     String label = labelName;
                     if (b && label != null && label.length() > 0) {
                         String substring = label.substring(1);
@@ -448,6 +451,37 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             ExceptionHandler.process(e);
         }
 
+    }
+
+    private void findSameNamedColumnAndReplaceTheIndex(List<Integer> indexsForSameNamedColumn, int i, IMetadataColumn oneColum,
+            String labelName) {
+        boolean findSameNameColumn = false;
+        boolean hasMax = false;
+        for (IMetadataColumn exsitingOneColumn : columns) {
+            if (exsitingOneColumn.getLabel() != null && exsitingOneColumn.getLabel().split("_").length > 1) {
+                String priorIndex = exsitingOneColumn.getLabel().split("_")[1];
+                String name = exsitingOneColumn.getLabel().split("_")[0];
+                if (name.equals(MetadataTool.validateColumnName(labelName, i))) {
+                    findSameNameColumn = true;
+                    indexsForSameNamedColumn.add(Integer.parseInt(priorIndex));
+                }
+            } else if (exsitingOneColumn.getLabel().equals(MetadataTool.validateColumnName(labelName, i))) {
+                findSameNameColumn = true;
+            }
+        }
+        Integer[] indexsarray = indexsForSameNamedColumn.toArray(new Integer[0]);
+        if (indexsarray.length > 0) {
+            Arrays.sort(indexsarray);
+            hasMax = true;
+        }
+        if (findSameNameColumn && hasMax) {
+            int nextIndex = ++indexsarray[indexsarray.length - 1];
+            oneColum.setLabel(MetadataTool.validateColumnName(labelName + "_" + Integer.toString(nextIndex), i));
+        } else if (findSameNameColumn) {
+            oneColum.setLabel(MetadataTool.validateColumnName(labelName + "_" + Integer.toString(1), i));
+        } else {
+            oneColum.setLabel(MetadataTool.validateColumnName(labelName, i));
+        }
     }
 
     /**
