@@ -61,6 +61,12 @@ public class ShadowProcessHelper {
      */
     private static IPreview currentPreview = null;
 
+    private static final String[] TEXT_ENCLOSURE_DATA = { TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), //$NON-NLS-1$ //$NON-NLS-2$
+            TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$
+
+    private static final String[] ESCAPE_CHAR_DATA = { TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), //$NON-NLS-1$ //$NON-NLS-2$
+            TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$
+
     public static void forceStopPreview() {
         if (currentPreview != null) {
             currentPreview.stopLoading();
@@ -101,15 +107,20 @@ public class ShadowProcessHelper {
         processDescription.setHeaderRow(getFilePropertyValue(connection.getHeaderValue()));
         processDescription.setFooterRow(getFilePropertyValue(connection.getFooterValue()));
         processDescription.setLimitRows(getFilePropertyValue(connection.getLimitValue()));
-        if (connection.getEscapeChar() != null
-                && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$ //$NON-NLS-2$
-            processDescription.setEscapeCharacter(connection.getEscapeChar());
+
+        processDescription.setCSVOption(connection.isCsvOption());
+        String escapeCharValue = getValueFromArray(connection.getEscapeChar(), ESCAPE_CHAR_DATA);
+        if (escapeCharValue != null && !connection.getEscapeChar().equals("Empty")) //$NON-NLS-1$
+        {
+            processDescription.setEscapeCharacter(escapeCharValue);
         } else {
             processDescription.setEscapeCharacter(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
         }
-        if (connection.getTextEnclosure() != null
-                && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) { //$NON-NLS-1$ //$NON-NLS-2$
-            processDescription.setTextEnclosure(connection.getTextEnclosure());
+
+        String textEnclosureValue = getValueFromArray(connection.getTextEnclosure(), TEXT_ENCLOSURE_DATA);
+        if (textEnclosureValue != null && !connection.getTextEnclosure().equals("Empty")) //$NON-NLS-1$
+        {
+            processDescription.setTextEnclosure(textEnclosureValue);
         } else {
             processDescription.setTextEnclosure(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
         }
@@ -137,6 +148,18 @@ public class ShadowProcessHelper {
         ProcessDescription processDescription = new ProcessDescription();
         return processDescription;
 
+    }
+
+    public static String getValueFromArray(String value, String[] array) {
+        if (value == null || array.length == 0) {
+            return null;
+        }
+        for (String str : array) {
+            if (value.equals(TalendTextUtils.removeQuotes(str))) {
+                return str;
+            }
+        }
+        return null;
     }
 
     /**

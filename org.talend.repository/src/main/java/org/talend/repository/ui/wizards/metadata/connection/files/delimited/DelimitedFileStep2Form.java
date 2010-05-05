@@ -204,8 +204,21 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
 
         // Fields to the Group Escape Char Settings
-        textEnclosureCombo.select(0);
-        escapeCharCombo.select(0);
+        String textEnclosure = getConnection().getTextEnclosure();
+        String textEnclosureValue = ShadowProcessHelper.getValueFromArray(textEnclosure, TEXT_ENCLOSURE_DATA);
+        if (textEnclosureValue == null) {
+            textEnclosureCombo.select(0);
+        } else {
+            textEnclosureCombo.setText(textEnclosureValue);
+        }
+        String escapeChar = getConnection().getEscapeChar();
+        String escapeCharValue = ShadowProcessHelper.getValueFromArray(escapeChar, ESCAPE_CHAR_DATA);
+        if (escapeCharValue == null) {
+            escapeCharCombo.select(0);
+        } else {
+            escapeCharCombo.setText(escapeCharValue);
+        }
+
         splitwayRecordForJavaFID.setSelection(getConnection().isSplitRecord());
 
         if (Escape.DELIMITED_LITERAL.equals(getConnection().getEscapeType())) {
