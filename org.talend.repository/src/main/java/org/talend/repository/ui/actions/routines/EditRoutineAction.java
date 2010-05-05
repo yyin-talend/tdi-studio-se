@@ -64,7 +64,10 @@ public class EditRoutineAction extends AbstractRoutineAction {
                 canWork = false;
             }
         }
-        RepositoryNode parent = node.getParent();
+        RepositoryNode parent = null;
+        if (node != null) {
+            parent = node.getParent();
+        }
         if (canWork && parent != null && parent instanceof BinRepositoryNode) {
             canWork = false;
         }
