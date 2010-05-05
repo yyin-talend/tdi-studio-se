@@ -227,7 +227,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(Project project, Item item, String pattern, IPath path, boolean folder,
+    private boolean checkFileNameAndPath(Project project, Item item, String pattern, IPath path, boolean folder,
             boolean... isImportItem) throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
@@ -245,12 +245,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             box
                     .setMessage(Messages.getString("ProxyRepositoryFactory.Label") + fileName + Messages.getString("ProxyRepositoryFactory.ReplaceJob")); //$NON-NLS-1$ //$NON-NLS-2$
             if (box.open() == SWT.OK) {
-                return;
+                return true;
             } else {
                 throw new IllegalArgumentException(Messages.getString(
                         "ProxyRepositoryFactory.illegalArgumentException.labeAlreadyInUse", new String[] { fileName })); //$NON-NLS-1$
             }
         }
+        return false;
     }
 
     private void checkFileNameAndPath(Project proejct, String label, String pattern, ERepositoryObjectType type, IPath path,
@@ -1081,9 +1082,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 // don't do anything
             }
         }
-        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false,
-                isImportItem);
-        this.repositoryFactoryFromProvider.create(project, item, path);
+        boolean flag = checkFileNameAndPath(project, item, RepositoryConstants
+                .getPattern(ERepositoryObjectType.getItemType(item)), path, false, isImportItem);
+        if (!flag) {
+            this.repositoryFactoryFromProvider.create(project, item, path);
+        }
         if ((item instanceof ProcessItem || item instanceof JobletProcessItem) && (isImportItem.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         }

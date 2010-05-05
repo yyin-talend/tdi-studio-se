@@ -336,9 +336,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-
-        addWsdlNeedLib(routineItem);
-
+        if (routineItem.eResource() != null)
+            addWsdlNeedLib(routineItem);
         return routineItem;
 
     }
