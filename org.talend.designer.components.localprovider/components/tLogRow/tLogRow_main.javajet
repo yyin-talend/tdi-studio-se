@@ -109,7 +109,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-								String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)
+								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
 					} else {//others
 %>
@@ -136,7 +136,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-								String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)
+								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
 					} else {//others
 %>
@@ -222,7 +222,7 @@ if (basic) {
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-								String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)
+								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
 					} else {//others
 %>    
@@ -283,7 +283,7 @@ if (basic) {
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-								String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)
+								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
 					} else {//others
 %>    
