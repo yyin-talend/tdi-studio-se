@@ -33,7 +33,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.editor.JobEditorInput;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -97,8 +97,8 @@ public class DesignerUtilities {
                 for (IEditorReference editorReference : editors) {
                     IEditorPart editor = editorReference.getEditor(false);
                     IEditorInput input = editor.getEditorInput();
-                    if (input instanceof RepositoryEditorInput) {
-                        RepositoryEditorInput rInput = (RepositoryEditorInput) input;
+                    if (input instanceof JobEditorInput) {
+                        JobEditorInput rInput = (JobEditorInput) input;
                         IProcess p = rInput.getLoadedProcess();
                         if (p != null && p.getId().equals(jobId) && p.getVersion().equals(jobVersion)) {
                             process[0] = p;

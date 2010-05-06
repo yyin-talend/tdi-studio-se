@@ -39,7 +39,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.wizards.OpenExistVersionProcessWizard;
-import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.EditPropertiesAction;
@@ -108,11 +108,11 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
         for (int i = 0; i < eidtors.length; i++) {
             try {
                 IEditorInput input = eidtors[i].getEditorInput();
-                if (!(input instanceof RepositoryEditorInput)) {
+                if (!(input instanceof JobEditorInput)) {
                     continue;
                 }
 
-                RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
+                JobEditorInput repositoryInput = (JobEditorInput) input;
                 checkUnLoadedNodeForProcess(repositoryInput);
                 if (repositoryInput.getItem().equals(node.getObject().getProperty().getItem())) {
 
@@ -127,7 +127,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
         return null;
     }
 
-    private void checkUnLoadedNodeForProcess(RepositoryEditorInput fileEditorInput) {
+    private void checkUnLoadedNodeForProcess(JobEditorInput fileEditorInput) {
         if (fileEditorInput == null || fileEditorInput.getLoadedProcess() == null) {
             return;
         }

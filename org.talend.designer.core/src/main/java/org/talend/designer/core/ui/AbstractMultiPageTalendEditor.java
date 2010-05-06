@@ -114,6 +114,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ERepositoryStatus;
@@ -168,7 +169,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
 
-    private RepositoryEditorInput processEditorInput;
+    private JobEditorInput processEditorInput;
 
     protected AbstractTalendEditor designerEditor;
 
@@ -265,7 +266,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // Lock the process :
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        processEditorInput = (RepositoryEditorInput) editorInput;
+        processEditorInput = (JobEditorInput) editorInput;
         IProcess2 currentProcess = processEditorInput.getLoadedProcess();
         if (!currentProcess.isReadOnly()) {
             try {

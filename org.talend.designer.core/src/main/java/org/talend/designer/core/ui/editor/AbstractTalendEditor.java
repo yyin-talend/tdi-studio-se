@@ -167,6 +167,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
@@ -675,9 +676,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         savePreviewPictures();
 
         try {
-            boolean isRepositoryEditorInput = getEditorInput() instanceof RepositoryEditorInput;
-            if (isRepositoryEditorInput) {
-                boolean saved = ((RepositoryEditorInput) getEditorInput()).saveProcess(new SubProgressMonitor(monitor, 80), null);
+            if (getEditorInput() instanceof JobEditorInput) {
+                boolean saved = ((JobEditorInput) getEditorInput()).saveProcess(new SubProgressMonitor(monitor, 80), null);
                 if (!saved) {
                     monitor.setCanceled(true);
                     throw new InterruptedException();
@@ -770,9 +770,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         super.setInput(input);
 
         try {
-            if (input instanceof RepositoryEditorInput) {
-                process = ((RepositoryEditorInput) input).getLoadedProcess();
-                property = ((RepositoryEditorInput) input).getItem().getProperty();
+            if (input instanceof JobEditorInput) {
+                process = ((JobEditorInput) input).getLoadedProcess();
+                property = ((JobEditorInput) input).getItem().getProperty();
                 rootProject = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(
                         ((RepositoryEditorInput) input).getItem());
             }
