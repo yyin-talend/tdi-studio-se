@@ -326,7 +326,9 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                 }
             }
         }
-
+        String routineContent = new String(byteArray.getInnerContent());
+        routineContent = chanageRoutinesPackage(routineContent);
+        byteArray.setInnerContent(routineContent.getBytes());
         routineItem.setContent(byteArray);
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
@@ -376,6 +378,13 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
     }
 
+    private String chanageRoutinesPackage(String routineContent) {
+        String oldPackage = "package(\\s)+" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "\\.((\\w)+)(\\s)*;";
+        String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY + ";";
+        routineContent = routineContent.replaceFirst(oldPackage, newPackage);
+        return routineContent;
+    }
+
     /**
      * DOC xtan there will be refactor for this method with JavaRoutineSynchronizer.syncRoutine().
      * 
@@ -397,6 +406,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
+                routineContent = chanageRoutinesPackage(routineContent);
                 String label = routineItem.getProperty().getLabel();
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
