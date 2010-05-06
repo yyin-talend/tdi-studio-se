@@ -129,6 +129,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             index = addPage(sqlDesigner);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
             attachListeners();
+            sqlEdit.setEditorContent(connParam); // reset the sql to avoid 007813
         } catch (Exception e) {
             MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"), //$NON-NLS-1$
                     Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage()); //$NON-NLS-1$
