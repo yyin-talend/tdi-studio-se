@@ -344,7 +344,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     String labelName = (schemaContent.get(0))[i - 1];
                     String sub = "";
                     String sub2 = "";
-                    if (labelName != null && labelName.length() > 0) {
+                    if (labelName != null && labelName.length() > 0 && labelName.startsWith("_")) { //$NON-NLS-1$
                         sub = labelName.substring(1);
                         if (sub != null && sub.length() > 0) {
                             sub2 = sub.substring(1);
@@ -357,7 +357,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     }
                     findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
                     String label = labelName;
-                    if (b && label != null && label.length() > 0) {
+                    if (b && label != null && label.length() > 0 && label.startsWith("_")) { //$NON-NLS-1$
                         String substring = label.substring(1);
                         if (label.startsWith("_")
                                 && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) || KeywordsValidator
