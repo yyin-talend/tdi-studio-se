@@ -260,14 +260,21 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         String[] filter = new String[] { "java" }; //$NON-NLS-1$
         Collection listFiles = FileUtils.listFiles(dir, filter, true);
         Iterator iterator = listFiles.iterator();
-
+        String name = "";
+        for (int i = 0; i < listFiles.size(); i++) {
+            File javaFile = (File) listFiles.toArray()[i];
+            String parentFileName = javaFile.getParentFile().getName();
+            if (!parentFileName.equals("routines")) {
+                name = parentFileName;
+            }
+        }
         while (iterator.hasNext()) {
             File javaFile = (File) iterator.next();
             String fileName = javaFile.getName();
             String label = fileName.substring(0, fileName.indexOf('.'));
             try {
-                RoutineItem returnItem = createRoutine(path, label, javaFile);
-                syncRoutine(returnItem, true);
+                RoutineItem returnItem = createRoutine(path, label, javaFile, name);
+                syncRoutine(returnItem, true, name);
                 refreshProject();
             } catch (IllegalArgumentException e) {
                 // nothing need to do for the duplicate label, there don't overwrite it.
@@ -295,7 +302,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      * 
      * @param path
      */
-    private RoutineItem createRoutine(IPath path, String label, File initFile) {
+    private RoutineItem createRoutine(IPath path, String label, File initFile, String name) {
 
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
@@ -327,7 +334,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             }
         }
         String routineContent = new String(byteArray.getInnerContent());
-        routineContent = chanageRoutinesPackage(routineContent);
+        routineContent = chanageRoutinesPackage(routineContent, name);
         byteArray.setInnerContent(routineContent.getBytes());
         routineItem.setContent(byteArray);
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
@@ -378,10 +385,12 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
     }
 
-    private String chanageRoutinesPackage(String routineContent) {
-        String oldPackage = "package(\\s)+" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "\\.((\\w)+)(\\s)*;";
-        String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY + ";";
-        routineContent = routineContent.replaceFirst(oldPackage, newPackage);
+    private String chanageRoutinesPackage(String routineContent, String name) {
+        if (!name.equals("")) {
+            String oldPackage = JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + name;
+            String newPackage = JavaUtils.JAVA_ROUTINES_DIRECTORY;
+            routineContent = routineContent.replaceAll(oldPackage.trim(), newPackage.trim());
+        }
         return routineContent;
     }
 
@@ -393,7 +402,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      * @return
      * @throws SystemException
      */
-    private IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+    private IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp, String name) throws SystemException {
         FileOutputStream fos = null;
         try {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
@@ -406,7 +415,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
-                routineContent = chanageRoutinesPackage(routineContent);
+                routineContent = chanageRoutinesPackage(routineContent, name);
                 String label = routineItem.getProperty().getLabel();
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
