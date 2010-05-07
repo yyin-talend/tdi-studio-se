@@ -623,6 +623,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                     designerCoreService.removeJobLaunch(objToDelete);
                 }
             }
+            if (objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
+                try {
+                    ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                            ICodeGeneratorService.class);
+                    codeGenService.createRoutineSynchronizer().deleteRoutinefile(objToDelete);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
         }
         if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName(), null, objToDelete);

@@ -302,4 +302,19 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         routineItem.getContent().setInnerContent(routineContent.getBytes());
     }
 
+    public void deleteRoutinefile(IRepositoryObject objToDelete) {
+        try {
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                    + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
+            /*
+             * File f = file.getLocation().toFile(); f.delete();
+             */
+            file.delete(true, null);
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

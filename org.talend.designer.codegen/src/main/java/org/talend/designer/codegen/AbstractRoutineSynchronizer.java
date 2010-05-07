@@ -112,6 +112,8 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
 
     protected abstract void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException;
 
+    public abstract void deleteRoutinefile(IRepositoryObject objToDelete);
+
     protected boolean isRoutineUptodate(RoutineItem routineItem) {
         Date refDate = getRefDate(routineItem);
         if (refDate == null) {

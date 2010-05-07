@@ -146,4 +146,16 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         // nothing to do
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#deleteRoutinefile(org.talend.core.model.repository.
+     * IRepositoryObject)
+     */
+    @Override
+    public void deleteRoutinefile(IRepositoryObject objToDelete) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
