@@ -37,6 +37,7 @@
 				<ITEM NAME="DB2" VALUE="DB2" />
 				<ITEM NAME="FIREBIRD" VALUE="FIREBIRD" />
 				<ITEM NAME="GREENPLUM" VALUE="GREENPLUM" />
+				<ITEM NAME="HIVE" VALUE="HIVE" />
 				<ITEM NAME="INGRES" VALUE="INGRES" />
 				<ITEM NAME="INTERBASE" VALUE="INTERBASE" />
 				<ITEM NAME="MSSQL" VALUE="MSSQL" />
@@ -87,6 +88,15 @@
 			FILTER="REGEXP:^tGreenplumConnection|tJDBCConnection$" 
 			NUM_ROW="2"
 			SHOW_IF="DBTYPE=='GREENPLUM'" 
+		/>
+		
+		<!-- Hive -->
+		<PARAMETER 
+			NAME="CONNECTION_HIVE" 
+			FIELD="COMPONENT_LIST"
+			FILTER="REGEXP:^tHiveConnection|tJDBCConnection$" 
+			NUM_ROW="3"
+			SHOW_IF="DBTYPE=='HIVE'" 
 		/>
 		
 		<!-- Ingres -->
@@ -254,6 +264,7 @@
       		<DEFAULT IF="DBTYPE=='DB2'">ibmdb2_id</DEFAULT>
       		<DEFAULT IF="DBTYPE=='FIREBIRD'">firebird_id</DEFAULT>
       		<DEFAULT IF="DBTYPE=='GREENPLUM'">greenplum_id</DEFAULT>
+      		<DEFAULT IF="DBTYPE=='HIVE'">hive_id</DEFAULT>
       		<DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
       		<DEFAULT IF="DBTYPE=='INTERBASE'">interbase_id</DEFAULT>
       		<DEFAULT IF="DBTYPE=='MSSQL'">id_MSSQL</DEFAULT>
