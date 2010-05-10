@@ -255,6 +255,10 @@ public class DatabaseForm extends AbstractForm {
         generalJdbcClassNameText.setText(getConnection().getDriverClass());
         generalJdbcUserText.setText(getConnection().getUsername());
         generalJdbcPasswordText.setText(getConnection().getPassword());
+        if (getConnection().getDatabaseType().equals(EDatabaseTypeName.GENERAL_JDBC.getXmlName())
+                && generalJdbcUrlText.getText().contains("sqlserver")) {//$NON-NLS-1$
+            schemaText.setText(getConnection().getSchema());
+        }
         generalJdbcDriverjarText.setText(getConnection().getDriverJarPath());
         generalMappingFileText.setText(getConnection().getDbmsId());
     }
@@ -458,7 +462,7 @@ public class DatabaseForm extends AbstractForm {
         // feature
         // 3629 hide
         // password
-
+        schemaText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
         generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1); //$NON-NLS-1$
 
         mappingSelectButton = new Button(generalDbCompositeParent, SWT.NONE);
@@ -1061,6 +1065,7 @@ public class DatabaseForm extends AbstractForm {
                     if (generalJdbcPasswordText != null) {
                         generalJdbcPasswordText.setText("");
                     }
+
                 } else {
                     if (urlConnectionStringText != null) {
                         urlConnectionStringText.setText("");
@@ -1072,9 +1077,9 @@ public class DatabaseForm extends AbstractForm {
                     if (passwordText != null) {
                         passwordText.setText("");
                     }
-                    if (schemaText != null) {
-                        schemaText.setText("");
-                    }
+                }
+                if (schemaText != null) {
+                    schemaText.setText("");
                 }
                 if (serverText != null) {
                     serverText.setText("");
@@ -1398,6 +1403,18 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
         });
+        
+        schemaText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(schemaText.getText())) {
+                        getConnection().setSchema(schemaText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
 
         generalMappingFileText.addModifyListener(new ModifyListener() {
 
@@ -1557,6 +1574,12 @@ public class DatabaseForm extends AbstractForm {
         value = generalJdbcPasswordText.getText();
         if (!validText(value)) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcPasswordText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        value = schemaText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", schemaText.getLabelText())); //$NON-NLS-1$
             return false;
         }
 
@@ -1734,7 +1757,8 @@ public class DatabaseForm extends AbstractForm {
                 if (schemaText.getText().equals("")) { //$NON-NLS-1$
                     schemaText.setText("dbo"); //$NON-NLS-1$
                 }
-            } else if (template == EDatabaseConnTemplate.VERTICA || template == EDatabaseConnTemplate.INFORMIX) {
+            } else if (template == EDatabaseConnTemplate.VERTICA || template == EDatabaseConnTemplate.INFORMIX
+                    || template == EDatabaseConnTemplate.GENERAL_JDBC) {
                 // add for bug 0009553 10531
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
@@ -1799,9 +1823,13 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(EDBParamName.DBRootPath, false);
             }
 
-            if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())) {
+            if (EDatabaseConnTemplate.isSchemaNeeded(getConnection().getDatabaseType())
+                    || (template == EDatabaseConnTemplate.GENERAL_JDBC && generalJdbcUrlText.getText().contains("sqlserver"))) {//$NON-NLS-1$
                 schemaText.show();
                 schemaText.setEditable(visible);
+                addContextParams(EDBParamName.Schema, visible);
+            } else {
+                schemaText.hide();
                 addContextParams(EDBParamName.Schema, visible);
             }
             if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
