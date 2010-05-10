@@ -1,25 +1,26 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package org.talend.ws.mapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.commons.beanutils.ConvertUtils;
 import org.talend.ws.exception.InvalidEnumValueException;
 import org.talend.ws.exception.LocalizedException;
 
 /**
- *
+ * 
  * @author rlamarche
  */
 public class EnumTypeMapper implements TypeMapper {
 
     private Class<?> clazz;
-    private Method valueOf;
+
+    private Method value;
+
+    private Method fromValue;
 
     public EnumTypeMapper(Class<?> clazz) {
         if (!clazz.isEnum()) {
@@ -27,7 +28,8 @@ public class EnumTypeMapper implements TypeMapper {
         }
         this.clazz = clazz;
         try {
-            this.valueOf = clazz.getMethod("valueOf", String.class);
+            this.fromValue = clazz.getMethod("fromValue", String.class);
+            this.value = clazz.getMethod("value");
         } catch (NoSuchMethodException ex) {
             throw new RuntimeException(ex);
         } catch (SecurityException ex) {
@@ -46,16 +48,15 @@ public class EnumTypeMapper implements TypeMapper {
         if (!clazz.isInstance(value)) {
             String str = ConvertUtils.convert(value);
             try {
-                return valueOf.invoke(null, str);
+                return fromValue.invoke(null, str);// bug 13000 by bchen
+                // return valueOf.invoke(null, str);
             } catch (IllegalAccessException ex) {
-                throw new LocalizedException("org.talend.ws.exception.illegalAccessValueOf", new String[]{clazz.
-                            getName()}, ex);
+                throw new LocalizedException("org.talend.ws.exception.illegalAccessValueOf", new String[] { clazz.getName() }, ex);
             } catch (InvocationTargetException ex) {
                 if (ex.getTargetException() instanceof IllegalArgumentException) {
                     throw new InvalidEnumValueException(str, clazz.getName());
                 } else {
-                    throw new LocalizedException("org.talend.ws.exception.Unknown", ex.
-                            getTargetException());
+                    throw new LocalizedException("org.talend.ws.exception.Unknown", ex.getTargetException());
                 }
 
             }
@@ -68,7 +69,12 @@ public class EnumTypeMapper implements TypeMapper {
         if (bean == null) {
             return null;
         } else {
-            return bean.toString();
+            try {
+                return value.invoke(bean); // bug 13000 by bchen
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
+            }
         }
     }
 }
