@@ -14,7 +14,10 @@ package org.talend.designer.core.ui.editor.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -504,6 +507,106 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             }
         }
         super.performRequest(req);
+    }
+
+    @Override
+    protected void refreshSourceConnections() {
+        int i;
+        ConnectionEditPart editPart;
+        Object model;
+
+        Map modelToEditPart = new HashMap();
+        List editParts = getSourceConnections();
+
+        for (i = 0; i < editParts.size(); i++) {
+            editPart = (ConnectionEditPart) editParts.get(i);
+            modelToEditPart.put(editPart.getModel(), editPart);
+        }
+
+        List modelObjects = getModelSourceConnections();
+
+        // List<? extends INodeConnector> connList = node.getListConnector();
+        if (modelObjects == null)
+            modelObjects = new ArrayList();
+        for (i = 0; i < modelObjects.size(); i++) {
+            model = modelObjects.get(i);
+
+            if (model instanceof Connection) {
+                Node sourcenode = ((Connection) model).getSource();
+                Node targetnode = ((Connection) model).getSource();
+                String connectorName = ((Connection) model).getConnectorName();
+                if (sourcenode.getConnectorFromName(connectorName) == null
+                        && targetnode.getConnectorFromName(connectorName) == null) {
+                    return;
+                }
+            }
+            if (i < editParts.size() && ((EditPart) editParts.get(i)).getModel() == model)
+                continue;
+
+            editPart = (ConnectionEditPart) modelToEditPart.get(model);
+            if (editPart != null)
+                reorderSourceConnection(editPart, i);
+            else {
+                editPart = createOrFindConnection(model);
+                addSourceConnection(editPart, i);
+            }
+        }
+
+        // Remove the remaining EditParts
+        List trash = new ArrayList();
+        for (; i < editParts.size(); i++)
+            trash.add(editParts.get(i));
+        for (i = 0; i < trash.size(); i++)
+            removeSourceConnection((ConnectionEditPart) trash.get(i));
+    }
+
+    @Override
+    protected void refreshTargetConnections() {
+        int i;
+        ConnectionEditPart editPart;
+        Object model;
+
+        Map mapModelToEditPart = new HashMap();
+        List connections = getTargetConnections();
+
+        for (i = 0; i < connections.size(); i++) {
+            editPart = (ConnectionEditPart) connections.get(i);
+            mapModelToEditPart.put(editPart.getModel(), editPart);
+        }
+
+        List modelObjects = getModelTargetConnections();
+        if (modelObjects == null)
+            modelObjects = new ArrayList();
+
+        for (i = 0; i < modelObjects.size(); i++) {
+            model = modelObjects.get(i);
+            if (model instanceof Connection) {
+                Node sourcenode = ((Connection) model).getSource();
+                Node targetnode = ((Connection) model).getSource();
+                String connectorName = ((Connection) model).getConnectorName();
+                if (sourcenode.getConnectorFromName(connectorName) == null
+                        && targetnode.getConnectorFromName(connectorName) == null) {
+                    return;
+                }
+            }
+            if (i < connections.size() && ((EditPart) connections.get(i)).getModel() == model)
+                continue;
+
+            editPart = (ConnectionEditPart) mapModelToEditPart.get(model);
+            if (editPart != null)
+                reorderTargetConnection(editPart, i);
+            else {
+                editPart = createOrFindConnection(model);
+                addTargetConnection(editPart, i);
+            }
+        }
+
+        // Remove the remaining Connection EditParts
+        List trash = new ArrayList();
+        for (; i < connections.size(); i++)
+            trash.add(connections.get(i));
+        for (i = 0; i < trash.size(); i++)
+            removeTargetConnection((ConnectionEditPart) trash.get(i));
     }
 
 }

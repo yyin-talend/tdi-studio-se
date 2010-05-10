@@ -352,9 +352,13 @@ public class ConnectionCreateCommand extends Command {
         connection.disconnect();
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = connection.getSourceNodeConnector();
-        nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
+        if (nodeConnectorSource != null) {
+            nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
+        }
         nodeConnectorTarget = connection.getTargetNodeConnector();
-        nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
+        if (nodeConnectorTarget != null) {
+            nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
+        }
         if (newMetadata != null) {
             source.getMetadataList().remove(newMetadata);
         }

@@ -58,8 +58,10 @@ public class DeleteNodeContainerCommand extends Command {
                     | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
             for (Connection connection : inputList) {
                 // see bug 0002633: "rejects" link disappears at times.
-                connection.getSourceNodeConnector().setCurLinkNbOutput(
-                        connection.getSourceNodeConnector().getCurLinkNbOutput() - 1);
+                if (connection != null && connection.getSourceNodeConnector() != null) {
+                    connection.getSourceNodeConnector().setCurLinkNbOutput(
+                            connection.getSourceNodeConnector().getCurLinkNbOutput() - 1);
+                }
 
                 Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
@@ -117,8 +119,10 @@ public class DeleteNodeContainerCommand extends Command {
                     | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
             for (Connection connection : inputList) {
                 // see bug 0004514: need to undo for 0002633
-                connection.getSourceNodeConnector().setCurLinkNbOutput(
-                        connection.getSourceNodeConnector().getCurLinkNbOutput() + 1);
+                if (connection != null && connection.getSourceNodeConnector() != null) {
+                    connection.getSourceNodeConnector().setCurLinkNbOutput(
+                            connection.getSourceNodeConnector().getCurLinkNbOutput() + 1);
+                }
 
                 Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {

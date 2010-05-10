@@ -113,12 +113,16 @@ public class Connection extends Element implements IConnection, IPerformance {
     // creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, final boolean monitorConnection) {
+        this.source = source;
+        this.target = target;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only when loading a process && connection creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, String uniqueName, final boolean monitorConnection) {
+        this.source = source;
+        this.target = target;
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
@@ -501,7 +505,11 @@ public class Connection extends Element implements IConnection, IPerformance {
             this.name = name;
 
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
-                if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
+                if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
+                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
+                        && source != null && source.getComponent().getName().equals(source.getLabel())) {
+                    uniqueName = connectorName;
+                } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
                         || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
                     uniqueName = name;
@@ -1291,5 +1299,4 @@ public class Connection extends Element implements IConnection, IPerformance {
     public ConnectionResuming getResuming() {
         return this.resuming;
     }
-
 }

@@ -78,30 +78,39 @@ public class NodeAnchor extends ChopboxAnchor {
                 if (((reference.y - (target.getSize().height / 2)) != targetLocation.y)
                         || ((reference.x - (target.getSize().width / 2)) != targetLocation.x)) {
                     FreeformViewport viewport = getViewport();
-                    int y = viewport.getVerticalRangeModel().getValue();
-                    int x = viewport.getHorizontalRangeModel().getValue();
-                    diff = new Point(-x, -y);
+                    if (viewport != null) {
+                        int y = viewport.getVerticalRangeModel().getValue();
+                        int x = viewport.getHorizontalRangeModel().getValue();
+                        diff = new Point(-x, -y);
+                    }
                 }
             } else {
                 if (((reference.y - (source.getSize().height / 2)) != sourceLocation.y)
                         || ((reference.x - (source.getSize().width / 2)) != sourceLocation.x)) {
                     FreeformViewport viewport = getViewport();
-                    int y = viewport.getVerticalRangeModel().getValue();
-                    int x = viewport.getHorizontalRangeModel().getValue();
-                    diff = new Point(-x, -y);
+                    if (viewport != null) {
+                        int y = viewport.getVerticalRangeModel().getValue();
+                        int x = viewport.getHorizontalRangeModel().getValue();
+                        diff = new Point(-x, -y);
+                    }
                 }
             }
-            double scale = getScalableFreeform().getScale();
+            ScalableFreeformLayeredPane pane = getScalableFreeform();
+
             sourceRect = new Rectangle(sourceLocation, source.getSize());
             targetRect = new Rectangle(targetLocation, target.getSize());
-            sourceLocation.performScale(scale);
-            targetLocation.performScale(scale);
-            sourceRect.performScale(scale);
-            targetRect.performScale(scale);
+
             sourceLocation = sourceLocation.getTranslated(diff);
             targetLocation = targetLocation.getTranslated(diff);
             sourceRect = sourceRect.getTranslated(diff);
             targetRect = targetRect.getTranslated(diff);
+            if (pane != null) {
+                double scale = pane.getScale();
+                sourceLocation.performScale(scale);
+                targetLocation.performScale(scale);
+                sourceRect.performScale(scale);
+                targetRect.performScale(scale);
+            }
 
             int nb = 0;
             int connectionId = 0;
@@ -132,6 +141,9 @@ public class NodeAnchor extends ChopboxAnchor {
         IFigure figure = getOwner();
         while (!(figure instanceof FreeformViewport)) {
             figure = figure.getParent();
+            if (figure == null) {
+                return (FreeformViewport) figure;
+            }
         }
         return (FreeformViewport) figure;
     }
@@ -140,6 +152,9 @@ public class NodeAnchor extends ChopboxAnchor {
         IFigure figure = getOwner();
         while (!(figure instanceof ScalableFreeformLayeredPane)) {
             figure = figure.getParent();
+            if (figure == null) {
+                return (ScalableFreeformLayeredPane) figure;
+            }
         }
         return (ScalableFreeformLayeredPane) figure;
     }

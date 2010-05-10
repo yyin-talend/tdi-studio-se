@@ -62,10 +62,15 @@ public class ConnectionDeleteCommand extends Command {
             connection.reconnect();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();
-            nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
+            if (nodeConnectorSource != null) {
+                nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
+            }
 
             nodeConnectorTarget = connection.getTargetNodeConnector();
-            nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
+            if (nodeConnectorTarget != null) {
+                nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
+            }
+
         }
         process.checkStartNodes();
         process.checkProcess();
