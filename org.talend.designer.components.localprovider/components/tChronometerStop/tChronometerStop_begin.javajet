@@ -1,67 +1,52 @@
 <%@ jet
-imports="
+  imports="
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
-    org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    java.util.List
-" 
+  " 
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-boolean sinceStarter = ("true").equals(ElementParameterParser.getValue(node,"__SINCE_STARTER__"));
-
-String starter = ElementParameterParser.getValue(
-    node,
-    "__STARTER__"
-);
-
-boolean display = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY__"));
-
-boolean displayComponentName = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY_COMPONENT_NAME__"));
-
-boolean displayReadableDuration = ("true").equals(ElementParameterParser.getValue(node,"__DISPLAY_READABLE_DURATION__"));
-
-
-String caption = ElementParameterParser.getValue(
-    node,
-    "__CAPTION__"
-);
+boolean sinceStarter = ("true").equals(ElementParameterParser.getValue(node, "__SINCE_STARTER__"));
+String starter = ElementParameterParser.getValue(node, "__STARTER__");
+boolean display = ("true").equals(ElementParameterParser.getValue(node, "__DISPLAY__"));
+boolean displayComponentName = ("true").equals(ElementParameterParser.getValue(node, "__DISPLAY_COMPONENT_NAME__"));
+boolean displayReadableDuration = ("true").equals(ElementParameterParser.getValue(node, "__DISPLAY_READABLE_DURATION__"));
+String caption = ElementParameterParser.getValue(node, "__CAPTION__");
 %>
-		long time<%=cid%>;
-
+long time<%=cid%>;
 <%
 if (sinceStarter) {
 %>
-        time<%=cid%> = System.currentTimeMillis()-((Long)globalMap.get("<%=starter%>")).longValue();
+  time<%=cid%> = System.currentTimeMillis() - ((Long)globalMap.get("<%=starter%>")).longValue();
 <%
 }
 else {
 %>
-		time<%=cid%> = System.currentTimeMillis()-startTime;
+  time<%=cid%> = System.currentTimeMillis() - startTime;
 <%
 }
 
 if (display) {
-    if (displayComponentName) {
-%>
-System.out.print("[ <%=cid%> ]  ");
-<%
-    }
-%>
-   
-<%
-    if (displayReadableDuration) {
-%>
-	    System.out.print("   " + time<%=cid%>/1000 + "seconds   ");
+  if (displayComponentName) {
+  %>
+    System.out.print("[ <%=cid%> ]  ");
+  <%
+  }
+  if (displayReadableDuration) {
+  %>
+    System.out.print("   " + time<%=cid%>/1000 + "seconds   ");
 	    
-<%  }%>
-System.out.println(<%=caption%> + "  " + time<%=cid%> + " milliseconds"); 
+  <%
+  }
+  %>
+  System.out.println(<%=caption%> + "  " + time<%=cid%> + " milliseconds"); 
 <%
 }
 %>
+Long currentTime<%=cid%> = System.currentTimeMillis();
+globalMap.put("<%=cid%>", currentTime<%=cid%>);
+globalMap.put("<%=cid%>_STOPTIME", currentTime<%=cid%>);
+globalMap.put("<%=cid%>_DURATION", time<%=cid%>);
