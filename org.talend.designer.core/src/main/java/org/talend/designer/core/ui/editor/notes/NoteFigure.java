@@ -21,7 +21,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.utils.ResourceDisposeUtil;
+import org.talend.designer.core.utils.ResourceDisposeUtil;
 
 /**
  */

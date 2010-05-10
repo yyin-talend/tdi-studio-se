@@ -49,7 +49,6 @@ Export-Package: org.talend.designer.core;
  org.talend.designer.core.model.process,
  org.talend.designer.core.model.process.jobsettings,
  org.talend.designer.core.model.process.statsandlogs,
- org.talend.designer.core.performance,
  org.talend.designer.core.ui;
   uses:="org.eclipse.core.runtime,
    org.talend.core.model.process,

@@ -16,11 +16,11 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
-import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.ResourceDisposeUtil;
 
 /**
  * Figure corresponding the the connection. <br/>

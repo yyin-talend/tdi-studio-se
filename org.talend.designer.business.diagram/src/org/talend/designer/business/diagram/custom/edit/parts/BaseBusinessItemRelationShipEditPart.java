@@ -18,10 +18,10 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ConnectionNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.notation.View;
-import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
 import org.talend.designer.business.diagram.custom.util.ElementHelper;
+import org.talend.designer.business.diagram.custom.util.ResourceDisposeUtil;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

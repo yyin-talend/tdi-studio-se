@@ -21,13 +21,13 @@ import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.gmf.runtime.notation.View;
-import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
 import org.talend.designer.business.diagram.custom.util.ElementHelper;
+import org.talend.designer.business.diagram.custom.util.ResourceDisposeUtil;
 import org.talend.designer.business.model.business.BusinessItem;
 
 /**

@@ -20,7 +20,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.utils.ResourceDisposeUtil;
+import org.talend.designer.business.diagram.custom.util.ResourceDisposeUtil;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

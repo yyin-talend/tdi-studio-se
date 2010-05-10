@@ -15,7 +15,7 @@ package org.talend.designer.business.diagram.custom.figures;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.talend.commons.utils.ResourceDisposeUtil;
+import org.talend.designer.business.diagram.custom.util.ResourceDisposeUtil;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

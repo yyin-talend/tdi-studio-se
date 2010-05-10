@@ -35,7 +35,6 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IEditorInput;
-import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -43,6 +42,7 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.utils.ResourceDisposeUtil;
 import org.talend.repository.model.RepositoryNode;
 
 /**

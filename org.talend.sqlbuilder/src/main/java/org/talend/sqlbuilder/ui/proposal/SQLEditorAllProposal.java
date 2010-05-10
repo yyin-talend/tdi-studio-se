@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui.proposal;
 
-import junit.framework.Assert;
-
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -77,7 +75,6 @@ public class SQLEditorAllProposal implements IContentProposal {
         label = label.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         initContent(hasString, contents, dbType, position);
         description = allString;
-        Assert.assertEquals(tmpC, contents[0] + contents[1]);
     }
 
     /**
@@ -215,9 +212,8 @@ public class SQLEditorAllProposal implements IContentProposal {
                 index3 = newQualityName.indexOf("."); //$NON-NLS-1$
                 boolean b = qualityName.replaceAll("\"", "").toLowerCase().startsWith( //$NON-NLS-1$ //$NON-NLS-2$
                         TalendTextUtils.removeQuotesForField(hasString, dbType).toLowerCase());
-                b = b
-                        || newQualityName.replaceAll("\"", "").toLowerCase().startsWith( //$NON-NLS-1$ //$NON-NLS-2$
-                                TalendTextUtils.removeQuotesForField(newHasString, dbType).toLowerCase());
+                b = b || newQualityName.replaceAll("\"", "").toLowerCase().startsWith( //$NON-NLS-1$ //$NON-NLS-2$
+                        TalendTextUtils.removeQuotesForField(newHasString, dbType).toLowerCase());
                 b = b || qualityName.toLowerCase().startsWith(hasString.toLowerCase())
                         || newQualityName.toLowerCase().startsWith(newHasString.toLowerCase());
                 if (!"".equals(hasString) && b) { //$NON-NLS-1$

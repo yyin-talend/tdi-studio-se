@@ -52,7 +52,7 @@ public class SnippetParser {
         Map<String, String> variables = new HashMap<String, String>();
     }
 
-    protected List<String> findFirstSnippetId(String allSnippetString) {
+    public List<String> findFirstSnippetId(String allSnippetString) {
         List<String> resultList = new ArrayList<String>();
         String snippetId = null;
         String snippetName = null;
@@ -77,7 +77,7 @@ public class SnippetParser {
         return resultList;
     }
 
-    protected String replaceFristSnippet(String replaceString, String allSnappetString) {
+    public String replaceFristSnippet(String replaceString, String allSnappetString) {
         StringBuffer resultString = new StringBuffer();
         try {
             Pattern regex = Pattern

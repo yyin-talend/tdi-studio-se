@@ -32,7 +32,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.utils.ResourceDisposeUtil;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.EConnectionType;
@@ -41,9 +40,11 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.utils.ResourceDisposeUtil;
 
 /**
- * This class create a figure with the given image. <br/>eh
+ * This class create a figure with the given image. <br/>
+ * eh
  * 
  * $Id$
  * 

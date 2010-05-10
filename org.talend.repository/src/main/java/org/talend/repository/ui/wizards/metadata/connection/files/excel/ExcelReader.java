@@ -31,9 +31,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.util.PackageHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Assert;
-import org.junit.Test;
-import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * DOC yexiaowei class global comment. Detailled comment
@@ -258,36 +255,6 @@ public class ExcelReader {
             return res2;
         } else {
             return null;// Too much rows
-        }
-    }
-
-    @Test
-    public void testReadSheet() {
-        try {
-            ExcelReader reader = new ExcelReader("/home/yexiaowei/testdata/test.xls"); //$NON-NLS-1$
-            List res = reader.readSheet("Sheet1"); //$NON-NLS-1$
-            Assert.assertEquals(7, res.size());
-
-        } catch (BiffException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        } catch (IOException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
-    }
-
-    @Test
-    public void testRowNamesGenerators() {
-        String[] res = ExcelReader.getColumnsTitle(26);
-        Assert.assertEquals("Z", res[25]); //$NON-NLS-1$
-
-        res = ExcelReader.getColumnsTitle(27);
-        Assert.assertEquals("AA", res[26]); //$NON-NLS-1$
-
-        res = ExcelReader.getColumnsTitle(100);
-        for (String name : res) {
-            System.out.println(name);
         }
     }
 }
