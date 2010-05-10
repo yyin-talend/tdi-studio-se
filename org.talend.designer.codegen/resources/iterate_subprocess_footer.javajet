@@ -9,6 +9,8 @@
         org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.NodesSubTree
+		org.talend.core.model.utils.NodeUtil 
   		java.util.List
  		 java.util.Set
   		java.util.HashSet
@@ -27,6 +29,7 @@
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
 	//String incomingName = codeGenArgument.getIncomingName();
+	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 	
 	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
 	iterateConnSet.addAll(node.getIncomingConnections(EConnectionType.ITERATE));
@@ -34,6 +37,40 @@
 	String iterateNodeName = node.getUniqueName();
 	
 	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
+	
+	class CreateSchemaRowInstance{
+		
+        public String createPrivateClassMethod(INode n, String parentLastRoot, boolean force, Set<String> names) {
+            String toReturn = "";
+            // declare root structs (all main outgoing connections)
+            for (IConnection conn : n.getOutgoingConnections()) {
+                if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                    if ((force) || (n.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(n)))) {
+                        // new Instance
+                        if (!names.contains(conn.getName())) {
+                            toReturn += conn.getName() + ",";
+                            names.add(conn.getName());
+                            parentLastRoot = conn.getName();
+                        }
+                    } else {
+                        // copy
+                        if (!names.contains(conn.getName())) {
+                            toReturn += conn.getName() + ",";
+                            names.add(conn.getName());
+                        }
+                    }
+                    if (!conn.getTarget().getComponent().useMerge()) {
+                        toReturn += createPrivateClassMethod(conn.getTarget(), parentLastRoot, false, names);
+                    }
+                } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)
+                        || conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
+                    toReturn += createPrivateClassMethod(conn.getTarget(), parentLastRoot, true, names);
+                }
+            }
+            return toReturn;
+        }
+	}
+	CreateSchemaRowInstance createSchemaRowInstance = new CreateSchemaRowInstance();
 %>
 
 <%
@@ -42,11 +79,10 @@
 		for (IConnection iterateConn : iterateConnSet) {//2
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
 	        if (parallelIterate) {//3
-	        	String rowList=","; 
-				for (IConnection conn : allSubProcessConnection) {
-					rowList += conn.getUniqueName()+",";
-				}
-				rowList = rowList.substring(0, rowList.length()-1);
+    			String schemaInstanceDeclaration = createSchemaRowInstance.createPrivateClassMethod(subTree.getRootNode(), subTree.getRootNode().getOutgoingConnections().get(0).getName(), false, new java.util.HashSet<String>());
+    			if (schemaInstanceDeclaration.length()>0) {
+    				schemaInstanceDeclaration = "," + schemaInstanceDeclaration.substring(0,schemaInstanceDeclaration.length()-1); 
+    			}
 				if(stat){
 %>
 if(execStat){
@@ -86,7 +122,7 @@ if(execStat){
 		}
 	}
 
-	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>,threadIdCounter++);
+	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=schemaInstanceDeclaration %>,threadIdCounter++);
 	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
 	
 <%
