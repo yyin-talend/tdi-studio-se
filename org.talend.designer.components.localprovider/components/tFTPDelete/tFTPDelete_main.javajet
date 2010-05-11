@@ -98,19 +98,32 @@ try{
     	}
     	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp_<%=cid %>.chdir(dir<%=cid %>);
     	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-		com.enterprisedt.net.ftp.FTPFile[] fileList_<%=cid%> = ftp_<%=cid%>.dirDetails(null);
-		for (com.enterprisedt.net.ftp.FTPFile file_<%=cid%> : fileList_<%=cid%>)
+    	String[] fileName_<%=cid%> = null;
+    	boolean dirFailed_<%=cid%> = false;
+    	try{
+    		fileName_<%=cid%> = ftp_<%=cid%>.dir(null,false);
+    	}catch(com.enterprisedt.net.ftp.FTPException e_<%=cid%>){
+    		dirFailed_<%=cid%> = true;
+    	}
+    	if((fileName_<%=cid%> == null) || dirFailed_<%=cid%> || (fileName_<%=cid%>.length <= 0)){
+			com.enterprisedt.net.ftp.FTPFile[] fileList_<%=cid%> = ftp_<%=cid%>.dirDetails(null);
+			fileName_<%=cid%> = new String[fileList_<%=cid%>.length];
+			for (int i_<%=cid%> = 0 ; i_<%=cid%> < fileList_<%=cid%>.length ; i_<%=cid%>++){
+				fileName_<%=cid%>[i_<%=cid%>] = fileList_<%=cid%>[i_<%=cid%>].getName();
+			}
+		}
+		for (String file_<%=cid%> : fileName_<%=cid%>)
 		{  
-			if ((file_<%=cid%>.getName()).matches(mask<%=cid %>))
+			if (file_<%=cid%>.matches(mask<%=cid %>))
 			{
 <%
 				if("FILE".equals(targetType)){
 %>				
-					ftp_<%=cid %>.delete(file_<%=cid%>.getName());
+					ftp_<%=cid %>.delete(file_<%=cid%>);
 <%
 				}else{
 %>					
-					ftp_<%=cid %>.rmdir(file_<%=cid%>.getName());
+					ftp_<%=cid %>.rmdir(file_<%=cid%>);
 <%
 				}
 %>					
