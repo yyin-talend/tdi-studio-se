@@ -71,22 +71,21 @@ if(fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/")).lastIndexOf
 }else{
 	file_<%=cid %> = fileName_<%=cid %>;
 }
+java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 <%
 					if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
-java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 if(!createFile<%=cid%>.exists()){ 
 	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs(); 
 	needRoot_<%=cid%>=true;
-}<%						if(isMerge==true){%>else{
-				if(createFile<%=cid %>.isFile()){
-					if(createFile<%=cid %>.length()<1){
-						needRoot_<%=cid %> = true;
+}
+<%
 					}
-				}
-			}
-				 	<%}%>
-
+					if(isMerge==true){
+%>
+if(!createFile<%=cid%>.exists() || (createFile<%=cid %>.isFile() && createFile<%=cid %>.length()<1)){
+	needRoot_<%=cid %> = true;
+}
 <%
 					}
 					if(("true").equals(split)){
