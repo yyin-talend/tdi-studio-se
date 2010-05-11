@@ -139,16 +139,26 @@ public class TableController extends AbstractElementPropertySectionController {
         Point labelSize2 = gc2.stringExtent(param.getDisplayName());
         gc2.dispose();
 
+        boolean needOffset = true;
         if ((labelSize2.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth2) {
             currentLabelWidth2 = labelSize2.x + ITabbedPropertyConstants.HSPACE;
+            needOffset = false;
         }
 
         int tableHorizontalOffset = -5;
         if (numInRow == 1) {
             if (lastControlPrm != null) {
-                formData.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
+                if (needOffset) {
+                    formData.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
+                } else {
+                    formData.left = new FormAttachment(lastControlPrm, currentLabelWidth2);
+                }
             } else {
-                formData.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
+                if (needOffset) {
+                    formData.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
+                } else {
+                    formData.left = new FormAttachment(0, currentLabelWidth2);
+                }
             }
         } else {
             formData.left = new FormAttachment(labelLabel2, 0 + tableHorizontalOffset, SWT.RIGHT);
