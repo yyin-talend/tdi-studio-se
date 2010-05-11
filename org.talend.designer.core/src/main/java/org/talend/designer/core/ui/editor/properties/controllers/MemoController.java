@@ -95,7 +95,12 @@ public class MemoController extends AbstractElementPropertySectionController {
         FormData data;
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
-        text.setEnabled(!param.isReadOnly());
+        // for bug 7580
+        if (!(text instanceof Text)) {
+            text.setEnabled(!param.isReadOnly());
+        } else {
+            text.setEditable(!param.isReadOnly());
+        }
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
         String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
         FontData fontData = new FontData(fontType);

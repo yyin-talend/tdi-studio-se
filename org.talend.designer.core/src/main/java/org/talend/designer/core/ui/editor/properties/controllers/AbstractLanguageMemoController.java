@@ -51,6 +51,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
@@ -266,7 +267,12 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         data.height = text.getLineHeight() * nbLines;
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
-        text.setEnabled(!param.isReadOnly());
+        // for bug 7580
+        if (!(text instanceof ReconcilerStyledText)) {
+            text.setEnabled(!param.isReadOnly());
+        } else {
+            text.setEditable(!param.isReadOnly());
+        }
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }

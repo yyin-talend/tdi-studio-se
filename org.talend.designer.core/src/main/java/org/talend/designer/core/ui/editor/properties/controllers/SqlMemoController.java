@@ -251,7 +251,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         FormData data;
         queryText.getParent().setSize(subComposite.getSize().x, queryText.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
-        queryText.setEnabled(!param.isReadOnly());
+        // for bug 7580
+        if (!(queryText instanceof ColorStyledText)) {
+            queryText.setEnabled(!param.isReadOnly());
+        } else {
+            queryText.setEditable(!param.isReadOnly());
+        }
         if (elem instanceof Node) {
             queryText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
