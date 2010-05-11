@@ -2576,6 +2576,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private Map<Node, SubjobContainer> copySubjobMap;
 
+    private Boolean lastVersion;
+
     /**
      * Sets the editor.
      * 
@@ -2901,6 +2903,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.ui.ILastVersionChecker#isLastVersion(org.talend.core.model.properties.Item)
      */
     public boolean isLastVersion(Item item) {
+        if (lastVersion != null) { // status can be known without check below, to continue to optimize later.
+            return lastVersion;
+        }
         if (item.getProperty() != null) {
             try {
                 List<IRepositoryObject> allVersion = null;
@@ -2948,5 +2953,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     public List<NodeType> getUnloadedNode() {
         return this.unloadedNode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
+     */
+    public void setLastVersion(Boolean lastVersion) {
+        this.lastVersion = lastVersion;
     }
 }

@@ -100,25 +100,27 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
 
         Property updatedProperty = null;
         try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
 
-            updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
-
+            updatedProperty = ProxyRepositoryFactory.getInstance().reload(updatedProperty);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
         // update the property of the node repository object
         node.getObject().setProperty(updatedProperty);
-        // added by nma, to avoid lazy exceptions, order 9556.
-        if (ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl() != null
-                && ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl().startsWith(DBPROJECT_LABEL)) {
-            try {
-                processItem = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(updatedProperty).getItem();
-            } catch (PersistenceException e1) {
-                ExceptionHandler.process(e1);
-            }
-        } else
-            processItem = (ProcessItem) updatedProperty.getItem();
+        // // added by nma, to avoid lazy exceptions, order 9556.
+        // if (ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl() != null
+        // && ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl().startsWith(DBPROJECT_LABEL)) {
+        // try {
+        // processItem = (ProcessItem)
+        // ProxyRepositoryFactory.getInstance().getUptodateProperty(updatedProperty).getItem();
+        // } catch (PersistenceException e1) {
+        // ExceptionHandler.process(e1);
+        // }
+        // } else
+
+        processItem = (ProcessItem) updatedProperty.getItem();
 
         if (processItem.getState().isRunningFromRep()) { // for bug 11505
             processItem.getState().setRunningFromRep(false);
@@ -126,7 +128,7 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         IWorkbenchPage page = getActivePage();
 
         try {
-            final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
+            final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
             checkUnLoadedNodeForProcess(fileEditorInput);
 
             IEditorPart editorPart = page.findEditor(fileEditorInput);

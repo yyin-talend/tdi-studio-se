@@ -176,7 +176,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                 if (item instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) item;
-                    fileEditorInput = new ProcessEditorInput(processItem, true, readonly);
+                    fileEditorInput = new ProcessEditorInput(processItem, true, false, readonly);
 
                 } else if (item instanceof BusinessProcessItem) {
                     BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;

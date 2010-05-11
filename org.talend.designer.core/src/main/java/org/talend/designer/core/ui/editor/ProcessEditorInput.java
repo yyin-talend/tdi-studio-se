@@ -13,7 +13,7 @@
 package org.talend.designer.core.ui.editor;
 
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.repository.editor.JobEditorInput;
@@ -26,12 +26,17 @@ import org.talend.repository.editor.JobEditorInput;
  */
 public class ProcessEditorInput extends JobEditorInput {
 
-    public ProcessEditorInput(Item item, boolean load) throws PersistenceException {
-        super(item, load);
+    public ProcessEditorInput(ProcessItem processItem, boolean load) throws PersistenceException {
+        this(processItem, load, null, null);
     }
 
-    public ProcessEditorInput(Item item, boolean load, Boolean readonly) throws PersistenceException {
-        super(item, load, readonly);
+    public ProcessEditorInput(ProcessItem processItem, boolean load, Boolean lastVersion) throws PersistenceException {
+        this(processItem, load, lastVersion, null);
+    }
+
+    public ProcessEditorInput(ProcessItem processItem, boolean load, Boolean lastVersion, Boolean readonly)
+            throws PersistenceException {
+        super(processItem, load, lastVersion, readonly);
     }
 
     protected void saveProcessBefore() {

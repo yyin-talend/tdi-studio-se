@@ -328,4 +328,14 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         }
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
+     */
+    public void setLastVersion(Boolean lastVersion) {
+        // not used yet
+        // TODO
+    }
 }

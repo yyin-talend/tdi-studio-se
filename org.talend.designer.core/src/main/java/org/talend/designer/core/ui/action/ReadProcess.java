@@ -62,7 +62,7 @@ public class ReadProcess extends AbstractProcessAction {
         IWorkbenchPage page = getActivePage();
 
         try {
-            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
+            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, null, true);
             checkUnLoadedNodeForProcess(fileEditorInput);
             IEditorPart editorPart = page.findEditor(fileEditorInput);
 
