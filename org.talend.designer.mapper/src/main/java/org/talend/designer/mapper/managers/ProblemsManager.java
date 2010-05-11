@@ -365,15 +365,21 @@ public class ProblemsManager {
             }
 
         }
-        tableEntry.setProblems(problems);
+        if (problems != null) {
+            if (problems.size() == 0) {
+                tableEntry.setProblems(null);
+            } else {
+                hasProblems = true;
+                tableEntry.setProblems(problems);
+            }
+        } else {
+            tableEntry.setProblems(problems);
+        }
 
         TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
         DataMapTableView retrieveDataMapTableView = mapperManager.retrieveDataMapTableView(tableEntry);
         mapperManager.getUiManager().applyActivatedCellEditors(tableViewerCreator);
 
-        if (problems != null) {
-            hasProblems = problems != null;
-        }
         return problems != null;
     }
 
