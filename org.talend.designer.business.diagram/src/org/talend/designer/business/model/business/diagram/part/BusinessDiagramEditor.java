@@ -306,6 +306,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
     };
 
+    private Boolean lastVersion;
+
     public void refresh() {
         DiagramEditPart diagramEditPart = this.getDiagramEditPart();
         List list = diagramEditPart.getChildren();
@@ -456,6 +458,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     }
 
     public boolean isLastVersion(Item item) {
+        if (lastVersion != null) {
+            return lastVersion;
+        }
         if (item.getProperty() != null) {
             try {
                 List<IRepositoryObject> allVersion = null;
@@ -487,6 +492,15 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
         }
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
+     */
+    public void setLastVersion(Boolean lastVersion) {
+        this.lastVersion = lastVersion;
     }
 
 }

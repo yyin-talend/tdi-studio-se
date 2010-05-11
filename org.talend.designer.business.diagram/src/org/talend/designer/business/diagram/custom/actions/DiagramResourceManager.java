@@ -28,6 +28,7 @@ import org.eclipse.gmf.runtime.diagram.ui.resources.editor.util.EditorUtil;
 import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.NotationPackage;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.BusinessProcessItem;
@@ -102,8 +103,8 @@ public class DiagramResourceManager {
         }
     }
 
-    public void openEditor(BusinessProcessItem businessProcessItem, IFile file, boolean forceReadOnly) {
-        RepositoryEditionManager.getInstance().openEditor(page, file, businessProcessItem, forceReadOnly);
+    public IEditorPart openEditor(BusinessProcessItem businessProcessItem, IFile file, boolean forceReadOnly) {
+        return RepositoryEditionManager.getInstance().openEditor(page, file, businessProcessItem, forceReadOnly);
     }
 
     private Resource createResource(IFile file) {
