@@ -447,6 +447,9 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
     private boolean isErrorRejectTableFor400(ExternalMapperTable table) {
         boolean errorCode = false;
         boolean errorMessage = false;
+        if (table == null || table.getMetadataTableEntries() == null) {
+            return false;
+        }
         for (ExternalMapperTableEntry entry : table.getMetadataTableEntries()) {
             if (ERROR_REJECT_MESSAGE.equals(entry.getName())) {
                 errorMessage = true;
