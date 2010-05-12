@@ -23,22 +23,14 @@ String personalName = needPersonalName ? ElementParameterParser.getValue(node, "
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String mimesubtype = ElementParameterParser.getValue(node, "__TEXT_SUBTYPE__");  
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-boolean useEHLO = "true".equals(ElementParameterParser.getValue(node, "__USE_EHLO__"));
 %> 
 String message_<%=cid %> = ((<%=message %>) == null || "".equals(<%=message %>)) ? "\"\"" : (<%=message %>) ;
 java.util.Properties props_<%=cid %> = System.getProperties();     
 props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
 props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+props_<%=cid %>.put("mail.smtp.localhost", smtpHost_<%=cid %>);
 props_<%=cid %>.put("mail.mime.encodefilename", "true");
 <% 
-if (useEHLO){%>
-  props_<%=cid %>.put("mail.smtp.ehlo","true");
-<%
-}else{
-%>  
-  props_<%=cid %>.put("mail.smtp.ehlo","false");
-<% 
-}
 if (startTLS){%>
   props_<%=cid %>.put("mail.smtp.starttls.enable","true");
 <%
