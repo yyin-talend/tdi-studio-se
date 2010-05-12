@@ -281,7 +281,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 if(("java.util.Date").equals(generatedType) || ("Object").equals(generatedType) 
                 	|| ("String").equals(generatedType) || ("BigDecimal").equals(generatedType)
                 	|| dimensionAttrbite.isNullable()) {
-                    condition.append("(lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " == null && " + inConnectionName + "." + dimensionAttrbite.getLabelName() + "!= null) || ");
+                    condition.append("(lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " == null && " + inConnectionName + "." + dimensionAttrbite.getLabelName() + "!= null");
+                   	//bug 12727 when setString("") usage getString() return null
+                   	if (("String").equals(generatedType)) {
+                   		condition.append(" && " + inConnectionName + "." + dimensionAttrbite.getLabelName() + ".length() != 0");
+                   	}
+                   	//bug 12727
+                   	condition.append(") || ");
                     condition.append("(lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " != null && !lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + ".equals(" + inConnectionName + "." + dimensionAttrbite.getLabelName() + "))");
                 } else {
                     condition.append("lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " != " + inConnectionName + "." + dimensionAttrbite.getLabelName());
