@@ -16,13 +16,21 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.IEditorPart;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.business.diagram.i18n.Messages;
+import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -60,13 +68,28 @@ public class ReadDiagramAction extends AContextualAction {
             IRepositoryObject repositoryObject = node.getObject();
             if (repositoryObject instanceof RepositoryObject) {
                 RepositoryObject abstractRepositoryObject = (RepositoryObject) repositoryObject;
+                Property property = abstractRepositoryObject.getProperty();
+                Property updatedProperty = null;
+                try {
 
-                BusinessProcessItem businessProcessItem = (BusinessProcessItem) abstractRepositoryObject.getProperty().getItem();
+                    updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                            new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                            .getProperty();
+
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+
+                BusinessProcessItem businessProcessItem = (BusinessProcessItem) updatedProperty.getItem();
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getActivePage(),
                         new NullProgressMonitor());
                 IFile file = diagramResourceManager.createDiagramFile();
                 diagramResourceManager.updateResource(businessProcessItem, file);
-                diagramResourceManager.openEditor(businessProcessItem, file, true);
+                IEditorPart part = diagramResourceManager.openEditor(businessProcessItem, file, false);
+
+                if (part instanceof BusinessDiagramEditor) {
+                    ((BusinessDiagramEditor) part).setLastVersion(true);
+                }
             }
         }
     }

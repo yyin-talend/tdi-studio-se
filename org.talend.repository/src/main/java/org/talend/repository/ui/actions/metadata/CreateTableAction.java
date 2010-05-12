@@ -115,58 +115,29 @@ public class CreateTableAction extends AbstractCreateTableAction {
         }
 
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(2), true);
             createFilePositionalTableWizard(node, false);
-
         } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(1), true);
             createFileDelimitedTableWizard(node, false);
-
         } else if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createDatabaseTableWizard(node, false);
-
         } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileRegexpTableWizard(node, false);
-
         } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileXmlTableWizard(node, false);
-
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileExcelTableWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createLDAPSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createWSDLSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createSalesforceSchemaWizard(node, false);
         }
         this.node = null;
-    }
-
-    /**
-     * DOC qzhang Comment method "getMetadataNode".
-     * 
-     * @return
-     */
-    private RepositoryNode getMetadataNode(RepositoryNode node) {
-        RepositoryNode parent = node.getParent();
-        if (parent != null && parent.getParent() == null) {
-            return parent;
-        }
-        return getMetadataNode(parent);
     }
 
     @Override

@@ -93,32 +93,15 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        // ProjectManager projectManager = ProjectManager.getInstance();
-        // processItem = ItemCacheManager.getProcessItem(new Project(projectManager.getProject(property.getItem())),
-        // property
-        // .getId(), property.getVersion());
-
         Property updatedProperty = null;
         try {
             updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
                     new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-
-            updatedProperty = ProxyRepositoryFactory.getInstance().reload(updatedProperty);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
         // update the property of the node repository object
         node.getObject().setProperty(updatedProperty);
-        // // added by nma, to avoid lazy exceptions, order 9556.
-        // if (ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl() != null
-        // && ProjectManager.getInstance().getCurrentProject().getEmfProject().getUrl().startsWith(DBPROJECT_LABEL)) {
-        // try {
-        // processItem = (ProcessItem)
-        // ProxyRepositoryFactory.getInstance().getUptodateProperty(updatedProperty).getItem();
-        // } catch (PersistenceException e1) {
-        // ExceptionHandler.process(e1);
-        // }
-        // } else
 
         processItem = (ProcessItem) updatedProperty.getItem();
 

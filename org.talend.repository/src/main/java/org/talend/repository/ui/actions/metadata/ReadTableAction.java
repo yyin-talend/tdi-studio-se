@@ -83,7 +83,7 @@ public class ReadTableAction extends AbstractCreateTableAction {
                         setEnabled(false);
                         return;
                     }
-                    
+
                     if (item2 instanceof HL7ConnectionItem) {
                         setEnabled(false);
                         return;
@@ -127,57 +127,25 @@ public class ReadTableAction extends AbstractCreateTableAction {
         }
 
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(2), true);
             createFilePositionalTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(1), true);
             createFileDelimitedTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createDatabaseTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileRegexpTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileXmlTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileExcelTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createLDAPSchemaWizard(node, true);
-
         } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
-            getViewPart().expand(metadataNode.getChildren().get(0), true);
             createSalesforceSchemaWizard(node, true);
         }
-    }
-
-    /**
-     * DOC qzhang Comment method "getMetadataNode".
-     * 
-     * @return
-     */
-    private RepositoryNode getMetadataNode(RepositoryNode node) {
-        RepositoryNode parent = node.getParent();
-        if (parent != null && parent.getParent() == null) {
-            return parent;
-        }
-        return getMetadataNode(parent);
     }
 }

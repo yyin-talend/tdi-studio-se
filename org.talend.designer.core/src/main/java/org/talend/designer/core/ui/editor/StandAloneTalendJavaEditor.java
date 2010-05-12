@@ -57,7 +57,6 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -187,8 +186,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
-            Property property = repFactory.reload(item.getProperty());
-            item = (FileItem) property.getItem();
             repFactory.unlock(item);
         } catch (PersistenceException e) {
             // e.printStackTrace();

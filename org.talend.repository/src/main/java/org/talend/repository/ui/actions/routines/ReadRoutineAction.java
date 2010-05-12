@@ -15,13 +15,19 @@ package org.talend.repository.ui.actions.routines;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -68,6 +74,18 @@ public class ReadRoutineAction extends AbstractRoutineAction {
             repositoryNode = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         }
         RoutineItem routineItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
+
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(routineItem)), routineItem.getProperty().getId())
+                    .getProperty();
+
+            repositoryNode.getObject().setProperty(updatedProperty);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        routineItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
         try {
             openRoutineEditor(routineItem, true);
         } catch (PartInitException e) {

@@ -95,10 +95,11 @@ public class EditRoutineAction extends AbstractRoutineAction {
                     new Project(ProjectManager.getInstance().getProject(routineItem)), routineItem.getProperty().getId())
                     .getProperty();
 
-            repositoryNode.getObject().setProperty(ProxyRepositoryFactory.getInstance().reload(updatedProperty));
+            repositoryNode.getObject().setProperty(updatedProperty);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
+        routineItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
 
         try {
             openRoutineEditor(routineItem, false);

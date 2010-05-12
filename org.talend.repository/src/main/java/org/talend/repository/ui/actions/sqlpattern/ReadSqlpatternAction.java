@@ -15,12 +15,17 @@ package org.talend.repository.ui.actions.sqlpattern;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -67,6 +72,16 @@ public class ReadSqlpatternAction extends AbstractSqlpatternAction {
      */
     protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
+        Property property = (Property) node.getObject().getProperty();
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        // update the property of the node repository object
+        node.getObject().setProperty(updatedProperty);
         SQLPatternItem sqlpatternItem = (SQLPatternItem) node.getObject().getProperty().getItem();
 
         try {

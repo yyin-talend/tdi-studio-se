@@ -49,6 +49,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
@@ -57,6 +58,7 @@ import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -829,5 +831,20 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             return true;
         }
         return false;
+    }
+
+    protected RepositoryNode getMetadataNode(RepositoryNode node) {
+        RepositoryNode parent = node.getParent();
+        if (parent != null && parent.getObject() != null) {
+            IRepositoryObject object = parent.getObject();
+            Item item = object.getProperty().getItem();
+            if (item instanceof ConnectionItem) {
+                return parent;
+            }
+        }
+        if (parent != null && parent.getParent() == null) {
+            return parent;
+        }
+        return getMetadataNode(parent);
     }
 }
