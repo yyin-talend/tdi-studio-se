@@ -467,6 +467,7 @@ public class RunProcessContext {
                                                     processMonitorThread = new Thread(psMonitor);
                                                     processMonitorThread.start();
                                                 } else {
+                                                    kill();
                                                     setRunning(false);
                                                 }
                                             } catch (Throwable e) {
