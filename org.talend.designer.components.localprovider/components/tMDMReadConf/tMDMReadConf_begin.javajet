@@ -108,8 +108,8 @@ java.util.List<org.talend.mdm.webservice.WSWhereItem> conditions_<%=cid %> = new
 		String predicate = map.get("PREDICATE");
 %>
 wc_<%=cid %> =new org.talend.mdm.webservice.WSWhereCondition(<%=xpath %>,org.talend.mdm.webservice.WSWhereOperator.<%=operator %>, <%=value %>, org.talend.mdm.webservice.WSStringPredicate.<%=predicate %>,false);
-org.talend.mdm.webservice.WSWhereItem wsItem_<%=i %>=new org.talend.mdm.webservice.WSWhereItem(wc_<%=cid %>,null,null);
-conditions_<%=cid %>.add(wsItem_<%=i %>);
+org.talend.mdm.webservice.WSWhereItem wsItem_<%=i %>_<%=cid %>=new org.talend.mdm.webservice.WSWhereItem(wc_<%=cid %>,null,null);
+conditions_<%=cid %>.add(wsItem_<%=i %>_<%=cid %>);
 <%
 	}//for
 %>
