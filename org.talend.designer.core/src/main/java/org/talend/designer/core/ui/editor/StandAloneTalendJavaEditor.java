@@ -31,6 +31,7 @@ import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -358,7 +359,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
      */
     @Override
     protected IJavaElement getCorrespondingElement(IJavaElement element) {
-        return null;
+        return element;
     }
 
     /*
@@ -457,4 +458,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         // not used yet
     }
 
+    protected void createActions() {
+        super.createActions();
+        getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
+    }
 }

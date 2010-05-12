@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jdt.ui.text.JavaTextTools;
@@ -262,5 +263,10 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         JavaTextTools textTools = JavaPlugin.getDefault().getJavaTextTools();
         return new JavaSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this,
                 IJavaPartitions.JAVA_PARTITIONING);
+    }
+
+    protected void createActions() {
+        super.createActions();
+        getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
     }
 }
