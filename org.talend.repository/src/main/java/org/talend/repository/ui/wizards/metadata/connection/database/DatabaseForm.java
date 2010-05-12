@@ -1842,7 +1842,7 @@ public class DatabaseForm extends AbstractForm {
                 jDBCschemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             } else {
-                schemaText.hide();
+                // schemaText.hide();
                 addContextParams(EDBParamName.Schema, visible);
             }
             if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
