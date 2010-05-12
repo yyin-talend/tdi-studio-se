@@ -19,6 +19,9 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -61,6 +64,7 @@ import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.ISampleCodeFactory;
 import org.talend.designer.core.utils.JavaSampleCodeFactory;
@@ -107,6 +111,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         this.curParameter = param;
         this.paramFieldType = param.getField();
         int nbLines = param.getNbLines();
+        final String paramName = param.getName();
 
         IControlCreator txtCtrl = new IControlCreator() {
 
@@ -279,6 +284,29 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
         addDragAndDropTarget(text);
         addSnippetDropTarget(viewer);
+
+        IDocument document = viewer.getDocument();
+        if (document != null) {
+            Process pro = null;
+            if (elem instanceof Node) {
+                pro = (Process) ((Node) elem).getProcess();
+            } else if (elem instanceof Connection) {
+                pro = (Process) ((Connection) elem).getSource().getProcess();
+            }
+            final Process process = pro;
+            document.addDocumentListener(new IDocumentListener() {
+
+                public void documentChanged(DocumentEvent event) {
+                    ContextParameterExtractor.saveContext(paramName, elem, viewer.getTextWidget().getText(), process);
+                }
+
+                public void documentAboutToBeChanged(DocumentEvent event) {
+                    // nothing to do
+                }
+            });
+
+        }
+
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
