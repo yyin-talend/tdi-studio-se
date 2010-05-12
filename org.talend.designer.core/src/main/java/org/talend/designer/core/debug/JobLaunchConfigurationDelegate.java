@@ -91,8 +91,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
             ItemCacheManager.clearCache();
             ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
             if (processItem != null) {
-                processItem.getState().setRunningFromRep(true);
-                ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true);
+                ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true, true, true);
                 IProcess process = fileEditorInput.getLoadedProcess();
                 return process;
             }

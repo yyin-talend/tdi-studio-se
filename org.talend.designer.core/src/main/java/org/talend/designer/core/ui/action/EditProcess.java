@@ -105,9 +105,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
 
         processItem = (ProcessItem) updatedProperty.getItem();
 
-        if (processItem.getState().isRunningFromRep()) { // for bug 11505
-            processItem.getState().setRunningFromRep(false);
-        }
         IWorkbenchPage page = getActivePage();
 
         try {
