@@ -69,6 +69,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
@@ -91,6 +92,8 @@ import org.talend.repository.ui.views.RepositoryView;
 public class VersionManagementPage extends ProjectSettingPage {
 
     private Button versionBtn;
+
+    private boolean isApplied;
 
     /*
      * (non-Javadoc)
@@ -708,9 +711,8 @@ public class VersionManagementPage extends ProjectSettingPage {
      */
     @Override
     protected void performApply() {
-        // TODO Auto-generated method stub
         super.performApply();
-        okPressed();
+        isApplied = true;
     }
 
     /*
@@ -734,9 +736,13 @@ public class VersionManagementPage extends ProjectSettingPage {
             if (!isFixedVersion()) {
                 newVersion = object.getNewVersion();
             }
-            if (!object.getOldVersion().equals(newVersion)) {
-                modified = true;
-                break;
+            IRepositoryObject repositoryObject = object.getRepositoryNode().getObject();
+            if (repositoryObject != null && repositoryObject.getProperty() != null) {
+                if (!newVersion.equals(repositoryObject.getVersion())) {
+                    isApplied = false;
+                    modified = true;
+                    break;
+                }
             }
         }
         if (modified) {
@@ -760,7 +766,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
             }
         } else {
-            if (!getModifiedVersionItems().isEmpty()) {
+            if (!getModifiedVersionItems().isEmpty() && !isApplied) {
                 MessageDialog.openWarning(getShell(), Messages.getString("VersionManagementDialog.WarningTitle"), //$NON-NLS-1$
                         Messages.getString("VersionManagementDialog.WarningMessages")); //$NON-NLS-1$
             }
@@ -777,16 +783,18 @@ public class VersionManagementPage extends ProjectSettingPage {
                 monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
                 Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
                 for (ItemVersionObject object : getModifiedVersionItems()) {
-                    if (!object.getOldVersion().equals(object.getNewVersion())) {
-                        final Item item = object.getItem();
-                        item.getProperty().setVersion(object.getNewVersion());
-                        types.add(object.getRepositoryNode().getObjectType());
-
-                        try {
-                            project = ProjectManager.getInstance().getCurrentProject();
-                            FACTORY.save(project, item.getProperty());
-                        } catch (PersistenceException e) {
-                            ExceptionHandler.process(e);
+                    IRepositoryObject repositoryObject = object.getRepositoryNode().getObject();
+                    if (repositoryObject != null && repositoryObject.getProperty() != null) {
+                        if (!object.getNewVersion().equals(repositoryObject.getVersion())) {
+                            final Item item = object.getItem();
+                            item.getProperty().setVersion(object.getNewVersion());
+                            types.add(object.getRepositoryNode().getObjectType());
+                            try {
+                                project = ProjectManager.getInstance().getCurrentProject();
+                                FACTORY.save(project, item.getProperty());
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
                         }
                     }
                     monitor.worked(100);
