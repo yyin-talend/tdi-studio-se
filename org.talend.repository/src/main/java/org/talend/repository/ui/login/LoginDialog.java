@@ -72,6 +72,8 @@ public class LoginDialog extends TrayDialog {
 
     private ConnectionUserPerReader perReader;
 
+    private boolean inuse = false;
+
     /**
      * Construct a new LoginDialog.
      * 
@@ -79,6 +81,18 @@ public class LoginDialog extends TrayDialog {
      */
     public LoginDialog(Shell parentShell) {
         super(parentShell);
+        perReader = ConnectionUserPerReader.getInstance();
+        setHelpAvailable(false);
+    }
+
+    /**
+     * Construct a new LoginDialog.
+     * 
+     * @param parentShell Parent shell.
+     */
+    public LoginDialog(Shell parentShell, boolean inuse) {
+        super(parentShell);
+        this.inuse = inuse;
         perReader = ConnectionUserPerReader.getInstance();
         setHelpAvailable(false);
     }
@@ -151,7 +165,7 @@ public class LoginDialog extends TrayDialog {
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
-        loginComposite = new LoginComposite(container, SWT.NONE, this);
+        loginComposite = new LoginComposite(container, SWT.NONE, this, inuse);
         GridData data = new GridData(GridData.FILL_BOTH);
         // data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
         data.heightHint = DIALOG_HEIGHT;

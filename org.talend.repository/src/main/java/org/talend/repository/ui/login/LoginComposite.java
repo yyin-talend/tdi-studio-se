@@ -164,6 +164,8 @@ public class LoginComposite extends Composite {
 
     public static boolean isRestart = false;
 
+    private boolean inuse = false;
+
     private ConnectionUserPerReader perReader = null;
 
     /**
@@ -172,10 +174,11 @@ public class LoginComposite extends Composite {
      * @param parent Parent component.
      * @param style Style bits.
      */
-    public LoginComposite(Composite parent, int style, LoginDialog dialog) {
+    public LoginComposite(Composite parent, int style, LoginDialog dialog, boolean inuse) {
         super(parent, style);
 
         this.dialog = dialog;
+        this.inuse = inuse;
 
         perReader = ConnectionUserPerReader.getInstance();
 
@@ -396,6 +399,14 @@ public class LoginComposite extends Composite {
         fillContents();
         addListeners();
         parent.getShell().pack();
+        if (inuse) {
+            manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
+            openProjectBtn.setEnabled(false);
+            warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+            warningLabel.setVisible(true);
+            restartBut.setVisible(false);
+        }
     }
 
     private ManageItem[] getManageElements() {
@@ -782,8 +793,16 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
+            warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
             warningLabel.setVisible(true);
             restartBut.setVisible(true);
+        } else if (inuse) {
+            manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
+            openProjectBtn.setEnabled(false);
+            warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+            warningLabel.setVisible(true);
+            restartBut.setVisible(false);
         } else {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
