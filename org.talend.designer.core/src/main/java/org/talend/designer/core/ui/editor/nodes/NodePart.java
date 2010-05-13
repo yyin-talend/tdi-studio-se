@@ -464,14 +464,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-
+                String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
                 boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
                         .isAvoidToShowJobAfterDoubleClick();
 
                 if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
                     try {
                         ItemCacheManager.clearCache();
-                        ProcessItem processItem = ItemCacheManager.getProcessItem(processName);
+                        ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
                         if (processItem != null) {
                             ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
 
