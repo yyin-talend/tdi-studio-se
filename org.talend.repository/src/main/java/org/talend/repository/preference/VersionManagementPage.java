@@ -67,6 +67,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -132,7 +133,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
     private Map<IImage, Image> cacheItemImages = new HashMap<IImage, Image>();
 
-    private Project project;
+    private Project project = ProjectManager.getInstance().getCurrentProject();
 
     private CheckboxRepositoryTreeViewer treeViewer;
 
@@ -789,9 +790,25 @@ public class VersionManagementPage extends ProjectSettingPage {
                             final Item item = object.getItem();
                             item.getProperty().setVersion(object.getNewVersion());
                             types.add(object.getRepositoryNode().getObjectType());
+
                             try {
-                                project = ProjectManager.getInstance().getCurrentProject();
-                                FACTORY.save(project, item.getProperty());
+                                // for bug 12853 ,version management doesn't work for joblet because eResource is null
+                                IRepositoryObject obj = null;
+                                if (item.getProperty().eResource() == null) {
+                                    ItemState state = item.getState();
+                                    if (state != null && state.getPath() != null) {
+                                        obj = FACTORY.getLastVersion(project, item.getProperty().getId(), state.getPath(), object
+                                                .getRepositoryNode().getObjectType());
+                                    } else {
+                                        obj = FACTORY.getLastVersion(project, item.getProperty().getId());
+                                    }
+                                }
+                                if (obj != null) {
+                                    obj.setVersion(object.getNewVersion());
+                                    FACTORY.save(project, obj.getProperty());
+                                } else {
+                                    FACTORY.save(project, item.getProperty());
+                                }
                             } catch (PersistenceException e) {
                                 ExceptionHandler.process(e);
                             }
