@@ -787,6 +787,16 @@ public class DatabaseTableForm extends AbstractForm {
                 String schemaLabel = tableNavigator.getSelection()[0].getText();
                 metadataTable = TableHelper.findByLabel(getConnection(), schemaLabel);
                 // initExistingNames();
+                List<String> filterTableNames = ExtractMetaDataFromDataBase.getFilterTablesName();
+                if (filterTableNames != null && !filterTableNames.isEmpty()) {
+                    tableCombo.setVisibleItemCount(filterTableNames.size());
+                    for (int i = 0; i < filterTableNames.size(); i++) {
+                        tableCombo.add(filterTableNames.get(i));
+                        if (filterTableNames.get(i).equals(metadataTable.getSourceName())) {
+                            tableCombo.select(i);
+                        }
+                    }
+                }
                 initMetadataForm();
                 if (isReadOnly()) {
                     addTableButton.setEnabled(false);
