@@ -17,6 +17,11 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Property;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -49,9 +54,6 @@ public abstract class AbstractCreateAction extends AContextualAction {
         }
         init((RepositoryNode) o);
         repositoryNode = (RepositoryNode) o;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            // setEnabled(false);
-        }
     }
 
     protected abstract void init(RepositoryNode node);
@@ -85,5 +87,34 @@ public abstract class AbstractCreateAction extends AContextualAction {
         List<String> names = doCollectChildNames(node.getParent());
         names.remove((String) node.getProperties(EProperties.LABEL));
         existingNames = names.toArray(new String[names.size()]);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.actions.AContextualAction#updateNodeToLastVersion()
+     */
+    @Override
+    protected void updateNodeToLastVersion() {
+        if (repositoryNode == null || repositoryNode.getObject() == null) {
+            return;
+        }
+        try {
+            ProxyRepositoryFactory.getInstance().initialize();
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
+        Property property = repositoryNode.getObject().getProperty();
+        Property updatedProperty = null;
+
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        // update the property of the node repository object
+        repositoryNode.getObject().setProperty(updatedProperty);
     }
 }

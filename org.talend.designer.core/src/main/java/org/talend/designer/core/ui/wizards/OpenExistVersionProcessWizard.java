@@ -29,6 +29,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -45,9 +46,11 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.expressionbuilder.ExpressionPersistance;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.routines.RoutineEditorInput;
 
@@ -134,6 +137,17 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
             refreshNewJob();
+            Property property = processObject.getRepositoryNode().getObject().getProperty();
+            Property updatedProperty = null;
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+            // update the property of the node repository object
+            processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
+
             openAnotherVersion(processObject.getRepositoryNode(), false);
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();

@@ -790,6 +790,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             process[0].setDirectoryName(this.originalRootFolderName);
 
         }
+        try {
+            ProxyRepositoryFactory.getInstance().initialize();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        ItemCacheManager.clearCache();
 
         if (!isMultiNodes()) {
             for (int i = 0; i <= process.length - 1; i++) {
