@@ -13,9 +13,13 @@
 package org.talend.designer.components.ui;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -27,11 +31,14 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
@@ -263,10 +270,47 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         String newPath = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getString(
                 IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
         if (this.oldPath != newPath) {
-            IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-            components.loadUserComponentsFromComponentsProviderExtension();
-            ComponentUtilities.updatePalette();
+
+            final IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask("Loading user component ......", 100);
+                    Display display = Display.getCurrent();
+                    if (display == null) {
+                        display = Display.getDefault();
+                    }
+                    if (display != null) {
+                        display.syncExec(new Runnable() {
+
+                            public void run() {
+                                IComponentsFactory components = ComponentsFactoryProvider.getInstance();
+
+                                components.loadUserComponentsFromComponentsProviderExtension();
+                                CorePlugin.getDefault().getLibrariesService().syncLibraries(monitor);
+                                monitor.worked(50);
+                                CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+                                ComponentUtilities.updatePalette();
+                                monitor.worked(100);
+                                monitor.done();
+
+                            }
+                        });
+
+                    }
+                }
+            };
+
+            final ProgressMonitorDialog dialog = new ProgressMonitorDialog(null);
+            try {
+                dialog.run(true, true, runnable);
+            } catch (InvocationTargetException e) {
+                ExceptionHandler.process(e);
+            } catch (InterruptedException e) {
+                ExceptionHandler.process(e);
+            }
+
             this.oldPath = newPath;
+
         }
         return flag;
     }
