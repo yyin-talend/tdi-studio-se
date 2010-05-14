@@ -17,6 +17,7 @@
 		java.util.Iterator
 	"
 	class="IterateSubProcessFooter" 
+	skeleton="subprocess_header_java.skeleton"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -37,40 +38,6 @@
 	String iterateNodeName = node.getUniqueName();
 	
 	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
-	
-	class CreateSchemaRowInstance{
-		
-        public String createPrivateClassMethod(INode n, String parentLastRoot, boolean force, Set<String> names) {
-            String toReturn = "";
-            // declare root structs (all main outgoing connections)
-            for (IConnection conn : n.getOutgoingConnections()) {
-                if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                    if ((force) || (n.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(n)))) {
-                        // new Instance
-                        if (!names.contains(conn.getName())) {
-                            toReturn += conn.getName() + ",";
-                            names.add(conn.getName());
-                            parentLastRoot = conn.getName();
-                        }
-                    } else {
-                        // copy
-                        if (!names.contains(conn.getName())) {
-                            toReturn += conn.getName() + ",";
-                            names.add(conn.getName());
-                        }
-                    }
-                    if (!conn.getTarget().getComponent().useMerge()) {
-                        toReturn += createPrivateClassMethod(conn.getTarget(), parentLastRoot, false, names);
-                    }
-                } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)
-                        || conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
-                    toReturn += createPrivateClassMethod(conn.getTarget(), parentLastRoot, true, names);
-                }
-            }
-            return toReturn;
-        }
-	}
-	CreateSchemaRowInstance createSchemaRowInstance = new CreateSchemaRowInstance();
 %>
 
 <%
@@ -79,7 +46,7 @@
 		for (IConnection iterateConn : iterateConnSet) {//2
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
 	        if (parallelIterate) {//3
-    			String schemaInstanceDeclaration = createSchemaRowInstance.createPrivateClassMethod(subTree.getRootNode(), subTree.getRootNode().getOutgoingConnections().get(0).getName(), false, new java.util.HashSet<String>());
+    			String schemaInstanceDeclaration = createPrivateClassMethodInstance(subTree.getRootNode(), subTree.getRootNode().getOutgoingConnections().get(0).getName(), false, new java.util.HashSet<String>());
     			if (schemaInstanceDeclaration.length()>0) {
     				schemaInstanceDeclaration = "," + schemaInstanceDeclaration.substring(0,schemaInstanceDeclaration.length()-1); 
     			}

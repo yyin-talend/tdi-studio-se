@@ -63,6 +63,36 @@ public class CLASS
         }
         return toReturn;
     }
+    
+    public String createPrivateClassMethodInstance(INode n, String parentLastRoot, boolean force, Set<String> names) {
+        String toReturn = "";
+        // declare root structs (all main outgoing connections)
+        for (IConnection conn : n.getOutgoingConnections()) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                if ((force) || (n.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(n)))) {
+                    // new Instance
+                    if (!names.contains(conn.getName())) {
+                        toReturn += conn.getName() + ",";
+                        names.add(conn.getName());
+                        parentLastRoot = conn.getName();
+                    }
+                } else {
+                    // copy
+                    if (!names.contains(conn.getName())) {
+                        toReturn += conn.getName() + ",";
+                        names.add(conn.getName());
+                    }
+                }
+                if (!conn.getTarget().getComponent().useMerge()) {
+                    toReturn += createPrivateClassMethodInstance(conn.getTarget(), parentLastRoot, false, names);
+                }
+            } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)
+                    || conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
+                toReturn += createPrivateClassMethodInstance(conn.getTarget(), parentLastRoot, true, names);
+            }
+        }
+        return toReturn;
+    }
 		 
     public String generate(Object argument) {
         return "";
