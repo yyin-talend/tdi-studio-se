@@ -130,7 +130,7 @@ public class PropertyChangeCommand extends Command {
         oldElementValues.clear();
         IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
         try {
-            if (propertyParam != null && propertyParam.getValue() != null) {
+            if (propertyParam != null && propertyParam.getValue() != null && !propertyParam.getValue().equals("")) {
                 IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
                         propertyParam.getValue().toString());
                 if (repository != null && repository.getProperty() != null) {
