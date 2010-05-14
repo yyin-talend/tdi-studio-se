@@ -38,12 +38,11 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.XmlFileConnectionItem;
-import org.talend.core.model.properties.impl.PropertyImpl;
-import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -115,27 +114,28 @@ public class FileController extends AbstractElementPropertySectionController {
     private void setDragAndDropActionBool() {
         IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
         try {
-            if (propertyParam != null && propertyParam.getValue() != null) {
-                IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                        propertyParam.getValue().toString());
-                if (repository != null && repository.getProperty() != null) {
-                    PropertyImpl property = (PropertyImpl) repository.getProperty();
-                    if (property != null && property.getItem() != null) {
-                        if (property.getItem() instanceof ConnectionItem) { // hywang add for 6484
-                            ConnectionItem ci = (ConnectionItem) property.getItem();
-                            if (ci instanceof XmlFileConnectionItem) {
-                                XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
-                                XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
-                                if (xciImpl != null && xciImpl.getConnection() != null) {
-                                    org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
-                                    if (((XmlFileConnectionImpl) cc).getXmlFilePath() != null) {
-                                        if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
-                                                || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
-                                            dragAndDropActionBool = true;
-                                    }
-                                }
-                            }
+            if (propertyParam != null && propertyParam.getValue() != null && !"".equals(propertyParam.getValue())) {
+                IElementParameter elementParameterFromField = elem
+                        .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                Item linkedRepositoryItem = null;
+                if (elementParameterFromField != null) {
+                    linkedRepositoryItem = elementParameterFromField.getLinkedRepositoryItem();
+                    if (linkedRepositoryItem == null
+                            || !linkedRepositoryItem.getProperty().getId().equals(propertyParam.getValue())) {
+                        IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                                propertyParam.getValue().toString());
+                        if (repository != null && repository.getProperty() != null) {
+                            linkedRepositoryItem = repository.getProperty().getItem();
+                            elementParameterFromField.setLinkedRepositoryItem(linkedRepositoryItem);
                         }
+                    }
+                }
+                if (linkedRepositoryItem != null && linkedRepositoryItem instanceof XmlFileConnectionItem) {
+                    XmlFileConnectionItem xci = (XmlFileConnectionItem) linkedRepositoryItem;
+                    XmlFileConnection cc = (XmlFileConnection) xci.getConnection();
+                    if (cc.getXmlFilePath() != null && cc.getXmlFilePath().endsWith(".xsd")
+                            || cc.getXmlFilePath().endsWith(".xsd\"")) {
+                        dragAndDropActionBool = true;
                     }
                 }
             }

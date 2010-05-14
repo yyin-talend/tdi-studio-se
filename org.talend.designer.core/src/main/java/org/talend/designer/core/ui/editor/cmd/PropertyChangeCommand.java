@@ -19,14 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
@@ -35,16 +32,8 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.FileItem;
-import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.XmlFileConnectionItem;
-import org.talend.core.model.properties.impl.PropertyImpl;
-import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -87,8 +76,6 @@ public class PropertyChangeCommand extends Command {
 
     private final String updataComponentParamName;
 
-    private boolean dragAndDropActionBool = false;
-
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -128,36 +115,6 @@ public class PropertyChangeCommand extends Command {
     public void execute() {
         IElementParameter currentParam = elem.getElementParameter(propName);
         oldElementValues.clear();
-        IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
-        try {
-            if (propertyParam != null && propertyParam.getValue() != null && !propertyParam.getValue().equals("")) {
-                IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                        propertyParam.getValue().toString());
-                if (repository != null && repository.getProperty() != null) {
-                    PropertyImpl property = (PropertyImpl) repository.getProperty();
-                    if (property != null && property.getItem() != null && !(property.getItem() instanceof FileItem)
-                            && !(property.getItem() instanceof LinkRulesItem)) {// hywang add for 6484
-                        ConnectionItem ci = (ConnectionItem) property.getItem();
-                        if (ci instanceof XmlFileConnectionItem) {
-                            XmlFileConnectionItem xci = (XmlFileConnectionItem) ci;
-                            XmlFileConnectionItemImpl xciImpl = (XmlFileConnectionItemImpl) xci;
-                            if (xciImpl != null && xciImpl.getConnection() != null) {
-                                org.talend.core.model.metadata.builder.connection.Connection cc = xciImpl.getConnection();
-                                if (((XmlFileConnectionImpl) cc).getXmlFilePath() != null) {
-                                    if (((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd")
-                                            || ((XmlFileConnectionImpl) cc).getXmlFilePath().endsWith(".xsd\""))
-                                        dragAndDropActionBool = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
-
         if (currentParam == null) {
             return;
         }
@@ -168,17 +125,15 @@ public class PropertyChangeCommand extends Command {
                 if (!EmfComponent.BUILTIN.equals(queryStoreValue) || !EmfComponent.TNS_FILE.equals(queryStoreValue)) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
                 }
-                if (dragAndDropActionBool == false)
-                    currentParam.setRepositoryValueUsed(false);
+                currentParam.setRepositoryValueUsed(false);
             } else {
                 toUpdate = true;
-                if (dragAndDropActionBool == false) {
+                String oldValueString = elem.getPropertyValue(propName).toString();
+                if (!oldValueString.endsWith("xsd") && !oldValueString.endsWith("xsd\""))
                     elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
-                }
                 for (IElementParameter param : elem.getElementParameters()) {
                     if (param.getCategory().equals(currentParam.getCategory())) {
-                        if (dragAndDropActionBool == false)
-                            param.setRepositoryValueUsed(false);
+                        param.setRepositoryValueUsed(false);
                     }
                 }
             }
