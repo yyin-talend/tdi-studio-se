@@ -78,7 +78,7 @@ public class ExternalDbMapTable implements IExternalMapTable, Serializable, Clon
         return this.metadataTableEntries;
     }
 
-    public List<? extends IExternalMapEntry> getTableEntries() {
+    public List<? extends IExternalMapEntry> returnTableEntries() {
         return getMetadataTableEntries();
     }
 

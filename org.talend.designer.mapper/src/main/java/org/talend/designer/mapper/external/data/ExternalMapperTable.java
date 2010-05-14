@@ -110,7 +110,7 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
         return this.metadataTableEntries;
     }
 
-    public List<? extends IExternalMapEntry> getTableEntries() {
+    public List<? extends IExternalMapEntry> returnTableEntries() {
         return getMetadataTableEntries();
     }
 

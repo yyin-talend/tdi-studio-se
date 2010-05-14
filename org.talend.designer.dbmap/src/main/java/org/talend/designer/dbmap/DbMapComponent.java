@@ -12,10 +12,12 @@
 // ============================================================================
 package org.talend.designer.dbmap;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -242,11 +244,23 @@ public class DbMapComponent extends AbstractMapComponent {
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
     public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-
+        StringBuilder input = null;
         if (stringReader != null) {
             Unmarshaller unmarshaller = new Unmarshaller(ExternalDbMapData.class);
             unmarshaller.setWhitespacePreserve(true);
             try {
+                BufferedReader r = new BufferedReader(stringReader);
+                input = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    input.append(line);
+                    input.append("\r\n"); //$NON-NLS-0$
+                }
+                // see 13019 ,remove all table-entries node when load job which contains db mapper components from old
+                // version's tos
+                String buf = input.toString().replaceAll("<table-entries .*?>.*?</table-entries>", ""); //$NON-NLS-0$ //$NON-NLS-1$
+                stringReader.close();
+                stringReader = new StringReader(buf);
                 externalData = (ExternalDbMapData) unmarshaller.unmarshal(stringReader);
             } catch (MarshalException e) {
                 ExceptionHandler.process(e);
@@ -258,7 +272,6 @@ public class DbMapComponent extends AbstractMapComponent {
                 }
             }
         }
-
     }
 
     /*

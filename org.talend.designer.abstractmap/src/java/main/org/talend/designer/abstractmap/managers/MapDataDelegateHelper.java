@@ -122,7 +122,7 @@ public class MapDataDelegateHelper {
         Map<IExternalMapTable, List<IExternalMapEntry>> tableMap = new HashMap<IExternalMapTable, List<IExternalMapEntry>>();
         if (checkedTables != null) {
             for (IExternalMapTable emTable : checkedTables) {
-                List<? extends IExternalMapEntry> tableEntries = emTable.getTableEntries();
+                List<? extends IExternalMapEntry> tableEntries = emTable.returnTableEntries();
                 if (tableEntries != null) {
                     for (IExternalMapEntry emEntry : tableEntries) {
                         matchAndAddEntry(emTable, emEntry, expression, tableMap);
