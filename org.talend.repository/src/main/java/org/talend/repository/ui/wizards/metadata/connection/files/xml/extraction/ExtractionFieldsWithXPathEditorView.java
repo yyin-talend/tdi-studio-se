@@ -43,8 +43,8 @@ import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.repository.i18n.Messages;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
- * EMF model directly
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * TGU same purpose as TargetSchemaTableEditorView but uses EMF model directly
  * 
  * $Id$
  * 
@@ -291,7 +291,8 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         int lstSize = list.size();
         for (int i = 0; i < lstSize; i++) {
             String name = list.get(i).getTagName();
-            if (names.contains(name)) {
+            String path = list.get(i).getRelativeXPathQuery();
+            if (!path.contains("..") && names.contains(name)) {
                 conflictNames.add(name);
             } else {
                 names.add(name);
