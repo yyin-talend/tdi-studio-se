@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.projectsetting;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,6 +65,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
@@ -281,7 +283,9 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
             if (isStatUseProjectSetting(node)) {
                 if (!checkedObjects.contains(node.getObject().getProperty().getId())) {
                     checkedObjects.add(node.getObject().getProperty().getId());
-                    checkedNode.add(node);
+                    if (!checkedNode.contains(node)) {
+                        checkedNode.add(node);
+                    }
                 }
             }
         }
@@ -301,22 +305,56 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask(getTaskMessages(), (checkedNode.size()) * 100);
                 final Map<String, Set<String>> contextVars = DetectContextVarsUtils.detectByPropertyType(elem, true);
+
                 addContextModel = false; // must init this
                 if (!contextVars.isEmpty()) {
-                    // if the context is not existed in job, will add or not.
-                    Display disp = Display.getCurrent();
-                    if (disp == null) {
-                        disp = Display.getDefault();
+                    boolean showDialog = false;
+                    Set<String> contextSet = new HashSet<String>();
+                    for (String key : contextVars.keySet()) {
+                        contextSet = contextVars.get(key);
+                        break;
                     }
-                    if (disp != null) {
-                        disp.syncExec(new Runnable() {
-
-                            public void run() {
-                                showContextAndCheck(contextVars);
+                    Connection connection = null;
+                    IElementParameter ptParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                    if (ptParam != null) {
+                        IElementParameter propertyElem = ptParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());
+                        Object proValue = propertyElem.getValue();
+                        if (proValue instanceof String && ((String) proValue).equalsIgnoreCase(EmfComponent.REPOSITORY)) {
+                            IElementParameter repositoryElem = ptParam.getChildParameters().get(
+                                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                            String value = (String) repositoryElem.getValue();
+                            ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+                            connection = connectionItem.getConnection();
+                            if (connection != null && connection.isContextMode()) {
+                                ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+                                for (IProcess process : openedProcessList) {
+                                    Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,
+                                            contextSet, process.getContextManager(), false);
+                                    if (addedContext != null && !addedContext.isEmpty()) {
+                                        showDialog = true;
+                                        break;
+                                    }
+                                }
                             }
-                        });
-                    } else {
-                        showContextAndCheck(contextVars);
+                        }
+                    }
+                    if (showDialog) {
+
+                        // if the context is not existed in job, will add or not.
+                        Display disp = Display.getCurrent();
+                        if (disp == null) {
+                            disp = Display.getDefault();
+                        }
+                        if (disp != null) {
+                            disp.syncExec(new Runnable() {
+
+                                public void run() {
+                                    showContextAndCheck(contextVars);
+                                }
+                            });
+                        } else {
+                            showContextAndCheck(contextVars);
+                        }
                     }
                 }
                 monitor.worked(10);
