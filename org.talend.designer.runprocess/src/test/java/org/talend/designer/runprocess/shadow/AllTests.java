@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.runprocess.shadow;
+package shadow;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: AllTests.java 38013 2010-03-05 14:21:59Z mhirt $
  * 
  */
 public final class AllTests {

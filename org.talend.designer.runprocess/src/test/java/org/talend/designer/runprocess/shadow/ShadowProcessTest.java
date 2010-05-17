@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.runprocess.shadow;
+package shadow;
 
 import junit.framework.TestCase;
 
@@ -24,7 +24,7 @@ import org.talend.core.model.general.Project;
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: ShadowProcessTest.java 38013 2010-03-05 14:21:59Z mhirt $
  * 
  */
 public class ShadowProcessTest extends TestCase {
