@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.talend.ws.exception.IllegalPropertyAccessException;
 import org.talend.ws.exception.InvocationTargetPropertyAccessor;
@@ -20,14 +22,19 @@ import org.talend.ws.exception.LocalizedException;
  */
 public class ListPropertyMapper implements PropertyMapper {
 
+    private MapperFactory mapperFactory;
+
     private TypeMapper xmlBeanMapper;
 
     private String propertyName;
 
     private PropertyDescriptor propertyDescriptor;
 
-    public ListPropertyMapper(Class<?> clazz, TypeMapper xmlBeanMapper, String propertyName) {
-        this.xmlBeanMapper = xmlBeanMapper;
+    private QName schemaTypeQName;
+
+    public ListPropertyMapper(Class<?> clazz, QName typeQName, String propertyName, MapperFactory mapperFactory) {
+        this.mapperFactory = mapperFactory;
+        this.schemaTypeQName = typeQName;
 
         PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
         for (PropertyDescriptor descriptor : descriptors) {
@@ -38,8 +45,8 @@ public class ListPropertyMapper implements PropertyMapper {
             }
         }
         if (propertyDescriptor == null) {
-            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + xmlBeanMapper.getClazz().getName()
-                    + " and property " + propertyName);
+            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + typeQName + " and property "
+                    + propertyName);
         }
 
     }
@@ -53,6 +60,7 @@ public class ListPropertyMapper implements PropertyMapper {
     }
 
     public void setValueTo(Object destination, Object value) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         if (value == null) {
             return;
         }
@@ -78,6 +86,7 @@ public class ListPropertyMapper implements PropertyMapper {
     }
 
     public Object getValueFrom(Object source) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         List values;
         try {
             values = (List) propertyDescriptor.getReadMethod().invoke(source);
@@ -96,6 +105,7 @@ public class ListPropertyMapper implements PropertyMapper {
     }
 
     public Object createProperty(Object value) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         if (value == null) {
             return null;
         }
@@ -115,6 +125,7 @@ public class ListPropertyMapper implements PropertyMapper {
     }
 
     public Object createValue(Object property) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         if (property == null) {
             return null;
         }

@@ -148,7 +148,6 @@ public class ServiceInvokerHelper implements ClassMapper {
                     String packageName = packagePrefix + JAXBUtils.namespaceURIToPackage(x.getTargetNamespace());
                     namespacePackageMap.put(x.getTargetNamespace(), packageName);
                     packageNamespaceMap.put(packageName, x.getTargetNamespace());
-
                     File f = org.apache.cxf.tools.util.JAXBUtils.getPackageMappingSchemaBindingFile(x.getTargetNamespace(),
                             packageName);
                     f.deleteOnExit();
@@ -176,7 +175,6 @@ public class ServiceInvokerHelper implements ClassMapper {
 
     protected Client createClient(QName service, QName port) {
         // bchen bug for 8674
-
         Client client = dynamicClientFactory.createClient(serviceDiscoveryHelper.getLocalWsdlUri(), service, Thread
                 .currentThread().getContextClassLoader(), port, bindingFiles);
         // end
@@ -299,7 +297,6 @@ public class ServiceInvokerHelper implements ClassMapper {
         StringBuilder sb = new StringBuilder();
         sb.append(getPackageForNamespaceURI(schemaType.getQName().getNamespaceURI()));
         sb.append(".");
-
         sb.append(getClassNameForTypeName(schemaType.getName()));
         String className = sb.toString();
 
@@ -359,8 +356,9 @@ public class ServiceInvokerHelper implements ClassMapper {
                 Class<?> finalClazz = null;
                 boolean allCorrect = false;
                 int tempSuffix = 0;
+                // bug13001 by bchen, deal with choice in sequence
+                Iterator<XmlSchemaObject> iterator = MapperFactory.getXmlSchemaObjectIter(xmlSchemaSequence);
                 while (!allCorrect) {
-                    Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().getIterator();
                     if (!iterator.hasNext()) {
                         PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
                         if (descriptors.length == 1 && "class".equals(descriptors[0].getName())) {

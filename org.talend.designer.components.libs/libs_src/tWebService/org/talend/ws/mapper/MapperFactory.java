@@ -12,6 +12,7 @@ import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.ws.commons.schema.XmlSchemaChoice;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexContent;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
@@ -19,7 +20,9 @@ import org.apache.ws.commons.schema.XmlSchemaComplexContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
@@ -68,6 +71,8 @@ public class MapperFactory {
         BUILTIN_DATATYPES_MAP.put("gDay", "javax.xml.datatype.XMLGregorianCalendar");
         BUILTIN_DATATYPES_MAP.put("duration", "javax.xml.datatype.Duration");
         BUILTIN_DATATYPES_MAP.put("NOTATION", "javax.xml.namespace.QName");
+        BUILTIN_DATATYPES_MAP.put("anyURI", "java.lang.String"); // bug13001 by bchen, anyURI undefined
+        BUILTIN_DATATYPES_MAP.put("token", "java.lang.String"); // bug13001 by bchen, token undefined
         BUILTIN_DATATYPES_MAP.put("string", "java.lang.String");
 
         BUILTIN_DATATYPES_MAP_REVERSE = new HashMap<String, String>();
@@ -97,6 +102,8 @@ public class MapperFactory {
         BUILTIN_DATATYPES_MAP_REVERSE.put("javax.xml.datatype.XMLGregorianCalendar", "gDay");
         BUILTIN_DATATYPES_MAP_REVERSE.put("javax.xml.datatype.Duration", "duration");
         BUILTIN_DATATYPES_MAP_REVERSE.put("javax.xml.namespace.QName", "NOTATION");
+        BUILTIN_DATATYPES_MAP_REVERSE.put("java.lang.String", "anyURI"); // bug13001 by bchen, anyURI undefined
+        BUILTIN_DATATYPES_MAP_REVERSE.put("java.lang.String", "token"); // bug13001 by bchen, token undefined
         BUILTIN_DATATYPES_MAP_REVERSE.put("java.lang.String", "string");
 
     }
@@ -104,6 +111,8 @@ public class MapperFactory {
     protected ClassMapper classMapper;
 
     protected XmlSchemaCollection schemaCollection;
+
+    protected Map<QName, TypeMapper> schemaTypeMap = new HashMap<QName, TypeMapper>();
 
     public MapperFactory(ClassMapper classMapper, XmlSchemaCollection schemaCollection) {
         this.classMapper = classMapper;
@@ -119,29 +128,52 @@ public class MapperFactory {
     }
 
     public TypeMapper createTypeMapper(XmlSchemaType xmlSchemaType) throws LocalizedException {
-
-        if (xmlSchemaType instanceof XmlSchemaComplexType) {
-            return createComplexTypeMapper((XmlSchemaComplexType) xmlSchemaType);
-        } else if (xmlSchemaType instanceof XmlSchemaSimpleType) {
-            if (ANYTYPE_QNAME.equals(xmlSchemaType.getQName())) {
-                return new AnyTypeMapper(this);
+        if (!schemaTypeMap.containsKey(xmlSchemaType.getQName())) {// bug 13001 by bchen, nested call type
+            schemaTypeMap.put(xmlSchemaType.getQName(), null);
+            TypeMapper typeMapper = null;
+            if (xmlSchemaType instanceof XmlSchemaComplexType) {
+                typeMapper = createComplexTypeMapper((XmlSchemaComplexType) xmlSchemaType);
+            } else if (xmlSchemaType instanceof XmlSchemaSimpleType) {
+                if (ANYTYPE_QNAME.equals(xmlSchemaType.getQName())) {
+                    typeMapper = new AnyTypeMapper(this);
+                } else {
+                    typeMapper = createSimpleTypeMapper((XmlSchemaSimpleType) xmlSchemaType);
+                }
             } else {
-                return createSimpleTypeMapper((XmlSchemaSimpleType) xmlSchemaType);
+                throw new IllegalArgumentException("Type " + xmlSchemaType.getClass().getName() + " is not yes supported.");
             }
+            schemaTypeMap.put(xmlSchemaType.getQName(), typeMapper);
+            return typeMapper;
         } else {
-            throw new IllegalArgumentException("Type " + xmlSchemaType.getClass().getName() + " is not yes supported.");
+            return schemaTypeMap.get(xmlSchemaType.getQName());
         }
     }
 
     public PropertyMapper createPropertyMapper(XmlSchemaElement xmlSchemaElement, Class<?> clazz) throws LocalizedException {
 
         XmlSchemaType xmlSchemaType = xmlSchemaElement.getSchemaType();
-        TypeMapper xmlBeanMapper = createTypeMapper(xmlSchemaType);
+
+        if (xmlSchemaType == null) { // bug 13001 by bchen, <element ref="refElement"/> "ref"
+            if (xmlSchemaElement.getRefName() != null) {
+                XmlSchemaElement xmlRefSchemaElement = schemaCollection.getElementByQName(xmlSchemaElement.getRefName());
+                if (xmlRefSchemaElement != null) {
+                    xmlSchemaType = xmlRefSchemaElement.getSchemaType();
+                }
+            }
+        }
+
+        // bug 13001 by bchen, inner class
+        if (xmlSchemaType.getName() == null && xmlSchemaType instanceof XmlSchemaComplexType) {
+            xmlSchemaType.setName(clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1) + "$"
+                    + xmlSchemaElement.getName());
+        }
+
+        createTypeMapper(xmlSchemaType);
 
         if (xmlSchemaElement.getMaxOccurs() > 1) {
-            return new ListPropertyMapper(clazz, xmlBeanMapper, xmlSchemaElement.getName());
+            return new ListPropertyMapper(clazz, xmlSchemaType.getQName(), xmlSchemaElement.getName(), this);
         } else {
-            return new SimplePropertyMapper(clazz, xmlBeanMapper, xmlSchemaElement.getName());
+            return new SimplePropertyMapper(clazz, xmlSchemaType.getQName(), xmlSchemaElement.getName(), this);
         }
     }
 
@@ -217,12 +249,37 @@ public class MapperFactory {
             return new SimpleTypeMapper(clazz);
         } else {
             if (xmlSchemaSimpleTypeContent instanceof XmlSchemaSimpleTypeRestriction) {
-                Class<?> clazz = classMapper.getClassForType(xmlSchemaSimpleType);
-                if (!clazz.isEnum()) {
-                    throw new IllegalArgumentException("Class " + clazz.getName() + " should be an enum.");
+                // bug 13001 by bchen,
+                // for
+                // <xsd:simpleType name="EventType">
+                // <xsd:restriction base="xsd:string"/>
+                // </xsd:simpleType>
+                // and not enum
+                // and enum have not typename,means jaxb didn't gen class for this enum
+                XmlSchemaObjectCollection xmlSchemaObjectCol = ((XmlSchemaSimpleTypeRestriction) xmlSchemaSimpleTypeContent)
+                        .getFacets();
+                if (xmlSchemaObjectCol.getCount() > 0 && xmlSchemaObjectCol.getItem(0) instanceof XmlSchemaEnumerationFacet
+                        && xmlSchemaSimpleType.getName() != null) {
+                    Class<?> clazz = classMapper.getClassForType(xmlSchemaSimpleType);
+                    if (!clazz.isEnum()) {
+                        throw new IllegalArgumentException("Class " + clazz.getName() + " should be an enum.");
+                    }
+                    return new EnumTypeMapper(clazz);
+                } else {
+                    String className = builtInTypeToJavaType(((XmlSchemaSimpleTypeRestriction) xmlSchemaSimpleTypeContent)
+                            .getBaseTypeName().getLocalPart());
+                    if (className == null) {
+                        throw new IllegalArgumentException("Unsupported type " + xmlSchemaSimpleType.getQName());
+                    }
+                    Class<?> clazz;
+                    try {
+                        clazz = Class.forName(className);
+                    } catch (ClassNotFoundException ex) {
+                        throw new IllegalArgumentException("Unable to find java type " + className, ex);
+                    }
+                    return new SimpleTypeMapper(clazz);
                 }
-
-                return new EnumTypeMapper(clazz);
+                // end
             } else {
                 throw new IllegalArgumentException("Unsupported type " + xmlSchemaSimpleTypeContent.getClass().getName());
             }
@@ -277,20 +334,41 @@ public class MapperFactory {
 
     private Map<String, PropertyMapper> createPropertyMappers(XmlSchemaSequence xmlSchemaSequence, Class<?> clazz)
             throws LocalizedException {
-
         Map<String, PropertyMapper> map = new ListOrderedMap();
-
-        Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().getIterator();
+        // bug13001 by bchen, deal with choice in sequence
+        Iterator<XmlSchemaObject> iterator = getXmlSchemaObjectIter(xmlSchemaSequence);
         while (iterator.hasNext()) {
             XmlSchemaObject xmlSchemaObject = iterator.next();
             if (xmlSchemaObject instanceof XmlSchemaElement) {
                 XmlSchemaElement xmlSchemaElement = (XmlSchemaElement) xmlSchemaObject;
 
                 map.put(xmlSchemaElement.getName(), createPropertyMapper(xmlSchemaElement, clazz));
+
             }
         }
 
         return map;
+    }
+
+    /*
+     * bug13001 by bchen, deal with choice in sequence :<xsd:complexType name="typeName"> <xsd:sequence> <xsd:choice>
+     * <xsd:element/> </xsd:choice> </xsd:sequence> </xsd:complexType>
+     */
+    public static Iterator<XmlSchemaObject> getXmlSchemaObjectIter(XmlSchemaSequence xmlSchemaSequence) {
+        Iterator<XmlSchemaObject> iterator = xmlSchemaSequence.getItems().getIterator();
+        while (iterator.hasNext()) {
+            XmlSchemaObject xmlSchemaObject = iterator.next();
+            if (xmlSchemaObject instanceof XmlSchemaElement) {
+                return xmlSchemaSequence.getItems().getIterator();
+            } else if (xmlSchemaObject instanceof XmlSchemaChoice) {
+                XmlSchemaChoice xmlSchemaChoice = (XmlSchemaChoice) xmlSchemaObject;
+                XmlSchemaObjectCollection xmlSchemaObjectCollection = xmlSchemaChoice.getItems();
+                return xmlSchemaObjectCollection.getIterator();
+            } else {
+                throw new IllegalArgumentException("Invalid xmlSchemaObject.");
+            }
+        }
+        return iterator;
     }
 
     private static String builtInTypeToJavaType(String type) {

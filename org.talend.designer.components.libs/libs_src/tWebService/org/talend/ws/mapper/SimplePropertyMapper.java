@@ -18,15 +18,20 @@ import org.talend.ws.exception.LocalizedException;
  */
 public class SimplePropertyMapper implements PropertyMapper {
 
+    private MapperFactory mapperFactory;
+
     private TypeMapper xmlBeanMapper;
 
     private String propertyName;
 
     private PropertyDescriptor propertyDescriptor;
 
-    public SimplePropertyMapper(Class<?> clazz, TypeMapper xmlBeanMapper, String propertyName) throws LocalizedException {
-        this.xmlBeanMapper = xmlBeanMapper;
+    private QName schemaTypeQName;
 
+    public SimplePropertyMapper(Class<?> clazz, QName typeQName, String propertyName, MapperFactory mapperFactory)
+            throws LocalizedException {
+        this.mapperFactory = mapperFactory;
+        this.schemaTypeQName = typeQName;
         PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(clazz);
         for (PropertyDescriptor descriptor : descriptors) {
             if (propertyName.equalsIgnoreCase(descriptor.getName())) {
@@ -36,8 +41,8 @@ public class SimplePropertyMapper implements PropertyMapper {
             }
         }
         if (propertyDescriptor == null) {
-            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + xmlBeanMapper.getClazz().getName()
-                    + " and property " + propertyName);
+            throw new IllegalArgumentException("Unable to get propertyDescriptor for bean " + typeQName + " and property "
+                    + propertyName);
         }
     }
 
@@ -46,6 +51,7 @@ public class SimplePropertyMapper implements PropertyMapper {
     }
 
     public void setValueTo(Object destination, Object value) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         try {
             Method method = propertyDescriptor.getWriteMethod();
             if (method.getParameterTypes()[0].equals(JAXBElement.class)) {
@@ -65,6 +71,7 @@ public class SimplePropertyMapper implements PropertyMapper {
     }
 
     public Object getValueFrom(Object source) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         try {
             Method method = propertyDescriptor.getReadMethod();
             if (method.getReturnType().equals(JAXBElement.class)) {
@@ -86,10 +93,12 @@ public class SimplePropertyMapper implements PropertyMapper {
     }
 
     public Object createProperty(Object value) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         return xmlBeanMapper.convertToType(value);
     }
 
     public Object createValue(Object property) throws LocalizedException {
+        xmlBeanMapper = mapperFactory.schemaTypeMap.get(schemaTypeQName);
         return xmlBeanMapper.typeToValue(property);
     }
 }

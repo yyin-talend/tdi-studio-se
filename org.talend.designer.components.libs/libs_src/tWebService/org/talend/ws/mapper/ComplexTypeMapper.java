@@ -1,22 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package org.talend.ws.mapper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.talend.ws.exception.LocalizedException;
 
 /**
- *
+ * 
  * @author rlamarche
  */
 public class ComplexTypeMapper implements TypeMapper {
 
     private Map<String, PropertyMapper> mappers;
+
     private Class<?> clazz;
+
     private List<String> propertiesOrder;
 
     protected ComplexTypeMapper(Map<String, PropertyMapper> mappers, Class<?> clazz, List<String> propertiesOrder) {
@@ -43,11 +45,9 @@ public class ComplexTypeMapper implements TypeMapper {
         try {
             bean = clazz.newInstance();
         } catch (InstantiationException ex) {
-            throw new RuntimeException("Unable to instantiate bean of type " + clazz.
-                    getName(), ex);
+            throw new RuntimeException("Unable to instantiate bean of type " + clazz.getName(), ex);
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException("Unable to instantiate bean of type " + clazz.
-                    getName(), ex);
+            throw new RuntimeException("Unable to instantiate bean of type " + clazz.getName(), ex);
         }
 
         for (Map.Entry<String, Object> entry : values.entrySet()) {
@@ -70,8 +70,7 @@ public class ComplexTypeMapper implements TypeMapper {
             if (!clazz.isInstance(bean)) {
                 throw new IllegalArgumentException("You must provide an object of type specified by property clazz.");
             }
-            Map<String, Object> values = new HashMap<String, Object>(mappers.
-                    size());
+            Map<String, Object> values = new HashMap<String, Object>(mappers.size());
 
             for (Map.Entry<String, PropertyMapper> entry : mappers.entrySet()) {
                 Object value = entry.getValue().getValueFrom(bean);

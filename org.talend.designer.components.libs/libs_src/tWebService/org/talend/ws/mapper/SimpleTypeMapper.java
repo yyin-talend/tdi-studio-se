@@ -1,13 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package org.talend.ws.mapper;
 
-import org.apache.commons.beanutils.ConvertUtils;
+import org.talend.ws.mapper.converter.ConvertTool;
 
 /**
- *
+ * 
  * @author rlamarche
  */
 public class SimpleTypeMapper implements TypeMapper {
@@ -26,7 +25,8 @@ public class SimpleTypeMapper implements TypeMapper {
         if (value == null) {
             return null;
         } else {
-            return ConvertUtils.convert(ConvertUtils.convert(value), clazz);
+            // return ConvertUtils.convert(ConvertUtils.convert(value), clazz);
+            return ConvertTool.convert(value, clazz);// bug13001 by bchen, for date type value
         }
     }
 
