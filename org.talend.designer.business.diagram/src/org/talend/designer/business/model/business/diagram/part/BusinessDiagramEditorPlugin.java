@@ -18,10 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.core.CorePlugin;
-import org.talend.designer.business.diagram.custom.listeners.BusinessDeleteListener;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * @generated
@@ -63,9 +60,8 @@ public class BusinessDiagramEditorPlugin extends AbstractUIPlugin {
         PreferencesHint.registerPreferenceStore(DIAGRAM_PREFERENCES_HINT, getPreferenceStore());
         adapterFactory = createAdapterFactory();
 
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        factory.addPropertyChangeListener(new BusinessDeleteListener());
-
+        // IProxyRepositoryFactory factory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        // factory.addPropertyChangeListener(new BusinessDeleteListener());
     }
 
     /**

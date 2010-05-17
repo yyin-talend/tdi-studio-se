@@ -63,9 +63,11 @@ public class AbstractConextAction extends AContextualAction {
      */
     @Override
     protected void updateNodeToLastVersion() {
-        if (repositoryNode == null || repositoryNode.getObject() == null) {
+        if (repositoryNode == null || repositoryNode.getObject() == null
+                || !(repositoryNode.getObject() instanceof RepositoryNode)) {
             return;
         }
+
         try {
             ProxyRepositoryFactory.getInstance().initialize();
         } catch (PersistenceException e1) {
