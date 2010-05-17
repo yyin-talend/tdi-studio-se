@@ -2645,7 +2645,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      */
     public List<INode> getNodesWithImport() {
         List<INode> nodesWithImport = new ArrayList<INode>();
-        for (INode node : nodes) {
+        for (INode node : getGeneratingNodes()) {
             if (node.getComponent().useImport()) {
                 nodesWithImport.add(node);
             }
