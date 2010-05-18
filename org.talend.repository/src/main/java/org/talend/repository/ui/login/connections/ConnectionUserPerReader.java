@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.talend.core.model.general.ConnectionBean;
 
 /**
- * DOC teileizeget class global comment. Detailled comment
+ * DOC hwang class global comment. Detailled comment
  */
 public class ConnectionUserPerReader {
 
@@ -44,7 +44,7 @@ public class ConnectionUserPerReader {
     private boolean isRead;
 
     private ConnectionUserPerReader() {
-        proper = new Properties();
+        proper = new EncryptedProperties();
         isRead = false;
         // String tmp = LocationManager.getConfigurationLocation().getURL().getPath();
         // String s = new Path(LocationManager.getConfigurationLocation().getURL().getPath()).toFile().getPath();
