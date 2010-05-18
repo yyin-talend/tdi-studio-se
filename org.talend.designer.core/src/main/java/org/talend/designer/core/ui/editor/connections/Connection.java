@@ -73,6 +73,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private Node source;
 
+    private Node sourceForUnit;
+
     protected String name;
 
     private ConnectionLabel label;
@@ -113,16 +115,14 @@ public class Connection extends Element implements IConnection, IPerformance {
     // creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, final boolean monitorConnection) {
-        this.source = source;
-        this.target = target;
+        this.sourceForUnit = source;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only when loading a process && connection creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, String uniqueName, final boolean monitorConnection) {
-        this.source = source;
-        this.target = target;
+        this.sourceForUnit = source;
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
@@ -130,6 +130,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     // used only in ConnectionManager to test if we can connect or not.
     public Connection(Node source, Node target, EConnectionType lineStyle, final boolean monitorConnection) {
         this.source = source;
+        this.sourceForUnit = source;
         this.target = target;
         this.lineStyle = lineStyle;
         this.monitorConnection = monitorConnection;
@@ -507,7 +508,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
-                        && source != null && source.getComponent().getName().equals(source.getLabel())) {
+                        && sourceForUnit != null && sourceForUnit.getComponent().getName().equals(sourceForUnit.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
