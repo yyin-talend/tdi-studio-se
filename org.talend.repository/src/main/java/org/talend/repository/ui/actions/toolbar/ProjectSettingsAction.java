@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.dialog.ProjectSettingDialog;
 
@@ -28,7 +29,7 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
 
     public ProjectSettingsAction() {
         super();
-        this.setText("Edit Project properties"); //$NON-NLS-1$
+        this.setText(Messages.getString("ProjectSettingsAction_editProject")); //$NON-NLS-1$
         this.setToolTipText(""); //$NON-NLS-1$
     }
 

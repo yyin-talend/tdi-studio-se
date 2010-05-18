@@ -619,8 +619,8 @@
                class="org.talend.designer.core.ui.action.OpenJobAction"
                definitionId="org.talend.designer.core.ui.open.type"
                icon="icons/find_job.png"
-               label="Find Job"
-               tooltip="Find a specific job">
+               label="%findJob.title"
+               tooltip="%findJob.tootip">
          </action>
     		
       </actionSet>

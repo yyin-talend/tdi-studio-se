@@ -437,19 +437,19 @@
                class="org.talend.repository.ui.actions.toolbar.UpdateModificationsAction"
                icon="icons/updateSettings.png"
                id="org.talend.repository.updateModifications"
-               label="Upate modified jobs"
+               label="%updateAllJobs.title"
                style="push"
                toolbarPath="Default"
-               tooltip="Detect and update all jobs">
+               tooltip="%updateAllJobs.tooltip">
          </action>
          <action
                class="org.talend.repository.ui.actions.toolbar.ProjectSettingsAction"
                icon="icons/projectssettings.png"
                id="org.talend.repository.projectsettings"
-               label="Project settings"
+               label="%projectsetting.title"
                style="push"
                toolbarPath="Default"
-               tooltip="Project settings">
+               tooltip="%projectsetting.tootip">
          </action>
          <!--action
                class="org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction"
@@ -1239,8 +1239,8 @@
               icon="icons/process_icon.gif"
                id="org.talend.repository.repositoryitem.createJob"
                style="pulldown"
-               tooltip="Create"
-               label="Create"
+               tooltip="%create.tootip"
+               label="%create.title"
                toolbarPath="Default"/>
       </actionSet>
    </extension>
