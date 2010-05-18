@@ -18,6 +18,7 @@
 	boolean mkDir = ("true").equals(ElementParameterParser.getValue(node, "__MKDIR__"));
 	boolean isAllFile = ("true").equals(ElementParameterParser.getValue(node, "__ALL_FILES__"));
 	boolean subDir = ("true").equals(ElementParameterParser.getValue(node, "__SUB_DIRECTROY__"));
+	boolean overwrite = ("true").equals(ElementParameterParser.getValue(node, "__OVERWRITE__"));
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 	%>
@@ -26,6 +27,15 @@
     String sourceDir_<%=cid %> = <%=directory %>;      
     java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);
     String zipFile_<%=cid %> = <%=zipFile %>;
+    <%
+    if(!overwrite){
+    %>
+    if(new java.io.File(zipFile_<%=cid %>).exists()){
+    	throw(new Exception("File already exist!"));
+    }
+    <%
+    }
+    %>
     <%if(mkDir){%>
     String zipDir_<%=cid %> = (<%=zipFile %>).contains("\\")?
     (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("\\")): (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("/"));
