@@ -96,7 +96,7 @@ public class UpdateContextParameterCommand extends Command {
                             case DELETE:
                                 item = (ContextItem) result.getParameter();
 
-                                if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+                                if (item != null && item.getProperty().getId().equals(param.getSource()) && result.isChecked()) {
                                     // delete it later
                                     deleteParameters.addParameter(context, param);
                                 } else {
@@ -106,7 +106,7 @@ public class UpdateContextParameterCommand extends Command {
                             case UPDATE:
                                 item = (ContextItem) result.getParameter();
 
-                                if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+                                if (item != null && item.getProperty().getId().equals(param.getSource()) && result.isChecked()) {
 
                                     ContextUtils.updateParameterFromRepository(item, param, context.getName());
                                 } else {

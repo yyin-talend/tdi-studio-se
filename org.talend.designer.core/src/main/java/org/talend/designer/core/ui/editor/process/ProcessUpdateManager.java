@@ -201,18 +201,18 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         final List<ContextItem> allContextItem = ContextUtils.getAllContextItem();
 
-        Set<String> refContextNames = new HashSet<String>();
+        Set<String> refContextIds = new HashSet<String>();
 
         for (IContext context : contextManager.getListContext()) {
             for (IContextParameter param : context.getContextParameterList()) {
                 if (!param.isBuiltIn()) {
                     String source = param.getSource();
                     String paramName = param.getName();
-                    refContextNames.add(source);
+                    refContextIds.add(source);
                     // rename
                     boolean renamed = false;
                     for (ContextItem item : repositoryRenamedMap.keySet()) {
-                        if (source.equals(item.getProperty().getLabel())) {
+                        if (source.equals(item.getProperty().getId())) {
                             String newName = getRenamedVarName(paramName, repositoryRenamedMap.get(item));
                             if (newName != null && !newName.equals(paramName)) {
                                 renamedMap.add(item, paramName);
@@ -222,7 +222,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     if (!renamed) {
                         // update
-                        final ContextItem contextItem = ContextUtils.getContextItemByName(allContextItem, source);
+                        final ContextItem contextItem = ContextUtils.getContextItemById(allContextItem, source);
                         boolean builtin = true;
                         if (contextItem != null) {
                             final ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(),
@@ -287,7 +287,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         // see 0004661: Add an option to propagate when add or remove a variable in a repository context to
         // jobs/joblets.
-        checkPropagateContextVariable(contextResults, contextManager, deleteParams, allContextItem, refContextNames);
+        checkPropagateContextVariable(contextResults, contextManager, deleteParams, allContextItem, refContextIds);
 
         // update
         if (!unsameMap.isEmpty()) {
@@ -341,10 +341,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @param contextManager
      * @param deleteParams
      * @param allContextItem
-     * @param refContextNames
+     * @param refContextIds
      */
     private void checkPropagateContextVariable(List<UpdateResult> contextResults, final IContextManager contextManager,
-            ContextItemParamMap deleteParams, final List<ContextItem> allContextItem, Set<String> refContextNames) {
+            ContextItemParamMap deleteParams, final List<ContextItem> allContextItem, Set<String> refContextIds) {
         if (ContextUtils.isPropagateContextVariable()) {
             // check newly added parameter
             Map<ContextItem, Set<String>> newParametersMap = ((JobContextManager) contextManager).getNewParametersMap();
@@ -352,11 +352,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 // improve lookup speed
                 Map<String, ContextItem> contextItemsMap = new HashMap<String, ContextItem>();
                 for (ContextItem contextItem : allContextItem) {
-                    contextItemsMap.put(contextItem.getProperty().getLabel(), contextItem);
+                    contextItemsMap.put(contextItem.getProperty().getId(), contextItem);
                 }
 
-                for (String name : refContextNames) {
-                    ContextItem contextItem = contextItemsMap.get(name);
+                for (String id : refContextIds) {
+                    ContextItem contextItem = contextItemsMap.get(id);
                     Set<String> names = newParametersMap.get(contextItem);
                     if (names == null || names.isEmpty()) {
                         continue;
@@ -1254,7 +1254,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             if (connection.isContextMode()) {
                 Set<String> neededVars = ConnectionContextHelper.retrieveContextVar(parameters, connection, category);
                 if (neededVars != null && !neededVars.isEmpty()) {
-                    ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+                    ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
                     if (contextItem != null) {
                         // find added variables
                         Set<String> addedVars = ConnectionContextHelper.checkAndAddContextVariables(contextItem, neededVars,

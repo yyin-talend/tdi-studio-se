@@ -486,7 +486,7 @@ public final class ConnectionContextHelper {
             // get the context variables from the node parameters.
             Set<String> neededVars = retrieveContextVar(elementParameters, connection, category);
             if (neededVars != null && !neededVars.isEmpty()) {
-                ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+                ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
                 if (contextItem != null) {
                     // find added variables
                     Set<String> addedVars = checkAndAddContextVariables(contextItem, neededVars, process.getContextManager(),
@@ -542,7 +542,7 @@ public final class ConnectionContextHelper {
             for (String id : varsMap.keySet()) {
                 ConnectionItem connItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
                 if (connItem != null) {
-                    ContextItem contextItem = ContextUtils.getContextItemById(connItem.getConnection().getContextId());
+                    ContextItem contextItem = ContextUtils.getContextItemById2(connItem.getConnection().getContextId());
                     if (contextItem != null) {
                         // add needed vars into job
                         Set<String> addedVars = checkAndAddContextVariables(contextItem, varsMap.get(id), process
@@ -564,8 +564,8 @@ public final class ConnectionContextHelper {
                         if (connItem != null) {
                             String source = UpdateRepositoryUtils.getRepositorySourceName(connItem);
                             if (addedVarsMap.containsKey(source)) {
-                                ContextItem contextItem = ContextUtils
-                                        .getContextItemById(connItem.getConnection().getContextId());
+                                ContextItem contextItem = ContextUtils.getContextItemById2(connItem.getConnection()
+                                        .getContextId());
                                 if (contextItem != null) {
                                     addContextVarForJob(process, contextItem, addedVarsMap.get(source));
                                     added = true;
@@ -706,7 +706,7 @@ public final class ConnectionContextHelper {
 
                             ContextUtils.updateParameter(param, contextParam);
 
-                            contextParam.setSource(contextItem.getProperty().getLabel());
+                            contextParam.setSource(contextItem.getProperty().getId());
                             contextParam.setContext(context);
 
                             context.getContextParameterList().add(contextParam);
@@ -762,7 +762,7 @@ public final class ConnectionContextHelper {
         if (connection == null) {
             return null;
         }
-        ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+        ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
         if (contextItem != null && connection.isContextMode()) {
             if (defaultContext) {
                 selectedContext = contextItem.getDefaultContext();

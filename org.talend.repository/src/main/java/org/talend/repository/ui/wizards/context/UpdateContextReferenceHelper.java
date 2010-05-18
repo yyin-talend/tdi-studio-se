@@ -60,22 +60,22 @@ public final class UpdateContextReferenceHelper {
         final Set<String> repositoryVarsSet = getCurRepositoryContextVarsName(curRepositoryManager);
         final Map<String, String> renamedMap = curRepositoryManager.getNameMap();
 
-        String curContextName = curContextItem.getProperty().getLabel();
+        // String curContextName = curContextItem.getProperty().getId();
         String curContextId = curContextItem.getProperty().getId();
         if (renamedMap != null && !renamedMap.isEmpty()) {
             // if rename the context variable naem, update the item context.
             updateProcessItemforVariablesReference(curRepositoryManager, curContextId, repositoryVarsSet, renamedMap);
             // update the opened context.
-            updateOpenedJobforVariablesReference(curRepositoryManager, curContextName, repositoryVarsSet, renamedMap);
+            updateOpenedJobforVariablesReference(curRepositoryManager, curContextId, repositoryVarsSet, renamedMap);
         }
     }
 
     /*
      * update the opened job context.
      */
-    private static void updateOpenedJobforVariablesReference(JobContextManager curRepositoryManager, final String contextName,
+    private static void updateOpenedJobforVariablesReference(JobContextManager curRepositoryManager, final String contextId,
             final Set<String> repositoryVarsSet, final Map<String, String> renamedMap) {
-        if (contextName == null) {
+        if (contextId == null) {
             return;
         }
 
@@ -94,7 +94,7 @@ public final class UpdateContextReferenceHelper {
                 for (IContextParameter contextParameter : context.getContextParameterList()) {
                     if (!contextParameter.isBuiltIn()) {
                         String source = contextParameter.getSource();
-                        if (source.equals(contextName)) {
+                        if (source.equals(contextId)) {
                             // check variable reference of current repository context
                             final String paramName = contextParameter.getName();
                             String newName = getRenamedVarName(paramName, renamedMap);

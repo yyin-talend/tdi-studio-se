@@ -1766,7 +1766,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             for (IContext context : contextManager.getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
                     if (item != null && ContextUtils.updateParameterFromRepository(item, param, context.getName())) {
-                        param.setSource(item.getProperty().getLabel());
+                        param.setSource(item.getProperty().getId());
                     } else {
                         param.setSource(IContextParameter.BUILT_IN);
                     }
