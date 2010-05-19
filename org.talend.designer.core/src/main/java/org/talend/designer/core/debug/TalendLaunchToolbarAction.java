@@ -113,7 +113,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         String jobId = launch.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
         String jobVersion = launch.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         if (jobId != null) {
-            if (allVersion != null) {
+            if (allVersion != null && allVersion.length > 0) {
                 for (IRepositoryObject obj : allVersion) {
                     if (obj.getProperty().getVersion().equals(jobVersion)) {
                         return true;
