@@ -69,8 +69,15 @@ public class ExportTreeViewer {
 
     private Button moveButton;
 
+    private JobScriptsExportWizardPage jobScriptExportWizardPage;
+
     public ExportTreeViewer(IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    public ExportTreeViewer(IStructuredSelection selection, JobScriptsExportWizardPage jobScriptExportWizardPage) {
+        this.selection = selection;
+        this.jobScriptExportWizardPage = jobScriptExportWizardPage;
     }
 
     public SashForm createContents(Composite parent) {
@@ -276,6 +283,21 @@ public class ExportTreeViewer {
         return false;
     }
 
+    private void checkSelection() {
+        if (jobScriptExportWizardPage == null) {
+            return;
+        }
+        if (this.getCheckNodes().length == 0) {
+            StringBuffer buff = new StringBuffer();
+            buff.append(Messages.getString("JavaJobScriptsExportWSWizardPage.needOneJobSelected")); //$NON-NLS-1$
+            jobScriptExportWizardPage.setErrorMessage(buff.toString());
+            jobScriptExportWizardPage.setPageComplete(false);
+        } else {
+            jobScriptExportWizardPage.setErrorMessage(null);
+            jobScriptExportWizardPage.setPageComplete(true);
+        }
+    }
+
     /**
      * DOC hcw Comment method "createSelectionButton".
      * 
@@ -296,6 +318,7 @@ public class ExportTreeViewer {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(true);
+                checkSelection();
             }
         });
 
@@ -306,6 +329,7 @@ public class ExportTreeViewer {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(false);
+                checkSelection();
             }
         });
 

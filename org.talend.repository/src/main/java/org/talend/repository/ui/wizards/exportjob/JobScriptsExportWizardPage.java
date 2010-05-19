@@ -387,7 +387,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected SashForm createExportTree(Composite parent) {
-        treeViewer = new ExportTreeViewer(selection);
+        treeViewer = new ExportTreeViewer(selection, this);
         SashForm sashForm = treeViewer.createContents(parent);
         treeViewer.addCheckStateListener(checkStateListener);
         return sashForm;
