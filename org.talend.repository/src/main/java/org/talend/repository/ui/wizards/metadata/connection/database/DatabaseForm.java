@@ -1758,9 +1758,11 @@ public class DatabaseForm extends AbstractForm {
                 // schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
-                if (schemaText.getText().equals("")) { //$NON-NLS-1$
-                    schemaText.setText("dbo"); //$NON-NLS-1$
-                }
+
+                // for bug 13033
+                //                if (schemaText.getText().equals("")) { //$NON-NLS-1$
+                //                    schemaText.setText("dbo"); //$NON-NLS-1$
+                // }
             } else if (template == EDatabaseConnTemplate.VERTICA || template == EDatabaseConnTemplate.INFORMIX) {
                 // add for bug 0009553 10531
                 schemaText.setEditable(true);
