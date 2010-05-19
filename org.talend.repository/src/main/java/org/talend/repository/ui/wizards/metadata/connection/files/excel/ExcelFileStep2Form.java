@@ -205,7 +205,6 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             thousandSeparaotrText.setEnabled(advanceSeparatorCheckbox.getSelection());
             decimalSeparatorText.setEnabled(advanceSeparatorCheckbox.getSelection());
         }
-
         checkFieldsValue();
     }
 
@@ -1113,9 +1112,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      * DOC YeXiaowei Comment method "saveOriginShcemaColumns".
      */
     private void saveOriginShcemaColumns() {
-        List<String> columns = getConnection().getSheetColumns();
-        originSchemaColumns.clear();
-        originSchemaColumns.addAll(columns);
+        // for bug 12907
+        if (originSchemaColumns.size() == 0) {
+            List<String> columns = getConnection().getSheetColumns();
+            originSchemaColumns.clear();
+            originSchemaColumns.addAll(columns);
+
+        }
     }
 
     /*
