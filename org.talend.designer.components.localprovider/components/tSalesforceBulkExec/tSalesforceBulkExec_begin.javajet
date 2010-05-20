@@ -108,8 +108,30 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 			<%=connSuccess.getName() %>.salesforce_id = resultMessage_<%=cid%>.get("Id");
 <%
 					for (IMetadataColumn column: metadata.getListColumns()) {
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>			
-		    <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");			
+					    <%		
+				        if(javaType == JavaTypesManager.STRING ){
+						%>
+				            <%=connSuccess.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
+						<%
+				        }else if(javaType == JavaTypesManager.DATE){
+				        %>
+				            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
+				        <%
+				        }else if(JavaTypesManager.isNumberType(javaType)) {
+				        %>
+				            <%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+				        <%
+				        }else { 
+						%>
+							<%=connSuccess.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+						<%
+						}
+						%>
+				           			
 <%					 
 					}
 				}
@@ -127,8 +149,29 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 			
 <%
 					for (IMetadataColumn column: metadata.getListColumns()) {
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>			
-		    <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");					
+					    <%		
+				        if(javaType == JavaTypesManager.STRING ){
+						%>
+				            <%=connReject.getName() %>.<%=column.getLabel() %> = resultMessage_<%=cid%>.get("<%=column.getLabel() %>");
+						<%
+				        }else if(javaType == JavaTypesManager.DATE && pattern != null){
+				        %>
+				            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"), <%= pattern %>);
+				        <%
+				        }else if(JavaTypesManager.isNumberType(javaType)) {
+				        %>
+				            <%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+				        <%
+				        }else { 
+						%>
+							<%=connReject.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(resultMessage_<%=cid%>.get("<%=column.getLabel() %>"));
+						<%
+						}
+						%>
 <%					 
 					}
 				}
