@@ -1676,7 +1676,7 @@ public class CLASS {
             return "";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "next value for \" + " + surrogateKeySequence + " + \"";
+            return "\" + " + surrogateKeySequence + " + \".nextval";
         }
         protected String getIncrement() {
             return "";
