@@ -180,6 +180,8 @@ public class DatabaseTableForm extends AbstractForm {
 
     private final IWizardPage parentWizardPage;
 
+    private String editSchemaTableName;
+
     /**
      * TableForm Constructor to use by RCP Wizard.
      * 
@@ -905,11 +907,17 @@ public class DatabaseTableForm extends AbstractForm {
 
     private void updateRetreiveSchemaButton() {
         boolean enable = false;
+
         if (tableCombo.getText() != null) {
             int index = tableCombo.getCombo().indexOf(tableCombo.getText());
             if (index > -1) {
                 enable = true;
             }
+        }
+        // for bug 13099
+        if (enable == false && metadataTable != null) {
+            editSchemaTableName = metadataTable.getLabel();
+            enable = true;
         }
         if (isReadOnly()) {
             retreiveSchemaButton.setEnabled(false);
@@ -950,7 +958,12 @@ public class DatabaseTableForm extends AbstractForm {
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
-                tableString = tableCombo.getItem(tableCombo.getSelectionIndex());
+             int selectionIndex = tableCombo.getSelectionIndex();
+                if (selectionIndex <0) {
+                    tableString = editSchemaTableName;
+                } else {
+                    tableString = tableCombo.getItem(selectionIndex);
+                }
 
                 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
                 metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
