@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.thash.io.sortimpl;
+package org.talend.designer.components.tsort.io.sortimpl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.talend.designer.components.thash.io.IMapHashFile;
-import org.talend.designer.components.thash.io.beans.ILightSerializable;
-import org.talend.designer.components.thash.io.util.DeleteFileOnExitUtil;
+import org.talend.designer.components.tsort.io.IMapHashFile;
+import org.talend.designer.components.tsort.io.beans.ILightSerializable;
+import org.talend.designer.components.tsort.io.util.DeleteFileOnExitUtil;
 
 /**
  * 
