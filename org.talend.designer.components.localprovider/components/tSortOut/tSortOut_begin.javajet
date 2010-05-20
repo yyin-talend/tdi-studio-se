@@ -655,7 +655,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
            				} else {
                				byte[] bytes = new byte[length];
                				dis.read(bytes);
-               				result.<%=column.getLabel() %> = new String(bytes);
+               				result.<%=column.getLabel() %> = new String(bytes, utf8Charset);
            				}
 					<%
 				} else if(("byte[]").equals(typeToGenerate)) {
@@ -746,7 +746,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeInt(-1);
 			} else {
-				byte[] byteArray = this.<%=column.getLabel() %>.getBytes();
+				byte[] byteArray = this.<%=column.getLabel() %>.getBytes(utf8Charset);
 				dos.writeInt(byteArray.length);
 				dos.write(byteArray);
 			}

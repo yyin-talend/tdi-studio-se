@@ -93,8 +93,8 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> {
- 
+ public class <%=process.getName()%> { 
+ 	
  	public final Object obj = new Object();    
 <%
 if(isRunInMultiThread){
@@ -103,6 +103,12 @@ if(isRunInMultiThread){
 <%
 }
 %>
+	<%//it will be use in job setting.%>    
+    private final static java.nio.charset.Charset defaultCharset = java.nio.charset.Charset.defaultCharset();
+    
+    <%//uft-8 is for temp file, for example: tSortRow, tMap. Because they need keep reversibility.%>
+    private final static java.nio.charset.Charset utf8Charset = java.nio.charset.Charset.forName("utf-8");
+    
     // create and load default properties
 	private java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default

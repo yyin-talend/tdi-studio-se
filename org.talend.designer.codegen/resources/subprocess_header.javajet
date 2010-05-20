@@ -299,7 +299,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
    				}
 			}
 			dis.readFully(commonByteArray, 0, length);
-			strReturn = new String(commonByteArray, 0, length);
+			strReturn = new String(commonByteArray, 0, length, utf8Charset);
 		}
 		return strReturn;
 	}
@@ -308,7 +308,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		if(str == null) {
             dos.writeInt(-1);
 		} else {
-            byte[] byteArray = str.getBytes();
+            byte[] byteArray = str.getBytes(utf8Charset);
 	    	dos.writeInt(byteArray.length);
 			dos.write(byteArray);
     	}
@@ -327,7 +327,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		} else {
 			byte[] byteArray = new byte[length];
 			dis.read(byteArray);
-			strReturn = new String(byteArray);
+			strReturn = new String(byteArray, utf8Charset);
 		}
 		return strReturn;
 	}
@@ -336,7 +336,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		if(str == null) {
             dos.writeInt(-1);
 		} else {
-            byte[] byteArray = str.getBytes();
+            byte[] byteArray = str.getBytes(utf8Charset);
 	    	dos.writeInt(byteArray.length);
 			dos.write(byteArray);
     	}
