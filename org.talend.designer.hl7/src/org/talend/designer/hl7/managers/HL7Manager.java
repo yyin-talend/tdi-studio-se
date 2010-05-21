@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -194,7 +195,9 @@ public class HL7Manager {
                 metatable.getColumns().add(column);
             }
             metatable.setLabel(schemaKey);
+            schemaKey = mapSchemaKeyFromNode(schemaKey);
             IMetadataTable table = ConvertionHelper.convert(metatable);
+            table.setTableName(schemaKey);
             if (displayName != null && !"".equals(displayName)) {
                 oneSchema.put("SCHEMA", schemaKey); //$NON-NLS-N$
                 oneSchema.put("MAPPING", displayName); //$NON-NLS-N$
@@ -212,11 +215,31 @@ public class HL7Manager {
                 }
                 if (find) {
                     hl7Component.getMetadataList().remove(index);
+                } else {
+                    schemaKey = hl7Component.getProcess().generateUniqueConnectionName(
+                            MultiSchemasUtil.getConnectionBaseName(schemaKey));
+                    table.setTableName(schemaKey);
                 }
                 hl7Component.getMetadataList().add(table);
             }
         }
         return schemas;
+    }
+
+    protected String mapSchemaKeyFromNode(String schemaKey) {
+        for (IMetadataTable table1 : hl7Component.getMetadataList()) {
+            if (table1.getTableName() != null && !"".equals(table1.getTableName()))
+                if (table1.getTableName().split("_").length > 2) { // for 12862,split table name from node to map
+                    // the label when the node is from repository
+                    String labelInNode = table1.getTableName().split("_")[1];
+                    if (labelInNode.equals(schemaKey)) {
+                        schemaKey = table1.getTableName();
+                        break;
+                    }
+                }
+
+        }
+        return schemaKey;
     }
 
     public List<String> getMsgContentList() {

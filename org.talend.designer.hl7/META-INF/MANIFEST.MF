@@ -8,8 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.commons.ui,
  org.talend.repository,
  org.talend.designer.core,
- org.talend.libraries.hl7,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.designer.components.localprovider
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .

@@ -29,6 +29,7 @@ import org.talend.designer.hl7.managers.HL7Manager;
 
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.GenericParser;
+import ca.uhn.hl7v2.validation.impl.NoValidation;
 
 /**
  * DOC gcui class global comment. Detailled comment. parse HL7 file.
@@ -157,6 +158,8 @@ public class HL7Parse {
      */
     public Message getHL7MessageInput(String messageText) {
         GenericParser p = new GenericParser();
+        p.setValidationContext(new NoValidation()); // force use novalidation
+
         Message message = null;
         try {
             if (messageText != null) {
@@ -191,4 +194,5 @@ public class HL7Parse {
         }
         return c;
     }
+
 }

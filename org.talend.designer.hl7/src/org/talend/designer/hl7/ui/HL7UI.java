@@ -165,17 +165,21 @@ public class HL7UI {
         for (IMetadataTable table : tables) {
             MetadataTable loaded = ConvertionHelper.convert(table);
             List<MetadataColumn> columns = loaded.getColumns();
-            if (hl7Manager.getSchemaRelationMap().get(table.getLabel()) != null) {
-                hl7Manager.getSchemaRelationMap().remove(table.getLabel());
-                hl7Manager.getSchemaRelationMap().put(table.getLabel(), columns);
+            String trueTableName = table.getLabel();
+            if (trueTableName.split("_").length > 2) { // get true table name from node draged from repository
+                trueTableName = trueTableName.split("_")[1]; //$NON-NLS-N$  
+            }
+            if (hl7Manager.getSchemaRelationMap().get(trueTableName) != null) {
+                hl7Manager.getSchemaRelationMap().remove(trueTableName);
+                hl7Manager.getSchemaRelationMap().put(trueTableName, columns);
             } else {
-                hl7Manager.getSchemaRelationMap().put(table.getLabel(), columns);
+                hl7Manager.getSchemaRelationMap().put(trueTableName, columns);
             }
             if (this.getMetaTableViewer().getSelection() instanceof IStructuredSelection) {
                 IStructuredSelection selection = (IStructuredSelection) this.getMetaTableViewer().getSelection();
                 if (selection.getFirstElement() != null) {
                     String name = ((IModel) selection.getFirstElement()).getDisplayName();
-                    if (name.equals(table.getLabel())) {
+                    if (name.equals(trueTableName)) {
                         hl7SchemaEditorView.getMetadataEditor().addAll(columns);
                     }
                 }
