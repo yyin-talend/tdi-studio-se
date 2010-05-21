@@ -104,7 +104,7 @@ if(isRunInMultiThread){
 }
 %>
 	<%//it will be use in job setting.%>    
-    private final static String defaultCharset = java.nio.charset.Charset.defaultCharset().getName;
+    private final static String defaultCharset = java.nio.charset.Charset.defaultCharset().name();
     
     <%//uft-8 is for temp file, for example: tSortRow, tMap. Because they need keep reversibility.%>
     private final static String utf8Charset = "UTF-8";
