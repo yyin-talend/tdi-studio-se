@@ -287,13 +287,45 @@ private class TalendException extends Exception {
 <%
 				}
 			}
+			
+			INode virtualNCatchNode = null;
+			boolean hasRealCatchNode = false; 
 			for (INode logCatcher : logCatchers) {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
+					if(logCatcher.isVirtualGenerateNode()){
+						virtualNCatchNode = logCatcher;
+					}else{
+						hasRealCatchNode = true;
+					}
+				}
+			}
+			if(hasRealCatchNode && virtualNCatchNode!=null){
+%>
+			try{
+<%
+			}
+			for (INode logCatcher : logCatchers) {
+				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
+					if(logCatcher!=virtualNCatchNode){
 					// 2) launch logCatcher subProcess
 %>
-			<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+				<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%
+					}
 				}
+			}
+			if(hasRealCatchNode && virtualNCatchNode!=null){
+%>
+			}finally{
+<%
+			}
+%>
+				<%=virtualNCatchNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+<%
+			if(hasRealCatchNode && virtualNCatchNode!=null){
+%>
+			}
+<%
 			}
 		}
 %>
