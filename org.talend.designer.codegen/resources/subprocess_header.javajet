@@ -990,6 +990,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 			String currentMethodName = new Exception().getStackTrace()[0].getMethodName();
 			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
 			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+				globalResumeTicket = true;
 
 <%
 //this part for "Resume Management"

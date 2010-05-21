@@ -87,7 +87,7 @@
 	}else{
 %>
 
-globalResumeTicket = true;
+
 
 <%
 //this part for "Resume Management"
