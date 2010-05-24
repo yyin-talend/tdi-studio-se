@@ -319,9 +319,11 @@ private class TalendException extends Exception {
 			}finally{
 <%
 			}
+			if(virtualNCatchNode!=null){
 %>
 				<%=virtualNCatchNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%
+			}
 			if(hasRealCatchNode && virtualNCatchNode!=null){
 %>
 			}
