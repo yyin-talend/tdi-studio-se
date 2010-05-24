@@ -49,7 +49,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -119,10 +118,10 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             Control lastControl) {
         this.curParameter = param;
         boolean isJobletOk = false;
-        IJobletProviderService service = getJobletProviderService(param);
-        if (service == null) { // not joblet
-            param.setDisplayName(EParameterName.COMPONENT_LIST.getDisplayName());
-        }
+        // IJobletProviderService service = getJobletProviderService(param);
+        // if (service == null) { // not joblet
+        // param.setDisplayName(EParameterName.COMPONENT_LIST.getDisplayName());
+        // }
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
