@@ -587,6 +587,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
+            if (list.contains(subjobInfo)) {
+                continue;
+            }
             list.add(subjobInfo);
             getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
                     resource, exportChoice);
