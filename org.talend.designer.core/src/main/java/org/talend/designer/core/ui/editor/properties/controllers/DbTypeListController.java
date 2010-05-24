@@ -333,7 +333,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                 String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue(); //$NON-NLS-1$
                 Connection connection = MetadataTool.getConnectionFromRepository(metaRepositoryName);
                 // bug 13200
-                if (((DatabaseConnection) connection).getDatabaseType().equals(EDatabaseTypeName.GENERAL_JDBC)) {
+                if (((DatabaseConnection) connection).getDatabaseType().equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
                     // bug 7618 modify
                     currentDbms = (DBConnectionContextUtils.cloneOriginalValueConnection((DatabaseConnection) connection))
                             .getDbmsId();
