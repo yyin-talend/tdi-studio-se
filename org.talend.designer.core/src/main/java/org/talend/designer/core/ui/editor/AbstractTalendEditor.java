@@ -202,10 +202,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     public void selectPaletteEntry(String componentName) {
         PaletteViewer paletteViewer = getPaletteViewerProvider().getEditDomain().getPaletteViewer();
+        if (paletteViewer == null) {
+            return;
+        }
         PaletteRoot root = getPaletteRoot();
         RootEditPart part = paletteViewer.getRootEditPart();
-        collapsePalette(part.getChildren());
-        selectPaletteEntry(componentName, paletteViewer, root.getChildren());
+        if (part != null) {
+            collapsePalette(part.getChildren());
+        }
+        if (root != null) {
+            selectPaletteEntry(componentName, paletteViewer, root.getChildren());
+        }
     }
 
     public PaletteViewer getPaletteViewer2() {
