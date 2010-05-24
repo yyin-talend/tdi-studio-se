@@ -176,6 +176,8 @@ public class DatabaseForm extends AbstractForm {
 
     private boolean first = true;
 
+    private boolean isModify = false;
+
     /**
      * Constructor to use by a Wizard to create a new database connection.
      * 
@@ -865,7 +867,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setServerName(serverText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -878,7 +880,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setPort(portText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                     // Check port
                     boolean b = true;
@@ -945,7 +947,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setSID(sidOrDatabaseText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -958,7 +960,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setDatasourceName(datasourceText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -971,7 +973,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setSchema(schemaText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -1000,7 +1002,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setAdditionalParams(additionParamText.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -1201,7 +1203,7 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
                         getConnection().setFileFieldName(fileField.getText());
-                        checkFieldsValue();
+                        modifyFieldValue();
                     }
                 }
             }
@@ -1286,6 +1288,12 @@ public class DatabaseForm extends AbstractForm {
             setSqlModelFields();
             first = false;
         }
+    }
+
+    private void modifyFieldValue() {
+        isModify = true;
+        checkFieldsValue();
+        isModify = false;
     }
 
     /**
@@ -1509,7 +1517,10 @@ public class DatabaseForm extends AbstractForm {
             urlConnectionStringText.setToolTipText(template.getUrlTemplate(version));
         }
         updateCheckButton();
-        setPropertiesFormEditable(false);
+
+        if (!isModify) {
+            setPropertiesFormEditable(false);
+        }
 
         if (dbTypeCombo.getSelectionIndex() < 0) {
             updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.alert", dbTypeCombo.getLabel())); //$NON-NLS-1$
@@ -1517,7 +1528,9 @@ public class DatabaseForm extends AbstractForm {
         }
 
         // Show Database Properties
-        setPropertiesFormEditable(true);
+        if (!isModify) {
+            setPropertiesFormEditable(true);
+        }
 
         if (!checkGeneralDB) {
             if (!checkTypeDBFieldValues()) {
