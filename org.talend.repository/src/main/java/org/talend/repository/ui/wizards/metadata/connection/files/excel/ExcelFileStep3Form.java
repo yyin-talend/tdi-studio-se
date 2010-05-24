@@ -292,6 +292,14 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         ExcelSchemaBean bean = new ExcelSchemaBean();
 
         bean.setSheetName(originalValueConnection.getSheetName());
+        // for bug 12907
+        bean.setFirstColumn(originalValueConnection.getFirstColumn());
+        bean.setLastColumn(originalValueConnection.getLastColumn());
+
+        bean.setAdvancedSeparator(originalValueConnection.isAdvancedSpearator());
+        bean.setThousandSeparator(originalValueConnection.getThousandSeparator());
+        bean.setDecimalSeparator(originalValueConnection.getDecimalSeparator());
+
         bean.setSelectAllSheets(originalValueConnection.isSelectAllSheets());
         bean.setSheetsList(originalValueConnection.getSheetList());
 
@@ -406,8 +414,7 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
             // fix bug 5694: column names check in FileDelimited wizard fails to
             // rename duplicate column name
             ShadowProcessPreview.fixDuplicateNames(label);
-            int k = valueOf - 1;
-            for (int i = k; i < k + numberOfCol.intValue(); i++) {
+            for (int i = 0; i < numberOfCol.intValue(); i++) {
                 // define the first currentType and assimile it to globalType
                 String globalType = null;
                 int lengthValue = 0;
@@ -420,10 +427,10 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
                         if (current == csvRows.size()) {
                             globalType = "id_String";//$NON-NLS-1$
                             continue;
-                        } else if (i - k >= csvRows.get(current).length) {
+                        } else if (i >= csvRows.get(current).length) {
                             globalType = "id_String"; //$NON-NLS-1$
                         } else {
-                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i - k]);
+                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
                             // if (current == csvRows.size()) {
                             // globalType = "id_String"; //$NON-NLS-1$
@@ -433,10 +440,10 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
                         if (current == csvRows.size()) {
                             globalType = "id_String";//$NON-NLS-1$
                             continue;
-                        } else if (i - k >= csvRows.get(current).length) {
+                        } else if (i >= csvRows.get(current).length) {
                             globalType = "String"; //$NON-NLS-1$
                         } else {
-                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i - k]);
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
                             // if (current == csvRows.size()) {
                             // globalType = "String"; //$NON-NLS-1$
@@ -538,8 +545,8 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
                 metadataColumn.setLength(lengthValue);
 
                 // Check the label and add it to the table
-                metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i - k]));
-                columns.add(i - k, metadataColumn);
+                metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
+                columns.add(i, metadataColumn);
             }
         }
         tableEditorView.getMetadataEditor().addAll(columns);
