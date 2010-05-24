@@ -374,7 +374,7 @@ java.util.List<Comparable<%=rowName %>Struct> list_<%=cid %> = new java.util.Arr
 %>
 ////////////////////////////////////
 class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implements
-                        org.talend.designer.components.thash.io.beans.ILightSerializable<<%=rowName %>StructILightSerializable> {
+                        org.talend.designer.components.tsort.io.beans.ILightSerializable<<%=rowName %>StructILightSerializable> {
 
 	public int compareTo(<%=rowName %>StructILightSerializable other) {
 
@@ -628,7 +628,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 		return 0;
 	}
 
-	public org.talend.designer.components.thash.io.beans.ILightSerializable createInstance(byte[] byteArray) {
+	public org.talend.designer.components.tsort.io.beans.ILightSerializable createInstance(byte[] byteArray) {
 		<%=rowName %>StructILightSerializable result = new <%=rowName %>StructILightSerializable();
 		java.io.ByteArrayInputStream bai = null;
 		java.io.DataInputStream dis = null;
