@@ -11,7 +11,7 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
-  >
+    >
     <SIGNATURE></SIGNATURE>
   </HEADER>
 
@@ -40,50 +40,36 @@
       <DEFAULT/>
     </PARAMETER>
     
-    <PARAMETER 
-      NAME="AUTOCAST"
-      FIELD="CHECK"
-      NUM_ROW="3"
-    >
-    <DEFAULT>false</DEFAULT>
+    <PARAMETER NAME="AUTOCAST" FIELD="CHECK" NUM_ROW="3">
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>   
     
-    <PARAMETER
-      NAME="MANUALTABLE"
-      FIELD="TABLE"
-      NUM_ROW="5"
-      NB_LINES="5"
-      SHOW_IF=" AUTOCAST == 'false'"
-    >
+    <PARAMETER NAME="MANUALTABLE" FIELD="TABLE" NUM_ROW="5" NB_LINES="5" SHOW_IF=" AUTOCAST == 'false'">
       <ITEMS>
       	<ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
         <ITEM NAME="OUTPUT_COLUMN" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
-			REQUIRED="true" NUM_ROW="7" CONTEXT="REJECT" SHOW="true">
-			<TABLE READONLY="true">
-				<COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255"
-					READONLY="false" CUSTOM="true" />
-				<COLUMN NAME="errorMessage" TYPE="id_String"
-					LENGTH="255" READONLY="false" CUSTOM="true" />
-			</TABLE>
-		</PARAMETER>
-		
-	<PARAMETER 
-      NAME="DIEONERROR"
-      FIELD="CHECK"
-      NUM_ROW="10"
-    >
-    <DEFAULT>false</DEFAULT>
+    <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="7" CONTEXT="REJECT" SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+      </TABLE>
+    </PARAMETER>
+    
+    <PARAMETER NAME="EMPTYTONULL" FIELD="CHECK" NUM_ROW="8">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    		
+	<PARAMETER NAME="DIEONERROR" FIELD="CHECK" NUM_ROW="10">
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>
   
-   <ADVANCED_PARAMETERS/>
-	   
-
+  <ADVANCED_PARAMETERS/>
+  
   <CODEGENERATION/>
 
   <RETURNS>
