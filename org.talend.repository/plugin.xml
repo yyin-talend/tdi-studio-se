@@ -1084,6 +1084,13 @@
              id="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
              name="SalesforceTimeoutMigrationTask">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"
+             description="MysqlOutputDBVersionForBug13250"
+             id="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"
+             name="MysqlOutputDBVersionForBug13250">
+       </projecttask>
    </extension>
    
    <extension
