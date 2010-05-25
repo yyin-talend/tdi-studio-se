@@ -458,9 +458,21 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         boolean findSameNameColumn = false;
         boolean hasMax = false;
         for (IMetadataColumn exsitingOneColumn : columns) {
-            if (exsitingOneColumn.getLabel() != null && exsitingOneColumn.getLabel().split("_").length > 1) {
-                String priorIndex = exsitingOneColumn.getLabel().split("_")[1];
-                String name = exsitingOneColumn.getLabel().split("_")[0];
+            boolean hasIndex = false;
+            String[] allseg = exsitingOneColumn.getLabel().split("_");
+            String name = "";
+            String priorIndex = allseg[allseg.length - 1];
+            if (isNumeric(priorIndex)) {
+                hasIndex = true;
+                for (int j = 0; j < allseg.length - 1; j++) {
+                    if (j != allseg.length - 2) {
+                        name = name + allseg[j] + "_";
+                    } else {
+                        name = name + allseg[j];
+                    }
+                }
+            }
+            if (exsitingOneColumn.getLabel() != null && exsitingOneColumn.getLabel().split("_").length > 1 && hasIndex) {
                 if (name.equals(MetadataTool.validateColumnName(labelName, i))) {
                     findSameNameColumn = true;
                     indexsForSameNamedColumn.add(Integer.parseInt(priorIndex));
@@ -933,6 +945,13 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    public static boolean isNumeric(String s) {
+        if ((s != null) && (s != ""))
+            return s.matches("^[0-9]*$");
+        else
+            return false;
     }
 
 }
