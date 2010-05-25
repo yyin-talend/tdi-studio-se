@@ -246,7 +246,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             <%
         }
         %>
-        String tmpQuery_<%=cid%> = "SELECT MAX(`<%=scdConfiger.getSurrogateKeyField()%>`) FROM `" + tableName_<%=cid%> + "`";
+        String tmpQuery_<%=cid%> = "SELECT MAX(\"<%=scdConfiger.getSurrogateKeyField()%>\") FROM " + tableName_<%=cid%> + "";
         java.sql.Statement tmpStmt_<%=cid%> = connection_<%=cid%>.createStatement();
         java.sql.ResultSet tmpRS_<%=cid%> = tmpStmt_<%=cid%>.executeQuery(tmpQuery_<%=cid%>);
         <%
