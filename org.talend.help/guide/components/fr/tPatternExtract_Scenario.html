@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:26">
+    <meta name="LASTUPDATED" content="05/24/10 15:45:17">
     <title>Scénario&#160;: Extraire uniquement les données qui correspondent à un modèle défini d&#39;un fichier délimité</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,114 +17,126 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2986023"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116301"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2986046"> </a><h2 class="pHeading2">
+<a name="wp3116308"> </a><h2 class="pHeading2">
 Scénario&#160;: Extraire uniquement les données qui correspondent à un modèle défini d&#39;un fichier délimité
 </h2>
-<a name="wp2986053"> </a><p class="pIndented1">
+<a name="wp3116315"> </a><p class="pIndented1">
 Ce scénario Java décrit un Job à trois composants, dans lequel le composant <b class="cBold">tExtractPattern</b> est utilisé afin d&#39;extraire uniquement les adresses e-mail des clients (qui correspondent au modèle<b class="cBold"> Email address</b>) d&#39;un fichier délimité contenant différentes données sur les clients. Il écrit ensuite les données extraites dans un autre fichier délimité.
 </p>
-<a name="wp2986071"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116333"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract.png" id="wp2986067" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract.png" id="wp3116329" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986082"> </a><div class="pSmartList2"><li>Glissez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tPatternExtract</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
-<a name="wp2986107"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileInputDelimited</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. Si vous avez déjà stocké vos schémas d&#39;entrée dans le <b class="cBold">Repository</b>, vous pouvez simplement glisser la métadonnée correspondante du noeud <b class="cBold">Metadata</b> dans l&#39;espace de modélisation graphique. Ainsi, les paramètres seront automatiquement renseignés, dans la vue <b class="cBold">Basic settings</b>. Pour plus d&#39;informations sur les métadonnées, consultez le <b class="cBold">Guide</b> <b class="cBold">Utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.</li></div>
+<a name="wp3116344"> </a><div class="pSmartList2"><li>Glissez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tPatternExtract</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
+<a name="wp3116369"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileInputDelimited</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. Si vous avez déjà stocké vos schémas d&#39;entrée dans le <b class="cBold">Repository</b>, vous pouvez simplement glisser la métadonnée correspondante du noeud <b class="cBold">Metadata</b> dans l&#39;espace de modélisation graphique. Ainsi, les paramètres seront automatiquement renseignés, dans la vue <b class="cBold">Basic settings</b>. Pour plus d&#39;informations sur les métadonnées, consultez le <b class="cBold">Guide</b> <b class="cBold">Utilisateur</b> de <b class="cBold">Talend Open Studio</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2986141"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../en/images/Use_Case_tPatternExtract1.png" id="wp2986137" border="0" hspace="0" vspace="0"/>
+<a name="wp3116403"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Use_Case_tPatternExtract1.png" id="wp3116399" border="0" hspace="0" vspace="0"/>
 </div>
-<a name="wp2986145"> </a><p class="pIndented1">
+<a name="wp3116407"> </a><p class="pIndented1">
 Dans ce scénario, le fichier délimité contient les noms, les adresses e-mail et les numéros de téléphone dans une seule colonne&#160;: <em class="cEmphasis">Name_Telephone_Address</em>.
 </p>
-<a name="wp2986159"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116421"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract2.png" id="wp2986155" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract2.png" id="wp3116417" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2986164"> </a><p class="pIndented1">
+<a name="wp3116426"> </a><p class="pIndented1">
 Le schéma d&#39;entrée du fichier délimité sera défini comme suit&#160;:
 </p>
-<a name="wp2986173"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116435"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract3.png" id="wp2986169" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract3.png" id="wp3116431" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986184"> </a><div class="pSmartList2"><li>Si vous n&#39;avez pas stocké les schémas des fichiers délimités dans le <b class="cBold">Repository</b>, définissez manuellement les propriétés du composant, dans la vue <b class="cBold">Basic settings</b>, et cliquez sur <b class="cBold">Edit schema</b> afin d&#39;afficher la boîte de dialogue où vous pourrez définir le schéma d&#39;entrée.</li></div>
-<a name="wp2986201"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> [+]</b>, afin d&#39;ajouter autant de lignes que vous avez dans votre schéma d&#39;entrée, une seule dans ce scénario, puis cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
-<a name="wp2986215"> </a><p class="pBodyRelative">
+<a name="wp3116446"> </a><div class="pSmartList2"><li>Si vous n&#39;avez pas stocké les schémas des fichiers délimités dans le <b class="cBold">Repository</b>, définissez manuellement les propriétés du composant, dans la vue <b class="cBold">Basic settings</b>, et cliquez sur <b class="cBold">Edit schema</b> afin d&#39;afficher la boîte de dialogue où vous pourrez définir le schéma d&#39;entrée.</li></div>
+<a name="wp3116463"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> [+]</b>, afin d&#39;ajouter autant de lignes que vous avez dans votre schéma d&#39;entrée, une seule dans ce scénario, puis cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3116477"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp2986212" border="0" hspace="0" vspace="0"/><br />
+<img src="images/bulb_small.png" align="left" id="wp3116474" border="0" hspace="0" vspace="0"/><br />
 Une nouvelle boîte de dialogue s&#39;ouvre et vous demande si vous voulez propager les changements, cliquez sur <b class="cBold">OK</b> si vous souhaitez accepter la propagation du schéma. Ainsi, les composants suivants obtiendront automatiquement le schéma d&#39;entrée. Il n&#39;y a donc pas besoin de paramétrer le schéma à nouveau.
 </p>
-<a name="wp2986235"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tPatternExtract</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3116497"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tPatternExtract</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2986246"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116508"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract4.png" id="wp2986242" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986257"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Column to check</b>, sélectionnez la colonne dont vous voulez vérifier les données, par rapport au modèle défini, <em class="cEmphasis">Name_Telephone_Address</em> dans cet exemple.</li></div>
-<a name="wp2986270"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Pattern type</b>, sélectionnez le modèle en accord avec lequel vous souhaitez extraire les données, <b class="cBold">Email address</b> dans cet exemple.</li></div>
-<a name="wp2986283"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> afin de propager automatiquement toutes les colonnes  du fichier délimité d&#39;entrée.</li></div>
-<a name="wp2986292"> </a><div class="pSmartList2"><li>Au besoin, cliquez sur <b class="cBold">Edit schema</b> afin de voir la structure des données des composants <b class="cBold">tFileInputDelimited</b> et <b class="cBold">tPatternExtract</b>.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2986311"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract5.png" id="wp2986307" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract4.png" id="wp3116504" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986323"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
-<a name="wp2986335"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileOutputDelimited</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3116519"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Column to check</b>, sélectionnez la colonne dont vous voulez vérifier les données, par rapport au modèle défini, <em class="cEmphasis">Name_Telephone_Address</em> dans cet exemple.</li></div>
+<a name="wp3116532"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Pattern type</b>, sélectionnez le modèle en accord avec lequel vous souhaitez extraire les données, <b class="cBold">Email address</b> dans cet exemple.</li></div>
+<a name="wp3116545"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> afin de propager automatiquement toutes les colonnes  du fichier délimité d&#39;entrée.</li></div>
+<a name="wp3116554"> </a><div class="pSmartList2"><li>Au besoin, cliquez sur <b class="cBold">Edit schema</b> afin de voir la structure des données des composants <b class="cBold">tFileInputDelimited</b> et <b class="cBold">tPatternExtract</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2986346"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116573"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract6.png" id="wp2986342" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract5.png" id="wp3116569" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986361"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...] </b>à côté du champ <b class="cBold">File Name</b>, afin de sélectionner le fichier dans lequel vous souhaitez écrire vos données de sortie.</li></div>
-<a name="wp2986366"> </a><div class="pSmartList2"><li>Définissez les séparateurs de lignes et de champs, au besoin. Dans cet exemple, nous voulons séparer les adresses e-mail des clients par un point virgule.</li></div>
-<a name="wp2986375"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Append</b> si vous voulez ajouter de nouvelles lignes à la fin des enregistrements.</li></div>
-<a name="wp2986384"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Include Heade</b>r pour inclure le titre de la colonne dans les données de sortie.</li></div>
-<a name="wp2986393"> </a><div class="pSmartList2"><li>Au besoin, cliquez sur <b class="cBold">Edit schema</b> afin de voir les flux de données d&#39;entrée et de sortie.</li></div>
-<a name="wp2986403"> </a><p class="pBodyRelative">
+<a name="wp3116585"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3116597"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileOutputDelimited</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3116608"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tPatternExtract6.png" id="wp3116604" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3116623"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...] </b>à côté du champ <b class="cBold">File Name</b>, afin de sélectionner le fichier dans lequel vous souhaitez écrire vos données de sortie.</li></div>
+<a name="wp3116628"> </a><div class="pSmartList2"><li>Définissez les séparateurs de lignes et de champs, au besoin. Dans cet exemple, nous voulons séparer les adresses e-mail des clients par un point virgule.</li></div>
+<a name="wp3116637"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Append</b> si vous voulez ajouter de nouvelles lignes à la fin des enregistrements.</li></div>
+<a name="wp3116646"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Include Heade</b>r pour inclure le titre de la colonne dans les données de sortie.</li></div>
+<a name="wp3116655"> </a><div class="pSmartList2"><li>Au besoin, cliquez sur <b class="cBold">Edit schema</b> afin de voir les flux de données d&#39;entrée et de sortie.</li></div>
+<a name="wp3116665"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp2986400" border="0" hspace="0" vspace="0"/><br />
+<img src="images/bulb_small.png" align="left" id="wp3116662" border="0" hspace="0" vspace="0"/><br />
 Notez que le schéma dans les composants de sortie est différent du schéma du composant qui les précède, puisque nous voulons extraire uniquement les données qui correspondent au modèle <b class="cBold">Email address</b>.
 </p>
 </ul></div>
 </ul></div>
-<a name="wp2986417"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116679"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract7.png" id="wp2986413" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract7.png" id="wp3116675" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2986430"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6 </b>pour l&#39;exécuter.</li></div>
+<a name="wp3116692"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6 </b>pour l&#39;exécuter.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2986434"> </a><p class="pIndented1">
+<a name="wp3116696"> </a><p class="pIndented1">
 Les adresses e-mail des clients sont extraites de la colonne sélectionnée, selon le modèle <b class="cBold">Email</b> défini, et écrites dans le fichier de sortie, séparées par un point virgule. Vous pouvez, par exemple, envoyer un mail à tous vos clients en une seule fois.
 </p>
-<a name="wp2986452"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3116712"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tPatternExtract8.png" id="wp2986444" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tPatternExtract8.png" id="wp3116706" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -135,6 +149,7 @@ Les adresses e-mail des clients sont extraites de la colonne sélectionnée, selon
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

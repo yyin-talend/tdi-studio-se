@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:26">
+    <meta name="LASTUPDATED" content="05/24/10 15:45:17">
     <title>Scénario&#160;: Comparer quatre colonnes en utilisant différentes méthodes de correspondance, et collecter les duplicats rencontrés</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,103 +17,115 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
-<a name="wp2980498"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3110793"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2980505"> </a><h2 class="pHeading2">
+<a name="wp3110800"> </a><h2 class="pHeading2">
 Scénario&#160;: Comparer quatre colonnes en utilisant différentes méthodes de correspondance, et collecter les duplicats rencontrés
 </h2>
-<a name="wp2980512"> </a><p class="pIndented1">
+<a name="wp3110807"> </a><p class="pIndented1">
 Ce scénario Java décrit un Job à quatre composants, dont le but est de collecter dans deux fichiers  séparés toutes les entrées uniques et tous les duplicats d&#39;entrées depuis des colonnes traitées définies, à partir des types de correspondance Levenshtein et Double Métaphone.
 </p>
-<a name="wp2980518"> </a><p class="pIndented1">
+<a name="wp3110813"> </a><p class="pIndented1">
 Le fichier d&#39;entrée dans cet exemple ressemble à ceci&#160;:
 </p>
-<a name="wp2980527"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3110822"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow4.png" id="wp2980523" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980546"> </a><div class="pSmartList2"><li>Glissez le <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tFuzzyUniqRow</b>, et deux <b class="cBold">tFileOutputExcel</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
-<a name="wp2980567"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tFuzzyUniqRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Main</b> <b class="cBold">row</b>, le  <b class="cBold">tFuzzyUniqRow</b> au premier <b class="cBold">tFileOutputExcel</b> avec un lien <b class="cBold">Uniques</b>, puis au second <b class="cBold">tFileOutputExcel</b> à l&#39;aide d&#39;un lien <b class="cBold">Duplicates</b>. </li></div>
-</ul></div>
-</ul></div>
-<a name="wp2980602"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow.png" id="wp2980598" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow4.png" id="wp3110818" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980617"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileInputDelimited</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3110841"> </a><div class="pSmartList2"><li>Glissez le <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tFuzzyUniqRow</b>, et deux <b class="cBold">tFileOutputExcel</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp3110862"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tFuzzyUniqRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Main</b> <b class="cBold">row</b>, le  <b class="cBold">tFuzzyUniqRow</b> au premier <b class="cBold">tFileOutputExcel</b> avec un lien <b class="cBold">Uniques</b>, puis au second <b class="cBold">tFileOutputExcel</b> à l&#39;aide d&#39;un lien <b class="cBold">Duplicates</b>. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp2980628"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3110897"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow1.png" id="wp2980624" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow.png" id="wp3110893" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980644"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Built-In</b> dans le champ <b class="cBold">Property Type</b>.</li></div>
-<a name="wp2980656"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">File Name</b> pour sélectionner le fichier contenant les données d&#39;entrée.</li></div>
-<a name="wp2980662"> </a><div class="pSmartList2"><li>Définissez les séparateurs de lignes et de champs.</li></div>
-<a name="wp2980678"> </a><div class="pSmartList2"><li>Au besoin, paramétrez les champs <b class="cBold">Header</b>, <b class="cBold">Footer</b>, and <b class="cBold">Limit</b>.<br />Pour ce scénario, saisissez <em class="cEmphasis">1</em> dans le champ <b class="cBold">Header</b>. Les champs <b class="cBold">Footer</b> et <b class="cBold">Limit</b> pour le nombre de lignes traitées ne sont pas paramétrés. </li></div>
-<a name="wp2980703"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue où vous pourrez décrire la structure des données du fichier délimité source.</li></div>
+<a name="wp3110912"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileInputDelimited</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2980714"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3110923"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow2.png" id="wp2980710" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow1.png" id="wp3110919" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2980721"> </a><p class="pIndented1">
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3110939"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Built-In</b> dans le champ <b class="cBold">Property Type</b>.</li></div>
+<a name="wp3110951"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">File Name</b> pour sélectionner le fichier contenant les données d&#39;entrée.</li></div>
+<a name="wp3110957"> </a><div class="pSmartList2"><li>Définissez les séparateurs de lignes et de champs.</li></div>
+<a name="wp3110973"> </a><div class="pSmartList2"><li>Au besoin, paramétrez les champs <b class="cBold">Header</b>, <b class="cBold">Footer</b>, and <b class="cBold">Limit</b>.<br />Pour ce scénario, saisissez <em class="cEmphasis">1</em> dans le champ <b class="cBold">Header</b>. Les champs <b class="cBold">Footer</b> et <b class="cBold">Limit</b> pour le nombre de lignes traitées ne sont pas paramétrés. </li></div>
+<a name="wp3110998"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue où vous pourrez décrire la structure des données du fichier délimité source.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3111009"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow2.png" id="wp3111005" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3111016"> </a><p class="pIndented1">
 Dans ce scénario, le schéma source est composé des colonnes suivantes&#160;: <em class="cEmphasis">ID, Status, FirstName, Email, City, Initial, ZipCode,</em> et <em class="cEmphasis">Header</em> (ID, Statut, Prénom, E-mail, Ville, Initiales, Code postal, et En-tête).
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980742"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFuzzyUniqRow</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
-<a name="wp2980751"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Key Attribute</b>, cochez les cases à côté des colonnes que vous souhaitez vérifier en utilisant la méthode de correspondance définie, <em class="cEmphasis">Firstname</em>, <em class="cEmphasis">Email</em>, <em class="cEmphasis">City</em> et <em class="cEmphasis">ZipCode</em> (Prénom, E-mail, Ville et Code postal) dans cet exemple.</li></div>
+<a name="wp3111037"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFuzzyUniqRow</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3111046"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Key Attribute</b>, cochez les cases à côté des colonnes que vous souhaitez vérifier en utilisant la méthode de correspondance définie, <em class="cEmphasis">Firstname</em>, <em class="cEmphasis">Email</em>, <em class="cEmphasis">City</em> et <em class="cEmphasis">ZipCode</em> (Prénom, E-mail, Ville et Code postal) dans cet exemple.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2980778"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3111073"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow3.png" id="wp2980774" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980789"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Matching Type</b>, paramétrez les méthodes de correspondance que vous souhaitez appliquer pour chaque colonne sélectionnée.<br />Dans cet exemple, <em class="cEmphasis">Levenshtein</em> est utilisé comme méthode de correspondance pour les colonnes <em class="cEmphasis">FirstName, Email, </em>et <em class="cEmphasis">ZipCode</em>, le <em class="cEmphasis">Double Metaphone</em> sera utilisé comme méthode de correspondance pour la colonne <em class="cEmphasis">City</em>.</li></div>
-<a name="wp2980814"> </a><div class="pSmartList2"><li>Paramétrez ensuite les distances minimale et maximale pour la méthode Levenshtein. Dans cette méthode, la distance est le nombre de changements devant être apporté aux caractères (insertion, suppression ou substitution) afin que l&#39;entrée corresponde entièrement à la référence. Dans cet exemple, nous voulons que la distance minimale soit égale à 0, et que la distance maximale soit égale à 2. Cela conduira à l&#39;écriture de toutes les entrées des colonnes <em class="cEmphasis">FirstName, Email, </em>et <em class="cEmphasis">ZipCode </em>qui correspondent exactement ou ont au plus deux modifications de caractères. Il n&#39;y a ni distance minimale, ni distance maximale à paramétrer pour le <em class="cEmphasis">Double Metaphone</em>, car cette méthode de correspondance est basée sur les divergences phonétiques dans les données d&#39;entrée.</li></div>
-<a name="wp2980838"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier <b class="cBold">tFileOutputExcel</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp2980850"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow5.png" id="wp2980846" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow3.png" id="wp3111069" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2980857"> </a><div class="pSmartList2"><li>Paramétrez le répertoire de destination, ainsi que la nom de la feuille (<span style="font-weight: bold">Sheet name</span>), et cochez la case <span style="font-weight: bold">Include header</span>.</li></div>
-<a name="wp2980867"> </a><div class="pSmartList2"><li> Répétez l&#39;opération pour le deuxième <b class="cBold">tFileOutputExcel</b>.</li></div>
-<a name="wp2980877"> </a><div class="pSmartList2"><li> Sauvegardez votre Job et cliquez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+<a name="wp3111084"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Matching Type</b>, paramétrez les méthodes de correspondance que vous souhaitez appliquer pour chaque colonne sélectionnée.<br />Dans cet exemple, <em class="cEmphasis">Levenshtein</em> est utilisé comme méthode de correspondance pour les colonnes <em class="cEmphasis">FirstName, Email, </em>et <em class="cEmphasis">ZipCode</em>, le <em class="cEmphasis">Double Metaphone</em> sera utilisé comme méthode de correspondance pour la colonne <em class="cEmphasis">City</em>.</li></div>
+<a name="wp3111109"> </a><div class="pSmartList2"><li>Paramétrez ensuite les distances minimale et maximale pour la méthode Levenshtein. Dans cette méthode, la distance est le nombre de changements devant être apporté aux caractères (insertion, suppression ou substitution) afin que l&#39;entrée corresponde entièrement à la référence. Dans cet exemple, nous voulons que la distance minimale soit égale à 0, et que la distance maximale soit égale à 2. Cela conduira à l&#39;écriture de toutes les entrées des colonnes <em class="cEmphasis">FirstName, Email, </em>et <em class="cEmphasis">ZipCode </em>qui correspondent exactement ou ont au plus deux modifications de caractères. Il n&#39;y a ni distance minimale, ni distance maximale à paramétrer pour le <em class="cEmphasis">Double Metaphone</em>, car cette méthode de correspondance est basée sur les divergences phonétiques dans les données d&#39;entrée.</li></div>
+<a name="wp3111133"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier <b class="cBold">tFileOutputExcel</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp2980889"> </a><p class="pIndented1">
+<a name="wp3111145"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow5.png" id="wp3111141" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3111152"> </a><div class="pSmartList2"><li>Paramétrez le répertoire de destination, ainsi que la nom de la feuille (<span style="font-weight: bold">Sheet name</span>), et cochez la case <span style="font-weight: bold">Include header</span>.</li></div>
+<a name="wp3111162"> </a><div class="pSmartList2"><li> Répétez l&#39;opération pour le deuxième <b class="cBold">tFileOutputExcel</b>.</li></div>
+<a name="wp3111172"> </a><div class="pSmartList2"><li> Sauvegardez votre Job et cliquez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3111184"> </a><p class="pIndented1">
 Le <b class="cBold">tFuzzyUniqRow</b> utilise la méthode de <em class="cEmphasis">Levenshtein</em> pour comparer séparément chacune des trois colonnes définies, il utilise la méthode du <em class="cEmphasis">Double Metaphone</em>, afin de comparer les données de la colonne <em class="cEmphasis">City</em>, puis passer la ligne unique et les duplicats aux fichiers de sortie définis. Dans notre exemple, les deux premières lignes correspondent, cependant, la deuxième ligne ira dans la sortie  <em class="cEmphasis">duplicates</em>. 
 </p>
-<a name="wp2980911"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3111206"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow6.png" id="wp2980907" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow6.png" id="wp3111202" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
-<a name="wp2980920"> </a><p class="pIndented1">
+<a name="wp3111215"> </a><p class="pIndented1">
 La troisième ligne est unique et ira dans la sortie <em class="cEmphasis">uniques</em>.
 </p>
-<a name="wp2980931"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3111226"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/Use_Case_tFuzzyUniqRow7.png" id="wp2980925" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tFuzzyUniqRow7.png" id="wp3111220" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -124,6 +138,7 @@ La troisième ligne est unique et ira dans la sortie <em class="cEmphasis">unique
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

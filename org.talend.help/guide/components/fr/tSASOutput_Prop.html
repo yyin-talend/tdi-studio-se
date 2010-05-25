@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:50">
+    <meta name="LASTUPDATED" content="05/24/10 15:45:26">
     <title>tSASOutput</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,20 +17,23 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2750406"> </a><h2 class="pHeading1">
 tSASOutput
 </h2>
 <a name="wp2746345"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tSasOutput_icon32_white.png" id="wp2746338" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tSasOutput_icon32_white.png" id="wp2746338" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2758764"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2758750" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<em class="cEmphasis">Assurez-vous d&#39;installer au préalable les modules sas.core.jar, sas.intrnet.javatools.jar et sas.svc.connection.jar sous le chemin </em><b style="font-weight: bold" class="cBold">lib &gt; java</b><span style="font-weight: normal"> dans votre build </span><b style="font-weight: bold" class="cBold">Talend Integration Suite</b><span style="font-weight: normal"> pour pouvoir utiliser toutes les fonctionnalités des composants SAS. Vous pouvez vérifier que ces modules ont bien été installés à partir de la vue </span><b style="font-weight: bold" class="cBold">Modules</b><span style="font-style: italic; font-weight: normal"> de votre studio.</span><span style="font-style: normal"> </span>
+<em class="cEmphasis">Assurez-vous d&#39;installer au préalable les modules sas.core.jar, sas.intrnet.javatools.jar et sas.svc.connection.jar sous le chemin </em><b style="font-weight: bold" class="cBold">lib &gt; java</b><span style="font-weight: normal"> dans votre build </span><b style="font-weight: bold" class="cBold">Talend Open Studio</b><span style="font-weight: normal"> pour pouvoir utiliser toutes les fonctionnalités des composants SAS. Vous pouvez vérifier que ces modules ont bien été installés à partir de la vue </span><b style="font-weight: bold" class="cBold">Modules</b><span style="font-style: italic; font-weight: normal"> de votre studio.</span><span style="font-style: normal"> </span>
 </div>
 <a name="wp2758781"> </a><h2 class="pHeading2">
 Propriétés du tSASOutput
@@ -78,7 +83,15 @@ Le <b class="cBold">tSASOutput</b> exécute l&#39;action définie sur la table et/
 </div>
 </td>
     <td><a name="wp2746477"> </a><div class="pCellBody">
-Cochez cette case et sélectionnez le composant <b class="cBold">tSASConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définis. 
+Cochez cette case et sélectionnez le composant <b class="cBold">tSASConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définis.<br />
+</div>
+<a name="wp3468495"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3468492" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3468520"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -200,7 +213,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2746610"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de Talend Open Studio. 
 </div>
 </td>
 </tr>
@@ -213,7 +226,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2746631"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de Talend Open Studio. 
 </div>
 </td>
 </tr>
@@ -364,16 +377,16 @@ Cochez cette case pour collecter les données de log au niveau du composant.
 &#160;
 </div>
 </td>
-    <td><a name="wp2835648"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+    <td><a name="wp3143762"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 <em class="cEmphasis">Enable parallel execution</em>
 </div>
 </td>
-    <td><a name="wp2748980"> </a><div class="pCellBody">
-Cochez cette case permet de traiter plusieurs flux de données simultanément. Cela permet de traiter les données plus rapidement.<br />Pour plus d&#39;informations, consultez <em class="cEmphasis">Paralléliser les flux de données</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite</b>.
+    <td><a name="wp3121201"> </a><div class="pCellBody">
+Cochez cette case permet de traiter plusieurs flux de données simultanément. Cela permet de traiter les données plus rapidement.<br />Pour plus d&#39;informations, consultez <em class="cEmphasis">Paralléliser les flux de données</em> du <span style="font-weight: bold">Guide Utilisateur</span> Talend Open Studio.
 </div>
-<a name="wp2952594"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3143803"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2952587" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3143788" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Les actions sur la table (<b class="cBold">Action on table</b>) ne sont pas disponibles avec la fonction de parallélisation. Ainsi, pour créer une table, vous devez utiliser un composant <b class="cBold">tCreateTable</b>. 
 </div>
 </td>
@@ -390,9 +403,11 @@ Ce composant couvre toutes les possibilités de requête SQL dans les bases de don
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -405,6 +420,7 @@ Ce composant couvre toutes les possibilités de requête SQL dans les bases de don
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

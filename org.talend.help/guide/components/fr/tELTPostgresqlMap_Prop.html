@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:17:56">
+    <meta name="LASTUPDATED" content="05/24/10 15:46:27">
     <title>tELTPostgresqlMap</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,8 +17,10 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2972694"> </a><h2 class="pHeading1">
 tELTPostgresqlMap
@@ -24,6 +28,7 @@ tELTPostgresqlMap
 <a name="wp2972704"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div align="left"><img src="images/tELTPostgresqlMap_icon32_white.png" id="wp2972699" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2972714"> </a><h2 class="pHeading2">
 Propriétés de tELTPostgresqlMap
@@ -75,8 +80,16 @@ Utilise les tables fournies en entrée pour alimenter les paramètres nécessaires 
 <em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp2972803"> </a><div class="pCellBody">
-Cochez cette case et sélectionnez le composant <b class="cBold">tPostgresqlConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définie.
+    <td><a name="wp3464039"> </a><div class="pCellBody">
+Cochez cette case et sélectionnez le composant <b class="cBold">tPostgresqlConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définie.<br />
+</div>
+<a name="wp3464051"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3464048" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp2972803"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -101,8 +114,8 @@ L&#39;éditeur ELT du Mapper vous permet de définir le schéma de sortie ainsi que
 <em class="cEmphasis">Style link</em>
 </div>
 </td>
-    <td><a name="wp2972839"> </a><div class="pCellBody">
-Sélectionnez le type d&#39;affichage des liens. Sélectionner <b class="cBold">Line</b> vous permettra d&#39;optimiser les performances.
+    <td><a name="wp3463506"> </a><div class="pCellBody">
+Sélectionnez le type d&#39;affichage des liens.<br /><b class="cBold">Auto</b>&#160;: par défaut, les liens entre les schémas d&#39;entrée et de sortie et les paramètres du service Web sont en forme de courbe.<br /><b class="cBold">Curves</b>&#160;: les liens entre les schémas et les paramètres du service Web sont en forme de ligne.<br /><b class="cBold">Line</b>&#160;: les liens entre les schémas et les paramètres du service Web sont en forme de lignes droites. Cette option vous permettra d&#39;optimiser les performances.
 </div>
 </td>
 </tr>
@@ -218,8 +231,8 @@ Sélectionnez l&#39;encodage dans la liste ou sélectionnez <b class="cBold">Custo
 <em class="cEmphasis">Additional JDBC parameters</em>
 </div>
 </td>
-    <td><a name="wp2972985"> </a><div class="pCellBody">
-Ajoutez des informations de connexion supplémentaires nécessaires à la connexion à la base de données.
+    <td><a name="wp3134213"> </a><div class="pCellBody">
+Spécifiez des informations supplémentaires de connexion à la base de données créée. Cette option n&#39;est pas disponible lorsque vous utilisez l&#39;option <b class="cBold">Use an existing connection</b> dans les <b class="cBold">Basic settings</b>.
 </div>
 </td>
 </tr>
@@ -253,9 +266,11 @@ Les composants ELT ne traitent pas le flux de données lui-même mais uniquement l
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -268,6 +283,7 @@ Les composants ELT ne traitent pas le flux de données lui-même mais uniquement l
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

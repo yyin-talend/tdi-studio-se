@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:11">
+    <meta name="LASTUPDATED" content="05/24/10 15:45:03">
     <title>tMysqlSCD</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,15 +17,18 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2081103"> </a><h2 class="pHeading1">
 tMysqlSCD
 </h2>
 <a name="wp1549995"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tMysqlSCD_icon32_white.png" id="wp1549991" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tMysqlSCD_icon32_white.png" id="wp1549991" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp1550002"> </a><h2 class="pHeading2">
 Propriétés du tMysqlSCD
@@ -73,7 +78,15 @@ Le <b class="cBold">tMysqlSCD</b> adresse des besoins en transformation Slowly C
 </div>
 </td>
     <td><a name="wp2768680"> </a><div class="pCellBody">
-Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b> pour réutiliser les informations de connexion que vous avez déjà définies.
+Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b> pour réutiliser les informations de connexion que vous avez déjà définies.<br />
+</div>
+<a name="wp3463457"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3463454" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3463482"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -216,7 +229,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2768788"> </a><div class="pCellBody">
-<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -229,7 +242,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2768803"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de Talend Integration Suite. 
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -268,7 +281,7 @@ Cochez cette case pour améliorer les performances du système.
 </div>
 </td>
     <td><a name="wp2769042"> </a><div class="pCellBody">
-Ajoutez des informations de connexion supplémentaires nécessaires à la connexion à la base de données.
+Spécifiez des informations supplémentaires de connexion à la base de données créée. Cette option n&#39;est pas disponible lorsque vous utilisez l&#39;option <b class="cBold">Use an existing connection</b> dans les <b class="cBold">Basic settings</b>.
 </div>
 </td>
 </tr>
@@ -310,6 +323,7 @@ Ce composant est un composant de sortie. Par conséquent, il requiert un composan
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
 <a name="wp2060090"> </a><h3 class="pHeading3">
 Méthodologie de gestion du SCD
@@ -322,7 +336,8 @@ La figure ci-dessous représente l&#39;éditeur SCD.
 </p>
 <a name="wp2060105"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../en/images/SCD_Editor.png" id="wp2060102" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/SCD_Editor.png" id="wp2060102" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2060115"> </a><h4 class="pHeading4">
 Clés SCD
@@ -364,6 +379,7 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
 ·	<b class="cBold">Type 1</b>&#160;: aucun historique n&#39;est stocké dans la base de données. Les nouvelles données écrase les anciennes. Utilisez ce type si vous n&#39;avez pas besoin de traquer les changements. Ce type de SCD convient lorsque vous corrigez certaines fautes, par exemple l&#39;orthographe des mots.
 </div>
 <a name="wp2078642"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2078648"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 88pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -9pt; text-transform: none">
 ·	<b class="cBold">Type2</b>&#160;: l&#39;intégralité de l&#39;historique est stockée dans la base de données. Ce type de SCD traque les données d&#39;historique en enregistrant un nouvel enregistrement dans la table de dimension avec une nouvelle clé à chaque fois qu&#39;un changement est effectué. Ce type de SCD convient lorsque l&#39;on traque les mises à jour, par exemple.<br /><br />Le principe du SCD <b class="cBold">Type 2</b> réside dans le fait qu&#39;un nouvel enregistrement est ajouté à la table SCD lorsqu&#39;un changement est détecté dans les colonnes sélectionnées. Notez que bien que plusieurs changements peuvent être effectués au même enregistrement sur plusieurs colonnes paramétrées en <b class="cBold">Type 2</b>, une seule ligne traquant ces changements est ajoutée à la table SCD.<br /><br />Le schéma du SCD Type 2 devrait inclure des colonnes spécifiques au SCD contenant les informations de log standard, notamment&#160;:<br />-<b class="cBold">start&#160;</b>: ajoute une colonne au schéma de la table SCD contenant la date de début d&#39;un enregistrement. Vous pouvez sélectionner une des colonnes du schéma d&#39;entrée comme date de départ pour la table SCD.<br />-<b class="cBold">end</b>&#160;: ajoute une colonne au schéma de la table SCD contenant la date de fin d&#39;un enregistrement. Lorsque l&#39;enregistrement est en cours, la date de fin est de valeur <b class="cBold">NULL</b> , sinon vous pouvez utiliser une année fixe en sélectionnant <b class="cBold">Fixed Year Value</b> dans la liste et renseignez l&#39;année fictive dans la cellule d&#39;à coté pour éviter d&#39;avoir une valeur nulle dans le champ <b class="cBold">end</b>.<br />-<b class="cBold">version</b>&#160;: ajoute une colonne au schéma de la table SCD contenant le numéro de version de l&#39;enregistrement.<br />-<b class="cBold">active</b>&#160;: ajoute une colonne au schéma de la table SCD contenant les statuts <b class="cBold">true</b> ou <b class="cBold">false</b>. Cette colonne permet de repérer facilement les enregistrements actifs.
@@ -373,6 +389,7 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
 </div>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -385,6 +402,7 @@ Il existe quatre types de dimensions à évolution lente (Slowly Changing Dimensio
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

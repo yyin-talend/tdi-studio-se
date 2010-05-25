@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:07">
+    <meta name="LASTUPDATED" content="05/24/10 15:44:59">
     <title>tMDMInput</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,20 +17,23 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2783723"> </a><h2 class="pHeading1">
 tMDMInput
 </h2>
 <a name="wp2765188"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/TalendMDMInput_white.png" id="wp2765184" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/TalendMDMInput_white.png" id="wp2765184" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2782351"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2782340" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-Ce composant est disponible dans la <b class="cBold">Palette</b>, mais vous ne pourrez l&#39;utiliser uniquement si vous possédez <b class="cBold">Talend MDM</b>.<br />
+Ce composant est disponible dans la <b class="cBold">Palette</b>, mais vous pourrez l&#39;utiliser uniquement si vous possédez <b class="cBold">Talend MDM</b>.<br />
 </div>
 <a name="wp2782355"> </a><h2 class="pHeading2">
 Propriétés du tMDMInput
@@ -56,7 +61,7 @@ Talend MDM
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2775007"> </a><div class="pCellBody">
-Le composant <b class="cBold">tMDMInput</b> lit les fichiers XML d&#39;une base de données MDM.
+Le composant <b class="cBold">tMDMInput</b> lit les données de référence du hub MDM (référentiel XML).
 </div>
 </td>
 </tr>
@@ -65,7 +70,7 @@ Le composant <b class="cBold">tMDMInput</b> lit les fichiers XML d&#39;une base 
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2775016"> </a><div class="pCellBody">
-Ce composant lit les fichiers XML d&#39;une base de données MDM afin de traiter les données lues.
+Ce composant lit les données de référence dans un hub MDM et rend possible le traitement de ces données.
 </div>
 </td>
 </tr>
@@ -113,7 +118,7 @@ Peut être Built-in ou Repository.
 </div>
 </td>
     <td><a name="wp2775057"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> et <em class="cEmphasis">Edit Schema</em>
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp2775060"> </a><div class="pCellBody">
@@ -135,7 +140,7 @@ Si vous modifiez le schéma, il redevient automatiquement built-in.
 </div>
 </td>
     <td><a name="wp2775082"> </a><div class="pCellBody">
-<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend On Demand</b>. 
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -148,7 +153,7 @@ Si vous modifiez le schéma, il redevient automatiquement built-in.
 </div>
 </td>
     <td><a name="wp2775100"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend On Demand</b>. 
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -161,7 +166,7 @@ Si vous modifiez le schéma, il redevient automatiquement built-in.
 </div>
 </td>
     <td><a name="wp2775118"> </a><div class="pCellBody">
-URL d&#39;accès à la base de données MDM.
+Saisissez l&#39;URL d&#39;accès au serveur MDM.
 </div>
 </td>
 </tr>
@@ -174,7 +179,7 @@ URL d&#39;accès à la base de données MDM.
 </div>
 </td>
     <td><a name="wp2775130"> </a><div class="pCellBody">
-Informations d&#39;authentification de l&#39;utilisateur de la base de données MDM.
+Saisissez les informations d&#39;authentification de l&#39;utilisateur du serveur MDM.
 </div>
 </td>
 </tr>
@@ -182,12 +187,12 @@ Informations d&#39;authentification de l&#39;utilisateur de la base de données M
 &#160;
 </div>
 </td>
-    <td><a name="wp2775137"> </a><div class="pCellHeading">
+    <td><a name="wp2963815"> </a><div class="pCellHeading">
 <em class="cEmphasis">Version</em>
 </div>
 </td>
-    <td><a name="wp2775139"> </a><div class="pCellBody">
-Saisissez le nom de la perspective à laquelle vous connectez et vous donnant accès à certaines données en fonction de vos droits utilisateur.<br />Laissez ce champ vide pour afficher la perspective par défaut.
+    <td><a name="wp2963818"> </a><div class="pCellBody">
+Saisissez le nom de la version des données de référence à laquelle vous souhaitez vous connecter, en fonction de vos droits utilisateur.<br />Laissez ce champ vide pour afficher la version par défaut des données de référence.
 </div>
 </td>
 </tr>
@@ -195,12 +200,12 @@ Saisissez le nom de la perspective à laquelle vous connectez et vous donnant acc
 &#160;
 </div>
 </td>
-    <td><a name="wp2775146"> </a><div class="pCellHeading">
+    <td><a name="wp2963825"> </a><div class="pCellHeading">
 <em class="cEmphasis">Entity</em>
 </div>
 </td>
-    <td><a name="wp2775148"> </a><div class="pCellBody">
-Saisissez le nom de l&#39;entité contenant les données que vous souhaitez lire.
+    <td><a name="wp2963828"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;entité contenant les données que vous souhaitez effacer.
 </div>
 </td>
 </tr>
@@ -208,12 +213,12 @@ Saisissez le nom de l&#39;entité contenant les données que vous souhaitez lire.
 &#160;
 </div>
 </td>
-    <td><a name="wp2775155"> </a><div class="pCellHeading">
+    <td><a name="wp2963835"> </a><div class="pCellHeading">
 <em class="cEmphasis">Data Container</em>
 </div>
 </td>
-    <td><a name="wp2775157"> </a><div class="pCellBody">
-Saisissez le nom du répertoire de sauvegarde contenant les données que vous souhaitez lire.
+    <td><a name="wp2963838"> </a><div class="pCellBody">
+Saisissez le nom du conteneur de données contenant les données que vous souhaitez effacer.
 </div>
 </td>
 </tr>
@@ -225,13 +230,13 @@ Saisissez le nom du répertoire de sauvegarde contenant les données que vous souh
 <em class="cEmphasis">Use multiple conditions</em>
 </div>
 </td>
-    <td><a name="wp2775166"> </a><div class="pCellBody">
-Cette case est cochée par défaut. Elle permet de filtrer les données à l&#39;aide de conditions.<br /><b class="cBold">Xpath</b>&#160;: saisissez, entre guillemets, le noeud XML sur lequel appliquer la condition.<br /><b class="cBold">Function</b>&#160;: sélectionnez la condition à utiliser.<br /><b class="cBold">Value</b>&#160;: saisissez, entre guillemets, la valeur souhaitée.<br /><b class="cBold">Predicate</b>&#160;: sélectionnez un prédicat lorsque vous utilisez plusieurs conditions.<br /><br />Si vous cochez cette case, vous avez la possibilité de sélectionner les ID des enregistrements que vous souhaitez récupérer dans la colonne <b class="cBold">ID value</b> du tableau <b class="cBold">IDS</b>.<br />
+    <td><a name="wp2963857"> </a><div class="pCellBody">
+Cochez cette case pour filtrer les données de référence à l&#39;aide de conditions.<br /><b class="cBold">Xpath</b>&#160;: saisissez, entre guillemets, le noeud XML sur lequel appliquer la condition.<br /><b class="cBold">Function</b>&#160;: sélectionnez la condition à utiliser.<br /><b class="cBold">Value</b>&#160;: saisissez, entre guillemets, la valeur souhaitée.<br /><b class="cBold">Predicate</b>&#160;: sélectionnez un prédicat lorsque vous utilisez plusieurs conditions.<br />Si vous décochez cette case, vous avez la possibilité de sélectionner des ID particuliers devant être affichés dans la colonne <b class="cBold">ID value</b> du tableau <b class="cBold">IDS</b>.<br />
 </div>
 <a name="wp2775193"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2775188" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-Si vous décochez la case <b class="cBold">Use multiple conditions</b>, l&#39;option <b class="cBold">Batch size</b> de l&#39;onglet <b class="cBold">Advanced settings</b> ne sera plus disponible.
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2963879" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Si vous décochez la case <b class="cBold">Use multiple conditions</b>, l&#39;option <b class="cBold">Batch Size</b> de l&#39;onglet <b class="cBold">Advanced settings</b> ne sera plus disponible.
 </p>
 </td>
 </tr>
@@ -257,7 +262,7 @@ Renseignez le nombre de lignes à ignorer.
 </div>
 </td>
     <td><a name="wp2775218"> </a><div class="pCellBody">
-Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ni traitée.
+Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ou traitée.
 </div>
 </td>
 </tr>
@@ -266,11 +271,11 @@ Nombre maximum de lignes à traiter. Si Limit = 0, aucune ligne n&#39;est lue ni 
 </div>
 </td>
     <td><a name="wp2775228"> </a><div class="pCellHeading">
-<em class="cEmphasis">Batch size</em>
+<em class="cEmphasis">Batch Size</em>
 </div>
 </td>
     <td><a name="wp2775230"> </a><div class="pCellBody">
-Nombre d&#39;enregistrement dans chaque lot récupéré.<br />
+Nombre de lignes dans chaque lot traité.<br />
 </div>
 <a name="wp2775236"> </a><p class="pBodyRelative">
 </p>
@@ -301,7 +306,7 @@ Noeud de l&#39;arborescence XML sur lequel est basé la boucle.
 </div>
 </td>
     <td><a name="wp2775264"> </a><div class="pCellBody">
-<b class="cBold">Column</b>&#160;: reflète le schéma tel qu&#39;il est défini dans l&#39;éditeur Edit Schema.<br /><b class="cBold">XPath query</b>&#160;: Saisissez les champs à extraire de la structure XML d&#39;entrée.<br /><b class="cBold">Get Nodes</b>&#160;: Cochez cette case pour ajouter les balises XML entournant les données à récupérer.
+<b class="cBold">Column</b>&#160;: reflète le schéma tel qu&#39;il est défini dans l&#39;éditeur Edit Schema.<br /><b class="cBold">XPath query</b>&#160;: Saisissez les champs à extraire de la structure XML d&#39;entrée.<br /><b class="cBold">Get Nodes</b>&#160;: Cochez cette case pour récupérer les balises XML entournant les données avec celles-ci.
 </div>
 </td>
 </tr>
@@ -323,16 +328,18 @@ Cochez cette case pour collecter les données de log au niveau du composant.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2775280"> </a><div class="pCellBody">
-Utilisez ce composant pour lire un fichier et séparer les champs à l&#39;aide du séparateur spécifié.
+Ce composant est utilisé comme composant de début. Il nécessite un flux de sortie..
 </div>
 </td>
 </tr>
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -345,6 +352,7 @@ Utilisez ce composant pour lire un fichier et séparer les champs à l&#39;aide du
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>

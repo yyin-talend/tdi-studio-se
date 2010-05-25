@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/23/10 10:14:50">
+    <meta name="LASTUPDATED" content="05/24/10 15:45:26">
     <title>tJDBCRow</title>
   </head>
+
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
@@ -15,15 +17,18 @@
         </td>
       </tr>
     </table-->
+
     <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
     <hr align="left"-->
+
     <blockquote>
 <a name="wp2307121"> </a><h2 class="pHeading1">
 tJDBCRow
 </h2>
 <a name="wp2307130"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../en/images/tJDBCRow_icon32_white.png" id="wp2307125" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tJDBCRow_icon32_white.png" id="wp2307125" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
 </div>
 <a name="wp2307137"> </a><h2 class="pHeading2">
 Propriétés du tJDBCRow
@@ -73,7 +78,15 @@ Selon la nature de la requête et de la base de données, <b class="cBold">tJDBCRo
 </div>
 </td>
     <td><a name="wp3013801"> </a><div class="pCellBody">
-Cochez cette case et sélectionnez le composant <b class="cBold">tJDBCConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définis. 
+Cochez cette case et sélectionnez le composant <b class="cBold">tJDBCConnection</b> adéquat à partir de la liste <b class="cBold">Component</b> pour réutiliser les paramètres d&#39;une connexion que vous avez déjà définis.<br />
+</div>
+<a name="wp3466270"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3466267" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3466295"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -151,7 +164,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2590593"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>&#160;: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Built-in</b>&#160;: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -164,7 +177,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2592321"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -315,9 +328,11 @@ Ce composant offre la flexibilité des requêtes sur toute base de données utilisa
 </table>
 </div>
 <p class="pBodyRelative">
+
 </p>
     </blockquote>
     <hr>
+
     <!--table align="right" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="right"><font size="1">
@@ -330,6 +345,7 @@ Ce composant offre la flexibilité des requêtes sur toute base de données utilisa
         </font></td>
       </tr>
     </table-->
+
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
