@@ -877,7 +877,10 @@ public class RunProcessContext {
 
                             // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
                             if (line.trim().length() > 22) {
-                                String temp = line.substring(23);
+                                String temp = line.substring(line.indexOf("|") + 1); // remove the 0|
+                                temp = temp.substring(temp.indexOf("|") + 1); // remove the first GnqOsQ|
+                                temp = temp.substring(temp.indexOf("|") + 1); // remove the second GnqOsQ|
+                                temp = temp.substring(temp.indexOf("|") + 1); // remove the third GnqOsQ|
                                 line = temp;
                             }
                         }
