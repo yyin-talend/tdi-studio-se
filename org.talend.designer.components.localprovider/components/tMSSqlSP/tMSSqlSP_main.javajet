@@ -64,7 +64,7 @@ class JavaToDbType {
 		} else if (("byte[]").equals(javaType)) {
 			return "BINARY";
 		} else if (("java.util.Date").equals(javaType)) {
-			return "DATE";
+			return "TIMESTAMP";
 		} else if (javaType.equalsIgnoreCase("boolean")) {
 			return "BOOLEAN";
 		} else if (javaType.equalsIgnoreCase("byte")) {
@@ -295,7 +295,7 @@ if (canGenerate) {
 							  		<%
 						  		} else if (("Date").equals(method)) {
 									%>
-									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex%>);
+									tmpDate_<%=cid%> = statement_<%=cid%>.getTimestamp(<%=argIndex%>);
 									if (tmpDate_<%=cid%> != null)
 										<%=firstOutConnection.getName()%>.<%=argName%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 									<%

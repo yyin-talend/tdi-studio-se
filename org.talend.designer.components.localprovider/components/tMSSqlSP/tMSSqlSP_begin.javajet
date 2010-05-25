@@ -58,5 +58,5 @@ if(hasOutput){
 %>
 );
 
-java.sql.Date tmpDate_<%=cid%>;
+java.sql.Timestamp tmpDate_<%=cid%>;
 String tmpString_<%=cid%>;
