@@ -333,7 +333,8 @@ public class QueryGuessCommand extends Command {
                 s[i] = s[i].trim();
                 buffer.append("," + "\n" + "\t" + "\t" + s[i]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
-            String[] last = s[s.length - 1].split("FROM"); //$NON-NLS-1$
+            // for bug 13265
+            String[] last = s[s.length - 1].split(" FROM "); //$NON-NLS-1$
             lastPartA = last[0].trim() + "\n"; //$NON-NLS-1$
             lastPartB = "FROM" + "\t" + last[1].trim(); //$NON-NLS-1$ //$NON-NLS-2$
             s[s.length - 1] = lastPartA + lastPartB;
