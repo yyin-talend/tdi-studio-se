@@ -52,7 +52,17 @@ String executionPlatform = ElementParameterParser.getValue(node,"__EXECUTION_PLA
 boolean setDbmoney = ("true").equals(ElementParameterParser.getValue(node,"__SET_DBMONEY__"));
 String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
 
+String datePattern = ElementParameterParser.getValue(node,"__DATE_FORMAT__");
+String[] datePatterns = datePattern.split(",");
+if(datePatterns.length > 1){
+	datePattern = datePatterns[1];
+}
+String datePatternCustom = ElementParameterParser.getValue(node,"__DATE_FORMAT_CUSTOM__");                
+if ("CUSTOM".equals(datePattern))
+	datePattern = datePatternCustom.substring(1,datePatternCustom.length()-1);
+
 String befroeCommit = ElementParameterParser.getValue(node, "__ROWS_BEFORE_COMMIT__");
+String badRows = ElementParameterParser.getValue(node, "__BAD_ROWS_BEFORE_ABORT__");
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
@@ -128,15 +138,29 @@ if(columnList != null && columnList.size() > 0) {
 	//-----------------------dbload command
 	StringBuilder command_<%=cid %> =  new StringBuilder();
 	//-------------------------1. add dbload cmd
+<%
+	if ("Windows".equalsIgnoreCase(executionPlatform)) {
+	//this just windows 
+%>
 	command_<%=cid %>.append("dbload ");
+<%
+	} else if ("Linux".equalsIgnoreCase(executionPlatform)) {
+	//this just windows 
+%>
+	command_<%=cid %>.append("./dbload ");
+<%
+	}
+%>
 	//-------------------------2.add database name
 	command_<%=cid %>.append("-d " + dbName_<%=cid%> + " ");
 	//-------------------------3.add command file
 	command_<%=cid %>.append("-c " + cmdFile_<%=cid%> + " ");
 	//-------------------------4.add  error log file
 	command_<%=cid %>.append("-l " + logFile_<%=cid%> + " ");
-	//-------------------------5.add commit interval
-	command_<%=cid %>.append("-n " + <%=befroeCommit%> + ";");
+	//-------------------------5.add  bad rows before abort
+	command_<%=cid %>.append("-e " + <%=badRows%> + " ");
+	//-------------------------6.add commit interval
+	command_<%=cid %>.append("-n " + <%=befroeCommit%> + ";"); 
 	
 	//----------------get envionment variables
 <%
@@ -164,6 +188,7 @@ if(columnList != null && columnList.size() > 0) {
 
 	evPara_<%=cid%>.add("INFORMIXDIR=" + <%=informixDir%>);
 	evPara_<%=cid%>.add("INFORMIXSERVER=" + dbServer_<%=cid%>);
+	evPara_<%=cid%>.add("DBDATE=" + "<%= datePattern %>");
 	
 <%
 	if (setDbmoney) {
@@ -187,7 +212,7 @@ if(columnList != null && columnList.size() > 0) {
 <%
 	} else if ("Linux".equalsIgnoreCase(executionPlatform)) {
 %>
-	final Process ps_<%=cid %> = runtime_<%=cid%>.exec(new String[]{command_<%=cid %>.toString()},
+	final Process ps_<%=cid %> = runtime_<%=cid%>.exec(command_<%=cid %>.toString(),
 								evPara_<%=cid%>.toArray(new String[]{}),dbLoadDirectory_<%=cid%>);
 <%
 	}
