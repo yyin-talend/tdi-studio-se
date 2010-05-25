@@ -708,19 +708,15 @@ public abstract class JobScriptsManager {
         if (relativePath == null) {
             relativePath = ""; //$NON-NLS-1$
         }
-        boolean found = false;
-        for (ExportFileResource res : allResources) {
-            Set<URL> urls = res.getResourcesByRelativePath(relativePath);
-            if (urls != null && urls.contains(projectURL)) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            List<URL> projectUrls = new ArrayList<URL>();
-            projectUrls.add(projectURL);
-            curResource.addResources(relativePath, projectUrls);
-        }
+        /*
+         * boolean found = false; for (ExportFileResource res : allResources) { Set<URL> urls =
+         * res.getResourcesByRelativePath(relativePath); if (urls != null && urls.contains(projectURL)) { found = true;
+         * break; } }
+         */
+        // for bug 13256
+        List<URL> projectUrls = new ArrayList<URL>();
+        projectUrls.add(projectURL);
+        curResource.addResources(relativePath, projectUrls);
     }
 
     /**
