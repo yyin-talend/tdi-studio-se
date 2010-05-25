@@ -32,8 +32,8 @@ import org.apache.log4j.Logger;
  * <li>Using many file per plug-in</li>
  * </ul>
  * 
- * Using plug-in can create their implementation by copy the DefaultMessagesImpl in the same package.<br/> * $Id:
- * MessagesCore.java,v 1.8 2006/07/26 16:02:00 amaumont Exp $
+ * Using plug-in can create their implementation by copy the DefaultMessagesImpl in the same package.<br/>
+ * * $Id: MessagesCore.java,v 1.8 2006/07/26 16:02:00 amaumont Exp $
  * 
  */
 public abstract class MessagesCore {
@@ -47,6 +47,10 @@ public abstract class MessagesCore {
     public static final String KEY_NOT_FOUND_PREFIX = "!!!"; //$NON-NLS-1$
 
     public static final String KEY_NOT_FOUND_SUFFIX = "!!!"; //$NON-NLS-1$
+
+    public static final String SINGLE_QUOTE = "'"; //$NON-NLS-1$
+
+    public static final String SINGLE_QUOTE_MUTI = "''"; //$NON-NLS-1$
 
     /**
      * Returns the i18n formatted message for <i>key</i> in the specified bundle.
@@ -76,6 +80,6 @@ public abstract class MessagesCore {
      * @return the string for the given key in the given resource bundle
      */
     public static String getString(String key, ResourceBundle resourceBundle, Object... args) {
-        return MessageFormat.format(getString(key, resourceBundle), args);
+        return MessageFormat.format(getString(key, resourceBundle).replaceAll(SINGLE_QUOTE, SINGLE_QUOTE_MUTI), args);
     }
 }
