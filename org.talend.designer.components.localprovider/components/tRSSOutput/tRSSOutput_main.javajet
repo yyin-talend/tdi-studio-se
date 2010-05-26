@@ -107,7 +107,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %> 	
    						org.dom4j.Element <%=coluLabel%>Element=rootElement.addElement("<%=coluLabel%>");
 <%		
-    					if(javaType == JavaTypesManager.STRING ){
+						if(coluLabel.equals("link")){
+%>
+							<%=coluLabel%>Element.addAttribute("href", <%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+    					}else if(javaType == JavaTypesManager.STRING ){
 %>	
  							<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
 <%		
