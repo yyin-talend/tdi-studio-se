@@ -20,6 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
+String reg = ElementParameterParser.getValue(node,"__REGEX__");
 
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
@@ -59,6 +60,7 @@ if(outConns!=null){
     	}
     }
 }
+boolean needRejectLink = !("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0;
 
 if(outConns!=null){
     for (IConnection conn : outConns) {
@@ -79,11 +81,25 @@ if(inConn!=null){
 		if(inputCol.getLabel().equals(field)){
 %>
     java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
+<%
+			if(!"".equals(rejectConnName)) {
+%>
+	boolean  isNotMatch_<%=cid %> = false;
+	if(!matcher_<%=cid %>.find()){
+		<%=rejectConnName %> = new <%=rejectConnName%>Struct();
+		<%=rejectConnName %>.errorMessage = <%=inConn.getName()%>.<%=field%> + " doesn't match regex:" + <%=reg%>;
+		isNotMatch_<%=cid %> = true;
+	}
+	matcher_<%=cid %>.reset();
+<%
+			}
+%>
+    
     int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
-    while(matcher_<%= cid %>.find()){
-    boolean matches_<%=cid %> = true;
+    while(<%="".equals(rejectConnName)?"":"isNotMatch_"+cid + "||" %> matcher_<%= cid %>.find()){
     
 <%
+			break;
 		}
 	}
 }
@@ -92,6 +108,7 @@ if(inConn!=null){
 List<IMetadataColumn> newColumnList = new ArrayList<IMetadataColumn>();
 if(outConn!=null && inConn!=null){
 %>
+<%="".equals(rejectConnName)?"":"if(!isNotMatch_"+cid +"){" %>
 try{
 	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
 <%
@@ -132,11 +149,11 @@ String temp_<%=cid%> = null;
     	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
 
 %>
-<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+<%=outConn.getName()%>.<%=column.getLabel() %> = groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
 <%
 		}else{
 %>
-	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
+	temp_<%=cid%> = groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
 	if(temp_<%=cid %>.length() > 0) {
 <%
 			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -228,7 +245,11 @@ String temp_<%=cid%> = null;
 	}
 %>
 }
+<%if(!"".equals(rejectConnName)){%>
+}
+isNotMatch_<%=cid %> = false;
 <%
+}
 }
 %>
 
