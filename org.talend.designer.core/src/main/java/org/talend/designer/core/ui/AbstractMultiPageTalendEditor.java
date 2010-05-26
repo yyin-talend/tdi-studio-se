@@ -975,9 +975,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         try {
             designerEditor.getProperty().eAdapters().remove(dirtyListener);
             Property property = designerEditor.getProperty();
-            if (property.getItem().eResource() == null) {
+            if (property.eResource() == null || property.getItem().eResource() == null) {
                 property = repFactory.getUptodateProperty(property);
             }
+            // fix for bug 12524 for db repository
+            property = repFactory.reload(property);
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
