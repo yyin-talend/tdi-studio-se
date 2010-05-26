@@ -91,8 +91,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
     protected static final int WIZARD_HEIGHT = 495;
 
-    protected boolean creation;
-
     private static Logger log = Logger.getLogger(AbstractCreateTableAction.class);
 
     /**
@@ -102,9 +100,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @param wizardDialog
      */
     private void handleWizard(RepositoryNode node, WizardDialog wizardDialog) {
-        if (!creation) {
-            RepositoryManager.refreshSavedNode(node);
-        }
+
+        RepositoryManager.refreshSavedNode(node);
+
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
@@ -128,9 +126,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @param wizardDialog
      */
     protected void handleWizard(RepositoryNode node, WizardDialog wizardDialog, boolean notSetSize) {
-        if (!creation) {
-            RepositoryManager.refreshSavedNode(node);
-        }
+
+        RepositoryManager.refreshSavedNode(node);
+
         if (!notSetSize) {
             wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         }

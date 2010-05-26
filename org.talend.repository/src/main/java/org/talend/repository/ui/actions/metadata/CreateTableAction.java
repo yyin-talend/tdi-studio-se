@@ -118,18 +118,15 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
         }
 
-        if (!creation) {
-            Property property = node.getObject().getProperty();
-            Property updatedProperty = null;
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        Property property = node.getObject().getProperty();
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
 
-                node.getObject().setProperty(updatedProperty);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-
+            node.getObject().setProperty(updatedProperty);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
 
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
@@ -185,7 +182,6 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                     setText(EDIT_LABEL);
-                    creation = false;
                     collectSiblingNames(node);
                     IRepositoryObject repositoryObject = node.getObject();
                     if (repositoryObject != null) {
@@ -241,7 +237,6 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)
                         || ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
-                    creation = true;
                     collectChildNames(node);
                     if (isLastVersion(node)) {
                         setEnabled(true);
