@@ -14,7 +14,10 @@ package org.talend.repository.ui.actions.metadata;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -26,6 +29,7 @@ import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -114,6 +118,20 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
         }
 
+        if (!creation) {
+            Property property = node.getObject().getProperty();
+            Property updatedProperty = null;
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+
+                node.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
             createFilePositionalTableWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)) {
@@ -167,6 +185,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                     setText(EDIT_LABEL);
+                    creation = false;
                     collectSiblingNames(node);
                     IRepositoryObject repositoryObject = node.getObject();
                     if (repositoryObject != null) {
@@ -222,6 +241,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)
                         || ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
+                    creation = true;
                     collectChildNames(node);
                     if (isLastVersion(node)) {
                         setEnabled(true);

@@ -13,12 +13,15 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.LdifFileConnectionItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
@@ -87,7 +90,20 @@ public class CreateFileLdifAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_LDIF);
             }
         }
-        ISelection selection = null;
+        if (!creation) {
+            Property property = repositoryNode.getObject().getProperty();
+            Property updatedProperty = null;
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+
+                repositoryNode.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(repositoryNode);
@@ -96,9 +112,12 @@ public class CreateFileLdifAction extends AbstractCreateAction {
             ldifFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldifFileWizard);
         } else {
-            selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new LdifFileWizard(PlatformUI.getWorkbench(),
                     creation, repositoryNode, getExistingNames()));
+        }
+
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

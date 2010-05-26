@@ -16,7 +16,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
@@ -84,7 +88,21 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
             }
         }
-        // ISelection selection = null;
+
+        if (!creation) {
+            Property property = repositoryNode.getObject().getProperty();
+            Property updatedProperty = null;
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+
+                repositoryNode.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
         WizardDialog wizardDialog = null;
         if (isToolbar()) {
             init(repositoryNode);
@@ -93,9 +111,12 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
             salesForceSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesForceSchemaWizard);// TODO send
         } else {
-            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new SalesforceSchemaWizard(PlatformUI
                     .getWorkbench(), creation, repositoryNode, getExistingNames(), false));
+        }
+
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

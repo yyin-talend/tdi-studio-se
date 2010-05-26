@@ -16,7 +16,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
@@ -90,7 +94,20 @@ public class CreateFileXmlAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_XML);
             }
         }
-        // ISelection selection = null;
+        if (!creation) {
+            Property property = repositoryNode.getObject().getProperty();
+            Property updatedProperty = null;
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+
+                repositoryNode.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(repositoryNode);
@@ -99,12 +116,12 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             xmlFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), xmlFileWizard);
         } else {
-            // selection = getSelection();
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new XmlFileWizard(PlatformUI.getWorkbench(),
                     creation, repositoryNode, getExistingNames()));
         }
-
-        //        
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
+        }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
