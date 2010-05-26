@@ -2661,7 +2661,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if this node is not anymore a subjob start, then set it back to the element list.
             // this one will be reaffected to a new subjob after
             if (node == null || !node.isDesignSubjobStartNode()) {
-                if (!node.isELTComponent()) {
+                // for bug 13314
+                if (node == null || !node.isELTComponent()) {
                     elem.addAll(sjc.getNodeContainers());
                     sjc.getNodeContainers().clear();
                     elem.remove(sjc);
