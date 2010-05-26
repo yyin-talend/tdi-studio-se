@@ -59,7 +59,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         IProcess process = DesignerUtilities.findProcessFromEditors(jobId, jobVersion);
         // find process from repository
         if (process == null) {
-            process = findProcessFromRepository(jobId);
+            process = findProcessFromRepository(jobId, jobVersion);
         }
 
         if (process == null) {
@@ -86,10 +86,10 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      * @param jobName
      * @return
      */
-    private IProcess findProcessFromRepository(String jobId) {
+    private IProcess findProcessFromRepository(String jobId, String version) {
         try {
             ItemCacheManager.clearCache();
-            ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
+            ProcessItem processItem = ItemCacheManager.getProcessItem(jobId, version);
             if (processItem != null) {
                 ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true, true, true);
                 IProcess process = fileEditorInput.getLoadedProcess();
