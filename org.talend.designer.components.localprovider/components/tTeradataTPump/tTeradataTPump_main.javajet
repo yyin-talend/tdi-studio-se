@@ -29,6 +29,7 @@ String where= ElementParameterParser.getValue(node, "__WHERE__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
+String beginLoad= ElementParameterParser.getValue(node, "__BEGINLOAD_ADVANCEDPARAM__");
 
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
@@ -58,7 +59,7 @@ fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;\r\n");
 fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 
 <%//Layout---------------------------------------------------------------%>
-fw_<%=cid %>.write(".BEGIN LOAD SESSIONS 8 PACK 600 ARRAYSUPPORT ON CHECKPOINT 60 TENACITY 2 ERRLIMIT 1000 ERRORTABLE "+tableFullName_<%=cid%>+"_err;\r\n");
+fw_<%=cid %>.write(".BEGIN LOAD "+ <%=beginLoad %> + ";\r\n");
 fw_<%=cid %>.write(".LAYOUT customer_layout;\r\n");
 <%
 if(columnList!=null){
