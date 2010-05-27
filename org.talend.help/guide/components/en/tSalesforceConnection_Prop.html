@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:14:55">
+    <meta name="LASTUPDATED" content="05/27/10 10:54:49">
     <title>tSalesforceConnection</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tOpenbravoERPOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceConnection_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tSalesforceBulkExec_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceConnection_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2949817"> </a><h2 class="pHeading1">
+<a name="wp2965468"> </a><h2 class="pHeading1">
 tSalesforceConnection
 </h2>
 <a name="wp2948948"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -47,7 +47,7 @@ Business
 </div>
 </td>
     <td><a name="wp2944175"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp2944172" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp2944172" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -95,7 +95,51 @@ Enter your Web service authentication details.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2944222"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2964540"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2964546"> </a><div class="pCellHeading">
+<em class="cEmphasis">Timeout (milliseconds)</em>
+</div>
+</td>
+    <td><a name="wp2964550"> </a><div class="pCellBody">
+Type in the intended number of query timeout in Salesforce.com.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2964580"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2964583"> </a><div class="pCellBody">
+For salesforce bulk component
+</div>
+</td>
+    <td><a name="wp2964586"> </a><div class="pCellBody">
+Select this check box if you use bulk data processing components from the salesforce family.<br />For more information on these bulk data processing components, see <a href="tSalesforceOutputBulk_Prop.html"><em class="cEmphasis">tSalesforceOutputBulk</em></a>, <a href="tSalesforceBulkExec_Prop.html"><em class="cEmphasis">tSalesforceBulkExec</em></a> and <a href="tSalesforceOutputBulkExec_Prop.html"><em class="cEmphasis">tSalesforceOutputBulkExec</em></a>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2964559"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2964563"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use Soap Compression</em>
+</div>
+</td>
+    <td><a name="wp2964566"> </a><div class="pCellBody">
+Select this check box if you want to activate SOAP compression.
+</div>
+<a name="wp2964573"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2964570" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The compression of SOAP messages results in increased performance levels.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2944222"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -106,24 +150,6 @@ Enter your Web service authentication details.
     <td><a name="wp2944229"> </a><div class="pCellBody">
 Select this check box if you want to use a proxy.
 </div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2944231"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2944235"> </a><div class="pCellHeading">
-<em class="cEmphasis">Use Soap Compression</em>
-</div>
-</td>
-    <td><a name="wp2944771"> </a><div class="pCellBody">
-Select this check box if you want to activate SOAP compression.
-</div>
-<a name="wp2944788"> </a><p class="pBodyRelative">
-</p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Components-03-22-040.jpg" height="48" width="43" align="left" id="wp2944782" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-The compression of SOAP messages results in increased performance levels
-</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2944250"> </a><div class="pCellBody">
@@ -144,7 +170,7 @@ Select this check box to collect the log data at a component level.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2944264"> </a><div class="pCellBody">
-This component is normally used with SAP components..
+This component is normally used with Salesforce components..
 </div>
 </td>
 </tr>
@@ -181,7 +207,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tOpenbravoERPOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceConnection_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tSalesforceBulkExec_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceConnection_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

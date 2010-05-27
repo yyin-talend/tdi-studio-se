@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:16">
+    <meta name="LASTUPDATED" content="05/27/10 10:59:07">
     <title>Scenario: Transforming a list of files as data flow</title>
   </head>
 
@@ -76,7 +76,7 @@ The following scenario describes a Job that iterates on a list of files, picks u
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1546008"> </a><div class="pSmartList2"><li>In each cell of the <b class="cBold">Value</b> field, press <b class="cBold">Ctrl+Space bar </b>to access the list of global and user-specific variables.</li></div>
-<a name="wp1546015"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Filename</em> column, use the global variable: (<code class="cCode">$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. It retrieves the current filepath in order to catch the name of each file, the Job iterates on. </li></div>
+<a name="wp1546015"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Filename</em> column, use the global variable: <code class="cCode">tFileList_1CURRENT_FILEPATH</code>. It retrieves the current filepath in order to catch the name of each file, the Job iterates on. </li></div>
 <a name="wp1546028"> </a><div class="pSmartList2"><li>For the <em class="cEmphasis">Date</em> column, use the Talend routine: <code class="cCode">Date.GetDate</code> (Perl) or <code class="cCode">TalendDate.getCurrentDate()</code> (in Java)</li></div>
 <a name="wp1546042"> </a><div class="pSmartList2"><li>Then on the <b class="cBold">tLogRow</b> component view, select the <b class="cBold">Print values in cells of a table </b>check box.</li></div>
 <a name="wp1546047"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>

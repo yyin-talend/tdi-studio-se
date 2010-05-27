@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/24/10 15:45:08">
+    <meta name="LASTUPDATED" content="05/27/10 09:47:15">
     <title>Scénario&#160;1&#160;: Récupérer les métadonnées d&#39;un système SAP</title>
   </head>
 
@@ -37,10 +37,10 @@ Les composants SAP (<b class="cBold">tSAPInput</b> et <b class="cBold">tSAPOutpu
 Ce scénario utilise l&#39;assistant SAP guidant l&#39;utilisateur à travers les différentes étapes de création de connexions SAP et des fonctions RFC et BAPI. L&#39;assistant SAP est uniquement disponible pour les utilisateurs <b class="cBold">Talend Integration Suite</b>. Si vous êtes utilisateur de <b class="cBold">Talend Open Studio</b> ou <b class="cBold">Talend On Demand</b>, vous devez configurer les propriétés du composant <b class="cBold">tSAPInput</b> manuellement.
 </p>
 <a name="wp1649005"> </a><p class="pIndented1">
-Ce scénario Java utilise un assistant SAP pour créer une connexion au système SAP, appelle une fonction BAPI pour récupérer les informations d&#39;une entreprise stockées dans le système SAP et les affiche dans <b class="cBold">Talend Open Studio</b>.
+Ce scénario Java utilise un assistant SAP pour créer une connexion au système SAP, appelle une fonction BAPI pour récupérer les informations d&#39;une entreprise stockées dans le système SAP et les affiche dans <b class="cBold">Talend Integration Suite</b>.
 </p>
 <a name="wp1658803"> </a><p class="pIndented1">
-Les figures ci-dessous affiche les paramètres du système SAP permettant d&#39;accéder aux informations sur l&#39;entreprise que nous souhaitons lire dans <b class="cBold">Talend Open Studio</b> à l&#39;aide du composant <b class="cBold">tSAPInput</b>.
+Les figures ci-dessous affiche les paramètres du système SAP permettant d&#39;accéder aux informations sur l&#39;entreprise que nous souhaitons lire dans <b class="cBold">Talend Integration Suite</b> à l&#39;aide du composant <b class="cBold">tSAPInput</b>.
 </p>
 <a name="wp1658817"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -49,8 +49,8 @@ Les figures ci-dessous affiche les paramètres du système SAP permettant d&#39;ac
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1658822"> </a><div class="pSmartList2"><li>Créez une connexion au système SAP à l&#39;aide de l&#39;assistant SAP. Dans ce scénario, la connexion SAP est appelée <b style="font-weight: bold" class="cBold">sap</b><span style="font-weight: normal">.</span> Pour plus d&#39;informations sur la configuration d&#39;une connexion SAP, consultez l&#39;<em class="cEmphasis">Etape&#160;1&#160;: Propriétés générales</em> et l&#39;<em class="cEmphasis">Etape&#160;2&#160;: Informations de connexion</em> du Guide utilisateur de Talend Open Studio. </li></div>
-<a name="wp1658841"> </a><div class="pSmartList2"><li>Appelez la fonction BAPI appelée <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> à l&#39;aide de l&#39;assistant SAP pour accéder au document html BAPI stocké dans le système SAP et consultez les informations sur l&#39;entreprise. Pour plus d&#39;informations sur l&#39;appel de fonctions, consultez l&#39; <em class="cEmphasis">Etape&#160;3&#160;: Appeler une fonction SAP</em> du Guide utilisateur de Talend Open Studio. </li></div>
+<a name="wp1658822"> </a><div class="pSmartList2"><li>Créez une connexion au système SAP à l&#39;aide de l&#39;assistant SAP. Dans ce scénario, la connexion SAP est appelée <b style="font-weight: bold" class="cBold">sap</b><span style="font-weight: normal">.</span> Pour plus d&#39;informations sur la configuration d&#39;une connexion SAP, consultez l&#39;<em class="cEmphasis">Etape&#160;1&#160;: Propriétés générales</em> et l&#39;<em class="cEmphasis">Etape&#160;2&#160;: Informations de connexion</em> du Guide utilisateur de Talend Integration Suite. </li></div>
+<a name="wp1658841"> </a><div class="pSmartList2"><li>Appelez la fonction BAPI appelée <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> à l&#39;aide de l&#39;assistant SAP pour accéder au document html BAPI stocké dans le système SAP et consultez les informations sur l&#39;entreprise. Pour plus d&#39;informations sur l&#39;appel de fonctions, consultez l&#39; <em class="cEmphasis">Etape&#160;3&#160;: Appeler une fonction SAP</em> du Guide utilisateur de Talend Integration Suite. </li></div>
 <a name="wp1658857"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Name filter</b>, saisissez <em class="cEmphasis">BAPI</em>* et cliquez sur le bouton <b class="cBold">Search</b> pour afficher toutes les fonctions BAPI disponibles.</li></div>
 <a name="wp1647831"> </a><div class="pSmartList2"><li>Sélectionnez <em class="cEmphasis">BAPI_COMPANY_GETDETAIL</em> pour afficher le schéma décrivant les informations de l&#39;entreprise.</li></div>
 </ul></div>
@@ -119,7 +119,7 @@ Pour récupérer les différents schémas de la fonction <b class="cBold">BAPI_COMPA
 </ul></div>
 </ul></div>
 <a name="wp2987657"> </a><p class="pIndented1">
-Pour plus d&#39;informations concernant la récupération des schémas<em class="cEmphasis">Etape&#160;4&#160;: Récupérer les schémas de la fonction appelée</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
+Pour plus d&#39;informations concernant la récupération des schémas<em class="cEmphasis">Etape&#160;4&#160;: Récupérer les schémas de la fonction appelée</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
 </p>
 <a name="wp2987669"> </a><p class="pIndented1">
 Les deux schémas apparaissent sous la fonction <b class="cBold">BAPI_COMPANY_GETDETAIL</b> dans le <b class="cBold">Repository.</b>
@@ -130,7 +130,7 @@ Les deux schémas apparaissent sous la fonction <b class="cBold">BAPI_COMPANY_GET
 
 </div>
 <a name="wp1648043"> </a><p class="pIndented1">
-Dans ce scénario, nous souhaitons récupérer les données correspondant à l&#39;entreprise dont l&#39;identifiant est 000001 pour les récupérer et les afficher dans <b class="cBold">Talend Open Studio</b>&#160;:
+Dans ce scénario, nous souhaitons récupérer les données correspondant à l&#39;entreprise dont l&#39;identifiant est 000001 pour les récupérer et les afficher dans <b class="cBold">Talend Integration Suite</b>&#160;:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -207,12 +207,12 @@ Les composants SAP (<b class="cBold">tSAPInput</b> et <b class="cBold">tSAPOutpu
 Ce scénario utilise l&#39;assistant SAP guidant l&#39;utilisateur à travers les différentes étapes de création de connexions SAP et des fonctions RFC et BAPI. L&#39;assistant SAP est uniquement disponible pour les utilisateurs <b class="cBold">Talend Integration Suite</b>. Si vous êtes utilisateur de <b class="cBold">Talend Open Studio</b> ou <b class="cBold">Talend On Demand</b>, vous devez configurer les propriétés du composant <b class="cBold">tSAPInput</b> manuellement.
 </p>
 <a name="wp2724928"> </a><p class="pIndented1">
-Ce scénario Java utilise l&#39;assistant SAP pour créer une connexion au système SAP et pour appeler une fonction RFC permettant de lire directement dans une table appelée <em class="cEmphasis">SFLIGHT</em> à partir du système SAP. Puis, il affiche dans <b class="cBold">Talend Open Studio</b> les différentes structures de la table <em class="cEmphasis">SFLIGHT</em> stockée dans le système SAP.
+Ce scénario Java utilise l&#39;assistant SAP pour créer une connexion au système SAP et pour appeler une fonction RFC permettant de lire directement dans une table appelée <em class="cEmphasis">SFLIGHT</em> à partir du système SAP. Puis, il affiche dans <b class="cBold">Talend Integration Suite</b> les différentes structures de la table <em class="cEmphasis">SFLIGHT</em> stockée dans le système SAP.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2724947"> </a><div class="pSmartList2"><li>Créez une connexion au système SAP à l&#39;aide de l&#39;assistant SAP. Dans ce scénario, la connexion SAP est appelée <b class="cBold">sap</b><em class="cEmphasis">.</em> Pour plus d&#39;informations concernant la configuration d&#39;une connexion SAP, consultez l&#39;<em class="cEmphasis">Etape&#160;1&#160;: Propriétés générales</em> et l&#39;<em class="cEmphasis">Etape&#160;2&#160;: Informations de connexion</em> du Guide utilisateur de Talend Open Studio. </li></div>
-<a name="wp2724979"> </a><div class="pSmartList2"><li>Appelez la fonction RFC appelée <em class="cEmphasis">RFC_READ_TABLE</em> à l&#39;aide de l&#39;assistant SAP pour accéder à la table du système SAP et pour visualiser sa structure. Pour plus d&#39;informations concernant l&#39;appel de fonction, consultez l&#39;<em class="cEmphasis">Etape&#160;3&#160;: Appeler une fonction SAP</em> du Guide utilisateur de Talend Open Studio. </li></div>
+<a name="wp2724947"> </a><div class="pSmartList2"><li>Créez une connexion au système SAP à l&#39;aide de l&#39;assistant SAP. Dans ce scénario, la connexion SAP est appelée <b class="cBold">sap</b><em class="cEmphasis">.</em> Pour plus d&#39;informations concernant la configuration d&#39;une connexion SAP, consultez l&#39;<em class="cEmphasis">Etape&#160;1&#160;: Propriétés générales</em> et l&#39;<em class="cEmphasis">Etape&#160;2&#160;: Informations de connexion</em> du Guide utilisateur de Talend Integration Suite. </li></div>
+<a name="wp2724979"> </a><div class="pSmartList2"><li>Appelez la fonction RFC appelée <em class="cEmphasis">RFC_READ_TABLE</em> à l&#39;aide de l&#39;assistant SAP pour accéder à la table du système SAP et pour visualiser sa structure. Pour plus d&#39;informations concernant l&#39;appel de fonction, consultez l&#39;<em class="cEmphasis">Etape&#160;3&#160;: Appeler une fonction SAP</em> du Guide utilisateur de Talend Integration Suite. </li></div>
 <a name="wp2725007"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Name filter</b>, saisissez <em class="cEmphasis">RFC</em>* et cliquez sur le bouton <b class="cBold">Search</b> pour afficher toutes les fonctions RFC disponibles.</li></div>
 </ul></div>
 </ul></div>
@@ -278,7 +278,7 @@ Pour récupérer les différents schémas de la fonction <b class="cBold">RFC_READ_T
 </ul></div>
 </ul></div>
 <a name="wp2987737"> </a><p class="pIndented1">
-Pour plus d&#39;informations concernant la récupération des schémas<em class="cEmphasis">Etape&#160;4&#160;: Récupérer les schémas de la fonction appelée</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
+Pour plus d&#39;informations concernant la récupération des schémas<em class="cEmphasis">Etape&#160;4&#160;: Récupérer les schémas de la fonction appelée</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
 </p>
 <a name="wp2987749"> </a><p class="pIndented1">
 Les trois schémas apparaissent sous la fonction <b class="cBold">RFC_READ_TABLE</b> dans le <b class="cBold">Repository.</b>
@@ -289,7 +289,7 @@ Les trois schémas apparaissent sous la fonction <b class="cBold">RFC_READ_TABLE<
 
 </div>
 <a name="wp2728413"> </a><p class="pIndented1">
-Dans ce scénario, nous souhaitons récupérer les données et le nom des colonnes de la table <b class="cBold">SFLIGHT</b> pour les récupérer et les afficher dans <b class="cBold">Talend Open Studio</b>. Ainsi, nous nous intéressons uniquement au schéma <b class="cBold">DATA</b> et <b class="cBold">FIELDS</b>&#160;: 
+Dans ce scénario, nous souhaitons récupérer les données et le nom des colonnes de la table <b class="cBold">SFLIGHT</b> pour les récupérer et les afficher dans <b class="cBold">Talend Integration Suite</b>. Ainsi, nous nous intéressons uniquement au schéma <b class="cBold">DATA</b> et <b class="cBold">FIELDS</b>&#160;: 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">

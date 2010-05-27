@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:16">
+    <meta name="LASTUPDATED" content="05/27/10 10:59:07">
     <title>Scenario: Waiting for a file to be removed </title>
   </head>
 
@@ -40,7 +40,7 @@ This scenario describes a Job scanning a directory and waiting for a file to be 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1539377"> </a><div class="pSmartList2"><li>This use case only requires two components from the <b class="cBold">Palette</b>: <b class="cBold">tWaitForFile</b> and <b class="cBold">tMsgbox</b></li></div>
 <a name="wp1539403"> </a><div class="pSmartList2"><li>Click and place these components on the design workspace and connect them using an <b class="cBold">Iterate</b> link to implement the loop.</li></div>
-<a name="wp1539427"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tWaitForFile</b> component, and on the Basic Settings view of the Components tab, set the condition and loop properties: </li></div>
+<a name="wp1539427"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tWaitForFile</b> component, and on the <b class="cBold">Basic Settings</b> view of the <b class="cBold">Component</b> tab, set the condition and loop properties: </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1539449"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -50,8 +50,8 @@ This scenario describes a Job scanning a directory and waiting for a file to be 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1539490"> </a><div class="pSmartList2"><li>In the <b class="cBold">Wait at each iteration </b>field, set the time in seconds you want to wait before the next iteration starts. In this example, the directory will be scanned every <em class="cEmphasis">5</em> seconds.</li></div>
-<a name="wp1539514"> </a><div class="pSmartList2"><li>In the <b class="cBold">Max iterations </b>field, fill out the number of iterations max you want to have before the whole Job is forced to end. In this example, the directory will be scanned a maximum of 5 times.</li></div>
+<a name="wp1539490"> </a><div class="pSmartList2"><li>In the <b class="cBold">Time (in seconds) between iteration </b>field, set the time in seconds you want to wait before the next iteration starts. In this example, the directory will be scanned every <em class="cEmphasis">5</em>&#160;seconds.</li></div>
+<a name="wp1539514"> </a><div class="pSmartList2"><li>In the <b class="cBold">Max. number of iterations (infinite loop if empty) </b>field, fill out the number of iterations max you want to have before the whole Job is forced to end. In this example, the directory will be scanned a maximum of 5 times.</li></div>
 <a name="wp1539536"> </a><div class="pSmartList2"><li>In the <b class="cBold">Directory to scan </b>field, type in the path to the folder to scan.</li></div>
 <a name="wp1539553"> </a><div class="pSmartList2"><li>In the <b class="cBold">Trigger action when </b>field, select the condition to be met, for the subjob to be triggered. In this use case, the condition is a file is deleted (or moved) from the directory. </li></div>
 <a name="wp1539566"> </a><div class="pSmartList2"><li>In the <b class="cBold">Then</b> field, select the action to be carried out when the condition is met before the number of iteration defined is reached. In this use case, as soon as the condition is met, the loop should be ended.</li></div>

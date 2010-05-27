@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>tOracleOutput</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp1380932"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-06-286-166.jpg" height="59" width="112" id="wp1380927" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-06-304-208.jpg" height="59" width="112" id="wp1380927" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -121,7 +121,7 @@ Click this icon to open a database connection wizard and store the database conn
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381018"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3385996"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -130,8 +130,13 @@ Click this icon to open a database connection wizard and store the database conn
 </div>
 </td>
     <td><a name="wp1381032"> </a><div class="pCellBody">
-Select this check box when using a <b class="cBold">tOracleConnection</b> component. When you deselect it, a check box appears (selected by default and followed by a field) in the <b class="cBold">Advanced settings</b>, <b class="cBold">Batch Size</b>, which enables you to define the number of lines in each processed batch.
+Select this check box when using a <b class="cBold">tOracleConnection</b> component. When you deselect it, a check box appears (selected by default and followed by a field) in the <b class="cBold">Advanced settings</b>, <b class="cBold">Batch Size</b>, which enables you to define the number of lines in each processed batch.<br />
 </div>
+<a name="wp3451201"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3451198" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381436"> </a><div class="pCellBody">
@@ -147,8 +152,10 @@ Drop-down list of available drivers.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2368239"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3387179"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387176" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This field is Java only.
 </div>
 </td>
     <td><a name="wp2368246"> </a><div class="pCellHeading">
@@ -212,7 +219,22 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381096"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3386126"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3386123" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This field is Perl only.
+</div>
+</td>
+    <td><a name="wp3386032"> </a><div class="pCellHeading">
+<em class="cEmphasis">Oracle schema</em>
+</div>
+</td>
+    <td><a name="wp3386035"> </a><div class="pCellBody">
+Name of the Oracle schema
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381096"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -225,7 +247,7 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2088316"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2088316"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -238,7 +260,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381153"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381153"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -256,7 +278,7 @@ It is necessary to specify at least one column as a primary key on which the <b 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381201"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381201"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -269,7 +291,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381219"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381219"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -282,7 +304,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381237"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381237"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -295,8 +317,10 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174376"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3386220"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3386217" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This option is Java only.
 </div>
 </td>
     <td><a name="wp2174383"> </a><div class="pCellHeading">
@@ -308,8 +332,41 @@ This check box is selected by default. Clear the check box to skip the row on er
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2174179"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3386469"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3386473"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+<a name="wp3386492"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3386489" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
+</div>
+</td>
+    <td><a name="wp3386476"> </a><div class="pCellBody">
+Specify additional connection properties for the DB connection you are creating. This option is not available if you have selected the <b class="cBold">Use an existing connection</b> check box in the <b class="cBold">Basic settings</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3387209"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387206" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This field is Perl only.
+</div>
+</td>
+    <td><a name="wp3386874"> </a><div class="pCellHeading">
+<em class="cEmphasis">Override any existing NLS_LANG environment variable</em>
+</div>
+</td>
+    <td><a name="wp3386877"> </a><div class="pCellBody">
+Select this check box to override variables already set for a NLS language environment.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174179"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp2174186"> </a><div class="pCellHeading">
@@ -321,7 +378,7 @@ Select the encoding type from the list or select <b class="cBold">Custom</b> and
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174197"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2174197"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -331,6 +388,19 @@ Select the encoding type from the list or select <b class="cBold">Custom</b> and
 </td>
     <td><a name="wp2174207"> </a><div class="pCellBody">
 Enter the number of rows to be completed before committing batches of rows together into the DB. This option ensures transaction quality (but not rollback) and, above all, better performance at execution.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3386578"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3386586"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3386588"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
@@ -399,8 +469,10 @@ This option is not offered if you create (with or without drop) the DB table. Th
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174297"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3387225"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387222" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
 </div>
 </td>
     <td><a name="wp2174304"> </a><div class="pCellHeading">
@@ -412,8 +484,40 @@ Select this check box to customize a request, especially when there is double ac
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2174311"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3387276"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387273" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
+</div>
+</td>
+    <td><a name="wp3386607"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use Hint Options</em>
+</div>
+</td>
+    <td><a name="wp3386609"> </a><div class="pCellBody">
+Select this check box to activate the hint configuration area which helps you optimize a query&#39;s execution. In this area, parameters are:<br />- <b class="cBold">HINT</b>: specify the hint you need, using the syntax<code class="cCode"> /*+ */.<br /></code>- <b class="cBold">POSITION</b>: specify where you put the hint in a SQL statement.<br />- <b class="cBold">SQL STMT</b>: select the SQL statement you need to use.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3387246"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387243" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
+</div>
+</td>
+    <td><a name="wp3386644"> </a><div class="pCellHeading">
+<em class="cEmphasis">Convert columns and table to uppercase</em>
+</div>
+</td>
+    <td><a name="wp3386647"> </a><div class="pCellBody">
+Select this check box to set the names of columns and table in upper case.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3387261"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387258" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
 </div>
 </td>
     <td><a name="wp2174318"> </a><div class="pCellHeading">
@@ -425,21 +529,10 @@ Select this check box to display each step during processing entries in a databa
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174325"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3387294"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-</td>
-    <td><a name="wp2174332"> </a><div class="pCellHeading">
-<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
-</div>
-</td>
-    <td><a name="wp2174335"> </a><div class="pCellBody">
-Select this check box to collect log data at the component level.
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2733452"> </a><div class="pCellBody">
-&#160;
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387291" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
 </div>
 </td>
     <td><a name="wp2733459"> </a><div class="pCellHeading">
@@ -451,8 +544,23 @@ When selected, enables you to define the number of lines in each processed batch
 </div>
 <a name="wp2930250"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallapt.png" align="left" id="wp2930228" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-If this check box does not appear, check that the case <b class="cBold">Use an existing connection</b> in the <b class="cBold">Basic settings</b> is deselected.
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp2930228" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This option is available only when you do not <b class="cBold">Use an existing connection</b> in <b class="cBold">Basic settings</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3387311"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3387308" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only.
+</div>
+</td>
+    <td><a name="wp3386768"> </a><div class="pCellHeading">
+<em class="cEmphasis">Support null in &quot;SQL WHERE&quot; statement</em>
+</div>
+</td>
+    <td><a name="wp3386771"> </a><div class="pCellBody">
+Select this check box to validate null in &quot;SQL WHERE&quot; statement.
 </div>
 </td>
 </tr>
@@ -460,16 +568,16 @@ If this check box does not appear, check that the case <b class="cBold">Use an e
 &#160;
 </div>
 </td>
-    <td><a name="wp3010211"> </a><div class="pCellHeading">
+    <td><a name="wp3446441"> </a><div class="pCellHeading">
 <em class="cEmphasis">Enable parallel execution</em>
 </div>
 </td>
-    <td><a name="wp2658171"> </a><div class="pCellBody">
-Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows</em>of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp3413761"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows</em>of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
-<a name="wp2987744"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3446493"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_smallapt.png" align="left" id="wp2987737" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3446478" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 The <b class="cBold">Action on table</b> field is not available with the parallelization function. Therefore, you must use a <b class="cBold">tCreateTable</b> component if you want to create a table.<br />
 </div>
 </td>

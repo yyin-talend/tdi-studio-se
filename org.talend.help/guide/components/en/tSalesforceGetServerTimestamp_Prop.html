@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:14:55">
+    <meta name="LASTUPDATED" content="05/27/10 10:54:49">
     <title>tSalesforceGetServerTimestamp</title>
   </head>
 
@@ -47,7 +47,7 @@ Business
 </div>
 </td>
     <td><a name="wp2932348"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp2932345" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp2932345" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -69,17 +69,22 @@ This component retrieves the current date of the Salesforce server presented in 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2932460"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2956936"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
 </div>
 </td>
-    <td><a name="wp2932467"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+    <td><a name="wp2956942"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
 </div>
 </td>
-    <td><a name="wp2932470"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
+    <td><a name="wp2956946"> </a><div class="pCellBody">
+Select this check box to use an established connection from <b class="cBold">tSalesforceConnection</b>. Once you select it, the <b class="cBold">Component list</b> field appear allowing you to choose the <b class="cBold">tSalesforceConnection</b> component to be used.<br />For more information on <b class="cBold">tSalesforceConnection</b>, see section <a href="tSalesforceConnection_Prop.html"><em class="cEmphasis">tSalesforceConnection</em></a>.<br />
 </div>
+<a name="wp3449748"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3449745" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, you can use <b class="cBold">Dynamic settings</b> to share the intended connection. In this case, make sure that the connection name is unique and distinctive. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2932374"> </a><div class="pCellBody">
@@ -105,6 +110,32 @@ Type in the webservice URL to connect to the Salesforce DB.
 </td>
     <td><a name="wp2932393"> </a><div class="pCellBody">
 Type in the Webservice user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2956749"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2956755"> </a><div class="pCellHeading">
+<em class="cEmphasis">Timeout (milliseconds)</em>
+</div>
+</td>
+    <td><a name="wp2956759"> </a><div class="pCellBody">
+Type in the intended number of query timeout in Salesforce.com.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2956993"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2957000"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp2957003"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
 </div>
 </td>
 </tr>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:03">
     <title>Scenario: Creating a temporary file and writing data in it</title>
   </head>
 
@@ -29,15 +29,15 @@
 Scenario: Creating a temporary file and writing data in it
 </h2>
 <a name="wp1608186"> </a><p class="pIndented1">
-The following Perl scenario describes a simple Job that creates an empty temporary file in a defined directory, writes data in it and deletes it after job execution.
+The following scenario describes a simple Job that creates an empty temporary file in a defined directory, writes data in it and deletes it after job execution.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1608850"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tCreate temporaryFile</b>, <b class="cBold">tRowgenerator</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tFileInputdelimited </b>and <b class="cBold">tLogFile</b>.</li></div>
-<a name="wp1608887"> </a><div class="pSmartList2"><li>Connect  <b class="cBold">tCreateTemporaryFile </b>to <b class="cBold">tRowGenerator</b> using a <b class="cBold">SubjobOk</b> link.</li></div>
-<a name="wp1615860"> </a><div class="pSmartList2"><li>Connect  <b class="cBold">tRowGenerator </b>to <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Row Main</b> link.</li></div>
-<a name="wp1615905"> </a><div class="pSmartList2"><li>Connect  <b class="cBold">tRowGenerator </b>to <b class="cBold">tFileInputDelimited</b> using a <b class="cBold">SubjobOk</b> link.</li></div>
-<a name="wp1609555"> </a><div class="pSmartList2"><li>Connect  <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tLogRow </b>using a <b class="cBold">Row Main</b> link.</li></div>
+<a name="wp1608850"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tCreate temporaryFile</b>, <b class="cBold">tRowGenerator</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tFileInputDelimited </b>and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp1608887"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tCreateTemporaryFile </b>to <b class="cBold">tRowGenerator</b> using a <b class="cBold">SubjobOk</b> link.</li></div>
+<a name="wp1615860"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator </b>to <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Row Main</b> link.</li></div>
+<a name="wp1615905"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator </b>to <b class="cBold">tFileInputDelimited</b> using a <b class="cBold">SubjobOk</b> link.</li></div>
+<a name="wp1609555"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tLogRow </b>using a <b class="cBold">Row Main</b> link.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1609573"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -62,7 +62,7 @@ The following Perl scenario describes a simple Job that creates an empty tempora
 <a name="wp1616127"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Directory</b> field to browse to the directory where temporary files will be stored, or enter the path manually.</li></div>
 <a name="wp1616143"> </a><div class="pSmartList2"><li>In the <b class="cBold">Template </b>field, enter a name for the temporary file respecting the template format.</li></div>
 <a name="wp1616151"> </a><div class="pSmartList2"><li>In the <b class="cBold">Suffix</b> field, enter a filename extension to indicate the file format you want to give to the temporary file.</li></div>
-<a name="wp1616290"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tRowgenerator</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+<a name="wp1616290"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tRowGenerator</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1616350"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -106,13 +106,13 @@ The following Perl scenario describes a simple Job that creates an empty tempora
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617491"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Built-In</b>.</li></div>
-<a name="wp1617009"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To output data in the created temporary file, select  <code class="cCode">$_globals{tCreateTemporaryFile_1}{FILEPATH} </code>on the Perl global variable list.</li></div>
+<a name="wp1617009"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To output data in the created temporary file, select  <code class="cCode">tCreateTemporaryFile_1.FILEPATH </code>on the global variable list.</li></div>
 <a name="wp1617080"> </a><div class="pSmartList2"><li>Set the row and field separators in their corresponding fields as needed.</li></div>
 <a name="wp1617028"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema </b>to <b class="cBold">Built-In</b> and click <b class="cBold">Sync columns</b> to synchronize input and output columns. Note that the row connection feeds automatically the output schema.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1617545"> </a><p class="pIndented1">
-For more information about schema types, see <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+For more information about schema types, see <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -128,7 +128,7 @@ For more information about schema types, see <em class="cEmphasis">Setting a bui
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1617229"> </a><div class="pSmartList2"><li>Set property type to <b class="cBold">Build in</b>.</li></div>
-<a name="wp1617241"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To read data in the created temporary file, select  <code class="cCode">$_globals{tCreateTemporaryFile_1}{FILEPATH} </code>on the Perl global variable list.</li></div>
+<a name="wp1617241"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">File Name</b> field and use the <b class="cBold">Ctrl+Space bar</b> combination to access the variable completion list. To read data in the created temporary file, select  <code class="cCode">tCreateTemporaryFile_1.FILEPATH </code>on the global variable list.</li></div>
 <a name="wp1617255"> </a><div class="pSmartList2"><li>Set the row and field separators in their corresponding fields as needed.</li></div>
 <a name="wp1617280"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built in </b>and click <b class="cBold">Edit schema</b> to define the data to pass on to the <b class="cBold">tLogRow</b> component. The schema consists of one column here, <em class="cEmphasis">value.</em></li></div>
 <a name="wp1617403"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute the Job.</li></div>

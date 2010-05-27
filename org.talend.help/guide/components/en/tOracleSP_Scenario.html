@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>Scenario: Checking number format using a stored procedure</title>
   </head>
 
@@ -87,7 +87,6 @@ The following job aims at connecting to an Oracle Database containing Social Sec
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1412652"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">Encoding type</b> in the list.</li></div>
 <a name="wp1412658"> </a><div class="pSmartList2"><li>In the <b class="cBold">SP Name</b> field, type in the exact name of the stored procedure (or function) as called in the Database. In this use case, the stored procedure name is <em class="cEmphasis">is_ssn</em>.</li></div>
 <a name="wp1413076"> </a><div class="pSmartList2"><li>The basic function used in this particular example is as follows:<br /><code class="cCode">CREATE OR REPLACE FUNCTION is_ssn(string_in VARCHAR2) RETURN PLS_INTEGER<br />IS<br />-- validating ###-##-#### format<br />BEGIN<br />  IF TRANSLATE(string_in, &#39;0123456789A&#39;, &#39;AAAAAAAAAAB&#39;) =<br />     &#39;AAA-AA-AAAA&#39; THEN<br />    RETURN 1;<br />  END IF;<br />  RETURN 0;<br />END is_ssn;<br />/</code></li></div>
 <a name="wp1412665"> </a><div class="pSmartList2"><li>As a return value is expected in this use case, the procedure acts as a function, so select the <b class="cBold">Is function</b> check box. </li></div>

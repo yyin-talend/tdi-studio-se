@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:16">
+    <meta name="LASTUPDATED" content="05/27/10 10:59:07">
     <title>tWaitForFile</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tUnite_Scenariogpb.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tUnite_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -47,7 +47,7 @@ Orchestration
 </div>
 </td>
     <td><a name="wp1538764"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-12-22-12.jpg" height="59" width="112" id="wp1538760" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-12-24-14.jpg" height="59" width="112" id="wp1538760" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -121,7 +121,46 @@ Mask of the file to be searched for insertion or removal.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538829"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3449980"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3449987"> </a><div class="pCellBody">
+<em class="cEmphasis">Include subdirectories</em>
+</div>
+</td>
+    <td><a name="wp3449990"> </a><div class="pCellBody">
+Select this check box to include the sub-folders.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3449994"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450001"> </a><div class="pCellHeading">
+<em class="cEmphasis">Case sensitive</em>
+</div>
+</td>
+    <td><a name="wp3450004"> </a><div class="pCellBody">
+Select this check box to activate case sensitivity.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3450016"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450023"> </a><div class="pCellHeading">
+<em class="cEmphasis">Include present file</em>
+</div>
+</td>
+    <td><a name="wp3450026"> </a><div class="pCellBody">
+Select this check box to include the file in use.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538829"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -130,11 +169,11 @@ Mask of the file to be searched for insertion or removal.
 </div>
 </td>
     <td><a name="wp1538836"> </a><div class="pCellBody">
-Select the condition to be met for the action to be carried out:<br /><b class="cBold">A file is created</b><br />A file is deleted
+Select the condition to be met for the action to be carried out:<br /><b class="cBold">A file is created</b><br /><b class="cBold">A file is deleted<br />A file is updated<br />A file is created or updated or deleted</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538841"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538841"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -143,11 +182,63 @@ Select the condition to be met for the action to be carried out:<br /><b class="
 </div>
 </td>
     <td><a name="wp1538848"> </a><div class="pCellBody">
-Select the action to be carried out: either stop the iterations when the condition is met or continue the loop until the end of the max iteration number.
+Select the action to be carried out: either stop the iterations when the condition is met <b class="cBold">(exit loop)</b> or continue the loop until the end of the max iteration number <b class="cBold">(continue loop)</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538853"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3450047"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450054"> </a><div class="pCellHeading">
+<em style="font-style: italic" class="cEmphasis">Schema </em><span style="font-style: normal">and</span><em class="cEmphasis"> Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3450057"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. .
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3450128"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450131"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450138"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3450160"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450163"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3450170"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3450189"> </a><div class="pCellBody">
+<b class="cBold">Advanced Settings</b>
+</div>
+</td>
+    <td><a name="wp3450192"> </a><div class="pCellHeading">
+<em class="cEmphasis">Wait for file to be released</em>
+</div>
+</td>
+    <td><a name="wp3450199"> </a><div class="pCellBody">
+<span style="font-weight: normal">Select this check box to delay the Job execution until the file is closed</span>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538853"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -156,7 +247,7 @@ This component plays the role of the start (or trigger) component of the subjob 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538862"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538862"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
@@ -189,7 +280,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tUnite_Scenariogpb.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tUnite_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

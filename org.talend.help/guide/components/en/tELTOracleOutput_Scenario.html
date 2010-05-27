@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:18:58">
+    <meta name="LASTUPDATED" content="05/27/10 10:57:53">
     <title>Scenario: Using the Oracle MERGE function to update and add data simultaneously</title>
   </head>
 
@@ -87,8 +87,8 @@ The schema is configured as follows&#160;:
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2969079"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default Table Name</b> field, enter the name of the source table within inverted commas.  In this example, the table used is called <em class="cEmphasis">NEW_CUSTOMERS_MLE</em>.</li></div>
-<a name="wp2969089"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default Schema Name</b> field, enter the name of the source schema within inverted commas. In this example, the schema used is called <em class="cEmphasis">ROOT</em>.</li></div>
+<a name="wp2969079"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default Table Name</b> field, enter the name of the source table within double quotation marks.  In this example, the table used is called <em class="cEmphasis">NEW_CUSTOMERS_MLE</em>.</li></div>
+<a name="wp2969089"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default Schema Name</b> field, enter the name of the source schema within double quotation marks. In this example, the schema used is called <em class="cEmphasis">ROOT</em>.</li></div>
 <a name="wp2969102"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">tELTOracleMap</b> and on the <b class="cBold">Component</b> view to display the component&#39;s basic properties.</li></div>
 </ul></div>
 </ul></div>
@@ -186,7 +186,7 @@ The columns defined as the primary key CANNOT and MUST NOT be made subject to up
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2969387"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use Merge Insert</b> check box to insert the new data, whilst the existing data is updated by Oracle&#39;s MERGE function.</li></div>
+<a name="wp2969387"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use Merge Insert</b> check box to insert the new data, while the existing data is updated by Oracle&#39;s MERGE function.</li></div>
 <a name="wp2969391"> </a><div class="pSmartList2"><li>In the table which appears, select the check boxes which correspond to the columns you want to insert. We want to insert all the new client data. Therefore, select all of the check boxes which correspond to the columns to be inserted.</li></div>
 <a name="wp2969398"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use Merge Insert Where Clause</b> check box if you want to use a WHERE clause to filter the data inserted during the MERGE operation.</li></div>
 <a name="wp2969405"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default Table Name</b> field, enter the name of the source table within inverted commas. In this example, the table used is called <em class="cEmphasis">NEW_CUSTOMERS_MLE</em></li></div>

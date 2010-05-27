@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:03">
+    <title>Scenario: Computing data with Hadoop distributed file system</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3433343"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3433351"> </a><h2 class="pHeading2">
+Scenario: Computing data with Hadoop distributed file system
+</h2>
+<a name="wp3433354"> </a><p class="pIndented1">
+The following scenario describes a simple Job that creates a file in a defined directory, get it into and out of HDFS, subsequently store it to another local directory, and read it at the end of the Job.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433363"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tHDFSPut</b>, <b class="cBold">tHDFSGet</b>, <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3433389"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tFixedFlowInput</b>.</li></div>
+<a name="wp3433402"> </a><div class="pSmartList2"><li>From the menu, select the <b class="cBold">Row</b> link to connect <b class="cBold">tFixedFlowInput </b>to <b class="cBold">tFileOutputDelimited</b>.</li></div>
+<a name="wp3433413"> </a><div class="pSmartList2"><li>The same way, right-click <b class="cBold">tFileInputDelimited </b>to connect it to <b class="cBold">tLogRow</b> using a <b class="cBold">Row Main</b> link.</li></div>
+<a name="wp3433428"> </a><div class="pSmartList2"><li>Similarly, right-click <b class="cBold">tFixedFlowInput</b> to connect it to <b class="cBold">tHDFSPut</b> using a <b class="cBold">OnSubjobOk</b> link.</li></div>
+<a name="wp3433442"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tHDFSGet</b> to <b class="cBold">tFileInputDelimited </b>using a <b class="cBold">On</b><b class="cBold">SubjobOk</b> link.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433449"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet1.png" id="wp3433446" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433458"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tFixedFlowInput</b>.</li></div>
+<a name="wp3433468"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings for <b class="cBold">tFixedFlowInput</b>.</li></div>
+<a name="wp3433480"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema </b>to <b class="cBold">Built-In</b> and click the three-dot <b class="cBold">[...]</b> button next to <b class="cBold">Edit Schema</b> to describe the data structure you want to create from internal variables. In this scenario, the schema contains one column: <em class="cEmphasis">content</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433492"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet3.png" id="wp3433489" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433498"> </a><div class="pSmartList2"><li>Click the plus button to add the parameter line.</li></div>
+<a name="wp3433504"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box and accept to propagate the changes when prompted by the studio.</li></div>
+<a name="wp3433516"> </a><div class="pSmartList2"><li>In <b class="cBold">Basic settings</b>, define the corresponding value in the <b class="cBold">Mode</b> area using the <b class="cBold">Use Single Table </b>option. In this scenario, the value is <em class="cEmphasis">&quot;Hello world!&quot;</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433529"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet2.png" id="wp3433526" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433540"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tFileOutputDelimited</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433549"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet4.png" id="wp3433546" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433557"> </a><div class="pSmartList2"><li>Click the three-dot <b class="cBold">[...]</b> button next to the <b class="cBold">File Name</b> field and browse to the output file you want to write data in, <em class="cEmphasis">in.txt</em> in this example.</li></div>
+<a name="wp3433570"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tHDFSPut</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433579"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet5.png" id="wp3433576" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433596"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host</b>, the <b class="cBold">Port</b>, the <b class="cBold">Username</b>, the <b class="cBold">Group</b> fields, enter the connection parameters to the HDFS.</li></div>
+<a name="wp3433603"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">Local directory</b> field, click the three-dot <b class="cBold">[...]</b> button to browse to the folder with the file to be loaded into the HDFS. In this scenario, the directory has been specified while configuring <b class="cBold">tFileOutputDelimited</b>: <em class="cEmphasis">C:/hadoopfiles/putFile/</em>. </li></div>
+<a name="wp3433616"> </a><div class="pSmartList2"><li>In the <b class="cBold">HDFS directory</b> field, type in the intended location in HDFS to store the file to be loaded. In this example, it is <em class="cEmphasis">/testFile</em>.</li></div>
+<a name="wp3433627"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Overwrite file</b> field to stretch the drop-down.</li></div>
+<a name="wp3433634"> </a><div class="pSmartList2"><li>From the menu, select <b class="cBold">always</b>.</li></div>
+<a name="wp3433641"> </a><div class="pSmartList2"><li>In the <b class="cBold">Files</b> area, click the plus button to add a row in which you define the file to be loaded.</li></div>
+<a name="wp3433653"> </a><div class="pSmartList2"><li>In the <b class="cBold">File mask</b> column, enter <em class="cEmphasis">*.txt</em> to replace <em class="cEmphasis">newLine</em> between quotation marks and leave the <b class="cBold">New name</b> column as it is. This allows you to extract all the <em class="cEmphasis">.txt</em> files in the specified directory without changing their names. In this example, the file is<em class="cEmphasis"> in.txt</em>.</li></div>
+<a name="wp3433672"> </a><div class="pSmartList2"><li>In the design workspace, select <b class="cBold">tHDFSGet</b> and click the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433681"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet6.png" id="wp3433678" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433698"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host</b>, the <b class="cBold">Port</b>, the <b class="cBold">Username</b>, the <b class="cBold">Group</b> fields, enter the connection parameters to the HDFS.</li></div>
+<a name="wp3433705"> </a><div class="pSmartList2"><li>In the <b class="cBold">HDFS directory</b> field, type in location storing the loaded file in HDFS. In this example, it is <em class="cEmphasis">/testFile</em>.</li></div>
+<a name="wp3433715"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">Local directory</b> field, click the three-dot <b class="cBold">[...]</b> button to browse to the folder intended to store the files that are extracted out of the HDFS. In this scenario, the directory is: <em class="cEmphasis">C:/hadoopfiles/getFile/</em>. </li></div>
+<a name="wp3433726"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Overwrite file</b> field to stretch the drop-down.</li></div>
+<a name="wp3433733"> </a><div class="pSmartList2"><li>From the menu, select <b class="cBold">always</b>.</li></div>
+<a name="wp3433739"> </a><div class="pSmartList2"><li>In the <b class="cBold">Files</b> area, click the plus button to add a row in which you define the file to be extracted.</li></div>
+<a name="wp3433752"> </a><div class="pSmartList2"><li>In the <b class="cBold">File mask</b> column, enter <em class="cEmphasis">*.txt</em> to replace <em class="cEmphasis">newLine</em> between quotation marks and leave the <b class="cBold">New name</b> column as it is. This allows you to extract all the <em class="cEmphasis">.txt</em> files from the specified directory in the HDFS without changing their names. In this example, the file is<em class="cEmphasis"> in.txt</em>.</li></div>
+<a name="wp3433769"> </a><div class="pSmartList2"><li>In the design workspace, select the <b class="cBold">tFileInputDelimited</b> component.</li></div>
+<a name="wp3433780"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Component</b> tab to define the basic settings of<b class="cBold"> tFileInputDelimited</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433787"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet7.png" id="wp3433784" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433796"> </a><div class="pSmartList2"><li>Set property type to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3433802"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">File Name/Stream</b> field, click the three-dot button to browse to the file you have obtained from the HDFS. In this scenario, the directory is <em class="cEmphasis">C:/hadoopfiles/getFile/in.txt</em>.</li></div>
+<a name="wp3433824"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Built-In </b>and click <b class="cBold">Edit schema</b> to define the data to pass on to the <b class="cBold">tLogRow</b> component. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433833"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet8.png" id="wp3433830" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3433839"> </a><div class="pSmartList2"><li>Click the plus button to add a new column.</li></div>
+<a name="wp3433842"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box and accept to propagate the changes when prompted by the studio.</li></div>
+<a name="wp3433851"> </a><div class="pSmartList2"><li>Save the Job and press <b class="cBold">F6</b> to execute the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3433858"> </a><p class="pIndented1">
+The <em class="cEmphasis">in.txt</em> file is created and loaded into the HDFS.
+</p>
+<a name="wp3433865"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet9.png" id="wp3433862" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3433875"> </a><p class="pIndented1">
+The file is also extracted from the HDFS by <b class="cBold">tHDFSGet</b> and is read by <b class="cBold">tFileInputDelimited</b>.
+</p>
+<a name="wp3433884"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tHDFSGet10.png" id="wp3433879" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

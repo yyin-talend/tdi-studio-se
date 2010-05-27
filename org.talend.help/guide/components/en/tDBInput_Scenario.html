@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>Scenario 1: Displaying selected data from DB table</title>
   </head>
 
@@ -77,13 +77,8 @@ StoreSQLQuery is a variable that can be used to debug a <b class="cBold">tDBInpu
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187883"> </a><div class="pSmartList2"><li>Use the same scenario as scenario 1 above and add a third component, <b class="cBold">tPerl</b>.</li></div>
-<a name="wp2251387"> </a><p class="pBodyRelative">
-<br />
-<img src="images/bulb_small.png" align="left" id="wp2251385" border="0" hspace="0" vspace="0"/><br />
-<br />If you create scenario 1 using the Java language, you must use <b class="cBold">tJava</b> in this step.
-</p>
-<a name="wp2204935"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> component to <b class="cBold">tPerl</b> component using a trigger connection of <b class="cBold">OnComponentOk</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tPerl</b> component.</li></div>
+<a name="wp1187883"> </a><div class="pSmartList2"><li>Use the same scenario as scenario 1 above and add a third component, <b class="cBold">tJava</b>.</li></div>
+<a name="wp2204935"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tDBInput</b> to <b class="cBold">tJava</b> using a trigger connection of the <b class="cBold">OnComponentOk</b> type. In this case, we want the <b class="cBold">tDBInput</b> to run before the <b class="cBold">tJava</b> component.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2204893"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -96,7 +91,7 @@ StoreSQLQuery is a variable that can be used to debug a <b class="cBold">tDBInpu
 <a name="wp1187904"> </a><div class="pSmartList2"><li>Set both <b class="cBold">tDBInput</b> and <b class="cBold">tLogRow</b> component as in <b class="cBold">tDBInput</b> scenario 1.</li></div>
 <a name="wp1187911"> </a><div class="pSmartList2"><li>Click anywhere on the design workspace to display the <b class="cBold">Contexts</b> property panel.</li></div>
 <a name="wp1187917"> </a><div class="pSmartList2"><li>Create a new parameter called explicitly <b class="cBold">StoreSQLQuery</b>. Enter a default value of 1. This value of 1 means the <b class="cBold">StoreSQLQuery</b> is &quot;true&quot; for a use in the QUERY global variable.</li></div>
-<a name="wp1187921"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">tPerl</b> component and display the <b class="cBold">Component</b> view. Enter the command Print to display the query content, press <b class="cBold">Ctrl+Space bar</b> to access the variable list and select the global variable QUERY.</li></div>
+<a name="wp3493347"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">tJava</b> component to display the <b class="cBold">Component</b> view. Enter the <code class="cCode">System.Out.println(&quot;&quot;)</code>command to display the query content, press <b class="cBold">Ctrl+Space bar</b> to access the variable list and select the global variable QUERY.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1187930"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">

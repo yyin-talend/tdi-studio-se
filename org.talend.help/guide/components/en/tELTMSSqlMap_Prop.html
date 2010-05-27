@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:18:58">
+    <meta name="LASTUPDATED" content="05/27/10 10:57:53">
     <title>tELTMSSqlMap</title>
   </head>
 
@@ -27,7 +27,7 @@ tELTMSSqlMap
 </h2>
 <a name="wp2977251"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="images/tELTMSSqlMap_icon32.png" id="wp2977246" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="images/tELTMSSqlMap_icon32_white.png" id="wp2977246" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2977258"> </a><h2 class="pHeading2">
@@ -50,7 +50,7 @@ ELT
 </div>
 </td>
     <td><a name="wp2977280"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp2977277" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp2977277" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -81,8 +81,13 @@ Uses the tables provided as input, to feed the parameter in the built statement.
 </div>
 </td>
     <td><a name="wp2977310"> </a><div class="pCellBody">
-Select this check box and select the appropriate Connection component from the <b class="cBold">Component</b> <b class="cBold">list</b> if you want to re-use connection parameters that you have already defined. 
+Select this check box and select the appropriate Connection component from the <b class="cBold">Component</b> <b class="cBold">list</b> if you want to re-use connection parameters that you have already defined.<br />
 </div>
+<a name="wp3449687"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3449684" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using, in <a href="Databases_group_intro.html"><em class="cEmphasis">Databases components</em></a>.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2977318"> </a><div class="pCellBody">
@@ -224,7 +229,7 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
     <td><a name="wp2977424"> </a><div class="pCellBody">
-Specify additional connection properties in the existing DB connection.
+Specify additional connection properties for the DB connection you are creating. This option is not available if you have selected the <b class="cBold">Use an existing connection</b> check box in the <b class="cBold">Basic settings</b>.
 </div>
 </td>
 </tr>

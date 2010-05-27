@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:11">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:52">
     <title>Scenario1: warning &amp; log on entries</title>
   </head>
 
@@ -41,7 +41,7 @@ In this basic scenario made of three components, a <b class="cBold">tRowGenerato
 <a name="wp1205118"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tRowGenerator</b>, a <b class="cBold">tWarn</b>, a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b>, on your design workspace</li></div>
 <a name="wp1205129"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tRowGenerator</b> to the <b class="cBold">tWarn</b> component.</li></div>
 <a name="wp1205139"> </a><div class="pSmartList2"><li>Connect separately the <b class="cBold">tLogCatcher</b> to the <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1205148"> </a><div class="pSmartList2"><li>On the <b class="cBold">tRowGenerator</b> editor, set the random entries creation using a basic Perl function: </li></div>
+<a name="wp1205148"> </a><div class="pSmartList2"><li>On the <b class="cBold">tRowGenerator</b> editor, set the random entries creation using a basic function: </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1205157"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -51,8 +51,8 @@ In this basic scenario made of three components, a <b class="cBold">tRowGenerato
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1236843"> </a><div class="pSmartList2"><li>On the <b class="cBold">tWarn</b> Component view, set your warning message, the code the priority level. In this case, the message is &quot;this is a warning&#39;.</li></div>
-<a name="wp1205173"> </a><div class="pSmartList2"><li>For this scenario, we will concatenate a Perl function to the message above, in order to collect the first value from the input table.</li></div>
+<a name="wp1236843"> </a><div class="pSmartList2"><li>On the <b class="cBold">tWarn</b> <b class="cBold">Component</b> view, set your warning message, the code the priority level. In this case, the message is &quot;this is a warning&#39;.</li></div>
+<a name="wp1205173"> </a><div class="pSmartList2"><li>For this scenario, we will concatenate a function to the message above, in order to collect the first value from the input table.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1205182"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -75,7 +75,7 @@ In this basic scenario made of three components, a <b class="cBold">tRowGenerato
 Press <b class="cBold">F6</b> to execute the Job. Notice that the Log produced is exhaustive.
 </p>
 <a name="wp1205220"> </a><h2 class="pHeading2">
-Scenario 2: log &amp; kill a Job
+Scenario 2: Log &amp; kill a Job
 </h2>
 <a name="wp1295196"> </a><p class="pIndented1">
 This scenario uses a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tDie</b> component. A <b class="cBold">tRowGenerator</b> is connected to a <b class="cBold">tFileOutputDelimited</b> using a Row link. On error, the <b class="cBold">tDie</b> triggers the catcher subjob which displays the log data content on the <b class="cBold">Run</b> console.
@@ -88,7 +88,7 @@ This scenario uses a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tDi
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1205257"> </a><div class="pSmartList2"><li>Drop all required components from various folders of the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tRowGenerator</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tDie</b>, <b class="cBold">tLogCatcher</b>, <b class="cBold">tLogRow</b>.</li></div>
-<a name="wp1205266"> </a><div class="pSmartList2"><li>On the tRowGenerator Component view, define the setting of the input entries to be handled.</li></div>
+<a name="wp1205266"> </a><div class="pSmartList2"><li>On the <b class="cBold">tRowGenerator</b> <b class="cBold">Component</b> view, define the setting of the input entries to be handled.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1205273"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -100,9 +100,9 @@ This scenario uses a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tDi
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1205280"> </a><div class="pSmartList2"><li>Edit the schema and define the following columns as random input examples: <em class="cEmphasis">id, name, quantity, flag and creation</em>.</li></div>
 <a name="wp1205288"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Number of rows</b> onto 0. This will constitute the error which the Die operation is based on.</li></div>
-<a name="wp1205299"> </a><div class="pSmartList2"><li>On the <b class="cBold">Values</b> table, define the <b class="cBold">Perl array</b> functions to feed the input flow.</li></div>
-<a name="wp1205305"> </a><div class="pSmartList2"><li>Define the <b class="cBold">tFileOutputDelimited</b> to hold the possible output data. The row connection from the tRowGenerator feeds automatically the output schema. The separator is a simple semi-colon.</li></div>
-<a name="wp1237081"> </a><div class="pSmartList2"><li>Connect this output component to the tDie using a <b class="cBold">Trigger  &gt; If </b> connection. Double-click on the newly created connection to define the if: <br /><code class="cCode">$_globals{tRowGenerator_1}{NB_LINE} &lt;= 0</code></li></div>
+<a name="wp1205299"> </a><div class="pSmartList2"><li>On the <b class="cBold">Values</b> table, define the functions to feed the input flow.</li></div>
+<a name="wp1205305"> </a><div class="pSmartList2"><li>Define the <b class="cBold">tFileOutputDelimited</b> to hold the possible output data. The <b class="cBold">row</b> connection from the <b class="cBold">tRowGenerator</b> feeds automatically the output schema. The separator is a simple semi-colon.</li></div>
+<a name="wp1237081"> </a><div class="pSmartList2"><li>Connect this output component to the <b class="cBold">tDie</b> using a <b class="cBold">Trigger  &gt; If </b> connection. Double-click on the newly created connection to define the if: <br /><code class="cCode">((Integer)globalMap.get(&quot;tRowGenerator_1_NB_LINE&quot;)) &lt;=0</code></li></div>
 <a name="wp1205331"> </a><div class="pSmartList2"><li>Then double-click to select and define the <b class="cBold">Basic settings</b> of the <b class="cBold">tDie</b> component.</li></div>
 </ul></div>
 </ul></div>
@@ -115,7 +115,7 @@ This scenario uses a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tDi
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1205349"> </a><div class="pSmartList2"><li>Enter your <b class="cBold">Die</b> message to be transmitted to the <b class="cBold">tLogCatcher</b> before the actual kill-job operation happens.</li></div>
 <a name="wp1205356"> </a><div class="pSmartList2"><li>Next to the Job but not physically connected to it, drop a <b class="cBold">tLogCatcher</b> from the <b class="cBold">Palette</b> to the design workspace and connect it to a <b class="cBold">tLogRow</b> component.</li></div>
-<a name="wp1205366"> </a><div class="pSmartList2"><li>Define the tLogCatcher Basic settings. Make sure the <b class="cBold">tDie</b> box is selected in order to add the Die message to the Log information transmitted to the final component. </li></div>
+<a name="wp1205366"> </a><div class="pSmartList2"><li>Define the <b class="cBold">tLogCatcher</b> <b class="cBold">Basic settings</b>. Make sure the <b class="cBold">tDie</b> box is selected in order to add the Die message to the Log information transmitted to the final component. </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1205375"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -126,7 +126,7 @@ This scenario uses a <b class="cBold">tLogCatcher</b> and a <b class="cBold">tDi
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1205381"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job and notice that the log contains a black message and a red one.</li></div>
-<a name="wp1205384"> </a><div class="pSmartList2"><li>The black log data come from the <b class="cBold">tDie</b> and are transmitted by the <b class="cBold">tLogCatcher</b>. In addition the normal PerlDie message in red displays as a Job abnormally died.</li></div>
+<a name="wp1205384"> </a><div class="pSmartList2"><li>The black log data come from the <b class="cBold">tDie</b> and are transmitted by the <b class="cBold">tLogCatcher</b>. In addition the normal Java Exception message in red displays as a Job abnormally died.</li></div>
 </ul></div>
 </ul></div>
     </blockquote>

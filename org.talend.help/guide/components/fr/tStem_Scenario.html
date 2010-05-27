@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/24/10 15:45:17">
+    <meta name="LASTUPDATED" content="05/27/10 09:47:26">
     <title>Scénario&#160;: Extraire les radicaux de mots anglais d&#39;une colonne spécifique </title>
   </head>
 
@@ -35,7 +35,7 @@ Ce scénario décrit un Job ayant six composants, effectuant une normalisation lin
 Le but de ce Job est de créer une sorte de dictionnaire des radicaux des mots anglais listés dans la colonne <em class="cEmphasis">translation</em>. Ce dictionnaire peut être utilisé plus tard, afin de vérifier les nouveaux mots à ajouter à la table sélectionnée. Les radicaux anglais extraits sont écrits dans un fichier de sortie, avec le nombre de leurs occurrences dans la colonne <em class="cEmphasis">translation</em>. 
 </p>
 <a name="wp3121323"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée principaux dans le Repository. Pour plus d&#39;informations concernant le stockage de métadonnées de schéma dans le Repository, consultez <em class="cEmphasis">Configurer une connexion DB</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée principaux dans le Repository. Pour plus d&#39;informations concernant le stockage de métadonnées de schéma dans le Repository, consultez <em class="cEmphasis">Configurer une connexion DB</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite</b>.
 </p>
 <a name="wp3121351"> </a><p class="pIndented1">
 La table d&#39;entrée principale contient huit colonnes&#160;: <em class="cEmphasis">id_key</em>, <em class="cEmphasis">id_lang</em>, <em class="cEmphasis">translation</em>, <em class="cEmphasis">id_status</em>,<em class="cEmphasis"> id_user_trans</em>, <em class="cEmphasis">id_user_validate</em>, <em class="cEmphasis">id_editor</em> et <em class="cEmphasis">date</em>. Nous voulons extraire le radical des mots de la colonne <em class="cEmphasis">translation</em>.

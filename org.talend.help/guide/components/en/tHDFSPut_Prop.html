@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:03">
+    <title>tHDFSPut</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3434059"> </a><h2 class="pHeading1">
+tHDFSPut
+</h2>
+<a name="wp3434068"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tHDFSPut_icon.png" id="wp3434063" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3434075"> </a><h2 class="pHeading2">
+tHDFSPut properties
+</h2>
+<a name="wp3434283"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3434083table3434078">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434083"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3434085"> </a><div class="pCellBody">
+File/Hadoop
+</div>
+</td>
+    <td><a name="wp3434093"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/java_icongh.png" id="wp3434090" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434098"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3434103"> </a><div class="pCellBody">
+<b class="cBold">tHDFSPut </b>load data into Hadoop file system.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434110"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3434115"> </a><div class="pCellBody">
+<b class="cBold">tHDFSPut </b>connects to Hadoop distributed file system to load large-scale files into it with optimized performance.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434122"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3434127"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp3434129"> </a><div class="pCellBody">
+IP address of the Hadoop distributed file system server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434131"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434136"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp3434138"> </a><div class="pCellBody">
+Listening port number of HDFS server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434140"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434145"> </a><div class="pCellHeading">
+<em class="cEmphasis">User name</em>
+</div>
+</td>
+    <td><a name="wp3434147"> </a><div class="pCellBody">
+User authentication name of HDFS
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434149"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434154"> </a><div class="pCellHeading">
+<em class="cEmphasis">Group</em>
+</div>
+</td>
+    <td><a name="wp3434156"> </a><div class="pCellBody">
+Membership including the authentication user under which the HDFS instances were started.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434158"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434163"> </a><div class="pCellHeading">
+<em class="cEmphasis">HDFS directory</em>
+</div>
+</td>
+    <td><a name="wp3434165"> </a><div class="pCellBody">
+Location to store the files in HDFS.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434167"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434172"> </a><div class="pCellHeading">
+<em class="cEmphasis">Local directory</em>
+</div>
+</td>
+    <td><a name="wp3434174"> </a><div class="pCellBody">
+Local directory where are stored the files to be loaded into HDFS.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434176"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434181"> </a><div class="pCellHeading">
+<em class="cEmphasis">Overwrite file</em>
+</div>
+</td>
+    <td><a name="wp3434183"> </a><div class="pCellBody">
+Options to overwrite or not the existing file with the new one.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434185"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434190"> </a><div class="pCellHeading">
+<em class="cEmphasis">Files</em>
+</div>
+</td>
+    <td><a name="wp3434195"> </a><div class="pCellBody">
+In the <b class="cBold">Files</b> area, the fields to be completed are:<br />- <b class="cBold">File mask</b>: type in the file name to be selected from the local directory. Regular expression is available.<br />- <b class="cBold">New name</b>: give a new name to the loaded file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434203"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434208"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3434210"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434218"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434222"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3434225"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434227"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3434231"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable parallel execution</em>
+</div>
+</td>
+    <td><a name="wp3434234"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b> 
+</div>
+<a name="wp3434252"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3434247" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+The <b class="cBold">Action on table</b> field is not available with the parallelization function. Therefore, you must use a <b class="cBold">tCreateTable</b> component if you want to create a table.<br />
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3434261"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3434263"> </a><div class="pCellBody">
+This component combines HDFS connection and data extraction, thus usually used as a single-component subjob but also possible as output or end object.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3434270"> </a><div class="pCellBody">
+<b class="cBold">Limitations</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3434278"> </a><div class="pCellBody">
+<b class="cBold">tHDFSGet</b> and <b class="cBold">tHDFSPut</b> should run under JRE 1.6+.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:19:47">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:33">
     <title>Scenario: Iterating on a remote directory </title>
   </head>
 
@@ -70,7 +70,7 @@ The following Java scenario describes a three-component Job that connects to an 
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2753988"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use an existing connection</b> check box and in the <b class="cBold">Component list</b>, click the relevant FTP connection component, <b class="cBold">tFTPConnection_1</b> in this scenario. Connection information are automatically filled in.  </li></div>
 <a name="wp2753999"> </a><div class="pSmartList2"><li>In the <b class="cBold">Remote directory</b> field, enter the relative path of the directory that holds the files to be listed. </li></div>
-<a name="wp2754006"> </a><div class="pSmartList2"><li>In the <b class="cBold">Filemask</b> field, click the plus button to add one line and then define a file mask to filter the data to recuperate. You can use special characters if need be. In this example, we want only to recuperate delimited files (<em class="cEmphasis">*csv</em>). </li></div>
+<a name="wp2754006"> </a><div class="pSmartList2"><li>In the <b class="cBold">Filemask</b> field, click the plus button to add one line and then define a file mask to filter the data to be retrieved. You can use special characters if need be. In this example, we want only to recuperate delimited files (<em class="cEmphasis">*csv</em>). </li></div>
 <a name="wp2755553"> </a><div class="pSmartList2"><li>In the <b class="cBold">Connect Mode</b> list, select the FTP server connection mode you want to use, <b class="cBold">Active</b> in this example.</li></div>
 <a name="wp2755563"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFTPGet</b> to display its <b class="cBold">Basic settings</b> view and define the components properties.</li></div>
 </ul></div>
@@ -98,7 +98,7 @@ The following Java scenario describes a three-component Job that connects to an 
 
 </div>
 <a name="wp2756158"> </a><p class="pIndented1">
-All .csv files held in the remote directory on the FTP server are listed in the defined directory, as defined in the filemask. Then the files are recuperated and saved in the defined local output directory. 
+All .csv files held in the remote directory on the FTP server are listed in the defined directory, as defined in the filemask. Then the files are retrieved and saved in the defined local output directory. 
 </p>
     </blockquote>
     <hr>

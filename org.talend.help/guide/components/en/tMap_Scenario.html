@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:18">
+    <meta name="LASTUPDATED" content="05/27/10 10:59:17">
     <title>Scenario 1: Mapping with filter and simple explicit join </title>
   </head>
 
@@ -603,22 +603,22 @@ Therefore if you check out the data contained in the newly created <em class="cE
 <a name="wp2936646"> </a><h2 class="pHeading2">
 Scenario 7: Mapping with join output tables
 </h2>
-<a name="wp2936650"> </a><p class="pIndented1">
+<a name="wp2942241"> </a><p class="pIndented1">
 The following scenario describes a Job processing reject flows without separating them from the main flow. 
 </p>
-<a name="wp2936703"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp2942249"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMapOutputtables1.png" id="wp2936700" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tMapOutputtables1.png" id="wp2942246" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2936736"> </a><div class="pSmartList2"><li>On the <b class="cBold">Repository</b> tree view, click <b class="cBold">Metadata</b> &gt; <b class="cBold">File delimited</b>. Drag and drop the <em class="cEmphasis">customers</em> metadata onto the workspace. </li></div>
-<a name="wp2936934"> </a><div class="pSmartList2"><li>A dialog box opens and asks you to choose which component type you want to use. Select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">OK</b>.</li></div>
-<a name="wp2936958"> </a><div class="pSmartList2"><li>Now, drag and drop the <em class="cEmphasis">states</em> metadata. Select the same component in the dialog box and click <b class="cBold">OK</b>.</li></div>
-<a name="wp2936865"> </a><div class="pSmartList2"><li>Drag and drop from the <b class="cBold">Palette</b> a <b class="cBold">tMap</b> and two <b class="cBold">tLogRow</b> components.</li></div>
+<a name="wp2942265"> </a><div class="pSmartList2"><li>On the <b class="cBold">Repository</b> tree view, click <b class="cBold">Metadata</b> &gt; <b class="cBold">File delimited</b>. Drag and drop the <em class="cEmphasis">customers</em> metadata onto the workspace. For more information about centralizing metadata, see Defining Metadata items in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. The <em class="cEmphasis">customers</em> metadata contains information about customers, such as their ID, their name or their address...</li></div>
+<a name="wp2942394"> </a><div class="pSmartList2"><li>A dialog box opens and asks you to choose which component type you want to use. Select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">OK</b>.</li></div>
+<a name="wp2942289"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">states</em> metadata. Select the same component in the dialog box and click <b class="cBold">OK</b>. The <em class="cEmphasis">states</em> metadata contains the ID of the state, and its name.</li></div>
+<a name="wp2936865"> </a><div class="pSmartList2"><li>Drop from the <b class="cBold">Palette</b> a <b class="cBold">tMap</b> and two <b class="cBold">tLogRow</b> components.</li></div>
 <a name="wp2936983"> </a><div class="pSmartList2"><li>Link the <em class="cEmphasis">customers</em> component to the <b class="cBold">tMap</b>, using a <b class="cBold">Row Main</b> link.</li></div>
-<a name="wp2936994"> </a><div class="pSmartList2"><li>Link the <em class="cEmphasis">states</em> component to the tMap, using a <b class="cBold">Row Main</b> link. It will automatically be defined as <b class="cBold">Lookup</b>.</li></div>
+<a name="wp2936994"> </a><div class="pSmartList2"><li>Link the <em class="cEmphasis">states</em> component to the <b class="cBold">tMap</b>, using a <b class="cBold">Row Main</b> link. It will automatically be defined as <b class="cBold">Lookup</b>.</li></div>
 <a name="wp2937768"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component. Drag and drop the <em class="cEmphasis">idState</em> column to the first row in the second table, in order to create a join.</li></div>
 <a name="wp2938606"> </a><div class="pSmartList2"><li>Clear the <b class="cBold">Die on error</b> check box if you want to handle the execution errors. The <b class="cBold">ErrorReject</b> table is now created. Click four times the <b class="cBold">[+]</b> button at the bottom right of the editor to add four columns. Select the input columns <em class="cEmphasis">id</em>, <em class="cEmphasis">idState</em>, <em class="cEmphasis">RegTime</em> and drag and drop them to the four new blank columns. </li></div>
 </ul></div>
@@ -631,7 +631,7 @@ The following scenario describes a Job processing reject flows without separatin
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2938632"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[+]</b> button at the top right of the editor to add an output table. In the dialog box which opens, select <b class="cBold">New output</b>. In the field next to it, type in the name of the table, <em class="cEmphasis">out1</em>. Click <b class="cBold">OK</b>.</li></div>
-<a name="wp2938651"> </a><div class="pSmartList2"><li>Then, drag and drop the four following columns from the input table to the <em class="cEmphasis">out1</em> table: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em>, and <em class="cEmphasis">idState</em>.</li></div>
+<a name="wp2938651"> </a><div class="pSmartList2"><li>Drop the four following columns from the input table to the <em class="cEmphasis">out1</em> table: <em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">CustomerAddress</em>, and <em class="cEmphasis">idState</em>.</li></div>
 <a name="wp2938670"> </a><div class="pSmartList2"><li>Add two columns <em class="cEmphasis">RegTime</em> and <em class="cEmphasis">RegisterTime</em> with a Date format by clicking two times the <b class="cBold">[+]</b> button.</li></div>
 <a name="wp2938680"> </a><div class="pSmartList2"><li>Click in the first one, and press <b class="cBold">Ctrl+Space</b> to display the autocompletion list. Select <code class="cCode">TalendDate.parseDate</code>. Change the pattern to <code class="cCode">(&quot;dd/MM/yyyy HH:mm&quot;,row1.RegTime)</code>.</li></div>
 <a name="wp2938692"> </a><div class="pSmartList2"><li>Do the same thing in the second column, but change the pattern to <code class="cCode">(&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;,row1.RegisterTime)</code>.</li></div>

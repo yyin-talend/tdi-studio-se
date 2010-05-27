@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:19:03">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:03">
     <title>Scenario: Writing DB data into an LDIF-type file</title>
   </head>
 
@@ -38,8 +38,8 @@ This scenario describes a two component Job which aims at extracting data from a
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187106"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tDBInput</b> and a <b class="cBold">tFileOutputLDIF</b> component from the <b class="cBold">Palette</b> to the design area. Bind them together using a <b class="cBold">Row &gt; Main</b> link.</li></div>
-<a name="wp1187122"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tDBInput</b> component, and go to the <b class="cBold">Component</b> panel then select the <b class="cBold">Basic settings</b> tab.</li></div>
+<a name="wp1187106"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tMysqlInput</b> and a <b class="cBold">tFileOutputLDIF</b> component from the <b class="cBold">Palette</b> to the design area. Connect them together using a <b class="cBold">Row &gt; Main</b> link.</li></div>
+<a name="wp1187122"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tMysqlInput</b> component, and go to the <b class="cBold">Component</b> panel then select the <b class="cBold">Basic settings</b> tab.</li></div>
 <a name="wp1187129"> </a><div class="pSmartList2"><li>If you stored the DB connection details in a <b class="cBold">Metadata</b> entry in the Repository, set the <b class="cBold">Property type</b> as well as the <b class="cBold">Schema type</b> on <b class="cBold">Repository</b> and select the relevant metadata entry. All other fields are filled in automatically, and retrieve the metadata-stored parameters. </li></div>
 </ul></div>
 </ul></div>
@@ -50,7 +50,7 @@ This scenario describes a two component Job which aims at extracting data from a
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1187161"> </a><div class="pSmartList2"><li>Alternatively select <b class="cBold">Built-in</b> as <b class="cBold">Property type</b> and <b class="cBold">Schema type</b> and fill in the DB connection and schema fields manually.</li></div>
+<a name="wp1187161"> </a><div class="pSmartList2"><li>Alternatively select <b class="cBold">Built-in</b> as the <b class="cBold">Property type</b> and <b class="cBold">Schema</b> type and fill in the DB connection and schema fields manually.</li></div>
 <a name="wp1187172"> </a><div class="pSmartList2"><li>Then double-click on <b class="cBold">tFileOutpuLDIF</b> and define the <b class="cBold">Basic settings</b>.</li></div>
 <a name="wp1187175"> </a><div class="pSmartList2"><li>Browse to the folder where you store the Output file. In this use case, a new LDIF file is to be created. Thus type in the name of this new file.</li></div>
 <a name="wp1187182"> </a><div class="pSmartList2"><li>In the <b class="cBold">Wrap</b> field, enter the number of characters held on one line. The text coming afterwards will get wrapped onto the next line.</li></div>
@@ -64,7 +64,7 @@ This scenario describes a two component Job which aims at extracting data from a
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1187202"> </a><div class="pSmartList2"><li>Select <b class="cBold">Add</b> as <b class="cBold">Change Type</b> as the newly created file is by definition empty. In case of modification type of Change, you&#39;ll need to define the nature of the modification you want to make to the file.</li></div>
-<a name="wp1187215"> </a><div class="pSmartList2"><li>As <b class="cBold">Schema Type</b>, select <b class="cBold">Built-in</b> and use the <b class="cBold">Sync Columns</b> button to retrieve the input schema definition.</li></div>
+<a name="wp1187215"> </a><div class="pSmartList2"><li>As the <b class="cBold">Schema</b> type, select <b class="cBold">Built-in</b> and use the <b class="cBold">Sync Columns</b> button to retrieve the input schema definition.</li></div>
 <a name="wp1187221"> </a><div class="pSmartList2"><li>Press F6 to short run the Job.</li></div>
 </ul></div>
 </ul></div>

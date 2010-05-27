@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:20:11">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:52">
     <title>Scenario: Measuring the processing time of a subjob and part of a subjob</title>
   </head>
 
@@ -25,16 +25,16 @@
 <a name="wp1550342"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1551536"> </a><h2 class="pHeading2">
+<a name="wp2943193"> </a><h2 class="pHeading2">
 Scenario: Measuring the processing time of a subjob and part of a subjob
 </h2>
-<a name="wp1557238"> </a><p class="pIndented1">
-This scenario is a Perl subjob that does the following in a sequence:
+<a name="wp2943199"> </a><p class="pIndented1">
+This scenario is a subjob that does the following in a sequence:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1559093"> </a><div class="pSmartList2"><li>generates 1000 000 rows of first and last names,</li></div>
-<a name="wp1559097"> </a><div class="pSmartList2"><li>replaces first names with last names,</li></div>
+<a name="wp2943204"> </a><div class="pSmartList2"><li>generates 1000 000 rows of first and last names,</li></div>
+<a name="wp1559097"> </a><div class="pSmartList2"><li>gathers first names with their corresponding last names,</li></div>
 <a name="wp1559339"> </a><div class="pSmartList2"><li>stores the output data in a delimited file,</li></div>
 <a name="wp1559367"> </a><div class="pSmartList2"><li>measures the duration of the subjob as a whole,</li></div>
 <a name="wp1560717"> </a><div class="pSmartList2"><li>measures the duration of the name replacement operation,</li></div>
@@ -51,7 +51,7 @@ To measure the processing time of the subjob:
 <a name="wp1654353"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp1654345" border="0" hspace="0" vspace="0"/><br />
-When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimited</b>, you will be prompted to name the output table. The name used in this example is &quot;new-order&quot;.
+When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimited</b>, you will be prompted to name the output table. The name used in this example is &quot;new_order&quot;.<br />
 </p>
 </ul></div>
 </ul></div>
@@ -64,7 +64,7 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1654385"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileOutputDelimited</b> to <b class="cBold">tChronometerStop</b> using an <b class="cBold">OnComponentOk</b> link.</li></div>
 <a name="wp1563981"> </a><div class="pSmartList2"><li>Select <b class="cBold">tRowGenerator</b> and click the <b class="cBold">Component</b> tab to display the component view.</li></div>
-<a name="wp1564049"> </a><div class="pSmartList2"><li>In the component view, click <b class="cBold">Basic settings</b>.The <b class="cBold">Component</b> tab opens on the <b class="cBold">Basic settings </b>view by default.</li></div>
+<a name="wp1564049"> </a><div class="pSmartList2"><li>In the <b class="cBold">component</b> view, click <b class="cBold">Basic settings</b>. The <b class="cBold">Component</b> tab opens on the <b class="cBold">Basic settings </b>view by default.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1564062"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -74,7 +74,7 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1564070"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema </b>to define the schema of the <b class="cBold">tRowGenerator</b>. For this Job, the schema is composed of two columns: <em class="cEmphasis">First_Name </em>and <em class="cEmphasis">Last_Name</em>, generated using Perl script.</li></div>
+<a name="wp1564070"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema </b>to define the schema of the <b class="cBold">tRowGenerator</b>. For this Job, the schema is composed of two columns: <em class="cEmphasis">First_Name </em>and <em class="cEmphasis">Last_Name</em>, so click twice the [+] button to add two columns and rename them.</li></div>
 <a name="wp1564085"> </a><div class="pSmartList2"><li>Click the <b class="cBold">RowGenerator Editor</b> three-dot button to open the editor and define the data to be generated.</li></div>
 </ul></div>
 </ul></div>
@@ -86,6 +86,7 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1564098"> </a><div class="pSmartList2"><li>In the <b class="cBold">RowGenerator Editor</b>, specify the number of rows to be generated in the <b class="cBold">Number of Rows for RowGenerator</b> field and click <b class="cBold">OK</b>. The <b class="cBold">RowGenerator Editor </b>closes.</li></div>
+<a name="wp2944368"> </a><div class="pSmartList2"><li>You will be prompted to propagate changes. Click <b class="cBold">Yes</b> in the popup message.</li></div>
 <a name="wp1564250"> </a><div class="pSmartList2"><li>Double-click on the <b class="cBold">tMap</b> component to open the Map editor. The Map editor opens displaying the input metadata of the<b class="cBold"> tRowGenerator</b> component.</li></div>
 </ul></div>
 </ul></div>
@@ -98,6 +99,8 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1564270"> </a><div class="pSmartList2"><li>In the <b class="cBold">Schema editor</b> panel of the Map editor, click the plus button of the output table to add two rows and define them.</li></div>
 <a name="wp1566525"> </a><div class="pSmartList2"><li>In the Map editor, drag the <em class="cEmphasis">First_Name </em>row from the input table to the <em class="cEmphasis">Last_Name</em> row in the output table and drag the <em class="cEmphasis">Last_Name </em>row from the input table to the <em class="cEmphasis">First_Name</em> row in the output table.</li></div>
+<a name="wp2944391"> </a><div class="pSmartList2"><li>Click <b class="cBold">Apply</b> to save changes.</li></div>
+<a name="wp2944405"> </a><div class="pSmartList2"><li>You will be prompted to propagate changes. Click <b class="cBold">Yes</b> in the popup message.</li></div>
 <a name="wp1564287"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the editor.</li></div>
 </ul></div>
 </ul></div>
@@ -120,7 +123,7 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1564749"> </a><div class="pSmartList2"><li>Select <b class="cBold">tChronometerStop</b> and click the <b class="cBold">Component</b> tab to display the component view.</li></div>
-<a name="wp1564764"> </a><div class="pSmartList2"><li>In the <b class="cBold">Since options </b>panel of the <b class="cBold">Basic settings </b>view<b class="cBold">, </b>select <b class="cBold">Since the beginning check box </b>to measure the duration of the subjob as a whole.</li></div>
+<a name="wp1564764"> </a><div class="pSmartList2"><li>In the <b class="cBold">Since options </b>panel of the <b class="cBold">Basic settings </b>view<b class="cBold">, </b>select <b class="cBold">Since the beginning</b> check box to measure the duration of the subjob as a whole.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1564841"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -144,47 +147,6 @@ When connecting <b class="cBold">tMap </b>to <b class="cBold">tFileOutputDelimit
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp1654423" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 You can measure the duration of the subjob the same way by placing <b class="cBold">tChronometerStop</b> below <b class="cBold">tRowGenerator</b>, and connecting the latter to <b class="cBold">tChronometerStop</b> using an <b class="cBold">OnSubjobOk</b> link.
-</p>
-<a name="wp1565061"> </a><p class="pIndented1">
-To measure only part of the subjob, the duration of the replacement task processed by <b class="cBold">tMap</b> in this scenario:
-</p>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1561668"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tChronometerStart</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
-<a name="wp1561317"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b>, <b class="cBold">tChronometerStart</b>, and <b class="cBold">tMap </b>using <b class="cBold">Main Row</b> links via a right-click on each component</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1561343"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_Chronometer.png" id="wp1561381" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1561415"> </a><div class="pSmartList2"><li>Place <b class="cBold">tChronometerStop</b> between <b class="cBold">tMap</b> and <b class="cBold">tFileOutputDelimited</b>.</li></div>
-<a name="wp1565273"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tMap</b> to <b class="cBold">tChronometerStop</b> using the <b class="cBold">Main Row</b> link <em class="cEmphasis">new_order</em>, and <b class="cBold">tChronometerStop</b> to <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Main Row</b> link.</li></div>
-<a name="wp1565406"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings </b>of the <b class="cBold">tChronometerStop </b>component, select the <b class="cBold">Since a tChronometerStart </b>check box and select <b class="cBold">tChronometerStart_1 </b>from the component list.</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1565419"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_ChronometerStop_BasicSettings2.png" id="wp1565416" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<div class="pSmartList1"><ul class="pSmartList1">
-<div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1565425"> </a><div class="pSmartList2"><li>Select/clear the other check boxes as needed.</li></div>
-<a name="wp1565432"> </a><div class="pSmartList2"><li>If needed, enter a text in the <b class="cBold">Caption</b> field.</li></div>
-<a name="wp1565440"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to execute the Job and display its result</li></div>
-</ul></div>
-</ul></div>
-<a name="wp1565453"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div align="center"><img src="images/Use_Case_ChronometerStop_Result.png" id="wp1565705" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-
-</div>
-<a name="wp1565700"> </a><p class="pIndented1">
-Such usage of <b class="cBold">tChronometerStart</b> and <b class="cBold">tChronometerStop </b>can display the performance rate of desired components in your subjob.
 </p>
     </blockquote>
     <hr>

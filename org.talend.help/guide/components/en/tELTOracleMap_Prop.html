@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:18:58">
+    <meta name="LASTUPDATED" content="05/27/10 10:57:53">
     <title>tELTOracleMap</title>
   </head>
 
@@ -50,7 +50,7 @@ ELT
 </div>
 </td>
     <td><a name="wp2968179"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Components-07-30-014.jpg" height="59" width="112" id="wp2968175" border="0" hspace="0" vspace="0"/>
+<img src="images/Components-07-30-016.jpg" height="59" width="112" id="wp2968175" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -72,8 +72,57 @@ Uses the tables provided as input, to feed the parameter in the built statement.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2968202"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3376759"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3376765"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+<a name="wp3377732"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3377729" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only
+</div>
+</td>
+    <td><a name="wp3376769"> </a><div class="pCellBody">
+Select this check box and select the appropriate <b class="cBold">tOracleConnection</b> component from the <b class="cBold">Component list </b>if you want to re-use connection parameters that you have already defined<br />
+</div>
+<a name="wp3449719"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3449716" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using, in <a href="Databases_group_intro.html"><em class="cEmphasis">Databases components</em></a>.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3376801"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3376804"> </a><div class="pCellHeading">
+<em class="cEmphasis">ELT Oracle Map Editor</em>
+</div>
+</td>
+    <td><a name="wp3376807"> </a><div class="pCellBody">
+The ELT Map editor allows you to define the output schema and make a graphical build of the SQL statement to be executed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3376847"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3376850"> </a><div class="pCellHeading">
+<em class="cEmphasis">Style link</em>
+</div>
+</td>
+    <td><a name="wp3376853"> </a><div class="pCellBody">
+<b class="cBold">Auto</b>: By default, the links between the input and output schemas and the Web service parameters are in the form of curves. <br /><b class="cBold">Curves</b>: Links between the schema and the Web service parameters are in the form of curve. <br /><b class="cBold">Lines</b>: Links between the schema and the Web service parameters are in the form of straight lines. <br />This option slightly optimizes performance.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2968202"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp2968207"> </a><div class="pCellHeading">
@@ -85,7 +134,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2968211"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2968211"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -98,7 +147,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2968220"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2968220"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -108,6 +157,21 @@ Either Built-in or Repository.
 </td>
     <td><a name="wp2968227"> </a><div class="pCellBody">
 <b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3377747"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3377744" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only
+</div>
+</td>
+    <td><a name="wp3376889"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection type</em>
+</div>
+</td>
+    <td><a name="wp3376892"> </a><div class="pCellBody">
+Drop-down list of the available drivers.
 </div>
 </td>
 </tr>
@@ -176,29 +240,62 @@ Select the encoding from the list or select Custom and define it manually. This 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2968277"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3376947"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2968282"> </a><div class="pCellHeading">
-<em class="cEmphasis">Preview</em>
+    <td><a name="wp3376950"> </a><div class="pCellHeading">
+<em class="cEmphasis">Mapping</em>
 </div>
 </td>
-    <td><a name="wp2968284"> </a><div class="pCellBody">
-The preview is an instant shot of the Mapper data. It becomes available when Mapper properties have been filled in with data. The preview synchronization takes effect only after saving changes.
+    <td><a name="wp3376953"> </a><div class="pCellBody">
+Automatically set mapping parameter.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2968286"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3376980"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3376983"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC Parameters</em>
+</div>
+<a name="wp3377762"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3377759" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only
+</div>
+</td>
+    <td><a name="wp3377016"> </a><div class="pCellBody">
+Specify additional connection properties for the DB connection you are creating. This option is not available if you have selected the <b class="cBold">Use an existing connection</b> check box in the <b class="cBold">Basic settings</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3377715"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3377712" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />Java only
+</div>
+</td>
+    <td><a name="wp3377051"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use Hint Options</em>
+</div>
+</td>
+    <td><a name="wp3377054"> </a><div class="pCellBody">
+Select this check box to activate the hint configuration area to help you optimize a query&#39;s execution. In this area, parameters are:<br />- <b class="cBold">HINT</b>: specify the hint you need, using the syntax<code class="cCode"> /*+ */.<br /></code>- <b class="cBold">POSITION</b>: specify where you put the hint in a SQL statement.<br />- <b class="cBold">SQL STMT</b>: select the SQL statement you need to use.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3377038"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2968291"> </a><div class="pCellHeading">
-<em class="cEmphasis">Map editor</em>
+    <td><a name="wp3377041"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
 </div>
 </td>
-    <td><a name="wp2968293"> </a><div class="pCellBody">
-The ELT Map editor allows you to define the output schema as well as build graphically the SQL statement to be executed.
+    <td><a name="wp3377044"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
 </div>
 </td>
 </tr>

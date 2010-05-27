@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>tHiveRow</title>
   </head>
 
@@ -47,7 +47,7 @@ Databases/Hive
 </div>
 </td>
     <td><a name="wp3269540"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp3269537" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp3269537" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Databases/Hive
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3269550"> </a><div class="pCellBody">
-<b class="cBold">tHiveRow</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix means the component implements a flow in the job design although it doesn&#39;t provide output. 
+<b class="cBold">tHiveRow</b> is the dedicated component for this database. It executes the SQL query stated in the specified database. The row suffix means the component implements a flow in the job design although it doesn&#39;t provide output. 
 </div>
 </td>
 </tr>
@@ -65,7 +65,7 @@ Databases/Hive
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3269562"> </a><div class="pCellBody">
-Depending on the nature of the query and the database, <b class="cBold">tHiveRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
+Depending on the nature of the query and the database, <b class="cBold">tHiveRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write your SQL statements easily.
 </div>
 </td>
 </tr>
@@ -78,7 +78,7 @@ Depending on the nature of the query and the database, <b class="cBold">tHiveRow
 </div>
 </td>
     <td><a name="wp3269576"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -95,7 +95,25 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269587"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3319112"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3319118"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3319122"> </a><div class="pCellBody">
+Select this check box and click the relevant <b class="cBold">tHiveConnection </b>component from the <b class="cBold">Component List </b>to reuse the connection details you already defined.<br />
+</div>
+<a name="wp3450244"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3450241" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269587"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -104,11 +122,11 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp3269594"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that follow are filled in automatically using the fetched data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269596"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269596"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,7 +139,7 @@ Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269605"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269605"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +152,7 @@ Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269614"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269614"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -147,7 +165,7 @@ Name of the database
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269623"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269623"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -160,7 +178,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269635"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269635"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -173,7 +191,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269647"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269647"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -186,7 +204,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269665"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269665"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -199,7 +217,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269683"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269683"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -212,7 +230,7 @@ Name of the table to be processed.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269692"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269692"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -221,11 +239,11 @@ Name of the table to be processed.
 </div>
 </td>
     <td><a name="wp3269699"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in </b>or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269701"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269701"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -238,7 +256,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269710"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269710"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -251,7 +269,7 @@ Either Built-in or Repository.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269719"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269719"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -264,7 +282,7 @@ Click the <b class="cBold">Guess Query </b>button to generate the query which co
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269731"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269731"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -277,7 +295,7 @@ Enter your DB query paying particularly attention to properly sequence the field
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269740"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269740"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -290,7 +308,7 @@ This check box is selected by default. Clear the check box to skip the row on er
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269758"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269758"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
@@ -303,7 +321,7 @@ Select this check box to insert the result of the query into a COLUMN of the cur
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269770"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269770"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -316,7 +334,7 @@ Select the encoding from the list or select <b class="cBold">Custom</b> and defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269782"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269782"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -329,12 +347,12 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3269797"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3269797"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3269799"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+This component offers the  benefit of flexible DB queries and covers all possible Hive QL queries.
 </div>
 </td>
 </tr>

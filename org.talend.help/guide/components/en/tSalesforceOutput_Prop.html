@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:14:55">
+    <meta name="LASTUPDATED" content="05/27/10 10:54:49">
     <title>tSalesforceOutput</title>
   </head>
 
@@ -47,7 +47,7 @@ Business
 </div>
 </td>
     <td><a name="wp2709164"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp2709161" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp2709161" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -69,8 +69,26 @@ Allows to write data into a Salesforce DB.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2709190"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2956575"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp2956545"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp2956548"> </a><div class="pCellBody">
+Select this check box to use an established connection from <b class="cBold">tSalesforceConnection</b>. Once you select it, the <b class="cBold">Component list</b> field appear allowing you to choose the <b class="cBold">tSalesforceConnection</b> component to be used.<br />For more information on <b class="cBold">tSalesforceConnection</b>, see section <a href="tSalesforceConnection_Prop.html"><em class="cEmphasis">tSalesforceConnection</em></a>.<br />
+</div>
+<a name="wp3449868"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3449865" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, you can use <b class="cBold">Dynamic settings</b> to share the intended connection. In this case, make sure that the connection name is unique and distinctive. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2709190"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp2709194"> </a><div class="pCellHeading">
@@ -82,7 +100,7 @@ Type in the webservice URL to connect to the Salesforce DB.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2709199"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2709199"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -92,6 +110,19 @@ Type in the webservice URL to connect to the Salesforce DB.
 </td>
     <td><a name="wp2709209"> </a><div class="pCellBody">
 Type in the Webservice user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2956245"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2956248"> </a><div class="pCellHeading">
+<em class="cEmphasis">Timeout (milliseconds)</em>
+</div>
+</td>
+    <td><a name="wp2956251"> </a><div class="pCellBody">
+Type in the intended number of query timeout in Salesforce.com.
 </div>
 </td>
 </tr>
@@ -209,7 +240,25 @@ The compression of SOAP messages optimizes system performance.
 </p>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2709330"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2964657"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2964660"> </a><div class="pCellHeading">
+<em class="cEmphasis">Retrieve inserted ID</em>
+</div>
+</td>
+    <td><a name="wp2964663"> </a><div class="pCellBody">
+Select this check box to allow Salesforce.com to return the salesforce ID produced for a new row that is to be inserted. The ID column is added to the processed data schema in Salesforce.com.
+</div>
+<a name="wp2964708"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp2964705" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This option is available only when you have chosen <b class="cBold">insert</b> action yet not in batch mode, i.e. not in the <b class="cBold">Extended Output</b> option.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2709330"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -222,7 +271,7 @@ Select this check box to gather the job processing metadata at a job level as we
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2709342"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2709342"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -231,7 +280,7 @@ Used as an output component. An Input component is required.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2709351"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2709351"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

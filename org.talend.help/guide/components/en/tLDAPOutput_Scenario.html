@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>Scenario: Editing data in a LDAP directory</title>
   </head>
 
@@ -22,30 +22,30 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp2984364"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3369922"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2984370"> </a><h2 class="pHeading2">
+<a name="wp3369929"> </a><h2 class="pHeading2">
 Scenario: Editing data in a LDAP directory
 </h2>
-<a name="wp2984524"> </a><p class="pBodyRelative">
+<a name="wp3440460"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_smallcln.png" align="left" id="wp2984522" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/bulb_small.png" align="left" id="wp3440453" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 All of the database output components have the <b class="cBold">Parallelize</b> option in their <b class="cBold">Advanced settings</b> tab. This option allows you to improve data processing performances by handling several data flows simultaneously. For more information, see <em class="cEmphasis">Parallelizing data flows</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
-<a name="wp2984528"> </a><p class="pIndented1">
-The following scenario describes a Job that reads an LDAP directory, updates the email of a selected entry and displays the output before writing the LDAP directory. To keep it simple, no alias dereferencing nor referral handling is performed. This scenario is based on <b class="cBold">LDAPInput</b>&#39;s <a href="tLDAPInput_Scenario.html#wp1431029"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>. The result returned was a single entry, related to an organisational person, whom email  is to be updated.
+<a name="wp3440479"> </a><p class="pIndented1">
+The following scenario describes a Job that reads an LDAP directory, updates the email of a selected entry and displays the output before writing the LDAP directory. To keep it simple, no alias dereferencing nor referral handling is performed. This scenario is based on <b class="cBold">LDAPInput</b>&#39;s <a href="tLDAPInput_Scenario.html#wp3370948"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>. The result returned was a single entry, related to an organisational person, whom email  is to be updated.
 </p>
-<a name="wp2984387"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3369951"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput1.png" id="wp2984384" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="images/Use_Case_tLDAPOutput1.png" id="wp3369948" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2984406"> </a><div class="pSmartList2"><li>Drop the <b class="cBold">tLDAPInput</b>, <b class="cBold">tLDAPOutput</b>, <b class="cBold">tMap</b> and <b class="cBold">tLogRow</b> components from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp3369970"> </a><div class="pSmartList2"><li>Drop the <b class="cBold">tLDAPInput</b>, <b class="cBold">tLDAPOutput</b>, <b class="cBold">tMap</b> and <b class="cBold">tLogRow</b> components from the <b class="cBold">Palette</b> to the design workspace.</li></div>
 <a name="wp1429725"> </a><div class="pSmartList2"><li>Connect the input component to the <b class="cBold">tMap</b> then to the <b class="cBold">tLogRow</b> and to the output component.</li></div>
-<a name="wp1429732"> </a><div class="pSmartList2"><li>In the <b class="cBold">tLDAPInput</b> Component view, set the connection details to the LDAP directory server as well as the filter as described in <a href="tLDAPInput_Scenario.html#wp1431029"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>.</li></div>
+<a name="wp1429732"> </a><div class="pSmartList2"><li>In the <b class="cBold">tLDAPInput</b> Component view, set the connection details to the LDAP directory server as well as the filter as described in <a href="tLDAPInput_Scenario.html#wp3370948"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>.</li></div>
 <a name="wp1429750"> </a><div class="pSmartList2"><li>Change the schema to make it simpler, by removing the unused fields: <em class="cEmphasis">dc</em>, <em class="cEmphasis">ou</em>, <em class="cEmphasis">objectclass</em>.</li></div>
 </ul></div>
 </ul></div>

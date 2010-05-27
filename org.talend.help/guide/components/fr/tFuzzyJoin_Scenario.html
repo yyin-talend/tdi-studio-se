@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/24/10 15:45:17">
+    <meta name="LASTUPDATED" content="05/27/10 09:47:26">
     <title>Scénario&#160;: Faire une correspondance floue entre deux colonnes et écrire les données rejetées</title>
   </head>
 
@@ -32,7 +32,7 @@ Scénario&#160;: Faire une correspondance floue entre deux colonnes et écrire les
 Ce scénario Java décrit un Job à cinq composants dont le but est&#160;: en premier lieu, de vérifier la distance d&#39;édition entre la colonne <em class="cEmphasis">IdClient</em> d&#39;un fichier d&#39;entrée, par rapport aux données du fichier de référence d&#39;entrée, et, ensuite, de vérifier tous les e-mails par prononciation dans la colonne <em class="cEmphasis">Email</em>, par rapport aux données du fichier d&#39;entrée de référence. Les sorties de ces deux types de correspondances sont écrits dans des fichiers distincts.
 </p>
 <a name="wp3109758"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée et les fichiers de référence dans le <b class="cBold">Repository</b>. pour plus d&#39;informations à propos du stockage de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée et les fichiers de référence dans le <b class="cBold">Repository</b>. pour plus d&#39;informations à propos du stockage de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -88,7 +88,7 @@ Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée et les fichier
 <a name="wp3110083"> </a><p class="pBodyRelative">
 <br />
 <img src="images/bulb_small.png" align="left" id="wp3110080" border="0" hspace="0" vspace="0"/><br />
-Vous pouvez créer et stocker des variables de contexte pour les distances minimale et maximale, et faire en sorte que votre Job fasse une boucle sur ces valeurs, en commençant  par la valeur maximale inférieure de correspondance et terminant par la valeur maximale supérieure afin de correspondre au plus grand nombre de lignes possible. Vous pouvez appuyer sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables et sélectionner les nouvelles variables de contexte. Pour plus d&#39;informations à propos des variables de contexte, consultez <em class="cEmphasis">Définition des Contextes et des Variables</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Open Studio</b>
+Vous pouvez créer et stocker des variables de contexte pour les distances minimale et maximale, et faire en sorte que votre Job fasse une boucle sur ces valeurs, en commençant  par la valeur maximale inférieure de correspondance et terminant par la valeur maximale supérieure afin de correspondre au plus grand nombre de lignes possible. Vous pouvez appuyer sur <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables et sélectionner les nouvelles variables de contexte. Pour plus d&#39;informations à propos des variables de contexte, consultez <em class="cEmphasis">Définition des Contextes et des Variables</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite</b>
 </p>
 <a name="wp3110106"> </a><div class="pSmartList2"><li>Paramétrez le type de correspondance pour la seconde colonne qui sera vérifiée, <em class="cEmphasis">Metaphone</em> dans cet exemple. Il n&#39;y a ni distance minimale, ni distance maximale à paramétrer, car cette méthode de correspondance est basée sur les divergences phonétiques entre les données d&#39;entrée et de référence.</li></div>
 <a name="wp3110119"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Inner join (with reject output)</b> pour définir l&#39;une des sorties comme table des rejets de la jointure interne.</li></div>

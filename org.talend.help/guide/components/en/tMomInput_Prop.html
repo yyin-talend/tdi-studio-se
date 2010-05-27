@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:19:47">
+    <meta name="LASTUPDATED" content="05/27/10 10:58:33">
     <title>tMomInput</title>
   </head>
 
@@ -47,7 +47,7 @@ Internet
 </div>
 </td>
     <td><a name="wp1551400"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/java_iconfn.png" id="wp1551395" border="0" hspace="0" vspace="0"/>
+<img src="images/java_icongh.png" id="wp1551395" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Internet
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1423560"> </a><div class="pCellBody">
-Fetches a message from a queue on a Message-Oriented middle ware system and passes it to the next component.
+Fetches a message from a queue on a Message-Oriented middle ware system and passes it on to the next component.
 </div>
 </td>
 </tr>
@@ -78,7 +78,7 @@ Fetches a message from a queue on a Message-Oriented middle ware system and pass
 </div>
 </td>
     <td><a name="wp1423586"> </a><div class="pCellBody">
-Select in the list the MOM server to be used. According to the server selected, the parameters required slightly differ.
+Select the MOM server to be used from the list. According to the server selected, the parameters required differ slightly.
 </div>
 </td>
 </tr>
@@ -91,7 +91,7 @@ Select in the list the MOM server to be used. According to the server selected, 
 </div>
 </td>
     <td><a name="wp1423592"> </a><div class="pCellBody">
-Fill in the Host name or IP address of the MOM server as well as the Port.
+Fill in the Host name or IP address of the MOM server and Port.
 </div>
 </td>
 </tr>
@@ -117,7 +117,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp1423604"> </a><div class="pCellBody">
-Select this check box to keep listening the MOM server for fetching any new message. Set the frequency of verification in seconds.
+Select this check box to keep the MOM server listening for and fetching new messages. Set the verification frequency in seconds.
 </div>
 </td>
 </tr>
@@ -156,7 +156,7 @@ Select the message type, either: <b class="cBold">Text</b> , <b class="cBold">By
 </div>
 </td>
     <td><a name="wp1423628"> </a><div class="pCellBody">
-Value by default is Channel
+The default value is Channel
 </div>
 </td>
 </tr>
@@ -195,11 +195,24 @@ Source of the message
 </div>
 </td>
     <td><a name="wp1595266"> </a><div class="pCellBody">
-Select this check box to fetch messages according to their ids.
+Select this check box to fetch messages according to their IDs.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2840877"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2950490"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2950496"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit (delete message after reading from the queue)</em>
+</div>
+</td>
+    <td><a name="wp2950500"> </a><div class="pCellBody">
+Select this check box to force a commit after reading each message from the queue.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2840877"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
@@ -212,16 +225,16 @@ Select this check box to gather the job processing metadata at a job level as we
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1423633"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1423633"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1423635"> </a><div class="pCellBody">
-This component is generally used as a start component. It requires to be linked to an output component.
+This component is generally used as a start component. It must be linked to an output component.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1423642"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1423642"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="04/02/10 19:15:25">
+    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
     <title>Scenario: Inserting data in mother/daughter tables</title>
   </head>
 
@@ -54,7 +54,7 @@ Back into <b class="cBold">Talend Integration Suite Studio</b>, the job requires
 <a name="wp1311186"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileList</b> component properties, such as the directory. name where files will be fetched from.</li></div>
 <a name="wp1312490"> </a><div class="pSmartList2"><li>Add a <b class="cBold">tMysqlConnection</b> component and connect it to the starter component of this job, in this example, the <b class="cBold">tFileList</b> component using an <b class="cBold">OnComponentOk</b> link to define the execution order.</li></div>
 <a name="wp1311192"> </a><div class="pSmartList2"><li>In the <b class="cBold">tMysqlConnection</b> Component view, set the connection details manually or fetch them from the Repository if you centrally stored them as a Metadata DB connection entry. For more information about Metadata, see <em class="cEmphasis">Defining Metadata items</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
-<a name="wp1311205"> </a><div class="pSmartList2"><li>On the <b class="cBold">tFileInputDelimited</b> component&#39;s <b class="cBold">Basic settings</b> panel, press Ctrl+Space bar to access the variable list. Set the  <b class="cBold">File Name</b> field to the global variable: <em class="cEmphasis">$_globals{tFileList_1}{CURRENT_FILEPATH}</em> </li></div>
+<a name="wp1311205"> </a><div class="pSmartList2"><li>On the <b class="cBold">tFileInputDelimited</b> component&#39;s <b class="cBold">Basic settings</b> panel, press <b class="cBold">Ctrl+Space</b> bar to access the variable list. Set the  <b class="cBold">File Name</b> field to the global variable: <em class="cEmphasis">tFileList_1.CURRENT_FILEPATH</em> </li></div>
 </ul></div>
 </ul></div>
 <a name="wp1311222"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
