@@ -217,8 +217,30 @@ public class ShadowProcessHelper {
 
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
 
-        if (connection.getSheetColumns() != null && !connection.getSheetColumns().isEmpty()) {
-            Iterator<String> iterate = connection.getSheetColumns().iterator();
+        // for bug 13364
+        String firstColumn = connection.getFirstColumn();
+        String lastColumn = connection.getLastColumn();
+        List<String> sheetColumns = connection.getSheetColumns();
+
+        int first = 1;
+        if (firstColumn != null) {
+            first = Integer.parseInt(firstColumn.trim());
+        }
+        int last = 0;
+        if (lastColumn != null) {
+            last = Integer.parseInt(lastColumn.trim());
+        }
+        if (last <= 0 || last > sheetColumns.size()) {
+            last = sheetColumns.size();
+        }
+
+        List<String> newSchemaColumns = new ArrayList<String>();
+        for (int i = first - 1; i < last; i++) {
+            newSchemaColumns.add(sheetColumns.get(i));
+        }
+
+        if (newSchemaColumns != null && !newSchemaColumns.isEmpty()) {
+            Iterator<String> iterate = newSchemaColumns.iterator();
             int i = 0;
             while (iterate.hasNext()) {
                 i++;
