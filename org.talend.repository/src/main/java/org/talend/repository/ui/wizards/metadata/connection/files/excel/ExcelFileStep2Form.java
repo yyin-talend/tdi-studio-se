@@ -1044,7 +1044,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                chopSchemaColumn();
+                // chopSchemaColumn();
                 processor.execute();
             }
         });
@@ -1094,7 +1094,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
             if ((!"".equals(filePath)) && (filePath != null)) { //$NON-NLS-1$
                 saveOriginShcemaColumns();
-                chopSchemaColumn();
+                // chopSchemaColumn();
                 if (!isContextMode()) {
                     refreshPreview();
                 }
@@ -1111,14 +1111,11 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     /**
      * DOC YeXiaowei Comment method "saveOriginShcemaColumns".
      */
-    private void saveOriginShcemaColumns() {
-        // for bug 12907
-        if (originSchemaColumns.size() == 0) {
-            List<String> columns = getConnection().getSheetColumns();
-            originSchemaColumns.clear();
-            originSchemaColumns.addAll(columns);
-
-        }
+    private void saveOriginShcemaColumns() {           
+        List<String> columns = getConnection().getSheetColumns();
+        originSchemaColumns.clear();
+        originSchemaColumns.addAll(columns);
+     
     }
 
     /*
