@@ -47,6 +47,8 @@ import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
@@ -656,7 +658,11 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                         title = metadataColumn.isKey() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
                         break;
                     case 2:
-                        title = metadataColumn.getType();
+                        String talendType = metadataColumn.getTalendType();
+                        JavaType javaTypeFromId = JavaTypesManager.getJavaTypeFromId(talendType);
+                        if (javaTypeFromId != null) {
+                            title = javaTypeFromId.getLabel();
+                        }
                         break;
                     case 3:
                         title = metadataColumn.isNullable() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$

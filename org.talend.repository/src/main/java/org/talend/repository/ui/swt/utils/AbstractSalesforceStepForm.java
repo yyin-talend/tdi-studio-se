@@ -188,20 +188,21 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         httpProxy = true;
                     }
                     salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy);
+                    if (!salesforceAPI.isLogin()) {
+                        try {
 
-                    // try {
-                    //
-                    // ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
-                    // for (int i = 0; i < loginList.size(); i++) {
-                    // if (loginList.get(i) instanceof SoapBindingStub) {
-                    // binding = (SoapBindingStub) loginList.get(i);
-                    // } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
-                    // bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
-                    // }
-                    // }
-                    // } catch (Throwable e) {
-                    // ExceptionHandler.process(e);
-                    // }
+                            ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
+                            for (int i = 0; i < loginList.size(); i++) {
+                                if (loginList.get(i) instanceof SoapBindingStub) {
+                                    binding = (SoapBindingStub) loginList.get(i);
+                                } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
+                                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
+                                }
+                            }
+                        } catch (Throwable e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
                     salesforceAPI.fetchMetaDataColumns(moduleName);
                     salesforceAPI.resetProxy();
                     monitor.done();

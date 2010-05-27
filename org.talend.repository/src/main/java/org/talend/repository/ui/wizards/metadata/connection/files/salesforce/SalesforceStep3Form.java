@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -31,7 +30,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
@@ -343,51 +341,82 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             return;
         }
 
-        try {
-            informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+        // try {
+        informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            // get the XmlArray width an adapt ProcessDescription
-            ProcessDescription processDescription = getProcessDescription(originalValueConnection);
+        // get the XmlArray width an adapt ProcessDescription
+        ProcessDescription processDescription = getProcessDescription(originalValueConnection);
 
-            IMetadataTable metadataTableOrder = readMetadataDetail();
-            if (metadataTableOrder != null) {
-                metadataTableClone = metadataTableOrder.clone();
-                metadataTableOrder = modifyMetadataTable();
-            }
-            List<IMetadataTable> schema = processDescription.getSchema();
-            if (schema != null && schema.size() > 0) {
-                if (useAlphbet) {
-                    if (metadataTableOrder != null) {
-                        schema.get(0).setListColumns(metadataTableOrder.getListColumns());
-                    }
-                } else {
-                    if (metadataTableClone != null) {
-                        schema.get(0).setListColumns(metadataTableClone.getListColumns());
-                    }
+        IMetadataTable metadataTableOrder = readMetadataDetail();
+        if (metadataTableOrder != null) {
+            metadataTableClone = metadataTableOrder.clone();
+            metadataTableOrder = modifyMetadataTable();
+        }
+        List<IMetadataTable> schema = processDescription.getSchema();
+        if (schema != null && schema.size() > 0) {
+            if (useAlphbet) {
+                if (metadataTableOrder != null) {
+                    schema.get(0).setListColumns(metadataTableOrder.getListColumns());
+                }
+            } else {
+                if (metadataTableClone != null) {
+                    schema.get(0).setListColumns(metadataTableClone.getListColumns());
                 }
             }
-            // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
-            // Step 3 of SF wizard
-            // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
-
-            if (csvArray == null) {
-                informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            } else {
-                refreshMetaDataTable(csvArray, processDescription);
-            }
-
-        } catch (CoreException e) {
-            if (getParent().getChildren().length == 1) {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
-            } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
-            }
-            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
+        // Step 3 of SF wizard
+        // processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
+        //            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
+        //
+        // if (csvArray == null) {
+        //                informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+        // } else {
+        // refreshMetaDataTable(csvArray, processDescription);
+        // }
 
+        // } catch (CoreException e) {
+        // if (getParent().getChildren().length == 1) {
+        //                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+        //                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
+        // } else {
+        //                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
+        // }
+        //            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+        // }
+        guessSchema(processDescription);
         checkFieldsValue();
+    }
+
+    /**
+     * DOC zli Comment method "guessSchema".
+     * 
+     * @param processDescription
+     */
+    public void guessSchema(ProcessDescription processDescription) {
+        informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
+        // clear all items
+        tableEditorView.getMetadataEditor().removeAll();
+        List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
+
+        List<IMetadataColumn> listColumns = processDescription.getSchema().get(0).getListColumns();
+        int size = listColumns.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                metadataColumn.setNullable(listColumns.get(i).isNullable());
+                metadataColumn.setLength(listColumns.get(i).getLength());
+                metadataColumn.setPattern(listColumns.get(i).getPattern());
+                metadataColumn.setTalendType(listColumns.get(i).getTalendType());
+                metadataColumn.setPrecision(listColumns.get(i).getPrecision());
+                metadataColumn.setLabel(listColumns.get(i).getLabel());
+                columns.add(i, metadataColumn);
+            }
+        }
+        tableEditorView.getMetadataEditor().addAll(columns);
+        tableEditorView.getTableViewerCreator().layout();
+        informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
+
     }
 
     public void refreshMetaDataTable(final CsvArray csvArray, ProcessDescription processDescription) {
