@@ -294,6 +294,11 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         for (int i = 0; i < lstSize; i++) {
             String name = list.get(i).getTagName();
             String path = list.get(i).getRelativeXPathQuery();
+            if (path == null) {
+                path = "";
+            }
+            if (name == null)
+                name = "";
             if (!path.contains("..") && names.contains(name)) {
                 if (con.get(name) != null && !con.get(name).contains(".."))
                     conflictNames.add(name);

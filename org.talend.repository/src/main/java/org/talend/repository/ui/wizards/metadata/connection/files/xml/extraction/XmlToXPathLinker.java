@@ -690,17 +690,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 }
 
             } else {
-                Node loopNode = allLoopNodes.get(0);
-                try {
-                    nodeList = this.nodeRetriever.retrieveNodeListFromNode(relativeXpath, loopNode);
-                    if (nodeList.size() == 0) {
-                        String currentLoopXPath = getCurrentLoopXPath();
-                        String expression = currentLoopXPath + "/" + relativeXpath;
-                        nodeList = this.nodeRetriever.retrieveNodeList(expression);
+                if (allLoopNodes.size() > 0) {
+                    Node loopNode = allLoopNodes.get(0);
+                    try {
+                        if (relativeXpath == null) {
+                            relativeXpath = ""; //$NON-NLS-1$
+                        }
+                        nodeList = this.nodeRetriever.retrieveNodeListFromNode(relativeXpath, loopNode);
+                        if (nodeList.size() == 0) {
+                            String currentLoopXPath = getCurrentLoopXPath();
+                            String expression = currentLoopXPath + "/" + relativeXpath;
+                            nodeList = this.nodeRetriever.retrieveNodeList(expression);
+                        }
+                    } catch (XPathExpressionException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                } catch (XPathExpressionException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
             if (nodeList != null) {
