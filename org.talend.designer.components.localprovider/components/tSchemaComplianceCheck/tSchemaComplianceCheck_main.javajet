@@ -110,7 +110,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
         if (<%=_sInConnName%>.<%=colName%> != null){        
           int len1_<%=cid%> = 0; //number of digits before the decimal point(ignoring frontend zeroes)
           int len2_<%=cid%> = 0; //number of digits after the decimal point(ignoring trailing  zeroes)
-          String s_<%=cid%> = <%=_sInConnName%>.<%=colName%>.toString();
+          String s_<%=cid%> = (<%=_sInConnName%>.<%=colName%>).toPlainString();
           
           if (s_<%=cid%>.startsWith("-")){
             s_<%=cid%> = s_<%=cid%>.substring(1);
@@ -139,7 +139,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       }
     }
     
-    public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
+    public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, int maxLength, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, metadataColumn.isNullable());
       boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);
