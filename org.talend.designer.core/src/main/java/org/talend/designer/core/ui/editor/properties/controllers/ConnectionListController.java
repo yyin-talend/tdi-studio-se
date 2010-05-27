@@ -48,6 +48,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.i18n.Messages;
@@ -404,5 +405,10 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         if (!ArrayUtils.contains(connectionValueList, param.getValue())) {
             param.setValue(""); //$NON-NLS-1$
         }
+    }
+
+    public static void updateConnectionCondition(Connection connection, String prefix, String oldName) {
+        ParameterValueUtil.renameValues(connection.getElementParameter(EParameterName.CONDITION.getName()), oldName, prefix
+                + oldName);
     }
 }
