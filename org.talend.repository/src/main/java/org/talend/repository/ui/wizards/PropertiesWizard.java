@@ -61,7 +61,9 @@ public class PropertiesWizard extends Wizard {
 
     private String originalVersion;
 
-    public PropertiesWizard(RepositoryNode node, IPath path) {
+    private String lastVersionFound;
+
+    public PropertiesWizard(RepositoryNode node, IPath path, boolean useLastVersion) {
         super();
 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROPERTIES_WIZ));
@@ -74,11 +76,25 @@ public class PropertiesWizard extends Wizard {
                         .getProxyRepositoryFactory();
                 try {
                     ItemState state = item.getState();
-                    if (state != null && state.getPath() != null) {
-                        this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId(), state
-                                .getPath(), node.getObject().getType());
+                    if (useLastVersion) {
+                        if (state != null && state.getPath() != null) {
+                            this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId(),
+                                    state.getPath(), node.getObject().getType());
+                            lastVersionFound = this.object.getVersion();
+                        } else {
+                            this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId());
+                            lastVersionFound = this.object.getVersion();
+                        }
                     } else {
-                        this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId());
+                        this.object = node.getObject();
+                        if (state != null && state.getPath() != null) {
+                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(),
+                                    property.getId(), state.getPath(), node.getObject().getType()).getVersion();
+                        } else {
+                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(),
+                                    property.getId()).getVersion();
+                        }
+                        this.object.setProperty(proxyRepositoryFactory.getUptodateProperty(property));
                     }
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
@@ -141,7 +157,7 @@ public class PropertiesWizard extends Wizard {
 
     @Override
     public void addPages() {
-        mainPage = new PropertiesWizardPage("WizardPage", object.getProperty(), path, isReadOnly(), false) { //$NON-NLS-1$
+        mainPage = new PropertiesWizardPage("WizardPage", object.getProperty(), path, isReadOnly(), false, lastVersionFound) { //$NON-NLS-1$
 
             @Override
             public void createControl(Composite parent) {

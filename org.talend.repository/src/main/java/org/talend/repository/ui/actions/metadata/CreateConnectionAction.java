@@ -152,13 +152,23 @@ public class CreateConnectionAction extends AbstractCreateAction {
         if (!creation) {
             Property property = node.getObject().getProperty();
             Property updatedProperty = null;
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+            if (getNeededVersion() == null) {
+                try {
+                    updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                            new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                            .getProperty();
 
-                node.getObject().setProperty(updatedProperty);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
+                    node.getObject().setProperty(updatedProperty);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            } else {
+                try {
+                    updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                            new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
             }
 
         }

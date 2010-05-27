@@ -90,13 +90,22 @@ public class ReadContextAction extends AbstractConextAction {
         Property property = repositoryNode.getObject().getProperty();
 
         Property updatedProperty = null;
-        try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-
-            repositoryNode.getObject().setProperty(updatedProperty);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+        if (getNeededVersion() == null) {
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+                repositoryNode.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        } else {
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+                repositoryNode.getObject().setProperty(updatedProperty);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
         }
 
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, true);

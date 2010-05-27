@@ -107,12 +107,20 @@ public abstract class AbstractCreateAction extends AContextualAction {
         }
         Property property = repositoryNode.getObject().getProperty();
         Property updatedProperty = null;
-
-        try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
+        if (getNeededVersion() == null) {
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        } else {
+            try {
+                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
         }
 
         // update the property of the node repository object
