@@ -223,11 +223,11 @@ public class ShadowProcessHelper {
         List<String> sheetColumns = connection.getSheetColumns();
 
         int first = 1;
-        if (firstColumn != null) {
+        if (firstColumn != null && !"".equals(firstColumn.trim())) {
             first = Integer.parseInt(firstColumn.trim());
         }
         int last = 0;
-        if (lastColumn != null) {
+        if (lastColumn != null && !"".equals(lastColumn.trim())) {
             last = Integer.parseInt(lastColumn.trim());
         }
         if (last <= 0 || last > sheetColumns.size()) {
