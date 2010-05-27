@@ -305,13 +305,13 @@ public class UIManager extends AbstractUIManager {
                             if (event.index != null) {
                                 int index = event.index;
                                 for (IMetadataColumn metadataColumn : metadataColumns) {
-                                    index = index + 1;
                                     lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
                                             metadataColumn, index));
                                     // handle related table view
                                     for (DataMapTableView tableView : relatedOutputsTableView) {
                                         mapperManager.addNewColumnEntry(tableView, metadataColumn, index);
                                     }
+                                    index = index + 1;
 
                                 }
                             } else if (event.indicesTarget != null) {
