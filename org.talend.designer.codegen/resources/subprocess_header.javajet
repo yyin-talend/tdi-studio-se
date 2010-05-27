@@ -126,7 +126,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 			    %>
 			    public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %><%
 			    	
-			    	if(javaType == JavaTypesManager.CHARACTER) {
+			    	if(javaType == JavaTypesManager.CHARACTER && !column.isNullable()) {
 			    		%> = ' '<%
 			    	}
 			    	
