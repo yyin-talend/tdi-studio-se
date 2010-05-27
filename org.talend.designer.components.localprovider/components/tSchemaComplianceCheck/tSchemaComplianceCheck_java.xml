@@ -114,7 +114,12 @@
 	    	<DEFAULT>(Not compatible with multi-threaded jobs)</DEFAULT>
 	    </PARAMETER>
 	</ADVANCED_PARAMETERS>
-	<CODEGENERATION></CODEGENERATION>
-
+	
+	<CODEGENERATION>	
+	  <IMPORTS>
+        <IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" REQUIRED="true" />
+	  </IMPORTS>
+    </CODEGENERATION>
+    
 	<RETURNS></RETURNS>
 </COMPONENT>

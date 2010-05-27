@@ -93,15 +93,47 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       }
     }
     
-    public void testPrecision(Integer iPrecision, String _sInConnName, IMetadataColumn metadataColumn, String cid) {
+    public void testPrecision(int _maxLength, int iPrecision, String _sInConnName, IMetadataColumn metadataColumn, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       String colName = metadataColumn.getLabel();
+      
       if (javaType == JavaTypesManager.BIGDECIMAL) {
+        /* NULLable, in case input value is Null, do nothing... 
+           Non-NULLable, 
+             (1) in case input value is Non-null, go into...; 
+             (2) in case input value is Null, do nothing and warning by NULL-CHECKER.
+        */
+        /*
+          if precision value is not empty or Null, checking "Precision" at first, if passed then checking "Length"
+        */
       %>
-        if(<%=_sInConnName%>.<%=colName%>.precision() != <%=iPrecision%>){
-          ifPassed_<%=cid%> = false;
-          errorCode_<%=cid%> += 8;
-          errorMessage_<%=cid%> += "|wrong precision";
+        if (<%=_sInConnName%>.<%=colName%> != null){        
+          int len1_<%=cid%> = 0; //number of digits before the decimal point(ignoring frontend zeroes)
+          int len2_<%=cid%> = 0; //number of digits after the decimal point(ignoring trailing  zeroes)
+          String s_<%=cid%> = <%=_sInConnName%>.<%=colName%>.toString();
+          
+          if (s_<%=cid%>.startsWith("-")){
+            s_<%=cid%> = s_<%=cid%>.substring(1);
+          }
+          s_<%=cid%> = org.apache.commons.lang.StringUtils.stripStart(s_<%=cid%>, "0");
+          
+          if (s_<%=cid%>.indexOf(".") >= 0){
+            len1_<%=cid%> = s_<%=cid%>.indexOf(".");    
+            s_<%=cid%> = org.apache.commons.lang.StringUtils.stripEnd(s_<%=cid%>, "0");
+            len2_<%=cid%> = s_<%=cid%>.length() - (len1_<%=cid%> + 1);
+          } else{
+            len1_<%=cid%> = s_<%=cid%>.length();
+          }
+
+          if (<%=iPrecision%> < len2_<%=cid%>) {
+            ifPassed_<%=cid%> = false;
+            errorCode_<%=cid%> += 8;
+            errorMessage_<%=cid%> += "|precision Non-matches";
+          } else if (<%=_maxLength%> < len1_<%=cid%> + <%=iPrecision%>) {
+            ifPassed_<%=cid%> = false;
+            errorCode_<%=cid%> += 8;
+            errorMessage_<%=cid%> += "|invalid Length setting is unsuitable for Precision";
+          }
         }
       <%
       }
@@ -246,7 +278,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       if (!isPrimitive){
       %>
         // validate nullable
-        if(<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
+        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
           ifPassed_<%=cid%> = false;
           errorCode_<%=cid%> += 4;
           errorMessage_<%=cid%> += "|empty or null";                        
@@ -277,12 +309,12 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       break;
     }
     
-    Integer iPrecision = null;
+    Object pre_iPrecision = null;
     String sInColumnName = inColumn.getLabel(), sTestColName = null, sTestColType = null, sTestColPattern = null;
-    boolean bNullable = true, bMaxLenLimited = false;
-    Object maxLength = null;
+    boolean bNullable = true, bMaxLenLimited = true;    
     /* use setting of tSchemaComplianceCheck schema (it is synchronize with inputting schema, but length value can be different) */    
-    maxLength = listColumsToTest.get(iInColIndex).getLength(); 
+    Object pre_maxLength = listColumsToTest.get(iInColIndex).getLength();
+    int maxLength = (pre_maxLength == null) ? 0 : Integer.parseInt(pre_maxLength.toString());
       
     if (bNeedReferSchema) {
       Map<String, String> checkedColumn = listCheckedColumns.get(iInColIndex);
@@ -291,23 +323,14 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       sTestColPattern = checkedColumn.get("DATEPATTERN");
       bNullable = "true".equals(checkedColumn.get("NULLABLE"));
       bMaxLenLimited = "true".equals(checkedColumn.get("MAX_LENGTH"));
-      
-      if (bMaxLenLimited){
-        maxLength = (maxLength == null) ? "0" : maxLength;
-      }
+       
     } else{
       IMetadataColumn schemaColumn = listColumsToTest.get(iInColIndex);
       sTestColName = schemaColumn.getLabel();
       sTestColType = JavaTypesManager.getTypeToGenerate(schemaColumn.getTalendType(), true);
       sTestColPattern = schemaColumn.getPattern();
       bNullable = schemaColumn.isNullable();
-      iPrecision = schemaColumn.getPrecision();
-        
-      if (maxLength == null){
-        bMaxLenLimited = false;
-      } else{
-        bMaxLenLimited = true;
-      }
+      pre_iPrecision = schemaColumn.getPrecision();
     }
 
     // NULL checking
@@ -325,12 +348,12 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
     }
     // length checking
     if (bMaxLenLimited){
-      checker.testDataLength(bNullable, sInConnName, inColumn, Integer.valueOf(maxLength.toString()), cid);
+      checker.testDataLength(bNullable, sInConnName, inColumn, maxLength, cid);
     }
     
     // precision checking
-    if(iPrecision != null){
-      checker.testPrecision(iPrecision, sInConnName, inColumn, cid);
+    if (pre_iPrecision != null){
+      checker.testPrecision(maxLength, Integer.parseInt(pre_iPrecision.toString()), sInConnName, inColumn, cid);
     }
     %>
     
