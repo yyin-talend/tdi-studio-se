@@ -851,6 +851,10 @@ public class CodeGenerator implements ICodeGenerator {
         return null;
     }
 
+    public void setContextName(String contextName) {
+        this.contextName = contextName;
+    }
+
     /**
      * DOC xtan for debug
      * <p>

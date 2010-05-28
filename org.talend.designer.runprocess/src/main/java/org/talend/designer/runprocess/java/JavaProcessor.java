@@ -329,6 +329,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
+            // set the selected context. if don't find, will keep default
+            if (!process.getContextManager().getDefaultContext().getName().equals(context.getName())) {
+                boolean found = false;
+                for (IContext c : process.getContextManager().getListContext()) {
+                    if (c.getName().equals(context.getName())) {
+                        found = true;
+                    }
+                }
+                if (found) {
+                    codeGen.setContextName(context.getName());
+                }
+            }
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
