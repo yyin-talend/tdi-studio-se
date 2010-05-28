@@ -129,7 +129,6 @@
       FIELD="FILE"
       NUM_ROW="14"
       REQUIRED="true"
-      SHOW_IF="EXECUTION == 'UNIX'" 
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/error.log"</DEFAULT>
     </PARAMETER>

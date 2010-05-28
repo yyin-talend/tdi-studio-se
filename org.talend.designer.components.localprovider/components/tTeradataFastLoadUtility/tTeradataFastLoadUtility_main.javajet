@@ -105,17 +105,7 @@ fw_<%=cid %>.write("LOGOFF;\r\n");
 fw_<%=cid %>.close();
 
 <%//run fastload command----------------------------------------------------%>
-<%
-if (("Windows").equals(execution)) {
-%>
-String sb_<%=cid%> = new String("cmd /c fastload < "+<%=scriptPath%>+<%=table%>+".script");
-<%
-} else {
-%>
-String sb_<%=cid%> = new String("fastload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
-<%
-}
-%>
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
     public void run() {
