@@ -112,7 +112,7 @@
           %>           
           try {
             <%
-            if (bEmptyToNull) {
+            if (bEmptyToNull && ("String".equals(inType) || "Object".equals(inType))) {
             %>
               if ("".equals(<%=preconnName %>.<%=preLabel%>)){  
                 <%=preconnName %>.<%=preLabel %> = null;
@@ -184,7 +184,7 @@
       %>     
       try {
         <%
-        if (bEmptyToNull) {
+        if (bEmptyToNull && ("String".equals(inType) || "Object".equals(inType))) {
         %>
           if ("".equals(<%=preconnName %>.<%=preLabel%>)){  
             <%=preconnName %>.<%=preLabel %> = null;
