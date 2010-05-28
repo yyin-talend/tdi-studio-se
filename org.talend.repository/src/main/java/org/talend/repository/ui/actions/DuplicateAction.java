@@ -32,6 +32,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -133,6 +134,18 @@ public class DuplicateAction extends AContextualAction {
         if (sourceNode == null) {
             return;
         }
+
+        Property property = (Property) sourceNode.getObject().getProperty();
+
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        // update the property of the node repository object
+        sourceNode.getObject().setProperty(updatedProperty);
 
         String initNameValue = "Copy_of_" + sourceNode.getObject().getProperty().getItem().getProperty().getLabel(); //$NON-NLS-1$
 
