@@ -100,9 +100,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @param wizardDialog
      */
     private void handleWizard(RepositoryNode node, WizardDialog wizardDialog) {
-
-        RepositoryManager.refreshSavedNode(node);
-
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
@@ -126,9 +123,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @param wizardDialog
      */
     protected void handleWizard(RepositoryNode node, WizardDialog wizardDialog, boolean notSetSize) {
-
-        RepositoryManager.refreshSavedNode(node);
-
         if (!notSetSize) {
             wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         }

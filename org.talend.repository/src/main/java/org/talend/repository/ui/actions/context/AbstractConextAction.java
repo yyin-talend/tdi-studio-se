@@ -18,6 +18,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -64,14 +65,8 @@ public class AbstractConextAction extends AContextualAction {
     @Override
     protected void updateNodeToLastVersion() {
         if (repositoryNode == null || repositoryNode.getObject() == null
-                || !(repositoryNode.getObject() instanceof RepositoryNode)) {
+                || !(repositoryNode.getObject() instanceof RepositoryObject)) {
             return;
-        }
-
-        try {
-            ProxyRepositoryFactory.getInstance().initialize();
-        } catch (PersistenceException e1) {
-            ExceptionHandler.process(e1);
         }
 
         Property property = repositoryNode.getObject().getProperty();

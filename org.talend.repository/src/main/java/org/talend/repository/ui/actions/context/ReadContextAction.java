@@ -17,17 +17,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 
@@ -85,27 +79,6 @@ public class ReadContextAction extends AbstractConextAction {
     protected void doRun() {
         if (repositoryNode == null) {
             repositoryNode = getCurrentRepositoryNode();
-        }
-
-        Property property = repositoryNode.getObject().getProperty();
-
-        Property updatedProperty = null;
-        if (getNeededVersion() == null) {
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-                repositoryNode.getObject().setProperty(updatedProperty);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        } else {
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
-                repositoryNode.getObject().setProperty(updatedProperty);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
         }
 
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, true);
