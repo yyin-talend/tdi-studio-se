@@ -26,6 +26,7 @@ abstract class  Manager {
     protected String userName;
     protected String password;
     protected String cid;
+    protected INode node;
     protected boolean temporary;
     protected abstract String getDriver();
     public abstract String getConnectionURL();
@@ -181,7 +182,7 @@ abstract class  Manager {
             return "";
         }
     }    
-    private String getDefaultValueSQL(String defaultValue) {
+    protected String getDefaultValueSQL(String defaultValue) {
         if(defaultValue == null || ("\"\"").equals(defaultValue) || ("").equals(defaultValue)) {
             return " ";
         } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
@@ -206,6 +207,9 @@ abstract class  Manager {
     	return getRProtectedChar();
     }
     
+    public void setNode(INode node){
+    	this.node = node;
+    }
 }
 
 class AS400Manager extends Manager {
@@ -1069,6 +1073,113 @@ class TeradataManager extends Manager {
 		javaCode.append("}\r\n");
         return javaCode.toString();
     }
+    
+      public String getCreateTableSQL(List<IMetadataColumn> listColumn) {
+        MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
+        StringBuilder createTableSQL = new StringBuilder();
+        
+        String tableType = ElementParameterParser.getValue(node, "__CREATE_TABLE_TYPE__");
+        
+        createTableSQL.append("CREATE " + tableType + " TABLE " + getLProtectedChar( "\" + tableName_" + cid + " + \"" ) + "\" + tableName_" + cid + " + \"" + getRProtectedChar("\" + tableName_" + cid + " + \"") + "(");
+        List<String> pkList = new ArrayList<String>();
+        int count = 0;
+        String ending = ",";
+        for(IMetadataColumn metadataColumn : listColumn) {
+            if(metadataColumn.isKey()) {
+                pkList.add(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()));
+            }
+            createTableSQL.append(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()) + " ");
+            String dataType = null;
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+            } else {
+                dataType = metadataColumn.getType();
+            }
+            if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED") ) {
+            	createTableSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ; 
+            }else {
+            	createTableSQL.append(dataType);
+            }            
+            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+            boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+            boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+            String prefix = "";
+            String suffix = "";
+            String comma = "";
+            
+            
+            if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
+                if(!precisionIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + precision);
+                }
+                if(!lengthIgnored) {
+                    prefix = (("").equals(prefix) ? "(" : prefix);
+                    suffix = (("").equals(suffix) ? ") " : suffix);
+                    if(precisionIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + length);
+                }
+                createTableSQL.append(suffix);
+            } else {
+                if(!lengthIgnored) {                
+                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
+                	}else {
+	                    prefix = "(";
+	                    suffix = ") ";
+	                    createTableSQL.append(prefix + length);                	                	
+                	}
+                }
+                if(!precisionIgnored) {
+                    prefix = (("").equals(prefix) ? "(" : prefix);
+                    suffix = (("").equals(suffix) ? ") " : suffix);
+                    if(lengthIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";                        
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + precision);
+                }
+                
+                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
+                } else {
+                	createTableSQL.append(suffix);
+                }
+                
+                if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
+                    createTableSQL.append("UNSIGNED");
+                }                
+            }
+            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
+            createTableSQL.append(setNullable(metadataColumn.isNullable()));            
+            if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                ending = "";
+            }
+            createTableSQL.append(ending);
+            count++;
+        }
+        if(pkList.size() > 0) {                
+            createTableSQL.append("primary key(");                
+            int i = 0;                
+            for(String pk : pkList) {                    
+                createTableSQL.append(pk);                    
+                if(i != pkList.size() - 1) {                        
+                    createTableSQL.append(",");                        
+                }                    
+                i++;                    
+            }                
+            createTableSQL.append(")");                
+        }
+        createTableSQL.append(")");
+        return createTableSQL.toString();
+    }
 }
 class StringUtil {
     public String getString(String source) {
@@ -1246,6 +1357,7 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new TeradataManager(host, port, dbName, tableName, userName, password, cid);
+            manager.setNode(node);
         } else if(("ODBC").equals(dbType)) {
             String odbcName = ElementParameterParser.getValue(node, "__ODBCNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
