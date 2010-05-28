@@ -26,10 +26,17 @@
 	</CONNECTORS>
 
 	<PARAMETERS>
+  	<PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="1"
+    >
+    	<DEFAULT>this component only support HL7 versin2.x</DEFAULT>
+    </PARAMETER>
 	    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="2"
       REPOSITORY_VALUE="HL7"
     />
 	
