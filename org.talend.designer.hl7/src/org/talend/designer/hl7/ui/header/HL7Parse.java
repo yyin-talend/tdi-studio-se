@@ -163,6 +163,7 @@ public class HL7Parse {
         Message message = null;
         try {
             if (messageText != null) {
+                messageText = messageText.replace('\n', '\r');
                 message = p.parse(messageText);
             }
         } catch (Exception e) {
