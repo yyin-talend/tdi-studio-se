@@ -297,7 +297,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             document.addDocumentListener(new IDocumentListener() {
 
                 public void documentChanged(DocumentEvent event) {
-                    ContextParameterExtractor.saveContext(paramName, elem, viewer.getTextWidget().getText(), process);
+                    if (!process.isReadOnly())
+                        ContextParameterExtractor.saveContext(paramName, elem, viewer.getTextWidget().getText(), process);
                 }
 
                 public void documentAboutToBeChanged(DocumentEvent event) {
