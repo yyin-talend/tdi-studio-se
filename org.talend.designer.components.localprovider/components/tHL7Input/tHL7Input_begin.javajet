@@ -222,7 +222,7 @@ parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
 	int[] index_<%=cid %> = null;
 	
 	while((str_<%=cid %> = reader_<%=cid %>.getMessage())!=null){
-	
+		str_<%=cid %> = str_<%=cid %>.replace('\n', '\r');
     	ca.uhn.hl7v2.model.Message message_<%=cid %> = parser_<%=cid %>.parse(str_<%=cid %>);
     	ca.uhn.hl7v2.util.Terser terser_<%=cid %> = new ca.uhn.hl7v2.util.Terser(message_<%=cid %>);
     	
