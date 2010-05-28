@@ -1393,12 +1393,16 @@ public class CLASS {
 					copyBulkSQL.append(
 					//convertDelim(fieldDelimiter)
 					fieldDelimiter
+					+ (column.isNullable() ? " WITH NULL ('" + nullIndicator + "')" : "")
 					+ " ,"
 					+ "\""
 					+ "+"
 					);
 				} else {
-					copyBulkSQL.append(recordDelimiter);
+					copyBulkSQL.append(
+					recordDelimiter
+					+ (column.isNullable() ? " WITH NULL ('" + nullIndicator + "')" : "")
+					);
 					copyBulkSQL.append(")");
 				}     	
 			} 

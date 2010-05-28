@@ -60,6 +60,7 @@
 	String leafFill = ElementParameterParser.getValue(node,"__LEAFFILL__");
 	String nonLeafFill = ElementParameterParser.getValue(node,"__NONLEAFFILL__");
 	String rowEstimate = ElementParameterParser.getValue(node,"__ROW_ESTIMATE__");
+	String sessionUser = ElementParameterParser.getValue(node,"__SESSION_USER__");
 
 	/***********************************************************************/
 	/** prepare the record delimiter: strip off any enclosing quote marks **/
@@ -81,8 +82,6 @@
 
       if (rowSeperatorParam.toLowerCase().equals("\":\"") ) { 
           recordDelimiter = "colon";
-      } else if (rowSeperatorParam.toLowerCase().equals("\";\"") ) { 
-          recordDelimiter = "semicomma";
       } else if (rowSeperatorParam.toLowerCase().equals("\",\"") ) { 
           recordDelimiter = "comma";
       } else if (rowSeperatorParam.toLowerCase().equals("\"\\t\"") ) { 
@@ -91,6 +90,9 @@
           System.err.println("Illegal Row Separator pattern");
       }
 
+    if (nullIndicator.startsWith("\"") && nullIndicator.endsWith("\"")) {
+        nullIndicator = nullIndicator.substring(1, nullIndicator.length()-1);
+    }
 
 	boolean convertToUppercase = false; // not active this function
 	%>
@@ -159,7 +161,7 @@
             fieldDelimiter = "colon";
        }
        else if (delimAction.toLowerCase().equals("\";\"")){
-            fieldDelimiter = "semicolon";
+            fieldDelimiter = "\';\'";
        }
        else if (delimAction.toLowerCase().equals("\"-\"")){
             fieldDelimiter = "\'-\'";
@@ -202,6 +204,8 @@
 		sqlBuffer.append("\n\nSET AUTOCOMMIT OFF");
 		sqlBuffer.append("\n\\p\\g");
 		sqlBuffer.append("\n\nSET NOJOURNALING");
+		sqlBuffer.append("\n\\p\\g");
+		sqlBuffer.append("\n\nSET SESSION AUTHORIZATION " + <%=sessionUser%>);
 		sqlBuffer.append("\n\\p\\g");
             <%
                 if(("TRUNCATE_BY_INGRESNET").equals(tableAction)) {
