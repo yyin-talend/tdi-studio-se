@@ -109,6 +109,14 @@ public class DuplicateAction extends AContextualAction {
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
                         canWork = false;
+                    } else if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_CDC
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_VIEW
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_SYNONYM
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.MDM_CONCEPT) {
+                        canWork = false;
                     }
                 }
             }
@@ -143,8 +151,8 @@ public class DuplicateAction extends AContextualAction {
             jobNameValue = ""; //$NON-NLS-1$
         }
 
-        InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.dialog.title"), Messages //$NON-NLS-1$
-                .getString("DuplicateAction.dialog.message"), jobNameValue, new IInputValidator() { //$NON-NLS-1$
+        InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.input.title"), //$NON-NLS-1$
+                Messages.getString("DuplicateAction.input.message"), jobNameValue, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
                         return validJobName(newText, selectionInClipboard);
@@ -203,8 +211,11 @@ public class DuplicateAction extends AContextualAction {
             return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
         } else {
             try {
-                if (!repositoryFactory.isNameAvailable(createNewItem(), itemName)) {
-                    return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError"); //$NON-NLS-1$
+                Item testNewItem = createNewItem();
+                if (testNewItem != null) {
+                    if (!repositoryFactory.isNameAvailable(testNewItem, itemName)) {
+                        return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError"); //$NON-NLS-1$
+                    }
                 }
             } catch (PersistenceException e) {
                 return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError"); //$NON-NLS-1$
@@ -239,46 +250,96 @@ public class DuplicateAction extends AContextualAction {
         ERepositoryObjectType repositoryType = sourceNode.getObjectType();
 
         Item item = null;
-
-        if (repositoryType.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
-            item = PropertiesFactory.eINSTANCE.createBusinessProcessItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.CONTEXT)) {
-            item = PropertiesFactory.eINSTANCE.createContextItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.ROUTINES)) {
-            item = PropertiesFactory.eINSTANCE.createRoutineItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.SQLPATTERNS)) {
-            item = PropertiesFactory.eINSTANCE.createSQLPatternItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.DOCUMENTATION)) {
-            item = PropertiesFactory.eINSTANCE.createDocumentationItem();
-            // Condition below is metadata items
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
-            item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
-            item = PropertiesFactory.eINSTANCE.createDelimitedFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
-            item = PropertiesFactory.eINSTANCE.createPositionalFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
-            item = PropertiesFactory.eINSTANCE.createRegExFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_XML)) {
-            item = PropertiesFactory.eINSTANCE.createXmlFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
-            item = PropertiesFactory.eINSTANCE.createExcelFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_LDIF)) {
-            item = PropertiesFactory.eINSTANCE.createLdifFileConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
-            item = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
-            item = PropertiesFactory.eINSTANCE.createSalesforceSchemaConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
-            item = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
-        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
-            item = PropertiesFactory.eINSTANCE.createWSDLSchemaConnectionItem();
-        } else {
-            item = PropertiesFactory.eINSTANCE.createProcessItem();
+        if (repositoryType != null) {
+            switch (repositoryType) {
+            case BUSINESS_PROCESS:
+                item = PropertiesFactory.eINSTANCE.createBusinessProcessItem();
+                break;
+            case CONTEXT:
+                item = PropertiesFactory.eINSTANCE.createContextItem();
+                break;
+            case DOCUMENTATION:
+                item = PropertiesFactory.eINSTANCE.createDocumentationItem();
+                break;
+            case JOBLET:
+                item = PropertiesFactory.eINSTANCE.createJobletProcessItem();
+                break;
+            case METADATA_CONNECTIONS:
+                item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
+                break;
+            case METADATA_FILE_DELIMITED:
+                item = PropertiesFactory.eINSTANCE.createDelimitedFileConnectionItem();
+                break;
+            case METADATA_FILE_EBCDIC:
+                item = PropertiesFactory.eINSTANCE.createEbcdicConnectionItem();
+                break;
+            case METADATA_FILE_EXCEL:
+                item = PropertiesFactory.eINSTANCE.createExcelFileConnectionItem();
+                break;
+            case METADATA_FILE_HL7:
+                item = PropertiesFactory.eINSTANCE.createHL7ConnectionItem();
+                break;
+            case METADATA_FILE_LDIF:
+                item = PropertiesFactory.eINSTANCE.createLdifFileConnectionItem();
+                break;
+            case METADATA_FILE_POSITIONAL:
+                item = PropertiesFactory.eINSTANCE.createPositionalFileConnectionItem();
+                break;
+            case METADATA_FILE_LINKRULES:
+                item = PropertiesFactory.eINSTANCE.createLinkRulesItem();
+                break;
+            case METADATA_FILE_REGEXP:
+                item = PropertiesFactory.eINSTANCE.createRegExFileConnectionItem();
+                break;
+            case METADATA_FILE_RULES:
+                item = PropertiesFactory.eINSTANCE.createRulesItem();
+                break;
+            case METADATA_FILE_XML:
+                item = PropertiesFactory.eINSTANCE.createXmlFileConnectionItem();
+                break;
+            case METADATA_GENERIC_SCHEMA:
+                item = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
+                break;
+            case METADATA_LDAP_SCHEMA:
+                item = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
+                break;
+            case METADATA_MDMCONNECTION:
+                item = PropertiesFactory.eINSTANCE.createMDMConnectionItem();
+                break;
+            case METADATA_SALESFORCE_SCHEMA:
+                item = PropertiesFactory.eINSTANCE.createSalesforceSchemaConnectionItem();
+                break;
+            case METADATA_SAPCONNECTIONS:
+                item = PropertiesFactory.eINSTANCE.createSAPConnectionItem();
+                break;
+            case METADATA_WSDL_SCHEMA:
+                item = PropertiesFactory.eINSTANCE.createWSDLSchemaConnectionItem();
+                break;
+            case PROCESS:
+                item = PropertiesFactory.eINSTANCE.createProcessItem();
+                break;
+            case ROUTINES:
+                item = PropertiesFactory.eINSTANCE.createRoutineItem();
+                break;
+            case SNIPPETS:
+                item = PropertiesFactory.eINSTANCE.createSnippetItem();
+                break;
+            case SQLPATTERNS:
+                item = PropertiesFactory.eINSTANCE.createSQLPatternItem();
+                break;
+            case SVG_BUSINESS_PROCESS:
+                item = PropertiesFactory.eINSTANCE.createSVGBusinessProcessItem();
+                break;
+            case TDQ_ELEMENT:
+                item = PropertiesFactory.eINSTANCE.createTDQItem();
+                break;
+            default:
+            }
         }
-
-        Property property = PropertiesFactory.eINSTANCE.createProperty();
-        item.setProperty(property);
+        if (item != null) {
+            Property property = PropertiesFactory.eINSTANCE.createProperty();
+            item.setProperty(property);
+        }
         return item;
     }
 
@@ -292,6 +353,12 @@ public class DuplicateAction extends AContextualAction {
             if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
                 List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
+                for (IRepositoryObject obj : allVersion) {
+                    if (obj.getVersion().equals(originalItem.getProperty().getVersion())) {
+                        originalItem = obj.getProperty().getItem();
+                        break;
+                    }
+                }
                 Item newItem = factory.copy(originalItem, path, true);
                 newItem.getProperty().setLabel(newJobName);
                 // newItem.getProperty().setVersion(JOB_INIT_VERSION);
