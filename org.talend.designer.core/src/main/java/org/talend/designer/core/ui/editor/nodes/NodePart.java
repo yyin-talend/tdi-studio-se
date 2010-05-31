@@ -48,15 +48,22 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ETalendSelectionType;
@@ -462,46 +469,62 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     }
                 }
             } else {
-                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
-                boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
-                        .isAvoidToShowJobAfterDoubleClick();
+                // add for feature 13361
+                boolean isJoblet = false;
 
-                if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
-                    try {
-                        ItemCacheManager.clearCache();
-                        ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
-                        if (processItem != null) {
-                            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
-
-                            IEditorPart editorPart = page.findEditor(fileEditorInput);
-
-                            if (editorPart == null) {
-                                IViewPart viewPart = page.findView(IRepositoryView.VIEW_ID);
-                                if (viewPart != null) {
-                                    fileEditorInput.setView((IRepositoryView) viewPart);
-                                    fileEditorInput.setRepositoryNode(null);
-                                    page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                                }
-                            } else {
-                                page.activate(editorPart);
-                            }
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    AbstractProcessProvider jobletProcessProvider = AbstractProcessProvider
+                            .findProcessProviderFromPID(IComponent.JOBLET_PID);
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null && service.isJobletComponent(node)) {
+                        isJoblet = true;
+                        Item jobletItem = jobletProcessProvider.getJobletItem(node);
+                        if (jobletItem != null) {
+                            service.openJobletItem((JobletProcessItem) jobletItem);
                         }
-                    } catch (PartInitException e) {
-                        MessageBoxExceptionHandler.process(e);
-                    } catch (PersistenceException e) {
-                        MessageBoxExceptionHandler.process(e);
                     }
-                } else {
-                    try {
-                        // modified for feature 2454.
-                        //
-                        // page.showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-                        page.showView(ComponentSettingsView.ID);
-                    } catch (PartInitException e) {
-                        // e.printStackTrace();
-                        ExceptionHandler.process(e);
+                }
+
+                if (!isJoblet) {
+                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+                    String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
+                    boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
+                            .isAvoidToShowJobAfterDoubleClick();
+
+                    if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
+                        try {
+                            ItemCacheManager.clearCache();
+                            ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
+                            if (processItem != null) {
+                                ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
+
+                                IEditorPart editorPart = page.findEditor(fileEditorInput);
+
+                                if (editorPart == null) {
+                                    IViewPart viewPart = page.findView(IRepositoryView.VIEW_ID);
+                                    if (viewPart != null) {
+                                        fileEditorInput.setView((IRepositoryView) viewPart);
+                                        fileEditorInput.setRepositoryNode(null);
+                                        page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
+                                    }
+                                } else {
+                                    page.activate(editorPart);
+                                }
+                            }
+                        } catch (PartInitException e) {
+                            MessageBoxExceptionHandler.process(e);
+                        } catch (PersistenceException e) {
+                            MessageBoxExceptionHandler.process(e);
+                        }
+                    } else {
+                        try {
+                            // modified for feature 2454.
+                            page.showView(ComponentSettingsView.ID);
+                        } catch (PartInitException e) {
+                            ExceptionHandler.process(e);
+                        }
                     }
                 }
             }
