@@ -129,7 +129,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				writerClass = "java.io.BufferedWriter";
     			}
     			if(!split){
-    				if(compress){// compress the dest file
+    				if(compress && !isAppend){// compress the dest file
 %>
 				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
@@ -404,7 +404,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     	
 	            if(!split){
 	            	if(isInRowMode){
-    					if(compress){// compress the dest file
+    					if(compress && !isAppend){// compress the dest file
 %>
 				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
@@ -427,7 +427,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 <%
                 		}
                 	}else{
-                		if(compress){// compress the dest file
+                		if(compress && !isAppend){// compress the dest file
 				%>
 				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";

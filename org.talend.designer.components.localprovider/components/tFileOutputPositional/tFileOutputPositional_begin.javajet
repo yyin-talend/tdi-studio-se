@@ -70,7 +70,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 <%
 			}
-			if(compress){// compress the dest file
+			if(compress && !isAppend){// compress the dest file
 %>
         String fullName_<%=cid%> = null;
         String extension_<%=cid%> = null;
@@ -107,7 +107,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			}
 		}else{ //the part of the output stream
-			if(compress){// compress the dest output stream
+			if(compress && !isAppend){// compress the dest output stream
 %>
 	    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
 	    			new java.io.BufferedOutputStream(<%=outStream %>));
