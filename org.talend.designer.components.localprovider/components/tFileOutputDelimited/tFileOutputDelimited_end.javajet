@@ -23,6 +23,8 @@
 	
 	String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 	boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
+	
+	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
 %>
 
 <% 
@@ -141,7 +143,7 @@
 
 <%if(!useStream && isDeleteEmptyFile){%>
 	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
-	<%if(compress){%>
+	<%if(compress && !isAppend && !split){%>
 		new java.io.File(zipName_<%=cid %>).delete();
 	<%}else{%>
 		new java.io.File(<%=filename %>).delete();
