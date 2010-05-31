@@ -1259,6 +1259,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
         } else {
             type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
         }
+        if (type.equals("Oracle")) {
+            IElementParameter ele = element.getElementParameter("CONNECTION_TYPE");
+            if (ele != null) {
+                type = (String) ele.getValue();
+            } else
+                type = "ORACLE_SID"; //$NON-NLS-1$
+        }
         connParameters.setDbType(type);
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
@@ -1462,6 +1469,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         connParameters = new ConnectionParameters();
         String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
+        if (type.equals("Oracle")) {
+            IElementParameter ele = elem.getElementParameter("CONNECTION_TYPE");
+            if (ele != null) {
+                type = (String) ele.getValue();
+            } else
+                type = "ORACLE_SID"; //$NON-NLS-1$
+        }
         connParameters.setDbType(type);
 
         String driverName = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$ 
