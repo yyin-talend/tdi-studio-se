@@ -158,8 +158,10 @@ public class ExternalNodeChangeCommand extends Command {
                     IMetadataTable metadata = inAndOut.getTable(connection);
                     INode sourceNode = currentIO.getSource();
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
-                    IMetadataTable oldMetadata = connection.getMetadataTable().clone();
-                    currentIO.setTable(oldMetadata);
+                    // It's better to clone, because will change that, if apply, bug 13325
+                    // IMetadataTable oldMetadata = connection.getMetadataTable().clone();
+                    IMetadataTable newMetadata = metadata.clone();
+                    currentIO.setTable(newMetadata);
                     String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                     if (schemaType != null) {
                         // if there is a SCHEMA_TYPE, then switch it to BUILT_IN if REPOSITORY is set.
@@ -171,7 +173,7 @@ public class ExternalNodeChangeCommand extends Command {
                     // for bug 9849
                     List<IMetadataColumn> listColumns = connection.getMetadataTable().getListColumns();
                     boolean empty = listColumns.isEmpty(); // before is empty
-                    List<IMetadataColumn> newListColumns = metadata.getListColumns();
+                    List<IMetadataColumn> newListColumns = newMetadata.getListColumns();
                     List<ColumnNameChanged> columnNameChangeds = new ArrayList<ColumnNameChanged>();
                     int size = listColumns.size();
                     int newSize = newListColumns.size();
@@ -229,12 +231,15 @@ public class ExternalNodeChangeCommand extends Command {
                             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
                                     && param.getContext().equals(connection.getConnectorName())) {
                                 schemaParam = param;
+                                break;
                             }
                         }
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), schemaParam,
-                                connection.getMetadataTable(), dataComponent.getTable());
-                        cmd.execute(true);
-                        metadataOutputChanges.add(cmd);
+                        if (schemaParam != null) {
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), schemaParam,
+                                    connection.getMetadataTable(), dataComponent.getTable());
+                            cmd.execute(true);
+                            metadataOutputChanges.add(cmd);
+                        }
                     }
                 }
                 if (connection instanceof Connection) {
@@ -248,7 +253,17 @@ public class ExternalNodeChangeCommand extends Command {
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
         }
         node.setExternalData(newExternalData);
-        node.setMetadataList(newMetaDataList);
+        /*
+         * It's better to clone, because will change that, if apply, bug 13325
+         */
+        // node.setExternalData(newExternalData.clone()); //should test later.
+        List<IMetadataTable> cloneNewMetadata = new ArrayList<IMetadataTable>();
+        if (newMetaDataList != null) {
+            for (IMetadataTable t : newMetaDataList) {
+                cloneNewMetadata.add(t.clone());
+            }
+        }
+        node.setMetadataList(cloneNewMetadata);
         // init trace
         for (IConnection conn : initTraceList) {
             if (conn instanceof Connection) {
