@@ -18,6 +18,8 @@ boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USES
 String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 
+boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+
 String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 			
@@ -47,10 +49,14 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
     directory_<%=cid%> = "";
 }
 boolean isFileGenerated_<%=cid %> = true;
+<%
+	if(isAppend){
+%>
 if(new java.io.File(<%=fileName%>).exists()){
 	isFileGenerated_<%=cid %> = false;
 }
 <%
+	}
 }
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,8 +88,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 node,
                 "__ENCODING__"
             );
-            
-            boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
             
             boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
     		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
@@ -290,7 +294,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
  				textEnclosure1 = "\"\\\"\"";
  			}
  			
-        	boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         	boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
         	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
         	boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
