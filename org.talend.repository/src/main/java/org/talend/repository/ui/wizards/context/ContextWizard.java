@@ -165,7 +165,7 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
         contextWizardPage0.setTitle(Messages.getString("ContextWizard.step0Title")); //$NON-NLS-1$
         contextWizardPage0.setDescription(Messages.getString("ContextWizard.step0Description")); //$NON-NLS-1$
         addPage(contextWizardPage0);
-        if (creation) {
+        if (creation || !isRepositoryObjectEditable()) {
             contextWizardPage0.setPageComplete(false);
         }
 
@@ -173,6 +173,9 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
         contextPage.setTitle(Messages.getString("ContextWizard.contextPageTitle")); //$NON-NLS-1$
         contextPage.setDescription(Messages.getString("ContextWizard.contextPageDescription")); //$NON-NLS-1$
         addPage(contextPage);
+        if (!isRepositoryObjectEditable()) {
+            contextPage.setPageComplete(false);
+        }
     }
 
     /**
