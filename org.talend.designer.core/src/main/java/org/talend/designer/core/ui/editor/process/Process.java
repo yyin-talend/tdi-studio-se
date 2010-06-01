@@ -103,7 +103,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
-import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
@@ -678,6 +677,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private void saveElementParameter(IElementParameter param, ProcessType process, TalendFileFactory fileFact,
             List<? extends IElementParameter> paramList, EList listParamType) {
         ElementParameterType pType;
+        boolean isJoblet = false;
+        if (param.getElement() instanceof INode && PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent((INode) param.getElement())) {
+                isJoblet = true;
+            }
+        }
 
         if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
                 || param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
@@ -695,7 +702,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (param.getParentParameter().getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
                         EParameterName.SCHEMA_TYPE.getName());
-                if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
+                if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
+                    // save conenction value
+                } else if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
                     return;
                 }
             }
@@ -709,7 +718,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
             // return;
             // }
-            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(this);
             if (isJoblet) {
                 if (param != null && !(param.getName().equals(EParameterName.STARTABLE.getName()))) {
                     return;
