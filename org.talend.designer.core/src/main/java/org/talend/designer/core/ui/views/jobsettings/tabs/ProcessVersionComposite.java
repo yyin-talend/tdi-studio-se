@@ -57,6 +57,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -103,6 +104,8 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         if (obj instanceof IProcess2) {
             boolean readOnly = ((IProcess2) obj).getProcessor().getProcess().isReadOnly();
             parent.setEnabled(!readOnly);
+        } else if (obj instanceof RepositoryObject) {
+            parent.setEnabled(true);
         }
         FormData thisFormData = new FormData();
         thisFormData.left = new FormAttachment(0, 0);
