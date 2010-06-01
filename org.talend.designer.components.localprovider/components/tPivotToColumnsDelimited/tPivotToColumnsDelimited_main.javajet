@@ -7,6 +7,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.Map
 "
@@ -17,6 +18,11 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+   		    
 List<Map<String, String>> groupbys = 
     ( List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 	
@@ -47,6 +53,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     
                     List<IMetadataColumn> columnList = metadata.getListColumns();
                     
+                    JavaType javaType = null;
+                    
                     String columnType = null;
                     
                     String columnTypeValue = null;
@@ -56,6 +64,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
              		for(IMetadataColumn column:columnList){
              			
              			if(column.getLabel().equals(aggColumn)){
+             			
+             				javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
              			
 							columnType = column.getTalendType().substring(3);
 							
@@ -156,12 +166,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(1).append(<%=fieldSeparator%>).toString());
 
-<%}else{%>
+<%}else{
+	if(advancedSeparator && JavaTypesManager.isNumberType(javaType)){%>
         
-        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
+        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).append(<%=fieldSeparator%>).toString());
   
-<%}%>
+  <%}else{%>
 
+        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
+<%	}
+  }%>
     }else{
 
         String aggStr<%=cid%> = (String)aggregation<%=cid%>.get(gKvalue<%=cid%>);
@@ -183,12 +197,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
             aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(1).toString() + <%=fieldSeparator%>;
 
-<%}else{%>
+<%}else{
+	if(advancedSeparator && JavaTypesManager.isNumberType(javaType)){%>
             
-            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
+            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString() + <%=fieldSeparator%>;
 
-<%}%>     
-            
+  <%}else{%>
+	
+            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
+	
+<%	}
+  }%>
+  
             aggregation<%=cid%>.remove(gKvalue<%=cid%>);
             
             aggregation<%=cid%>.put(gKvalue<%=cid%>,aggStr<%=cid%>);
@@ -239,15 +259,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					<%}%>
                     
                 }else{
-               		<%if(("BigDecimal").equals(columnType)){%>
-						
-					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
+               		<%if(("BigDecimal").equals(columnType) || ("Double").equals(columnType)||("Float").equals(columnType)){
+               			if(advancedSeparator){%>
+               			
+							java.math.BigDecimal sourceBD_<%=cid%> = new java.math.BigDecimal(FormatterUtils.unformat_Number(aggStrSplit<%=cid%>[pivotIndex<%=cid%>],<%=thousandsSeparator%>,<%=decimalSeparator%>));
+							java.math.BigDecimal targetBD_<%=cid%> = new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString());
+					  		aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = FormatterUtils.format_Number(sourceBD_<%=cid%>.add(targetBD_<%=cid%>).toString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
 					  
-					<%}else if(("Double").equals(columnType)||("Float").equals(columnType)){%>
+						<%}else{%>
 
-					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
+					  		aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
 					  
-					<%}else{%>
+						<%}
+					}else{%>
 					  
 					  sum<%=cid%> = (<%=columnTypeValue%>)(<%=columnType%>.parse<%=columnTypeFunName%>(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + <%=columnType%>.parse<%=columnTypeFunName%>(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString()));
                 	
@@ -270,34 +294,47 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             <%
             }else if( ("max").equals(aggFunction) ){
-            %>
-            
-                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())>Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
-                    
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
+               	if(advancedSeparator){%>
+               		
+               		String unformatedSourceStr_<%=cid%> = FormatterUtils.unformat_Number(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
+            		String unformatedTargetStr_<%=cid%> = FormatterUtils.unformat_Number(aggStrSplit<%=cid%>[pivotIndex<%=cid%>],<%=thousandsSeparator%>,<%=decimalSeparator%>);
+	                if(Float.parseFloat(unformatedSourceStr_<%=cid%>)>Float.parseFloat(unformatedTargetStr_<%=cid%>))
+	                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = FormatterUtils.format_Number(aggValues<%=cid%>.toString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
+	                    
+	            <%}else{%>
+	            
+	                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())>Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
+	                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
+            	}
             }else if( ("min").equals(aggFunction) ){
-            %>
+               	if(advancedSeparator){%>
                 
-
-                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())<Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
+               		String unformatedSourceStr_<%=cid%> = FormatterUtils.unformat_Number(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
+            		String unformatedTargetStr_<%=cid%> = FormatterUtils.unformat_Number(aggStrSplit<%=cid%>[pivotIndex<%=cid%>],<%=thousandsSeparator%>,<%=decimalSeparator%>);
+	                if(Float.parseFloat(unformatedSourceStr_<%=cid%>)<Float.parseFloat(unformatedTargetStr_<%=cid%>))
+	                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = FormatterUtils.format_Number(aggValues<%=cid%>.toString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
                     
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
+                <%}else{%>
+                
+	                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())<Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
+	                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
+            	}
             }else if( ("first").equals(aggFunction) ){
             %>
             
                 if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
 
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
             
             <%
             }else if( ("last").equals(aggFunction) ){
             %>
     
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
                 
             <%
             }
