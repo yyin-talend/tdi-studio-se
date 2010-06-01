@@ -23,6 +23,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -435,7 +436,20 @@ public class PropertyChangeCommand extends Command {
                         IElementParameter param = node.getElementParameter(EParameterName.SCHEMA.getName());
                         IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
                         newMetadataTable = meta.clone(true);
-                        newMetadataTable.getListColumns().addAll(defaultMetadataTable.clone(true).getListColumns());
+                        List<IMetadataColumn> toAdd = new ArrayList<IMetadataColumn>();
+                        for (IMetadataColumn column : defaultMetadataTable.clone(true).getListColumns()) {
+                            boolean found = false;
+                            for (IMetadataColumn existingColumn : newMetadataTable.getListColumns()) {
+                                if (existingColumn.getLabel().equals(column.getLabel())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                toAdd.add(column);
+                            }
+                        }
+                        newMetadataTable.getListColumns().addAll(toAdd);
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
