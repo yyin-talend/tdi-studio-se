@@ -243,6 +243,7 @@ try{
 <%
 	}
 %>
+	nb_line_<%=cid%>++;
 }catch(Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
