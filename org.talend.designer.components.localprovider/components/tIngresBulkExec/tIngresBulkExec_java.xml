@@ -95,7 +95,7 @@
       NUM_ROW="70"
       REQUIRED="true"
     >
-      <DEFAULT>"C:\ingres_bulk.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/ingres_bulk.csv"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="80">
