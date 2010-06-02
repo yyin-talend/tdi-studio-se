@@ -23,7 +23,10 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -113,23 +116,29 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public void setName() {
         super.setName();
         String label = getEditorInput().getName();
-        String jobVersion = this.getProcess().getVersion();
+        IProcess process2 = this.getProcess();
+        String jobVersion = process2.getVersion();
         // if (getActivePage() == 1) {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
             if (revisionChanged && service.isProjectInSvnMode()) {
-                revisionNumStr = service.getCurrentSVNRevision(this.getProcess());
+                revisionNumStr = service.getCurrentSVNRevision(process2);
                 revisionChanged = false;
                 if (revisionNumStr != null) {
                     revisionNumStr = ".r" + revisionNumStr;
                 }
             }
         }
+        String title = "MultiPageTalendEditor.Job";//$NON-NLS-1$
+        Item item = process2.getProperty().getItem();
+        if (item instanceof JobletProcessItem) {
+            title = title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
+        }
         if (revisionNumStr != null) {
-            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion) + revisionNumStr); //$NON-NLS-1$
+            setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr); 
         } else {
-            setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
+            setPartName(Messages.getString(title, label, jobVersion)); //$NON-NLS-1$
         }
     }
 
