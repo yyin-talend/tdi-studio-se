@@ -38,7 +38,7 @@
 
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true">
-			<DEFAULT>"http://localhost:8080/talend/TalendPort"</DEFAULT>
+			<DEFAULT>"http://localhost:8080/datamanager/loadServlet"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
@@ -81,7 +81,7 @@
 
 		<PARAMETER NAME="MASS_LEVEL" FIELD="TEXT" NUM_ROW="60"
 			REQUIRED="true">
-			<DEFAULT>200</DEFAULT>
+			<DEFAULT>500</DEFAULT>
 		</PARAMETER>
 
 	</PARAMETERS>
