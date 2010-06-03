@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/27/10 10:55:16">
+    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
     <title>Scenario 1: Populating a data warehouse</title>
   </head>
 
@@ -22,289 +22,289 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp3443480"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3547696"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3443490"> </a><h2 class="pHeading2">
+<a name="wp3547706"> </a><h2 class="pHeading2">
 Scenario 1: Populating a data warehouse
 </h2>
-<a name="wp3443494"> </a><p class="pIndented1">
+<a name="wp3547710"> </a><p class="pIndented1">
 The following Java scenario creates a three-component Job that populates a data warehouse. A <b class="cBold">tOracleInput</b> component reads your client data stored in the <em class="cEmphasis">CLIENT</em> table. A <b class="cBold">tMap</b> component allows you to modify this data and the modifications are transmitted to the <em class="cEmphasis">Leadfact</em> table in the database through a <b class="cBold">tOracleOutput</b> component.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443526"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tOracleInput</b>, <b class="cBold">tMap</b>, and <b class="cBold">tOracleOutput</b>.</li></div>
-<a name="wp3443547"> </a><div class="pSmartList2"><li>Connect the three components using <b class="cBold">Row Main </b>links. Click the link between <b class="cBold">tMap</b> and <b class="cBold">tOracleOutput</b> and name it <em class="cEmphasis">leadfact</em>.</li></div>
+<a name="wp3547742"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tOracleInput</b>, <b class="cBold">tMap</b>, and <b class="cBold">tOracleOutput</b>.</li></div>
+<a name="wp3547763"> </a><div class="pSmartList2"><li>Connect the three components using <b class="cBold">Row Main </b>links. Click the link between <b class="cBold">tMap</b> and <b class="cBold">tOracleOutput</b> and name it <em class="cEmphasis">leadfact</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443570"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3547786"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC1_1.png" id="wp3443566" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC1_1.png" id="wp3547782" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443585"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tOracleInput</b> to display its <b class="cBold">Basic settings</b> view and define its properties. </li></div>
+<a name="wp3547801"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tOracleInput</b> to display its <b class="cBold">Basic settings</b> view and define its properties. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443596"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3547812"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC1_2.png" id="wp3443592" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC1_2.png" id="wp3547808" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443611"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the connection to the <em class="cEmphasis">TALEND</em> database that holds the information about your clients. The connection details will display automatically in the corresponding fields.</li></div>
-<a name="wp3443629"> </a><p class="pBodyRelative">
+<a name="wp3547827"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the connection to the <em class="cEmphasis">TALEND</em> database that holds the information about your clients. The connection details will display automatically in the corresponding fields.</li></div>
+<a name="wp3547845"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp3443622" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3547838" border="0" hspace="0" vspace="0"/><br />
 If you have not stored the DB connection details in the <b class="cBold">Metadata</b> entry in the Repository, select <b class="cBold">Built-in </b>in the property type list and set the connection details manually.
 </p>
-<a name="wp3443649"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Repository</b> and click the three-dot button to select the schema of the <em class="cEmphasis">CLIENT </em>table stored in the <b class="cBold">Metadata</b> folder.</li></div>
+<a name="wp3547865"> </a><div class="pSmartList2"><li>Set <b class="cBold">Schema</b> to <b class="cBold">Repository</b> and click the three-dot button to select the schema of the <em class="cEmphasis">CLIENT </em>table stored in the <b class="cBold">Metadata</b> folder.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443670"> </a><p class="pIndented1">
+<a name="wp3547886"> </a><p class="pIndented1">
 Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443690"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table Name</b> field, enter the name of the table holding the information you want to modify, <em class="cEmphasis">CLIENT</em> in this example. </li></div>
-<a name="wp3443704"> </a><div class="pSmartList2"><li>Click <b class="cBold">Guess Query</b> to retrieve all data from your table.</li></div>
-<a name="wp3443716"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the <b class="cBold">Map Editor</b>. Notice that the input area to the left is already filled with the metadata of the input component. </li></div>
+<a name="wp3547906"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table Name</b> field, enter the name of the table holding the information you want to modify, <em class="cEmphasis">CLIENT</em> in this example. </li></div>
+<a name="wp3547920"> </a><div class="pSmartList2"><li>Click <b class="cBold">Guess Query</b> to retrieve all data from your table.</li></div>
+<a name="wp3547932"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the <b class="cBold">Map Editor</b>. Notice that the input area to the left is already filled with the metadata of the input component. </li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443727"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3547943"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC1_3.png" id="wp3443723" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC1_3.png" id="wp3547939" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443738"> </a><div class="pSmartList2"><li>Drag the fields in the input zone to the fields in the <em class="cEmphasis">leadfact </em>table in the output zone. For more information regarding data mapping, see <em class="cEmphasis">Mapping data flows</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
-<a name="wp3443764"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the operation.</li></div>
-<a name="wp3443775"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tOracleOutput</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp3547954"> </a><div class="pSmartList2"><li>Drag the fields in the input zone to the fields in the <em class="cEmphasis">leadfact </em>table in the output zone. For more information regarding data mapping, see <em class="cEmphasis">Mapping data flows</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
+<a name="wp3547980"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the operation.</li></div>
+<a name="wp3547991"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tOracleOutput</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443790"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548006"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC1_4.png" id="wp3443786" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC1_4.png" id="wp3548002" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443809"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the <em class="cEmphasis">cdc_data</em> connection to the data warehouse. The connection details will display automatically in the corresponding fields</li></div>
-<a name="wp3443823"> </a><p class="pBodyRelative">
+<a name="wp3548025"> </a><div class="pSmartList2"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the <em class="cEmphasis">cdc_data</em> connection to the data warehouse. The connection details will display automatically in the corresponding fields</li></div>
+<a name="wp3548039"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp3443816" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3548032" border="0" hspace="0" vspace="0"/><br />
 If you have not stored the data warehouse connection details in the <b class="cBold">Metadata</b> folder in the <b class="cBold">Repository</b> tree view, select <b class="cBold">Built-in </b>in the property type list and set the connection details manually.
 </p>
 </ul></div>
 </ul></div>
-<a name="wp3443843"> </a><p class="pIndented1">
+<a name="wp3548059"> </a><p class="pIndented1">
 Related topics: <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3443863"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table Name</b> field, enter the name of the table you want to populate with modified data, <em class="cEmphasis">LEADFACT</em> in this example.</li></div>
-<a name="wp3443880"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to create and populate the <em class="cEmphasis">LEADFACT </em>table in the data warehouse.</li></div>
+<a name="wp3548079"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table Name</b> field, enter the name of the table you want to populate with modified data, <em class="cEmphasis">LEADFACT</em> in this example.</li></div>
+<a name="wp3548096"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to create and populate the <em class="cEmphasis">LEADFACT </em>table in the data warehouse.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3443894"> </a><h2 class="pHeading2">
+<a name="wp3548110"> </a><h2 class="pHeading2">
 Scenario 2: Retrieving modified data using Oracle CDC Redo log mode
 </h2>
-<a name="wp3443903"> </a><p class="pBodyRelative">
+<a name="wp3548119"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_small.png" align="left" id="wp3443900" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3548116" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Before modifying data in the LEADFACT table and retrieving these modifications using the <b class="cBold">tOracleCDC</b> component, you must activate the <b class="cBold">Redo log</b> mode in the Oracle database that holds the table to monitor. For more information on how to activate the <b class="cBold">Redo log</b> mode, see <em class="cEmphasis">Prerequisites for the Redo log mode</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
-<a name="wp3443931"> </a><p class="pIndented1">
+<a name="wp3548147"> </a><p class="pIndented1">
 This scenario is based on the preceding one. It continuously populates and modifies the data stored in the <em class="cEmphasis">LEADFACT</em> table, and retrieves and saves, every night, these modifications in a dedicated table using the CDC function. These modifications could be then extracted by the various concerned departments.
 </p>
-<a name="wp3443944"> </a><h3 class="pHeading3">
+<a name="wp3548160"> </a><h3 class="pHeading3">
 Step&#160;1: Configuring CDC
 </h3>
-<a name="wp3443952"> </a><p class="pIndented2">
+<a name="wp3548168"> </a><p class="pIndented2">
 Before being able to retrieve modified data from the <em class="cEmphasis">LEADFACT</em> table, you must:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3443961"> </a><div class="pSmartList3"><li>first set up the DB connection dedicated to CDC,</li></div>
-<a name="wp3443965"> </a><div class="pSmartList3"><li>second, set up a DB connection to the source data and identify the table to catch,</li></div>
-<a name="wp3443972"> </a><div class="pSmartList3"><li>finally, set the connection between the CDC and the data.</li></div>
+<a name="wp3548177"> </a><div class="pSmartList3"><li>first set up the DB connection dedicated to CDC,</li></div>
+<a name="wp3548181"> </a><div class="pSmartList3"><li>second, set up a DB connection to the source data and identify the table to catch,</li></div>
+<a name="wp3548188"> </a><div class="pSmartList3"><li>finally, set the connection between the CDC and the data.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3443977"> </a><p class="pIndented2">
+<a name="wp3548193"> </a><p class="pIndented2">
 To do that:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3443992"> </a><div class="pSmartList3"><li>In the <b class="cBold">Repository</b> tree view and under <b class="cBold">Metadata</b>, create a connection to your database dedicated to CDC, <em class="cEmphasis">cdc_publisher</em> in this scenario.</li></div>
-<a name="wp3444009"> </a><div class="pSmartList3"><li>In the <b class="cBold">Repository</b> tree view and under <b class="cBold">Metadata</b>, create a connection to the source data warehouse and identify the table to catch, <em class="cEmphasis">LEADFACT</em> in this scenario.</li></div>
-<a name="wp3444025"> </a><div class="pSmartList3"><li>Right-click the connection to the <em class="cEmphasis">orcle</em> database and select <b class="cBold">Retrieve schema</b> from the drop-down menu to retrieve the schema of the table to catch.</li></div>
-<a name="wp3444039"> </a><div class="pSmartList3"><li>Right-click <b class="cBold">CDC Foundation</b> of the <em class="cEmphasis">cdc-data </em>connection and select <b class="cBold">Create CDC</b> in the drop-down menu.</li></div>
+<a name="wp3548208"> </a><div class="pSmartList3"><li>In the <b class="cBold">Repository</b> tree view and under <b class="cBold">Metadata</b>, create a connection to your database dedicated to CDC, <em class="cEmphasis">cdc_publisher</em> in this scenario.</li></div>
+<a name="wp3548225"> </a><div class="pSmartList3"><li>In the <b class="cBold">Repository</b> tree view and under <b class="cBold">Metadata</b>, create a connection to the source data warehouse and identify the table to catch, <em class="cEmphasis">LEADFACT</em> in this scenario.</li></div>
+<a name="wp3548241"> </a><div class="pSmartList3"><li>Right-click the connection to the <em class="cEmphasis">orcle</em> database and select <b class="cBold">Retrieve schema</b> from the drop-down menu to retrieve the schema of the table to catch.</li></div>
+<a name="wp3548255"> </a><div class="pSmartList3"><li>Right-click <b class="cBold">CDC Foundation</b> of the <em class="cEmphasis">cdc-data </em>connection and select <b class="cBold">Create CDC</b> in the drop-down menu.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444054"> </a><p class="pIndented2">
+<a name="wp3548270"> </a><p class="pIndented2">
 The <b class="cBold">[Create Change Data Capture] </b>dialog box displays
 </p>
-<a name="wp3444063"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548279"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_1.png" id="wp3444059" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC_Create_Sub2_1.png" id="wp3548275" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444074"> </a><div class="pSmartList3"><li>Click the three-dot button next to the <b class="cBold">Set link Connection</b> field and select the connection that corresponds to CDC, <em class="cEmphasis">cdc_publisher</em> in this example.</li></div>
-<a name="wp3444092"> </a><div class="pSmartList3"><li>In the <b class="cBold">Options</b> area, select the <b class="cBold">Log mode</b> check box.</li></div>
-<a name="wp3444103"> </a><div class="pSmartList3"><li>Click <b class="cBold">Create Subscriber</b>. The <b class="cBold">[Create Subscriber and Execute SQL Script]</b> dialog box displays.</li></div>
+<a name="wp3548290"> </a><div class="pSmartList3"><li>Click the three-dot button next to the <b class="cBold">Set link Connection</b> field and select the connection that corresponds to CDC, <em class="cEmphasis">cdc_publisher</em> in this example.</li></div>
+<a name="wp3548308"> </a><div class="pSmartList3"><li>In the <b class="cBold">Options</b> area, select the <b class="cBold">Log mode</b> check box.</li></div>
+<a name="wp3548319"> </a><div class="pSmartList3"><li>Click <b class="cBold">Create Subscriber</b>. The <b class="cBold">[Create Subscriber and Execute SQL Script]</b> dialog box displays.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444115"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548331"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_2.png" id="wp3444111" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC_Create_Sub2_2.png" id="wp3548327" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444131"> </a><div class="pSmartList3"><li>Click <b class="cBold">Execute</b> and then <b class="cBold">Close</b> to close the dialog box.</li></div>
-<a name="wp3444141"> </a><div class="pSmartList3"><li>Click <b class="cBold">Finish</b> to validate the creation of the subscriber table.</li></div>
+<a name="wp3548347"> </a><div class="pSmartList3"><li>Click <b class="cBold">Execute</b> and then <b class="cBold">Close</b> to close the dialog box.</li></div>
+<a name="wp3548357"> </a><div class="pSmartList3"><li>Click <b class="cBold">Finish</b> to validate the creation of the subscriber table.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444150"> </a><p class="pIndented2">
+<a name="wp3548366"> </a><p class="pIndented2">
 In the <b class="cBold">CDC Foundation</b> folder, the relevant subscriber table displays.
 </p>
-<a name="wp3444154"> </a><p class="pIndented2">
+<a name="wp3548370"> </a><p class="pIndented2">
 You must specify which table the subscriber wants to subscribe to and then activate the subscription. To do that:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444170"> </a><div class="pSmartList3"><li>Right-click the <em class="cEmphasis">LEADFACT</em> schema of the <em class="cEmphasis">cdc-data</em> connection and select <b class="cBold">Add CDC</b> in the drop-down list. The <b class="cBold">[Create Subscriber and Execute SQL Script]</b> dialog box displays.</li></div>
-<a name="wp3444191"> </a><p class="pBodyRelative">
+<a name="wp3548386"> </a><div class="pSmartList3"><li>Right-click the <em class="cEmphasis">LEADFACT</em> schema of the <em class="cEmphasis">cdc-data</em> connection and select <b class="cBold">Add CDC</b> in the drop-down list. The <b class="cBold">[Create Subscriber and Execute SQL Script]</b> dialog box displays.</li></div>
+<a name="wp3548407"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp3444185" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3548401" border="0" hspace="0" vspace="0"/><br />
 For Oracle databases and in <b class="cBold">Talend Integration Suite Studio</b> version 3.2 or subsequent versions, the CDC system creates an alias for the source table(s) monitored. This avoids problems relating to identifier length upon creation of the table of changes and it&#39;s associated view.  For CDC systems which are already in place, the table names are maintained.<br />
 </p>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444201"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548417"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC_Create_Sub2_3.png" id="wp3444197" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC_Create_Sub2_3.png" id="wp3548413" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444218"> </a><div class="pSmartList3"><li>Click <b class="cBold">Execute</b> and then <b class="cBold">Close</b> to validate the subscription.</li></div>
+<a name="wp3548434"> </a><div class="pSmartList3"><li>Click <b class="cBold">Execute</b> and then <b class="cBold">Close</b> to validate the subscription.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444226"> </a><p class="pIndented2">
+<a name="wp3548442"> </a><p class="pIndented2">
 In the <b class="cBold">CDC Foundation</b> folder, the two created tables display and the schema node of the catched table is marked with a green CDC symbol.
 </p>
-<a name="wp3444237"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548453"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC_arbo.png" id="wp3444232" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC_arbo.png" id="wp3548448" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3444245"> </a><h3 class="pHeading3">
+<a name="wp3548461"> </a><h3 class="pHeading3">
 Step&#160;2: Modifying the data
 </h3>
-<a name="wp3444253"> </a><p class="pIndented2">
+<a name="wp3548469"> </a><p class="pIndented2">
 Modify the data of your clients in the <em class="cEmphasis">LEADFACT</em> table, for example, convert all customer names to upper case.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444265"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tMap</b> component and enter <code class="cCode">row1.LASTNAME.toUpperCase()</code>in front of the <b class="cBold">CLASTNAME</b> column to convert all customer names to upper case.</li></div>
-<a name="wp3444283"> </a><div class="pSmartList3"><li>Click <b class="cBold">Ok</b>.</li></div>
-<a name="wp3444292"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tOracleOutput</b> component.</li></div>
-<a name="wp3444305"> </a><div class="pSmartList3"><li>In the <b class="cBold">Action on table</b> field, select <b class="cBold">None</b>.</li></div>
-<a name="wp3444317"> </a><div class="pSmartList3"><li>In the <b class="cBold">Action on data</b> field, select <b class="cBold">Insert or update</b> to insert or update table data.</li></div>
-<a name="wp3444328"> </a><div class="pSmartList3"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp3548481"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tMap</b> component and enter <code class="cCode">row1.LASTNAME.toUpperCase()</code>in front of the <b class="cBold">CLASTNAME</b> column to convert all customer names to upper case.</li></div>
+<a name="wp3548499"> </a><div class="pSmartList3"><li>Click <b class="cBold">Ok</b>.</li></div>
+<a name="wp3548508"> </a><div class="pSmartList3"><li>Double-click the <b class="cBold">tOracleOutput</b> component.</li></div>
+<a name="wp3548521"> </a><div class="pSmartList3"><li>In the <b class="cBold">Action on table</b> field, select <b class="cBold">None</b>.</li></div>
+<a name="wp3548533"> </a><div class="pSmartList3"><li>In the <b class="cBold">Action on data</b> field, select <b class="cBold">Insert or update</b> to insert or update table data.</li></div>
+<a name="wp3548544"> </a><div class="pSmartList3"><li>Save your job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444336"> </a><p class="pIndented2">
+<a name="wp3548552"> </a><p class="pIndented2">
 To view all changes done on data, right-click the <em class="cEmphasis">LEADFACT</em> table and select <b class="cBold">View All Changes</b> to open the relevant dialog box.
 </p>
-<a name="wp3444350"> </a><h3 class="pHeading3">
+<a name="wp3548566"> </a><h3 class="pHeading3">
 Step&#160;3: Extracting change data
 </h3>
-<a name="wp3444354"> </a><p class="pIndented2">
+<a name="wp3548570"> </a><p class="pIndented2">
 After setting up the CDC environment, you can now design a job using the Mysql CDC component to incrementally extract the change data from the <em class="cEmphasis">LEADFACT</em> table. To do that:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444378"> </a><div class="pSmartList3"><li>From the <b class="cBold">Palette</b>, drop the <b class="cBold">tMysqlCDC</b> and <b class="cBold">tLogRow</b> components to the design workspace.</li></div>
-<a name="wp3444389"> </a><div class="pSmartList3"><li>Link the two components using a <b class="cBold">Row Main</b> link.</li></div>
+<a name="wp3548594"> </a><div class="pSmartList3"><li>From the <b class="cBold">Palette</b>, drop the <b class="cBold">tMysqlCDC</b> and <b class="cBold">tLogRow</b> components to the design workspace.</li></div>
+<a name="wp3548605"> </a><div class="pSmartList3"><li>Link the two components using a <b class="cBold">Row Main</b> link.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444398"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548614"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tOracleCDC2_1.png" id="wp3444394" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleCDC2_1.png" id="wp3548610" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444413"> </a><div class="pSmartList3"><li>Double-click <b class="cBold">tOracleCDC</b> to open its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp3548629"> </a><div class="pSmartList3"><li>Double-click <b class="cBold">tOracleCDC</b> to open its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444424"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="images/Use_Case_tOracleCDC2_2.png" id="wp3444420" border="0" hspace="0" vspace="0"/>
+<a name="wp3548640"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/Use_Case_tOracleCDC2_2.png" id="wp3548636" border="0" hspace="0" vspace="0"/>
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444439"> </a><div class="pSmartList3"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the schema corresponding to your Oracle DB table, <em class="cEmphasis">cdc_publisher</em> in this scenario. The connection details will display automatically in the corresponding fields</li></div>
-<a name="wp3444453"> </a><p class="pBodyRelative">
+<a name="wp3548655"> </a><div class="pSmartList3"><li>Set <b class="cBold">Property Type</b> to <b class="cBold">Repository</b> and then select the schema corresponding to your Oracle DB table, <em class="cEmphasis">cdc_publisher</em> in this scenario. The connection details will display automatically in the corresponding fields</li></div>
+<a name="wp3548669"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp3444450" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3548666" border="0" hspace="0" vspace="0"/><br />
 If you have not stored the data warehouse connection details in the <b class="cBold">Metadata</b> folder in the <b class="cBold">Repository</b> tree view, select <b class="cBold">Built-in </b>in the property type list and set the connection details manually.
 </p>
-<a name="wp3444481"> </a><div class="pSmartList3"><li>In the <b class="cBold">Schema using CDC</b> field, select <b class="cBold">Repository</b> and then select the schema of the <em class="cEmphasis">LEADFACT</em> table stored in the <b class="cBold">Metadata</b> folder.</li></div>
-<a name="wp3444498"> </a><div class="pSmartList3"><li>In the <b class="cBold">Table using CDC</b> field, enter the name of the table captured by the CDC, in this scenario <em class="cEmphasis">Leadfact</em>.</li></div>
-<a name="wp3444511"> </a><div class="pSmartList3"><li>In the <b class="cBold">Events to catch</b> field, select the check boxes corresponding to the type of the modified data the subscriber will extract. In this scenario, select the three check boxes for the three subscribers.</li></div>
-<a name="wp3444524"> </a><div class="pSmartList3"><li>Double-click <b class="cBold">tLogRow</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp3548697"> </a><div class="pSmartList3"><li>In the <b class="cBold">Schema using CDC</b> field, select <b class="cBold">Repository</b> and then select the schema of the <em class="cEmphasis">LEADFACT</em> table stored in the <b class="cBold">Metadata</b> folder.</li></div>
+<a name="wp3548714"> </a><div class="pSmartList3"><li>In the <b class="cBold">Table using CDC</b> field, enter the name of the table captured by the CDC, in this scenario <em class="cEmphasis">Leadfact</em>.</li></div>
+<a name="wp3548727"> </a><div class="pSmartList3"><li>In the <b class="cBold">Events to catch</b> field, select the check boxes corresponding to the type of the modified data the subscriber will extract. In this scenario, select the three check boxes for the three subscribers.</li></div>
+<a name="wp3548740"> </a><div class="pSmartList3"><li>Double-click <b class="cBold">tLogRow</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444535"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3548751"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tMysqlCDC3.png" id="wp3444531" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlCDC3.png" id="wp3548747" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <div class="pSmartList3"><ul class="pSmartList3">
-<a name="wp3444546"> </a><div class="pSmartList3"><li>Click the <b class="cBold">Sync columns</b> button to retrieve the schema from the preceding component.</li></div>
-<a name="wp3444556"> </a><div class="pSmartList3"><li>Click <b class="cBold">Edit schema</b> to open the schema dialog box.</li></div>
-<a name="wp3444567"> </a><div class="pSmartList3"><li>In the <b class="cBold">TALEND_CDC_CREATION_DATE</b> line of the <b class="cBold">Date Pattern</b> column, enter between brackets the desired date format: <code class="cCode">&quot;yyyy-MM-dd&quot;</code>.</li></div>
-<a name="wp3444583"> </a><div class="pSmartList3"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+<a name="wp3548762"> </a><div class="pSmartList3"><li>Click the <b class="cBold">Sync columns</b> button to retrieve the schema from the preceding component.</li></div>
+<a name="wp3548772"> </a><div class="pSmartList3"><li>Click <b class="cBold">Edit schema</b> to open the schema dialog box.</li></div>
+<a name="wp3548783"> </a><div class="pSmartList3"><li>In the <b class="cBold">TALEND_CDC_CREATION_DATE</b> line of the <b class="cBold">Date Pattern</b> column, enter between brackets the desired date format: <code class="cCode">&quot;yyyy-MM-dd&quot;</code>.</li></div>
+<a name="wp3548799"> </a><div class="pSmartList3"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
 </ul></div>
 </ul></div>
 </ul></div>
-<a name="wp3444591"> </a><p class="pIndented2">
+<a name="wp3548807"> </a><p class="pIndented2">
 In the <b class="cBold">Redo log</b> mode, changes done on data are indicated in the following way: modifications are equal to first, an &quot;update and delete&quot; operation (<b class="cBold">UO</b>), and then to an &quot;update and insert&quot; operation (<b class="cBold">UN</b>). Thus, client data displays twice:<br />- First, data is deleted (<b class="cBold">UO)</b>.<br />-Second, data is inserted (<b class="cBold">UN)</b>.
 </p>
-<a name="wp3444612"> </a><p class="pIndented2">
+<a name="wp3548828"> </a><p class="pIndented2">
 Once these modifications are extracted, they are no more available in the modified table. To verify their extraction, right-click the <em class="cEmphasis">LEADFACT</em> table catched by the CDC and then select <b class="cBold">Views All Changes</b>. The extracted changes do not display anymore.
 </p>
-<a name="wp3444632"> </a><p class="pIndented2">
-For another CDC scenario using the <b class="cBold">Trigger</b> mode, see <a href="tMysqlCDC_Scenario.html#wp3441910"><em class="cEmphasis">Scenario 2: Retrieving modified data using CDC</em></a> of the <b class="cBold">tMysqlCDC</b> component.
+<a name="wp3548848"> </a><p class="pIndented2">
+For another CDC scenario using the <b class="cBold">Trigger</b> mode, see <a href="tMysqlCDC_Scenario.html#wp3546105"><em class="cEmphasis">Scenario 2: Retrieving modified data using CDC</em></a> of the <b class="cBold">tMysqlCDC</b> component.
 </p>
     </blockquote>
     <hr>

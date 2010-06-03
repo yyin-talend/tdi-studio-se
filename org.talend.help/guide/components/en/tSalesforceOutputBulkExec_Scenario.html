@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/27/10 10:54:49">
+    <meta name="LASTUPDATED" content="06/02/10 16:38:01">
     <title>Scenario: Inserting bulk data into your Salesforce.com</title>
   </head>
 
@@ -33,7 +33,7 @@ This scenario describes a four-component Job that submits bulk data into Salesfo
 </p>
 <a name="wp2962817"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulkExec1.png" id="wp2962813" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec1.png" id="wp2962813" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2962826"> </a><p class="pIndented1">
@@ -52,19 +52,19 @@ Then to create and execute this Job, operate as follows:
 </ul></div>
 <a name="wp2962978"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulk1.png" id="wp2962974" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk1.png" id="wp2962974" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2962993"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b> if you have already stored the connection to the salesforce server in the <b class="cBold">Metadata</b> node of the <b class="cBold">Repository</b> tree view. The property fields that follow are automatically filled in. If you have not defined the server connection locally in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> from the <b class="cBold">Property Type</b> list.<br />For more information about metadata, see <em class="cEmphasis">Managing Metadata</em>.</li></div>
-<a name="wp2963030"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">File name/Stream</b> field, click the <img src="images/DotButton.png" id="wp2963026" border="0" hspace="0" vspace="0"/> button to browse to the input file you prepared for the scenario, for example, <em class="cEmphasis">sforcebulk.txt</em>.</li></div>
+<a name="wp2963030"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">File name/Stream</b> field, click the <img src="../Images/DotButton.png" id="wp2963026" border="0" hspace="0" vspace="0"/> button to browse to the input file you prepared for the scenario, for example, <em class="cEmphasis">sforcebulk.txt</em>.</li></div>
 <a name="wp2963047"> </a><div class="pSmartList2"><li>From the <b class="cBold">Schema</b> list, select <b class="cBold">Repository</b> and then click the three-dot button to open a dialog box where you can select the repository schema you want to use for this component. If you have not defined your schema locally in the metadata, select <b class="cBold">Built-in</b> from the <b class="cBold">Schema</b> list and then click the three-dot button next to the <b class="cBold">Edit schema</b> field to open the dialog box where you can set the schema manually. In this scenario, the schema is made of four columns: <em class="cEmphasis">Name</em>, <em class="cEmphasis">ParentId</em>, <em class="cEmphasis">Phone</em> and <em class="cEmphasis">Fax</em>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2963070"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulk_schema.png" id="wp2963066" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk_schema.png" id="wp2963066" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -75,7 +75,7 @@ Then to create and execute this Job, operate as follows:
 </ul></div>
 <a name="wp2963206"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulkExec2.png" id="wp2963202" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec2.png" id="wp2963202" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -85,7 +85,7 @@ Then to create and execute this Job, operate as follows:
 <a name="wp2963892"> </a><div class="pSmartList2"><li>In the <b class="cBold">Bulk file path</b> field, browse to the directory where you store the bulk <em class="cEmphasis">.csv</em> data to be processed.</li></div>
 <a name="wp2964229"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp2964222" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp2964222" border="0" hspace="0" vspace="0"/><br />
 <br />The bulk file here to be processed must be in<em class="cEmphasis"> .csv</em> format.
 </p>
 <a name="wp2964237"> </a><div class="pSmartList2"><li>From the <b class="cBold">Action</b> list, select the action you want to carry out on the prepared bulk data. In this use case, <b class="cBold">insert</b>.</li></div>
@@ -96,7 +96,7 @@ Then to create and execute this Job, operate as follows:
 </ul></div>
 <a name="wp2964199"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulk4.png" id="wp2963314" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk4.png" id="wp2963314" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -112,7 +112,7 @@ On the console of the <b class="cBold">Run</b> view, you can check the execution
 </p>
 <a name="wp2963376"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tSalesforceOutputBulkExec3.png" id="wp2963372" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec3.png" id="wp2963372" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2963385"> </a><p class="pIndented1">

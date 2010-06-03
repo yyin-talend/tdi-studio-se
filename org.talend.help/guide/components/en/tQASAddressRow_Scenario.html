@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="05/27/10 10:54:58">
+    <meta name="LASTUPDATED" content="06/02/10 16:38:20">
     <title>Scenario: Editing addresses and giving the verification status</title>
   </head>
 
@@ -22,148 +22,148 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp3000454"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499397"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3000462"> </a><h2 class="pHeading2">
+<a name="wp3499405"> </a><h2 class="pHeading2">
 Scenario: Editing addresses and giving the verification status
 </h2>
-<a name="wp3000469"> </a><p class="pIndented1">
+<a name="wp3499416"> </a><p class="pIndented1">
 Below is a five-component java scenario created in <b class="cBold">Talend Integration Suite Studio</b>.
 </p>
-<a name="wp3000473"> </a><p class="pIndented1">
+<a name="wp3499421"> </a><p class="pIndented1">
 This Job:
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000479"> </a><div class="pSmartList2"><li>reads an input csv file that holds some client-related information,</li></div>
-<a name="wp3000491"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tMap</b> component to concatenate the three fields <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>,</li></div>
-<a name="wp3000504"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tQASAddressRow</b> component to analyze the output column <em class="cEmphasis">Edit_Address</em> and gives the verification status of all edited addresses,</li></div>
-<a name="wp3000515"> </a><div class="pSmartList2"><li>uses a <b class="cBold">tFilterRow</b> component to output only the addresses which status is not equal to <em class="cEmphasis">None</em>.</li></div>
-<a name="wp3000518"> </a><div class="pSmartList2"><li>and finally displays the correct formatted address along with their verification status on the console.</li></div>
+<a name="wp3499429"> </a><div class="pSmartList2"><li>reads an input csv file that holds some client-related information,</li></div>
+<a name="wp3499445"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tMap</b> component to concatenate the three fields <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>,</li></div>
+<a name="wp3499462"> </a><div class="pSmartList2"><li>uses the <b class="cBold">tQASAddressRow</b> component to analyze the output column <em class="cEmphasis">Edit_Address</em> and gives the verification status of all edited addresses,</li></div>
+<a name="wp3499471"> </a><div class="pSmartList2"><li>uses a <b class="cBold">tFilterRow</b> component to output only the addresses which status is not equal to <em class="cEmphasis">None</em>.</li></div>
+<a name="wp3499480"> </a><div class="pSmartList2"><li>and finally displays the correct formatted address along with their verification status on the console.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000523"> </a><p class="pIndented1">
+<a name="wp3499486"> </a><p class="pIndented1">
 In this scenario, we have already stored the input schemas of the input file in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">Dropping components from the Metadata node</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000550"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
+<a name="wp3499521"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000562"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499536"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tFuzzyJoin.png" id="wp3000559" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFuzzyJoin.png" id="wp3499532" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000573"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFileInputDelimited </b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputDelimited</b> component displays on the workspace. The input file used in this scenario is called <em class="cEmphasis">address_template</em>.</li></div>
-<a name="wp3000589"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMap</b>, <b class="cBold">tQASAddressRow</b>, <b class="cBold">tFilterRow</b>, and <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3499551"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFileInputDelimited </b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputDelimited</b> component displays on the workspace. The input file used in this scenario is called <em class="cEmphasis">address_template</em>.</li></div>
+<a name="wp3499572"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tMap</b>, <b class="cBold">tQASAddressRow</b>, <b class="cBold">tFilterRow</b>, and <b class="cBold">tLogRow</b>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000607"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499595"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow.png" id="wp3000604" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow.png" id="wp3499591" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000627"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tMap</b> and <b class="cBold">tQASAddressRow</b> to <b class="cBold">tFilterRow</b> using <b class="cBold">Main</b> links, <b class="cBold">tMap</b> to <b class="cBold">tQASAddressRow</b> using the <b class="cBold">New Output</b> link, and <b class="cBold">tFilterRow</b> to <b class="cBold">tLogRow</b> using the <b class="cBold">Filter</b> link.</li></div>
-<a name="wp3000655"> </a><div class="pSmartList2"><li>If needed, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view. All its property fields are automatically filled in. If you do not define your input files in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
+<a name="wp3499618"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tMap</b> and <b class="cBold">tQASAddressRow</b> to <b class="cBold">tFilterRow</b> using <b class="cBold">Main</b> links, <b class="cBold">tMap</b> to <b class="cBold">tQASAddressRow</b> using the <b class="cBold">New Output</b> link, and <b class="cBold">tFilterRow</b> to <b class="cBold">tLogRow</b> using the <b class="cBold">Filter</b> link.</li></div>
+<a name="wp3499659"> </a><div class="pSmartList2"><li>If needed, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view. All its property fields are automatically filled in. If you do not define your input files in the Repository, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000670"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499678"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow1.png" id="wp3000667" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow1.png" id="wp3499674" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3000674"> </a><p class="pIndented1">
+<a name="wp3499682"> </a><p class="pIndented1">
 The input file in this example is a csv file that holds some French client personal information.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000684"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the Map Editor and concatenate the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>fields from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>.</li></div>
+<a name="wp3499694"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> component to open the Map Editor and concatenate the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>fields from the incoming data flow in one output column: <em class="cEmphasis">Edit_Address</em>.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000700"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499717"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow2.png" id="wp3000697" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow2.png" id="wp3499713" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000709"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate and close the Map Editor.</li></div>
-<a name="wp3000718"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tQASAddressRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
+<a name="wp3499729"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate and close the Map Editor.</li></div>
+<a name="wp3499741"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tQASAddressRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000727"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499752"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow3.png" id="wp3000724" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow3.png" id="wp3499748" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000735"> </a><div class="pSmartList2"><li>In the <b class="cBold">QAS WSDL url</b> field, enter the URL for the QuickAdress XML document (provided by Experian QAS).</li></div>
-<a name="wp3000745"> </a><div class="pSmartList2"><li>On the <b class="cBold">Country</b> list, select the country corresponding to your input addresses, <em class="cEmphasis">France</em> in this example.</li></div>
-<a name="wp3000756"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema set in the <b class="cBold">tMap </b>component.</li></div>
-<a name="wp3000762"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Edit schema</b> to view the input and output data flow. The output schema should include the <em class="cEmphasis">Edit_Address </em>column that hold the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>initial input columns.</li></div>
-<a name="wp3000779"> </a><p class="pBodyRelative">
+<a name="wp3499763"> </a><div class="pSmartList2"><li>In the <b class="cBold">QAS WSDL url</b> field, enter the URL for the QuickAdress XML document (provided by Experian QAS).</li></div>
+<a name="wp3499772"> </a><div class="pSmartList2"><li>On the <b class="cBold">Country</b> list, select the country corresponding to your input addresses, <em class="cEmphasis">France</em> in this example.</li></div>
+<a name="wp3499790"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema set in the <b class="cBold">tMap </b>component.</li></div>
+<a name="wp3499798"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Edit schema</b> to view the input and output data flow. The output schema should include the <em class="cEmphasis">Edit_Address </em>column that hold the <em class="cEmphasis">Address, Postal, </em>and <em class="cEmphasis">City </em>initial input columns.</li></div>
+<a name="wp3499820"> </a><p class="pBodyRelative">
 <br />
-<img src="images/bulb_small.png" align="left" id="wp3000777" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3499817" border="0" hspace="0" vspace="0"/><br />
 The output schema of any of the QuickAddress components depends on the selected country since every country has different address norms.
 </p>
 </ul></div>
 </ul></div>
-<a name="wp3000787"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499830"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow4.png" id="wp3000784" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow4.png" id="wp3499826" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000796"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
-<a name="wp3000806"> </a><div class="pSmartList2"><li>On the <b class="cBold">Column to analyze</b> list, select <em class="cEmphasis">Edit_Address</em>.</li></div>
-<a name="wp3000815"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFilterRow</b> component to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp3499842"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3499855"> </a><div class="pSmartList2"><li>On the <b class="cBold">Column to analyze</b> list, select <em class="cEmphasis">Edit_Address</em>.</li></div>
+<a name="wp3499867"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFilterRow</b> component to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000824"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499878"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow5.png" id="wp3000821" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow5.png" id="wp3499874" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000832"> </a><div class="pSmartList2"><li>In the <b class="cBold">Conditions</b> area, click the plus button to add one condition to the output flow and in the corresponding table cells:<br />-select the input column you want to operate on, <br />-select the needed function on the list,<br />-select the operator to bind the input column with the value,<br />-type in between the quotes the address value to be filtered.</li></div>
+<a name="wp3499889"> </a><div class="pSmartList2"><li>In the <b class="cBold">Conditions</b> area, click the plus button to add one condition to the output flow and in the corresponding table cells:<br />-select the input column you want to operate on, <br />-select the needed function on the list,<br />-select the operator to bind the input column with the value,<br />-type in between the quotes the address value to be filtered.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000841"> </a><p class="pIndented1">
+<a name="wp3499900"> </a><p class="pIndented1">
 In this example, we want to exclude the addresses which status is equal to <em class="cEmphasis">None</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000854"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tLogRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
+<a name="wp3499915"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tLogRow</b> component to display its <b class="cBold">Basic settings</b> and define its properties.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000861"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499926"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Use_Case_tQASAddressDoctorRow6.png" id="wp3000858" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tQASAddressDoctorRow6.png" id="wp3499922" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3000864"> </a><p class="pIndented1">
+<a name="wp3499930"> </a><p class="pIndented1">
 In this example, and for clarity purposes, we want the result to display on the console in a separate key/value tabular list for each row.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3000875"> </a><div class="pSmartList2"><li>Save your Job an press <b class="cBold">F6</b> to execute it and display the result on the console.</li></div>
+<a name="wp3499944"> </a><div class="pSmartList2"><li>Save your Job an press <b class="cBold">F6</b> to execute it and display the result on the console.</li></div>
 </ul></div>
 </ul></div>
-<a name="wp3000884"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3499955"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="images/Components-05-48-176.jpg" height="559" width="599" id="wp3000879" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Components-09-48-176.jpg" height="559" width="599" id="wp3499949" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3000890"> </a><p class="pIndented1">
+<a name="wp3499963"> </a><p class="pIndented1">
 In the above result samples, the <b class="cBold">tQASAddressRow</b> reads the input rows, corrects and formats the addresses, gives the result in the <em class="cEmphasis">Edit_Address</em> row, and gives the verification status in the <em class="cEmphasis">Status</em> row.
 </p>
     </blockquote>
