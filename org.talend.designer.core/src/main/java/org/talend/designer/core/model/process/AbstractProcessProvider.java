@@ -212,6 +212,8 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * bug 6158
      */
     public abstract Item getJobletItem(INode node);
+	// for feature 13361
+    public abstract Item getJobletItem(INode node, String version);
 
     public boolean containNodeInMemoryNotProcess() {
         return this.canCreateNode;

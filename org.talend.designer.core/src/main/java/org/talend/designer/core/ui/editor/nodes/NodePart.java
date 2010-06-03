@@ -479,7 +479,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             IJobletProviderService.class);
                     if (service != null && service.isJobletComponent(node)) {
                         isJoblet = true;
-                        Item jobletItem = jobletProcessProvider.getJobletItem(node);
+                        String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
+                        Item jobletItem = jobletProcessProvider.getJobletItem(node, version);
                         if (jobletItem != null) {
                             service.openJobletItem((JobletProcessItem) jobletItem);
                         }
