@@ -111,6 +111,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryWorkUnit;
@@ -313,7 +314,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             designerEditor.resetJobResources();
 
             setName();
-            designerEditor.getCurrentJobResource().getJobInfo().setJobName(getEditorInput().getName());
+            JobInfo jobInfo = designerEditor.getCurrentJobResource().getJobInfo();
+            if (jobInfo != null) {
+                jobInfo.setJobName(getEditorInput().getName());
+            }
             jobResourceManager.addProtection(designerEditor);
 
             processor.initPath();
