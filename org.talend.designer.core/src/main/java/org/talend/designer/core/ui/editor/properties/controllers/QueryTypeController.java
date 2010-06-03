@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -244,6 +245,9 @@ public class QueryTypeController extends AbstractRepositoryController {
 
         cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
+        if ("Oracle".equalsIgnoreCase(type)) {
+            type = EDatabaseTypeName.ORACLEFORSID.getDisplayName();
+        }
         cmd.setParameters(realTableId, realTableName, type);
         return cmd;
     }
