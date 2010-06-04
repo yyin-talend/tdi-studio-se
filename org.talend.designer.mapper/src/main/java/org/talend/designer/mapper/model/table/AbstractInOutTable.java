@@ -12,10 +12,12 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.connection.IOConnection;
@@ -24,6 +26,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -39,7 +42,13 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     private ExpressionFilterEntry expressionFilterEntry;
 
+    private ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel;
+
     private boolean activateExpressionFilter;
+
+    private boolean activateCondensedTool;
+
+    protected List<GlobalMapEntry> mapSettingEntries = new ArrayList<GlobalMapEntry>();
 
     /**
      * 
@@ -69,9 +78,11 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         expressionFilterEntry = new ExpressionFilterEntry(this);
+        tableMapSettingEntriesModel = new ExtendedTableModel<GlobalMapEntry>("Model for map setting", mapSettingEntries);
         if (externalMapperTable != null) {
             this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
             this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
+            this.activateCondensedTool = externalMapperTable.isActivateCondensedTool();
         }
         List<IMetadataColumn> columns = this.metadataTable.getListColumns();
         Map<String, ExternalMapperTableEntry> nameToPerTabEntry = new HashMap<String, ExternalMapperTableEntry>();
@@ -83,8 +94,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
         for (IMetadataColumn column : columns) {
             AbstractInOutTableEntry columnEntry = getNewTableEntry(column);
-            ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn()
-                    .getLabel());
+            ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn().getLabel());
             if (externalMapperTableEntry != null) {
                 columnEntry.setExpression(externalMapperTableEntry.getExpression());
                 // mapperManager.getProblemsManager().checkProblemsForTableEntry(columnEntry, false);
@@ -119,6 +129,10 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         return this.expressionFilterEntry;
     }
 
+    public ExtendedTableModel<GlobalMapEntry> getTableMapSettingEntriesModel() {
+        return this.tableMapSettingEntriesModel;
+    }
+
     /**
      * Getter for activateExpressionFilter.
      * 
@@ -135,6 +149,14 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
      */
     public void setActivateExpressionFilter(boolean activateExpressionFilter) {
         this.activateExpressionFilter = activateExpressionFilter;
+    }
+
+    public boolean isActivateCondensedTool() {
+        return this.activateCondensedTool;
+    }
+
+    public void setActivateCondensedTool(boolean activatecondensedTool) {
+        this.activateCondensedTool = activatecondensedTool;
     }
 
 }

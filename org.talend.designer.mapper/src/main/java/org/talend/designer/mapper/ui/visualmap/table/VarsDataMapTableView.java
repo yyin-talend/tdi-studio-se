@@ -86,6 +86,9 @@ public class VarsDataMapTableView extends DataMapTableView {
         createTableForColumns();
     }
 
+    protected void createMapSettingTable() {
+    }
+
     @Override
     protected void addListeners() {
         super.addListeners();

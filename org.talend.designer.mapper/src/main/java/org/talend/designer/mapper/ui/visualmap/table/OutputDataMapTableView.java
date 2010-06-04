@@ -14,6 +14,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,6 +30,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemoveCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
@@ -46,8 +48,10 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
+import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -61,6 +65,8 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 public class OutputDataMapTableView extends DataMapTableView {
 
     private OutputTableCellModifier cellModifier;
+
+    private ExtendedTextCellEditor expressionCellEditor;
 
     public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
@@ -76,7 +82,79 @@ public class OutputDataMapTableView extends DataMapTableView {
         createTableForColumns();
     }
 
-    private ExtendedTextCellEditor expressionCellEditor;
+    protected void createMapSettingTable() {
+
+        ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel = ((OutputTable) abstractDataMapTable)
+                .getTableMapSettingEntriesModel();
+
+        extendedTableViewerForMapSetting = new AbstractExtendedTableViewer<GlobalMapEntry>(tableMapSettingEntriesModel,
+                centerComposite) {
+
+            @Override
+            protected void createColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator, Table table) {
+                initMapSettingColumns(tableViewerCreator);
+            }
+
+            @Override
+            protected void setTableViewerCreatorOptions(TableViewerCreator<GlobalMapEntry> newTableViewerCreator) {
+                super.setTableViewerCreatorOptions(newTableViewerCreator);
+                newTableViewerCreator.setBorderVisible(false);
+            }
+        };
+
+        if (tableMapSettingEntriesModel != null) {
+            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, OUTPUT_REJECT, null));
+            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOK_UP_INNER_JOIN_REJECT, null));
+        }
+
+        mapSettingViewerCreator = extendedTableViewerForMapSetting.getTableViewerCreator();
+        mapSettingTable = extendedTableViewerForMapSetting.getTable();
+        tableForMapSettingGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+        mapSettingTable.setLayoutData(tableForMapSettingGridData);
+        mapSettingTable.setHeaderVisible(true);
+        mapSettingTable.setLinesVisible(true);
+
+        boolean mappingSettingVisible = false;
+        if (abstractDataMapTable instanceof AbstractInOutTable) {
+            mappingSettingVisible = ((AbstractInOutTable) abstractDataMapTable).isActivateCondensedTool();
+        }
+        tableForMapSettingGridData.exclude = !mappingSettingVisible;
+        mapSettingTable.setVisible(mappingSettingVisible);
+
+        // mapSettingViewerCreator.setCellModifier(new TableCellModifier(mapSettingViewerCreator));
+
+    }
+
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+        return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
+
+            public Object get(GlobalMapEntry bean) {
+                functComboBox.setItems(new String[] { "true", "false" });
+                IDataMapTable parent = bean.getParent();
+                OutputTable outputTable = (OutputTable) parent;
+                if (OUTPUT_REJECT.equals(bean.getName())) {
+                    return String.valueOf(outputTable.isReject());
+                } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+                    return String.valueOf(outputTable.isRejectInnerJoin());
+                }
+
+                return "";
+            }
+
+            public void set(GlobalMapEntry bean, Object value) {
+                if (value == null) {
+                    return;
+                }
+                IDataMapTable parent = bean.getParent();
+                OutputTable outputTable = (OutputTable) parent;
+                if (OUTPUT_REJECT.equals(bean.getName())) {
+                    outputTable.setReject(Boolean.valueOf(value.toString()));
+                } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+                    outputTable.setRejectInnerJoin(Boolean.valueOf(value.toString()));
+                }
+            }
+        };
+    }
 
     /*
      * (non-Javadoc)

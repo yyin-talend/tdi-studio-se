@@ -21,7 +21,7 @@ package org.talend.designer.mapper.ui.image;
 public enum ImageInfo {
 
     MINIMIZE_ICON("/icons/collapse16.png"), //$NON-NLS-1$
-//    INTERMEDIATE_SIZE_ICON("/icons/checked.png"), //$NON-NLS-1$
+    //    INTERMEDIATE_SIZE_ICON("/icons/checked.png"), //$NON-NLS-1$
     RESTORE_ICON("/icons/uncollapse16.png"), //$NON-NLS-1$
     ADD("/icons/add.png"), //$NON-NLS-1$
     CHECKED_ICON("/icons/checked.png"), //$NON-NLS-1$
@@ -41,7 +41,7 @@ public enum ImageInfo {
     REJECT_FILTER_ICON("/icons/rejectfilter.png"), //$NON-NLS-1$
     REJECT_LOOKUP_ICON("/icons/rejectlookup.png"), //$NON-NLS-1$
     LOOKUP_KEY_ICON("/icons/lookup_key16.png"), //$NON-NLS-1$
-    ;
+    CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"), ;
 
     private String path;
 

@@ -76,6 +76,8 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
 
     private boolean activateExpressionFilter;
 
+    private boolean activateCondensedTool;
+
     private String matchingMode;
 
     private String lookupMode;
@@ -462,6 +464,14 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
         }
 
         return false;
+    }
+
+    public boolean isActivateCondensedTool() {
+        return this.activateCondensedTool;
+    }
+
+    public void setActivateCondensedTool(boolean activateCondensedTool) {
+        this.activateCondensedTool = activateCondensedTool;
     }
 
 }

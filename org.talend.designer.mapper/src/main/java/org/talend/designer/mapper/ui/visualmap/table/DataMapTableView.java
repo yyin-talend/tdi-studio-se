@@ -22,6 +22,7 @@ import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -29,6 +30,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -79,6 +81,7 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
+import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -96,6 +99,7 @@ import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
@@ -167,6 +171,8 @@ public abstract class DataMapTableView extends Composite {
 
     private ToolItem minimizeButton;
 
+    protected ToolItem condensedItem;
+
     protected int heightForRestore;
 
     protected Layout parentLayout;
@@ -175,9 +181,13 @@ public abstract class DataMapTableView extends Composite {
 
     protected TableViewerCreator tableViewerCreatorForGlobalMap;
 
+    protected TableViewerCreator mapSettingViewerCreator;
+
     protected Table tableForConstraints;
 
     protected Table tableForGlobalMap;
+
+    protected Table mapSettingTable;
 
     private boolean executeSelectionEvent = true;
 
@@ -209,6 +219,8 @@ public abstract class DataMapTableView extends Composite {
 
     protected AbstractExtendedTableViewer<GlobalMapEntry> extendedTableViewerForGlobalMap;
 
+    protected AbstractExtendedTableViewer<GlobalMapEntry> extendedTableViewerForMapSetting;
+
     private static Image imageKey;
 
     private static Image imageEmpty;
@@ -231,11 +243,25 @@ public abstract class DataMapTableView extends Composite {
 
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN"; //$NON-NLS-1$
 
+    public static final String MAP_SETTING_COLUMN = "MAP_SETTING_COLUMN"; //$NON-NLS-1$
+
+    public static final String MATCH_MODEL_SETTING = "Match Model"; //$NON-NLS-1$
+
+    public static final String JOIN_MODEL_SETTING = "Join Model"; //$NON-NLS-1$
+
+    public static final String PERSISTENCE_MODEL_SETTING = "Store temp data"; //$NON-NLS-1$
+
+    public static final String OUTPUT_REJECT = "Active output reject"; //$NON-NLS-1$
+
+    public static final String LOOK_UP_INNER_JOIN_REJECT = "Look up Inner Join Reject"; //$NON-NLS-1$
+
     public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
     protected GridData tableForConstraintsGridData;
 
     protected GridData tableForGlobalMapGridData;
+
+    protected GridData tableForMapSettingGridData;
 
     private ExpressionProposalProvider expressionProposalProviderForExpressionFilter;
 
@@ -414,6 +440,8 @@ public abstract class DataMapTableView extends Composite {
             initExtraTable();
         }
 
+        createMapSettingTable();
+
         createContent();
 
         if (!mapperManager.componentIsReadOnly()) {
@@ -436,6 +464,45 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "createContent".
      */
     protected abstract void createContent();
+
+    protected abstract void createMapSettingTable();
+
+    protected void initMapSettingColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
+
+        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
+        column.setTitle("Property");
+        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+        column.setModifiable(true);
+
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
+
+            public Object get(GlobalMapEntry bean) {
+                return bean.getName();
+            }
+
+            public void set(GlobalMapEntry bean, Object value) {
+                // do nothing
+            }
+        });
+
+        column = new TableViewerCreatorColumn(tableViewerCreator);
+        column.setTitle("Value");
+        column.setId(MAP_SETTING_COLUMN);
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+        CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
+        ComboBoxCellEditor cellEditor = new ComboBoxCellEditor();
+        cellEditor.create(tableViewerCreator.getTable());
+        CCombo functCombo = (CCombo) cellEditor.getControl();
+        functCombo.setEditable(false);
+        column.setCellEditor(cellEditor, comboValueAdapter);
+        column.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
+        column.setModifiable(true);
+
+    }
+
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+        return null;
+    }
 
     /**
      * DOC amaumont Comment method "addToolItemSeparator".
@@ -972,6 +1039,22 @@ public abstract class DataMapTableView extends Composite {
         resizeAtExpandedSize();
     }
 
+    protected void showTableMapSetting(boolean visible) {
+        if (visible) {
+            tableForMapSettingGridData.exclude = false;
+            mapSettingTable.setVisible(true);
+            if (WindowSystem.isGTK()) {
+                mapSettingViewerCreator.layout();
+            }
+
+        } else {
+            tableForMapSettingGridData.exclude = true;
+            mapSettingTable.setVisible(false);
+        }
+        mapSettingViewerCreator.getTableViewer().refresh();
+        resizeAtExpandedSize();
+    }
+
     /**
      * DOC amaumont Comment method "showTableConstraints".
      */
@@ -1128,9 +1211,25 @@ public abstract class DataMapTableView extends Composite {
 
     protected void createFiltersToolItems() {
         boolean isErrorReject = false;
-        if (getDataMapTable() instanceof OutputTable) {
-            isErrorReject = getMapperManager().ERROR_REJECT.equals(getDataMapTable().getName());
+        if (!(getDataMapTable() instanceof OutputTable)) {
+            return;
         }
+        isErrorReject = ((OutputTable) getDataMapTable()).isErrorRejectTable();
+
+        condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
+        condensedItem.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
+        condensedItem.setSelection(((OutputTable) abstractDataMapTable).isActivateCondensedTool());
+        condensedItem.setToolTipText("tMap settings");
+        condensedItem.setImage(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+        condensedItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ((OutputTable) abstractDataMapTable).setActivateCondensedTool(condensedItem.getSelection());
+                showTableMapSetting(condensedItem.getSelection());
+            }
+
+        });
 
         if (mapperManager.isAdvancedMap()) {
 
@@ -1173,104 +1272,6 @@ public abstract class DataMapTableView extends Composite {
             }
             // /////////////////////////////////////////////////////////////////
         }
-
-        final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectFilterCheck.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
-        rejectFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableOutputReject")); //$NON-NLS-1$
-        boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
-        // Image image = ImageProviderMapper.getImage(isReject ?
-        // ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.REJECT_FILTER_ICON : ImageInfo.REJECT_FILTER_ICON);
-        if (WindowSystem.isGTK()) {
-            rejectFilterCheck.setImage(image);
-            rejectFilterCheck.setHotImage(image);
-        } else {
-            rejectFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON));
-            rejectFilterCheck.setHotImage(image);
-        }
-        rejectFilterCheck.setSelection(isReject);
-
-        // /////////////////////////////////////////////////////////////////
-        if (rejectFilterCheck != null) {
-
-            rejectFilterCheck.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    Image image = null;
-                    if (rejectFilterCheck.getSelection()) {
-                        ((OutputTable) abstractDataMapTable).setReject(true);
-                        image = ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON);
-                    } else {
-                        ((OutputTable) abstractDataMapTable).setReject(false);
-                        image = ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON);
-                    }
-                    if (WindowSystem.isGTK()) {
-                        rejectFilterCheck.setImage(image);
-                        rejectFilterCheck.setHotImage(image);
-                    } else {
-                        rejectFilterCheck.setHotImage(image);
-                    }
-                }
-
-            });
-
-        }
-
-        // // /////////////////////////////////////////////////////////////////
-        final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectInnerJoinFilterCheck.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
-        rejectInnerJoinFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableLookupInnerJoin")); //$NON-NLS-1$
-        boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
-        // image = ImageProviderMapper.getImage(isRejectInnerJoin ?
-        // ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.REJECT_LOOKUP_ICON : ImageInfo.REJECT_LOOKUP_ICON);
-        if (WindowSystem.isGTK()) {
-            rejectInnerJoinFilterCheck.setImage(image);
-            rejectInnerJoinFilterCheck.setHotImage(image);
-        } else {
-            rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON));
-            // rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-            rejectInnerJoinFilterCheck.setHotImage(image);
-        }
-        rejectInnerJoinFilterCheck.setSelection(isRejectInnerJoin);
-        // rejectInnerJoinFilterCheck.setText("Reject2");
-        // /////////////////////////////////////////////////////////////////
-        if (rejectInnerJoinFilterCheck != null) {
-
-            rejectInnerJoinFilterCheck.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    Image image = null;
-                    if (rejectInnerJoinFilterCheck.getSelection()) {
-                        ((OutputTable) abstractDataMapTable).setRejectInnerJoin(true);
-                        image = ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON);
-                        // image =
-                        // ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-                    } else {
-                        ((OutputTable) abstractDataMapTable).setRejectInnerJoin(false);
-                        image = ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON);
-                        // image =
-                        // ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-                    }
-                    if (WindowSystem.isGTK()) {
-                        rejectInnerJoinFilterCheck.setImage(image);
-                        rejectInnerJoinFilterCheck.setHotImage(image);
-                    } else {
-                        rejectInnerJoinFilterCheck.setHotImage(image);
-                    }
-                }
-
-            });
-
-        }
-
-        // /////////////////////////////////////////////////////////////////
 
     }
 

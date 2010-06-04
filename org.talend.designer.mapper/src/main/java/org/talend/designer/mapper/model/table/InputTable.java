@@ -89,10 +89,10 @@ public class InputTable extends AbstractInOutTable {
                     matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
                 }
             }
-            if(matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
+            if (matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
                 matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
             }
-            
+
             this.lookupMode = TMAP_LOOKUP_MODE.parse(externalMapperTable.getLookupMode());
             if (lookupMode == null) {
                 lookupMode = TMAP_LOOKUP_MODE.LOAD_ONCE;
@@ -101,8 +101,8 @@ public class InputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> globalMapEntries = externalMapperTable.getGlobalMapKeysValues();
             if (globalMapEntries != null) {
                 for (ExternalMapperTableEntry externalMapperTableEntry : globalMapEntries) {
-                    GlobalMapEntry entry = new GlobalMapEntry(this, externalMapperTableEntry.getName(),
-                            externalMapperTableEntry.getExpression());//, externalMapperTableEntry.getType());
+                    GlobalMapEntry entry = new GlobalMapEntry(this, externalMapperTableEntry.getName(), externalMapperTableEntry
+                            .getExpression());// , externalMapperTableEntry.getType());
                     // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     // varTableEntry.setNullable(externalMapperTableEntry.isNullable());
                     // }
@@ -113,7 +113,6 @@ public class InputTable extends AbstractInOutTable {
         }
     }
 
-    
     public void addGlobalMapEntry(GlobalMapEntry entry) {
         this.tableGlobalMapEntriesModel.add(entry);
     }
@@ -138,7 +137,6 @@ public class InputTable extends AbstractInOutTable {
     public ExtendedTableModel<GlobalMapEntry> getTableGlobalMapEntriesModel() {
         return this.tableGlobalMapEntriesModel;
     }
-
 
     /*
      * (non-Javadoc)
