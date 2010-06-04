@@ -38,11 +38,20 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_DEFAULT_DIR"
+      FIELD="CHECK"
+      NUM_ROW="19"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="DIRECTORY"
       FIELD="DIRECTORY"
       NUM_ROW="20"
+      SHOW_IF="USE_DEFAULT_DIR == 'false'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
     </PARAMETER>
