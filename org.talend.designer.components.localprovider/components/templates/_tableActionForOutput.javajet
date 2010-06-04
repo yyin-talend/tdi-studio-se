@@ -47,7 +47,7 @@ if (!isParallelize) {
 				java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
 				boolean whetherExist_<%=cid%> = false;
 				try {
-					isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM " +  <%=table%> );
+					isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM [" +  <%=table%> + "]" );
 					whetherExist_<%=cid%> = true;
 				} catch (Exception e){
 					whetherExist_<%=cid%> = false;
