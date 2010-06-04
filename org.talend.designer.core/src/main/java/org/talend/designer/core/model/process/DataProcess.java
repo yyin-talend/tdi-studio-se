@@ -288,7 +288,13 @@ public class DataProcess {
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                     copyElementParametersValue(connection, dataConnec);
                 }
-
+                // for feature 13360
+                if (PluginChecker.isTIS() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
+                    List<IElementParameter> elementList = (List<IElementParameter>) connection.getElementParameters();
+                    for (IElementParameter elementParameter : elementList) {
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(elementParameter);
+                    }
+                }
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();

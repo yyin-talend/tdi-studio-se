@@ -18,7 +18,14 @@
 if ((trace)&&(node!=null)&&(!node.isThereLinkWithHash())) {
 %>
 if(!isChildJob && (Boolean)globalMap.get("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>")){
-	   Thread.sleep(<%=pauseTime%>);
+	if (globalMap.get("USE_CONDITION") != null && (Boolean) globalMap.get("USE_CONDITION")) {
+		if (globalMap.get("TRACE_CONDITION") != null && (Boolean) globalMap.get("TRACE_CONDITION")) {
+			Thread.sleep(<%=pauseTime%>);								
+		}
+	} else { // no condition set
+		Thread.sleep(<%=pauseTime%>);
+	}
+
 }   
 <%
 }

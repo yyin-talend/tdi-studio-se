@@ -127,7 +127,7 @@ public enum EParameterName {
     RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$
     FAILURE_INSTRUCTIONS("Failure instructions"), //$NON-NLS-1$
-
+    ACTIVEBREAKPOINT("Activate conditional breakpoint"),
     // hywang add for feature7373
     COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
     CDC_TYPE_MODE("CDC Type Mode"), //$NON-NLS-1$

@@ -42,6 +42,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ILocalRepositoryFactory;
@@ -335,7 +336,52 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setShow(true);
             param.setReadOnly(isLocalRepository);
             addElementParameter(param);
+            // breakpoint
+            if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                param = new ElementParameter(this);
+                param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
+                param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
+                param.setField(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.BREAKPOINT);
+                param.setNumRow(13);
+                param.setValue(false);
+                param.setShow(true);
+                addElementParameter(param);
+                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
+                final Node tmpNode = new Node(component, (Process) source.getProcess());
+                tmpNode.addInput(this);
+                final List<? extends IElementParameter> parameters = component.createElementParameters(tmpNode);
+                IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
+                if (tmpParam != null) {
+                    tmpParam.setElement(this);
+                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                    tmpParam.setNumRow(14);
+                    addElementParameter(tmpParam);
+                }
+                tmpParam = tmpNode.getElementParameter("CONDITIONS");
+                if (tmpParam != null) {
+                    tmpParam.setElement(this);
+                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                    tmpParam.setNumRow(15);
+                    ColumnListController.updateColumnList(tmpNode, null, true);
+                    addElementParameter(tmpParam);
+                }
 
+                tmpParam = tmpNode.getElementParameter("USE_ADVANCED");
+                if (tmpParam != null) {
+                    tmpParam.setElement(this);
+                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                    tmpParam.setNumRow(16);
+                    addElementParameter(tmpParam);
+                }
+                tmpParam = tmpNode.getElementParameter("ADVANCED_COND");
+                if (tmpParam != null) {
+                    tmpParam.setElement(this);
+                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                    tmpParam.setNumRow(17);
+                    addElementParameter(tmpParam);
+                }
+            }
         }
     }
 

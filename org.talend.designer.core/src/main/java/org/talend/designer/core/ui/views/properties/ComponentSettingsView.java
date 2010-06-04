@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -532,7 +534,14 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             if (PluginChecker.isTIS()) {
 
                 Object propertyValue = elem.getPropertyValue(Connection.LINESTYLE_PROP);
-                if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
+                if (propertyValue instanceof EConnectionType
+                        && ((EConnectionType) propertyValue).hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    // if (((Connection) elem).checkTraceShowEnable()) {
+                    final List<EComponentCategory> list = new ArrayList<EComponentCategory>(Arrays.asList(categories));
+                    list.add(EComponentCategory.BREAKPOINT);
+                    return list.toArray(new EComponentCategory[0]);
+                    // }
+                } else if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
                         || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
                         || propertyValue.equals(EConnectionType.RUN_IF) || propertyValue.equals(EConnectionType.ON_SUBJOB_OK)
                         || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)) {
