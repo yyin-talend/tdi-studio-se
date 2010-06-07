@@ -118,6 +118,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            <% if(typeToGenerate.equals("java.util.Date"))
             {%>            
                 String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+                if(context_<%=ctxParam.getName()%>_value==null)
+                	context_<%=ctxParam.getName()%>_value = "";
 				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
 				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
 				if(context_<%=ctxParam.getName()%>_pos > -1){
