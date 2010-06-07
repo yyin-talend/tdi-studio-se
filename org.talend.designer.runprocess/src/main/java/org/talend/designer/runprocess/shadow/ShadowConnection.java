@@ -138,4 +138,14 @@ public class ShadowConnection extends AbstractConnection {
         }
         return EConnectionType.FLOW_MAIN.getName();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getTmpNode()
+     */
+    public INode getTmpNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
