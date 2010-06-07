@@ -183,6 +183,7 @@
 	    	}else {
 	    		//print info and job continue to run, for case: context_param is not empty.
 				System.err.println("Could not find the context " + contextStr);
+				throw new IOException("Could not find the context " + contextStr);
 			}
 			
 			if(!context_param.isEmpty()) {						
