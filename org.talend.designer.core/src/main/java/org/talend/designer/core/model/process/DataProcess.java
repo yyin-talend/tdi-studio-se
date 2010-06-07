@@ -62,6 +62,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -290,6 +291,9 @@ public class DataProcess {
                 }
                 // for feature 13360
                 if (PluginChecker.isTIS() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
+                    if (connection.getTmpNode() != null) {
+                        ColumnListController.updateColumnList(connection.getTmpNode(), null, true);
+                    }
                     List<IElementParameter> elementList = (List<IElementParameter>) connection.getElementParameters();
                     for (IElementParameter elementParameter : elementList) {
                         ((List<IElementParameter>) dataConnec.getElementParameters()).add(elementParameter);

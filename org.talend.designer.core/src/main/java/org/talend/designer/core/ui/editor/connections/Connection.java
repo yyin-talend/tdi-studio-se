@@ -74,6 +74,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private Node source;
 
+    private Node tmpNode;
+
     private Node sourceForUnit;
 
     protected String name;
@@ -348,7 +350,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
                 addElementParameter(param);
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
-                final Node tmpNode = new Node(component, (Process) source.getProcess());
+                tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.addInput(this);
                 final List<? extends IElementParameter> parameters = component.createElementParameters(tmpNode);
                 IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
@@ -1345,5 +1347,15 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public ConnectionResuming getResuming() {
         return this.resuming;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getTmpNode()
+     */
+    public INode getTmpNode() {
+        // TODO Auto-generated method stub
+        return tmpNode;
     }
 }
