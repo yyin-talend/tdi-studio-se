@@ -80,15 +80,19 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
      */
     private String fileURL = null;
 
-    public void parse(String fileURL) {
+    private String charset = "UTF-8";
+
+    public void parse(String fileURL, String charset) {
         this.fileURL = fileURL;
+        this.charset = charset;
         start();
     }
 
     private java.io.InputStream is;
 
-    public void parse(java.io.InputStream is) {
+    public void parse(java.io.InputStream is, String charset) {
         this.is = is;
+        this.charset = charset;
         start();
     }
 
@@ -97,10 +101,16 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
 
             DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            if (fileURL != null)
-                saxParser.parse(fileURL, hd);
-            else
+
+            if (fileURL != null) {
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new java.io.InputStreamReader(
+                        new java.io.FileInputStream(fileURL), this.charset));
+                saxParser.parse(inSource, hd);
+            } else {
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);
+                inSource.setEncoding(this.charset);
                 saxParser.parse(is, hd);
+            }
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -125,7 +135,7 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
             String loopPath = "/Table/Row";
 
             SimpleSAXLooper looper = new SimpleSAXLooper(loopPath, query, asXMLs);
-            looper.parse(file);
+            looper.parse(file, "UTF-8");
             DataBufferCache cache = DataBufferCache.getInstance();
             long num = 0;
             while (cache.hasData()) {

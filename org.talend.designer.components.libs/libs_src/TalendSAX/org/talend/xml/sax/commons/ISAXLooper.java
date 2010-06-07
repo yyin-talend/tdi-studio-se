@@ -20,9 +20,9 @@ import java.util.Map;
  */
 public interface ISAXLooper {
 
-    public void parse(String fileName);
+    public void parse(String fileName, String charset);
 
-    public void parse(java.io.InputStream is);
+    public void parse(java.io.InputStream is, String charset);
 
     public Iterator<Map<String, String>> iterator();
 

@@ -124,12 +124,15 @@ public class ComplexSAXLooper implements ISAXLooper {
         return loopPaths;
     }
 
+    private String charset = "UTF-8";
+
     /**
      * Parse the XML file. Buffer the result in LoopEntry.
      * 
      * @param fileURL file URL
      */
-    public void parse(String fileURL) {
+    public void parse(String fileURL, String charset) {
+        this.charset = charset;
         try {
             DefaultHandler hd = null;
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -138,7 +141,9 @@ public class ComplexSAXLooper implements ISAXLooper {
             } else {
                 hd = newHandler2();
             }
-            saxParser.parse(fileURL, hd);
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new java.io.InputStreamReader(
+                    new java.io.FileInputStream(fileURL), this.charset));
+            saxParser.parse(inSource, hd);
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -154,7 +159,8 @@ public class ComplexSAXLooper implements ISAXLooper {
      * 
      * @param is InputStream
      */
-    public void parse(java.io.InputStream is) {
+    public void parse(java.io.InputStream is, String charset) {
+        this.charset = charset;
         try {
             DefaultHandler hd = null;
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -163,6 +169,8 @@ public class ComplexSAXLooper implements ISAXLooper {
             } else {
                 hd = newHandler2();
             }
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);
+            inSource.setEncoding(this.charset);
             saxParser.parse(is, hd);
 
         } catch (ParserConfigurationException e) {
@@ -448,7 +456,7 @@ public class ComplexSAXLooper implements ISAXLooper {
             String loopPath = "/orderdata/order/header";
 
             ComplexSAXLooper looper = new ComplexSAXLooper(loopPath, query, asXMLs);
-            looper.parse(file);
+            looper.parse(file,"UTF-8");
 
             java.util.Iterator<java.util.Map<String, String>> iter = looper.iterator();
 

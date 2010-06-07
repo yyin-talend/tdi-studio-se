@@ -113,12 +113,24 @@ public class SAXLooper {
         }
     }
 
+    private String charset = "UTF-8";
+
+    /**
+     * 
+     * DOC WLIU set the encoding of the parser, it doesn't work if the source is a character stream
+     * 
+     * @param charset
+     */
+    public void setEncoding(String charset) {
+        this.charset = charset;
+    }
+
     public void parse(String fileName) {
-        looper.parse(fileName);
+        looper.parse(fileName, charset);
     }
 
     public void parse(java.io.InputStream is) {
-        looper.parse(is);
+        looper.parse(is, charset);
     }
 
     public Iterator<Map<String, String>> iterator() {

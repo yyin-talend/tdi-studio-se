@@ -308,7 +308,8 @@ if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filenam
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
 }else{
-	parser_<%=cid%>.parse(new java.io.File(filename_<%=cid %>.toString()).toURI().toString());
+	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
+	parser_<%=cid%>.parse(new org.xml.sax.InputSource(in_<%=cid %>));
 }
 org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
 
@@ -537,7 +538,8 @@ org.dom4j.Document doc_<%=cid%> = null;
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	doc_<%=cid%> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
 }else{
-	doc_<%=cid%> = reader_<%=cid %>.read(new java.io.File(filename_<%=cid %>.toString()).toURI().toString());
+	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
+	doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
 }
 
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
@@ -616,6 +618,7 @@ boolean[] asXMLs_<%=cid%> = new boolean[]{
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>,asXMLs_<%=cid%>);
+looper_<%=cid%>.setEncoding(<%=encoding %>);
 Object filename_<%=cid %> = <%=filename %>;
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
@@ -623,7 +626,7 @@ if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filenam
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	looper_<%=cid%>.parse((java.io.InputStream)filename_<%=cid %>);
 }else{
-	looper_<%=cid%>.parse(new java.io.File(filename_<%=cid %>.toString()).toURI().toString());
+	looper_<%=cid%>.parse(filename_<%=cid %>.toString());
 }
 java.util.Iterator<java.util.Map<String, String>> it_<%=cid%>  = looper_<%=cid%>.iterator();
 while (it_<%=cid%>.hasNext()) {
