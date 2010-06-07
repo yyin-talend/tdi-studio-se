@@ -12,14 +12,39 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.contexts;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.Item;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -55,8 +80,123 @@ public class ContextsView extends ViewPart {
         gd.horizontalAlignment = SWT.FILL;
         contextComposite.setLayoutData(gd);
 
+        initialDrop();
+
         refresh();
 
+    }
+
+    public void initialDrop() {
+        int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+        DropTarget target = new DropTarget(contextComposite, operations);
+        final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
+        target.setTransfer(new Transfer[] { transfer });
+        target.addDropListener(new DropTargetListener() {
+
+            public void dropAccept(DropTargetEvent event) {
+            }
+
+            public void drop(DropTargetEvent event) {
+                if (transfer.isSupportedType(event.currentDataType)) {
+                    ISelection selection = transfer.getSelection();
+                    if (selection instanceof TreeSelection) {
+                        Object[] objects = ((TreeSelection) selection).toArray();
+                        List<Object> asList = Arrays.asList(objects);
+                        boolean created = false;
+                        for (Object obj : objects) {
+                            if (obj instanceof RepositoryNode) {
+                                RepositoryNode sourceNode = (RepositoryNode) obj;
+                                Item item = sourceNode.getObject().getProperty().getItem();
+                                if (item instanceof ContextItem) {
+                                    ContextItem contextItem = (ContextItem) item;
+                                    EList context = contextItem.getContext();
+                                    Set<String> contextSet = new HashSet<String>();
+                                    Iterator iterator = context.iterator();
+                                    while (iterator.hasNext()) {
+                                        Object repositoryObject = iterator.next();
+                                        if (repositoryObject instanceof ContextTypeImpl) {
+                                            EList contextParameters = ((ContextTypeImpl) repositoryObject).getContextParameter();
+                                            Iterator contextParas = contextParameters.iterator();
+                                            while (contextParas.hasNext()) {
+                                                ContextParameterTypeImpl contextParameterType = (ContextParameterTypeImpl) contextParas
+                                                        .next();
+                                                String name = contextParameterType.getName();
+                                                contextSet.add(name);
+                                            }
+                                        }
+                                    }
+                                    IEditorInput editorInput = part.getEditorInput();
+                                    if (editorInput instanceof ProcessEditorInput) {
+                                        ProcessEditorInput processInput = (ProcessEditorInput) editorInput;
+                                        Process process = processInput.getLoadedProcess();
+                                        IContextManager contextManager = process.getContextManager();
+
+                                        Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(
+                                                contextItem, contextSet, contextManager, false);
+                                        if (addedContext != null && addedContext.size() > 0) {
+                                            ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                                            created = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (created) {
+                            RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
+                        }
+                    }
+                }
+            }
+
+            public void dragOver(DropTargetEvent event) {
+                if (transfer.isSupportedType(event.currentDataType)) {
+                    IEditorInput editorInput = part.getEditorInput();
+                    if (!(editorInput instanceof ProcessEditorInput)) {
+                        event.detail = DND.DROP_NONE;
+                    } else {
+                        ISelection selection = transfer.getSelection();
+                        if (selection instanceof TreeSelection) {
+                            Object[] objects = ((TreeSelection) selection).toArray();
+                            for (Object obj : objects) {
+                                if (obj instanceof RepositoryNode) {
+                                    RepositoryNode sourceNode = (RepositoryNode) obj;
+                                    Item item = sourceNode.getObject().getProperty().getItem();
+                                    if (!(item instanceof ContextItem)) {
+                                        event.detail = DND.DROP_NONE;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            public void dragOperationChanged(DropTargetEvent event) {
+            }
+
+            public void dragLeave(DropTargetEvent event) {
+            }
+
+            public void dragEnter(DropTargetEvent event) {
+                if (event.detail == DND.DROP_DEFAULT) {
+                    if ((event.operations & DND.DROP_COPY) != 0) {
+                        event.detail = DND.DROP_COPY;
+                    } else {
+                        event.detail = DND.DROP_NONE;
+                    }
+                }
+                for (int i = 0; i < event.dataTypes.length; i++) {
+                    if (transfer.isSupportedType(event.dataTypes[i])) {
+                        event.currentDataType = event.dataTypes[i];
+                        if (event.detail != DND.DROP_COPY) {
+                            event.detail = DND.DROP_NONE;
+                        }
+                        break;
+                    }
+                }
+
+            }
+        });
     }
 
     public boolean updateContextFromRepository() {

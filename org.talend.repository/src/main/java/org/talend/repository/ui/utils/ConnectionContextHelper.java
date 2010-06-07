@@ -659,7 +659,7 @@ public final class ConnectionContextHelper {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static void addContextVarForJob(IProcess2 process, final ContextItem contextItem, final Set<String> addedVars) {
+    public static void addContextVarForJob(IProcess2 process, final ContextItem contextItem, final Set<String> addedVars) {
         if (process == null || contextItem == null || addedVars == null || addedVars.isEmpty()) {
             return;
         }
