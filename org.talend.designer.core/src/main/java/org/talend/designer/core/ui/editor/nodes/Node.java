@@ -2029,6 +2029,19 @@ public class Node extends Element implements INode {
                     if (tableValues != null
                             && "tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
+                    } else if (tableValues != null && "tAdvancedFileOutputXML".equalsIgnoreCase(component.getName())
+                            && param.getName().equals("LOOP") && tableValues.size() != 0) {
+                        // for bug 10108
+                        if (((Boolean) this.getElementParameter("MERGE").getValue()) == true) {
+                            List<Map<String, String>> listGroup = (List<Map<String, String>>) externalNode.getElementParameter(
+                                    "GROUP").getValue();
+                            List<Map<String, String>> listLoop = (List<Map<String, String>>) externalNode.getElementParameter(
+                                    "LOOP").getValue();
+                            if (listGroup.size() == 0 || listLoop.size() == 0) {
+                                String errorMessage = Messages.getString("Node.needLoopAndGroup", param.getDisplayName());
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
+                        }
                     } else {
                         if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
