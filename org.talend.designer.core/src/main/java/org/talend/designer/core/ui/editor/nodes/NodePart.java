@@ -477,7 +477,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             .findProcessProviderFromPID(IComponent.JOBLET_PID);
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
-                    if (service != null && service.isJobletComponent(node)) {
+                    boolean isAvoidShowJobletAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
+                            .isAvoidToShowJobletAfterDoubleClick();
+                    if (service != null && service.isJobletComponent(node) && !isAvoidShowJobletAfterDoubleClick) {
                         isJoblet = true;
                         String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
                         Item jobletItem = jobletProcessProvider.getJobletItem(node, version);

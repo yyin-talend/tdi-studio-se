@@ -58,6 +58,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     private CheckBoxFieldEditor doNotShowJobAfterDoubleClickCheckBoxField;
 
+    private CheckBoxFieldEditor doNotShowJobletAfterDoubleClickCheckBoxField;
+
     private DirectoryFieldEditor filePathTemp;
 
     private final String dataViewer = "Data Viewer"; //$NON-NLS-1$
@@ -65,6 +67,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     private final String mapper = "Mapper "; //$NON-NLS-1$
 
     private final String tRunJob = "tRunJob"; //$NON-NLS-1$
+
+    private final String joblet = "Joblet"; //$NON-NLS-1$
 
     private static String oldPath = null;
 
@@ -170,6 +174,17 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         return group;
     }
 
+// for feature 13361
+    protected Composite createForJoblet(Composite parent) {
+        Group group = createGroup(parent);
+        group.setText(joblet);
+        Composite composite = createComposite(group);
+        addFontAndColorFieldsForJoblet(composite);
+        GridLayout layout = createLayout();
+        composite.setLayout(layout);
+        return group;
+    }
+
     protected Group createGroup(Composite parent) {
         Group group = new Group(parent, SWT.NONE);
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -219,6 +234,12 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         addField(doNotShowJobAfterDoubleClickCheckBoxField);
     }
 
+    protected void addFontAndColorFieldsForJoblet(Composite composite) {
+        doNotShowJobletAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IComponentPreferenceConstant.IS_AVOID_JOBLET,
+                Messages.getString("ComponentJobletPreferencePage.label"), composite); //$NON-NLS-1$
+        addField(doNotShowJobletAfterDoubleClickCheckBoxField);
+    }
+
     public void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
         filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, Messages
@@ -249,6 +270,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         }
         createForMapper(parent);
         createFortRunJob(parent);
+        createForJoblet(parent);
         parent.pack();
     }
 

@@ -23,6 +23,8 @@ public interface IComponentPreferenceConstant {
 
     public static final String IS_AVOID = "isAvoidShowJobAfterDoulbleClick"; //$NON-NLS-1$
 
+    public static final String IS_AVOID_JOBLET = "isAvoidShowJobletAfterDoulbleClick"; //$NON-NLS-1$
+
     public static final String USER_COMPONENTS_FOLDER = "USER_COMPONENTS_FOLDER"; //$NON-NLS-1$
 
     public static final String LINK_STYLE = "LINK_STYLE"; //$NON-NLS-1$

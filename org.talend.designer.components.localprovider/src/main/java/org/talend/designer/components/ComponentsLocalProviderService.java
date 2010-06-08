@@ -26,6 +26,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.components.model.ComponentFileChecker;
 import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
+import org.talend.designer.components.ui.IComponentPreferenceConstant;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -43,6 +44,11 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
     public boolean isAvoidToShowJobAfterDoubleClick() {
         return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore()
                 .getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
+    }
+
+    public boolean isAvoidToShowJobletAfterDoubleClick() {
+        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getBoolean(
+                IComponentPreferenceConstant.IS_AVOID_JOBLET);
     }
 
     /*
