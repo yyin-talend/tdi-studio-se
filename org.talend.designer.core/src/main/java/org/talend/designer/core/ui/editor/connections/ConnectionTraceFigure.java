@@ -406,9 +406,10 @@ public class ConnectionTraceFigure extends Figure {
         } else {
             image = ImageProvider.getImage(ECoreImage.TRACE_OFF);
         }
-        if (image != null && connection.getTracesCondition() != null) {
-            image = OverlayImageProvider.getImageForOverlay(image, EImage.INFORMATION_SMALL, EPosition.BOTTOM_LEFT);
-        }
+        if (connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()) != null)
+            if (image != null && (Boolean) connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).getValue()) {
+                image = OverlayImageProvider.getImageForOverlay(image, EImage.INFORMATION_SMALL, EPosition.BOTTOM_LEFT);
+            }
         return image;
     }
 

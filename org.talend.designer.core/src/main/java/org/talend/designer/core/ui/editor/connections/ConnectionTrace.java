@@ -83,7 +83,8 @@ public class ConnectionTrace extends Element {
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.TRACES_SHOW_ENABLE.getName())
                 || id.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName())
-                || id.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())) {
+                || id.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())
+                || id.equals(EParameterName.ACTIVEBREAKPOINT.getName())) {
             firePropertyChange(id, null, value);
             return; // else, it will loop.
         }

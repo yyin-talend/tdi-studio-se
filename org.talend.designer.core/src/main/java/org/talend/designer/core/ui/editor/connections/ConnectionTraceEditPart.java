@@ -160,7 +160,8 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
             refreshVisuals();
         } else if (request.equals(EParameterName.TRACES_SHOW_ENABLE.getName())
                 || request.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName())
-                || request.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())) {
+                || request.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())
+                || request.equals(EParameterName.ACTIVEBREAKPOINT.getName())) {
             refreshVisuals();
         }
 

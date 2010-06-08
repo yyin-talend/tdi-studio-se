@@ -750,6 +750,9 @@ public class ProcessComposite extends Composite {
                             continue;
                         }
                         traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
+                        if (connection != null) {
+                            connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
+                        }
                     }
                 }
 

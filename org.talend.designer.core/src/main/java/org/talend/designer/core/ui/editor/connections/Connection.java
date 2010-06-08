@@ -346,8 +346,10 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setField(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.BREAKPOINT);
                 param.setNumRow(13);
-                param.setValue(false);
+                param.setValue(checkTraceShowEnable());
+                param.setContextMode(false);
                 param.setShow(true);
+
                 addElementParameter(param);
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
                 tmpNode = new Node(component, (Process) source.getProcess());
@@ -382,6 +384,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(17);
                     addElementParameter(tmpParam);
+                }
+                if (this.checkTraceShowEnable()) {
+                    setPropertyValue(EParameterName.ACTIVEBREAKPOINT.getName(), checkTraceShowEnable());
                 }
             }
         }
@@ -913,6 +918,17 @@ public class Connection extends Element implements IConnection, IPerformance {
         // feature 6355
         if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
             setTraceConnection((Boolean) value);
+        }
+        if ((EParameterName.TRACES_SHOW_ENABLE.getName().equals(id) || EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
+                && value instanceof Boolean) {
+            if (PluginChecker.isTIS() && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                this.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).setValue(value);
+                if (this.trace != null) {
+                    this.trace.setPropertyValue(EParameterName.ACTIVEBREAKPOINT.getName(), value);
+                }
+                firePropertyChange(EParameterName.ACTIVEBREAKPOINT.getName(), null, value);
+                setProcessStates();
+            }
         }
         if (EParameterName.TRACES_CONNECTION_FILTER.getName().equals(id)) {
             if (this.trace != null) {

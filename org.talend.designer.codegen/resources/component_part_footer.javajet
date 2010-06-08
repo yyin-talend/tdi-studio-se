@@ -51,6 +51,7 @@ if (node.getIncomingConnections().size() == 1) {
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
+
 if(execStat){
  runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
  	+iterateId,2, 0); 
@@ -67,12 +68,18 @@ if(execStat){
      if (trace ) { 
   %>
     globalMap.put("USE_CONDITION",Boolean.TRUE);
-  
+    
   if (<%=conn.getName() %> !=null  ) {
-  	
+  		if(<%=node.isDesignSubjobStartNode()%>){
+  		globalMap.put("USE_CONDITION", Boolean.FALSE);
+  		
+  	}
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   runTrace.isPause();
   if (runTrace.isPause()) {
+  	if(<%=node.isDesignSubjobStartNode()%>){
+  		globalMap.put("TRACE_CONDITION", Boolean.FALSE);
+  		}
    while (runTrace.isPause()) {
    	Thread.sleep(100);
    }
@@ -177,6 +184,8 @@ if (inputColName!=null) {
     ){
     	globalMap.put("TRACE_CONDITION", Boolean.TRUE);
     	
+    }else{
+    	globalMap.put("TRACE_CONDITION", Boolean.FALSE);
     }
       
       <%}
