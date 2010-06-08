@@ -35,14 +35,14 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
@@ -126,11 +126,10 @@ public class ContextsView extends ViewPart {
                                         }
                                     }
                                     IEditorInput editorInput = part.getEditorInput();
-                                    if (editorInput instanceof ProcessEditorInput) {
-                                        ProcessEditorInput processInput = (ProcessEditorInput) editorInput;
-                                        Process process = processInput.getLoadedProcess();
+                                    if (editorInput instanceof JobEditorInput) {
+                                        JobEditorInput jobInput = (JobEditorInput) editorInput;
+                                        IProcess2 process = jobInput.getLoadedProcess();
                                         IContextManager contextManager = process.getContextManager();
-
                                         Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(
                                                 contextItem, contextSet, contextManager, false);
                                         if (addedContext != null && addedContext.size() > 0) {
@@ -151,7 +150,7 @@ public class ContextsView extends ViewPart {
             public void dragOver(DropTargetEvent event) {
                 if (transfer.isSupportedType(event.currentDataType)) {
                     IEditorInput editorInput = part.getEditorInput();
-                    if (!(editorInput instanceof ProcessEditorInput)) {
+                    if (!(editorInput instanceof JobEditorInput)) {
                         event.detail = DND.DROP_NONE;
                     } else {
                         ISelection selection = transfer.getSelection();

@@ -73,6 +73,7 @@ import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTy
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -104,7 +105,6 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
@@ -118,6 +118,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -404,11 +405,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         }
                     }
                     IEditorInput editorInput = editor.getEditorInput();
-                    if (editorInput instanceof ProcessEditorInput) {
-                        ProcessEditorInput processInput = (ProcessEditorInput) editorInput;
-                        Process process = processInput.getLoadedProcess();
+                    if (editorInput instanceof JobEditorInput) {
+                        JobEditorInput jobInput = (JobEditorInput) editorInput;
+                        IProcess2 process = jobInput.getLoadedProcess();
                         IContextManager contextManager = process.getContextManager();
-
                         Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem, contextSet,
                                 contextManager, false);
                         if (addedContext != null && addedContext.size() > 0) {
