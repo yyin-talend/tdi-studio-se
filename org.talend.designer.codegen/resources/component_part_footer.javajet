@@ -67,20 +67,14 @@ if(execStat){
     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
      if (trace ) { 
   %>
-    globalMap.put("USE_CONDITION",Boolean.TRUE);
-    
-  if (<%=conn.getName() %> !=null  ) {
   		if(<%=node.isDesignSubjobStartNode()%>){
-  			
-  		globalMap.put("USE_CONDITION", Boolean.FALSE);
-  		
-  	}
+    globalMap.put("USE_CONDITION",Boolean.TRUE);
+    globalMap.put("TRACE_CONDITION", Boolean.FALSE);
+}    
+  if (<%=conn.getName() %> !=null  ) {
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   runTrace.isPause();
   if (runTrace.isPause()) {
-  	if(<%=node.isDesignSubjobStartNode()%>){
-  		globalMap.put("TRACE_CONDITION", Boolean.FALSE);
-  		}
    while (runTrace.isPause()) {
    	Thread.sleep(100);
    }
@@ -134,9 +128,7 @@ if (inputColName!=null) {
      String logical = ElementParameterParser.getValue(cc,"__LOGICAL_OP__");   
      boolean use_breakout = ("true").equals(ElementParameterParser.getValue(cc, "__ACTIVEBREAKPOINT__"));
       if (metadata != null&& connName != null) {
-      if(use_breakout){%>
-      		if(<%=cc.getSource().isDesignSubjobStartNode()%>||((Boolean)globalMap.get("TRACE_CONDITION")!=null&&(Boolean)globalMap.get("TRACE_CONDITION"))){
-      		
+      if(use_breakout){%>     		
        if (
       <% 
       if ((keyColumns!=null &&keyColumns.size() > 0)|| use_advanced) { //111
@@ -187,10 +179,8 @@ if (inputColName!=null) {
     ){
     	globalMap.put("TRACE_CONDITION", Boolean.TRUE);
     	
-    }else{
-    	globalMap.put("TRACE_CONDITION", Boolean.FALSE);
     }
-      }
+      
       <%}
       for (IConnection conn : node.getOutgoingConnections()) {
        if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
