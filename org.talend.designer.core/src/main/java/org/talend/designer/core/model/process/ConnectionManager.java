@@ -117,9 +117,9 @@ public class ConnectionManager {
             }
         }
         if (connType.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
-            if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
-                return false;
-            }
+            // if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
+            // return false;
+            // }
             boolean isJoblet = false;
             if (PluginChecker.isJobLetPluginLoaded()) {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
@@ -133,12 +133,22 @@ public class ConnectionManager {
                         }
                         isJoblet = true;
                     }
+                    // bug 11553
+                    if (isJoblet && !(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
+                        List<INode> inputs = service.getInputNodes(target);
+                        if (inputs.size() == 0) {
+                            return true;
+                        }
+                    }
                     // for bug 10973
                     if (service.isTriggerNode(target) && target.getIncomingConnections() != null
                             && target.getIncomingConnections().size() >= 1) {
                         return false;
                     }
                 }
+            }
+            if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
+                return false;
             }
             if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
                 return false;
