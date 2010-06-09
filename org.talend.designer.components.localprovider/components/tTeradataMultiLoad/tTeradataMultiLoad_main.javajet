@@ -29,6 +29,11 @@ String where= ElementParameterParser.getValue(node, "__WHERE__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
+String beginLoad= ElementParameterParser.getValue(node, "__BEGINLOAD_ADVANCEDPARAM__");
+boolean returnCodeDie= ElementParameterParser.getValue(node, "__RETURN_CODE_DIE__").equals("true");
+String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
+boolean specifyLogTable= ElementParameterParser.getValue(node, "__SPECIFY_LOG_TABLE__").equals("true");
+String logTable= ElementParameterParser.getValue(node, "__LOG_TABLE_TABLE__");
 
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
@@ -54,7 +59,17 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 <%//build script---------------------------------------------------------%>
 
 StringBuilder script_<%=cid%> = new StringBuilder();
-fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;\r\n");
+<%
+if(!specifyLogTable) {
+%>
+	fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;\r\n");
+<%
+} else {
+%>
+	fw_<%=cid %>.write(".LOGTABLE "+<%=logTable%>+";\r\n");
+<%
+}
+%>
 fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 
 <%//Layout---------------------------------------------------------------%>
@@ -179,3 +194,15 @@ process_<%=cid %>.waitFor();
 normal_<%=cid %>.interrupt();
 
 error_<%=cid %>.interrupt();
+
+globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
+
+<%
+if(returnCodeDie) {
+%>
+	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
+		throw new RuntimeException("TPump returned exit code "+process_<%=cid %>.exitValue());
+	}
+<%	
+}
+%>
