@@ -201,7 +201,7 @@ globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
 if(returnCodeDie) {
 %>
 	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
-		throw new RuntimeException("TPump returned exit code "+process_<%=cid %>.exitValue());
+		throw new RuntimeException("Multiload returned exit code "+process_<%=cid %>.exitValue());
 	}
 <%	
 }
