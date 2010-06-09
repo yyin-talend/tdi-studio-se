@@ -54,6 +54,7 @@ import org.eclipse.ui.PlatformUI;
 import org.epic.core.preferences.LabelFieldEditor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.CorePreferencePage;
 import org.talend.core.prefs.ui.OneLineComboFieldEditor;
@@ -215,6 +216,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         zipFolderPathFile.mkdir();
                     }
                     String pluginPath = System.getProperty("user.dir") + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
+                    // String pluginPath = "D:" + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
+
                     HashMap jarFileMap = new HashMap();
                     File file = new File(pluginPath);
                     if (file.isDirectory()) {
@@ -243,7 +246,12 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             if (key.toString().endsWith(".nl") //$NON-NLS-1$
                                     || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
                                     || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
-                                ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
+                                if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
+                                    ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
+                                } else {
+                                    FileCopyUtils.copyFolder(currentFileToBak.getAbsolutePath(), jarFolderPath + fs
+                                            + currentFileToBak.getName());
+                                }
                                 File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
                                 File[] jarSubFiles = jarFiles.listFiles();
                                 for (File subJarf : jarSubFiles) {
@@ -258,7 +266,12 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                 }
                                 String writeJarFileName = jarFolderPath + fs + currentFileToBak.getName();
                                 currentFileToBak.delete();
-                                ZipFileUtils.zip(writeJarFileName, currentFileToBak.getAbsolutePath(), false);
+                                if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
+                                    ZipFileUtils.zip(writeJarFileName, currentFileToBak.getAbsolutePath(), false);
+                                } else {
+                                    FileCopyUtils.copyFolder(writeJarFileName, currentFileToBak.getAbsolutePath());
+                                }
+
                             }
                         }
                     } else {
@@ -273,7 +286,12 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                 if (writeJarFile == null)
                                     continue;
                                 String jarFilePath = writeJarFile.getAbsolutePath();
-                                ZipFileUtils.unZip(writeJarFile, jarFolderPath + fs + writeJarFile.getName());
+                                // for bug 13620
+                                if (writeJarFile.toString().endsWith(".jar")) {//$NON-NLS-1$
+                                    ZipFileUtils.unZip(writeJarFile, jarFolderPath + fs + writeJarFile.getName());
+                                } else {
+                                    FileCopyUtils.copyFolder(jarFilePath, jarFolderPath + fs + writeJarFile.getName());
+                                }
                                 File[] zipSubFiles = f.listFiles();
                                 File jarFiles = new File(jarFolderPath + fs + writeJarFile.getName());
                                 File[] jarSubFiles = jarFiles.listFiles();
@@ -320,7 +338,11 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                                 }
                                 String writeJarFileName = jarFolderPath + fs + writeJarFile.getName();
                                 writeJarFile.delete();
-                                ZipFileUtils.zip(writeJarFileName, jarFilePath, false);
+                                if (writeJarFileName.endsWith(".jar")) {//$NON-NLS-1$
+                                    ZipFileUtils.zip(writeJarFileName, jarFilePath, false);
+                                } else {
+                                    FileCopyUtils.copyFolder(writeJarFileName, jarFilePath);
+                                }
                             }
                         }
                     }
