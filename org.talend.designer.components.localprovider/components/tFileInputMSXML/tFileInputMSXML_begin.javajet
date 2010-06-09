@@ -335,8 +335,8 @@ String[][] arrQuery_<%=cid %> =new String[][]{<%=builderQueries.toString() %>};
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>,arrLoop_<%=cid %>,arrQuery_<%=cid %>);
-
-looper_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
+looper_<%=cid%>.setEncoding(<%=encoding %>);
+looper_<%=cid%>.parse(<%=filename %>);
 	java.util.Iterator<java.util.Map<String, java.util.Map<String,String>>> it_<%=cid %>  = looper_<%=cid %>.multiIterator();
 	while (it_<%=cid%>.hasNext()) {
 	
