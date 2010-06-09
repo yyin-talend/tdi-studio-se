@@ -56,6 +56,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.metadata.celleditor.ModuleListCellEditor;
 import org.talend.core.ui.metadata.celleditor.RuleCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
 import org.talend.core.ui.metadata.celleditor.SchemaXPathQuerysCellEditor;
@@ -242,6 +243,13 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             return returnedValue;
                         };
                     });
+                    break;
+                case MODULE_LIST:
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!currentParam.isReadOnly()));
+                    ModuleListCellEditor moduleEditor = new ModuleListCellEditor(table, currentParam, param);
+                    moduleEditor.setTableEditorView(this);
+                    column.setCellEditor(moduleEditor);
                     break;
                 case COLOR:
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())

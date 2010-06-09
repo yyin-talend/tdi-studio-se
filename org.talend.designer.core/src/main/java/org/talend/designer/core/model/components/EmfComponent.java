@@ -1695,6 +1695,7 @@ public class EmfComponent implements IComponent {
                 case LOOKUP_COLUMN_LIST:
                 case PREV_COLUMN_LIST:
                 case CONTEXT_PARAM_NAME_LIST:
+                case MODULE_LIST:
                     addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
                             node);
                     break;

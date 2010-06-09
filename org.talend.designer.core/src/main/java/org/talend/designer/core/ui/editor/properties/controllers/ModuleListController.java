@@ -80,25 +80,23 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
         dial.setFilterExtensions(FilesUtils.getAcceptJARFilesSuffix());
         String file = dial.open();
-        if (file != null) {
-            if (!file.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) button.getData(PARAMETER_NAME);
-                String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
-                if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
-                    try {
-                        CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-
-                    // update the combo current value
-                    CCombo combo = (CCombo) hashCurControls.get(propertyName);
-                    if (combo != null && !combo.isDisposed()) {
-                        combo.setText(Path.fromOSString(file).lastSegment());
-                    }
-
-                    return new PropertyChangeCommand(elem, propertyName, lastSegment);
+        if (file != null && !file.equals("")) { //$NON-NLS-1$
+            String propertyName = (String) button.getData(PARAMETER_NAME);
+            String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
+            if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
+                try {
+                    CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
                 }
+
+                // update the combo current value
+                CCombo combo = (CCombo) hashCurControls.get(propertyName);
+                if (combo != null && !combo.isDisposed()) {
+                    combo.setText(Path.fromOSString(file).lastSegment());
+                }
+
+                return new PropertyChangeCommand(elem, propertyName, lastSegment);
             }
         }
         return null;
@@ -160,7 +158,8 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -253,8 +252,9 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -271,7 +271,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         }
     }
 
-    private void updateModuleList(Node node) {
+    public static void updateModuleList(Node node) {
         List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeeded();
         Set<String> moduleNameList = new TreeSet<String>();
         Set<String> moduleValueList = new TreeSet<String>();
@@ -292,6 +292,17 @@ public class ModuleListController extends AbstractElementPropertySectionControll
             if (param.getField() == EParameterFieldType.MODULE_LIST) {
                 param.setListItemsDisplayName(moduleNameArray);
                 param.setListItemsValue(moduleValueArray);
+            } else if (param.getField() == EParameterFieldType.TABLE) {
+                Object[] listItemsValue = param.getListItemsValue();
+                if (listItemsValue != null) {
+                    for (Object o : listItemsValue) {
+                        if (o instanceof IElementParameter
+                                && ((IElementParameter) o).getField() == EParameterFieldType.MODULE_LIST) {
+                            ((IElementParameter) o).setListItemsDisplayName(moduleNameArray);
+                            ((IElementParameter) o).setListItemsValue(moduleValueArray);
+                        }
+                    }
+                }
             }
         }
     }
@@ -299,7 +310,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     /**
      * DOC yzhang class global comment. Detailled comment
      */
-    private final class IgnoreCaseComparator implements Comparator<String> {
+    private final static class IgnoreCaseComparator implements Comparator<String> {
 
         public int compare(String o1, String o2) {
             return o1.compareToIgnoreCase(o2);

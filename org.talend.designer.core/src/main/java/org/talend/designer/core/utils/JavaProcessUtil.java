@@ -66,29 +66,29 @@ public class JavaProcessUtil {
             }
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
-                    if (!"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
+                    if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
                         // is not empty.
-                        String moduleValue = (String) curParam.getValue();
-
-                        if (ContextParameterUtils.isContainContextParam(moduleValue)) {
-                            String var = ContextParameterUtils.getVariableFromCode(moduleValue);
-                            if (var != null) {
-                                IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
-                                if (selectedContext == null) {
-                                    selectedContext = process.getContextManager().getDefaultContext();
-                                }
-                                IContextParameter param = selectedContext.getContextParameter(var);
-                                if (param != null) {
-                                    // add only the file name without path
-                                    String paramvalue = param.getValue();
-                                    int a = paramvalue.lastIndexOf("\\"); //$NON-NLS-1$
-                                    String filename = paramvalue.substring(a + 1, paramvalue.length());
-                                    neededLibraries.add(filename);
+                        neededLibraries.add(getModuleValue(process, (String) curParam.getValue()));
+                    }
+                } else if (curParam.getField() == EParameterFieldType.TABLE) {
+                    List<Map<String, Object>> values = (List<Map<String, Object>>) curParam.getValue();
+                    if (values != null && !values.isEmpty()) {
+                        Object[] listItemsValue = curParam.getListItemsValue();
+                        if (listItemsValue != null && listItemsValue.length > 0 && listItemsValue[0] instanceof IElementParameter) {
+                            for (Object o : listItemsValue) {
+                                IElementParameter param = (IElementParameter) o;
+                                if (param.getField() == EParameterFieldType.MODULE_LIST) {
+                                    for (Map<String, Object> line : values) {
+                                        String moduleName = (String) line.get(param.getName());
+                                        if (moduleName != null && !"".equals(moduleName)) {
+                                            moduleName = getModuleValue(process, moduleName);
+                                            if (!neededLibraries.contains(moduleName)) {
+                                                neededLibraries.add(moduleName);
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        } else {
-                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                                    TalendTextUtils.SINGLE_QUOTE, "")); //$NON-NLS-1$
                         }
                     }
                 }
@@ -135,6 +135,27 @@ public class JavaProcessUtil {
         }
         return neededLibraries;
 
+    }
+
+    private static String getModuleValue(final IProcess process, String moduleValue) {
+        if (ContextParameterUtils.isContainContextParam(moduleValue)) {
+            String var = ContextParameterUtils.getVariableFromCode(moduleValue);
+            if (var != null) {
+                IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+                if (selectedContext == null) {
+                    selectedContext = process.getContextManager().getDefaultContext();
+                }
+                IContextParameter param = selectedContext.getContextParameter(var);
+                if (param != null) {
+                    // add only the file name without path
+                    String paramvalue = param.getValue();
+                    int a = paramvalue.lastIndexOf("\\"); //$NON-NLS-1$
+                    String filename = paramvalue.substring(a + 1, paramvalue.length());
+                    return filename;
+                }
+            }
+        }
+        return TalendTextUtils.removeQuotes(moduleValue);
     }
 
     /**

@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -30,7 +31,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -1444,16 +1444,10 @@ public class DatabaseForm extends AbstractForm {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(getShell());
-                dialog.setFilterExtensions(new String[] { "*.jar", "*.zip", "*.*", "*" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-                String pathSeparator = System.getProperty("path.separator"); //$NON-NLS-1$
-                dialog.setFilterPath(userDir + pathSeparator + "lib" + pathSeparator + "java"); //$NON-NLS-1$ //$NON-NLS-2$
-                String path = dialog.open();
-                if (path == null) {
-                    return;
+                SelectDatabaseJarDialog dialog = new SelectDatabaseJarDialog(getShell(), generalJdbcDriverjarText.getText());
+                if (dialog.open() == Window.OK) {
+                    generalJdbcDriverjarText.setText(dialog.getJarsString());
                 }
-                generalJdbcDriverjarText.setText(path);
             }
 
         });

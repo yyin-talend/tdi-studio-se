@@ -102,7 +102,7 @@ public class TableController extends AbstractElementPropertySectionController {
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
-        tableEditorView.setReadOnly(param.isReadOnly());
+        tableEditorView.setReadOnly(param.isReadOnly() || param.isRepositoryValueUsed());
 
         final Table table = tableEditorView.getTable();
 
@@ -303,6 +303,7 @@ public class TableController extends AbstractElementPropertySectionController {
     private void updateTableValues(IElementParameter param) {
         if (elem instanceof Node) {
             DbTypeListController.updateDbTypeList((Node) elem, null);
+            ModuleListController.updateModuleList((Node) elem);
         } else if (elem instanceof Connection) {
             DbTypeListController.updateDbTypeList(((Connection) elem).getSource(), null);
         }
