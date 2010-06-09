@@ -175,6 +175,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.swt.widgets,
    org.eclipse.core.runtime.preferences,
    org.eclipse.gmf.runtime.common.ui.preferences",
+ org.talend.designer.core.ui.projectsetting,
  org.talend.designer.core.ui.views,
  org.talend.designer.core.ui.views.contexts,
  org.talend.designer.core.ui.views.jobsettings,
