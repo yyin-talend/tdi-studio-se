@@ -227,6 +227,22 @@ public class ExternalNodeChangeCommand extends Command {
 
                     if (openDialog) {
                         IElementParameter schemaParam = null;
+
+                        if (connection != null) {
+                            for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
+                                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                                        && param.getContext().equals(connection.getConnectorName())) {
+                                    schemaParam = param;
+                                    break;
+                                }
+                            }
+                            if (schemaParam != null) {
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getTarget(), schemaParam,
+                                        connection.getMetadataTable(), dataComponent.getTable());
+                                cmd.execute(true);
+                                metadataOutputChanges.add(cmd);
+                            }
+                        }
                         for (IElementParameter param : ((Node) connection.getSource()).getElementParameters()) {
                             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
                                     && param.getContext().equals(connection.getConnectorName())) {
