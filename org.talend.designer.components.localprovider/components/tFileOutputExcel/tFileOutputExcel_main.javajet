@@ -220,7 +220,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}else if (javaType == JavaTypesManager.DOUBLE){
 %>
 							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel()%>);
-<%						
+<%					}else if(JavaTypesManager.isNumberType(javaType)){
+%>
+							xlsxTool_<%=cid%>.addCellValue(Double.parseDouble(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>)));
+<%
 					}else{	
 %>
 							xlsxTool_<%=cid%>.addCellValue(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>));
