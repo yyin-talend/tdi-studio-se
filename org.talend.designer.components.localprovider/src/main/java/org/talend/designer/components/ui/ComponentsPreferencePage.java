@@ -174,7 +174,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         return group;
     }
 
-// for feature 13361
+    // for feature 13361
     protected Composite createForJoblet(Composite parent) {
         Group group = createGroup(parent);
         group.setText(joblet);
@@ -270,7 +270,9 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
         }
         createForMapper(parent);
         createFortRunJob(parent);
-        createForJoblet(parent);
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            createForJoblet(parent);
+        }
         parent.pack();
     }
 
