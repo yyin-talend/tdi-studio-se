@@ -243,16 +243,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             %>
 
                 <%=columnTypeValue%> sum<%=cid%> ;
-                
+
                 if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])){
                 	
-                	<%if(("BigDecimal").equals(columnType)){%>
+                	<%if(("BigDecimal").equals(columnType) || ("Double").equals(columnType)||("Float").equals(columnType)){
+						if(advancedSeparator){%>
 					
-					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
-                    
-                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);  
+						  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
+	                    
+	                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = FormatterUtils.format_Number(String.valueOf(sum<%=cid%>),<%=thousandsSeparator%>,<%=decimalSeparator%>);
+                      
+						<%}else{%>
 					  
-					<%}else{%>
+						  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
+	                    
+	                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
+                      
+						<%}
+					  }else{%>
 
 					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
                     
@@ -327,7 +335,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	}
             }else if( ("first").equals(aggFunction) ){
             %>
-            
+            	
                 if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
                 
                 <%if(advancedSeparator){%>
