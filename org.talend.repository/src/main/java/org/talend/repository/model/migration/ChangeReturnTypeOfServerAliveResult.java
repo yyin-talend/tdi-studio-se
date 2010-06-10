@@ -82,7 +82,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
         ECodeLanguage language = getProject().getLanguage();
         EList node = processType.getNode();
         EList connections = processType.getConnection();
-        Pattern pattern = Pattern.compile("(.*)" + MATCH_REGEX + "(.*)");
+        Pattern pattern = Pattern.compile(MATCH_REGEX);
         for (Object n : node) {
             NodeType type = (NodeType) n;
             EList elementParameterList = type.getElementParameter();
@@ -90,7 +90,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
                     if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                        Matcher match = pattern.matcher(elemType.getValue().replaceAll("\n", ""));
+                        Matcher match = pattern.matcher(elemType.getValue());
                         if (match.matches()) {
                             String replace = getReplaceValue(match);
                             elemType.setValue(replace);
@@ -106,7 +106,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                     ElementValueType elemVal = (ElementValueType) elemV;
                     if (language.equals(ECodeLanguage.JAVA)) {
                         if (elemVal.getValue() != null && elemVal.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                            Matcher match = pattern.matcher(elemVal.getValue().replaceAll("\n", ""));
+                            Matcher match = pattern.matcher(elemVal.getValue());
                             if (match.matches()) {
                                 String replace = getReplaceValue(match);
                                 elemVal.setValue(replace);
@@ -127,7 +127,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
                     if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                        Matcher match = pattern.matcher(elemType.getValue().replaceAll("\n", ""));
+                        Matcher match = pattern.matcher(elemType.getValue());
                         if (match.matches()) {
                             String replace = getReplaceValue(match);
                             elemType.setValue(replace);
