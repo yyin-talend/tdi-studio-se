@@ -86,6 +86,7 @@ public enum EDatabaseComponentName {
     INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"), //$NON-NLS-1$ //$NON-NLS-2$
     INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE" //$NON-NLS-1$ //$NON-NLS-2$
     EXASOL(DatabaseConnectionItem.class, EDatabaseTypeName.EXASOL, "tEXAInput", "tEXAOutput", true), // "INGRES"), //$NON-NLS-1$ //$NON-NLS-2$
+    VECTORWISE(DatabaseConnectionItem.class, EDatabaseTypeName.VECTORWISE, "tVectorWiseInput", "tVectorWiseOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     // )
     // ,
     SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"), //$NON-NLS-1$ //$NON-NLS-2$
