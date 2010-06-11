@@ -144,7 +144,32 @@
       REQUIRED="true"
     >
       <DEFAULT>1000000</DEFAULT>
-    </PARAMETER>
+    	</PARAMETER>
+        <PARAMETER 
+      NAME="ERRORFILES" 
+      FIELD="TEXT" 
+      NUM_ROW="11" 
+      REQUIRED="true" 
+    > 
+    <DEFAULT>"ERRORFILES table_ERR1, table_ERR2"</DEFAULT> 
+        </PARAMETER>
+        <PARAMETER 
+      NAME="RETURN_CODE_DIE" 
+      FIELD="CHECK" 
+      NUM_ROW="13" 
+      REQUIRED="true" 
+    > 
+    <DEFAULT>false</DEFAULT> 
+        </PARAMETER>
+	<PARAMETER 
+     NAME="RETURN_CODE" 
+     FIELD="TEXT" 
+     NUM_ROW="13" 
+     REQUIRED="true"
+     SHOW_IF="RETURN_CODE_DIE=='true'"
+    > 
+    <DEFAULT>8</DEFAULT> 
+ 	</PARAMETER>
    </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>

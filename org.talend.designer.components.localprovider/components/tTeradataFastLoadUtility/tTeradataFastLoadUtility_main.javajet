@@ -28,7 +28,12 @@ String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
 
+boolean returnCodeDie= ElementParameterParser.getValue(node, "__RETURN_CODE_DIE__").equals("true");
+String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
+
 String checkPoint= ElementParameterParser.getValue(node, "__CHECK_POINT__");
+
+String errorFiles= ElementParameterParser.getValue(node, "__ERRORFILES__");
 
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
@@ -75,7 +80,7 @@ if(columnList!=null){
 }
 %>
 fw_<%=cid %>.write("FILE="+<%=loadFile%>+";\r\n");
-fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" ERRORFILES "+ <%=dbname%> + "." + <%=table%>+"_ERR1, "+ <%=dbname%> + "." + <%=table%>+"_ERR2 CHECKPOINT <%=checkPoint%>;\r\n");
+fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" "+<%=errorFiles%>+" CHECKPOINT <%=checkPoint%>;\r\n");
 <%//SQL statements-------------------------------------------------------%>
 <%
 StringBuilder insertColSQL = new StringBuilder();
@@ -150,3 +155,15 @@ process_<%=cid %>.waitFor();
 normal_<%=cid %>.interrupt();
 
 error_<%=cid %>.interrupt();
+
+globalMap.put("<%=cid %>_EXIT_VALUE", process_<%=cid %>.exitValue());
+
+<%
+if(returnCodeDie) {
+%>
+	if(process_<%=cid %>.exitValue()>=<%=returnCode%>) {
+		throw new RuntimeException("Fastload returned exit code "+process_<%=cid %>.exitValue());
+	}
+<%	
+}
+%>
