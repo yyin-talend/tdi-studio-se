@@ -83,6 +83,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     private RepositoryEditorInput rEditorInput;
 
+    private Boolean isEditable = true;
+
     /**
      * DOC smallet Comment method "getRepositoryFactory".
      */
@@ -97,8 +99,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     @Override
     public boolean isEditable() {
-        if (!getRepositoryFactory().getStatus(item).isEditable())
+        if (!getRepositoryFactory().getStatus(item).isEditable()) {
             getSourceViewer().getTextWidget().setDragDetect(false);
+            isEditable = false;
+        }
         return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable() && isLastVersion(item);
     }
 
@@ -121,9 +125,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         try {
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
-            item.getProperty().eAdapters().add(dirtyListener);
             if (!rEditorInput.isReadOnly()) {
+                item.getProperty().eAdapters().add(dirtyListener);
                 repFactory.lock(item);
+            } else {
+                rEditorInput.getFile().setReadOnly(true);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -199,6 +205,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                 RepositoryManager.refreshSavedNode(repositoryNode);
             }
         }
+        if (!isEditable)
+            rEditorInput.getFile().setReadOnly(false);
         // force clean jobsettings
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow != null) {
@@ -444,6 +452,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             }
         }
         return false;
+    }
+
+    public boolean isEditorInputModifiable() {
+        return isEditable();
     }
 
     /*
