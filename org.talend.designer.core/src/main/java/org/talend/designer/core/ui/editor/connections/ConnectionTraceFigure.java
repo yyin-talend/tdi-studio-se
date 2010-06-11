@@ -34,6 +34,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -56,6 +57,8 @@ public class ConnectionTraceFigure extends Figure {
     private static final int MAX_VARIABLE_WIDTH = 70;
 
     private static final int MAX_VALUE_WIDTH = 100;
+
+    public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png";
 
     private Connection connection;
 
@@ -406,10 +409,19 @@ public class ConnectionTraceFigure extends Figure {
         } else {
             image = ImageProvider.getImage(ECoreImage.TRACE_OFF);
         }
-        if (connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()) != null)
-            if (image != null && (Boolean) connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).getValue()) {
-                image = OverlayImageProvider.getImageForOverlay(image, EImage.INFORMATION_SMALL, EPosition.BOTTOM_LEFT);
+        if (connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()) != null) {
+
+            if ((Boolean) connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).getValue()
+                    && (Boolean) connection.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName()).getValue()) {
+                image = ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE));
+            } else {
+
             }
+
+        }
+        if (image != null && connection.getCondition() != null) {
+            image = OverlayImageProvider.getImageForOverlay(image, EImage.INFORMATION_SMALL, EPosition.BOTTOM_LEFT);
+        }
         return image;
     }
 

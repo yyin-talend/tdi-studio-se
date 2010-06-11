@@ -346,7 +346,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setField(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.BREAKPOINT);
                 param.setNumRow(13);
-                param.setValue(checkTraceShowEnable());
+                param.setValue(false);
                 param.setContextMode(false);
                 param.setShow(true);
 
@@ -384,9 +384,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                     tmpParam.setCategory(EComponentCategory.BREAKPOINT);
                     tmpParam.setNumRow(17);
                     addElementParameter(tmpParam);
-                }
-                if (this.checkTraceShowEnable()) {
-                    setPropertyValue(EParameterName.ACTIVEBREAKPOINT.getName(), checkTraceShowEnable());
                 }
             }
         }
@@ -919,8 +916,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
             setTraceConnection((Boolean) value);
         }
-        if ((EParameterName.TRACES_SHOW_ENABLE.getName().equals(id) || EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
-                && value instanceof Boolean) {
+        if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id) && value instanceof Boolean) {
             if (PluginChecker.isTIS() && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
                 this.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).setValue(value);
                 if (this.trace != null) {
@@ -930,6 +926,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 setProcessStates();
             }
         }
+
         if (EParameterName.TRACES_CONNECTION_FILTER.getName().equals(id)) {
             if (this.trace != null) {
                 this.trace.setPropertyValue(id, value);

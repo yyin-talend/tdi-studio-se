@@ -65,12 +65,15 @@ if(execStat){
   IMetadataTable metadata = conn.getMetadataTable();
    if (metadata!=null) {
     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-     if (trace ) { 
-  %>
-  		if(<%=node.isDesignSubjobStartNode()%>){
+    if (("true").equals(ElementParameterParser.getValue(conn, "__TRACES_CONNECTION_ENABLE__")) &&
+    		("true").equals(ElementParameterParser.getValue(conn, "__ACTIVEBREAKPOINT__")) && node.isDesignSubjobStartNode()) {
+    %>
     globalMap.put("USE_CONDITION",Boolean.TRUE);
     globalMap.put("TRACE_CONDITION", Boolean.FALSE);
-}    
+    <%   
+     }
+     if (trace ) { 
+  %>
   if (<%=conn.getName() %> !=null  ) {
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   runTrace.isPause();
