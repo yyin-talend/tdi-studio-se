@@ -37,7 +37,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.generation.HTMLDocGenerator;
@@ -87,7 +87,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
             }
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
@@ -102,7 +102,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
         if (node != null && node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject repositoryObject = node.getObject();
+            IRepositoryViewObject repositoryObject = node.getObject();
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                 ExportFileResource resource = new ExportFileResource(processItem, path);
@@ -507,7 +507,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 label = node.getProperties(EProperties.LABEL).toString();
             } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     label = processItem.getProperty().getLabel();

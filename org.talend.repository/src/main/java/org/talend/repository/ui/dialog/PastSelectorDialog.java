@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -39,9 +40,9 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class PastSelectorDialog extends Dialog {
 
-    private List<IRepositoryObject> versions;
+    private List<IRepositoryViewObject> versions;
 
-    private Set<IRepositoryObject> selectedVersionItems = new HashSet<IRepositoryObject>();
+    private Set<IRepositoryViewObject> selectedVersionItems = new HashSet<IRepositoryViewObject>();
 
     private Table table;
 
@@ -56,7 +57,7 @@ public class PastSelectorDialog extends Dialog {
      * 
      * @param parentShell
      */
-    public PastSelectorDialog(Shell parentShell, List<IRepositoryObject> versions, RepositoryNode sourceNode) {
+    public PastSelectorDialog(Shell parentShell, List<IRepositoryViewObject> versions, RepositoryNode sourceNode) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.versions = versions;
@@ -94,7 +95,7 @@ public class PastSelectorDialog extends Dialog {
         modificationTime.setWidth(200);
         modificationTime.setText("Modification Time");
 
-        for (IRepositoryObject object : versions) {
+        for (IRepositoryViewObject object : versions) {
             if (object.getVersion().equals(sourceNode.getObject().getVersion())) {
                 continue;
             }
@@ -166,7 +167,7 @@ public class PastSelectorDialog extends Dialog {
         return composite;
     }
 
-    public Set<IRepositoryObject> getSelectedVersionItems() {
+    public Set<IRepositoryViewObject> getSelectedVersionItems() {
         return this.selectedVersionItems;
     }
 

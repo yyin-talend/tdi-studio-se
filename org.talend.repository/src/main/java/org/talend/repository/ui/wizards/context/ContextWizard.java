@@ -38,10 +38,13 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -68,7 +71,15 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
 
     private IContextManager contextManager;
 
-    String oldSource;
+    private String originaleObjectLabel;
+
+    private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
 
     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();;
 
@@ -140,14 +151,22 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
                 node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
             }
             if (node != null) {
-                RepositoryObject object = (RepositoryObject) node.getObject();
+                IRepositoryViewObject object;
+                if (node.getObject() instanceof RepositoryObject)
+                    object = (RepositoryObject) node.getObject();
+                else {
+                    object = (RepositoryViewObject) node.getObject();
+                }
                 setRepositoryObject(object);
                 isRepositoryObjectEditable();
                 initLockStrategy();
 
                 contextItem = (ContextItem) object.getProperty().getItem();
-                oldSource = contextItem.getProperty().getLabel();
-
+                originaleObjectLabel = contextItem.getProperty().getLabel();
+                this.originalVersion = contextItem.getProperty().getVersion();
+                this.originalDescription = contextItem.getProperty().getDescription();
+                this.originalPurpose = contextItem.getProperty().getPurpose();
+                this.originalStatus = contextItem.getProperty().getStatusCode();
                 contextProperty = contextItem.getProperty();
                 contextManager = new JobContextManager(contextItem.getContext(), contextItem.getDefaultContext());
             }
@@ -218,15 +237,15 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
 
                             // update
                             RepositoryUpdateManager.updateContext((JobContextManager) contextManager, contextItem);
-
                         }
                     }
-
+                    // contextItem.setProperty(ProxyRepositoryFactory.getInstance().getUptodateProperty(contextItem.getProperty()));
                     factory.save(contextItem);
                     updateRelatedView();
 
                 }
                 closeLockStrategy();
+                ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
                 // TimeMeasure.end("performFinish");
             } catch (PersistenceException e) {
                 String detailError = e.toString();
@@ -239,6 +258,16 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean performCancel() {
+        contextItem.getProperty().setVersion(this.originalVersion);
+        contextItem.getProperty().setLabel(this.originaleObjectLabel);
+        contextItem.getProperty().setDescription(this.originalDescription);
+        contextItem.getProperty().setPurpose(this.originalPurpose);
+        contextItem.getProperty().setStatusCode(this.originalStatus);
+        return super.performCancel();
     }
 
     /**

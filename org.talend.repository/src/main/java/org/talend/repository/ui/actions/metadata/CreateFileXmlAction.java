@@ -90,7 +90,6 @@ public class CreateFileXmlAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_XML);
             }
         }
-
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(repositoryNode);
@@ -102,7 +101,9 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new XmlFileWizard(PlatformUI.getWorkbench(),
                     creation, repositoryNode, getExistingNames()));
         }
-
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
+        }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();

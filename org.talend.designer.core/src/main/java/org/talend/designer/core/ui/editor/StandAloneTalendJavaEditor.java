@@ -58,7 +58,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
@@ -440,7 +440,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                         item.getProperty().getId());
                 if (allVersion != null && !allVersion.isEmpty()) {
                     if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {

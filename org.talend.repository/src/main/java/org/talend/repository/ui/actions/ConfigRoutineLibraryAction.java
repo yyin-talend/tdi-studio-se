@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -59,7 +59,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
                     switch (node.getType()) {
                     case REPOSITORY_ELEMENT:
                         if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
-                            IRepositoryObject repObj = node.getObject();
+                            IRepositoryViewObject repObj = node.getObject();
                             IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                             ERepositoryStatus status = repFactory.getStatus(repObj);
                             boolean isEditable = status.isPotentiallyEditable() || status.isEditable();

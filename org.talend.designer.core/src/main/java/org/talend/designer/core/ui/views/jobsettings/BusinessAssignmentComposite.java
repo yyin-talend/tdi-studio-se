@@ -65,7 +65,7 @@ import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -269,7 +269,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     RepositoryNode curNode = null;
                     JobSettingsView viewer = (JobSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                             .getActivePage().findView(JobSettingsView.ID);
-                    IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(item.getId());
+                    IRepositoryViewObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(item.getId());
                     if (lastVersion != null) {
                         curNode = RepositoryNodeUtilities.getRepositoryNode(lastVersion);
                         select(viewer, curNode);
@@ -400,7 +400,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     }
 
     private RepositoryNode createRepositoryNode(BusinessAssignment businessAssignment) {
-        IRepositoryObject lastVersion;
+        IRepositoryViewObject lastVersion;
         try {
             TalendItem item = businessAssignment.getTalendItem();
             lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(item.getId());
@@ -413,7 +413,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
                 return repositoryNode;
             } else if (item instanceof SQLPattern) {
-                IRepositoryObject object = getObjectFromSystem(item, ERepositoryObjectType.SQLPATTERNS);
+                IRepositoryViewObject object = getObjectFromSystem(item, ERepositoryObjectType.SQLPATTERNS);
                 if (object != null) {
                     RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
                             .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
@@ -422,7 +422,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     return repositoryNode;
                 }
             } else if (item instanceof Routine) {
-                IRepositoryObject object = getObjectFromSystem(item, ERepositoryObjectType.ROUTINES);
+                IRepositoryViewObject object = getObjectFromSystem(item, ERepositoryObjectType.ROUTINES);
                 if (object != null) {
                     RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
                             .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
@@ -453,10 +453,10 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         return null;
     }
 
-    private IRepositoryObject getObjectFromSystem(TalendItem item, ERepositoryObjectType type) {
+    private IRepositoryViewObject getObjectFromSystem(TalendItem item, ERepositoryObjectType type) {
         try {
-            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(type);
-            for (IRepositoryObject object : list) {
+            List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(type);
+            for (IRepositoryViewObject object : list) {
                 if (item.getLabel().equals(object.getLabel())) {
                     return object;
                 }

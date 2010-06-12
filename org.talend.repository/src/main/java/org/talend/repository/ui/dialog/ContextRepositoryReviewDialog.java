@@ -48,7 +48,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -202,7 +202,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
             IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
             RepositoryNode context = (RepositoryNode) selection.getFirstElement();
             try { // get the item from file
-                IRepositoryObject contextObj = factory.getLastVersion(context.getObject().getProperty().getId());
+                IRepositoryViewObject contextObj = factory.getLastVersion(context.getObject().getProperty().getId());
                 item = (ContextItem) contextObj.getProperty().getItem();
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);

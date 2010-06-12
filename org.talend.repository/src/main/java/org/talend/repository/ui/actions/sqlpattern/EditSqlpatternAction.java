@@ -87,7 +87,7 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
             ExceptionHandler.process(e);
         }
         // update the property of the node repository object
-        node.getObject().setProperty(updatedProperty);
+        // node.getObject().setProperty(updatedProperty);
         SQLPatternItem sqlPatternItem = (SQLPatternItem) node.getObject().getProperty().getItem();
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean readonly = factory.getStatus(sqlPatternItem) == ERepositoryStatus.LOCK_BY_OTHER;

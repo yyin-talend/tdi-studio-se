@@ -50,7 +50,8 @@ public class VersionAuthorSection extends AbstractSection {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
+     * @see
+     * org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
      * org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
      */
     @Override
@@ -178,13 +179,13 @@ public class VersionAuthorSection extends AbstractSection {
 
     @Override
     protected void beforeSave() {
-        String version = versionText.getText();
-        String version2 = getObject().getVersion();
-        if (version != null && version2 != null) {
-            if (VersionUtils.compareTo(version, version2) != 0) {
-                getObject().setVersion(version);
-            }
-        }
+        // String version = versionText.getText();
+        // String version2 = getObject().getVersion();
+        // if (version != null && version2 != null) {
+        // if (VersionUtils.compareTo(version, version2) != 0) {
+        // getObject().setVersion(version);
+        // }
+        // }
     }
 
     @Override

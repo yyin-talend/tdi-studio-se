@@ -15,14 +15,14 @@ package org.talend.repository.model;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
  */
 public class QueryRepositoryObject extends org.talend.core.model.metadata.Query implements ISubRepositoryObject {
 
-    private final IRepositoryObject repObj;
+    private final IRepositoryViewObject repObj;
 
     private final Query query;
 
@@ -34,7 +34,7 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
         return null;
     }
 
-    public QueryRepositoryObject(IRepositoryObject repObj, Query table) {
+    public QueryRepositoryObject(IRepositoryViewObject repObj, Query table) {
         this.repObj = repObj;
         this.query = table;
     }
@@ -42,11 +42,6 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
     @Override
     public Property getProperty() {
         return repObj.getProperty();
-    }
-
-    @Override
-    public void setProperty(Property property) {
-        repObj.setProperty(property);
     }
 
     @Override

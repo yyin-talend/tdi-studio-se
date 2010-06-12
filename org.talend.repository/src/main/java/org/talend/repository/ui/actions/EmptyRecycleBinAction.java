@@ -12,13 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -28,14 +23,13 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
@@ -46,6 +40,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * Action used to empty the recycle bin.<br/>
@@ -85,88 +81,35 @@ public class EmptyRecycleBinAction extends AContextualAction {
             return;
         }
 
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask(title, node.getChildren().size() + 10);
-                Display disp = Display.getCurrent();
-                if (disp == null) {
-                    disp = Display.getDefault();
-                }
-                // for JobDeleteListener
-                DeleteActionCache deleteActionCache = DeleteActionCache.getInstance();
-                deleteActionCache.setDocRefresh(false);
-
-                // if multi sub object in one item, only save it in one time.
-                Map<String, Item> needSaveItems = new HashMap<String, Item>();
-
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                for (RepositoryNode child : node.getChildren()) {
-                    final IRepositoryObject objToDelete = child.getObject();
-                    try { // if on item is error, will continue.
-                        if (objToDelete instanceof ISubRepositoryObject) {
-                            ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
-                            if (!isRootNodeDeleted(child)) {
-                                subRepositoryObject.removeFromParent();
-                                needSaveItems.put(subRepositoryObject.getProperty().getId(), subRepositoryObject.getProperty()
-                                        .getItem());
-                            }
-                            if (subRepositoryObject.getAbstractMetadataObject() != null) {
-                                monitor.subTask(subRepositoryObject.getAbstractMetadataObject().getLabel());
-                            }
-                        } else {
-                            monitor.subTask(objToDelete.getLabel());
-                            deleteActionCache.closeOpenedEditor(objToDelete);
-
-                            if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
-                                    && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
-                                factory.deleteObjectPhysical(objToDelete);
-                            monitor.worked(1);
-                        }
-                    } catch (Exception e) {
-                        MessageBoxExceptionHandler.process(e);
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        for (RepositoryNode child : node.getChildren()) {
+            try {
+                deleteElements(factory, child);
+                IRepositoryViewObject objToDelete = child.getObject();
+                if (objToDelete instanceof ISubRepositoryObject) {
+                    ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
+                    if (!isRootNodeDeleted(child)) {
+                        subRepositoryObject.removeFromParent();
+                        factory.save(subRepositoryObject.getProperty().getItem());
                     }
-                }
-                if (!needSaveItems.isEmpty()) {
-                    // save item
-                    monitor.subTask("Save items....");
-                    for (String id : needSaveItems.keySet()) {
-                        Item item = needSaveItems.get(id);
-                        if (item != null) {
-                            try { // if on item is error, will continue.
-                                factory.save(item);
-                            } catch (Exception e) {
-                                MessageBoxExceptionHandler.process(e);
-                            }
-                            monitor.worked(1);
-                        }
-                    }
-                }
-                if (disp != null) {
-                    disp.syncExec(new Runnable() {
-
-                        public void run() {
-                            refreshRelations();
-                        }
-                    });
                 } else {
-                    refreshRelations();
+                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    for (IEditorReference editors : page.getEditorReferences()) {
+                        String nameInEditor = editors.getName();
+                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$ 
+                            page.closeEditor(editors.getEditor(false), false);
+                        }
+                    }
+                    if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
+                            && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC) {
+                        factory.deleteObjectPhysical(objToDelete);
+                    }
                 }
-                monitor.done();
-                deleteActionCache.revertParameters();
+            } catch (Exception e) {
+                MessageBoxExceptionHandler.process(e);
             }
-
-        };
-
-        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(shell);
-        try {
-            dialog.run(true, false, runnable);
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-        } catch (InterruptedException e) {
-            ExceptionHandler.process(e);
         }
-
+        RepositoryManager.getRepositoryView().refresh();
     }
 
     private Shell getShell() {
@@ -214,6 +157,41 @@ public class EmptyRecycleBinAction extends AContextualAction {
         }
     }
 
+    private void deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentNode) throws PersistenceException,
+            BusinessException {
+        IRepositoryViewObject objToDelete = currentNode.getObject();
+        if (objToDelete == null) {
+            return;
+        }
+        if (objToDelete instanceof ISubRepositoryObject) {
+            ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
+            if (!isRootNodeDeleted(currentNode)) {
+                subRepositoryObject.removeFromParent();
+                factory.save(subRepositoryObject.getProperty().getItem());
+            }
+        } else {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            for (IEditorReference editors : page.getEditorReferences()) {
+                String nameInEditor = editors.getName();
+                if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$
+                    page.closeEditor(editors.getEditor(false), false);
+                }
+            }
+            if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
+                    && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC) {
+                if (currentNode.getType() == ENodeType.SIMPLE_FOLDER) {
+                    for (RepositoryNode curNode : currentNode.getChildren()) {
+                        deleteElements(factory, curNode);
+                    }
+                    IPath path = RepositoryNodeUtilities.getPath(currentNode);
+                    factory.deleteFolder(currentNode.getContentType(), path);
+                } else {
+                    factory.deleteObjectPhysical(objToDelete);
+                }
+            }
+        }
+    }
+
     /**
      * DOC qzhang Comment method "getRootNode".
      * 
@@ -225,7 +203,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
         if (child != null) {
             RepositoryNode parent = child.getParent();
             if (parent != null) {
-                IRepositoryObject object = parent.getObject();
+                IRepositoryViewObject object = parent.getObject();
                 if (object != null) {
                     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 

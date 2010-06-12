@@ -19,11 +19,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
@@ -145,12 +149,39 @@ public class CreateConnectionAction extends AbstractCreateAction {
             break;
         }
 
+        if (!creation) {
+            Property property = node.getObject().getProperty();
+            Property updatedProperty = null;
+            if (getNeededVersion() == null) {
+                // try {
+                // updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                // new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                // .getProperty();
+                //
+                // node.getObject().setProperty(updatedProperty);
+                // } catch (PersistenceException e) {
+                // ExceptionHandler.process(e);
+                // }
+            } else {
+                try {
+                    updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                            new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
+        }
+
         DatabaseWizard databaseWizard;
         if (isToolbar()) {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
             databaseWizard.setToolBar(true);
         } else {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
+        }
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(node);
         }
 
         // Open the Wizard
@@ -175,6 +206,10 @@ public class CreateConnectionAction extends AbstractCreateAction {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+                setEnabled(false);
+                return;
+            }
+            if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
                 setEnabled(false);
                 return;
             }

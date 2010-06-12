@@ -32,7 +32,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -160,7 +160,7 @@ public class QueryGuessCommand extends Command {
             IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             if (param != null) {
                 try {
-                    IRepositoryObject object = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    IRepositoryViewObject object = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                             .getLastVersion((String) param.getValue());
                     if (object != null) {
                         Item item = object.getProperty().getItem();

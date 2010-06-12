@@ -78,7 +78,7 @@ public abstract class AbstractProcessVersionAction extends AContextualAction {
                 ExceptionHandler.process(e);
             }
             // update the property of the node repository object
-            repositoryNode.getObject().setProperty(updatedProperty);
+            // repositoryNode.getObject().setProperty(updatedProperty);
             processItem = (ProcessItem) updatedProperty.getItem();
         }
     }

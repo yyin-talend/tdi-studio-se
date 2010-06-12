@@ -54,7 +54,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
@@ -432,11 +432,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
      * @param schemaId
      * @return
      */
-    private IRepositoryObject findRepositoryObject(String schemaId) {
+    private IRepositoryViewObject findRepositoryObject(String schemaId) {
         try {
             String[] names = schemaId.split(" - "); //$NON-NLS-1$
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            IRepositoryObject node = factory.getLastVersion(names[0]);
+            IRepositoryViewObject node = factory.getLastVersion(names[0]);
             return node;
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
@@ -465,7 +465,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             return;
         }
         // find IRepositoryObject from repository that contains current connection
-        IRepositoryObject node = findRepositoryObject(schemaId);
+        IRepositoryViewObject node = findRepositoryObject(schemaId);
 
         RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(node);
         RepositoryNode metadataNode = null;

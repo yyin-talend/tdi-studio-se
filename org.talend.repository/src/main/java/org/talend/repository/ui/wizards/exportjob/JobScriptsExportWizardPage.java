@@ -65,8 +65,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -197,7 +197,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
             }
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
@@ -211,7 +211,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
         if (node != null && node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject repositoryObject = node.getObject();
+            IRepositoryViewObject repositoryObject = node.getObject();
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                 ExportFileResource resource = new ExportFileResource(processItem, path);
@@ -315,7 +315,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 label = node.getProperties(EProperties.LABEL).toString();
             } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     label = processItem.getProperty().getLabel();

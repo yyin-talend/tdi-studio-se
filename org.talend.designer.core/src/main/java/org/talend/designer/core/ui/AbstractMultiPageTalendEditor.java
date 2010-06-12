@@ -85,7 +85,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
@@ -145,6 +145,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 }
                 // propertyIsDirty = true;
                 designerEditor.getProperty().eAdapters().remove(dirtyListener);
+                process = designerEditor.getProcess();
                 process.updateProperties();
                 designerEditor.getProperty().eAdapters().add(dirtyListener);
 
@@ -591,9 +592,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                                     nameMap, jobId, curContextVars);
                                         }
                                         // add for bug 9564
-                                        List<IRepositoryObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                                        List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
                                         List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
-                                        for (IRepositoryObject repositoryObject : all) {
+                                        for (IRepositoryViewObject repositoryObject : all) {
                                             Item item = repositoryObject.getProperty().getItem();
                                             if (item instanceof ProcessItem) {
                                                 ProcessItem processItem = (ProcessItem) item;
@@ -983,7 +984,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 property = repFactory.getUptodateProperty(property);
             }
             // fix for bug 12524 for db repository
-            property = repFactory.reload(property);
+            // property = repFactory.reload(property);
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block

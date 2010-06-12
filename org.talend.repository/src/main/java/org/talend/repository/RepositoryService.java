@@ -58,7 +58,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IHL7ProviderService;
@@ -187,11 +187,11 @@ public class RepositoryService implements IRepositoryService {
 
     // This method is used for the Action in RepositoryView to synchronize the sqlBuilder.
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
-    public void notifySQLBuilder(List<IRepositoryObject> list) {
+    public void notifySQLBuilder(List<IRepositoryViewObject> list) {
         IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryView.show();
         removeRepositoryChangedListener(listener);
-        for (Iterator<IRepositoryObject> iter = list.iterator(); iter.hasNext();) {
-            IRepositoryObject element = iter.next();
+        for (Iterator<IRepositoryViewObject> iter = list.iterator(); iter.hasNext();) {
+            IRepositoryViewObject element = iter.next();
             repositoryChanged(new RepositoryElementDelta(element));
         }
         registerRepositoryChangedListenerAsFirst(listener);
@@ -323,7 +323,7 @@ public class RepositoryService implements IRepositoryService {
         rcpMode = true;
     }
 
-    public void openMetadataConnection(IRepositoryObject o) {
+    public void openMetadataConnection(IRepositoryViewObject o) {
         final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(o);
         openMetadataConnection(false, realNode, null);
     }
@@ -577,7 +577,7 @@ public class RepositoryService implements IRepositoryService {
         }
         if (propertyParam != null && functionParam != null) {
             try {
-                IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(
+                IRepositoryViewObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(
                         (String) propertyParam.getValue());
                 if (lastVersion != null) {
 

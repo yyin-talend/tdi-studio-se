@@ -57,7 +57,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.SpagoBiServer;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -121,7 +121,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
                 addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
             }
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
@@ -138,7 +138,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
         if (node != null && node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject repositoryObject = node.getObject();
+            IRepositoryViewObject repositoryObject = node.getObject();
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                 ExportFileResource resource = new ExportFileResource(processItem, path);

@@ -31,9 +31,9 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
-import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
@@ -74,10 +74,10 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         if (obj instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) obj;
-            IRepositoryObject repositoryObject = repositoryNode.getObject();
+            IRepositoryViewObject repositoryObject = repositoryNode.getObject();
 
-            if (repositoryObject instanceof RepositoryObject) {
-                RepositoryObject abstractRepositoryObject = (RepositoryObject) repositoryObject;
+            if (repositoryObject instanceof RepositoryViewObject) {
+                RepositoryViewObject abstractRepositoryObject = (RepositoryViewObject) repositoryObject;
                 Property property = abstractRepositoryObject.getProperty();
                 Property updatedProperty = null;
                 try {

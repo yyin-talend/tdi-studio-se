@@ -25,7 +25,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
@@ -65,7 +65,7 @@ public class ReadDiagramAction extends AContextualAction {
         }
         RepositoryNode node = repositoryNode;
         if (node != null) {
-            IRepositoryObject repositoryObject = node.getObject();
+            IRepositoryViewObject repositoryObject = node.getObject();
             if (repositoryObject instanceof RepositoryObject) {
                 RepositoryObject abstractRepositoryObject = (RepositoryObject) repositoryObject;
                 Property property = abstractRepositoryObject.getProperty();

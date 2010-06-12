@@ -46,7 +46,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
@@ -632,7 +632,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         manager.synchronizeAllSqlEditors(this);
     }
 
-    public void notifySQLBuilder(IRepositoryObject o) {
+    public void notifySQLBuilder(IRepositoryViewObject o) {
         CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
         CorePlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(o));
         CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);

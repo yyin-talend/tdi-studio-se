@@ -33,7 +33,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -63,8 +63,8 @@ public class RoutineItemsCheck {
                         ICodeGeneratorService.class);
                 routineSynchronizer = service.createPerlRoutineSynchronizer();
 
-                List<IRepositoryObject> routineObjList = factory.getAll(ERepositoryObjectType.ROUTINES, false);
-                for (IRepositoryObject repositoryObj : routineObjList) {
+                List<IRepositoryViewObject> routineObjList = factory.getAll(ERepositoryObjectType.ROUTINES, false);
+                for (IRepositoryViewObject repositoryObj : routineObjList) {
                     RoutineItem item = (RoutineItem) repositoryObj.getProperty().getItem();
                     routineSynchronizer.syncRoutine(item, true);
                     IFile file = routineSynchronizer.getFile(item);

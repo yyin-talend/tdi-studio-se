@@ -89,7 +89,7 @@ import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -1781,7 +1781,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             if (repositoryParam != null) {
                 try {
-                    IRepositoryObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    IRepositoryViewObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                             .getLastVersion((String) repositoryParam.getValue());
                     if (o != null) {
                         RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o);

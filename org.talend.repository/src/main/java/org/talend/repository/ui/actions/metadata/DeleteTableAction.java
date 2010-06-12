@@ -39,7 +39,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -79,7 +79,7 @@ public class DeleteTableAction extends AContextualAction {
         Boolean confirm = null;
 
         // used to store the database connection object that are used to notify the sqlBuilder.
-        final List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
+        final List<IRepositoryViewObject> connections = new ArrayList<IRepositoryViewObject>();
         final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         Map<String, Item> procItems = new HashMap<String, Item>();
 
@@ -175,7 +175,7 @@ public class DeleteTableAction extends AContextualAction {
                 canWork = false;
                 break;
             case REPOSITORY_ELEMENT:
-                IRepositoryObject repObj = node.getObject();
+                IRepositoryViewObject repObj = node.getObject();
 
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (!nodeType.isSubItem()) {
@@ -184,7 +184,7 @@ public class DeleteTableAction extends AContextualAction {
                 }
                 if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
                     canWork = true;
-                    IRepositoryObject repositoryObject = node.getObject();
+                    IRepositoryViewObject repositoryObject = node.getObject();
                     if (repositoryObject != null) {
                         Item item2 = repositoryObject.getProperty().getItem();
                         if (item2 instanceof DatabaseConnectionItem) {

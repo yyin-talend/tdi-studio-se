@@ -49,7 +49,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
@@ -422,7 +422,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         selectJobNodeIfExists(button, dialog);
 
         if (dialog.open() == RepositoryReviewDialog.OK) {
-            IRepositoryObject repositoryObject = dialog.getResult().getObject();
+            IRepositoryViewObject repositoryObject = dialog.getResult().getObject();
             final Item item = repositoryObject.getProperty().getItem();
             String id = item.getProperty().getId();
 
@@ -444,7 +444,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
             if (elem != null && elem instanceof Node) {
                 Node runJobNode = (Node) elem;
                 String paramName = (String) button.getData(PARAMETER_NAME);
-                String jobId = (String) runJobNode.getPropertyValue(paramName); //.getElementParameter(name).getValue();
+                String jobId = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobId)) {
                     // if user have selected job
                     ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
@@ -599,13 +599,13 @@ public class ProcessController extends AbstractElementPropertySectionController 
         final String jobId = (String) jobNameParam.getValue();
         Item item = null;
 
-        List<IRepositoryObject> allVersion = ProcessorUtilities.getAllVersionObjectById(jobId);
+        List<IRepositoryViewObject> allVersion = ProcessorUtilities.getAllVersionObjectById(jobId);
 
         // IRepositoryObject lastVersionObject = null;
         String label = null;
         if (allVersion != null) {
             String oldVersion = null;
-            for (IRepositoryObject obj : allVersion) {
+            for (IRepositoryViewObject obj : allVersion) {
                 String version = obj.getVersion();
                 if (oldVersion == null) {
                     oldVersion = version;

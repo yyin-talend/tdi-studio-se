@@ -29,6 +29,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobInfo;
@@ -42,7 +43,8 @@ import org.talend.scheduler.SchedulerPlugin;
  * This class is responsible for keeping synchronous with project,job and context in comboxes, according to these 3
  * arameters, generate corresponding command.
  * 
- * <br/> $Id$
+ * <br/>
+ * $Id$
  * 
  */
 public class TalendJobManager {
@@ -52,10 +54,10 @@ public class TalendJobManager {
     private ProxyRepositoryFactory factory;
 
     // private RootContainer<Integer, IRepositoryObject> processContainer;
-    private RootContainer<String, IRepositoryObject> processContainer;
+    private RootContainer<String, IRepositoryViewObject> processContainer;
 
     // private ContentList<Integer, IRepositoryObject> processAbsoluteMembers;
-    private ContentList<String, IRepositoryObject> processAbsoluteMembers;
+    private ContentList<String, IRepositoryViewObject> processAbsoluteMembers;
 
     private Map<String, List<JobInfo>> runjobInfosByName;
 
@@ -161,7 +163,7 @@ public class TalendJobManager {
             runjobInfosByName.remove(string);
         }
 
-        for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+        for (Content<String, IRepositoryViewObject> object : processAbsoluteMembers.values()) {
             IRepositoryObject process = (IRepositoryObject) object.getContent();
             if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
                 String path = object.getParent().getPath().toString();
@@ -208,7 +210,7 @@ public class TalendJobManager {
     public List<String> getCurrentJobContexts() {
         List<String> contextNameList = new ArrayList<String>();
         try {
-            for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+            for (Content<String, IRepositoryViewObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
                 if (process.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
@@ -244,7 +246,7 @@ public class TalendJobManager {
         String selectedProcess = selectedJobName;
 
         try {
-            for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+            for (Content<String, IRepositoryViewObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
                 String id = process.getLabel();
 

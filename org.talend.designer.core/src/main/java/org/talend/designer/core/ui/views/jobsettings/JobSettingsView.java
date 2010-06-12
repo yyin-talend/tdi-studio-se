@@ -42,7 +42,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
@@ -136,7 +136,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
                                 .getCategory());
 
-                    } else if (data instanceof IRepositoryObject) {
+                    } else if (data instanceof IRepositoryViewObject) {
 
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data, descriptor
@@ -144,7 +144,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
                     } else if (data instanceof IEditorPart) {
                         currentSelectedTab = descriptor;
-                        IRepositoryObject repObj = retrieveBusiness((IEditorPart) data);
+                        IRepositoryViewObject repObj = retrieveBusiness((IEditorPart) data);
                         if (repObj != null) {
                             IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), repObj,
                                     descriptor.getCategory());
@@ -163,9 +163,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     }
 
-    private IRepositoryObject retrieveBusiness(IEditorPart businessPart) {
+    private IRepositoryViewObject retrieveBusiness(IEditorPart businessPart) {
         if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
-            IRepositoryObject lastVersion = null;
+            IRepositoryViewObject lastVersion = null;
             selectedModel = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
 
@@ -218,13 +218,13 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             // dynamicComposite = new ContextDynamicComposite(parent, style, category, element);
 
         } else if (EComponentCategory.MAIN.equals(category)) {
-            dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
+            dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryViewObject) data);
         } else if (EComponentCategory.VERSIONS.equals(category)) {
             dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
-                    (IRepositoryObject) data);
+                    (IRepositoryViewObject) data);
         } else if (EComponentCategory.SVNHISTORY.equals(category) && service != null) {
             dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
-                    (IRepositoryObject) data);
+                    (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
             dynamicComposite = new BusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         } else if (EComponentCategory.RULERS_AND_GRID.equals(category)) {
@@ -257,7 +257,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
 
             categories = getCategories(process);
-        } else if (obj != null && obj instanceof IRepositoryObject) {
+        } else if (obj != null && obj instanceof IRepositoryViewObject) {
             categories = getCategories(obj);
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
@@ -413,12 +413,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
             // category.add(EComponentCategory.CONTEXT);
 
-        } else if (obj instanceof IRepositoryObject) {
+        } else if (obj instanceof IRepositoryViewObject) {
             category.add(EComponentCategory.MAIN);
             category.add(EComponentCategory.VERSIONS);
 
-            if (service != null && service.isProjectInSvnMode() && ((IRepositoryObject) obj).getProperty() != null
-                    && ((IRepositoryObject) obj).getProperty().getItem() instanceof ProcessItem)
+            if (service != null && service.isProjectInSvnMode() && ((IRepositoryViewObject) obj).getProperty() != null
+                    && ((IRepositoryViewObject) obj).getProperty().getItem() instanceof ProcessItem)
                 category.add(EComponentCategory.SVNHISTORY);
 
         } else if (obj instanceof IEditorPart) {
@@ -501,7 +501,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 if (diagramModelService.isBusinessDiagramEditor(activeEditor)) {
                     this.selectedPrimary = true;
                     this.cleaned = force;
-                    IRepositoryObject object = retrieveBusiness(activeEditor);
+                    IRepositoryViewObject object = retrieveBusiness(activeEditor);
                     if (object != null) {
                         String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
                         Object type = object.getType();
@@ -515,7 +515,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             this.selectedPrimary = true;
             this.cleaned = force;
-            IRepositoryObject object = retrieveBusiness(activeEditor);
+            IRepositoryViewObject object = retrieveBusiness(activeEditor);
             if (object != null) {
                 String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
                 Object type = object.getType();
@@ -587,7 +587,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     return;
                 }
 
-                IRepositoryObject repositoryObject = repositoryNode.getObject();
+                IRepositoryViewObject repositoryObject = repositoryNode.getObject();
                 if (repositoryObject == null) {
                     repositoryObject = new EmptyRepositoryObject();
                     return;

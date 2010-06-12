@@ -57,7 +57,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
@@ -449,7 +449,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         try {
             String[] names = queryId.split(" - "); //$NON-NLS-1$
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            IRepositoryObject node = factory.getLastVersion(names[0]);
+            IRepositoryViewObject node = factory.getLastVersion(names[0]);
             DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
             return item;
         } catch (PersistenceException e) {

@@ -70,7 +70,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
@@ -737,7 +737,7 @@ public class VersionManagementPage extends ProjectSettingPage {
             if (!isFixedVersion()) {
                 newVersion = object.getNewVersion();
             }
-            IRepositoryObject repositoryObject = object.getRepositoryNode().getObject();
+            IRepositoryViewObject repositoryObject = object.getRepositoryNode().getObject();
             if (repositoryObject != null && repositoryObject.getProperty() != null) {
                 if (!newVersion.equals(repositoryObject.getVersion())) {
                     isApplied = false;
@@ -784,7 +784,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                 monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
                 Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
                 for (ItemVersionObject object : getModifiedVersionItems()) {
-                    IRepositoryObject repositoryObject = object.getRepositoryNode().getObject();
+                    IRepositoryViewObject repositoryObject = object.getRepositoryNode().getObject();
                     if (repositoryObject != null && repositoryObject.getProperty() != null) {
                         if (!object.getNewVersion().equals(repositoryObject.getVersion())) {
                             final Item item = object.getItem();
@@ -793,7 +793,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
                             try {
                                 // for bug 12853 ,version management doesn't work for joblet because eResource is null
-                                IRepositoryObject obj = null;
+                                IRepositoryViewObject obj = null;
                                 if (item.getProperty().eResource() == null) {
                                     ItemState state = item.getState();
                                     if (state != null && state.getPath() != null) {
@@ -804,7 +804,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                                     }
                                 }
                                 if (obj != null) {
-                                    obj.setVersion(object.getNewVersion());
+                                    // obj.setVersion(object.getNewVersion());
                                     FACTORY.save(project, obj.getProperty());
                                 } else {
                                     FACTORY.save(project, item.getProperty());

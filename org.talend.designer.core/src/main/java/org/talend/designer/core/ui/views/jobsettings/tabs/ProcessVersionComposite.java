@@ -57,7 +57,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -96,16 +96,15 @@ public class ProcessVersionComposite extends AbstractTabComposite {
      * @param parent
      * @param style
      */
-    public ProcessVersionComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory, IRepositoryObject obj) {
-        super(parent, style, factory, obj);
+    public ProcessVersionComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory,
+            IRepositoryViewObject IRepositoryViewObject) {
+        super(parent, style, factory, IRepositoryViewObject);
         FormLayout layout = new FormLayout();
         setLayout(layout);
         // add by wzhang for bug 8218
-        if (obj instanceof IProcess2) {
-            boolean readOnly = ((IProcess2) obj).getProcessor().getProcess().isReadOnly();
+        if (IRepositoryViewObject instanceof IProcess2) {
+            boolean readOnly = ((IProcess2) IRepositoryViewObject).getProcessor().getProcess().isReadOnly();
             parent.setEnabled(!readOnly);
-        } else if (obj instanceof RepositoryObject) {
-            parent.setEnabled(true);
         }
         FormData thisFormData = new FormData();
         thisFormData.left = new FormAttachment(0, 0);
@@ -171,14 +170,14 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                 try {
                     Project project = ProjectManager.getInstance().getProject(repositoryObject.getProperty());
 
-                    List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                    List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                             new org.talend.core.model.general.Project(project), repositoryObject.getId(),
                             repositoryObject.getProperty().getItem().getState().getPath(),
                             ERepositoryObjectType.getItemType(repositoryObject.getProperty().getItem()));
                     Collections.sort(allVersion, new IRepositoryObjectComparator());
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
-                        IRepositoryObject repositoryObjectVersion = allVersion.get(i);
+                        IRepositoryViewObject repositoryObjectVersion = allVersion.get(i);
                         RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode, repositoryObjectVersion);
                         objects[i] = repositoryNode;
                     }
@@ -189,7 +188,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
             }
 
             private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode,
-                    IRepositoryObject repositoryObjectVersion) {
+                    IRepositoryViewObject repositoryObjectVersion) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion.getProperty()
                         .getItem());
 

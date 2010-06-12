@@ -44,6 +44,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
@@ -56,8 +57,10 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.routines.RoutineLibraryMananger;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -91,39 +94,39 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return EcoreUtil.generateUUID();
     }
 
-    public RootContainer<String, IRepositoryObject> getDocumentation(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.DOCUMENTATION, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataConnection(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_CONNECTIONS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataSAPConnection(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SAPCONNECTIONS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataEBCDIC(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EBCDIC, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataMDM(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_MDMCONNECTION, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataRules(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_RULES, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFilePositional(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_POSITIONAL, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getProcess(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getProcess(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.PROCESS, true);
     }
 
@@ -132,67 +135,67 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getJoblets()
      */
-    public RootContainer<String, IRepositoryObject> getJoblets(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.JOBLET, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getContext(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getContext(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.CONTEXT, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getRoutine(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.ROUTINES, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.SQLPATTERNS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getSnippets(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.SNIPPETS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getBusinessProcess(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.BUSINESS_PROCESS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.SVG_BUSINESS_PROCESS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_REGEXP, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileXml(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_XML, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileLdif(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileExcel(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EXCEL, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_HL7, true);
     }
 
@@ -215,7 +218,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
      */
-    public List<IRepositoryObject> getRecycleBinItems(Project project) throws PersistenceException {
+    public List<IRepositoryViewObject> getRecycleBinItems(Project project) throws PersistenceException {
         ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
                 ERepositoryObjectType.METADATA_SAPCONNECTIONS, ERepositoryObjectType.SQLPATTERNS,
                 ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
@@ -229,11 +232,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_RULES, ERepositoryObjectType.METADATA_FILE_HL7,
                 ERepositoryObjectType.METADATA_MDMCONNECTION };
 
-        List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
+        List<IRepositoryViewObject> deletedItems = new ArrayList<IRepositoryViewObject>();
         for (int i = 0; i < types.length; i++) {
-            RootContainer<String, IRepositoryObject> container = getObjectFromFolder(project, types[i], true);
-            List<IRepositoryObject> repositoryObjects = container.getAbsoluteMembers().objects();
-            for (IRepositoryObject object : repositoryObjects) {
+            RootContainer<String, IRepositoryViewObject> container = getObjectFromFolder(project, types[i], true);
+            List<IRepositoryViewObject> repositoryObjects = container.getAbsoluteMembers().objects();
+            for (IRepositoryViewObject object : repositoryObjects) {
                 if (object.getProperty().getItem().getState().isDeleted()) {
                     deletedItems.add(object);
                 }
@@ -248,9 +251,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @param toReturn
      * @param serializableAllVersion
      */
-    protected List<IRepositoryObject> convert(List<IRepositoryObject> serializableAllVersion) {
-        List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
-        for (IRepositoryObject current : serializableAllVersion) {
+    protected List<IRepositoryViewObject> convert(List<IRepositoryViewObject> serializableAllVersion) {
+        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
+        for (IRepositoryViewObject current : serializableAllVersion) {
             toReturn.add(current);
         }
         return toReturn;
@@ -265,8 +268,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         lastRepositoryTypeForItemMap.put(id, itemType);
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
-        List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
+    protected List<IRepositoryViewObject> getSerializable(Project project, String id, boolean allVersion)
+            throws PersistenceException {
+        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
 
         if (lastFolderForItemMap.containsKey(id)) {
             ERepositoryObjectType itemType = lastRepositoryTypeForItemMap.get(id);
@@ -274,9 +278,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             Object fullFolder = getFullFolder(project, itemType, currentPath);
 
             try {
-                if (fullFolder != null) {
-                    List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType, allVersion,
-                            false, true);
+                if (fullFolder != null && (fullFolder instanceof FolderItem || ((IFolder) fullFolder).exists())) {
+                    List<IRepositoryViewObject> itemsFound = getSerializableFromFolder(project, fullFolder, id, itemType,
+                            allVersion, false, true);
                     if (!itemsFound.isEmpty()) { // add for items in recycle-bin
                         toReturn.addAll(itemsFound);
                         return toReturn;
@@ -292,7 +296,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         for (ERepositoryObjectType repositoryObjectType : REPOSITORY_OBJECT_TYPE_LIST) {
             Object folder = getFolder(project, repositoryObjectType);
             if (folder != null) {
-                List<IRepositoryObject> itemsFound = getSerializableFromFolder(project, folder, id, repositoryObjectType,
+                List<IRepositoryViewObject> itemsFound = getSerializableFromFolder(project, folder, id, repositoryObjectType,
                         allVersion, true, true);
                 if (!itemsFound.isEmpty()) {
                     addToHistory(id, repositoryObjectType, itemsFound.get(0).getProperty().getItem().getState().getPath());
@@ -308,15 +312,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
-    public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = null;
+    public List<IRepositoryViewObject> getAllVersion(Project project, String id) throws PersistenceException {
+        List<IRepositoryViewObject> serializableAllVersion = null;
         serializableAllVersion = getSerializable(project, id, true);
         return convert(serializableAllVersion);
     }
 
-    public List<IRepositoryObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
+    public List<IRepositoryViewObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
             throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = null;
+        List<IRepositoryViewObject> serializableAllVersion = null;
 
         Object fullFolder = getFullFolder(project, type, relativeFolder);
         if (fullFolder != null) {
@@ -327,11 +331,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             }
             return convert(serializableAllVersion);
         }
-        serializableAllVersion = new ArrayList<IRepositoryObject>();
+        serializableAllVersion = new ArrayList<IRepositoryViewObject>();
         return serializableAllVersion;
     }
 
-    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryObject>... givenList)
+    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryViewObject>... givenList)
             throws PersistenceException {
         if (name == null) {
             name = item.getProperty().getLabel();
@@ -353,7 +357,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             path = item.getState().getPath();
         }
 
-        List<IRepositoryObject> list;
+        List<IRepositoryViewObject> list;
 
         if (givenList.length == 0) {
             list = getAll(project, type, true, false);
@@ -361,7 +365,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             list = givenList[0];
         }
 
-        for (IRepositoryObject current : list) {
+        for (IRepositoryViewObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())
                     && item.getProperty().getId() != current.getProperty().getId()) {
                 // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
@@ -373,7 +377,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Project project, Object folder, String id,
+    protected abstract List<IRepositoryViewObject> getSerializableFromFolder(Project project, Object folder, String id,
             ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted,
             boolean... recursiveCall) throws PersistenceException;
 
@@ -439,9 +443,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<URL> routines = service.getSystemRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
         // will automatically set the children folders
-        folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
-
-        List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.ROUTINES, false, false);
+        FolderItem folderItem = folderHelper.getFolder("code/routines/system");
+        if (folderItem == null) {
+            folderItem = folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
+        }
+        List<IRepositoryViewObject> repositoryObjects = getAll(project, ERepositoryObjectType.ROUTINES, false, false);
         Map<String, List<URI>> routineAndJars = RoutineLibraryMananger.getInstance().getRoutineAndJars();
         for (URL url : routines) {
             String[] fragments = url.toString().split("/"); //$NON-NLS-1$
@@ -454,7 +460,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             }
 
             RoutineItem existingItem = null;
-            for (IRepositoryObject object : repositoryObjects) {
+            for (IRepositoryViewObject object : repositoryObjects) {
                 if (object.getLabel().equals(routineLabel) && object.getProperty().getItem() instanceof RoutineItem) {
                     existingItem = (RoutineItem) object.getProperty().getItem();
                     break;
@@ -464,6 +470,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 createRoutine(url, path, routineLabel, routineAndJars.get(routineLabel));
             } else {
                 updateRoutine(url, existingItem);
+                existingItem.setParent(folderItem);
             }
         }
     }
@@ -473,11 +480,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         Project project = getRepositoryContext().getProject();
         FolderHelper folderHelper = getFolderHelper(project.getEmfProject());
         // will automatically set the children folders
-        folderHelper.createFolder("sqlPatterns/system"); //$NON-NLS-1$
+        FolderItem folderItem = folderHelper.getFolder("sqlPatterns/system");
+        if (folderItem == null) {
+            folderItem = folderHelper.createFolder("sqlPatterns/system"); //$NON-NLS-1$
+        }
 
         List<URL> routines = service.getSystemSQLPatterns();
 
-        List<IRepositoryObject> repositoryObjects = getAll(project, ERepositoryObjectType.SQLPATTERNS, false, false);
+        List<IRepositoryViewObject> repositoryObjects = getAll(project, ERepositoryObjectType.SQLPATTERNS, false, false);
 
         for (URL url : routines) {
             String[] fragments = url.toString().split("/"); //$NON-NLS-1$
@@ -496,7 +506,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             String sqlPatternLabel = tmp[0];
 
             SQLPatternItem existingItem = null;
-            for (IRepositoryObject object : repositoryObjects) {
+            for (IRepositoryViewObject object : repositoryObjects) {
                 if (object.getLabel().equals(sqlPatternLabel) && object.getProperty().getItem() instanceof SQLPatternItem
                         && ((SQLPatternItem) object.getProperty().getItem()).getEltName().equals(categoryName)) {
                     existingItem = (SQLPatternItem) object.getProperty().getItem();
@@ -507,6 +517,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 createSQLPattern(url, sqlPatternLabel, categoryName);
             } else {
                 updateSQLPattern(url, existingItem);
+                existingItem.setParent(folderItem);
             }
         }
     }
@@ -631,12 +642,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                         .lastSegment());
             }
             if (folderHelper.getFolder(parentPath.append(systemPath)) == null) {
-                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, categoryPath, systemPath
-                        .lastSegment());
+                Folder folder = createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS,
+                        categoryPath, systemPath.lastSegment());
+                ((FolderItem) folder.getProperty().getItem()).setType(FolderType.SYSTEM_FOLDER_LITERAL);
             }
             if (folderHelper.getFolder(parentPath.append(userPath)) == null) {
-                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, categoryPath, userPath
-                        .lastSegment());
+                Folder folder = createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS,
+                        categoryPath, userPath.lastSegment());
+                ((FolderItem) folder.getProperty().getItem()).setType(FolderType.SYSTEM_FOLDER_LITERAL);
             }
             create(getRepositoryContext().getProject(), sqlpatternItem, systemPath);
 
@@ -696,18 +709,31 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             String productBranding = brandingService.getFullProductName();
             project.getEmfProject().setProductVersion(productBranding + "-" + productVersion); //$NON-NLS-1$
         }
-        saveProject();
+        // saveProject();
+
+        // parent's folders info are transient, so need to set again each start.
+        for (FolderItem curFolderItem : (List<FolderItem>) project.getEmfProject().getFolders()) {
+            fillParentsFolderInfos(curFolderItem);
+            curFolderItem.setParent(project.getEmfProject());
+        }
 
         setLoggedOnProject(true);
     }
 
-    protected abstract void saveProject() throws PersistenceException;
+    private void fillParentsFolderInfos(FolderItem folderItem) {
+        for (Item curItem : (List<Item>) folderItem.getChildren()) {
+            if (curItem instanceof FolderItem) {
+                fillParentsFolderInfos((FolderItem) curItem);
+            }
+            curItem.setParent(folderItem);
+        }
+    }
 
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         List<ModuleNeeded> importNeedsList = new ArrayList<ModuleNeeded>();
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        List<IRepositoryObject> jobs = repositoryFactory.getAll(ERepositoryObjectType.PROCESS, true);
-        for (IRepositoryObject cur : jobs) {
+        List<IRepositoryViewObject> jobs = repositoryFactory.getAll(ERepositoryObjectType.PROCESS, true);
+        for (IRepositoryViewObject cur : jobs) {
             if (repositoryFactory.getStatus(cur) != ERepositoryStatus.DELETED) {
                 ProcessItem item = (ProcessItem) cur.getProperty().getItem();
                 if (item == null || item.getProcess() == null) {
@@ -733,8 +759,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return importNeedsList;
     }
 
-    public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException {
-        RootContainer<String, IRepositoryObject> toReturn = new RootContainer<String, IRepositoryObject>();
+    public RootContainer<String, IRepositoryViewObject> getRoutineFromProject(Project project) throws PersistenceException {
+        RootContainer<String, IRepositoryViewObject> toReturn = new RootContainer<String, IRepositoryViewObject>();
         ERepositoryObjectType type = ERepositoryObjectType.ROUTINES;
 
         IProject fsProject = ResourceModelUtils.getProject(project);
@@ -743,11 +769,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 .getFolderName(ERepositoryObjectType.ROUTINES), true);
 
         addFolderMembers(project, type, toReturn, objectFolder, true);
+        saveProject(project);
         return toReturn;
     }
 
-    public synchronized IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = null;
+    public synchronized IRepositoryViewObject getLastVersion(Project project, String id) throws PersistenceException {
+        List<IRepositoryViewObject> serializableAllVersion = null;
         serializableAllVersion = getSerializable(project, id, false);
         int size = serializableAllVersion.size();
         if (size > 1) {
@@ -770,10 +797,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @return
      */
     // for bug 9265
-    private String getItemsMessages(List<IRepositoryObject> serializableAllVersion, int size) {
+    private String getItemsMessages(List<IRepositoryViewObject> serializableAllVersion, int size) {
         String message = Messages.getString("AbstractEMFRepositoryFactory.presistenceException.whoCauseProblems");//$NON-NLS-1$
         int k = 0;
-        for (IRepositoryObject object : serializableAllVersion) {
+        for (IRepositoryViewObject object : serializableAllVersion) {
             message += object.getProperty().getLabel();
             k++;
             if (k < size) {
@@ -783,9 +810,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return message;
     }
 
-    public synchronized IRepositoryObject getLastVersion(Project project, String id, String relativeFolder,
+    public synchronized IRepositoryViewObject getLastVersion(Project project, String id, String relativeFolder,
             ERepositoryObjectType type) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = null;
+        List<IRepositoryViewObject> serializableAllVersion = null;
         Object fullFolder = getFullFolder(project, type, relativeFolder);
         serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
         if (serializableAllVersion.isEmpty()) {
@@ -848,9 +875,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
 
-        List<IRepositoryObject> allVersion = new ArrayList<IRepositoryObject>();
+        List<IRepositoryViewObject> allVersion = new ArrayList<IRepositoryViewObject>();
         getAllVersions(project, property, allVersion);
-        for (IRepositoryObject repositoryObject : allVersion) {
+        for (IRepositoryViewObject repositoryObject : allVersion) {
             Property uptodateProperty = repositoryObject.getProperty();
             if (uptodateProperty.getVersion().equals(property.getVersion())) {
                 return uptodateProperty;
@@ -859,10 +886,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return null;
     }
 
-    private void getAllVersions(Project project, Property property, List<IRepositoryObject> allVersion)
+    private void getAllVersions(Project project, Property property, List<IRepositoryViewObject> allVersion)
             throws PersistenceException {
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
-
         Object fullFolder = getFullFolder(project, itemType, property.getItem().getState().getPath());
         if (fullFolder != null) {
             allVersion.addAll(getSerializableFromFolder(project, fullFolder, property.getId(), itemType, true, false, true));
@@ -891,7 +917,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
         // MOD mzhao Temporary return original object. In this case, the object hasn't been updated from svn server.
         if (allVersion.size() == 0) {
-            allVersion.add(new RepositoryObject(property));
+            allVersion.add(new RepositoryViewObject(property));
         }
 
     }
@@ -903,5 +929,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 builder.removeItemRelations(objToDelete.getProperty().getItem());
             }
         }
+    }
+
+    public FolderItem getFolderItem(Project project, ERepositoryObjectType itemType, IPath path) {
+        return getFolderHelper(project.getEmfProject()).getFolder(itemType.getFolderName(itemType) + "/" + path);
     }
 }

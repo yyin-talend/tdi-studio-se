@@ -28,7 +28,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.rowgenerator.shadow.LogRowNode;
 import org.talend.designer.rowgenerator.shadow.RowGenContextManager;
 import org.talend.designer.runprocess.IProcessor;
@@ -231,7 +231,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
      */
-    public List<IRepositoryObject> getChildren() {
+    public List<IRepositoryViewObject> getChildren() {
         // TODO Auto-generated method stub
         return null;
     }

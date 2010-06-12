@@ -184,6 +184,9 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 if (nodeType != ERepositoryObjectType.PROCESS) {
                     canWork = false;
                 }
+                if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+                    canWork = false;
+                }
                 break;
             default:
                 canWork = false;

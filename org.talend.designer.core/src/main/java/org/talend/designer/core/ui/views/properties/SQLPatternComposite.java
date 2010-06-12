@@ -85,7 +85,7 @@ import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -233,7 +233,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                     id = id.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                    IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                    IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                     String label = repositoryObject.getLabel();
 
                     refreshComboContent(tableViewer, false);
@@ -617,7 +617,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 String compoundId = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                 String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                 String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
 
                 SQLPatternItem item = null;
@@ -729,11 +729,11 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         // String dbName = (String) elementParam.getValue();
         List<SQLPatternInfor> patternInfor = new ArrayList<SQLPatternInfor>();
         try {
-            List<IRepositoryObject> list = null;
+            List<IRepositoryViewObject> list = null;
             if (isItemIndexChecked() && modifySQL) {
                 List<RelationshipItemBuilder.Relation> relations = new ArrayList<RelationshipItemBuilder.Relation>();
                 IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                List<IRepositoryObject> updateList = new ArrayList<IRepositoryObject>();
+                List<IRepositoryViewObject> updateList = new ArrayList<IRepositoryViewObject>();
                 for (Map map : tableInput) {
                     String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                     relations.addAll(RelationshipItemBuilder.getInstance().getItemsRelatedTo(id, ItemCacheManager.LATEST_VERSION,
@@ -741,7 +741,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 }
                 for (RelationshipItemBuilder.Relation relation : relations) {
                     try {
-                        IRepositoryObject obj = factory.getLastVersion(relation.getId());
+                        IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
                         if (obj != null) {
                             updateList.add(obj);
                         }
@@ -757,7 +757,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 // add reference sql pattern
                 addReferencedSQLTemplate(list, ProjectManager.getInstance().getCurrentProject());
             }
-            for (IRepositoryObject repositoryObject : list) {
+            for (IRepositoryViewObject repositoryObject : list) {
                 Item item = repositoryObject.getProperty().getItem();
                 if (item instanceof SQLPatternItem) {
                     SQLPatternItem sqlitem = (SQLPatternItem) repositoryObject.getProperty().getItem();
@@ -776,7 +776,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         return patternInfor;
     }
 
-    private void addReferencedSQLTemplate(List<IRepositoryObject> list, Project project) {
+    private void addReferencedSQLTemplate(List<IRepositoryViewObject> list, Project project) {
         try {
             Context ctx = CorePlugin.getContext();
             if (ctx == null) {
@@ -798,10 +798,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 if (refeInRef != null && refeInRef.size() > 0) {
                     addReferencedSQLTemplate(list, newProject);
                 }
-                List<IRepositoryObject> refList;
+                List<IRepositoryViewObject> refList;
                 refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(newProject,
                         ERepositoryObjectType.SQLPATTERNS, false);
-                for (IRepositoryObject repositoryObject : refList) {
+                for (IRepositoryViewObject repositoryObject : refList) {
                     Item item = repositoryObject.getProperty().getItem();
                     if (item instanceof SQLPatternItem) {
                         if (!((SQLPatternItem) item).isSystem()) {
@@ -894,7 +894,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 String compoundId = (String) ep.get(SQLPatternUtils.SQLPATTERNLIST);
                 String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                 String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
                 SQLPatternItem item = null;
                 if (repositoryObject == null
@@ -1105,7 +1105,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     TableItem item = tableViewer.getTable().getSelection()[0];
                     id = item.getText();
                 }
-                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                 byte[] code = ((SQLPatternItem) repositoryObject.getProperty().getItem()).getContent().getInnerContent();
                 codeText.setText(new String(code));
 

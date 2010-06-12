@@ -73,7 +73,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
@@ -126,7 +126,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     private final Map<String, ConnectionItem> repositoryConnectionItemMap;
 
-    private Map<String, IRepositoryObject> processMap;
+    private Map<String, IRepositoryViewObject> processMap;
 
     private String oldPropertyType;
 
@@ -193,16 +193,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     private void updateProcessList() {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
-        processMap = new HashMap<String, IRepositoryObject>();
+        processMap = new HashMap<String, IRepositoryViewObject>();
 
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
-            RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
-            ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
+            RootContainer<String, IRepositoryViewObject> processContainer = factory.getProcess();
+            ContentList<String, IRepositoryViewObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
 
             String currentProcess = part.getTalendEditor().getProcess().getLabel();
-            for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-                IRepositoryObject process = object.getContent();
+            for (Content<String, IRepositoryViewObject> object : processAbsoluteMembers.values()) {
+                IRepositoryViewObject process = object.getContent();
                 if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
                     String path = object.getParent().getPath().toString();
                     String name;
@@ -241,7 +241,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         processNameList = tempFolderList;
 
         for (String name : processNameList) {
-            IRepositoryObject process = processMap.get(name);
+            IRepositoryViewObject process = processMap.get(name);
             processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String[] processTableNameList = processNameList.toArray(new String[0]);
@@ -300,9 +300,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         }
 
         try {
-            List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
+            List<IRepositoryViewObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
 
-            for (IRepositoryObject process : list) {
+            for (IRepositoryViewObject process : list) {
                 String id = process.getLabel();
                 if (selectedProcess.equals(id)) {
                     if (process.getProperty().getItem() instanceof ProcessItem) {

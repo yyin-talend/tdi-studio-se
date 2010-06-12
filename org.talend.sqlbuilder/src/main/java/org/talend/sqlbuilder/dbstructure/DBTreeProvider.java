@@ -43,8 +43,8 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
-import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -291,19 +291,19 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             isCleared = true;
         }
         for (Object obj : fromModel.getMembers()) {
-            RepositoryObject obj2 = (RepositoryObject) obj;
+            RepositoryViewObject obj2 = (RepositoryViewObject) obj;
             if (!connectionParameters.getRepositoryId().equals(obj2.getProperty().getId())) {
                 continue;
             }
-            IRepositoryObject repositoryObject = obj2.cloneNewObject();
+            IRepositoryViewObject repositoryObject = obj2.cloneNewObject();
             maps.put((obj2).getId(), obj2);
             addNode(parent, repositoryObject, false, null);
         }
     }
 
-    private static Map<String, IRepositoryObject> maps = new HashMap<String, IRepositoryObject>();
+    private static Map<String, IRepositoryViewObject> maps = new HashMap<String, IRepositoryViewObject>();
 
-    private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject, boolean isBuildIn, Integer index) {
+    private void addNode(RepositoryNode parent, IRepositoryViewObject repositoryObject, boolean isBuildIn, Integer index) {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                 .getConnection();
@@ -355,7 +355,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private List<Query> displayQueries = new ArrayList<Query>();
 
-    private void createQueries(RepositoryNode node, final IRepositoryObject repObj, DatabaseConnection metadataConnection,
+    private void createQueries(RepositoryNode node, final IRepositoryViewObject repObj, DatabaseConnection metadataConnection,
             boolean isBuildIn) {
         QueriesConnection queriesConnection = metadataConnection.getQueries();
 
@@ -370,7 +370,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
-    private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
+    private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryViewObject repObj,
+            QueriesConnection queriesConnection) {
         displayQueries.clear();
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
             Query query = (Query) iter.next();
@@ -397,7 +398,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      * @param iMetadataConnection
      * @param metadataConnection
      */
-    private void createTables(RepositoryNode node, final IRepositoryObject repObj, Connection metadataConnection,
+    private void createTables(RepositoryNode node, final IRepositoryViewObject repObj, Connection metadataConnection,
             boolean isBuildIn) {
         for (Object currentTable : metadataConnection.getTables()) {
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
@@ -418,7 +419,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
-    private void createColumns(RepositoryNode tableNode, IRepositoryObject repObj, Object currentTable, boolean isBuildIn) {
+    private void createColumns(RepositoryNode tableNode, IRepositoryViewObject repObj, Object currentTable, boolean isBuildIn) {
         for (Object currentColumn : ((MetadataTable) currentTable).getColumns()) {
             MetadataColumn metadataColumn = (MetadataColumn) currentColumn;
             RepositoryNode columnNode = createMetacolumn(tableNode, repObj, metadataColumn, isBuildIn);
@@ -427,8 +428,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
     }
 
-    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj, MetadataColumn metadataColumn,
-            boolean isBuildIn) {
+    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryViewObject repObj,
+            MetadataColumn metadataColumn, boolean isBuildIn) {
         MetadataColumnRepositoryObject modelObj = new MetadataColumnRepositoryObject(repObj, metadataColumn);
         modelObj.setRepositoryName(metadataColumn.getLabel());
         // statusCode use for source table name
@@ -462,7 +463,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      * @param table
      * @return
      */
-    private RepositoryNode createMetatable(RepositoryNode node, IRepositoryObject repObj,
+    private RepositoryNode createMetatable(RepositoryNode node, IRepositoryViewObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table, boolean isBuildIn) {
         MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(repObj, table);
         modelObj.setRepositoryName(table.getLabel());
@@ -501,11 +502,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class QueriesConnectionRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
         private QueriesConnection queriesConnection;
 
-        public QueriesConnectionRepositoryObject(IRepositoryObject repObj, QueriesConnection queriesConnection) {
+        public QueriesConnectionRepositoryObject(IRepositoryViewObject repObj, QueriesConnection queriesConnection) {
             super(repObj.getProperty());
             this.repObj = repObj;
             this.queriesConnection = queriesConnection;
@@ -528,11 +529,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class QueryRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
         private Query query;
 
-        public QueryRepositoryObject(IRepositoryObject repObj, Query query) {
+        public QueryRepositoryObject(IRepositoryViewObject repObj, Query query) {
             super(repObj.getProperty());
             this.repObj = repObj;
             this.query = query;
@@ -551,9 +552,9 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class FolderRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
-        public FolderRepositoryObject(IRepositoryObject repObj) {
+        public FolderRepositoryObject(IRepositoryViewObject repObj) {
             super(null);
             this.repObj = repObj;
         }
@@ -577,9 +578,9 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class MetadataConnectionRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
-        public MetadataConnectionRepositoryObject(IRepositoryObject repObj) {
+        public MetadataConnectionRepositoryObject(IRepositoryViewObject repObj) {
             super(repObj.getProperty());
             this.repObj = repObj;
         }
@@ -600,11 +601,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class MetadataTableRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
         private org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-        public MetadataTableRepositoryObject(IRepositoryObject repObj,
+        public MetadataTableRepositoryObject(IRepositoryViewObject repObj,
                 org.talend.core.model.metadata.builder.connection.MetadataTable table) {
             super(repObj.getProperty());
             this.repObj = repObj;
@@ -624,11 +625,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     public static class MetadataColumnRepositoryObject extends SqlBuilderRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private IRepositoryViewObject repObj;
 
         private MetadataColumn column;
 
-        public MetadataColumnRepositoryObject(IRepositoryObject repObj, MetadataColumn column) {
+        public MetadataColumnRepositoryObject(IRepositoryViewObject repObj, MetadataColumn column) {
             super(repObj.getProperty());
             this.repObj = repObj;
             this.column = column;
@@ -662,7 +663,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return null;
     }
 
-    public static Map<String, IRepositoryObject> getMaps() {
+    public static Map<String, IRepositoryViewObject> getMaps() {
         return maps;
     }
 

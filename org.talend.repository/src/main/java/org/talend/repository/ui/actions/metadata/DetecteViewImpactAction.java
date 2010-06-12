@@ -29,6 +29,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -92,7 +93,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                 case REPOSITORY_ELEMENT:
                     switch (node.getObjectType()) {
                     case METADATA_CON_TABLE:
-                        IRepositoryObject repositoryObject = node.getObject();
+                        IRepositoryViewObject repositoryObject = node.getObject();
                         if (repositoryObject != null) {
                             Item item2 = repositoryObject.getProperty().getItem();
                             if (item2 instanceof DatabaseConnectionItem) {

@@ -38,7 +38,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -145,7 +145,7 @@ public class DuplicateAction extends AContextualAction {
             ExceptionHandler.process(e);
         }
         // update the property of the node repository object
-        sourceNode.getObject().setProperty(updatedProperty);
+        // sourceNode.getObject().setProperty(updatedProperty);
 
         String initNameValue = "Copy_of_" + sourceNode.getObject().getProperty().getItem().getProperty().getLabel(); //$NON-NLS-1$
 
@@ -365,8 +365,8 @@ public class DuplicateAction extends AContextualAction {
 
             if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
-                List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
-                for (IRepositoryObject obj : allVersion) {
+                List<IRepositoryViewObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
+                for (IRepositoryViewObject obj : allVersion) {
                     if (obj.getVersion().equals(originalItem.getProperty().getVersion())) {
                         originalItem = obj.getProperty().getItem();
                         break;
@@ -395,12 +395,12 @@ public class DuplicateAction extends AContextualAction {
         }
     }
 
-    private void copyOldVersions(List<IRepositoryObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
+    private void copyOldVersions(List<IRepositoryViewObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
             IPath path) throws Exception {
         if (allVersion != null && allVersion.size() > 1) {
             PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
             if (dialog.open() == Window.OK) {
-                for (IRepositoryObject object : dialog.getSelectedVersionItems()) {
+                for (IRepositoryViewObject object : dialog.getSelectedVersionItems()) {
                     Item copy = factory.copy(object.getProperty().getItem(), path);
                     copy.getProperty().setId(newLastVersionItem.getProperty().getId());
                     copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());

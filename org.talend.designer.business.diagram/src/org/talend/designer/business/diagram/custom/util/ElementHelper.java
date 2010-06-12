@@ -37,7 +37,7 @@ import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
@@ -97,7 +97,7 @@ public class ElementHelper {
                     if (assignment instanceof BusinessAssignment) {
                         TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
                         if (talendItem != null) {
-                            IRepositoryObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                            IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
                                     talendItem.getId());
                             if (obj != null) {
                                 ERepositoryObjectType type = obj.getType();
@@ -134,9 +134,9 @@ public class ElementHelper {
                                     labels.add(label);
                                 } else if (talendItem instanceof SQLPattern) {
 
-                                    List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                    List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
                                             ERepositoryObjectType.SQLPATTERNS);
-                                    for (IRepositoryObject object : list) {
+                                    for (IRepositoryViewObject object : list) {
                                         if (talendItem.getLabel().equals(object.getLabel())) {
                                             img = ImageDescriptor.createFromFile(ECoreImage.class,
                                                     ECoreImage.METADATA_SQLPATTERN_ICON.getPath()).createImage();
@@ -147,9 +147,9 @@ public class ElementHelper {
                                     }
 
                                 } else if (talendItem instanceof Routine) {
-                                    List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                    List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
                                             ERepositoryObjectType.ROUTINES);
-                                    for (IRepositoryObject object : list) {
+                                    for (IRepositoryViewObject object : list) {
                                         if (talendItem.getLabel().equals(object.getLabel())) {
                                             img = ImageDescriptor.createFromFile(ECoreImage.class,
                                                     ECoreImage.ROUTINE_ICON.getPath()).createImage();

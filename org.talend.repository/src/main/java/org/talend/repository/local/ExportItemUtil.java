@@ -56,7 +56,7 @@ import org.talend.core.model.properties.TDQItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.tis.ITDQImportExportService;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
@@ -216,9 +216,9 @@ public class ExportItemUtil {
         for (Item item : items) {
             org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(pManager
                     .getProject(item));
-            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
+            List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
                     item.getProperty().getId());
-            for (IRepositoryObject repositoryObject : allVersion) {
+            for (IRepositoryViewObject repositoryObject : allVersion) {
                 Item anyVersionItem = repositoryObject.getProperty().getItem();
                 if (!anyVersionItem.equals(item)) {
                     itemsVersions.add(anyVersionItem);

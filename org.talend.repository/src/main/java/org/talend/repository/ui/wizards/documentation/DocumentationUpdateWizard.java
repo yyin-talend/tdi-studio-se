@@ -25,7 +25,7 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.LinkType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -51,7 +51,7 @@ public class DocumentationUpdateWizard extends CheckLastVersionRepositoryWizard 
     /**
      * Constructs a new DocumentationUpdateWizard.
      */
-    public DocumentationUpdateWizard(IWorkbench workbench, IRepositoryObject object, IPath destinationPath) {
+    public DocumentationUpdateWizard(IWorkbench workbench, IRepositoryViewObject object, IPath destinationPath) {
         super(workbench, false);
         this.pathToSave = destinationPath;
         this.docItem = object.getProperty().getItem();

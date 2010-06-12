@@ -34,7 +34,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.RepositoryConstants;
@@ -49,7 +49,7 @@ import org.talend.repository.model.ResourceModelUtils;
 public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     public void syncAllRoutines() throws SystemException {
-        for (IRepositoryObject routine : getRoutines()) {
+        for (IRepositoryViewObject routine : getRoutines()) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             if (!routineItem.isBuiltIn()) {
                 syncRoutine(routineItem, false);
@@ -153,7 +153,7 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * IRepositoryObject)
      */
     @Override
-    public void deleteRoutinefile(IRepositoryObject objToDelete) {
+    public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
         // TODO Auto-generated method stub
 
     }

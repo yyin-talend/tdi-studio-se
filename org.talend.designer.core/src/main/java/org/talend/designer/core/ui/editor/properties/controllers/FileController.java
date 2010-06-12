@@ -43,7 +43,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.XmlFileConnectionItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.utils.PathExtractor;
@@ -122,8 +122,8 @@ public class FileController extends AbstractElementPropertySectionController {
                     linkedRepositoryItem = elementParameterFromField.getLinkedRepositoryItem();
                     if (linkedRepositoryItem == null
                             || !linkedRepositoryItem.getProperty().getId().equals(propertyParam.getValue())) {
-                        IRepositoryObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                                propertyParam.getValue().toString());
+                        IRepositoryViewObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory()
+                                .getLastVersion(propertyParam.getValue().toString());
                         if (repository != null && repository.getProperty() != null) {
                             linkedRepositoryItem = repository.getProperty().getItem();
                             elementParameterFromField.setLinkedRepositoryItem(linkedRepositoryItem);

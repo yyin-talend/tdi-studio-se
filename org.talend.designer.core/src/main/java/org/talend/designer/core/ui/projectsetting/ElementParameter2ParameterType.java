@@ -32,7 +32,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -419,8 +419,8 @@ public class ElementParameter2ParameterType {
         IProcess process = null;
 
         try {
-            List<IRepositoryObject> all = repositoryFactory.getAll(ERepositoryObjectType.PROCESS);
-            for (IRepositoryObject object : all) {
+            List<IRepositoryViewObject> all = repositoryFactory.getAll(ERepositoryObjectType.PROCESS);
+            for (IRepositoryViewObject object : all) {
                 if (!openedProcess.contains(object)) {
                     Item item = object.getProperty().getItem();
                     if (item instanceof ProcessItem) {

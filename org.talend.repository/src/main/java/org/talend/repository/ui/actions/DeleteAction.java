@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,13 +51,15 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
@@ -143,7 +146,7 @@ public class DeleteAction extends AContextualAction {
                             types.add(ERepositoryObjectType.DOCUMENTATION);
                         }
 
-                        deleteFolder(node, factory);
+                        deleteFolder(node, factory, deleteActionCache);
                     }
                 } catch (PersistenceException e) {
                     MessageBoxExceptionHandler.process(e);
@@ -151,6 +154,11 @@ public class DeleteAction extends AContextualAction {
                     MessageBoxExceptionHandler.process(e);
                 }
             }
+        }
+        try {
+            factory.saveProject(ProjectManager.getInstance().getCurrentProject());
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
 
         final boolean updatePalette = needToUpdataPalette;
@@ -160,7 +168,7 @@ public class DeleteAction extends AContextualAction {
                 if (updatePalette) {
                     ComponentUtilities.updatePalette();
                 }
-                RepositoryManager.refreshDeletedNode(types);
+                RepositoryManager.getRepositoryView().refresh();
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 for (IEditorReference editors : page.getEditorReferences()) {
                     CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
@@ -177,9 +185,18 @@ public class DeleteAction extends AContextualAction {
 
     /**
      * DOC qwei Comment method "deleteFolder".
+     * 
+     * @param deleteActionCache
      */
-    private void deleteFolder(final RepositoryNode node, final IProxyRepositoryFactory factory) {
+    private void deleteFolder(final RepositoryNode node, final IProxyRepositoryFactory factory,
+            final DeleteActionCache deleteActionCache) {
+        FolderItem folderItem = (FolderItem) node.getObject().getProperty().getItem();
         try {
+            if (folderItem.getState().isDeleted()) {
+                // if folder has been deleted already
+                deleteElements(factory, deleteActionCache, node);
+                return;
+            }
             IRunnableWithProgress op = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -194,9 +211,33 @@ public class DeleteAction extends AContextualAction {
                             deleteRepositoryNode(repositoryNode, factory);
                             monitor.worked(1 * 100 / taskTotal);
                         }
-                        factory.deleteFolder(objectType, path);
+
+                        FolderItem folderItem = factory.getFolderItem(ProjectManager.getInstance().getCurrentProject(),
+                                objectType, path);
+                        folderItem.getState().setDeleted(true);
+
+                        String fullPath = "";
+                        FolderItem curItem = folderItem;
+                        while (curItem.getParent() instanceof FolderItem
+                                && ((Item) curItem.getParent()).getParent() instanceof FolderItem
+                                && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
+                            FolderItem parentFolder = (FolderItem) curItem.getParent();
+                            if ("".equals(fullPath)) {
+                                fullPath = parentFolder.getProperty().getLabel() + fullPath;
+                            } else {
+                                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
+                            }
+                            curItem = parentFolder;
+                        }
+                        if (objectType == ERepositoryObjectType.SQLPATTERNS) {
+                            if ("".equals(fullPath)) {
+                                fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                            } else {
+                                fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                            }
+                        }
+                        folderItem.getState().setPath(fullPath);
                     } catch (Exception e) {
-                        // e.printStackTrace();
                         ExceptionHandler.process(e);
                     }
                     monitor.done();
@@ -205,7 +246,6 @@ public class DeleteAction extends AContextualAction {
             };
             PlatformUI.getWorkbench().getProgressService().run(true, true, op);
         } catch (Exception e) {
-            // e.printStackTrace();
             ExceptionHandler.process(e);
         }
     }
@@ -219,10 +259,25 @@ public class DeleteAction extends AContextualAction {
             for (RepositoryNode repositoryNode2 : repositoryList) {
                 deleteRepositoryNode(repositoryNode2, factory);
             }
-            factory.deleteFolder(objectType, path);
+
+            FolderItem folderItem = factory.getFolderItem(ProjectManager.getInstance().getCurrentProject(), objectType, path);
+            folderItem.getState().setDeleted(true);
+
+            String fullPath = "";
+            FolderItem curItem = folderItem;
+            while (curItem.getParent() instanceof FolderItem && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
+                FolderItem parentFolder = (FolderItem) curItem.getParent();
+                if ("".equals(fullPath)) {
+                    fullPath = parentFolder.getProperty().getLabel() + fullPath;
+                } else {
+                    fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
+                }
+                curItem = parentFolder;
+            }
+            folderItem.getState().setPath(fullPath);
 
         } else {
-            IRepositoryObject objToDelete = repositoryNode.getObject();
+            IRepositoryViewObject objToDelete = repositoryNode.getObject();
             factory.deleteObjectLogical(objToDelete);
         }
     }
@@ -303,7 +358,7 @@ public class DeleteAction extends AContextualAction {
 
     public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
             DeleteActionCache deleteActionCache, RepositoryNode currentJobNode) {
-        IRepositoryObject object = currentJobNode.getObject();
+        IRepositoryViewObject object = currentJobNode.getObject();
         Item nodeItem = object.getProperty().getItem(); // hywang add
         boolean needCheckJobletIfUsedInProcess = false;
         if (nodeItem instanceof JobletProcessItem) {
@@ -340,11 +395,11 @@ public class DeleteAction extends AContextualAction {
                         refParentProjects.add(currentProject); // contain current project
                     }
                     for (Project refP : refParentProjects) {
-                        List<IRepositoryObject> processes = factory.getAll(refP, ERepositoryObjectType.PROCESS);
-                        List<IRepositoryObject> jobletes = factory.getAll(refP, ERepositoryObjectType.JOBLET);
+                        List<IRepositoryViewObject> processes = factory.getAll(refP, ERepositoryObjectType.PROCESS);
+                        List<IRepositoryViewObject> jobletes = factory.getAll(refP, ERepositoryObjectType.JOBLET);
                         processes.addAll(jobletes);
                         deleteActionCache.setProcessList(processes);
-                        for (IRepositoryObject process : deleteActionCache.getProcessList()) {
+                        for (IRepositoryViewObject process : deleteActionCache.getProcessList()) {
                             // node = (EList) process.getGraphicalNodes();item
 
                             Property property2 = process.getProperty();
@@ -450,7 +505,7 @@ public class DeleteAction extends AContextualAction {
      */
     private boolean isForbidNode(RepositoryNode node) {
 
-        IRepositoryObject nodeObject = node.getObject();
+        IRepositoryViewObject nodeObject = node.getObject();
         // Avoid to delete node which is locked.
         if (nodeObject != null
                 && (nodeObject.getProperty().getItem().getState().isLocked() || RepositoryManager
@@ -492,7 +547,7 @@ public class DeleteAction extends AContextualAction {
             return true;
         }
         if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
-            final IRepositoryObject object = nodeObject;
+            final IRepositoryViewObject object = nodeObject;
             if (object != null && object instanceof MetadataTableRepositoryObject) {
                 final MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
                 if (table != null && table instanceof SubscriberTable) {
@@ -503,19 +558,15 @@ public class DeleteAction extends AContextualAction {
         return false;
     }
 
-    /**
-     * ftang Comment method "deleteElements".
-     * 
-     * @param factory
-     * @param currentJobNode
-     * @throws PersistenceException
-     * @throws BusinessException
-     */
     private boolean deleteElements(IProxyRepositoryFactory factory, DeleteActionCache deleteActionCache,
             RepositoryNode currentJobNode) throws PersistenceException, BusinessException {
-        Boolean confirm = null;
+        return deleteElements(factory, deleteActionCache, currentJobNode, null);
+    }
+
+    private boolean deleteElements(IProxyRepositoryFactory factory, DeleteActionCache deleteActionCache,
+            RepositoryNode currentJobNode, Boolean confirm) throws PersistenceException, BusinessException {
         boolean needReturn = false;
-        IRepositoryObject objToDelete = currentJobNode.getObject();
+        IRepositoryViewObject objToDelete = currentJobNode.getObject();
 
         List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, deleteActionCache, currentJobNode);
         if (checkRepository.size() > 0) {
@@ -543,10 +594,17 @@ public class DeleteAction extends AContextualAction {
                 if (confirm) {
 
                     deleteActionCache.closeOpenedEditor(objToDelete);
-
-                    factory.deleteObjectPhysical(objToDelete);
-                    ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
-
+                    if (currentJobNode.getType() == ENodeType.SIMPLE_FOLDER) {
+                        for (RepositoryNode curNode : currentJobNode.getChildren()) {
+                            deleteElements(factory, deleteActionCache, curNode, confirm);
+                        }
+                        factory.deleteFolder(currentJobNode.getContentType(), new Path(currentJobNode.getObject().getProperty()
+                                .getItem().getState().getPath()
+                                + "/" + currentJobNode.getObject().getProperty().getLabel()));
+                    } else {
+                        factory.deleteObjectPhysical(objToDelete);
+                        ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
+                    }
                 }
             } else {
                 factory.deleteObjectLogical(objToDelete);
@@ -627,7 +685,7 @@ public class DeleteAction extends AContextualAction {
                         visible = false;
                         break;
                     }
-                    IRepositoryObject repObj = node.getObject();
+                    IRepositoryViewObject repObj = node.getObject();
                     IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 
                     ERepositoryStatus status = repFactory.getStatus(repObj);

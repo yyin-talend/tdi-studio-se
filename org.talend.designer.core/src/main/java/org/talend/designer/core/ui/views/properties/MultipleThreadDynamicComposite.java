@@ -77,7 +77,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -167,12 +167,12 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * fixed for 8971
      */
-    private List<IRepositoryObject> getAllRepositoryMetadata() {
+    private List<IRepositoryViewObject> getAllRepositoryMetadata() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         ProjectManager pManager = ProjectManager.getInstance();
         pManager.getReferencedProjects(); // retrieve reference project.
 
-        List<IRepositoryObject> repositoryObjects;
+        List<IRepositoryViewObject> repositoryObjects;
         try {
             repositoryObjects = retrieveMetadataFromProject(factory, pManager, pManager.getCurrentProject());
         } catch (PersistenceException e) {
@@ -187,16 +187,16 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * fixed for 8971
      */
-    private List<IRepositoryObject> retrieveMetadataFromProject(IProxyRepositoryFactory factory, ProjectManager pManager,
+    private List<IRepositoryViewObject> retrieveMetadataFromProject(IProxyRepositoryFactory factory, ProjectManager pManager,
             Project parentProject) throws PersistenceException {
-        List<IRepositoryObject> repositoryObjects = factory.getAll(parentProject, ERepositoryObjectType.METADATA);
+        List<IRepositoryViewObject> repositoryObjects = factory.getAll(parentProject, ERepositoryObjectType.METADATA);
         if (repositoryObjects == null) {
-            repositoryObjects = new ArrayList<IRepositoryObject>();
+            repositoryObjects = new ArrayList<IRepositoryViewObject>();
         }
         List<Project> referencedProjects = pManager.getReferencedProjects(parentProject);
         if (referencedProjects != null) {
             for (Project p : referencedProjects) {
-                List<IRepositoryObject> refRepObjects = retrieveMetadataFromProject(factory, pManager, p);
+                List<IRepositoryViewObject> refRepObjects = retrieveMetadataFromProject(factory, pManager, p);
                 if (refRepObjects != null) {
                     repositoryObjects.addAll(refRepObjects);
                 }
@@ -215,7 +215,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-                List<IRepositoryObject> repositoryObjects = getAllRepositoryMetadata();
+                List<IRepositoryViewObject> repositoryObjects = getAllRepositoryMetadata();
 
                 int total = repositoryObjects.size(); // + elem.getElementParameters().size();
                 monitorWrap.beginTask(Messages.getString("MultipleThreadDynamicComposite.gatherInformation"), total); //$NON-NLS-1$
@@ -234,7 +234,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     tableIdAndDbTypeMap.clear();
                     tableIdAndDbSchemaMap.clear();
 
-                    for (IRepositoryObject curObject : repositoryObjects) {
+                    for (IRepositoryViewObject curObject : repositoryObjects) {
 
                         Item item = curObject.getProperty().getItem();
                         if (item instanceof ConnectionItem) {

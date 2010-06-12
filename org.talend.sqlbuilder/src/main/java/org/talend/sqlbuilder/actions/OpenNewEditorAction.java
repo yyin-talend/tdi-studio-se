@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
@@ -71,8 +71,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void init() {
-        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
-                .toList().toArray(new RepositoryNode[] {});
+        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection()).toList()
+                .toArray(new RepositoryNode[] {});
         if (selectedNodes.length == 0) {
             this.setEnabled(false);
             return;
@@ -105,7 +105,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
             firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
         }
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
-        IRepositoryObject object = SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject();
+        IRepositoryViewObject object = SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject();
         connParam.setRepositoryName(object.getLabel());
         connParam.setRepositoryId(object.getId());
         if (isQuery) {

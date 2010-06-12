@@ -35,7 +35,7 @@ import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
@@ -326,7 +326,7 @@ public final class EMFRepositoryNodeManager {
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
         // inital the quote depence on the dbtype
-        IRepositoryObject rObject = currRoot.getObject();
+        IRepositoryViewObject rObject = currRoot.getObject();
         DatabaseConnectionItem item = (DatabaseConnectionItem) rObject.getProperty().getItem();
         DatabaseConnection dbConnection = (DatabaseConnection) item.getConnection();
         String dbType = dbConnection.getDatabaseType();

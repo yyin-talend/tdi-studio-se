@@ -61,7 +61,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.DesignerPlugin;
@@ -402,8 +402,8 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                                         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
                                                 1 * UpdatesConstants.SCALE, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
                                         subMonitor.beginTask(UpdatesConstants.EMPTY, 1 * rate);
-                                        IRepositoryObject lastVersion = DesignerPlugin.getDefault().getProxyRepositoryFactory()
-                                                .getLastVersion(id);
+                                        IRepositoryViewObject lastVersion = DesignerPlugin.getDefault()
+                                                .getProxyRepositoryFactory().getLastVersion(id);
                                         if (lastVersion != null) {
                                             Item item = lastVersion.getProperty().getItem();
                                             IProcess processFromItem = designerCoreService.getProcessFromItem(item);

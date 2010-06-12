@@ -28,7 +28,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -271,9 +271,9 @@ public final class DowngradeParameterHelper {
                 repositoryConnectionsNeeded = ERepositoryObjectType.METADATA;
             }
 
-            List<IRepositoryObject> objects = proxyRepositoryFactory.getAll(repositoryConnectionsNeeded);
+            List<IRepositoryViewObject> objects = proxyRepositoryFactory.getAll(repositoryConnectionsNeeded);
             ConnectionItem connectionItem = null;
-            for (IRepositoryObject object : objects) {
+            for (IRepositoryViewObject object : objects) {
                 connectionItem = (ConnectionItem) object.getProperty().getItem();
 
                 switch (type) {

@@ -19,7 +19,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -37,7 +37,7 @@ public class DatabaseConnectionParameterUtil {
                 // 8846
                 String contextID = conn.getContextId();
                 paramValue = ContextParameterUtils.getVariableFromCode(paramValue);
-                IRepositoryObject repObj;
+                IRepositoryViewObject repObj;
                 try {
                     repObj = ProxyRepositoryFactory.getInstance().getLastVersion(contextID);
                     if (repObj.getProperty().getItem() instanceof ContextItem) {

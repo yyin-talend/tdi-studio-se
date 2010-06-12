@@ -136,15 +136,15 @@ public class PurposeStatusSection extends AbstractSection {
 
     @Override
     protected void beforeSave() {
-        String text = purposeText.getText();
-        if (!text.equals(getObject().getPurpose())) {
-            getObject().setPurpose(text);
-        }
+        // String text = purposeText.getText();
+        // if (!text.equals(getObject().getPurpose())) {
+        // getObject().setPurpose(text);
+        // }
 
-        text = statusHelper.getStatusCode(statusText.getText());
-        if (!text.equals(getObject().getStatusCode())) {
-            getObject().setStatusCode(text);
-        }
+        // text = statusHelper.getStatusCode(statusText.getText());
+        // if (!text.equals(getObject().getStatusCode())) {
+        // getObject().setStatusCode(text);
+        // }
     }
 
     @Override

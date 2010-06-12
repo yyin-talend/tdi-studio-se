@@ -97,6 +97,10 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
                     .getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
 
+        if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
+        }
+
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();

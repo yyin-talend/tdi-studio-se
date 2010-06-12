@@ -38,7 +38,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IReferencedProjectService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -109,7 +109,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         RepositoryNode node = (RepositoryNode) obj;
 
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT || node.getType() == ENodeType.SIMPLE_FOLDER) {
-            IRepositoryObject object = node.getObject();
+            IRepositoryViewObject object = node.getObject();
             if (object == null) {
                 return node.getLabel();
             }
@@ -143,7 +143,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 break;
             }
             String label = getText(object.getProperty());
-            if (!mainProject.equals(emfproject) && PluginChecker.isRefProjectLoaded()) {
+            if (!mainProject.getTechnicalLabel().equals(emfproject.getTechnicalLabel()) && PluginChecker.isRefProjectLoaded()) {
                 IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault().getService(
                         IReferencedProjectService.class);
                 if (service != null && service.isMergeRefProject()) {
@@ -362,7 +362,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault()
                             .getService(IReferencedProjectService.class);
                     if (service != null && service.isMergeRefProject()) {
-                        IRepositoryObject object = node.getObject();
+                        IRepositoryViewObject object = node.getObject();
                         if (object != null) {
                             org.talend.core.model.properties.Project project = ProjectManager.getInstance().getProject(
                                     object.getProperty().getItem());

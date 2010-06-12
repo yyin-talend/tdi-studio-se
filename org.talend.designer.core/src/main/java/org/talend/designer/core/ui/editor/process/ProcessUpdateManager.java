@@ -63,7 +63,7 @@ import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
@@ -454,7 +454,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     // get the connection
                     Connection repositoryConnection = null;
                     String source = null;
-                    IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) repositoryParam
+                    IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) repositoryParam
                             .getValue());
                     if (lastVersion != null) {
                         final Item item = lastVersion.getProperty().getItem();
@@ -908,7 +908,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
-                IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
                 UpdateCheckResult result = null;
 
                 Connection repositoryConnection = null;
@@ -965,10 +965,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             .getService(ICDCProviderService.class);
                                     if (service != null) {
                                         try {
-                                            List<IRepositoryObject> all;
+                                            List<IRepositoryViewObject> all;
                                             all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
                                                     ERepositoryObjectType.METADATA_CONNECTIONS);
-                                            for (IRepositoryObject obj : all) {
+                                            for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
                                                     String cdcLinkId = service

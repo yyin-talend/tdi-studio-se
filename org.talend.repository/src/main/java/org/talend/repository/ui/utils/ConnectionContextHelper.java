@@ -70,7 +70,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -116,7 +116,7 @@ public final class ConnectionContextHelper {
         }
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
-            IRepositoryObject context = factory.getLastVersion(contextId);
+            IRepositoryViewObject context = factory.getLastVersion(contextId);
             if (context != null && factory.getStatus(context) != ERepositoryStatus.DELETED) {
                 if (context.getProperty().getItem() instanceof ContextItem) {
                     connection.setContextMode(true);
@@ -188,7 +188,7 @@ public final class ConnectionContextHelper {
             //
             try {
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                List<IRepositoryObject> contextObjectList = factory.getAll(ERepositoryObjectType.CONTEXT, true);
+                List<IRepositoryViewObject> contextObjectList = factory.getAll(ERepositoryObjectType.CONTEXT, true);
 
                 int i = 1;
                 String tmpLabel = newLabel;
@@ -205,9 +205,9 @@ public final class ConnectionContextHelper {
         return null;
     }
 
-    private static boolean isValidContextName(List<IRepositoryObject> contextObjectList, String name) {
+    private static boolean isValidContextName(List<IRepositoryViewObject> contextObjectList, String name) {
         if (contextObjectList != null) {
-            for (IRepositoryObject object : contextObjectList) {
+            for (IRepositoryViewObject object : contextObjectList) {
                 Item item = object.getProperty().getItem();
                 if (item.getProperty().getLabel().equals(name)) {
                     return false;
@@ -340,12 +340,12 @@ public final class ConnectionContextHelper {
         if (isId && RepositoryNode.NO_ID.equals(contextNameOrId.trim())) {
             return null;
         }
-        IRepositoryObject contextObject = null;
+        IRepositoryViewObject contextObject = null;
         try {
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            List<IRepositoryObject> contextObjectList = factory.getAll(ERepositoryObjectType.CONTEXT, true);
+            List<IRepositoryViewObject> contextObjectList = factory.getAll(ERepositoryObjectType.CONTEXT, true);
             if (contextObjectList != null) {
-                for (IRepositoryObject object : contextObjectList) {
+                for (IRepositoryViewObject object : contextObjectList) {
                     Item item = object.getProperty().getItem();
                     if (item != null && item instanceof ContextItem) {
                         String itemNameOrId = null;

@@ -28,7 +28,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.SnippetItem;
 import org.talend.core.model.properties.SnippetVariable;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.snippet.VariableItemHelper;
 
 /**
@@ -214,12 +214,12 @@ public class SnippetParser {
 
     private SnippetItem findSnippet(SnippetStore store) {
         try {
-            RootContainer<String, IRepositoryObject> snippets = RunProcessPlugin.getDefault().getRepositoryService()
+            RootContainer<String, IRepositoryViewObject> snippets = RunProcessPlugin.getDefault().getRepositoryService()
                     .getProxyRepositoryFactory().getSnippets();
-            List<IRepositoryObject> objects = snippets.getMembers();
+            List<IRepositoryViewObject> objects = snippets.getMembers();
 
             SnippetItem item = null;
-            for (IRepositoryObject repositoryObject : objects) {
+            for (IRepositoryViewObject repositoryObject : objects) {
                 item = (SnippetItem) repositoryObject.getProperty().getItem();
                 if (item.getProperty().getId().equals(store)) {
                     break;

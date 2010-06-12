@@ -97,7 +97,12 @@ public class EditContextAction extends AbstractConextAction {
         }
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, repositoryNode, false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
+
+        // refresh to lock image
+        RepositoryManager.refreshSavedNode(repositoryNode);
+
         dlg.open();
+        // refresh to unlock image
         RepositoryManager.refreshSavedNode(repositoryNode);
 
     }

@@ -37,6 +37,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -73,6 +74,16 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
     private IMetadataContextModeManager contextModeManager;
 
     private boolean isToolbar;
+
+    private String originaleObjectLabel;
+
+    private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
 
     /**
      * Constructor for FileWizard.
@@ -131,6 +142,13 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
             initLockStrategy();
             break;
         }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
+        }
         initConnection();
     }
 
@@ -179,6 +197,13 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
         initConnection();
     }
@@ -286,6 +311,8 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }
+                ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+
             } catch (PersistenceException e) {
                 String detailError = e.toString();
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
@@ -297,6 +324,18 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean performCancel() {
+        if (!creation) {
+            connectionItem.getProperty().setVersion(this.originalVersion);
+            connectionItem.getProperty().setLabel(this.originaleObjectLabel);
+            connectionItem.getProperty().setDescription(this.originalDescription);
+            connectionItem.getProperty().setPurpose(this.originalPurpose);
+            connectionItem.getProperty().setStatusCode(this.originalStatus);
+        }
+        return super.performCancel();
     }
 
     /**

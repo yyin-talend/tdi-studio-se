@@ -58,7 +58,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.business.diagram.custom.commands.UnassignTalendItemsFromBusinessAssignmentCommand;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
 import org.talend.designer.business.diagram.custom.util.KeyHelper;
@@ -252,7 +252,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
     }
 
     private RepositoryNode createRepositoryNode(BusinessAssignment businessAssignment) {
-        IRepositoryObject lastVersion;
+        IRepositoryViewObject lastVersion;
         try {
             lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(businessAssignment.getTalendItem().getId());
 

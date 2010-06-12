@@ -17,7 +17,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.commands.ChangeTalendItemLabelCommand;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -40,7 +40,7 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         BusinessAssignment assignment = (BusinessAssignment) object;
         try {
             if (columnIndex == 0) {
-                IRepositoryObject lastVersion = getLastVersion(object);
+                IRepositoryViewObject lastVersion = getLastVersion(object);
                 if (lastVersion == null) {
                     MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
                     if (table != null) {
@@ -57,18 +57,18 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                     TalendItem item = assignment.getTalendItem();
                     if (item instanceof SQLPattern) {
 
-                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                        List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
                                 ERepositoryObjectType.SQLPATTERNS);
-                        for (IRepositoryObject obj : list) {
+                        for (IRepositoryViewObject obj : list) {
                             if (item.getLabel().equals(obj.getLabel())) {
                                 return image;
                             }
                         }
 
                     } else if (item instanceof Routine) {
-                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance()
-                                .getAll(ERepositoryObjectType.ROUTINES);
-                        for (IRepositoryObject obj : list) {
+                        List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                ERepositoryObjectType.ROUTINES);
+                        for (IRepositoryViewObject obj : list) {
                             if (item.getLabel().equals(obj.getLabel())) {
                                 return image;
                             }
@@ -93,7 +93,7 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
     public String getColumnText(Object object, int columnIndex) {
         String columnText = super.getColumnText(object, columnIndex);
         BusinessAssignment assignment = (BusinessAssignment) object;
-        IRepositoryObject lastVersion = getLastVersion(object);
+        IRepositoryViewObject lastVersion = getLastVersion(object);
         try {
             if (columnIndex == 0) {
                 if (lastVersion == null) {
@@ -118,18 +118,18 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                     TalendItem item = assignment.getTalendItem();
                     if (item instanceof SQLPattern) {
 
-                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                        List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
                                 ERepositoryObjectType.SQLPATTERNS);
-                        for (IRepositoryObject obj : list) {
+                        for (IRepositoryViewObject obj : list) {
                             if (item.getLabel().equals(obj.getLabel())) {
                                 return columnText;
                             }
                         }
 
                     } else if (item instanceof Routine) {
-                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance()
-                                .getAll(ERepositoryObjectType.ROUTINES);
-                        for (IRepositoryObject obj : list) {
+                        List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                ERepositoryObjectType.ROUTINES);
+                        for (IRepositoryViewObject obj : list) {
                             if (item.getLabel().equals(obj.getLabel())) {
                                 return columnText;
                             }
@@ -165,7 +165,7 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         return columnText;
     }
 
-    private IRepositoryObject getLastVersion(Object object) {
+    private IRepositoryViewObject getLastVersion(Object object) {
         BusinessAssignment businessAssignment = (BusinessAssignment) object;
         try {
             return ProxyRepositoryFactory.getInstance().getLastVersion(businessAssignment.getTalendItem().getId());
@@ -174,7 +174,7 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         return null;
     }
 
-    private boolean isDeleted(IRepositoryObject repositoryObject) {
+    private boolean isDeleted(IRepositoryViewObject repositoryObject) {
         return ProxyRepositoryFactory.getInstance().getStatus(repositoryObject).equals(ERepositoryStatus.DELETED);
     }
 }

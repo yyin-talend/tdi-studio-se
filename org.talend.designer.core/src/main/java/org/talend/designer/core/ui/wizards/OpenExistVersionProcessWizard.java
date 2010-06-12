@@ -29,7 +29,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -37,7 +36,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
@@ -61,7 +60,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     OpenExistVersionProcessPage mainPage = null;
 
-    private final IRepositoryObject processObject;
+    private final IRepositoryViewObject processObject;
 
     private boolean alreadyEditedByUser = false;
 
@@ -69,7 +68,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     private String originalVersion = null;
 
-    public OpenExistVersionProcessWizard(IRepositoryObject processObject) {
+    public OpenExistVersionProcessWizard(IRepositoryViewObject processObject) {
         this.processObject = processObject;
         originaleObjectLabel = processObject.getProperty().getLabel();
         originalVersion = processObject.getProperty().getVersion();
@@ -137,16 +136,16 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
             refreshNewJob();
-            Property property = processObject.getRepositoryNode().getObject().getProperty();
-            Property updatedProperty = null;
-            try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
+            // Property property = processObject.getRepositoryNode().getObject().getProperty();
+            // Property updatedProperty = null;
+            // try {
+            // updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+            // new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+            // } catch (PersistenceException e) {
+            // ExceptionHandler.process(e);
+            // }
             // update the property of the node repository object
-            processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
+            // processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
 
             openAnotherVersion(processObject.getRepositoryNode(), false);
         } else {
@@ -171,6 +170,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
         try {
             repositoryFactory.save(getProperty(), this.originaleObjectLabel, this.originalVersion);
             ExpressionPersistance.getInstance().jobNameChanged(originaleObjectLabel, processObject.getLabel());
+            ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
             return true;
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e);

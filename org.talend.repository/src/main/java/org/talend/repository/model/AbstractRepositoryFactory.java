@@ -25,7 +25,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryWorkUnit;
 
 /**
@@ -135,9 +135,9 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         return EcoreUtil.generateUUID();
     }
 
-    private void collect(RootContainer<String, IRepositoryObject> rootContainer, List<ConnectionItem> result)
+    private void collect(RootContainer<String, IRepositoryViewObject> rootContainer, List<ConnectionItem> result)
             throws PersistenceException {
-        for (IRepositoryObject repositoryObject : rootContainer.getAbsoluteMembers().objects()) {
+        for (IRepositoryViewObject repositoryObject : rootContainer.getAbsoluteMembers().objects()) {
             ConnectionItem connectionItem = (ConnectionItem) repositoryObject.getProperty().getItem();
             if (getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                 result.add(connectionItem);
@@ -170,7 +170,7 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public List<ContextItem> getContextItem(Project project) throws PersistenceException {
         List<ContextItem> result = new ArrayList<ContextItem>();
 
-        for (IRepositoryObject repositoryObject : getContext(project).getAbsoluteMembers().objects()) {
+        for (IRepositoryViewObject repositoryObject : getContext(project).getAbsoluteMembers().objects()) {
             ContextItem contextItem = (ContextItem) repositoryObject.getProperty().getItem();
             if (getStatus(contextItem) != ERepositoryStatus.DELETED) {
                 result.add(contextItem);

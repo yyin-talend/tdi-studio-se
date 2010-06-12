@@ -16,7 +16,7 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 
 /**
@@ -26,9 +26,10 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
 
     private final SAPFunctionUnit functionUnit;
 
-    private final IRepositoryObject repObj;
+    private final IRepositoryViewObject repObj;
 
-    public SAPFunctionRepositoryObject(IRepositoryObject repObj, RepositoryNode functionNode, final SAPFunctionUnit functionUnit) {
+    public SAPFunctionRepositoryObject(IRepositoryViewObject repObj, RepositoryNode functionNode,
+            final SAPFunctionUnit functionUnit) {
         this.repObj = repObj;
         this.functionUnit = functionUnit;
     }
@@ -60,12 +61,6 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
         return ERepositoryObjectType.METADATA_SAP_FUNCTION;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.repository.RepositoryObject#setLabel(java.lang.String)
-     */
-    @Override
     public void setLabel(String value) {
         if (functionUnit.getLabel() == null) {
             functionUnit.setLabel(value);
@@ -85,11 +80,6 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
     @Override
     public Property getProperty() {
         return repObj.getProperty();
-    }
-
-    @Override
-    public void setProperty(Property property) {
-        repObj.setProperty(property);
     }
 
     @Override

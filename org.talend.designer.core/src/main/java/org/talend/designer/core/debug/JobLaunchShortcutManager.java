@@ -28,7 +28,7 @@ import org.eclipse.ui.IEditorPart;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -89,7 +89,7 @@ public class JobLaunchShortcutManager {
      * 
      * cli Comment method "removeJobLaunch".
      */
-    public static void removeJobLaunch(IRepositoryObject objToDelete) {
+    public static void removeJobLaunch(IRepositoryViewObject objToDelete) {
         if (objToDelete == null) {
             return;
         }
@@ -138,7 +138,7 @@ public class JobLaunchShortcutManager {
      * 
      * cli Comment method "renameJobLaunch".
      */
-    public static void renameJobLaunch(IRepositoryObject obj, String oldLabel) {
+    public static void renameJobLaunch(IRepositoryViewObject obj, String oldLabel) {
         if (obj == null) {
             return;
         }

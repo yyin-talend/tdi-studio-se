@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
@@ -49,9 +49,9 @@ public class JobVersionUtils {
     public static String[] getAllVersions(RepositoryNode repositoryNode) {
         List<String> versionList = new ArrayList<String>();
         try {
-            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+            List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                     repositoryNode.getRoot().getProject(), repositoryNode.getId());
-            for (IRepositoryObject repositoryObject : allVersion) {
+            for (IRepositoryViewObject repositoryObject : allVersion) {
                 versionList.add(repositoryObject.getVersion());
             }
         } catch (PersistenceException e) {

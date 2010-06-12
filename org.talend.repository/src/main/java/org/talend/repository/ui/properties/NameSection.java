@@ -162,7 +162,7 @@ public class NameSection extends AbstractSection {
                         return;
                     }
                 }
-                getObject().setLabel(text);
+                // getObject().setLabel(text);
             }
         }
     }

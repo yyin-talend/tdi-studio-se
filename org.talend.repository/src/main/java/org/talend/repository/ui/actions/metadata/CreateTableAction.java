@@ -28,7 +28,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
@@ -101,7 +101,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-            final IRepositoryObject object = node.getObject();
+            final IRepositoryViewObject object = node.getObject();
             if (object instanceof MetadataTableRepositoryObject) {
                 MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
                 if (table instanceof SubscriberTable) {
@@ -168,7 +168,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                     setText(EDIT_LABEL);
                     collectSiblingNames(node);
-                    IRepositoryObject repositoryObject = node.getObject();
+                    IRepositoryViewObject repositoryObject = node.getObject();
                     if (repositoryObject != null) {
                         Item item2 = repositoryObject.getProperty().getItem();
                         if (item2 instanceof DatabaseConnectionItem) {

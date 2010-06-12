@@ -45,7 +45,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.IDesignerCoreService;
@@ -602,7 +602,7 @@ public abstract class JobScriptsManager {
                             repositoryMetadataId = id[0];
                             try {
                                 IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                                IRepositoryObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
+                                IRepositoryViewObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
                                 if (lastVersion != null) {
                                     Item item2 = lastVersion.getProperty().getItem();
                                     if (item2 != null) {
@@ -663,7 +663,7 @@ public abstract class JobScriptsManager {
                 if (repositoryContextId != null && !"".equals(repositoryContextId)) { //$NON-NLS-1$
                     try {
                         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                        IRepositoryObject lastVersion = factory.getLastVersion(repositoryContextId);
+                        IRepositoryViewObject lastVersion = factory.getLastVersion(repositoryContextId);
                         if (lastVersion != null) {
                             Item item2 = lastVersion.getProperty().getItem();
                             String contextName = item2.getProperty().getLabel();

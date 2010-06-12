@@ -36,6 +36,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
@@ -114,14 +115,14 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         String jobVersion = launch.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         if (jobId != null) {
             if (allVersion != null && allVersion.length > 0) {
-                for (IRepositoryObject obj : allVersion) {
+                for (IRepositoryViewObject obj : allVersion) {
                     if (obj.getProperty().getVersion().equals(jobVersion)) {
                         return true;
                     }
                 }
             } else {
-                List<IRepositoryObject> all = factory.getAllVersion(jobId);
-                for (IRepositoryObject obj : all) {
+                List<IRepositoryViewObject> all = factory.getAllVersion(jobId);
+                for (IRepositoryViewObject obj : all) {
                     if (obj.getProperty().getVersion().equals(jobVersion)) {
                         return true;
                     }

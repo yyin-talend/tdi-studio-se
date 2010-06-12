@@ -90,7 +90,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
@@ -2389,7 +2389,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
      */
-    public List<IRepositoryObject> getChildren() {
+    public List<IRepositoryViewObject> getChildren() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -2494,7 +2494,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
         try {
-            IRepositoryObject repositoryObject = factory.getProcess().getMember(getProject().getMasterJobId());
+            IRepositoryViewObject repositoryObject = factory.getProcess().getMember(getProject().getMasterJobId());
             if (repositoryObject.getType() == ERepositoryObjectType.PROCESS) {
                 item = (ProcessItem) repositoryObject.getProperty().getItem();
             }
@@ -2917,7 +2917,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = null;
+                List<IRepositoryViewObject> allVersion = null;
                 ItemState state = property.getItem().getState();
                 ERepositoryObjectType type = ERepositoryObjectType.PROCESS;
                 if (item instanceof JobletProcessItem) {
@@ -2945,7 +2945,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
                 String lastVersion = VersionUtils.DEFAULT_VERSION;
 
-                for (IRepositoryObject object : allVersion) {
+                for (IRepositoryViewObject object : allVersion) {
                     if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
                         lastVersion = object.getVersion();
                     }

@@ -56,7 +56,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -223,11 +223,11 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         List<IMPORTType> imports = null;
         String linkTarget = null;
 
-        RootContainer<String, IRepositoryObject> routines = getRouineFromProject(project);
+        RootContainer<String, IRepositoryViewObject> routines = getRouineFromProject(project);
         List<LinkTargetStore> paths = new ArrayList<LinkTargetStore>();
         String language = project.getLanguage().getName().trim();
 
-        for (IRepositoryObject obj : routines.getMembers()) {
+        for (IRepositoryViewObject obj : routines.getMembers()) {
             RoutineItem routine = (RoutineItem) obj.getProperty().getItem();
             imports = routine.getImports();
 
@@ -262,10 +262,10 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
      * 
      * @param project
      */
-    private RootContainer<String, IRepositoryObject> getRouineFromProject(Project project) {
+    private RootContainer<String, IRepositoryViewObject> getRouineFromProject(Project project) {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        RootContainer<String, IRepositoryObject> routines = null;
+        RootContainer<String, IRepositoryViewObject> routines = null;
         try {
             routines = factory.getRoutineFromProject(project);
         } catch (PersistenceException e) {

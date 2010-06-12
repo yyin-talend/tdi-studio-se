@@ -1072,6 +1072,13 @@
        </projecttask>
        <projecttask
              beforeLogon="false"
+             class="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
+             description="Move all items who were in bin folders in previous project to standard folder."
+             id="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
+             name="Remove the use of bin folder.">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
              class="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
              description="Support 3 versions tJavaFlex for bug11754"
              id="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"

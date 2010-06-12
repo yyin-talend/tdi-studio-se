@@ -48,25 +48,30 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.PropertiesWizard;
@@ -91,10 +96,28 @@ public class EditPropertiesAction extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
+        try {
+            ProxyRepositoryFactory.getInstance().initialize();
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
+
+        Property property = node.getObject().getProperty();
+        Property updatedProperty = null;
+
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        // update the property of the node repository object
+        // node.getObject().setProperty(updatedProperty);
+
         IPath path = RepositoryNodeUtilities.getPath(node);
 
         String originalName = node.getObject().getLabel();
-
         PropertiesWizard wizard = new PropertiesWizard(node, path, getNeededVersion() == null);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {

@@ -32,7 +32,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
@@ -56,7 +56,7 @@ public class CopyToGenericSchemaHelper {
      * @param isConnectionTableSchema
      * @throws PersistenceException
      */
-    public static void copyToGenericSchema(IProxyRepositoryFactory factory, IRepositoryObject tableToMove, IPath targetPath)
+    public static void copyToGenericSchema(IProxyRepositoryFactory factory, IRepositoryViewObject tableToMove, IPath targetPath)
             throws PersistenceException {
 
         repositoryFactory = factory;
@@ -160,7 +160,7 @@ public class CopyToGenericSchemaHelper {
      * @param objectToM m isConnectionTableSchema
      * @return
      */
-    private static boolean checkIsConnectionTableSchema(IRepositoryObject objectToMove) {
+    private static boolean checkIsConnectionTableSchema(IRepositoryViewObject objectToMove) {
         if (objectToMove != null && objectToMove.getType() != null) {
             switch (objectToMove.getType()) {
             case METADATA_CON_TABLE:

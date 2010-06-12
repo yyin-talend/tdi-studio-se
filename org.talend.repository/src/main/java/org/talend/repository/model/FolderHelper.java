@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -77,6 +78,7 @@ public abstract class FolderHelper {
             return;
         }
         FolderItem folder = null;
+        EObject parent = project;
         for (int i = 0; i < segmentCount; i++) {
             String segment = path.segment(i);
             FolderItem child = findChildFolder(folder, segment);
@@ -103,6 +105,8 @@ public abstract class FolderHelper {
                 }
             }
             folder = child;
+            folder.setParent(parent);
+            parent = folder;
         }
     }
 
@@ -133,6 +137,7 @@ public abstract class FolderHelper {
         } else {
             previousFolder.getChildren().remove(folder);
         }
+        folder.setParent(null);
         removeFromResource(folder);
     }
 
@@ -241,7 +246,7 @@ public abstract class FolderHelper {
      * @return
      */
     public boolean pathExists(FolderItem folder, String label) {
-        for (Object child : ((FolderItem) folder.eContainer()).getChildren()) {
+        for (Object child : ((FolderItem) folder.getParent()).getChildren()) {
             if (child instanceof FolderItem) {
                 FolderItem folderChild = (FolderItem) child;
                 if (!folderChild.getProperty().getId().equals(folder.getProperty().getId())

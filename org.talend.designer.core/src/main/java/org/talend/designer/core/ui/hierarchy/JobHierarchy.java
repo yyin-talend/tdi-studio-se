@@ -23,7 +23,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.utils.DesignerUtilities;
 
 /**
@@ -67,13 +67,13 @@ public class JobHierarchy {
         return jobs.toArray(new IProcess2[0]);
     }
 
-    public Collection<IRepositoryObject> getContextDependencies(IProcess process) {
+    public Collection<IRepositoryViewObject> getContextDependencies(IProcess process) {
         List<Item> items = new ArrayList<Item>(1);
         items.add(process.getProperty().getItem());
         return ProcessUtils.getProcessDependencies(ERepositoryObjectType.CONTEXT, items);
     }
 
-    public Collection<IRepositoryObject> getMetadataDependencies(IProcess process) {
+    public Collection<IRepositoryViewObject> getMetadataDependencies(IProcess process) {
         List<Item> items = new ArrayList<Item>(1);
         items.add(process.getProperty().getItem());
         return ProcessUtils.getProcessDependencies(ERepositoryObjectType.METADATA, items);

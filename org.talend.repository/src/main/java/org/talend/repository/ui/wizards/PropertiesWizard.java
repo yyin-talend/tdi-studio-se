@@ -34,11 +34,13 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.expressionbuilder.ExpressionPersistance;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -51,7 +53,7 @@ public class PropertiesWizard extends Wizard {
 
     private PropertiesWizardPage mainPage;
 
-    private IRepositoryObject object;
+    private IRepositoryViewObject object;
 
     private final IPath path;
 
@@ -60,6 +62,12 @@ public class PropertiesWizard extends Wizard {
     private final String originaleObjectLabel;
 
     private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
 
     private String lastVersionFound;
 
@@ -94,7 +102,6 @@ public class PropertiesWizard extends Wizard {
                             this.lastVersionFound = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(),
                                     property.getId()).getVersion();
                         }
-                        this.object.setProperty(proxyRepositoryFactory.getUptodateProperty(property));
                     }
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
@@ -106,6 +113,9 @@ public class PropertiesWizard extends Wizard {
         }
         this.originaleObjectLabel = this.object.getLabel();
         this.originalVersion = this.object.getVersion();
+        this.originalDescription = this.object.getDescription();
+        this.originalPurpose = this.object.getPurpose();
+        this.originalStatus = this.object.getStatusCode();
         this.path = path;
         lockObject();
     }
@@ -136,8 +146,8 @@ public class PropertiesWizard extends Wizard {
                 // if we have updated the version, the object will change, so we still need to unlock the original
                 // version of the object.
                 if (!object.getProperty().getVersion().equals(originalVersion)) {
-                    List<IRepositoryObject> list = repositoryFactory.getAllVersion(object.getProperty().getId());
-                    for (IRepositoryObject obj : list) {
+                    List<IRepositoryViewObject> list = repositoryFactory.getAllVersion(object.getProperty().getId());
+                    for (IRepositoryViewObject obj : list) {
                         if (obj.getProperty().getVersion().equals(originalVersion)) {
                             repositoryFactory.unlock(obj);
                             break;
@@ -196,14 +206,11 @@ public class PropertiesWizard extends Wizard {
         if (alreadyEditedByUser) {
             return false;
         }
-
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            repositoryFactory.save(object.getProperty(), this.originaleObjectLabel, this.originalVersion);
-            // if (!object.getLabel().equals(originaleObjectLabel)) {
-            // manageRunJobRenaming(object.getLabel(), originaleObjectLabel);
-            // }
+            ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+            proxyRepositoryFactory.save(object.getProperty(), this.originaleObjectLabel, this.originalVersion);
             ExpressionPersistance.getInstance().jobNameChanged(originaleObjectLabel, object.getLabel());
+            proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
             return true;
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e);
@@ -266,21 +273,13 @@ public class PropertiesWizard extends Wizard {
     @Override
     public boolean performCancel() {
         if (!alreadyEditedByUser) {
-            try {
-                reloadProperty();
-
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e);
-            }
+            object.getProperty().setVersion(this.originalVersion);
+            object.getProperty().setLabel(this.originaleObjectLabel);
+            object.getProperty().setDescription(this.originalDescription);
+            object.getProperty().setPurpose(this.originalPurpose);
+            object.getProperty().setStatusCode(this.originalStatus);
         }
         return true;
-    }
-
-    private void reloadProperty() throws PersistenceException {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-
-        Property property = repositoryFactory.reload(object.getProperty());
-        object.setProperty(property);
     }
 
     @Override

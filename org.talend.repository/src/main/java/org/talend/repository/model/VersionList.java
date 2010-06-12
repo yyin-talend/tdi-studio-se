@@ -18,19 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 
 /**
  * Used to manage IRepositoryObject list with allowing or not of all versions of each object. Constructor parameter
- * <code>allVersion</code> specify, if <code>false</code>, that only the most recent version of an object must be
- * kept. This functionnality is realized by the <code>add</code> method.<br/>
+ * <code>allVersion</code> specify, if <code>false</code>, that only the most recent version of an object must be kept.
+ * This functionnality is realized by the <code>add</code> method.<br/>
  * 
  * PTODO SML Overide other way to put object in the list
  * 
  * $Id$
  * 
  */
-public class VersionList extends ArrayList<IRepositoryObject> {
+public class VersionList extends ArrayList<IRepositoryViewObject> {
 
     private static final long serialVersionUID = 6286880354826726354L;
 
@@ -44,8 +44,7 @@ public class VersionList extends ArrayList<IRepositoryObject> {
     /**
      * DEfault constructor.
      * 
-     * @param allVersion - <code>true</code> if all versions of each object must be kept, <code>false</code>
-     * otherwise.
+     * @param allVersion - <code>true</code> if all versions of each object must be kept, <code>false</code> otherwise.
      */
     public VersionList(boolean allVersion) {
         super();
@@ -57,7 +56,7 @@ public class VersionList extends ArrayList<IRepositoryObject> {
      * 
      * If <code>false</code>, method will add object only if
      * <ul>
-     * <li> no object with this id could be found or</li>
+     * <li>no object with this id could be found or</li>
      * <li>an object with this id can be found and new object version is most recent than old object. Then old is
      * removed and new is added.</li>
      * </ul>
@@ -68,7 +67,7 @@ public class VersionList extends ArrayList<IRepositoryObject> {
      * @see Collection.add
      */
     @Override
-    public boolean add(IRepositoryObject o) {
+    public boolean add(IRepositoryViewObject o) {
         if (allVersion) {
             return super.add(o);
         } else {
@@ -78,7 +77,7 @@ public class VersionList extends ArrayList<IRepositoryObject> {
                 idToIndexMap.put(o.getId(), super.size());
                 return super.add(o);
             } else {
-                IRepositoryObject another = super.get(index);
+                IRepositoryViewObject another = super.get(index);
                 // compare version, see bug 0004190: Version check for the latest version is wrong.
                 if (VersionUtils.compareTo(o.getVersion(), another.getVersion()) > 0) {
                     // version is newer than existing one , replace it

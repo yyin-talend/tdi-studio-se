@@ -58,7 +58,7 @@ import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -836,7 +836,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
     protected RepositoryNode getMetadataNode(RepositoryNode node) {
         RepositoryNode parent = node.getParent();
         if (parent != null && parent.getObject() != null) {
-            IRepositoryObject object = parent.getObject();
+            IRepositoryViewObject object = parent.getObject();
             Item item = object.getProperty().getItem();
             if (item instanceof ConnectionItem) {
                 return parent;

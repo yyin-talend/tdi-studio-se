@@ -95,7 +95,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
      * 
      * @see org.talend.repository.ui.actions.AContextualAction#updateNodeToLastVersion()
      */
-    @Override
+    @Deprecated
     protected void updateNodeToLastVersion() {
         if (repositoryNode == null || repositoryNode.getObject() == null
                 || !(repositoryNode.getObject() instanceof RepositoryObject)) {
@@ -121,6 +121,6 @@ public abstract class AbstractCreateAction extends AContextualAction {
         }
 
         // update the property of the node repository object
-        repositoryNode.getObject().setProperty(updatedProperty);
+        // repositoryNode.getObject().setProperty(updatedProperty);
     }
 }

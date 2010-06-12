@@ -19,7 +19,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -44,7 +44,7 @@ public class RepositoryHelper {
         if (object instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) object;
             if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = repositoryNode.getObject();
+                IRepositoryViewObject repositoryObject = repositoryNode.getObject();
                 for (Iterator iter = repository.getTalenditems().iterator(); iter.hasNext();) {
                     TalendItem talendItem = (TalendItem) iter.next();
                     if (talendItem.getId().equals(repositoryObject.getId())) {
@@ -62,7 +62,7 @@ public class RepositoryHelper {
         if (object instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) object;
             if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = repositoryNode.getObject();
+                IRepositoryViewObject repositoryObject = repositoryNode.getObject();
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
 
                 EClass class1 = getEClass(nodeType);

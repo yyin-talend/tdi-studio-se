@@ -24,7 +24,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ERepositoryStatus;
@@ -62,7 +62,7 @@ public class CopyObjectAction {
             return false;
         }
 
-        IRepositoryObject objectToCopy = sourceNode.getObject();
+        IRepositoryViewObject objectToCopy = sourceNode.getObject();
 
         // Cannot move logically deleted objects :
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -134,7 +134,7 @@ public class CopyObjectAction {
             // Source is an repository element :
             // wzhang modified to fix bug 12349 and 11535
             Item originalItem = factory.getUptodateProperty(sourceNode.getObject().getProperty()).getItem();
-            List<IRepositoryObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
+            List<IRepositoryViewObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
             // qli modified to fix the bug 5400 and 6185.
             Item newItem = factory.copy(originalItem, path);
             if (newItem instanceof RoutineItem) {
@@ -153,12 +153,12 @@ public class CopyObjectAction {
         }
     }
 
-    private void copyOldVersions(List<IRepositoryObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
+    private void copyOldVersions(List<IRepositoryViewObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
             IPath path) throws Exception {
         if (allVersion != null && allVersion.size() > 1) {
             PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
             if (dialog.open() == Window.OK) {
-                for (IRepositoryObject object : dialog.getSelectedVersionItems()) {
+                for (IRepositoryViewObject object : dialog.getSelectedVersionItems()) {
                     Item copy = factory.copy(object.getProperty().getItem(), path);
                     copy.getProperty().setId(newLastVersionItem.getProperty().getId());
                     copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());

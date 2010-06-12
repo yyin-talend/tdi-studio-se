@@ -43,7 +43,7 @@ import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
@@ -133,7 +133,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
-            Property property = repFactory.reload(item.getProperty());
+            // Property property = repFactory.reload(item.getProperty());
+            Property property = repFactory.getUptodateProperty(item.getProperty());
             item = (RoutineItem) property.getItem();
             repFactory.unlock(item);
         } catch (PersistenceException e) {
@@ -315,7 +316,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                         item.getProperty().getId());
                 if (allVersion != null && !allVersion.isEmpty()) {
                     if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {

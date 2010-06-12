@@ -42,7 +42,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -186,7 +186,7 @@ public class UpdateNodeParameterCommand extends Command {
                                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
                                         .getName());
                                 Item item = null;
-                                IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
                                 if (lastVersion != null) {
                                     item = lastVersion.getProperty().getItem();
                                 }
@@ -195,10 +195,10 @@ public class UpdateNodeParameterCommand extends Command {
                                             .getService(ICDCProviderService.class);
                                     if (service != null) {
                                         try {
-                                            List<IRepositoryObject> all;
+                                            List<IRepositoryViewObject> all;
                                             all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
                                                     ERepositoryObjectType.METADATA_CONNECTIONS);
-                                            for (IRepositoryObject obj : all) {
+                                            for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
                                                     String cdcLinkId = service
@@ -377,7 +377,7 @@ public class UpdateNodeParameterCommand extends Command {
                                                 // wzhang added to fix 9251. get the current connection.
                                                 String propertyValue = (String) node
                                                         .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                                                IRepositoryObject lastVersion = UpdateRepositoryUtils
+                                                IRepositoryViewObject lastVersion = UpdateRepositoryUtils
                                                         .getRepositoryObjectById(propertyValue);
                                                 Connection repositoryConn = null;
                                                 if (lastVersion != null) {

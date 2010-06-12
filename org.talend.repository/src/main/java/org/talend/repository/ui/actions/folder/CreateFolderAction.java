@@ -118,6 +118,9 @@ public class CreateFolderAction extends AContextualAction {
                         || (property == ERepositoryObjectType.SQLPATTERNS && !isUnderUserDefined(node))) {
                     canWork = false;
                 }
+                if (node.getObject().getProperty().getItem().getState().isDeleted()) {
+                    canWork = false;
+                }
                 break;
             default:
                 // Nothing to do

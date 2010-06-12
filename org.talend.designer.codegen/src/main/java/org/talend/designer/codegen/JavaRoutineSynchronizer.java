@@ -36,7 +36,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -58,7 +58,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
     public void syncAllRoutines() throws SystemException {
-        for (IRepositoryObject routine : getRoutines()) {
+        for (IRepositoryViewObject routine : getRoutines()) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem, true);
         }
@@ -302,7 +302,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         routineItem.getContent().setInnerContent(routineContent.getBytes());
     }
 
-    public void deleteRoutinefile(IRepositoryObject objToDelete) {
+    public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);

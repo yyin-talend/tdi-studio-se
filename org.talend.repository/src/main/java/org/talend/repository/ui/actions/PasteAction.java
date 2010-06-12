@@ -29,7 +29,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.i18n.Messages;
@@ -116,7 +116,7 @@ public class PasteAction extends AContextualAction {
         }
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
         IProxyRepositoryFactory proxyFactory = ProxyRepositoryFactory.getInstance();
-        IRepositoryObject object = target.getObject();
+        IRepositoryViewObject object = target.getObject();
 
         if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.JOBLETS
                 || target.getContentType() == ERepositoryObjectType.GENERATED

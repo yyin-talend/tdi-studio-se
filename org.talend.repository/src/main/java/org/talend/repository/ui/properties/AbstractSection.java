@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -45,7 +45,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
     private static final List<AbstractSection> REGISTERED_SECTIONS = new ArrayList<AbstractSection>();
 
-    private IRepositoryObject repositoryObject;
+    private IRepositoryViewObject repositoryObject;
 
     private RepositoryNode repositoryNode;
 
@@ -72,7 +72,8 @@ public abstract class AbstractSection extends AbstractPropertySection {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
+     * @see
+     * org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
      * org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
      */
     @Override
@@ -80,7 +81,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
         super.createControls(parent, aTabbedPropertySheetPage);
     }
 
-    protected IRepositoryObject getObject() {
+    protected IRepositoryViewObject getObject() {
         return repositoryObject;
     }
 

@@ -26,7 +26,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -63,7 +63,7 @@ public class ReadTableAction extends AbstractCreateTableAction {
             }
             ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-                IRepositoryObject repositoryObject = node.getObject();
+                IRepositoryViewObject repositoryObject = node.getObject();
                 if (repositoryObject != null) {
                     Item item2 = repositoryObject.getProperty().getItem();
                     if (item2 instanceof DatabaseConnectionItem) {

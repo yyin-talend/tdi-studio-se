@@ -36,7 +36,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
@@ -256,10 +256,10 @@ public final class UpdateContextReferenceHelper {
         IProxyRepositoryFactory factory = factory = ProxyRepositoryFactory.getInstance();
 
         try {
-            List<IRepositoryObject> repositoryObjList = factory.getAll(ERepositoryObjectType.PROCESS, true);
-            for (IRepositoryObject repositoryObj : repositoryObjList) {
-                List<IRepositoryObject> allVersion = factory.getAllVersion(repositoryObj.getId());
-                for (IRepositoryObject object : allVersion) {
+            List<IRepositoryViewObject> repositoryObjList = factory.getAll(ERepositoryObjectType.PROCESS, true);
+            for (IRepositoryViewObject repositoryObj : repositoryObjList) {
+                List<IRepositoryViewObject> allVersion = factory.getAllVersion(repositoryObj.getId());
+                for (IRepositoryViewObject object : allVersion) {
                     ProcessItem item = (ProcessItem) object.getProperty().getItem();
 
                     if (item != null) {

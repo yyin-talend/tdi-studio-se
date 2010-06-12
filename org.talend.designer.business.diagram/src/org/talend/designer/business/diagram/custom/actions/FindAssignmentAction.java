@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
@@ -91,7 +91,7 @@ public class FindAssignmentAction extends AContextualAction {
                 for (Iterator iterator = businessItem.getAssignments().iterator(); iterator.hasNext();) {
                     BusinessAssignment businessAssignment = (BusinessAssignment) iterator.next();
                     TalendItem talendItem = businessAssignment.getTalendItem();
-                    IRepositoryObject obj = repositoryNode.getObject();
+                    IRepositoryViewObject obj = repositoryNode.getObject();
                     if (talendItem.getId().equals(repositoryNode.getId())) {
                         list.add(businessItem);
                     } else if (talendItem instanceof SQLPattern || talendItem instanceof Routine

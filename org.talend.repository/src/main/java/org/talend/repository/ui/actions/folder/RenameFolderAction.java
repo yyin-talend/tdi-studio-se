@@ -127,6 +127,9 @@ public class RenameFolderAction extends AContextualAction {
                         || RepositoryConstants.USER_DEFINED.equals(label)) {
                     canWork = false;
                 }
+                if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+                    canWork = false;
+                }
                 break;
             default:
                 canWork = false;

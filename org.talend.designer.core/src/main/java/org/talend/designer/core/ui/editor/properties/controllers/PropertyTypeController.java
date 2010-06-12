@@ -50,7 +50,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -587,7 +587,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         // replace property by CDC property.
                         String propertyId = cdcType.getLinkDB();
                         try {
-                            IRepositoryObject object = ProxyRepositoryFactory.getInstance().getLastVersion(propertyId);
+                            IRepositoryViewObject object = ProxyRepositoryFactory.getInstance().getLastVersion(propertyId);
                             if (object != null) {
                                 if (object.getProperty().getItem() instanceof DatabaseConnectionItem) {
                                     DatabaseConnectionItem dbConnItem = (DatabaseConnectionItem) object.getProperty().getItem();

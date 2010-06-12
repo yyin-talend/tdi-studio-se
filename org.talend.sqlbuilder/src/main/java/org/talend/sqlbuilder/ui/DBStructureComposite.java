@@ -50,7 +50,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -69,7 +69,8 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
- * Detailled comment for this class. <br/> $Id: DBStructureComposite.java,v 1.40 2006/11/09 07:29:18 peiqin.hou Exp $
+ * Detailled comment for this class. <br/>
+ * $Id: DBStructureComposite.java,v 1.40 2006/11/09 07:29:18 peiqin.hou Exp $
  * 
  * @author phou
  * 
@@ -223,7 +224,7 @@ public class DBStructureComposite extends Composite {
     protected void updateStructureView(RepositoryChangedEvent event) {
         if (!isShowAllConnections) {
             DatabaseConnectionItem originalConnection = getDisplayedConnection();
-            IRepositoryObject repositoryObject = event.getDelta().getRepositoryObject();
+            IRepositoryViewObject repositoryObject = event.getDelta().getRepositoryObject();
             if (repositoryObject != null) {
                 DatabaseConnectionItem newConnection = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
 
@@ -250,7 +251,7 @@ public class DBStructureComposite extends Composite {
         }
         RepositoryNode node = list.get(0);
 
-        IRepositoryObject o = node.getObject();
+        IRepositoryViewObject o = node.getObject();
         DatabaseConnectionItem item = (DatabaseConnectionItem) o.getProperty().getItem();
         return item;
 

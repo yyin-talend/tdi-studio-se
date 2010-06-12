@@ -32,7 +32,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -42,19 +42,19 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
 
     private static Map<String, Date> id2date = new HashMap<String, Date>();
 
-    protected List<IRepositoryObject> getRoutines() throws SystemException {
-        List<IRepositoryObject> routineList = getMainProjectRoutine();
+    protected List<IRepositoryViewObject> getRoutines() throws SystemException {
+        List<IRepositoryViewObject> routineList = getMainProjectRoutine();
         // list.addAll(getReferencedProjectRoutine());
 
         // remove routine with same name in reference project
         Set<String> routineNames = new HashSet<String>();
-        for (IRepositoryObject obj : routineList) {
+        for (IRepositoryViewObject obj : routineList) {
             routineNames.add(obj.getProperty().getLabel());
         }
 
-        List<IRepositoryObject> refRoutines = new ArrayList<IRepositoryObject>();
+        List<IRepositoryViewObject> refRoutines = new ArrayList<IRepositoryViewObject>();
         getReferencedProjectRoutine(refRoutines, ProjectManager.getInstance().getReferencedProjects());
-        for (IRepositoryObject obj : refRoutines) {
+        for (IRepositoryViewObject obj : refRoutines) {
             String name = obj.getProperty().getLabel();
             // it does not have a routine with same name
             if (!routineNames.contains(name)) {
@@ -65,11 +65,11 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
         return routineList;
     }
 
-    private List<IRepositoryObject> getMainProjectRoutine() throws SystemException {
+    private List<IRepositoryViewObject> getMainProjectRoutine() throws SystemException {
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
 
-        List<IRepositoryObject> routines;
+        List<IRepositoryViewObject> routines;
         try {
             routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
         } catch (PersistenceException e) {
@@ -78,7 +78,7 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
         return routines;
     }
 
-    private void getReferencedProjectRoutine(List<IRepositoryObject> routines, List projects) throws SystemException {
+    private void getReferencedProjectRoutine(List<IRepositoryViewObject> routines, List projects) throws SystemException {
         if (projects == null || projects.isEmpty()) {
             return;
         }
@@ -112,7 +112,7 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
 
     protected abstract void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException;
 
-    public abstract void deleteRoutinefile(IRepositoryObject objToDelete);
+    public abstract void deleteRoutinefile(IRepositoryViewObject objToDelete);
 
     protected boolean isRoutineUptodate(RoutineItem routineItem) {
         Date refDate = getRefDate(routineItem);
@@ -163,7 +163,7 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
         Map<String, List<URI>> modules = new HashMap<String, List<URI>>();
 
         try {
-            for (IRepositoryObject ro : getRoutines()) {
+            for (IRepositoryViewObject ro : getRoutines()) {
                 Item item = ro.getProperty().getItem();
                 if (item instanceof RoutineItem) {
                     EList imports = ((RoutineItem) item).getImports();

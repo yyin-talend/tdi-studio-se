@@ -53,7 +53,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -644,7 +644,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             ProcessItem item = (ProcessItem) process[0].getItem();
             try {
                 String id = item.getProperty().getId();
-                IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(id);
+                IRepositoryViewObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(id);
                 item = (ProcessItem) lastVersion.getProperty().getItem();
             } catch (PersistenceException e) {
                 throw new RuntimeException(e);

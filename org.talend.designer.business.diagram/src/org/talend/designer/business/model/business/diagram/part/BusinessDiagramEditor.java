@@ -55,7 +55,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SVGBusinessProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
@@ -266,7 +266,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         // Unlock the process :
         IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
-            Property property = repFactory.reload(repositoryEditorInput.getItem().getProperty());
+            // Property property = repFactory.reload(repositoryEditorInput.getItem().getProperty());
+            Property property = repFactory.getUptodateProperty(repositoryEditorInput.getItem().getProperty());
             repositoryEditorInput.setItem(property.getItem());
             repFactory.unlock(repositoryEditorInput.getItem());
         } catch (PersistenceException e) {
@@ -463,7 +464,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryObject> allVersion = null;
+                List<IRepositoryViewObject> allVersion = null;
                 ItemState state = item.getState();
                 ERepositoryObjectType type = ERepositoryObjectType.BUSINESS_PROCESS;
 
@@ -479,7 +480,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 }
                 String lastVersion = VersionUtils.DEFAULT_VERSION;
 
-                for (IRepositoryObject object : allVersion) {
+                for (IRepositoryViewObject object : allVersion) {
                     if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
                         lastVersion = object.getVersion();
                     }

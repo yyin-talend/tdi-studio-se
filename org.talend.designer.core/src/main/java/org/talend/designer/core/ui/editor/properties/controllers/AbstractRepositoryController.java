@@ -52,7 +52,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.RulesItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -260,7 +260,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
         if (elem instanceof Node) {
             String propertyValue = (String) (((Node) elem).getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-            IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+            IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
             if (lastVersion != null) {
                 final Item item = lastVersion.getProperty().getItem();
                 if (item != null && item instanceof ConnectionItem) {
@@ -326,7 +326,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             Item item;
             String displayName = "";
             try {
-                IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
                 if (object == null) {
                     return;
                 }
@@ -386,7 +386,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 Item item;
                 try {
-                    IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                    IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
                     if (object == null) {
                         return;
                     }
@@ -438,7 +438,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 Item item;
                 try {
-                    IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                    IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
                     if (object == null) {
                         return;
                     }

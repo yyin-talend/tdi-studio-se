@@ -29,7 +29,7 @@ import org.talend.core.model.migration.IProjectMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 
@@ -47,7 +47,7 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
         ExecutionResult executeFinal = null;
-        List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
+        List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
         try {
             for (ERepositoryObjectType curTyp : getTypes()) {
                 list.addAll(factory.getAll(curTyp, true, true));
@@ -57,7 +57,7 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
                 return ExecutionResult.NOTHING_TO_DO;
             }
 
-            for (IRepositoryObject object : list) {
+            for (IRepositoryViewObject object : list) {
                 ExecutionResult execute = null;
                 Item item = object.getProperty().getItem();
 

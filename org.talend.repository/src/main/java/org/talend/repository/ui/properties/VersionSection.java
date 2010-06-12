@@ -51,6 +51,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -140,12 +141,12 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                         .getParentRepositoryNodeFromSelection(repositoryObject);
 
                 try {
-                    List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                    List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                             repositoryObject.getId());
                     Collections.sort(allVersion, new IRepositoryObjectComparator());
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
-                        IRepositoryObject repositoryObjectVersion = allVersion.get(i);
+                        IRepositoryViewObject repositoryObjectVersion = allVersion.get(i);
                         RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode, repositoryObjectVersion);
                         objects[i] = repositoryNode;
                     }
@@ -156,7 +157,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
             }
 
             private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode,
-                    IRepositoryObject repositoryObjectVersion) {
+                    IRepositoryViewObject repositoryObjectVersion) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion.getProperty()
                         .getItem());
 

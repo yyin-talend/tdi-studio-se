@@ -81,7 +81,7 @@ public class ReadSqlpatternAction extends AbstractSqlpatternAction {
             ExceptionHandler.process(e);
         }
         // update the property of the node repository object
-        node.getObject().setProperty(updatedProperty);
+        // node.getObject().setProperty(updatedProperty);
         SQLPatternItem sqlpatternItem = (SQLPatternItem) node.getObject().getProperty().getItem();
 
         try {

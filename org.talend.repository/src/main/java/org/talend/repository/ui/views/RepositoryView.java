@@ -111,8 +111,8 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.impl.JobletDocumentationItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -683,7 +683,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             public String getTooltipContent(TreeItem item) {
 
                 RepositoryNode node = (RepositoryNode) item.getData();
-                IRepositoryObject object = node.getObject();
+                IRepositoryViewObject object = node.getObject();
                 if (object == null) {
                     return null;
                 }
@@ -1125,7 +1125,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return root;
     }
 
-    public List<IRepositoryObject> getAll(ERepositoryObjectType type) {
+    public List<IRepositoryViewObject> getAll(ERepositoryObjectType type) {
         // find the system folder
         RepositoryNode container = findContainer(root, type);
 
@@ -1133,7 +1133,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             throw new IllegalArgumentException(type + Messages.getString("RepositoryView.notfound")); //$NON-NLS-1$
         }
 
-        List<IRepositoryObject> result = new ArrayList<IRepositoryObject>();
+        List<IRepositoryViewObject> result = new ArrayList<IRepositoryViewObject>();
         addElement(result, type, container);
         return result;
     }
@@ -1155,7 +1155,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     }
 
-    private void addElement(List<IRepositoryObject> result, ERepositoryObjectType type, RepositoryNode node) {
+    private void addElement(List<IRepositoryViewObject> result, ERepositoryObjectType type, RepositoryNode node) {
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT && node.getProperties(EProperties.CONTENT_TYPE) == type) {
             result.add(node.getObject());
         } else {

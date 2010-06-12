@@ -19,6 +19,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -71,8 +72,9 @@ public class BusinessDeleteListener implements PropertyChangeListener {
         }
     }
 
-    public void deleteSVGObjectLogicalOrPhysical(IRepositoryObject object, boolean isDeleteBusinessLogical) throws PersistenceException {
-        IRepositoryObject svgObjectToDelete = ProxyRepositoryFactory.getInstance().getLastVersion("svg_" + object.getId());
+    public void deleteSVGObjectLogicalOrPhysical(IRepositoryObject object, boolean isDeleteBusinessLogical)
+            throws PersistenceException {
+        IRepositoryViewObject svgObjectToDelete = ProxyRepositoryFactory.getInstance().getLastVersion("svg_" + object.getId());
 
         if (svgObjectToDelete != null) {
             try {

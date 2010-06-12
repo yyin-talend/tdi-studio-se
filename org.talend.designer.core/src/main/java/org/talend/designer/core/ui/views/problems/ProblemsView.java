@@ -60,6 +60,7 @@ import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -346,10 +347,10 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * @return
          */
         private RoutineItem getRoutineItem() throws PersistenceException {
-            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.ROUTINES, true);
+            List<IRepositoryViewObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    .getAll(ERepositoryObjectType.ROUTINES, true);
 
-            for (IRepositoryObject repositoryObject : list) {
+            for (IRepositoryViewObject repositoryObject : list) {
                 String name = repositoryObject.getProperty().getLabel();
                 String id = repositoryObject.getProperty().getId();
                 if (matchRoutine(id, name, problem.getMarker().getResource().getName())) {

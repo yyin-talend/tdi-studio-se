@@ -27,7 +27,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.impl.FolderItemImpl;
 import org.talend.core.model.properties.impl.ProjectImpl;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.repository.ProjectManager;
@@ -39,7 +39,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
 
     private final static String TITLE = Messages.getString("OpenExistVersionProcess.open.title"); //$NON-NLS-1$
 
-    private final IRepositoryObject processObject;
+    private final IRepositoryViewObject processObject;
 
     private ProcessVersionComposite versionListComposite;
 
@@ -67,7 +67,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
      * 
      * @param pageName
      */
-    protected OpenExistVersionProcessPage(final boolean alreadyEditedByUser, final IRepositoryObject processObject) {
+    protected OpenExistVersionProcessPage(final boolean alreadyEditedByUser, final IRepositoryViewObject processObject) {
         super("OpenExistVersionProcessPage"); //$NON-NLS-1$
         setTitle(TITLE);
         setMessage(Messages.getString("OpenExistVersionProcessPage.messageCreated")); //$NON-NLS-1$

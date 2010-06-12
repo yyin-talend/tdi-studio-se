@@ -62,7 +62,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -327,7 +327,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
                     .getProxyRepositoryFactory();
             try {
-                IRepositoryObject lastVersion = proxyRepositoryFactory.getLastVersion(implicitRepositoryId);
+                IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(implicitRepositoryId);
                 if (implicitRepositoryId.equals(lastVersion.getId())) {
                     Item item = lastVersion.getProperty().getItem();
                     if (item instanceof DatabaseConnectionItem) {

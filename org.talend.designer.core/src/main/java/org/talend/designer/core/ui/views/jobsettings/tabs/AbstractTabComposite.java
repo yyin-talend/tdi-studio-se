@@ -26,7 +26,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
@@ -39,7 +39,7 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
 
     protected TabbedPropertySheetWidgetFactory widgetFactory;
 
-    protected IRepositoryObject repositoryObject;
+    protected IRepositoryViewObject repositoryObject;
 
     protected static final SimpleDateFormat FORMATTER = new SimpleDateFormat();
 
@@ -49,10 +49,11 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
      * @param parent
      * @param style
      */
-    public AbstractTabComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory, IRepositoryObject obj) {
+    public AbstractTabComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
+            IRepositoryViewObject iRepositoryViewObject) {
         super(parent, style);
         this.widgetFactory = widgetFactory;
-        this.repositoryObject = obj;
+        this.repositoryObject = iRepositoryViewObject;
     }
 
     public IEditorPart getEditor() {

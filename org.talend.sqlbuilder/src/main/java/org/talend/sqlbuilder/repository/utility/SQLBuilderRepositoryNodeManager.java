@@ -47,7 +47,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -703,13 +703,13 @@ public class SQLBuilderRepositoryNodeManager {
      * @return DatabaseConnectionItem : item current node.
      */
     public static DatabaseConnectionItem getItem(RepositoryNode newNode) {
-        IRepositoryObject repositoryObject = newNode.getObject();
+        IRepositoryViewObject repositoryObject = newNode.getObject();
         DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
         return item;
     }
 
     public static DatabaseConnectionItem getEMFItem(String id) {
-        IRepositoryObject repositoryObject = DBTreeProvider.getMaps().get(id);
+        IRepositoryViewObject repositoryObject = DBTreeProvider.getMaps().get(id);
         DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
         return item;
     }

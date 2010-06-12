@@ -36,9 +36,10 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -66,6 +67,16 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
     private Property connectionProperty;
 
     private ConnectionItem connectionItem;
+
+    private String originaleObjectLabel;
+
+    private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
 
     private boolean isToolBar;
 
@@ -125,6 +136,13 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
             initLockStrategy();
             break;
         }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
+        }
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
     }
@@ -175,6 +193,13 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
@@ -268,7 +293,7 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                     if (isModified) {
                         CorePlugin.getDefault().getDesignerCoreService().refreshComponentView(connectionItem);
                     }
-
+                    ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
                     closeLockStrategy();
 
                 }
@@ -279,7 +304,7 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
-            List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
+            List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
             list.add(repositoryObject);
             RepositoryPlugin.getDefault().getRepositoryService().notifySQLBuilder(list);
 
@@ -287,6 +312,18 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean performCancel() {
+        if (!creation) {
+            connectionItem.getProperty().setVersion(this.originalVersion);
+            connectionItem.getProperty().setLabel(this.originaleObjectLabel);
+            connectionItem.getProperty().setDescription(this.originalDescription);
+            connectionItem.getProperty().setPurpose(this.originalPurpose);
+            connectionItem.getProperty().setStatusCode(this.originalStatus);
+        }
+        return super.performCancel();
     }
 
     /**

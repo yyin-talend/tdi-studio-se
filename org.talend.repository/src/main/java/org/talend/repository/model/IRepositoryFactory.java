@@ -24,6 +24,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SpagoBiServer;
@@ -31,7 +32,7 @@ import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryWorkUnit;
 
 /**
@@ -95,7 +96,7 @@ public interface IRepositoryFactory {
      * @return <code>true</code> if the name is not used an so is available.
      * @throws PersistenceException
      */
-    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryObject>... givenList)
+    public boolean isNameAvailable(Project project, Item item, String name, List<IRepositoryViewObject>... givenList)
             throws PersistenceException;
 
     public boolean isPathValid(Project project, ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
@@ -114,9 +115,9 @@ public interface IRepositoryFactory {
      * @return a list (may be empty) of all version
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException;
+    public List<IRepositoryViewObject> getAllVersion(Project project, String id) throws PersistenceException;
 
-    public List<IRepositoryObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
+    public List<IRepositoryViewObject> getAllVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
             throws PersistenceException;
 
     /**
@@ -128,7 +129,7 @@ public interface IRepositoryFactory {
      * found
      * @throws PersistenceException
      */
-    public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException;
+    public IRepositoryViewObject getLastVersion(Project project, String id) throws PersistenceException;
 
     /**
      * Returns last version of an object given its id. If folder and repository type is given it can be faster (mostly
@@ -140,7 +141,7 @@ public interface IRepositoryFactory {
      * found
      * @throws PersistenceException
      */
-    public IRepositoryObject getLastVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
+    public IRepositoryViewObject getLastVersion(Project project, String id, String folderPath, ERepositoryObjectType type)
             throws PersistenceException;
 
     /**
@@ -153,8 +154,8 @@ public interface IRepositoryFactory {
      * @return a list of all objects of type <code>type</code> in the repository in the project
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
-            throws PersistenceException;
+    public List<IRepositoryViewObject> getAll(Project project, ERepositoryObjectType type, boolean withDeleted,
+            boolean allVersions) throws PersistenceException;
 
     /**
      * Deletes logically the given object. <code>isDeleted</code> on this object will now returned <code>true</code>.
@@ -164,7 +165,7 @@ public interface IRepositoryFactory {
      * @param deletionAuthor - the user perfom the deletion (only for logging in this version)
      * @throws PersistenceException
      */
-    public void deleteObjectLogical(Project project, IRepositoryObject objToDelete) throws PersistenceException;
+    public void deleteObjectLogical(Project project, IRepositoryViewObject objToDelete) throws PersistenceException;
 
     /**
      * Deletes physically the given object. Object cannot be retrieved.
@@ -174,9 +175,10 @@ public interface IRepositoryFactory {
      * @param deletionAuthor - the user perfom the deletion (only for logging in this version)
      * @throws PersistenceException
      */
-    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException;
+    public void deleteObjectPhysical(Project project, IRepositoryViewObject objToDelete) throws PersistenceException;
 
-    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete, String version) throws PersistenceException;
+    public void deleteObjectPhysical(Project project, IRepositoryViewObject objToDelete, String version)
+            throws PersistenceException;
 
     /**
      * Restore a logically deleted object. <code>isDeleted</code> on this object will now returned <code>false</code>.
@@ -187,9 +189,9 @@ public interface IRepositoryFactory {
      * @param restorationAuthor - the user perfom the restoration (only for logging in this version)
      * @throws PersistenceException
      */
-    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException;
+    public void restoreObject(IRepositoryViewObject objToRestore, IPath path) throws PersistenceException;
 
-    public void moveObject(IRepositoryObject objToMove, IPath newPath) throws PersistenceException;
+    public void moveObject(IRepositoryViewObject objToMove, IPath newPath) throws PersistenceException;
 
     public void lock(Item item) throws PersistenceException;
 
@@ -214,7 +216,7 @@ public interface IRepositoryFactory {
 
     public String isServerValid() throws BusinessException;
 
-    public void create(Project project, Item item, IPath path) throws PersistenceException;
+    public void create(Project project, Item item, IPath path, boolean... isImportItem) throws PersistenceException;
 
     public void save(Project project, Item item) throws PersistenceException;
 
@@ -232,56 +234,56 @@ public interface IRepositoryFactory {
      */
     public Property reload(Property property) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getBusinessProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getSVGBusinessProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getDocumentation(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getProcess(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getContext(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getContext(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getSnippets(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getRoutine(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataConnection(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataSAPConnection(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataEBCDIC(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataHL7(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataMDM(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project) throws PersistenceException;
 
     // feature 0006484
-    public RootContainer<String, IRepositoryObject> getMetadataRules(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFilePositional(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileXml(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileExcel(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileLdif(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project) throws PersistenceException;
 
-    public List<IRepositoryObject> getRecycleBinItems(Project project) throws PersistenceException;
+    public List<IRepositoryViewObject> getRecycleBinItems(Project project) throws PersistenceException;
 
     /**
      * gather all the metadata connections (file / db / etc ...).
@@ -311,9 +313,9 @@ public interface IRepositoryFactory {
      * 
      * @return
      */
-    public RootContainer<String, IRepositoryObject> getJoblets(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getRoutineFromProject(Project project) throws PersistenceException;
 
     public void updateItemsPath(ERepositoryObjectType type, IPath targetPath) throws PersistenceException;
 
@@ -343,4 +345,6 @@ public interface IRepositoryFactory {
      * @param uriString the uri sting of resource.
      */
     public void unloadResources(String uriString);
+
+    public FolderItem getFolderItem(Project project, ERepositoryObjectType itemType, IPath path);
 }

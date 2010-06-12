@@ -53,7 +53,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
@@ -707,11 +707,11 @@ public class DesignerCoreService implements IDesignerCoreService {
         ProjectSettingManager.createImplicitContextLoadElement(project);
     }
 
-    public void removeJobLaunch(IRepositoryObject objToDelete) {
+    public void removeJobLaunch(IRepositoryViewObject objToDelete) {
         JobLaunchShortcutManager.removeJobLaunch(objToDelete);
     }
 
-    public void renameJobLaunch(IRepositoryObject obj, String originalName) {
+    public void renameJobLaunch(IRepositoryViewObject obj, String originalName) {
         JobLaunchShortcutManager.renameJobLaunch(obj, originalName);
     }
 
@@ -739,4 +739,5 @@ public class DesignerCoreService implements IDesignerCoreService {
         Problems.add(problem);
         Problems.refreshProblemTreeView();
     }
+
 }

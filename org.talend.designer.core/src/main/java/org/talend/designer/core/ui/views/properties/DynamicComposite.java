@@ -70,7 +70,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -536,7 +536,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     private void addConnectionItem(TreeViewer viewer, RepositoryContentProvider provider, List<ConnectionItem> list,
             RepositoryNode repositoryNode3) {
-        IRepositoryObject object = repositoryNode3.getObject();
+        IRepositoryViewObject object = repositoryNode3.getObject();
         if (object != null) {
             Item item = object.getProperty().getItem();
             if (item instanceof ConnectionItem) {

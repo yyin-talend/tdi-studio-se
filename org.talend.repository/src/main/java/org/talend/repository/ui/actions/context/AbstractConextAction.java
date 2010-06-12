@@ -89,7 +89,7 @@ public class AbstractConextAction extends AContextualAction {
         }
 
         // update the property of the node repository object
-        repositoryNode.getObject().setProperty(updatedProperty);
+        // repositoryNode.getObject().setProperty(updatedProperty);
     }
 
 }

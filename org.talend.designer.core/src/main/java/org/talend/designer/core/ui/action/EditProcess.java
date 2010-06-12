@@ -100,8 +100,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-        // update the property of the node repository object
-        node.getObject().setProperty(updatedProperty);
 
         processItem = (ProcessItem) updatedProperty.getItem();
 

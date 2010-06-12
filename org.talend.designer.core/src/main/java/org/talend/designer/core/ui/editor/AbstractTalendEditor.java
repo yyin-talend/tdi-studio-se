@@ -789,7 +789,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         if (property.getItem() instanceof ProcessItem) {
-            currentJobResource.setJobInfo(new JobInfo((ProcessItem) property.getItem(), process.getContextManager()
+            currentJobResource.setJobInfo(new JobInfo((ProcessItem) property.getItem(), property, process.getContextManager()
                     .getDefaultContext().getName()));
             currentJobResource.setProjectName(rootProject.getLabel());
 

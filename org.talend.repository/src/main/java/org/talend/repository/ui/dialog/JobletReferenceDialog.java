@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.JobletReferenceBean;
@@ -91,11 +91,11 @@ public class JobletReferenceDialog extends SelectionDialog {
 
     }
 
-    private IRepositoryObject objToDelete;
+    private IRepositoryViewObject objToDelete;
 
     private List<JobletReferenceBean> referenceList;
 
-    public JobletReferenceDialog(Shell parentShell, IRepositoryObject objToDelete, List<JobletReferenceBean> referenceList) {
+    public JobletReferenceDialog(Shell parentShell, IRepositoryViewObject objToDelete, List<JobletReferenceBean> referenceList) {
         super(parentShell);
         setShellStyle(SWT.RESIZE | getShellStyle());
         this.objToDelete = objToDelete;

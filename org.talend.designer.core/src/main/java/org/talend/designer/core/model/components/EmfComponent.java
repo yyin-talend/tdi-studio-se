@@ -68,7 +68,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -525,10 +525,10 @@ public class EmfComponent implements IComponent {
 
         SQLPatternItem sqlpatternItem = null;
         try {
-            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.SQLPATTERNS, false);
+            List<IRepositoryViewObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    .getAll(ERepositoryObjectType.SQLPATTERNS, false);
 
-            for (IRepositoryObject repositoryObject : list) {
+            for (IRepositoryViewObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
                 if (item.getEltName().equals(eltNodeName) && item.getProperty().getLabel().equals(sqlpatternName)) {
                     sqlpatternItem = item;
@@ -553,9 +553,9 @@ public class EmfComponent implements IComponent {
         List<String> patterns = new ArrayList<String>();
         try {
 
-            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.SQLPATTERNS, false);
-            for (IRepositoryObject repositoryObject : list) {
+            List<IRepositoryViewObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    .getAll(ERepositoryObjectType.SQLPATTERNS, false);
+            for (IRepositoryViewObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
                 if (item.getEltName().equals(db)) {
                     patterns.add(item.getProperty().getLabel());

@@ -27,7 +27,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.properties.User;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -43,7 +43,7 @@ public class MainComposite extends AbstractTabComposite {
      * @param parent
      * @param style
      */
-    public MainComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory, IRepositoryObject obj) {
+    public MainComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory, IRepositoryViewObject obj) {
         super(parent, style, factory, obj);
 
         FormLayout layout = new FormLayout();

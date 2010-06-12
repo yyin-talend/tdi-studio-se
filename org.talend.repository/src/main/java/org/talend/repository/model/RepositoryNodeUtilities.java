@@ -27,7 +27,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -50,7 +50,7 @@ public class RepositoryNodeUtilities {
             return null;
         }
         if (node.isBin()) {
-            return new Path("bin"); //$NON-NLS-1$
+            return new Path(""); //$NON-NLS-1$
         }
         if ((node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() != ERepositoryObjectType.JOBS && node
                 .getContentType() != ERepositoryObjectType.JOBLETS)
@@ -132,7 +132,7 @@ public class RepositoryNodeUtilities {
         }
         IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            final IRepositoryObject lastVersion = factory.getLastVersion(id);
+            final IRepositoryViewObject lastVersion = factory.getLastVersion(id);
             return getPath(lastVersion);
         } catch (PersistenceException e) {
             //
@@ -140,7 +140,7 @@ public class RepositoryNodeUtilities {
         return null;
     }
 
-    public static IPath getPath(IRepositoryObject curNode) {
+    public static IPath getPath(IRepositoryViewObject curNode) {
         if (curNode == null) {
             return null;
         }
@@ -168,7 +168,7 @@ public class RepositoryNodeUtilities {
         }
         IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            final IRepositoryObject lastVersion = factory.getLastVersion(id);
+            final IRepositoryViewObject lastVersion = factory.getLastVersion(id);
             if (lastVersion != null) {
                 return getRepositoryNode(lastVersion, expanded);
             }
@@ -184,11 +184,11 @@ public class RepositoryNodeUtilities {
      * 
      * get the repository node by a IRepositoryObject.
      */
-    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode) {
+    public static RepositoryNode getRepositoryNode(IRepositoryViewObject curNode) {
         return getRepositoryNode(curNode, true);
     }
 
-    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode, boolean expanded) {
+    public static RepositoryNode getRepositoryNode(IRepositoryViewObject curNode, boolean expanded) {
         if (curNode == null) {
             return null;
         }
@@ -199,7 +199,7 @@ public class RepositoryNodeUtilities {
         return getRepositoryNode(view.getRoot(), curNode, view, expanded);
     }
 
-    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view,
+    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryViewObject curNode, IRepositoryView view,
             boolean expanded) {
         if (rootNode == null || curNode == null || view == null) {
             return null;
@@ -238,7 +238,7 @@ public class RepositoryNodeUtilities {
         getRepositoryCheckedNode(view.getRoot(), curNode.getObject(), view, true, nodes);
     }
 
-    private static RepositoryNode getRepositoryCheckedNode(RepositoryNode rootNode, IRepositoryObject curNode,
+    private static RepositoryNode getRepositoryCheckedNode(RepositoryNode rootNode, IRepositoryViewObject curNode,
             IRepositoryView view, boolean expanded, Set<RepositoryNode> nodes) {
         if (rootNode == null || curNode == null || view == null) {
             return null;
@@ -298,7 +298,7 @@ public class RepositoryNodeUtilities {
         return false;
     }
 
-    private static void expandNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
+    private static void expandNode(RepositoryNode rootNode, IRepositoryViewObject curNode, IRepositoryView view) {
         if (rootNode == null || curNode == null || view == null) {
             return;
         }
@@ -525,7 +525,7 @@ public class RepositoryNodeUtilities {
      * ggu Comment method "getParentRepositoryNodeFromSelection".
      * 
      */
-    public static RepositoryNode getParentRepositoryNodeFromSelection(IRepositoryObject object) {
+    public static RepositoryNode getParentRepositoryNodeFromSelection(IRepositoryViewObject object) {
         if (object.getRepositoryNode() != null && object.getRepositoryNode().getParent() != null) {
             return object.getRepositoryNode().getParent();
         }

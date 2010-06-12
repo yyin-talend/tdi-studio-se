@@ -29,7 +29,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -60,7 +60,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
         boolean routineToUpdate = false;
         super.processAnnotations(files);
 
-        List<IRepositoryObject> routineObjectList = null;
+        List<IRepositoryViewObject> routineObjectList = null;
         for (BuildContext context : files) {
 
             String filePath = (context.getFile().getProjectRelativePath()).toString();
@@ -101,7 +101,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     /**
      * yzhang Comment method "updateProblems".
      */
-    private void updateProblems(List<IRepositoryObject> routineObjectList, String filePath) {
+    private void updateProblems(List<IRepositoryViewObject> routineObjectList, String filePath) {
 
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
         try {
@@ -109,7 +109,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
 
-            for (IRepositoryObject repositoryObject : routineObjectList) {
+            for (IRepositoryViewObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
                 ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
                 IFile currentFile = synchronizer.getFile(property.getItem());

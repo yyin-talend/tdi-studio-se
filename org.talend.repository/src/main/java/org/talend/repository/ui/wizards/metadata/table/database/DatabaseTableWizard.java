@@ -29,7 +29,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
@@ -164,7 +164,7 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
             saveMetaData();
             closeLockStrategy();
 
-            List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
+            List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
             list.add(repositoryObject);
             RepositoryPlugin.getDefault().getRepositoryService().notifySQLBuilder(list);
             return true;

@@ -30,7 +30,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -448,7 +448,7 @@ public final class UpgradeParameterHelper {
         }
         final IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
-            final IRepositoryObject lastVersion = proxyRepositoryFactory.getLastVersion(parentId);
+            final IRepositoryViewObject lastVersion = proxyRepositoryFactory.getLastVersion(parentId);
             if (lastVersion != null) {
                 final Item item = lastVersion.getProperty().getItem();
                 if (item != null) {
@@ -511,8 +511,8 @@ public final class UpgradeParameterHelper {
         }
         final IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
-            List<IRepositoryObject> allRepositoryObject = proxyRepositoryFactory.getAll(type, true);
-            for (IRepositoryObject repObject : allRepositoryObject) {
+            List<IRepositoryViewObject> allRepositoryObject = proxyRepositoryFactory.getAll(type, true);
+            for (IRepositoryViewObject repObject : allRepositoryObject) {
                 Item item = repObject.getProperty().getItem();
                 if (item != null && label.equals(item.getProperty().getLabel())) {
                     return item.getProperty().getId();

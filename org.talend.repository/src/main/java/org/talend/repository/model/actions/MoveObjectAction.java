@@ -22,7 +22,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
@@ -74,7 +74,7 @@ public class MoveObjectAction {
             return false;
         }
 
-        IRepositoryObject objectToCopy = sourceNode.getObject();
+        IRepositoryViewObject objectToCopy = sourceNode.getObject();
 
         // Cannot move system routines:
         // if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
@@ -223,7 +223,7 @@ public class MoveObjectAction {
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
-            IRepositoryObject objectToMove = sourceNode.getObject();
+            IRepositoryViewObject objectToMove = sourceNode.getObject();
 
             if (targetNode instanceof BinRepositoryNode) {
                 // Move in the recycle bin :

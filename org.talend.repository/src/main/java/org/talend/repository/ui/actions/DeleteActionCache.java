@@ -31,6 +31,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -61,13 +62,13 @@ public final class DeleteActionCache {
         setOpenProcessMap(createOpenProcessMap(getOpenedProcessList()));
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryObject> tmpProcessList = null;
+        List<IRepositoryViewObject> tmpProcessList = null;
         try {
             tmpProcessList = factory.getAll(ERepositoryObjectType.PROCESS, true);
             if (tmpProcessList == null) {
-                tmpProcessList = new ArrayList<IRepositoryObject>();
+                tmpProcessList = new ArrayList<IRepositoryViewObject>();
             }
-            List<IRepositoryObject> jobletList = factory.getAll(ERepositoryObjectType.JOBLET, true);
+            List<IRepositoryViewObject> jobletList = factory.getAll(ERepositoryObjectType.JOBLET, true);
             if (jobletList != null) {
                 tmpProcessList.addAll(jobletList);
             }
@@ -120,7 +121,7 @@ public final class DeleteActionCache {
 
     private MultiKeyMap openProcessMap;
 
-    private List<IRepositoryObject> processList;
+    private List<IRepositoryViewObject> processList;
 
     public List<IProcess> getOpenedProcessList() {
         return this.openedProcessList;
@@ -138,11 +139,11 @@ public final class DeleteActionCache {
         this.openProcessMap = openProcessMap;
     }
 
-    public List<IRepositoryObject> getProcessList() {
+    public List<IRepositoryViewObject> getProcessList() {
         return this.processList;
     }
 
-    public void setProcessList(List<IRepositoryObject> processList) {
+    public void setProcessList(List<IRepositoryViewObject> processList) {
         this.processList = processList;
     }
 
@@ -199,14 +200,14 @@ public final class DeleteActionCache {
         }
         if (result == null) {
             IProxyRepositoryFactory factory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-            List<IRepositoryObject> all = factory.getAll(project, type, true, true);
+            List<IRepositoryViewObject> all = factory.getAll(project, type, true, true);
             getRepositoryObjectMap().put(project, type, all);
 
             if (withDeleted) {
                 result = all;
             } else {
-                List<IRepositoryObject> noDeleted = new ArrayList<IRepositoryObject>();
-                for (IRepositoryObject obj : all) {
+                List<IRepositoryViewObject> noDeleted = new ArrayList<IRepositoryViewObject>();
+                for (IRepositoryViewObject obj : all) {
                     ERepositoryStatus status = factory.getStatus(obj);
                     if (ERepositoryStatus.DELETED != status) {
                         noDeleted.add(obj);
@@ -225,7 +226,7 @@ public final class DeleteActionCache {
      * 
      * bug 12883
      */
-    public void closeOpenedEditor(final IRepositoryObject objToDelete) {
+    public void closeOpenedEditor(final IRepositoryViewObject objToDelete) {
         if (objToDelete != null) {
             Display disp = Display.getCurrent();
             if (disp == null) {
@@ -244,7 +245,7 @@ public final class DeleteActionCache {
         }
     }
 
-    private void closeEditor(final IRepositoryObject objToDelete) {
+    private void closeEditor(final IRepositoryViewObject objToDelete) {
         if (objToDelete != null) {
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (activeWorkbenchWindow != null) {

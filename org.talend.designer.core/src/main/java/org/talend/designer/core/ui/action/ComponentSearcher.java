@@ -32,7 +32,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -55,7 +55,7 @@ public class ComponentSearcher {
     }
 
     public void run() {
-        final List<IRepositoryObject> found = new ArrayList<IRepositoryObject>();
+        final List<IRepositoryViewObject> found = new ArrayList<IRepositoryViewObject>();
 
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
@@ -110,14 +110,14 @@ public class ComponentSearcher {
      * @param nodeName
      * @param found
      */
-    protected void search(IProgressMonitor monitor, String nodeName, List<IRepositoryObject> found) {
+    protected void search(IProgressMonitor monitor, String nodeName, List<IRepositoryViewObject> found) {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
 
         try {
-            List<IRepositoryObject> repositoryObjectList = factory.getAll(ERepositoryObjectType.PROCESS, false);
+            List<IRepositoryViewObject> repositoryObjectList = factory.getAll(ERepositoryObjectType.PROCESS, false);
             monitor.beginTask("Searching Component in Jobs ", repositoryObjectList.size()); //$NON-NLS-1$
-            for (IRepositoryObject rObject : repositoryObjectList) {
+            for (IRepositoryViewObject rObject : repositoryObjectList) {
                 if (monitor.isCanceled()) {
                     break;
                 }

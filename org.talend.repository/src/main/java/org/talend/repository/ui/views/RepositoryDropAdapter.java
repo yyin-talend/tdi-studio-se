@@ -26,7 +26,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -115,7 +115,7 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
             RepositoryNode sourceNode = (RepositoryNode) obj;
 
             if (sourceNode != null) {
-                IRepositoryObject object = sourceNode.getObject();
+                IRepositoryViewObject object = sourceNode.getObject();
                 if (object == null) {
                     return false;
                 }

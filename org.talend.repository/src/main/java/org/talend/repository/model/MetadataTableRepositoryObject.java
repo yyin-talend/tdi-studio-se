@@ -16,18 +16,18 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
  */
 public class MetadataTableRepositoryObject extends MetadataTable implements ISubRepositoryObject {
 
-    private final IRepositoryObject repObj;
+    private final IRepositoryViewObject repObj;
 
     private final org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-    public MetadataTableRepositoryObject(IRepositoryObject repObj,
+    public MetadataTableRepositoryObject(IRepositoryViewObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable table) {
         this.repObj = repObj;
         this.table = table;
@@ -46,10 +46,10 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
         return repObj.getProperty();
     }
 
-    @Override
-    public void setProperty(Property property) {
-        repObj.setProperty(property);
-    }
+    // @Override
+    // public void setProperty(Property property) {
+    // repObj.setProperty(property);
+    // }
 
     @Override
     public String getVersion() {

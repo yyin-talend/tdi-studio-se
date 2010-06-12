@@ -51,6 +51,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -59,6 +60,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -77,6 +79,8 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -500,6 +504,20 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                         try {
                             ItemCacheManager.clearCache();
                             ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
+
+                            Property updatedProperty = null;
+                            try {
+                                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                                        new Project(ProjectManager.getInstance().getProject(processItem)), processName)
+                                        .getProperty();
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
+                            // update the property of the node repository object
+                            // node.getObject().setProperty(updatedProperty);
+
+                            processItem = (ProcessItem) updatedProperty.getItem();
+
                             if (processItem != null) {
                                 ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
 

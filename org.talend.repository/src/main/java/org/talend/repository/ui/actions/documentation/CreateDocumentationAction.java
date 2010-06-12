@@ -77,6 +77,9 @@ public class CreateDocumentationAction extends AContextualAction {
                 if (nodeType != ERepositoryObjectType.DOCUMENTATION) {
                     canWork = false;
                 }
+                if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+                    canWork = false;
+                }
                 break;
             default:
                 canWork = false;

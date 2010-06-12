@@ -53,7 +53,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -1014,12 +1014,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             String classRoot = getClassRootLocation();
             userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
-            List<IRepositoryObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
+            List<IRepositoryViewObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
                     ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.ROUTINES);
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
                 File file = (File) iterator.next();
-                for (IRepositoryObject object : allRoutines) {
+                for (IRepositoryViewObject object : allRoutines) {
                     RoutineItem item = (RoutineItem) object.getProperty().getItem();
                     if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) { //$NON-NLS-1$
                         iterator.remove();

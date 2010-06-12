@@ -55,6 +55,8 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.JobletDocumentationItem;
@@ -65,7 +67,9 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
@@ -111,8 +115,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param parent
      * @param type
      */
-    public ProjectRepositoryNode(org.talend.core.model.general.Project project, IRepositoryObject object, RepositoryNode parent,
-            RepositoryNode root, ENodeType type) {
+    public ProjectRepositoryNode(org.talend.core.model.general.Project project, IRepositoryViewObject object,
+            RepositoryNode parent, RepositoryNode root, ENodeType type) {
         super(object, parent, type);
         // for referenced project
         this.project = project;
@@ -593,19 +597,109 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     handleReferenced(refProject);
                 }
             } else if (parent == recBinNode) {
-                List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
-                for (IRepositoryObject object : objects) {
-                    if (!isGeneratedJobItem(object.getProperty().getItem())) {
-                        RepositoryNode repNode = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
-                        repNode.setProperties(EProperties.CONTENT_TYPE, object.getType());
-                        repNode.setProperties(EProperties.LABEL, object.getLabel());
-                        recBinNode.getChildren().add(repNode);
-                        repNode.setParent(recBinNode);
-                    }
+                // List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
+                List<RepositoryNode> foldersList = new ArrayList<RepositoryNode>();
+                List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
+                for (FolderItem folder : folderItems) {
+                    addItemToRecycleBin(recBinNode, folder, foldersList);
                 }
             }
         } catch (PersistenceException e) {
             RuntimeExceptionHandler.process(e);
+        }
+    }
+
+    private ERepositoryObjectType getFolderContentType(FolderItem folderItem) {
+        if (!folderItem.getType().equals(FolderType.SYSTEM_FOLDER_LITERAL)) {
+            if (!(folderItem.getParent() instanceof FolderItem)) {
+                return null; // appears only for a folder for expression builder !
+            }
+            return getFolderContentType((FolderItem) folderItem.getParent());
+        }
+        for (ERepositoryObjectType objectType : ERepositoryObjectType.values()) {
+            String folderName;
+            try {
+                folderName = ERepositoryObjectType.getFolderName(objectType);
+            } catch (Exception e) {
+                // just catch exception to avoid the types who don't have folders
+                continue;
+            }
+            if (folderName.contains("/")) {
+                String[] folders = folderName.split("/");
+                FolderItem currentFolderItem = folderItem;
+                boolean found = true;
+                for (int i = folders.length - 1; i >= 0; i--) {
+                    if (!currentFolderItem.getProperty().getLabel().equals(folders[i])) {
+                        found = false;
+                        break;
+                    }
+                    if (i > 0) {
+                        if (!(currentFolderItem.getParent() instanceof FolderItem)) {
+                            found = false;
+                            break;
+                        }
+                        currentFolderItem = (FolderItem) currentFolderItem.getParent();
+                    }
+                }
+                if (found) {
+                    return objectType;
+                }
+            } else {
+                if (folderName.equals(folderItem.getProperty().getLabel())) {
+                    return objectType;
+                }
+            }
+        }
+        if (folderItem.getParent() instanceof FolderItem) {
+            return getFolderContentType((FolderItem) folderItem.getParent());
+        }
+        return null;
+    }
+
+    private void addItemToRecycleBin(RepositoryNode parentNode, Item item, List<RepositoryNode> foldersList) {
+        if (isGeneratedJobItem(item)) {
+            return;
+        }
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+        RepositoryNode currentParentNode = parentNode;
+        if (item instanceof FolderItem) {
+            itemType = getFolderContentType((FolderItem) item);
+            if (item.getState().isDeleted()) {
+                // need to display this folder in the recycle bin.
+                Folder folder = new Folder(item.getProperty(), itemType);
+                RepositoryNode folderNode = null;
+                for (RepositoryNode existingFolder : foldersList) {
+                    if (existingFolder.getContentType().equals(folder.getType())
+                            && existingFolder.getProperties(EProperties.LABEL).equals(folder.getLabel())) {
+                        folderNode = existingFolder;
+                        break;
+                    }
+                }
+                if (folderNode == null) {
+                    folderNode = new RepositoryNode(folder, parentNode, ENodeType.SIMPLE_FOLDER);
+                    folderNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+                    folderNode.setProperties(EProperties.LABEL, folder.getLabel());
+                    foldersList.add(folderNode);
+                    parentNode.getChildren().add(folderNode);
+                    folderNode.setParent(parentNode);
+                }
+
+                for (Item curItem : (List<Item>) ((FolderItem) item).getChildren()) {
+                    addItemToRecycleBin(folderNode, curItem, foldersList);
+                }
+                currentParentNode = folderNode;
+            } else {
+                for (Item curItem : (List<Item>) ((FolderItem) item).getChildren()) {
+                    addItemToRecycleBin(parentNode, curItem, foldersList);
+                }
+            }
+        } else if (item.getState().isDeleted()) {
+            RepositoryNode repNode = new RepositoryNode(new RepositoryObject(item.getProperty()), currentParentNode,
+                    ENodeType.REPOSITORY_ELEMENT);
+            repNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+            repNode.setProperties(EProperties.LABEL, item.getProperty().getLabel());
+            currentParentNode.getChildren().add(repNode);
+            repNode.setParent(currentParentNode);
         }
     }
 
@@ -720,27 +814,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     }
 
-    // /**
-    // * ftang Comment method "createSubFolder".
-    // *
-    // * @param folder
-    // * @param fromModel
-    // */
-    // private void createSubFolder(RepositoryNode folder, Container fromModel) {
-    //
-    // for (Object object : fromModel.getSubContainer()) {
-    // Container container = (Container) object;
-    // // Folder oFolder = new Folder((Property) container.getProperty(), ERepositoryObjectType.JOBS);
-    // RepositoryNode subFolder = new StableRepositoryNode(folder, container.getLabel(), ECoreImage.FOLDER_CLOSE_ICON);
-    // subFolder.setProperties(EProperties.LABEL, container.getLabel());
-    // subFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS); // ERepositoryObjectType.FOLDER);
-    // folder.getChildren().add(subFolder);
-    // if (container.getSubContainer() != null && container.getSubContainer().size() > 0) {
-    // createSubFolder(subFolder, container);
-    // }
-    // }
-    //
-    // }
     private RepositoryNode getSQLPatternNode(String parentLabel, String label) {
         if (getMergeRefProject()) {
             List<RepositoryNode> sqlChildren = getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS).getChildren();
@@ -808,7 +881,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 } else {
 
                     folder = new StableRepositoryNode(parent, RepositoryConstants.SYSTEM_DIRECTORY, ECoreImage.FOLDER_CLOSE_ICON);
-
+                    parent.getChildren().add(folder);
                 }
 
             } else if (ERepositoryObjectType.GENERATED.name().equalsIgnoreCase(label)) {
@@ -825,26 +898,28 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                             continue;
                         }
                         folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
-                        parent.getChildren().add(folder);
+                        if (factory.getStatus(oFolder) != ERepositoryStatus.DELETED) {
+                            parent.getChildren().add(folder);
+                        }
                     }
                 } else {
                     folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
+                    if (factory.getStatus(oFolder) != ERepositoryStatus.DELETED) {
+                        parent.getChildren().add(folder);
+                    }
                 }
 
             }
             folder.setProperties(EProperties.LABEL, label);
-            folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
-            if (!getMergeRefProject()) {
-                parent.getChildren().add(folder);
-            }
+            folder.setProperties(EProperties.CONTENT_TYPE, type);
             convert(newProject, container, folder, type, recBinNode);
-
         }
 
         // not folder or folders have no subFolder
         for (Object obj : fromModel.getMembers()) {
-            IRepositoryObject repositoryObject = (IRepositoryObject) obj;
-            addNode(parent, type, recBinNode, repositoryObject);
+            IRepositoryViewObject repositoryObject = (IRepositoryViewObject) obj;
+            if (!repositoryObject.getProperty().getItem().getState().isDeleted())
+                addNode(parent, type, recBinNode, repositoryObject);
         }
     }
 
@@ -890,13 +965,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     private void addNode(RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode,
-            IRepositoryObject repositoryObject) {
+            IRepositoryViewObject repositoryObject) {
 
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
 
         node.setProperties(EProperties.CONTENT_TYPE, type);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
-        if (factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED) {
+        if ((factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED && parent.getObject() == null)
+                || (factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED && factory.getStatus(parent.getObject()) != ERepositoryStatus.DELETED)) {
             // recBinNode.getChildren().add(node);
             // node.setParent(recBinNode);
         } else {
@@ -926,7 +1002,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
-        // PTODO tgu implementation a revoir
         if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
             DelimitedFileConnection metadataConnection = (DelimitedFileConnection) ((ConnectionItem) repositoryObject
                     .getProperty().getItem()).getConnection();
@@ -1006,7 +1081,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param iMetadataConnection
      * @param metadataConnection
      */
-    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list,
+    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj, EList list,
             ERepositoryObjectType repositoryObjectType) {
         for (Object currentTable : list) {
             if (currentTable == null) {
@@ -1041,7 +1116,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param repositoryObjectType TODO
      * @param iMetadataConnection
      */
-    private void createTable(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
+    private void createTable(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable,
             ERepositoryObjectType repositoryObjectType) {
         if (metadataTable == null) {
@@ -1055,7 +1130,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
     }
 
-    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
+    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,
             Connection metadataConnection) {
 
         // // 5.GENERIC SCHEMAS
@@ -1162,7 +1237,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param metadataConnection
      * @param functionNode
      */
-    private void createSAPFunctionNodes(final RepositoryNode recBin, IRepositoryObject rebObj, Connection metadataConnection,
+    private void createSAPFunctionNodes(final RepositoryNode recBin, IRepositoryViewObject rebObj, Connection metadataConnection,
             RepositoryNode functionNode) {
         EList functions = ((SAPConnection) metadataConnection).getFuntions();
         if (functions == null || functions.isEmpty()) {
@@ -1190,7 +1265,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param unit
      * @return
      */
-    private RepositoryNode createSAPNode(IRepositoryObject rebObj, RepositoryNode functionNode, SAPFunctionUnit unit) {
+    private RepositoryNode createSAPNode(IRepositoryViewObject rebObj, RepositoryNode functionNode, SAPFunctionUnit unit) {
         SAPFunctionRepositoryObject modelObj = new SAPFunctionRepositoryObject(rebObj, functionNode, unit);
         modelObj.setLabel(unit.getName());
         RepositoryNode tableNode = new RepositoryNode(modelObj, functionNode, ENodeType.REPOSITORY_ELEMENT);
@@ -1208,7 +1283,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param iMetadataFileDelimited
      * @return
      */
-    private RepositoryNode createMetatableNode(RepositoryNode node, IRepositoryObject repObj,
+    private RepositoryNode createMetatableNode(RepositoryNode node, IRepositoryViewObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table,
             ERepositoryObjectType repositoryObjectType) {
         MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
@@ -1228,7 +1303,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @param query
      * @return
      */
-    private RepositoryNode createQueryNode(RepositoryNode node, IRepositoryObject repObj, Query query) {
+    private RepositoryNode createQueryNode(RepositoryNode node, IRepositoryViewObject repObj, Query query) {
         QueryRepositoryObject modelObj = new QueryRepositoryObject(repObj, query);
         modelObj.setLabel(query.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);

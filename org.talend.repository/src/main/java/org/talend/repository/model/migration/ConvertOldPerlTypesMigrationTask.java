@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
@@ -27,7 +27,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.PerlItemOldTypesConverter;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -111,7 +111,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
      * @return
      */
     private void convertJobs(ProcessItem processItem) throws PersistenceException {
-        List<IRepositoryObject> processList = FACTORY.getAll(ERepositoryObjectType.PROCESS, true);
+        List<IRepositoryViewObject> processList = FACTORY.getAll(ERepositoryObjectType.PROCESS, true);
         PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(processItem);
 
         if (converter.isModified()) {

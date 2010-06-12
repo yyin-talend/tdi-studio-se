@@ -81,7 +81,7 @@ public class ReadRoutineAction extends AbstractRoutineAction {
                     new Project(ProjectManager.getInstance().getProject(routineItem)), routineItem.getProperty().getId())
                     .getProperty();
 
-            repositoryNode.getObject().setProperty(updatedProperty);
+            // repositoryNode.getObject().setProperty(updatedProperty);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
