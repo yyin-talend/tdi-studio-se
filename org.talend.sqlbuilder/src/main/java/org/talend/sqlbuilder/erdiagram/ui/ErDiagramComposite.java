@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -253,6 +254,7 @@ public class ErDiagramComposite extends SashForm {
                         } else {
                             tables.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(), getCurrentDbType()));
                         }
+
                         boolean oracleDbType = TextUtil.isOracleDbType(getCurrentDbType());
                         for (Object obj : tablePart.getChildren()) {
                             if (obj instanceof ColumnPart) {
@@ -269,10 +271,10 @@ public class ErDiagramComposite extends SashForm {
                                         String columnContent = column.getElementName();
                                         Pattern pattern = Pattern.compile("\\w+"); //$NON-NLS-1$
                                         Matcher matcher = pattern.matcher(columnContent);
-
+                                        EDatabaseTypeName dbType = EDatabaseTypeName.getTypeFromDbType(getCurrentDbType());
                                         // modify for bug 12092
-                                        boolean sqlKeyword = KeywordsValidator
-                                                .isSqlKeyword(column.getElementName(), oracleDbType);
+                                        boolean sqlKeyword = KeywordsValidator.isSqlKeyword(column.getElementName(), dbType
+                                                .getProduct());
 
                                         if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
                                             columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
