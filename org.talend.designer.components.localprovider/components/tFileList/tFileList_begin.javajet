@@ -118,14 +118,18 @@
                 try {
                     java.io.FileInputStream fis_1 = new java.io.FileInputStream(o1);
                     java.io.FileInputStream fis_2 = new java.io.FileInputStream(o2);
+                    long size_1 = fis_1.available();
+                    long size_2 = fis_2.available();
+                    fis_1.close();
+                    fis_2.close();
 
-                    if (fis_1.available() == fis_2.available()) {
+                    if (size_1 == size_2) {
                         return (o1.getName()).compareTo(o2.getName());
-                    } else if (fis_1.available() > fis_2.available()) {
+                    } else if (size_1 > size_2) {
                         return 1;
                     } else {
                         return -1;
-                    }
+                    }                    
                 } catch (Exception e) {
                     return -1;
                 }
@@ -148,15 +152,19 @@
                 try {
                     java.io.FileInputStream fis_1 = new java.io.FileInputStream(o1);
                     java.io.FileInputStream fis_2 = new java.io.FileInputStream(o2);
+                    long size_1 = fis_1.available();
+                    long size_2 = fis_2.available();
+                    fis_1.close();
+                    fis_2.close();                    
 
-                    if (fis_1.available() == fis_2.available()) {
+                    if (size_1 == size_2) {
                         return (o2.getName()).compareTo(o1.getName());
 
-                    } else if (fis_1.available() < fis_2.available()) {
+                    } else if (size_1 < size_2) {
                         return 1;
                     } else {
                         return -1;
-                    }
+                    }                    
                 } catch (Exception e) {
                     return -1;
                 }
