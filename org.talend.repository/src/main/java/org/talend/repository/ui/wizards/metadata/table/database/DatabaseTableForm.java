@@ -73,6 +73,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
@@ -110,7 +111,7 @@ public class DatabaseTableForm extends AbstractForm {
     /**
      * FormTable Settings.
      */
-    private static final int WIDTH_GRIDDATA_PIXEL = 650;
+    private static final int WIDTH_GRIDDATA_PIXEL = 750;
 
     private static final boolean STREAM_DETACH_IS_VISIBLE = false;
 
@@ -388,7 +389,7 @@ public class DatabaseTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, WIDTH_GRIDDATA_PIXEL, height);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -470,7 +471,6 @@ public class DatabaseTableForm extends AbstractForm {
         tableEditorView.setCurrentDbms(trueDbmsID);
         tableEditorView.initGraphicComponents();
         metadataEditor.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel")); //$NON-NLS-1$
-        addUtilsButtonListeners();
     }
 
     /**
@@ -726,14 +726,20 @@ public class DatabaseTableForm extends AbstractForm {
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    // connection is done and
-                                    // tables exist
+                                    // start tos, and then click the table to editor schema directly. need to get tables
+                                    // again.
                                     String[] items = null;
                                     if (itemTableName != null && !itemTableName.isEmpty()) {
-                                        List<String> filterTableNames = ExtractMetaDataFromDataBase.getFilterTablesName();
+                                        TableInfoParameters tableInfoParameters = new TableInfoParameters();
+                                        List<String> filterTableNames = ExtractMetaDataFromDataBase.returnTablesFormConnection(
+                                                iMetadataConnection, tableInfoParameters);
                                         if (filterTableNames != null && !filterTableNames.isEmpty()) {
+                                            int visiblecount = filterTableNames.size();
+                                            if (visiblecount > LabelledCombo.MAX_VISIBLE_ITEM_COUNT) {
+                                                visiblecount = LabelledCombo.MAX_VISIBLE_ITEM_COUNT;
+                                            }
                                             items = new String[filterTableNames.size()];
-                                            tableCombo.setVisibleItemCount(filterTableNames.size());
+                                            tableCombo.setVisibleItemCount(visiblecount);
                                             // fill the combo
                                             for (int i = 0; i < filterTableNames.size(); i++) {
                                                 tableCombo.add(filterTableNames.get(i));
@@ -789,9 +795,15 @@ public class DatabaseTableForm extends AbstractForm {
                 String schemaLabel = tableNavigator.getSelection()[0].getText();
                 metadataTable = TableHelper.findByLabel(getConnection(), schemaLabel);
                 // initExistingNames();
-                List<String> filterTableNames = ExtractMetaDataFromDataBase.getFilterTablesName();
+                TableInfoParameters tableInfoParameters = new TableInfoParameters();
+                List<String> filterTableNames = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
+                        tableInfoParameters);
                 if (filterTableNames != null && !filterTableNames.isEmpty()) {
-                    tableCombo.setVisibleItemCount(filterTableNames.size());
+                    int visiblecount = filterTableNames.size();
+                    if (visiblecount > LabelledCombo.MAX_VISIBLE_ITEM_COUNT) {
+                        visiblecount = LabelledCombo.MAX_VISIBLE_ITEM_COUNT;
+                    }
+                    tableCombo.setVisibleItemCount(visiblecount);
                     for (int i = 0; i < filterTableNames.size(); i++) {
                         tableCombo.add(filterTableNames.get(i));
                         if (filterTableNames.get(i).equals(metadataTable.getSourceName())) {
@@ -958,8 +970,8 @@ public class DatabaseTableForm extends AbstractForm {
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
-             int selectionIndex = tableCombo.getSelectionIndex();
-                if (selectionIndex <0) {
+                int selectionIndex = tableCombo.getSelectionIndex();
+                if (selectionIndex < 0) {
                     tableString = editSchemaTableName;
                 } else {
                     tableString = tableCombo.getItem(selectionIndex);
