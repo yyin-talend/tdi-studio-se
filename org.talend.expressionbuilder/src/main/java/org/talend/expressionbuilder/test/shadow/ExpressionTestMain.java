@@ -36,6 +36,7 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.shadow.LogRowNode;
 import org.talend.designer.rowgenerator.shadow.RowGenProcess;
+import org.talend.designer.rowgenerator.shadow.RowGenProcessMain;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
@@ -50,6 +51,9 @@ public class ExpressionTestMain {
 
     public static final String EXPRESSION_BUILDER = "Expression_builder"; //$NON-NLS-1$
 
+    // for bug 13625
+    public static final String EXPRESSION_CONTEXT = RowGenProcessMain.PREVIEW; //$NON-NLS-1$
+
     private IProcess expressionBuilderTestProcess;
 
     private final StyledText text;
@@ -63,7 +67,7 @@ public class ExpressionTestMain {
         text = resultText;
 
         if (function != null) {
-            IContext context2 = new org.talend.core.model.context.JobContext(EXPRESSION_BUILDER);
+            IContext context2 = new org.talend.core.model.context.JobContext(EXPRESSION_CONTEXT);
 
             List<IContextParameter> params = new ArrayList<IContextParameter>();
             JobContextParameter contextParameter = new JobContextParameter();
@@ -150,7 +154,11 @@ public class ExpressionTestMain {
         StringBuffer testResult = new StringBuffer();
         try {
             // Thread.sleep(500);
+            boolean hasErrorMessage = false;
             BufferedReader readerOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            if (process.getErrorStream() != null && process.getErrorStream().available() > 0) {
+                hasErrorMessage = true;
+            }
             BufferedReader readerError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             Thread.sleep(500);
             boolean ready = readerOut.ready();
