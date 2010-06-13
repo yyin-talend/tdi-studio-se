@@ -227,10 +227,11 @@ public class CodeGenerator implements ICodeGenerator {
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.BEGIN, null));
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.MAIN, null));
 
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
+                                    .getRootNode()));
+
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
                         }
-
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree.getRootNode()));
 
                         componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END, null));
 
