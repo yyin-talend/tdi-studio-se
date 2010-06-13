@@ -31,6 +31,7 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
   String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
   String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
   String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+  boolean redirect = "true".equals(ElementParameterParser.getValue(node, "__REDIRECT__"));
 
   boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
   String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
@@ -172,12 +173,37 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
     org.apache.commons.httpclient.methods.GetMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
   <%}%>
    
-  boolean isContinue = true;
+	boolean isContinue = true;
+	int status_<%=cid%>;
+	String finalURL_<%=cid%> = <%=uri%>;
   try{
-    int status_<%=cid%>  = client_<%=cid %>.executeMethod(method_<%=cid%>);     
+  
+<%if(redirect && post){%>
+	//Bug13155, add support of redirection
+	boolean redirect_<%=cid%> = true;
+  	while(redirect_<%=cid%>){
+    	status_<%=cid%> = client_<%=cid %>.executeMethod(method_<%=cid%>);
+  		if((status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_PERMANENTLY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_SEE_OTHER) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_TEMPORARY_REDIRECT)){
+  			if(method_<%=cid%>.getResponseHeader("location").getValue().substring(0, 4).equals("http")){
+  				method_<%=cid%>.releaseConnection();
+  				method_<%=cid%> = new org.apache.commons.httpclient.methods.PostMethod(method_<%=cid%>.getResponseHeader("location").getValue());
+  			}else{
+	  			method_<%=cid%>.setURI(new org.apache.commons.httpclient.URI("/" + method_<%=cid%>.getResponseHeader("location").getValue(), false));
+  			}
+  			System.out.println("Redirect to: " +method_<%=cid%>.getURI());
+  			finalURL_<%=cid%> = method_<%=cid%>.getURI().toString();
+  		}else if(status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_OK){
+  			redirect_<%=cid%> = false;
+  		}else{
+			throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
+  		}
+  	}
+<%}else{%>
+    status_<%=cid%>  = client_<%=cid %>.executeMethod(method_<%=cid%>);     
     if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
       throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
-    }      
+    }
+<%}%>
   }catch(Exception e){
     <% if(("true").equals(dieOnError)){%>
       throw(e);
@@ -209,7 +235,7 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
       String fileName_<%=cid %> = (<%=filename%>).trim();    
   
       //open directory
-      java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);    
+      java.net.URL url_<%=cid %> = new java.net.URL(finalURL_<%=cid%>);
     
       String sURIPath_<%=cid%> = "";
       int iLastSlashIndex_<%=cid%> = 0;
