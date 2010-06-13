@@ -154,11 +154,7 @@ public class ExpressionTestMain {
         StringBuffer testResult = new StringBuffer();
         try {
             // Thread.sleep(500);
-            boolean hasErrorMessage = false;
             BufferedReader readerOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            if (process.getErrorStream() != null && process.getErrorStream().available() > 0) {
-                hasErrorMessage = true;
-            }
             BufferedReader readerError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             Thread.sleep(500);
             boolean ready = readerOut.ready();
