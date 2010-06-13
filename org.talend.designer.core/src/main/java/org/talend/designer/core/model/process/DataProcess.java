@@ -1444,10 +1444,12 @@ public class DataProcess {
         dataConnec.setSource(hashNode);
         dataConnec.setLinkNodeForHash(((DataConnection) mergeOutputConnection).getLinkNodeForHash());
         dataConnec.setElementParameters(mergeOutputConnection.getElementParameters());
+        dataConnec.setUniqueName(mergeOutputConnection.getUniqueName());
         mergeOutputConnection.setElementParameters(new ArrayList<IElementParameter>());
         dataConnec.setTarget(oldNodeTarget);
 
         ((DataConnection) mergeOutputConnection).setName(hashNode.getUniqueName() + "_" + mergeOutputConnection.getName());
+        ((DataConnection) mergeOutputConnection).setUniqueName(hashNode.getUniqueName() + "_" + mergeOutputConnection.getName());
 
         int inputId = mergeOutputConnection.getInputId();
         if (inputId == 0) { // can be 0 in case of lookup just on the tUnite
