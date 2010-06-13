@@ -516,14 +516,16 @@ if (execStat) {
 <%
 	}	
 %>
-	
-	resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","","");
-    
+	int returnCode = 0;	
     if(errorCode == null) {
-         return status != null && status.equals("failure") ? 1 : 0;	
+         returnCode = status != null && status.equals("failure") ? 1 : 0;	
     } else {   
-         return errorCode.intValue();
+         returnCode = errorCode.intValue();
     }
+	resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "" + returnCode,"","","","");
+  
+    return returnCode;
+
   }
 	
 	private void evalParam(String arg) {
