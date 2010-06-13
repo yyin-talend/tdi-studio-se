@@ -25,8 +25,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.impl.FolderItemImpl;
-import org.talend.core.model.properties.impl.ProjectImpl;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
@@ -203,16 +201,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
     }
 
     public boolean isContainedRefProject() {
-        Object container = this.getProperty().getItem().eContainer();
-        if (this.getProperty().getItem().eContainer() == null)
-            return false;
-        while (container != null && container instanceof FolderItemImpl) {
-            container = ((FolderItemImpl) container).eContainer();
-        }
-        if (container != null && container instanceof ProjectImpl)
-            return ((ProjectImpl) container).getTechnicalLabel().equals(
-                    ProjectManager.getInstance().getCurrentProject().getTechnicalLabel()) ? false : true;
-        else
-            return false;
+        return !ProjectManager.getInstance().getProject(this.getProperty()).getTechnicalLabel().equals(
+                ProjectManager.getInstance().getCurrentProject().getEmfProject().getTechnicalLabel());
     }
 }

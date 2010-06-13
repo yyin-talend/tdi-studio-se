@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
@@ -94,11 +93,6 @@ public abstract class RepositoryWizard extends Wizard {
      * @param IRepositoryObject
      */
     public boolean performCancel() {
-        try {
-            reload();
-        } catch (PersistenceException e) {
-            MessageBoxExceptionHandler.process(e);
-        }
         closeLockStrategy();
         return true;
     }

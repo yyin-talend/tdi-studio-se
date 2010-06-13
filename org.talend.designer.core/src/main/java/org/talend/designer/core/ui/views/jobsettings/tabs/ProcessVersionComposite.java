@@ -159,7 +159,7 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         tableViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-                IRepositoryObject repositoryObject = ((IRepositoryObject) inputElement);
+                IRepositoryViewObject repositoryObject = ((IRepositoryViewObject) inputElement);
                 if (repositoryObject.getProperty() == null) {
                     return null;
                 }
