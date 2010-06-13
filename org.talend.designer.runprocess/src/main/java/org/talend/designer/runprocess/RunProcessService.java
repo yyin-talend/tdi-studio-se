@@ -226,4 +226,11 @@ public class RunProcessService implements IRunProcessService {
     public IPreferenceStore getPreferenceStore() {
         return RunProcessPlugin.getDefault().getPreferenceStore();
     }
+
+    public IProcess getActiveProcess() {
+        if (RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext() == null) {
+            return null;
+        }
+        return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
+    }
 }

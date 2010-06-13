@@ -82,14 +82,4 @@ public class DataConnection extends AbstractConnection implements IDataConnectio
         this.linkedNodeForHash = linkedNodeForHash;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getTmpNode()
-     */
-    public INode getTmpNode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

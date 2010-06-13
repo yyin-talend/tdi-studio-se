@@ -62,7 +62,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -270,35 +269,77 @@ public class DataProcess {
                     param.setShowIf("ENABLE_PARALLEL == 'true'"); //$NON-NLS-1$
                     param.setNumRow(1);
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
-                    copyElementParametersValue(connection, dataConnec);
                 }
-                if (PluginChecker.isTIS()
-                        && (connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
-                                || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
-                                || connection.getLineStyle() == EConnectionType.RUN_IF
-                                || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
-
+                if (dataConnec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     IElementParameter param = new ElementParameter(dataConnec);
-                    param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
-                    param.setValue(Boolean.FALSE);
-                    param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+                    param.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+                    param.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
                     param.setField(EParameterFieldType.CHECK);
-                    param.setCategory(EComponentCategory.RESUMING);
-                    param.setNumRow(2);
-                    param.setShow(true);
+                    param.setValue(Boolean.FALSE);
+                    param.setCategory(EComponentCategory.ADVANCED);
+                    param.setShow(false);
+                    param.setNumRow(1);
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
-                    copyElementParametersValue(connection, dataConnec);
                 }
-                // for feature 13360
-                if (PluginChecker.isTIS() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
-                    if (connection.getTmpNode() != null) {
-                        ColumnListController.updateColumnList(connection.getTmpNode(), null, true);
+                if (PluginChecker.isTIS()) {
+
+                    if ((connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
+                            || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
+                            || connection.getLineStyle() == EConnectionType.RUN_IF
+                            || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
+                        IElementParameter param = new ElementParameter(dataConnec);
+                        param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
+                        param.setValue(Boolean.FALSE);
+                        param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+                        param.setField(EParameterFieldType.CHECK);
+                        param.setCategory(EComponentCategory.RESUMING);
+                        param.setNumRow(2);
+                        param.setShow(true);
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param); // breakpoint
                     }
-                    List<IElementParameter> elementList = (List<IElementParameter>) connection.getElementParameters();
-                    for (IElementParameter elementParameter : elementList) {
-                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(elementParameter);
+
+                    if (dataConnec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        IElementParameter param = new ElementParameter(dataConnec);
+                        param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
+                        param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
+                        param.setField(EParameterFieldType.CHECK);
+                        param.setCategory(EComponentCategory.BREAKPOINT);
+                        param.setNumRow(13);
+                        param.setValue(false);
+                        param.setContextMode(false);
+                        param.setShow(true);
+
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
+                        DataNode tmpNode = new DataNode(component, "breakpointNode");
+                        IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
+                        if (tmpParam != null) {
+                            tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                            tmpParam.setNumRow(14);
+                            ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+                        }
+                        tmpParam = tmpNode.getElementParameter("CONDITIONS");
+                        if (tmpParam != null) {
+                            tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                            tmpParam.setNumRow(15);
+                            ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+                        }
+
+                        tmpParam = tmpNode.getElementParameter("USE_ADVANCED");
+                        if (tmpParam != null) {
+                            tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                            tmpParam.setNumRow(16);
+                            ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+                        }
+                        tmpParam = tmpNode.getElementParameter("ADVANCED_COND");
+                        if (tmpParam != null) {
+                            tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+                            tmpParam.setNumRow(17);
+                            ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+                        }
                     }
                 }
+                copyElementParametersValue(connection, dataConnec);
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();
@@ -1015,7 +1056,6 @@ public class DataProcess {
                 || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
         NodeProgressBar progressBar = null;
         DataNode fsNode = null, oldFsNode = null;
-        List<IConnection> connectionsToAdd = new ArrayList<IConnection>();
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
@@ -1403,6 +1443,8 @@ public class DataProcess {
         dataConnec.setName(mergeOutputConnection.getName()); //$NON-NLS-1$
         dataConnec.setSource(hashNode);
         dataConnec.setLinkNodeForHash(((DataConnection) mergeOutputConnection).getLinkNodeForHash());
+        dataConnec.setElementParameters(mergeOutputConnection.getElementParameters());
+        mergeOutputConnection.setElementParameters(new ArrayList<IElementParameter>());
         dataConnec.setTarget(oldNodeTarget);
 
         ((DataConnection) mergeOutputConnection).setName(hashNode.getUniqueName() + "_" + mergeOutputConnection.getName());

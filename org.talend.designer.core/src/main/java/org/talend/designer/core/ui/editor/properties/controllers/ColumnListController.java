@@ -48,6 +48,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
@@ -342,9 +343,27 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         String[] refColumnListValues = refColumnListValuesTmp.toArray(new String[0]);
 
         boolean isSCDComponent = node.getComponent().getName().endsWith("SCD");//$NON-NLS-1$
-        for (int i = 0; i < node.getElementParameters().size(); i++) {
-            IElementParameter param = node.getElementParameters().get(i);
-            columnList = getColumnList(node, param.getContext());
+        updateColumnsOnElement(node, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
+                curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
+                refColumnListValues, isSCDComponent);
+
+        for (IConnection connection : node.getOutgoingConnections()) {
+            updateColumnsOnElement(connection, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
+                    curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
+                    refColumnListValues, isSCDComponent);
+        }
+        synLengthTipFlag = null;
+    }
+
+    private static void updateColumnsOnElement(IElement element, List<ColumnNameChanged> columnsChanged,
+            boolean synWidthWithMetadataColumn, String[] prevColumnNameList, String[] curColumnNameList,
+            String[] curColumnValueList, List<String> refColumnListNamesTmpWithSourceName, List<String> refColumnListValuesTmp,
+            String[] refColumnListNames, String[] refColumnListValues, boolean isSCDComponent) {
+        List<String> columnList;
+        String[] columnNameList;
+        for (int i = 0; i < element.getElementParameters().size(); i++) {
+            IElementParameter param = element.getElementParameters().get(i);
+            columnList = getColumnList(element, param.getContext());
             columnNameList = columnList.toArray(new String[0]);
             if (param.getField() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {
                 curColumnNameList = columnNameList;
@@ -389,15 +408,21 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 for (int j = 0; j < itemsValue.length; j++) {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                        columnList = getColumnList(node, tmpParam.getContext());
+                        columnList = getColumnList(element, tmpParam.getContext());
                         String[] tableColumnNameList = columnList.toArray(new String[0]);
                         if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
                             curColumnNameList = tableColumnNameList;
                             curColumnValueList = tableColumnNameList;
                         }
-                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof INode) {
                             curColumnNameList = prevColumnNameList;
                             curColumnValueList = prevColumnNameList;
+                        }
+                        // previous columns from a connection is in fact the same as the current columns.
+                        // needed for traces with breakpoint, feature:
+                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof IConnection) {
+                            curColumnNameList = tableColumnNameList;
+                            curColumnValueList = tableColumnNameList;
                         }
                         if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                             curColumnNameList = refColumnListNames;
@@ -463,7 +488,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine.put(codes[0], columnName);
                     }
                     if (synWidthWithMetadataColumn) {
-                        setColumnSize(newLine, node, codes, param);
+                        setColumnSize(newLine, element, codes, param);
                     }
                     newParamValues.add(j, newLine);
                 }
@@ -487,7 +512,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     listRepositoryItem[j] = ""; //$NON-NLS-1$
                     listItemsShowIf[j] = null;
                     listItemsNotShowIf[j] = null;
-                    newParam = new ElementParameter(node);
+                    newParam = new ElementParameter(element);
                     newParam.setName(columnName); //$NON-NLS-1$
                     newParam.setDisplayName(""); //$NON-NLS-1$
                     newParam.setField(EParameterFieldType.TEXT);
@@ -528,7 +553,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
             }
         }
-        synLengthTipFlag = null;
     }
 
     /**
@@ -551,9 +575,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * @param codes
      * @param param
      */
-    private static void setColumnSize(Map<String, Object> newLine, INode node, String[] codes, IElementParameter param) {
-        if (node.getMetadataList().size() > 0) {
-            IMetadataTable table = node.getMetadataList().get(0);
+    private static void setColumnSize(Map<String, Object> newLine, IElement element, String[] codes, IElementParameter param) {
+        if (element instanceof INode && ((INode) element).getMetadataList().size() > 0) {
+            IMetadataTable table = ((INode) element).getMetadataList().get(0);
             String lineName = (String) newLine.get("SCHEMA_COLUMN"); //$NON-NLS-1$
             for (IMetadataColumn column : table.getListColumns()) {
 
@@ -618,21 +642,26 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return synLengthTipFlag.booleanValue();
     }
 
-    private static List<String> getColumnList(INode node, String context) {
+    private static List<String> getColumnList(IElement element, String context) {
         List<String> columnList = new ArrayList<String>();
 
-        IMetadataTable table = node.getMetadataFromConnector(context);
-
-        if (table == null) {
-            if (node.getMetadataList().size() > 0) {
-                table = node.getMetadataList().get(0);
+        IMetadataTable table = null;
+        if (element instanceof INode) {
+            table = ((INode) element).getMetadataFromConnector(context);
+            if (table == null) {
+                if (((INode) element).getMetadataList().size() > 0) {
+                    table = ((INode) element).getMetadataList().get(0);
+                }
             }
+        } else if (element instanceof IConnection) {
+            table = ((IConnection) element).getMetadataTable();
         }
+
         if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
                 // add for bug 12034
                 String label = column.getLabel();
-                if (node.getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
+                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
                     if (label.length() > 1) {
                         String labelSub = label.substring(1);
                         if (labelSub != null && KeywordsValidator.isKeyword(labelSub)) {

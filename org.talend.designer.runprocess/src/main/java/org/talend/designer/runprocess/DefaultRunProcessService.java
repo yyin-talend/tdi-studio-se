@@ -250,4 +250,12 @@ public class DefaultRunProcessService implements IRunProcessService {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public IProcess getActiveProcess() {
+        if (RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext() == null) {
+            return null;
+        }
+
+        return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
+    }
 }

@@ -13,9 +13,9 @@
   org.talend.designer.codegen.config.NodesSubTree
   org.talend.core.model.process.IProcess
   org.talend.core.model.utils.NodeUtil
-  java.util.Map
   org.talend.core.model.metadata.types.JavaTypesManager
   org.talend.core.model.metadata.types.JavaType
+  java.util.Map
   java.util.List
   java.util.Set
   java.util.HashSet
@@ -28,10 +28,12 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 IProcess process = node.getProcess();
 String startNodeCid=node.getDesignSubjobStartNode().getUniqueName();
+ 
 NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
+
 boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 
 Set<IConnection> connSet =  new HashSet<IConnection>();
@@ -42,16 +44,10 @@ Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
 iterateConnSet.addAll(node.getOutgoingConnections(EConnectionType.ITERATE));
 
 List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
-String connName = null;
 
-if (node.getIncomingConnections().size() == 1) {
-  IConnection conn = node.getIncomingConnections().get(0);
-  connName = conn.getName();
-}
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
-
 if(execStat){
  runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
  	+iterateId,2, 0); 
@@ -61,20 +57,26 @@ if(execStat){
 }
 
  if (codePart.equals(ECodePart.MAIN)) {
+  boolean traceCodeGenerated = false;     
   for (IConnection conn : node.getOutgoingConnections()) {
-  IMetadataTable metadata = conn.getMetadataTable();
-   if (metadata!=null) {
-    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-    if (("true").equals(ElementParameterParser.getValue(conn, "__TRACES_CONNECTION_ENABLE__")) &&
-    		("true").equals(ElementParameterParser.getValue(conn, "__ACTIVEBREAKPOINT__")) && node.isDesignSubjobStartNode()) {
-    %>
+     boolean use_breakout = ("true").equals(ElementParameterParser.getValue(conn, "__ACTIVEBREAKPOINT__"));
+     boolean use_reaceenble = ("true").equals(ElementParameterParser.getValue(conn, "__TRACES_CONNECTION_ENABLE__"));
+  	if(node.isSubProcessStart() && use_breakout && !traceCodeGenerated) {
+  	  traceCodeGenerated = true;
+  %>
     globalMap.put("USE_CONDITION",Boolean.TRUE);
     globalMap.put("TRACE_CONDITION", Boolean.FALSE);
-    <%   
-     }
-     if (trace ) { 
+  <%
+    }
+  
+   IMetadataTable metadata = conn.getMetadataTable();
+   if (metadata!=null) {
+    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) ||
+        conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+     if (trace && use_reaceenble) { 
   %>
-  if (<%=conn.getName() %> !=null  ) {
+  
+  if (<%=conn.getName() %> !=null) {
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   runTrace.isPause();
   if (runTrace.isPause()) {
@@ -90,48 +92,14 @@ if(execStat){
          }
 %>");
 	}
-  }
-
-<%
-
-     }
-    }
-   }
-  }
-  
-  String inputColName = null;
-  IConnection cc=null;
-  if (node.getIncomingConnections()!=null) {
-   for (IConnection incomingConn : node.getIncomingConnections()) {
-    if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-     inputColName = incomingConn.getName();
-     cc= incomingConn;
-     break;
-    }
-   }
-  }
-    List<IMetadataTable> metadatas = node.getMetadataList();	
-if (inputColName!=null) {
- if(cc.getLineStyle().equals(EConnectionType.FLOW_MAIN)){
-    if ((metadatas != null) && (metadatas.size() > 0)) {
-     IMetadataTable metadata = metadatas.get(0);
-     for (IMetadataColumn column : metadata.getListColumns()) {
-
-     %>
-
-	<%}}}}
-	%>
-  <%if ((!node.isSubProcessStart())&&(NodeUtil.isDataAutoPropagated(node))) {
-   if (inputColName!=null) {
-    if ((metadatas != null) && (metadatas.size() > 0)) {
-     IMetadataTable metadata = metadatas.get(0);
-                 boolean use_advanced = ("true").equals(ElementParameterParser.getValue(cc, "__USE_ADVANCED__"));
-      List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue( cc,  "__CONDITIONS__");
-   		String advancedCondition = ElementParameterParser.getValue(cc, "__ADVANCED_COND__");
-     String logical = ElementParameterParser.getValue(cc,"__LOGICAL_OP__");   
-     boolean use_breakout = ("true").equals(ElementParameterParser.getValue(cc, "__ACTIVEBREAKPOINT__"));
-      if (metadata != null&& connName != null) {
-      if(use_breakout){%>     		
+	<%
+	    
+     boolean use_advanced = ("true").equals(ElementParameterParser.getValue(conn, "__USE_ADVANCED__"));
+      List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue( conn,  "__CONDITIONS__");
+   		String advancedCondition = ElementParameterParser.getValue(conn, "__ADVANCED_COND__");
+     String logical = ElementParameterParser.getValue(conn,"__LOGICAL_OP__");
+      if (metadata != null) {
+      if(use_breakout && use_reaceenble){%>     		
        if (
       <% 
       if ((keyColumns!=null &&keyColumns.size() > 0)|| use_advanced) { //111
@@ -144,7 +112,7 @@ if (inputColName!=null) {
             <% 
             if (!("").equals(keyColumn.get("FUNCTION"))) {
             %>    
-              <%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+              <%=keyColumn.get("FUNCTION").replace("$source", conn.getName() + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
             <%
             }else {
               IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
@@ -154,14 +122,14 @@ if (inputColName!=null) {
                 //this is only for bug:8133, when "Oject" type, and "Empty" function, and compare with "null"
                 if (keyColumn.get("RVALUE") != null && keyColumn.get("RVALUE").equals("null")){
 	            %>
-	              <%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+	              <%="$source $operator $target".replace("$source", conn.getName() + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
                 <%}else{%>
-                  <%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+                  <%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", conn.getName() + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
                 <%
 	            }
               } else {
               %>  
-                <%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
+                <%="$source $operator $target".replace("$source", conn.getName() + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
               <%
 	          }
             }
@@ -171,7 +139,7 @@ if (inputColName!=null) {
         <%
         } // <- 222
         %>
-         <%=use_advanced? (keyColumns.size() < 1 ? "" : logical) + advancedCondition.replace("input_row", connName) : ""%>
+         <%=use_advanced? (keyColumns.size() < 1 ? "" : logical) + advancedCondition.replace("input_row", conn.getName()) : ""%>
       <% 
       } else { //111 
       %>
@@ -181,17 +149,38 @@ if (inputColName!=null) {
       %>      
     ){
     	globalMap.put("TRACE_CONDITION", Boolean.TRUE);
-    	
     }
-      
-      <%}
-      for (IConnection conn : node.getOutgoingConnections()) {
-       if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-        for (IMetadataColumn column : metadata.getListColumns()) {
-  
+<%
+       }
 %>
-    
- <%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
+  }
+<%
+      }
+     }
+    }
+   }
+  }
+  
+  String inputColName = null;
+  if (node.getIncomingConnections()!=null) {
+   for (IConnection incomingConn : node.getIncomingConnections()) {
+    if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+     inputColName = incomingConn.getName();
+     break;
+    }
+   }
+  }
+  List<IMetadataTable> metadatas = node.getMetadataList();
+  if ((!node.isSubProcessStart())&&(NodeUtil.isDataAutoPropagated(node))) {
+   if (inputColName!=null) {
+    if ((metadatas != null) && (metadatas.size() > 0)) {
+     IMetadataTable outputMetadata = metadatas.get(0);
+     if (outputMetadata != null) {
+      for (IConnection outputConnection : node.getOutgoingConnections()) {
+       if (outputConnection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || outputConnection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+        for (IMetadataColumn column : outputMetadata.getListColumns()) {
+%>
+ <%=outputConnection.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
 <% 
        	}
        }

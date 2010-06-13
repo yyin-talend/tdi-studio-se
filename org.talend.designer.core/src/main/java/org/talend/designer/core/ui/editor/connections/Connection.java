@@ -74,8 +74,6 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private Node source;
 
-    private Node tmpNode;
-
     private Node sourceForUnit;
 
     protected String name;
@@ -352,9 +350,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
                 addElementParameter(param);
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
-                tmpNode = new Node(component, (Process) source.getProcess());
+                Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.addInput(this);
-                final List<? extends IElementParameter> parameters = component.createElementParameters(tmpNode);
                 IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
                 if (tmpParam != null) {
                     tmpParam.setElement(this);
@@ -448,6 +445,13 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public boolean checkTraceShowEnable() {
         // enable
+        IProcess process = DesignerPlugin.getDefault().getRunProcessService().getActiveProcess();
+        if (process == null || this.getSource() == null) {
+            return false;
+        }
+        if (!process.getId().equals(this.getSource().getProcess().getId())) {
+            return false;
+        }
         boolean enabled = DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
         return enabled;
     }
@@ -1360,15 +1364,5 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public ConnectionResuming getResuming() {
         return this.resuming;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getTmpNode()
-     */
-    public INode getTmpNode() {
-        // TODO Auto-generated method stub
-        return tmpNode;
     }
 }
