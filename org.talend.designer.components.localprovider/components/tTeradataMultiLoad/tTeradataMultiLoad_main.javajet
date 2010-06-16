@@ -73,7 +73,7 @@ if(!specifyLogTable) {
 fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 
 <%//Layout---------------------------------------------------------------%>
-fw_<%=cid %>.write(".BEGIN IMPORT MLOAD TABLES "+tableFullName_<%=cid%>+" SESSIONS 8;\r\n");
+fw_<%=cid %>.write(".BEGIN IMPORT MLOAD TABLES "+tableFullName_<%=cid%>+" "+<%=beginLoad%>+";\r\n");
 fw_<%=cid %>.write(".LAYOUT customer_layout;\r\n");
 <%
 if(columnList!=null){
