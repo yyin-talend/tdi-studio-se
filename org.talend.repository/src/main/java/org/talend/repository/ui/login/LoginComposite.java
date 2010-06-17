@@ -71,15 +71,19 @@ import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
+import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -133,8 +137,6 @@ public class LoginComposite extends Composite {
     public Button openProjectBtn;
 
     private Button manageConnectionsButton;
-
-    private Project[] projects;
 
     private Label newProjectLabel;
 
@@ -648,8 +650,7 @@ public class LoginComposite extends Composite {
         projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-                prefManipulator.setLastProject(getProject().getLabel());
+                setLastProject(getPackProject());
                 dialog.updateButtons();
                 setRepositoryContextInContext();
             }
@@ -707,7 +708,7 @@ public class LoginComposite extends Composite {
         if (newProjectDialog.open() == Window.OK) {
             project = newPrjWiz.getProject();
             populateProjectList();
-            selectProject(project);
+            selectProject(new PackProject(project));
         }
         validateProject();
     }
@@ -814,7 +815,6 @@ public class LoginComposite extends Composite {
 
     private void unpopulateProjectList() {
         projectViewer.setInput(null);
-        projects = null;
         projectViewer.getControl().setEnabled(false);
     }
 
@@ -822,8 +822,22 @@ public class LoginComposite extends Composite {
         RepositoryContext repositoryContext = new RepositoryContext();
         repositoryContext.setUser(getUser());
         repositoryContext.setClearPassword(passwordText.getText());
-        repositoryContext.setProject(getProject());
         repositoryContext.setFields(getConnection().getDynamicFields());
+
+        PackProject packProject = getPackProject();
+        if (packProject != null) {
+            repositoryContext.setProject(packProject.getProject());
+
+            String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR
+                    + packProject.getTechnicalLabel();
+            if (packProject.isSVNBranch()) {
+                repositoryContext.getFields().put(branchKey, packProject.getBranch());
+            } else {
+                repositoryContext.getFields().put(branchKey, ""); //$NON-NLS-1$
+            }
+        } else {
+            repositoryContext.setProject(null);
+        }
         return repositoryContext;
     }
 
@@ -833,6 +847,7 @@ public class LoginComposite extends Composite {
     }
 
     protected void populateProjectList() {
+        List<PackProject> packProjects = new ArrayList<PackProject>();
 
         if (getConnection() == null || !getConnection().isComplete()) {
             return;
@@ -873,14 +888,14 @@ public class LoginComposite extends Composite {
 
             initialized = true;
         } catch (Exception e) {
-            projects = new Project[0];
+            packProjects.clear();
 
             MessageDialog.openError(getShell(), "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (initialized) {
             try {
-                projects = repositoryFactory.readProject();
+                Project[] projects = repositoryFactory.readProject();
                 Arrays.sort(projects, new Comparator<Project>() {
 
                     public int compare(Project p1, Project p2) {
@@ -888,25 +903,49 @@ public class LoginComposite extends Composite {
                     }
 
                 });
+
+                ISVNProviderService service = null;
+                if (PluginChecker.isSVNProviderPluginLoaded()) {
+                    try {
+                        service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+                    } catch (RuntimeException e) {
+                        // nothing to do
+                    }
+                }
+                for (Project p : projects) {
+                    if (service != null && !p.isLocal() && service.isSVNProject(p)) {
+                        packProjects.add(new PackProject(p, SVNConstant.NAME_TRUNK)); //$NON-NLS-1$
+
+                        String[] branches = service.getBranchList(p);
+                        if (branches != null) {
+                            for (String branch : branches) {
+                                packProjects.add(new PackProject(p, branch));
+                            }
+                        }
+                    } else {
+                        packProjects.add(new PackProject(p));
+                    }
+                }
+
             } catch (PersistenceException e) {
-                projects = new Project[0];
+                packProjects.clear();
 
                 setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
                         + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
                 MessageDialog.openError(getShell(),
                         "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (BusinessException e) {
-                projects = new Project[0];
+                packProjects.clear();
 
                 MessageDialog.openError(getShell(),
                         "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
-        projectViewer.setInput(projects);
+        projectViewer.setInput(packProjects);
 
         // importDemoProjectAction.setExistingProjects(projects);
 
-        if (projects.length > 0) {
+        if (!packProjects.isEmpty()) {
             // Try to select the last recently used project
             selectLastUsedProject();
 
@@ -922,23 +961,43 @@ public class LoginComposite extends Composite {
      * @param projects
      */
     private void selectLastUsedProject() {
-        Project[] projects = (Project[]) projectViewer.getInput();
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        String lastProject = prefManipulator.getLastProject();
-        if (lastProject != null) {
-            Project goodProject = null;
-            for (int i = 0; goodProject == null && i < projects.length; i++) {
-                if (lastProject.equals(projects[i].getLabel())) {
-                    goodProject = projects[i];
+        List<PackProject> projects = (List<PackProject>) projectViewer.getInput();
+        if (projects != null) {
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+            String lastProject = prefManipulator.getLastProject();
+            String lastSVNBranch = prefManipulator.getLastSVNBranch();
+
+            if (lastProject != null) {
+                PackProject goodProject = null;
+                PackProject recoredProject = null;
+
+                for (int i = 0; goodProject == null && i < projects.size(); i++) {
+                    PackProject packProject = projects.get(i);
+                    if (lastProject.equals(packProject.getLabel())) {
+                        if (packProject.isSVNBranch()) {
+                            if (lastSVNBranch != null && lastSVNBranch.equals(packProject.getBranch())) {
+                                goodProject = packProject;
+                                break;
+                            }
+                            if (packProject.getBranch().equals(SVNConstant.NAME_TRUNK)) {
+                                recoredProject = packProject;
+                            }
+                        } else {
+                            goodProject = packProject;
+                        }
+                    }
                 }
-            }
+                if (recoredProject != null && goodProject == null) { // use the trunk as default
+                    goodProject = recoredProject;
+                }
 
-            if (goodProject == null && projects.length > 0) {
-                goodProject = projects[0];
-            }
+                if (goodProject == null && projects.size() > 0) {
+                    goodProject = projects.get(0);
+                }
 
-            if (goodProject != null) {
-                selectProject(goodProject);
+                if (goodProject != null) {
+                    selectProject(goodProject);
+                }
             }
         }
     }
@@ -948,16 +1007,19 @@ public class LoginComposite extends Composite {
      * 
      * @param goodProject
      */
-    private void selectProject(Project goodProject) {
+    private void selectProject(PackProject goodProject) {
         projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
         setRepositoryContextInContext();
     }
 
     private void selectProject(String projectName) {
-        for (Project current : projects) {
-            if (current.getLabel().equals(projectName)) {
-                selectProject(current);
-                return;
+        List<PackProject> projects = (List<PackProject>) projectViewer.getInput();
+        if (projects != null) {
+            for (PackProject p : projects) {
+                if (p.getLabel().equals(projectName)) {
+                    selectProject(p);
+                    return;
+                }
             }
         }
     }
@@ -980,11 +1042,11 @@ public class LoginComposite extends Composite {
         return toReturn;
     }
 
-    public Project getProject() {
-        Project project = null;
+    public PackProject getPackProject() {
+        PackProject project = null;
         if (!projectViewer.getSelection().isEmpty()) {
             IStructuredSelection sel = (IStructuredSelection) projectViewer.getSelection();
-            project = (Project) sel.getFirstElement();
+            project = (PackProject) sel.getFirstElement();
         }
         return project;
     }
@@ -1006,12 +1068,25 @@ public class LoginComposite extends Composite {
          */
         @Override
         public String getText(Object element) {
-            Project prj = (Project) element;
-            String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName(); //$NON-NLS-1$
-            if (!prj.isLocal() && !isAuthenticationNeeded()) {
-                toReturn += " (remote project in offline mode)"; //$NON-NLS-1$
+            if (element instanceof PackProject) {
+                PackProject prj = (PackProject) element;
+                StringBuffer toReturn = new StringBuffer();
+                toReturn.append(prj.getLabel());
+                if (prj.isSVNBranch()) {
+                    toReturn.append(" ("); //$NON-NLS-1$
+                    toReturn.append(prj.getBranch());
+                    toReturn.append(")"); //$NON-NLS-1$
+                }
+
+                toReturn.append(" - "); //$NON-NLS-1$
+                toReturn.append(prj.getLanguage().getName());
+                if (!prj.getProject().isLocal() && !isAuthenticationNeeded()) {
+                    toReturn.append(" (remote project in offline mode)"); //$NON-NLS-1$
+                }
+                return toReturn.toString();
             }
-            return toReturn;
+            return super.getText(element);
+
         }
 
     }
@@ -1122,5 +1197,17 @@ public class LoginComposite extends Composite {
 
     public List<ConnectionBean> getStoredConnections() {
         return this.storedConnections;
+    }
+
+    public void setLastProject(final PackProject project) {
+        if (project != null) {
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+            prefManipulator.setLastProject(project.getLabel());
+            if (project.isSVNBranch()) {
+                prefManipulator.setLastSVNBranch(project.getBranch());
+            } else {
+                prefManipulator.setLastSVNBranch(""); //$NON-NLS-1$
+            }
+        }
     }
 }

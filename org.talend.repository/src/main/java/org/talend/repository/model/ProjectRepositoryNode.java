@@ -70,6 +70,7 @@ import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
@@ -255,7 +256,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private String showSVNRoot() {
         String urlPath = ProjectManager.getInstance().getCurrentBranchURL(project);
-        if (!urlPath.contains("trunk") && !urlPath.contains("branches") && !urlPath.contains("tags")) {//$NON-NLS-1$//$NON-NLS-1$//$NON-NLS-1$
+        if (!urlPath.contains(SVNConstant.NAME_TRUNK) && !urlPath.contains(SVNConstant.NAME_BRANCHES)
+                && !urlPath.contains(SVNConstant.NAME_TAGS)) {
             return null;
         }
         if ("".equals(urlPath) || urlPath == null) {
