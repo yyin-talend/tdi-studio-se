@@ -72,13 +72,16 @@
 	
     <PARAMETER
       NAME="DRIVER_JAR"
-      FIELD="MODULE_LIST"
+      FIELD="TABLE"
       NUM_ROW="30"
+      NB_LINES="2" 
       REPOSITORY_VALUE="DRIVER_JAR"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT></DEFAULT>
+      	<ITEMS> 
+			<ITEM NAME="JAR_NAME" FIELD="MODULE_LIST"  /> 
+		</ITEMS> 
     </PARAMETER>
 	
     <PARAMETER

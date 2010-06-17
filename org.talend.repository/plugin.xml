@@ -1098,6 +1098,13 @@
              id="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"
              name="MysqlOutputDBVersionForBug13250">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeJDBCDriverJarTypeForFeature12879"
+             description="ChangeJDBCDriverJarTypeForFeature12879"
+             id="org.talend.repository.model.migration.ChangeJDBCDriverJarTypeForFeature12879"
+             name="ChangeJDBCDriverJarTypeForFeature12879">
+       </projecttask>
    </extension>
    
    <extension
