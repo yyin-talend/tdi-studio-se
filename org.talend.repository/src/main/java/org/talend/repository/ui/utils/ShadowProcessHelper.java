@@ -155,7 +155,7 @@ public class ShadowProcessHelper {
             return null;
         }
         for (String str : array) {
-            if (value.equals(TalendTextUtils.removeQuotes(str))) {
+            if (value.equals(str)) {
                 return str;
             }
         }
