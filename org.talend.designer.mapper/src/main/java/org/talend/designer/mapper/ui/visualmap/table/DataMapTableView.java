@@ -247,6 +247,8 @@ public abstract class DataMapTableView extends Composite {
 
     public static final String MATCH_MODEL_SETTING = "Match Model"; //$NON-NLS-1$
 
+    public static final String LOOKUP_MODEL_SETTING = "Lookup Model"; //$NON-NLS-1$
+
     public static final String JOIN_MODEL_SETTING = "Join Model"; //$NON-NLS-1$
 
     public static final String PERSISTENCE_MODEL_SETTING = "Store temp data"; //$NON-NLS-1$
@@ -433,14 +435,13 @@ public abstract class DataMapTableView extends Composite {
         centerLayout.verticalSpacing = spacingCenterLayout;
         centerComposite.setLayout(centerLayout);
 
+        createMapSettingTable();
         if (mapperManager.isAdvancedMap() && this instanceof OutputDataMapTableView) {
             createExpressionFilter(DEFAULT_OUT_EXPRESSION_FILTER);
             initExtraTable();
         } else {
             initExtraTable();
         }
-
-        createMapSettingTable();
 
         createContent();
 

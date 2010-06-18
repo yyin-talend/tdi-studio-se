@@ -459,6 +459,9 @@ public class DataProcess {
 
             // set the first one (input) with the properties of the graphical node.
             dataNode = itemsMap.get(multipleComponentManager.getInput());
+            if (dataNode == null) {
+                continue;
+            }
             dataNode.setStart(graphicalNode.isStart());
             dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
             dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
@@ -679,10 +682,14 @@ public class DataProcess {
             if (multipleComponentManager.isSetConnector()) {
                 newMetadata = graphicalNode.getMetadataFromConnector(multipleComponentManager.getConnector()).clone();
             } else {
-                if (graphicalNode.getMetadataList() != null) {
+                if (graphicalNode.getMetadataList() != null && graphicalNode.getMetadataList().size() > 0) {
                     newMetadata = graphicalNode.getMetadataList().get(0).clone();
                 }
             }
+            if (newMetadata == null) {
+                continue;
+            }
+
             newMetadata.setTableName(uniqueName);
             if (graphicalNode.isDesignSubjobStartNode()) {
                 curNode.setDesignSubjobStartNode(null);
