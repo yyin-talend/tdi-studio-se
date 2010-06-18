@@ -69,11 +69,11 @@ if(columnList!=null){
 	int counter = 1;
 	for(IMetadataColumn column:columnList){	
 		if( columnList.size() != counter){	%>
-		fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(255)),\r\n");
+		fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)),\r\n");
 	<%
 		} else {
 	%>
-			fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(255))\r\n");
+			fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>))\r\n");
 	<% 	}
 		counter++;
 	}

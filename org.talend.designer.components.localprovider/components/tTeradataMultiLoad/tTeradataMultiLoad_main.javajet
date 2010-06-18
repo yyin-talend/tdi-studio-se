@@ -79,7 +79,7 @@ fw_<%=cid %>.write(".LAYOUT customer_layout;\r\n");
 if(columnList!=null){
 	for(IMetadataColumn column:columnList){	
 %>
-fw_<%=cid %>.write(".FIELD "+"<%=column.getOriginalDbColumnName()%>"+" * VARCHAR(255);\r\n");
+fw_<%=cid %>.write(".FIELD "+"<%=column.getOriginalDbColumnName()%>"+" * VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>);\r\n");
 <%
 	}
 }
