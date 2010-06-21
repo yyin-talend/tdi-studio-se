@@ -1220,7 +1220,7 @@ public class LoginComposite extends Composite {
         ISVNProviderService svnService = getSVNService();
         if (p != null && svnService != null) {
             try {
-                if (svnService.isSVNProject(p)) {
+                if (!p.isLocal() && svnService.isSVNProject(p)) {
                     brancesList.add(SVNConstant.NAME_TRUNK);
                     String[] branchList = svnService.getBranchList(p);
                     if (branchList != null) {
@@ -1241,7 +1241,7 @@ public class LoginComposite extends Composite {
         ISVNProviderService svnService = getSVNService();
         if (project != null && svnService != null) {
             try {
-                if (svnService.isSVNProject(project)) {
+                if (!project.isLocal() && svnService.isSVNProject(project)) {
                     hide = false;
                 }
             } catch (PersistenceException e) {
