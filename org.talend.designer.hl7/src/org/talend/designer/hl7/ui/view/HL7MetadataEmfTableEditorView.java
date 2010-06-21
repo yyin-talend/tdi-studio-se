@@ -45,6 +45,8 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
 
     private HL7Tree2SchemaLinker linker;
 
+    private boolean isRepository;
+
     /**
      * You must initialize graphicals components by calling <code>initGraphicComponents()</code>.
      * 
@@ -391,7 +393,8 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
      */
     @Override
     protected ExtendedToolbarView initToolBar() {
-        return new HL7MetadataEmfToolbarEditor(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(), linker);
+        return new HL7MetadataEmfToolbarEditor(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(), linker,
+                isRepository());
     }
 
     public TableViewerCreatorColumn getNameColumn() {
@@ -404,6 +407,14 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
 
     public void setLinker(HL7Tree2SchemaLinker linker) {
         this.linker = linker;
+    }
+
+    public boolean isRepository() {
+        return this.isRepository;
+    }
+
+    public void setRepository(boolean isRepository) {
+        this.isRepository = isRepository;
     }
 
 }

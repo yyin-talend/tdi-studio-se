@@ -64,13 +64,16 @@ public class HL7Tree2SchemaLinker extends TreeToTablesLinker<Object, Object> {
 
     private HL7UI mainui;
 
+    private boolean isRepository;
+
     /**
      * DOC hywang HL7Tree2SchemaLinker constructor comment.
      * 
      * @param commonParent
      */
-    public HL7Tree2SchemaLinker(Composite commonParent) {
+    public HL7Tree2SchemaLinker(Composite commonParent, boolean isRepository) {
         super(commonParent);
+        this.isRepository = isRepository;
     }
 
     public void init(TreeViewer sourceTrees, HL7MetadataEmfTableEditorView hl7SchemaTableEditorView) {
@@ -297,6 +300,14 @@ public class HL7Tree2SchemaLinker extends TreeToTablesLinker<Object, Object> {
 
     public void setMainui(HL7UI mainui) {
         this.mainui = mainui;
+    }
+
+    public boolean isRepository() {
+        return this.isRepository;
+    }
+
+    public void setRepository(boolean isRepository) {
+        this.isRepository = isRepository;
     }
 
 }

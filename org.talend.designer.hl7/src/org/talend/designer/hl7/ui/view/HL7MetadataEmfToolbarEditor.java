@@ -62,6 +62,8 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
 
     private List<MetadataColumn> needUpdateInRelationMap = new ArrayList<MetadataColumn>();
 
+    private boolean isRepository;
+
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
      * 
@@ -76,9 +78,10 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
 
     // hywang add
     public HL7MetadataEmfToolbarEditor(Composite parent, int style,
-            AbstractExtendedTableViewer<MetadataColumn> extendedTableViewer, HL7Tree2SchemaLinker linker) {
+            AbstractExtendedTableViewer<MetadataColumn> extendedTableViewer, HL7Tree2SchemaLinker linker, boolean isRepository) {
         super(parent, style, extendedTableViewer);
         this.linker = linker;
+        this.isRepository = isRepository;
     }
 
     public HL7MetadataEmfToolbarEditor(Composite parent, int style,
@@ -118,6 +121,10 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 return tableEditorModel.createNewMetadataColumn(dbmsId);
             }
 
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
+            }
         };
     }
 
@@ -135,6 +142,10 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 return new MetadataEmfPasteCommand(extendedTableModel, indexWhereInsert);
             }
 
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
+            }
         };
     }
 
@@ -152,6 +163,11 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 return new MetadataEmfExportXmlCommand((MetadataEmfTableEditor) extendedTableModel, file, dbmsId);
             }
 
+            @Override
+            public boolean getEnabledState() {
+                return true;
+            }
+
         };
     }
 
@@ -167,6 +183,11 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
             @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
                 return new MetadataEmfImportXmlCommand(extendedTableModel, file);
+            }
+
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
             }
 
         };
@@ -201,6 +222,11 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 linker.getBackgroundRefresher().refreshBackground();
             }
 
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
+            }
+
         };
     }
 
@@ -213,7 +239,13 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 linker.getMainui().redrawLinkers();
                 linker.getBackgroundRefresher().refreshBackground();
             }
+
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
+            }
         };
+
     }
 
     @Override
@@ -226,6 +258,10 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
                 linker.getBackgroundRefresher().refreshBackground();
             }
 
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && !isRepository; // 13749
+            }
         };
     }
 

@@ -36,6 +36,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
@@ -93,6 +94,8 @@ public class HL7UI {
 
     private String endChar;
 
+    protected boolean isRepository;
+
     public HL7UI(Composite parent, HL7Manager hl7Manager) {
         this.hl7Manager = hl7Manager;
         this.hl7Manager.getUiManager().setHl7UI(this);
@@ -115,7 +118,8 @@ public class HL7UI {
      * @param child
      */
     private void createContent(Composite mainComposite) {
-        header = new HeaderComposite(mainComposite, SWT.NONE, this.filePath, startChar, endChar, hl7Manager);
+        judgeRepository();
+        header = new HeaderComposite(mainComposite, SWT.NONE, this.filePath, startChar, endChar, hl7Manager, this.isRepository);
 
         MsgToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         MsgToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -126,10 +130,9 @@ public class HL7UI {
 
         MsgToSchemaSash.setWeights(new int[] { 40, 60 });
 
-        linker = new HL7Tree2SchemaLinker(this.MsgToSchemaSash);
+        linker = new HL7Tree2SchemaLinker(this.MsgToSchemaSash, this.isRepository);
         linker.setMainui(this);
         hl7SchemaEditorView.setLinker(linker);
-
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 300;
         hl7SchemaEditorView.initGraphicComponents();
@@ -144,8 +147,21 @@ public class HL7UI {
         linker.setManager(hl7Manager);
         initMessageTree();
         new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
+        initTableViewer();
         initSchemaCombo();
         initlinkers();
+        hl7SchemaEditorView.setReadOnly(isRepository);
+    }
+
+    private void judgeRepository() {
+        for (IElementParameter param : this.hl7Manager.getHl7Component().getElementParametersWithChildrens()) {
+            if (param.getName().equals("REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
+                if (param.getValue() != null && !"".equals(param.getValue().toString())) {
+                    isRepository = true;
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -161,6 +177,12 @@ public class HL7UI {
     @SuppressWarnings("unchecked")
     protected void initlinkers() {
         // 1.set tableviewer by component
+        redrawLinkers();
+        linker.getBackgroundRefresher().refreshBackground();
+        // 2.initlinks initLinkersByPrimitiveModels(this.labelProvider.getAllPrimitives());
+    }
+
+    private void initTableViewer() {
         List<IMetadataTable> tables = externalNode.getMetadataList();
         for (IMetadataTable table : tables) {
             MetadataTable loaded = ConvertionHelper.convert(table);
@@ -185,9 +207,6 @@ public class HL7UI {
                 }
             }
         }
-        redrawLinkers();
-        linker.getBackgroundRefresher().refreshBackground();
-        // 2.initlinks initLinkersByPrimitiveModels(this.labelProvider.getAllPrimitives());
     }
 
     public void initMessageTree() {
@@ -226,6 +245,9 @@ public class HL7UI {
         schemaTargetGroup.setBackgroundMode(SWT.INHERIT_FORCE);
         createCombo(schemaTargetGroup);
         hl7SchemaEditorView = new HL7MetadataEmfTableEditorView(schemaTargetGroup, SWT.BORDER, false);
+        hl7SchemaEditorView.setRepository(isRepository);
+        // boolean isRepository =
+        // hl7SchemaEditorView.setRepository(isRepository);
         hl7SchemaEditorView.setShowDbTypeColumn(true, true, false);
         hl7SchemaEditorView.setShowDbColumnName(true, false);
 

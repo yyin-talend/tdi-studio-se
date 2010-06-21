@@ -190,34 +190,36 @@ public class HL7Message2SchemaDragAndDropHandler {
 
         public void drop(DropTargetEvent event) {
             // System.out.println("\n>>drop");
-            DropTarget dropTarget = (DropTarget) event.getSource();
-            Control control = dropTarget.getControl();
+            if (!linker.isRepository()) {
+                DropTarget dropTarget = (DropTarget) event.getSource();
+                Control control = dropTarget.getControl();
 
-            MessageToSchemaDraggedData draggedData = SegmentTransfer.getInstance().getDraggedData();
+                MessageToSchemaDraggedData draggedData = SegmentTransfer.getInstance().getDraggedData();
 
-            List<TransferableSegmentEntry> transferableEntryList = draggedData.getTransferableEntryList();
+                List<TransferableSegmentEntry> transferableEntryList = draggedData.getTransferableEntryList();
 
-            HL7MetadataEmfTableEditorView hl7TableEditorView = linker.getHl7SchemaTableEditorView();
+                HL7MetadataEmfTableEditorView hl7TableEditorView = linker.getHl7SchemaTableEditorView();
 
-            // ExtendedTableModel<MetadataColumn> extendedTableModel = hl7TableEditorView.getExtendedTableModel();
-            if (transferableEntryList.size() > 0) {
-                String segName = transferableEntryList.get(0).getPm().getDisplayName();
-                Display display = linker.getTree().getDisplay();
-                Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
-                linker.getTree().getShell().setCursor(cursor);
-                MetadataColumn metacolumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
-                metacolumn.setLabel(label);
-                metacolumn.setOriginalField(segName);
-                hl7TableEditorView.getMetadataEditor().add(metacolumn);
-                TreeItem item = SegmentTransfer.getInstance().getDragedItem();
-                TableItem targetitem = targetTable.getSelection()[0];
-                createLinks(item, targetitem);
-                final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();
-                String key = combo.getItem(combo.getSelectionIndex()).toString();
-                linker.getManager().updateRelationMapping(key, metacolumn, true);
+                // ExtendedTableModel<MetadataColumn> extendedTableModel = hl7TableEditorView.getExtendedTableModel();
+                if (transferableEntryList.size() > 0) {
+                    String segName = transferableEntryList.get(0).getPm().getDisplayName();
+                    Display display = linker.getTree().getDisplay();
+                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                    linker.getTree().getShell().setCursor(cursor);
+                    MetadataColumn metacolumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                    String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
+                    metacolumn.setLabel(label);
+                    metacolumn.setOriginalField(segName);
+                    hl7TableEditorView.getMetadataEditor().add(metacolumn);
+                    TreeItem item = SegmentTransfer.getInstance().getDragedItem();
+                    TableItem targetitem = targetTable.getSelection()[0];
+                    createLinks(item, targetitem);
+                    final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();
+                    String key = combo.getItem(combo.getSelectionIndex()).toString();
+                    linker.getManager().updateRelationMapping(key, metacolumn, true);
+                }
+                linker.updateLinksStyleAndControlsSelection(control);
             }
-            linker.updateLinksStyleAndControlsSelection(control);
             // linker.getBackgroundRefresher().refreshBackground();
         }
     }

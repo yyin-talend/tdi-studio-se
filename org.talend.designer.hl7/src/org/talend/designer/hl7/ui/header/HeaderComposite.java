@@ -52,15 +52,18 @@ public class HeaderComposite extends Composite {
 
     private HL7Parse hl7Parse = new HL7Parse();
 
-    private boolean msgIsChange = false;
+    private boolean msgIsChange;
+
+    private boolean isRepository;
 
     public HeaderComposite(Composite parent, int style, String filePath, String startCharValue, String endCharValue,
-            HL7Manager hl7Manager) {
+            HL7Manager hl7Manager, boolean isRepository) {
         super(parent, style);
         this.filePath = filePath;
         this.startCharValue = startCharValue;
         this.endCharValue = endCharValue;
         this.hl7Manager = hl7Manager;
+        this.isRepository = isRepository;
         createComponents();
     }
 
@@ -78,6 +81,7 @@ public class HeaderComposite extends Composite {
             }
         };
         fileField.setText(filePath);
+        fileField.setEditable(!isRepository);
 
         final Group group = Form.createGroup(this, 4, "File Setting", 30);
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -85,8 +89,10 @@ public class HeaderComposite extends Composite {
         group.setLayoutData(gridData);
         startChar = new LabelledText(group, "Start character");
         startChar.setText(startCharValue);
+        startChar.setEditable(!isRepository);
         endChar = new LabelledText(group, "End character");
         endChar.setText(endCharValue);
+        endChar.setEditable(!isRepository);
         addListeners();
     }
 
