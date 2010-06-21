@@ -39,6 +39,7 @@ import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
@@ -417,8 +418,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             category.add(EComponentCategory.MAIN);
             category.add(EComponentCategory.VERSIONS);
 
-            if (service != null && service.isProjectInSvnMode() && ((IRepositoryViewObject) obj).getProperty() != null
-                    && ((IRepositoryViewObject) obj).getProperty().getItem() instanceof ProcessItem)
+            if (service != null
+                    && service.isProjectInSvnMode()
+                    && ((IRepositoryViewObject) obj).getProperty() != null
+                    && (((IRepositoryViewObject) obj).getProperty().getItem() instanceof ProcessItem || ((IRepositoryViewObject) obj)
+                            .getProperty().getItem() instanceof JobletProcessItem))
                 category.add(EComponentCategory.SVNHISTORY);
 
         } else if (obj instanceof IEditorPart) {
