@@ -45,6 +45,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.IBrandingService;
@@ -190,7 +191,7 @@ public class LoginDialog extends TrayDialog {
         if (LoginComposite.isRestart == true) {
             super.okPressed();
         } else {
-            logIn(loginComposite.getPackProject());
+            logIn(loginComposite.getProject());
         }
     }
 
@@ -204,7 +205,7 @@ public class LoginDialog extends TrayDialog {
      * @param project
      * @throws Exception
      */
-    protected void logIn(final PackProject project) {
+    protected void logIn(final Project project) {
 
         ConnectionBean connBean = loginComposite.getConnection();
         if (connBean == null || project == null || project.getLabel() == null) {
@@ -214,7 +215,7 @@ public class LoginDialog extends TrayDialog {
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(connBean.getName());
-        loginComposite.setLastProject(project);
+        prefManipulator.setLastProject(project.getLabel());
         saveLastConnBean(connBean);
         if (project.getLanguage().equals(ECodeLanguage.PERL)) {
             IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
@@ -232,7 +233,7 @@ public class LoginDialog extends TrayDialog {
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
-                    ProxyRepositoryFactory.getInstance().logOnProject(project.getProject(), monitorWrap);
+                    ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
                 } catch (LoginException e) {
                     throw new InvocationTargetException(e);
                 } catch (PersistenceException e) {

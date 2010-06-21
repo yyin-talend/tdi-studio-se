@@ -55,6 +55,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -107,8 +108,6 @@ public class LoginComposite extends Composite {
 
     private static int horizontalMerge = 145;
 
-    private static final int HORIZONTAL_SPACE_BUTTONS = 0;
-
     private static final int VERTICAL_SPACE = 0;
 
     private static final int HORIZONTAL_SPACE = 5;
@@ -132,13 +131,13 @@ public class LoginComposite extends Composite {
 
     private ComboViewer projectViewer;
 
-    public Button fillProjectsBtn;
+    private ComboViewer branchesViewer;
 
-    public Button openProjectBtn;
+    private Button fillProjectsBtn;
+
+    private Button openProjectBtn;
 
     private Button manageConnectionsButton;
-
-    private Label newProjectLabel;
 
     private Button manageProjectsButton;
 
@@ -353,7 +352,16 @@ public class LoginComposite extends Composite {
         data.right = new FormAttachment(openProjectBtn, -HORIZONTAL_SPACE);
         data.bottom = new FormAttachment(openProjectBtn, VERTICAL_SPACE, SWT.CENTER);
         fillProjectsBtn.setLayoutData(data);
+        // branches
+        branchesViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
+        branchesViewer.setContentProvider(new ArrayContentProvider());
+        branchesViewer.setLabelProvider(new LabelProvider());
+        data = new FormData();
+        data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(fillProjectsBtn, VERTICAL_SPACE, SWT.CENTER);
+        branchesViewer.getControl().setLayoutData(data);
 
+        // project
         projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
 
         projectViewer.setContentProvider(new ArrayContentProvider());
@@ -361,8 +369,8 @@ public class LoginComposite extends Composite {
 
         data = new FormData();
         data.left = new FormAttachment(manageViewer.getControl(), 0, SWT.LEFT);
-        data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
-        data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
+        data.right = new FormAttachment(branchesViewer.getControl(), -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(branchesViewer.getControl(), VERTICAL_SPACE, SWT.CENTER);
         projectViewer.getControl().setLayoutData(data);
 
         differentWorkSpace = toolkit.createComposite(formBody);
@@ -542,7 +550,7 @@ public class LoginComposite extends Composite {
         }
 
         projectViewer.getControl().setEnabled(false);
-
+        branchesViewer.getControl().setEnabled(false);
         if (getConnection() != null) {
             user.setText(getConnection().getUser());
             passwordText.setText(getConnection().getPassword());
@@ -650,12 +658,25 @@ public class LoginComposite extends Composite {
         projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                setLastProject(getPackProject());
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                Project project = getProject();
+                prefManipulator.setLastProject(project.getLabel());
+                setBranchesSetting(project, false);
                 dialog.updateButtons();
                 setRepositoryContextInContext();
             }
         });
+        branchesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            public void selectionChanged(SelectionChangedEvent event) {
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                String branch = getBranch();
+                if (branch == null) {
+                    branch = SVNConstant.EMPTY;
+                }
+                prefManipulator.setLastSVNBranch(branch);
+            }
+        });
         manageConnectionsButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -708,7 +729,7 @@ public class LoginComposite extends Composite {
         if (newProjectDialog.open() == Window.OK) {
             project = newPrjWiz.getProject();
             populateProjectList();
-            selectProject(new PackProject(project));
+            selectProject(project);
         }
         validateProject();
     }
@@ -816,27 +837,25 @@ public class LoginComposite extends Composite {
     private void unpopulateProjectList() {
         projectViewer.setInput(null);
         projectViewer.getControl().setEnabled(false);
+        branchesViewer.getControl().setEnabled(false);
     }
 
     public RepositoryContext getRepositoryContext() {
         RepositoryContext repositoryContext = new RepositoryContext();
         repositoryContext.setUser(getUser());
         repositoryContext.setClearPassword(passwordText.getText());
+        Project project = getProject();
+        repositoryContext.setProject(project);
         repositoryContext.setFields(getConnection().getDynamicFields());
-
-        PackProject packProject = getPackProject();
-        if (packProject != null) {
-            repositoryContext.setProject(packProject.getProject());
-
+        String branch = getBranch();
+        if (project != null) {
             String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR
-                    + packProject.getTechnicalLabel();
-            if (packProject.isSVNBranch()) {
-                repositoryContext.getFields().put(branchKey, packProject.getBranch());
+                    + project.getTechnicalLabel();
+            if (branch != null) {
+                repositoryContext.getFields().put(branchKey, branch);
             } else {
-                repositoryContext.getFields().put(branchKey, ""); //$NON-NLS-1$
+                repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
             }
-        } else {
-            repositoryContext.setProject(null);
         }
         return repositoryContext;
     }
@@ -847,8 +866,7 @@ public class LoginComposite extends Composite {
     }
 
     protected void populateProjectList() {
-        List<PackProject> packProjects = new ArrayList<PackProject>();
-
+        Project[] projects = null;
         if (getConnection() == null || !getConnection().isComplete()) {
             return;
         }
@@ -888,14 +906,14 @@ public class LoginComposite extends Composite {
 
             initialized = true;
         } catch (Exception e) {
-            packProjects.clear();
+            projects = new Project[0];
 
             MessageDialog.openError(getShell(), "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (initialized) {
             try {
-                Project[] projects = repositoryFactory.readProject();
+                projects = repositoryFactory.readProject();
                 Arrays.sort(projects, new Comparator<Project>() {
 
                     public int compare(Project p1, Project p2) {
@@ -903,55 +921,33 @@ public class LoginComposite extends Composite {
                     }
 
                 });
-
-                ISVNProviderService service = null;
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    try {
-                        service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
-                    } catch (RuntimeException e) {
-                        // nothing to do
-                    }
-                }
-                for (Project p : projects) {
-                    if (service != null && !p.isLocal() && service.isSVNProject(p)) {
-                        packProjects.add(new PackProject(p, SVNConstant.NAME_TRUNK)); //$NON-NLS-1$
-
-                        String[] branches = service.getBranchList(p);
-                        if (branches != null) {
-                            for (String branch : branches) {
-                                packProjects.add(new PackProject(p, branch));
-                            }
-                        }
-                    } else {
-                        packProjects.add(new PackProject(p));
-                    }
-                }
-
             } catch (PersistenceException e) {
-                packProjects.clear();
+                projects = new Project[0];
 
                 setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
                         + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
                 MessageDialog.openError(getShell(),
                         "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (BusinessException e) {
-                packProjects.clear();
+                projects = new Project[0];
 
                 MessageDialog.openError(getShell(),
                         "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
-        projectViewer.setInput(packProjects);
+        projectViewer.setInput(projects);
 
         // importDemoProjectAction.setExistingProjects(projects);
 
-        if (!packProjects.isEmpty()) {
+        if (projects.length > 0) {
             // Try to select the last recently used project
             selectLastUsedProject();
 
             projectViewer.getControl().setEnabled(true);
+            branchesViewer.getControl().setEnabled(true);
         } else {
             projectViewer.getControl().setEnabled(false);
+            branchesViewer.getControl().setEnabled(false);
         }
     }
 
@@ -961,43 +957,23 @@ public class LoginComposite extends Composite {
      * @param projects
      */
     private void selectLastUsedProject() {
-        List<PackProject> projects = (List<PackProject>) projectViewer.getInput();
-        if (projects != null) {
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-            String lastProject = prefManipulator.getLastProject();
-            String lastSVNBranch = prefManipulator.getLastSVNBranch();
-
-            if (lastProject != null) {
-                PackProject goodProject = null;
-                PackProject recoredProject = null;
-
-                for (int i = 0; goodProject == null && i < projects.size(); i++) {
-                    PackProject packProject = projects.get(i);
-                    if (lastProject.equals(packProject.getLabel())) {
-                        if (packProject.isSVNBranch()) {
-                            if (lastSVNBranch != null && lastSVNBranch.equals(packProject.getBranch())) {
-                                goodProject = packProject;
-                                break;
-                            }
-                            if (packProject.getBranch().equals(SVNConstant.NAME_TRUNK)) {
-                                recoredProject = packProject;
-                            }
-                        } else {
-                            goodProject = packProject;
-                        }
-                    }
+        Project[] projects = (Project[]) projectViewer.getInput();
+        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        String lastProject = prefManipulator.getLastProject();
+        if (lastProject != null) {
+            Project goodProject = null;
+            for (int i = 0; goodProject == null && i < projects.length; i++) {
+                if (lastProject.equals(projects[i].getLabel())) {
+                    goodProject = projects[i];
                 }
-                if (recoredProject != null && goodProject == null) { // use the trunk as default
-                    goodProject = recoredProject;
-                }
+            }
 
-                if (goodProject == null && projects.size() > 0) {
-                    goodProject = projects.get(0);
-                }
+            if (goodProject == null && projects.length > 0) {
+                goodProject = projects[0];
+            }
 
-                if (goodProject != null) {
-                    selectProject(goodProject);
-                }
+            if (goodProject != null) {
+                selectProject(goodProject);
             }
         }
     }
@@ -1007,19 +983,18 @@ public class LoginComposite extends Composite {
      * 
      * @param goodProject
      */
-    private void selectProject(PackProject goodProject) {
+    private void selectProject(Project goodProject) {
         projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
+        setBranchesSetting(goodProject, true);
         setRepositoryContextInContext();
     }
 
     private void selectProject(String projectName) {
-        List<PackProject> projects = (List<PackProject>) projectViewer.getInput();
-        if (projects != null) {
-            for (PackProject p : projects) {
-                if (p.getLabel().equals(projectName)) {
-                    selectProject(p);
-                    return;
-                }
+        Project[] projects = (Project[]) projectViewer.getInput();
+        for (Project current : projects) {
+            if (current.getLabel().equals(projectName)) {
+                selectProject(current);
+                return;
             }
         }
     }
@@ -1042,11 +1017,11 @@ public class LoginComposite extends Composite {
         return toReturn;
     }
 
-    public PackProject getPackProject() {
-        PackProject project = null;
+    public Project getProject() {
+        Project project = null;
         if (!projectViewer.getSelection().isEmpty()) {
             IStructuredSelection sel = (IStructuredSelection) projectViewer.getSelection();
-            project = (PackProject) sel.getFirstElement();
+            project = (Project) sel.getFirstElement();
         }
         return project;
     }
@@ -1068,25 +1043,12 @@ public class LoginComposite extends Composite {
          */
         @Override
         public String getText(Object element) {
-            if (element instanceof PackProject) {
-                PackProject prj = (PackProject) element;
-                StringBuffer toReturn = new StringBuffer();
-                toReturn.append(prj.getLabel());
-                if (prj.isSVNBranch()) {
-                    toReturn.append(" ("); //$NON-NLS-1$
-                    toReturn.append(prj.getBranch());
-                    toReturn.append(")"); //$NON-NLS-1$
-                }
-
-                toReturn.append(" - "); //$NON-NLS-1$
-                toReturn.append(prj.getLanguage().getName());
-                if (!prj.getProject().isLocal() && !isAuthenticationNeeded()) {
-                    toReturn.append(" (remote project in offline mode)"); //$NON-NLS-1$
-                }
-                return toReturn.toString();
+            Project prj = (Project) element;
+            String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName(); //$NON-NLS-1$
+            if (!prj.isLocal() && !isAuthenticationNeeded()) {
+                toReturn += " (remote project in offline mode)"; //$NON-NLS-1$
             }
-            return super.getText(element);
-
+            return toReturn;
         }
 
     }
@@ -1199,15 +1161,108 @@ public class LoginComposite extends Composite {
         return this.storedConnections;
     }
 
-    public void setLastProject(final PackProject project) {
-        if (project != null) {
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-            prefManipulator.setLastProject(project.getLabel());
-            if (project.isSVNBranch()) {
-                prefManipulator.setLastSVNBranch(project.getBranch());
-            } else {
-                prefManipulator.setLastSVNBranch(""); //$NON-NLS-1$
+    private ISVNProviderService getSVNService() {
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            try {
+                service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            } catch (RuntimeException e) {
+                // nothing to do
             }
         }
+        return service;
+    }
+
+    public String getBranch() {
+        Project project = getProject();
+        if (!branchesViewer.getSelection().isEmpty() && project != null) {
+            IStructuredSelection ss = (IStructuredSelection) branchesViewer.getSelection();
+            String branch = (String) ss.getFirstElement();
+            /*
+             * verify branches
+             */
+            // List<String> branchList = getProjectBranches(project);
+            // if (branchList != null && branchList.contains(branch)) {
+            return branch;
+            // }
+        }
+        return null;
+    }
+
+    private void setBranchesSetting(Project project, boolean lastUsedBranch) {
+        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+
+        List<String> projectBranches = getProjectBranches(project);
+        branchesViewer.setInput(projectBranches);
+        if (!projectBranches.isEmpty()) {
+            String branch = null;
+            if (lastUsedBranch) {
+                String lastBranch = prefManipulator.getLastSVNBranch();
+                if (lastBranch != null && projectBranches.contains(lastBranch)) {
+                    branch = lastBranch;
+                }
+            }
+            if (branch == null) {
+                branch = projectBranches.get(0); // trunk
+                prefManipulator.setLastSVNBranch(branch);
+            }
+
+            branchesViewer.setSelection(new StructuredSelection(new Object[] { branch }));
+
+        } else {
+            prefManipulator.setLastSVNBranch(SVNConstant.EMPTY);
+        }
+        hideBranchesView();
+    }
+
+    private List<String> getProjectBranches(Project p) {
+        List<String> brancesList = new ArrayList<String>();
+        ISVNProviderService svnService = getSVNService();
+        if (p != null && svnService != null) {
+            try {
+                if (svnService.isSVNProject(p)) {
+                    brancesList.add(SVNConstant.NAME_TRUNK);
+                    String[] branchList = svnService.getBranchList(p);
+                    if (branchList != null) {
+                        brancesList.addAll(Arrays.asList(branchList));
+                    }
+
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return brancesList;
+    }
+
+    private void hideBranchesView() {
+        boolean hide = true;
+        Project project = getProject();
+        ISVNProviderService svnService = getSVNService();
+        if (project != null && svnService != null) {
+            try {
+                if (svnService.isSVNProject(project)) {
+                    hide = false;
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        Control nextControl = null;
+        if (hide) {
+            nextControl = fillProjectsBtn;
+        } else {
+            nextControl = branchesViewer.getControl();
+        }
+        FormData data = new FormData();
+        data.left = new FormAttachment(manageViewer.getControl(), 0, SWT.LEFT);
+        data.right = new FormAttachment(nextControl, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(nextControl, VERTICAL_SPACE, SWT.CENTER);
+        projectViewer.getControl().setLayoutData(data);
+        projectViewer.getControl().getParent().layout();
+
+        branchesViewer.getControl().setVisible(!hide);
+
+        branchesViewer.getControl().getShell().pack();
     }
 }
