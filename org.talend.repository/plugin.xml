@@ -1071,6 +1071,12 @@
              name="Add a new checkbox to control attribute option">
        </projecttask>
        <projecttask
+             beforeLogon="true"
+             class="org.talend.repository.model.migration.CleanFoldersMigrationTask"
+             id="org.talend.repository.model.migration.CleanFoldersMigrationTask"
+             name="Clean all folders from project">
+       </projecttask>
+       <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
              description="Move all items who were in bin folders in previous project to standard folder."
