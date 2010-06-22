@@ -65,4 +65,8 @@ public class ImplicitContextLoadProjectSettingPage extends AbstractJobSettingsPa
         return EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS;
     }
 
+    protected String getDisplayName() {
+        return "Implicit Context Load";
+    }
+
 }

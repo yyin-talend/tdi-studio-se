@@ -181,7 +181,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                     }
 
                     if (!sameValues) {
-                        boolean ok = MessageDialog.openQuestion(getShell(), "Message",
+                        boolean ok = MessageDialog.openQuestion(getShell(), getDisplayName(),
                                 "Connection has been changed , do you want to change value from repository ?");
                         if (ok) {
                             ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
@@ -192,7 +192,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                     }
 
                 } else {
-                    MessageDialog.openInformation(getShell(), "Message",
+                    MessageDialog.openInformation(getShell(), getDisplayName(),
                             "Connection has been deleted ,change to build in automaticlly");
                     ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, null,
                             getPropertyTypeName(), EmfComponent.BUILTIN);
@@ -210,6 +210,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
     protected abstract Element checkAndCreateElement();
 
     protected abstract EComponentCategory getCategory();
+
+    protected abstract String getDisplayName();
 
     @Override
     public void dispose() {

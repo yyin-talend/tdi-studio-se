@@ -62,4 +62,8 @@ public class StatLogsProjectSettingPage extends AbstractJobSettingsPage {
         return EParameterName.STATANDLOG_USE_PROJECT_SETTINGS;
     }
 
+    protected String getDisplayName() {
+        return "Stats & Logs";
+    }
+
 }
