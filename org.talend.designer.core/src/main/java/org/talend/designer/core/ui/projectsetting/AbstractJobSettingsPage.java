@@ -197,6 +197,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                     ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, null,
                             getPropertyTypeName(), EmfComponent.BUILTIN);
                     changeValuesFromRepository1.execute();
+                    isConnectionChanged = true;
                 }
 
             }
