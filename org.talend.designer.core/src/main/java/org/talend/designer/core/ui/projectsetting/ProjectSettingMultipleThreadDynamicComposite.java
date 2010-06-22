@@ -16,9 +16,19 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
+import org.talend.repository.UpdateRepositoryUtils;
 
 /**
  * cli class global comment. Detailled comment
@@ -29,9 +39,14 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
 
     private boolean isCommandExcute;
 
+    private String repositoryPropertyName;
+
+    private boolean connectionUpdated;
+
     public ProjectSettingMultipleThreadDynamicComposite(Composite parentComposite, int styles, EComponentCategory section,
-            Element element, boolean isCompactView) {
+            Element element, boolean isCompactView, String repositoryPropertyName) {
         super(parentComposite, styles, section, element, isCompactView);
+        this.repositoryPropertyName = repositoryPropertyName;
     }
 
     @Override
@@ -43,6 +58,8 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
                 public void stackChanged(CommandStackEvent event) {
                     if (event.getDetail() == CommandStack.POST_EXECUTE) {
                         isCommandExcute = true;
+                        // when show connection param ,update it if needed
+                        updateConnectionFromRepository();
                     }
                 }
             });
@@ -52,5 +69,83 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
 
     public boolean isCommandExcute() {
         return this.isCommandExcute;
+    }
+
+    private void updateConnectionFromRepository() {
+        if (repositoryPropertyName == null || repositoryPropertyName.split(":").length != 2 || connectionUpdated) {
+            return;
+        }
+        String[] split = repositoryPropertyName.split(":");
+        String parentParamName = split[0];
+
+        Element elementParams = elem;
+        IElementParameter elementParameter = elementParams.getElementParameter(parentParamName);
+        if (elementParameter != null && elementParameter.isShow(elem.getElementParameters())
+                && elementParameter.getChildParameters() != null) {
+            if (elementParameter.getChildParameters().get("PROPERTY_TYPE") != null
+                    && !EmfComponent.BUILTIN.equals(elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue())) {
+                DatabaseConnection connection = null;
+                String id = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue();
+                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(id);
+                if (lastVersion != null && lastVersion.getProperty() != null) {
+                    Item item = lastVersion.getProperty().getItem();
+                    if (item instanceof DatabaseConnectionItem) {
+                        DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                        connection = (DatabaseConnection) dbItem.getConnection();
+                    }
+                }
+
+                if (connection != null) {
+                    boolean sameValues = true;
+                    for (IElementParameter param : elementParams.getElementParameters()) {
+                        String repositoryValue = param.getRepositoryValue();
+                        if (param.isShow(elementParams.getElementParameters()) && repositoryValue != null
+                                && !param.getName().equals("PROPERTY_TYPE")) {
+                            Object repValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
+                            if (repValue == null) {
+                                continue;
+                            }
+                            if (repositoryValue.equals(UpdatesConstants.TYPE)) { // datebase type
+                                boolean found = false;
+                                String[] list = param.getListRepositoryItems();
+                                for (int i = 0; (i < list.length) && (!found); i++) {
+                                    if (repValue.equals(list[i])) {
+                                        found = true;
+                                    }
+
+                                }
+                                if (!found) {
+                                    sameValues = false;
+                                    break;
+                                }
+
+                            } else {
+                                // check the value
+                                if (!param.getValue().equals(repValue)) {
+                                    sameValues = false;
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                    if (!sameValues) {
+                        ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, connection,
+                                repositoryPropertyName, id);
+                        changeValuesFromRepository.execute();
+                        connectionUpdated = true;
+                    }
+
+                } else {
+                    // change to build in
+                    ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, null,
+                            parentParamName + ":" + "PROPERTY_TYPE", EmfComponent.BUILTIN);
+                    changeValuesFromRepository1.execute();
+                }
+
+            }
+
+        }
+
     }
 }

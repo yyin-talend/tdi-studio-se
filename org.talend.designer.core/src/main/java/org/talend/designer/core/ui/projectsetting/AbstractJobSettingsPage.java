@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
@@ -39,6 +40,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -46,10 +49,14 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -65,7 +72,6 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
@@ -87,6 +93,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     private List<RepositoryNode> checkedNode = new ArrayList<RepositoryNode>();
 
+    private boolean isConnectionChanged = false;
+
     /*
      * (non-Javadoc)
      * 
@@ -105,11 +113,96 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         if (getParametersType() != null) {
             ElementParameter2ParameterType.loadElementParameters(elem, getParametersType(), getPropertyTypeName());
         }
-        // 
+        // update connection from repository if needed
+        updateProjectSetting();
+
         mComposite = new ProjectSettingMultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, getCategory(), elem,
-                true);
+                true, getRepositoryPropertyName());
         mComposite.setLayoutData(createFormData());
         return composite;
+    }
+
+    public void updateProjectSetting() {
+
+        String[] split = getRepositoryPropertyName().split(":");
+        String parentParamName = split[0];
+
+        Element elementParams = elem;
+        IElementParameter elementParameter = elementParams.getElementParameter(parentParamName);
+        if (elementParameter != null && elementParameter.isShow(elem.getElementParameters())
+                && elementParameter.getChildParameters() != null) {
+            if (elementParameter.getChildParameters().get("PROPERTY_TYPE") != null
+                    && !EmfComponent.BUILTIN.equals(elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue())) {
+
+                DatabaseConnection connection = null;
+                String id = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue();
+                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(id);
+                if (lastVersion != null && lastVersion.getProperty() != null) {
+                    Item item = lastVersion.getProperty().getItem();
+                    if (item instanceof DatabaseConnectionItem) {
+                        DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                        connection = (DatabaseConnection) dbItem.getConnection();
+                    }
+                }
+
+                if (connection != null) {
+                    boolean sameValues = true;
+                    for (IElementParameter param : elementParams.getElementParameters()) {
+                        String repositoryValue = param.getRepositoryValue();
+                        if (param.isShow(elementParams.getElementParameters()) && repositoryValue != null
+                                && !param.getName().equals("PROPERTY_TYPE")) {
+                            Object repValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
+                            if (repValue == null) {
+                                continue;
+                            }
+                            if (repositoryValue.equals(UpdatesConstants.TYPE)) { // datebase type
+                                boolean found = false;
+                                String[] list = param.getListRepositoryItems();
+                                for (int i = 0; (i < list.length) && (!found); i++) {
+                                    if (repValue.equals(list[i])) {
+                                        found = true;
+                                    }
+
+                                }
+                                if (!found) {
+                                    sameValues = false;
+                                    break;
+                                }
+
+                            } else {
+                                // check the value
+                                if (!param.getValue().equals(repValue)) {
+                                    sameValues = false;
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+
+                    if (!sameValues) {
+                        boolean ok = MessageDialog.openQuestion(getShell(), "Message",
+                                "Connection has been changed , do you want to change value from repository ?");
+                        if (ok) {
+                            ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
+                                    connection, getRepositoryPropertyName(), id);
+                            changeValuesFromRepository.execute();
+                            isConnectionChanged = true;
+                        }
+                    }
+
+                } else {
+                    MessageDialog.openInformation(getShell(), "Message",
+                            "Connection has been deleted ,change to build in automaticlly");
+                    ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, null,
+                            getPropertyTypeName(), EmfComponent.BUILTIN);
+                    changeValuesFromRepository1.execute();
+                }
+
+            }
+
+        }
+
     }
 
     protected abstract void checkSettingExisted();
@@ -185,7 +278,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
     @Override
     public boolean performOk() {
 
-        if (mComposite != null && mComposite.isCommandExcute()) {
+        if (mComposite != null && (mComposite.isCommandExcute() || isConnectionChanged)) {
             // save to the memory
             ParametersType parametersType = getParametersType();
             if (parametersType != null) {
@@ -308,7 +401,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
                 addContextModel = false; // must init this
                 if (!contextVars.isEmpty()) {
-                    boolean showDialog = false;
+                    // boolean showDialog = false;
                     Set<String> contextSet = new HashSet<String>();
                     for (String key : contextVars.keySet()) {
                         contextSet = contextVars.get(key);
@@ -326,19 +419,21 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                             ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(value);
                             connection = connectionItem.getConnection();
                             if (connection != null && connection.isContextMode()) {
-                                ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
-                                for (IProcess process : openedProcessList) {
-                                    Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,
-                                            contextSet, process.getContextManager(), false);
-                                    if (addedContext != null && !addedContext.isEmpty()) {
-                                        showDialog = true;
-                                        break;
-                                    }
-                                }
+                                addContextModel = true;
+                                // ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+                                // for (IProcess process : openedProcessList) {
+                                // Set<String> addedContext =
+                                // ConnectionContextHelper.checkAndAddContextVariables(contextItem,
+                                // contextSet, process.getContextManager(), false);
+                                // if (addedContext != null && !addedContext.isEmpty()) {
+                                // showDialog = true;
+                                // break;
+                                // }
+                                // }
                             }
                         }
                     }
-                    if (showDialog) {
+                    if (addContextModel) {
 
                         // if the context is not existed in job, will add or not.
                         Display disp = Display.getCurrent();
