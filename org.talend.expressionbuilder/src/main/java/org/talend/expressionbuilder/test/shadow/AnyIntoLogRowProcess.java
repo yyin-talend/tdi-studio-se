@@ -34,6 +34,7 @@ import org.talend.designer.rowgenerator.shadow.RowGenContextManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.shadow.ShadowConnection;
 import org.talend.designer.runprocess.shadow.ShadowNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -596,6 +597,56 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
     public IMetadataTable getOutputMetadataTable() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getInformationStatus()
+     */
+    public ERepositoryStatus getInformationStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getPath()
+     */
+    public String getPath() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getProjectLabel()
+     */
+    public String getProjectLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getRepositoryStatus()
+     */
+    public ERepositoryStatus getRepositoryStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#isDeleted()
+     */
+    public boolean isDeleted() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

@@ -85,26 +85,6 @@ public class EmptyRecycleBinAction extends AContextualAction {
         for (RepositoryNode child : node.getChildren()) {
             try {
                 deleteElements(factory, child);
-                IRepositoryViewObject objToDelete = child.getObject();
-                if (objToDelete instanceof ISubRepositoryObject) {
-                    ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
-                    if (!isRootNodeDeleted(child)) {
-                        subRepositoryObject.removeFromParent();
-                        factory.save(subRepositoryObject.getProperty().getItem());
-                    }
-                } else {
-                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                    for (IEditorReference editors : page.getEditorReferences()) {
-                        String nameInEditor = editors.getName();
-                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$ 
-                            page.closeEditor(editors.getEditor(false), false);
-                        }
-                    }
-                    if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
-                            && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC) {
-                        factory.deleteObjectPhysical(objToDelete);
-                    }
-                }
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e);
             }

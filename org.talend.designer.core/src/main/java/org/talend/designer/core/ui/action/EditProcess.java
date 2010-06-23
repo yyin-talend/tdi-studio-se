@@ -25,11 +25,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -93,15 +91,15 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        Property updatedProperty = null;
-        try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
+        // Property updatedProperty = null;
+        // try {
+        // updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+        // new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // }
 
-        processItem = (ProcessItem) updatedProperty.getItem();
+        processItem = (ProcessItem) property.getItem();
 
         IWorkbenchPage page = getActivePage();
 

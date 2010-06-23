@@ -744,9 +744,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                         final boolean skipStep = checkConnectStatus(check, itemTableName);
 
                         DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation,
-                                item, metadataTable, getExistingNames(), forceReadOnly, managerConnection, metadataConnection);
+                                node.getObject(), metadataTable, getExistingNames(), forceReadOnly, managerConnection,
+                                metadataConnection);
                         databaseTableWizard.setSkipStep(skipStep);
-                        databaseTableWizard.setRepositoryObject(node.getObject());
                         UIJob uijob = new UIJob("") { //$NON-NLS-1$
 
                             // modified by wzhang. when connection failed,error message display.

@@ -26,6 +26,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.repository.RepositoryWorkUnit;
 
 /**
@@ -51,6 +52,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     private List<DynamicChoiceBean> choices = new ArrayList<DynamicChoiceBean>();
 
     private boolean loggedOnProject = false;
+
+    private List<IRepositoryWorkUnitListener> listeners = new ArrayList<IRepositoryWorkUnitListener>();
 
     public List<DynamicButtonBean> getButtons() {
         return buttons;
@@ -211,6 +214,7 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     public void logOffProject() {
         loggedOnProject = false;
+        listeners.clear();
     }
 
     public boolean isLoggedOnProject() {
@@ -219,5 +223,23 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     public void setLoggedOnProject(boolean loggedOnProject) {
         this.loggedOnProject = loggedOnProject;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.repository.model.IRepositoryFactory#addRepositoryWorkUnitListener(org.talend.repository.model.
+     * IRepositoryWorkUnitListener)
+     */
+    public void addRepositoryWorkUnitListener(IRepositoryWorkUnitListener listener) {
+        listeners.add(listener);
+    }
+
+    public synchronized void runRepositoryWorkUnitListeners() {
+        for (IRepositoryWorkUnitListener listener : listeners) {
+            listener.workUnitFinished();
+        }
+
+        listeners.clear();
     }
 }

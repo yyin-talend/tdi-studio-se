@@ -28,16 +28,15 @@ import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DocumentationItem;
-import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IReferencedProjectService;
@@ -80,6 +79,20 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         this.view = view;
     }
 
+    public String getText(IRepositoryViewObject object) {
+        StringBuffer string = new StringBuffer();
+        string.append(object.getLabel());
+        if (!(object instanceof Folder)) {
+            string.append(" " + object.getVersion()); //$NON-NLS-1$
+        }
+        // nodes in the recycle bin
+        if (object.isDeleted()) {
+            String oldPath = object.getPath();
+            string.append(" (" + oldPath + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return string.toString();
+    }
+
     public String getText(Property property) {
         StringBuffer string = new StringBuffer();
         string.append(property.getLabel());
@@ -93,19 +106,16 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             String oldPath = property.getItem().getState().getPath();
             string.append(" (" + oldPath + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-
-        // PTODO SML [FOLDERS++] temp code
-        // if (object.getType() != ERepositoryObjectType.FOLDER) {
-        // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
-        // }
         return string.toString();
     }
 
     public String getText(Object obj) {
+        if (obj instanceof IRepositoryViewObject) {
+            return getText((IRepositoryViewObject) obj);
+        }
         if (obj instanceof Property) {
             return getText((Property) obj);
         }
-
         RepositoryNode node = (RepositoryNode) obj;
 
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT || node.getType() == ENodeType.SIMPLE_FOLDER) {
@@ -115,10 +125,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
             org.talend.core.model.properties.Project mainProject = ProjectManager.getInstance().getCurrentProject()
                     .getEmfProject();
-            org.talend.core.model.properties.Project emfproject = ProjectManager.getInstance().getProject(
-                    object.getProperty().getItem());
+            String projectLabel = object.getProjectLabel();
 
-            // TODO SML remove this table rustine
             switch (object.getType()) {
             case METADATA_CON_QUERY:
             case SNIPPETS:
@@ -128,13 +136,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_CDC:
             case METADATA_SAP_FUNCTION:
                 String label = object.getLabel();
-                if (!mainProject.equals(emfproject) && PluginChecker.isRefProjectLoaded()) {
+                if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {
 
                     IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault()
                             .getService(IReferencedProjectService.class);
                     if (service != null && service.isMergeRefProject()) {
-                        Project project = new Project(emfproject);
-                        label = label + " (@" + project.getLabel() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                        label = label + " (@" + projectLabel + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                     }
 
                 }
@@ -142,13 +149,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             default:
                 break;
             }
-            String label = getText(object.getProperty());
-            if (!mainProject.getTechnicalLabel().equals(emfproject.getTechnicalLabel()) && PluginChecker.isRefProjectLoaded()) {
+            String label = getText(object);
+            if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {
                 IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault().getService(
                         IReferencedProjectService.class);
                 if (service != null && service.isMergeRefProject()) {
-                    Project project = new Project(emfproject);
-                    label = label + " (@" + project.getLabel() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    label = label + " (@" + projectLabel + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
             }
@@ -160,11 +166,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         }
     }
 
-    public Image getImage(Property property) {
-        Item item = property.getItem();
-        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+    public Image getImage(IRepositoryViewObject object) {
+        // Item item = property.getItem();
+        ERepositoryObjectType itemType = object.getType();
         Image img = null;
         if (itemType == ERepositoryObjectType.JOBLET) {
+            Property property = object.getProperty();
             img = getJobletCustomIcon(property);
             // img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
             img = ImageUtils.propertyLabelScale(property.getId(), img, ICON_SIZE.ICON_16);
@@ -174,6 +181,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
         // Manage doc extensions:
         if (itemType == ERepositoryObjectType.DOCUMENTATION) {
+            Property property = object.getProperty();
+            Item item = property.getItem();
             if (item instanceof DocumentationItem) {
                 img = OverlayImageProvider.getImageWithDocExt(((DocumentationItem) item).getExtension());
             } else if (item instanceof LinkDocumentationItem) {
@@ -188,34 +197,11 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
         }
 
-        // add the error info in the icon only for routine (only for java, because the perl auto build problem.)
-        // if (itemType == ERepositoryObjectType.ROUTINES) {
-        // ECodeLanguage lang = ((RepositoryContext)
-        // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-        // .getProject().getLanguage();
-        // if (lang == ECodeLanguage.JAVA) {
-        // IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
-        // Boolean isCompilePass = designerCoreService.isRoutineCompilePass(property.getLabel());
-        // if (isCompilePass != null && !isCompilePass) {
-        // img = OverlayImageProvider.getImageWithError(img).createImage();
-        // }
-        // }
-        // }
-
-        // Manage master job case:
-        // PTODO SML
-        // if (node.getObject().getType() == ERepositoryObjectType.PROCESS &&
-        // node.getObject().getLabel().equals("Tagada")) {
-        // img = OverlayImageProvider.getImageWithSpecial(img).createImage();
-        // }
-
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        ERepositoryStatus repositoryStatus = factory.getStatus(item);
+        ERepositoryStatus repositoryStatus = object.getRepositoryStatus();
 
         Image image = OverlayImageProvider.getImageWithStatus(img, repositoryStatus);
 
-        InformationLevel informationLevel = property.getMaxInformationLevel();
-        ERepositoryStatus informationStatus = factory.getStatus(informationLevel);
+        ERepositoryStatus informationStatus = object.getInformationStatus();
 
         return OverlayImageProvider.getImageWithStatus(image, informationStatus);
     }
@@ -261,8 +247,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
     private static Map<byte[], Image> cachedImages = new HashMap<byte[], Image>();
 
     public Image getImage(Object obj) {
-        if (obj instanceof Property) {
-            return getImage((Property) obj);
+        if (obj instanceof IRepositoryViewObject) {
+            return getImage((IRepositoryViewObject) obj);
         }
 
         RepositoryNode node = (RepositoryNode) obj;
@@ -324,7 +310,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 break;
             }
 
-            return getImage(node.getObject().getProperty());
+            return getImage(node.getObject());
         }
     }
 
@@ -353,8 +339,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
             return STABLE_SECONDARY_ENTRY_COLOR;
         default:
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+            ERepositoryStatus repositoryStatus = node.getObject().getRepositoryStatus();
             if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
                 return LOCKED_ENTRY;
             } else {

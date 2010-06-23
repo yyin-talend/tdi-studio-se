@@ -35,6 +35,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -708,5 +709,55 @@ public class RowGenProcess extends Element implements IProcess {
     public IMetadataTable getOutputMetadataTable() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getInformationStatus()
+     */
+    public ERepositoryStatus getInformationStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getPath()
+     */
+    public String getPath() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getProjectLabel()
+     */
+    public String getProjectLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getRepositoryStatus()
+     */
+    public ERepositoryStatus getRepositoryStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#isDeleted()
+     */
+    public boolean isDeleted() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

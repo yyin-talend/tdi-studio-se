@@ -77,24 +77,25 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
      * @param managerConnection
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection,
+    public DatabaseTableWizard(IWorkbench workbench, boolean creation, IRepositoryViewObject object, MetadataTable metadataTable,
+            String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection,
             IMetadataConnection metadataConnection) {
         super(workbench, creation, forceReadOnly);
-        this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.existingNames = existingNames;
         this.managerConnection = managerConnection;
         this.metadataConnection = metadataConnection;
+        setNeedsProgressMonitor(true);
+
+        // set the repositoryObject, lock and set isRepositoryObjectEditable
+        setRepositoryObject(object);
+        isRepositoryObjectEditable();
+        initLockStrategy();
+        this.connectionItem = (ConnectionItem) object.getProperty().getItem();
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
             oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         }
-        setNeedsProgressMonitor(true);
-
-        // set the repositoryObject, lock and set isRepositoryObjectEditable
-        isRepositoryObjectEditable();
-        initLockStrategy();
     }
 
     /**
@@ -188,7 +189,7 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
     private void saveMetaData() {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
-            factory.save(repositoryObject.getProperty().getItem());
+            factory.save(connectionItem);
         } catch (PersistenceException e) {
             String detailError = e.toString();
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$

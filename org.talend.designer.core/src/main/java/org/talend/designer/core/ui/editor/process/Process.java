@@ -136,6 +136,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
@@ -2971,5 +2972,55 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      */
     public void setLastVersion(Boolean lastVersion) {
         this.lastVersion = lastVersion;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getInformationStatus()
+     */
+    public ERepositoryStatus getInformationStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getPath()
+     */
+    public String getPath() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getProjectLabel()
+     */
+    public String getProjectLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#getRepositoryStatus()
+     */
+    public ERepositoryStatus getRepositoryStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#isDeleted()
+     */
+    public boolean isDeleted() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

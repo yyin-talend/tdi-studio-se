@@ -24,6 +24,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -123,7 +125,8 @@ public abstract class RepositoryWizard extends Wizard {
      * @param repositoryObject the repositoryObject to set
      */
     public void setRepositoryObject(IRepositoryViewObject repositoryViewObject) {
-        this.repositoryObject = repositoryViewObject;
+        // RepositoryViewObject is dynamic, here we prefer have a RepositoryObject with a fixed property.
+        this.repositoryObject = new RepositoryObject(repositoryViewObject.getProperty());
         calculateRepositoryObjectEditable();
     }
 
@@ -146,6 +149,7 @@ public abstract class RepositoryWizard extends Wizard {
         if (repositoryObject != null && !forceReadOnly) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             repositoryObjectEditable = factory.isEditableAndLockIfPossible(repositoryObject);
+            RepositoryManager.refresh(repositoryObject.getType());
         }
     }
 

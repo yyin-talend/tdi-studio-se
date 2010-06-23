@@ -94,40 +94,49 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return EcoreUtil.generateUUID();
     }
 
-    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.DOCUMENTATION, true);
+    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.DOCUMENTATION, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_CONNECTIONS, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_CONNECTIONS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SAPCONNECTIONS, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SAPCONNECTIONS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EBCDIC, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EBCDIC, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_MDMCONNECTION, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_MDMCONNECTION, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_RULES, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_RULES, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_DELIMITED, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_POSITIONAL, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_POSITIONAL, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getProcess(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.PROCESS, true);
+    public RootContainer<String, IRepositoryViewObject> getProcess(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.PROCESS, true, options);
     }
 
     /*
@@ -135,68 +144,84 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getJoblets()
      */
-    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.JOBLET, true);
+    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.JOBLET, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getContext(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.CONTEXT, true);
+    public RootContainer<String, IRepositoryViewObject> getContext(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.CONTEXT, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.ROUTINES, true);
+    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.ROUTINES, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.SQLPATTERNS, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SQLPATTERNS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.SNIPPETS, true);
+    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SNIPPETS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.BUSINESS_PROCESS, true);
+    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.BUSINESS_PROCESS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.SVG_BUSINESS_PROCESS, true);
+    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SVG_BUSINESS_PROCESS, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_REGEXP, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_REGEXP, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_XML, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_XML, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_LDIF, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_LDIF, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EXCEL, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EXCEL, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_LDAP_SCHEMA, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true, options);
     }
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project) throws PersistenceException {
-        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_HL7, true);
+    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project, boolean... options)
+            throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_HL7, true, options);
     }
 
     // MOD sgandon 31/03/2010 : moved from local variable to static variable for optimisation purpose.
@@ -218,7 +243,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
      */
-    public List<IRepositoryViewObject> getRecycleBinItems(Project project) throws PersistenceException {
+    public List<IRepositoryViewObject> getRecycleBinItems(Project project, boolean... options) throws PersistenceException {
         ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
                 ERepositoryObjectType.METADATA_SAPCONNECTIONS, ERepositoryObjectType.SQLPATTERNS,
                 ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
@@ -234,10 +259,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         List<IRepositoryViewObject> deletedItems = new ArrayList<IRepositoryViewObject>();
         for (int i = 0; i < types.length; i++) {
-            RootContainer<String, IRepositoryViewObject> container = getObjectFromFolder(project, types[i], true);
+            RootContainer<String, IRepositoryViewObject> container = getObjectFromFolder(project, types[i], true, options);
             List<IRepositoryViewObject> repositoryObjects = container.getAbsoluteMembers().objects();
             for (IRepositoryViewObject object : repositoryObjects) {
-                if (object.getProperty().getItem().getState().isDeleted()) {
+                if (object.isDeleted()) {
                     deletedItems.add(object);
                 }
             }
@@ -382,10 +407,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             boolean... recursiveCall) throws PersistenceException;
 
     protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(Project project, ERepositoryObjectType type,
-            boolean onlyLastVersion) throws PersistenceException;
+            boolean onlyLastVersion, boolean... options) throws PersistenceException;
 
     protected abstract <K, T> void addFolderMembers(Project project, ERepositoryObjectType type, Container<K, T> toReturn,
-            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
+            Object objectFolder, boolean onlyLastVersion, boolean... options) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 

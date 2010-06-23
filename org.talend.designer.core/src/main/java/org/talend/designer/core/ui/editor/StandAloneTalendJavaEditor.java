@@ -51,6 +51,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ByteArray;
@@ -65,6 +66,7 @@ import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -144,7 +146,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private void setName() {
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-        setTitleImage(labelProvider.getImage(item.getProperty()));
+        setTitleImage(labelProvider.getImage(rEditorInput.getRepositoryNode().getObject()));
         setPartName(labelProvider.getText(item.getProperty()));
     }
 
@@ -158,7 +160,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (item != null) {
             IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
             ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-            return labelProvider.getImage(item.getProperty());
+            return labelProvider.getImage(rEditorInput.getRepositoryNode().getObject());
         }
         return super.getTitleImage();
     }
@@ -202,7 +204,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             if (repFactory.getStatus(item) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
             } else {
-                RepositoryManager.refreshSavedNode(repositoryNode);
+                RepositoryManager.refresh(repositoryNode.getObjectType());
             }
         }
         if (!isEditable)
@@ -243,12 +245,29 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-            IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+            final IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+
+            try {
+                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
+                        IncrementalProjectBuilder.AUTO_BUILD, null);
+            } catch (CoreException e1) {
+                ExceptionHandler.process(e1);
+            }
+            // check syntax error
+            addProblems();
+            String name = "Save Routine";
+            RepositoryWorkUnit<Object> repositoryWorkUnit = new RepositoryWorkUnit<Object>(name, this) {
+
+                @Override
+                protected void run() throws LoginException, PersistenceException {
+                    refreshJobAndSave(repFactory);
+                }
+            };
+            repFactory.executeRepositoryWorkUnit(repositoryWorkUnit);
 
             // for bug 11930: Unable to save Routines.* in db project
-            refreshJobBeforeSave(repFactory);
 
-            repFactory.save(item);
+            // repFactory.save(item);
             // startRefreshJob(repFactory);
 
         } catch (Exception e) {
@@ -258,19 +277,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
-    private void refreshJobBeforeSave(final IProxyRepositoryFactory repFactory) {
-
-        try {
-            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                    IncrementalProjectBuilder.AUTO_BUILD, null);
-        } catch (CoreException e1) {
-            ExceptionHandler.process(e1);
-        }
-        // check syntax error
-        addProblems();
+    private void refreshJobAndSave(final IProxyRepositoryFactory repFactory) {
         try {
             // cause it to update MaxInformationLevel
-            repFactory.save(item.getProperty());
+            repFactory.save(item);
         } catch (Exception e) {
         }
         // update image in repository

@@ -33,6 +33,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.repository.RepositoryWorkUnit;
 
 /**
@@ -234,56 +235,80 @@ public interface IRepositoryFactory {
      */
     public Property reload(Property property) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getProcess(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getProcess(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getContext(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getContext(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project, boolean... options)
+            throws PersistenceException;
 
     // feature 0006484
-    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project, boolean... options)
+            throws PersistenceException;
 
-    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project, boolean... options)
+            throws PersistenceException;
 
-    public List<IRepositoryViewObject> getRecycleBinItems(Project project) throws PersistenceException;
+    public List<IRepositoryViewObject> getRecycleBinItems(Project project, boolean... options) throws PersistenceException;
 
     /**
      * gather all the metadata connections (file / db / etc ...).
@@ -313,7 +338,8 @@ public interface IRepositoryFactory {
      * 
      * @return
      */
-    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project) throws PersistenceException;
+    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project, boolean... options)
+            throws PersistenceException;
 
     public RootContainer<String, IRepositoryViewObject> getRoutineFromProject(Project project) throws PersistenceException;
 
@@ -331,6 +357,13 @@ public interface IRepositoryFactory {
 
     @SuppressWarnings("unchecked")
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit);
+
+    /**
+     * Catch only the next repositoryWorkUnit operation, once workUnit is finished, listener is removed.
+     * 
+     * @param listener
+     */
+    public void addRepositoryWorkUnitListener(IRepositoryWorkUnitListener listener);
 
     public void logOffProject();
 

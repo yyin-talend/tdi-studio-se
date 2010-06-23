@@ -86,6 +86,7 @@ import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
@@ -157,6 +158,21 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     };
 
+    protected IRepositoryWorkUnitListener repositoryWorkListener = new IRepositoryWorkUnitListener() {
+
+        public void workUnitFinished() {
+            revisionChanged = true;
+            if (display != null) {
+                display.syncExec(new Runnable() {
+
+                    public void run() {
+                        setName();
+                    }
+                });
+            }
+        }
+    };
+
     public abstract boolean showExtraPaletteEntry();
 
     protected boolean propertyIsDirty = false;
@@ -182,6 +198,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public boolean revisionChanged = false;
 
     public String revisionNumStr = null;
+
+    private Display display;
 
     private IPartListener partListener = new IPartListener() {
 
@@ -275,8 +293,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 Property property = processEditorInput.getItem().getProperty();
                 propertyInformation = new ArrayList(property.getInformations());
                 property.eAdapters().add(dirtyListener);
+                display = site.getShell().getDisplay();
+                repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
-                revisionChanged = true;
             } catch (PersistenceException e) {
                 // e.printStackTrace();
                 ExceptionHandler.process(e);
@@ -540,8 +559,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         updateRunJobContext();
         designerEditor.getProperty().eAdapters().remove(dirtyListener);
+        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+        display = getSite().getShell().getDisplay();
+        repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
         getEditor(0).doSave(monitor);
-        revisionChanged = true;
         designerEditor.getProperty().eAdapters().add(dirtyListener);
         propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;

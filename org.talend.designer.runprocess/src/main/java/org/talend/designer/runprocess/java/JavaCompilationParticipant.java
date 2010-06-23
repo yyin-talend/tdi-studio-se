@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -34,6 +35,7 @@ import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xhuang class global comment. Detailled comment <br/>
@@ -86,7 +88,19 @@ public class JavaCompilationParticipant extends CompilationParticipant {
 
                 public void run() {
                     try {
-                        Problems.refreshRepositoryView();
+                        Display.getDefault().syncExec(new Runnable() {
+
+                            /*
+                             * (non-Javadoc)
+                             * 
+                             * @see java.lang.Runnable#run()
+                             */
+                            public void run() {
+                                IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getActivePage().findView(IRepositoryView.VIEW_ID);
+                                viewPart.refresh(ERepositoryObjectType.ROUTINES);
+                            }
+                        });
                         Problems.refreshProblemTreeView();
                     } catch (Exception e) {
                         // ignore any exception here, as there is no impact if refresh or not.

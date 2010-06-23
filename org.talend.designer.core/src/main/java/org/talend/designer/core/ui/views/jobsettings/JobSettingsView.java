@@ -420,11 +420,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             if (service != null
                     && service.isProjectInSvnMode()
-                    && ((IRepositoryViewObject) obj).getProperty() != null
-                    && (((IRepositoryViewObject) obj).getProperty().getItem() instanceof ProcessItem || ((IRepositoryViewObject) obj)
-                            .getProperty().getItem() instanceof JobletProcessItem))
+                    && (((IRepositoryViewObject) obj).getType() == ERepositoryObjectType.PROCESS || ((IRepositoryViewObject) obj)
+                            .getType() == ERepositoryObjectType.JOBLET))
                 category.add(EComponentCategory.SVNHISTORY);
-
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 category.add(EComponentCategory.MAIN);

@@ -82,6 +82,8 @@ import org.talend.core.model.properties.impl.FolderItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.IRepositoryWorkUnitListener;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
@@ -553,22 +555,24 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public void deleteObjectLogical(Project project, IRepositoryViewObject objToDelete) throws PersistenceException,
             BusinessException {
-        checkAvailability(objToDelete);
-        this.repositoryFactoryFromProvider.deleteObjectLogical(project, objToDelete);
+        // RepositoryViewObject is dynamic, so force to use in all case the RepositoryObject with fixed object.
+        IRepositoryViewObject object = new RepositoryObject(objToDelete.getProperty());
+        checkAvailability(object);
+        this.repositoryFactoryFromProvider.deleteObjectLogical(project, object);
         // unlock(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
-        String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
+        String str[] = new String[] { object + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
 
         // TODO this need to be refactered after M2.
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
-                || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
+        if (object.getType() == ERepositoryObjectType.PROCESS || object.getType() == ERepositoryObjectType.JOBLET
+                || object.getType() == ERepositoryObjectType.ROUTINES) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, object);
         }
 
         if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
-            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
+            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_TO_RECYCLE_BIN.getName(), null, object);
         }
     }
 
@@ -609,36 +613,37 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (project == null || objToDelete == null) {
             return;
         }
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
-                || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
-            if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+        // RepositoryViewObject is dynamic, so force to use in all case the RepositoryObject with fixed object.
+        IRepositoryViewObject object = new RepositoryObject(objToDelete.getProperty());
+        if (object.getType() == ERepositoryObjectType.PROCESS || object.getType() == ERepositoryObjectType.JOBLET
+                || object.getType() == ERepositoryObjectType.ROUTINES) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, object);
+            if (object.getType() == ERepositoryObjectType.PROCESS) {
                 // delete the job launch, for bug 8878
                 IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
                 if (designerCoreService != null) {
-                    designerCoreService.removeJobLaunch(objToDelete);
+                    designerCoreService.removeJobLaunch(object);
                 }
             }
-            if (objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
+            if (object.getType() == ERepositoryObjectType.ROUTINES) {
                 try {
                     ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                             ICodeGeneratorService.class);
-                    codeGenService.createRoutineSynchronizer().deleteRoutinefile(objToDelete);
+                    codeGenService.createRoutineSynchronizer().deleteRoutinefile(object);
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
 
             }
         }
-        if (objToDelete.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
-            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName(), null, objToDelete);
+        if (object.getType() == ERepositoryObjectType.BUSINESS_PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName(), null, object);
         }
 
-        this.repositoryFactoryFromProvider.deleteObjectPhysical(project, objToDelete, version);
+        this.repositoryFactoryFromProvider.deleteObjectPhysical(project, object, version);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
-        String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
+        String str[] = new String[] { object.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
     }
 
@@ -1684,8 +1689,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getBusinessProcess(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getBusinessProcess(project);
+    public RootContainer<String, IRepositoryViewObject> getBusinessProcess(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getBusinessProcess(project, options);
     }
 
     /*
@@ -1693,8 +1699,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getContext(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getContext(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getContext(project);
+    public RootContainer<String, IRepositoryViewObject> getContext(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getContext(project, options);
     }
 
     /*
@@ -1702,8 +1709,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getDocumentation(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getDocumentation(project);
+    public RootContainer<String, IRepositoryViewObject> getDocumentation(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getDocumentation(project, options);
     }
 
     /*
@@ -1711,8 +1719,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getJoblets(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getJoblets(project);
+    public RootContainer<String, IRepositoryViewObject> getJoblets(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getJoblets(project, options);
     }
 
     /*
@@ -1721,8 +1730,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnection(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataConnection(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataConnection(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataConnection(project, options);
     }
 
     /*
@@ -1732,8 +1742,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileDelimited(org.talend.core.model.general.Project
      * )
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFileDelimited(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileDelimited(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileDelimited(project, options);
     }
 
     /*
@@ -1742,8 +1753,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileExcel(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFileExcel(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileExcel(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileExcel(project, options);
     }
 
     /*
@@ -1752,8 +1764,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileLdif(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFileLdif(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileLdif(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileLdif(project, options);
     }
 
     /*
@@ -1763,8 +1776,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFilePositional(org.talend.core.model.general.Project
      * )
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFilePositional(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFilePositional(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFilePositional(project, options);
     }
 
     /*
@@ -1773,8 +1787,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileRegexp(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFileRegexp(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileRegexp(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileRegexp(project, options);
     }
 
     /*
@@ -1783,8 +1798,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileXml(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataFileXml(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataFileXml(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileXml(project, options);
     }
 
     /*
@@ -1794,8 +1810,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataGenericSchema(org.talend.core.model.general.Project
      * )
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataGenericSchema(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataGenericSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataGenericSchema(project, options);
     }
 
     /*
@@ -1804,8 +1821,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataLDAPSchema(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataLDAPSchema(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataLDAPSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataLDAPSchema(project, options);
     }
 
     /*
@@ -1814,8 +1832,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataSQLPattern(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataSQLPattern(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataSQLPattern(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataSQLPattern(project, options);
     }
 
     /*
@@ -1825,8 +1844,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataSalesforceSchema(org.talend.core.model.general
      * .Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataSalesforceSchema(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataSalesforceSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataSalesforceSchema(project, options);
     }
 
     /*
@@ -1835,8 +1855,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataWSDLSchema(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataWSDLSchema(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataWSDLSchema(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataWSDLSchema(project, options);
     }
 
     /*
@@ -1844,8 +1865,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getProcess(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getProcess(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getProcess(project);
+    public RootContainer<String, IRepositoryViewObject> getProcess(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getProcess(project, options);
     }
 
     /*
@@ -1854,8 +1876,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getRecycleBinItems(org.talend.core.model.general.Project)
      */
-    public List<IRepositoryViewObject> getRecycleBinItems(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getRecycleBinItems(project);
+    public List<IRepositoryViewObject> getRecycleBinItems(Project project, boolean... options) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getRecycleBinItems(project, options);
     }
 
     /*
@@ -1863,8 +1885,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getRoutine(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getRoutine(project);
+    public RootContainer<String, IRepositoryViewObject> getRoutine(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getRoutine(project, options);
     }
 
     /*
@@ -1872,8 +1895,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getSnippets(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getSnippets(project);
+    public RootContainer<String, IRepositoryViewObject> getSnippets(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getSnippets(project, options);
     }
 
     /*
@@ -1909,9 +1933,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataSAPConnection(org.talend.core.model.general.Project
      * )
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project, boolean... options)
+            throws PersistenceException {
         // TODO Auto-generated method stub
-        return this.repositoryFactoryFromProvider.getMetadataSAPConnection(project);
+        return this.repositoryFactoryFromProvider.getMetadataSAPConnection(project, options);
     }
 
     /*
@@ -1939,8 +1964,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.talend.repository.model.IProxyRepositoryFactory#getMetadataEbcdicConnection(org.talend.core.model.general
      * .Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataEBCDIC(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataEBCDIC(project, options);
     }
 
     /*
@@ -1957,8 +1983,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataRules(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project) throws PersistenceException {
-        return repositoryFactoryFromProvider.getMetadataRules(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataRules(Project project, boolean... options)
+            throws PersistenceException {
+        return repositoryFactoryFromProvider.getMetadataRules(project, options);
     }
 
     /*
@@ -1967,9 +1994,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see
      * org.talend.repository.model.IProxyRepositoryFactory#getSVGBusinessProcess(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project) throws PersistenceException {
+    public RootContainer<String, IRepositoryViewObject> getSVGBusinessProcess(Project project, boolean... options)
+            throws PersistenceException {
         // TODO Auto-generated method stub
-        return this.repositoryFactoryFromProvider.getSVGBusinessProcess(project);
+        return this.repositoryFactoryFromProvider.getSVGBusinessProcess(project, options);
     }
 
     /*
@@ -2015,8 +2043,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataMDM(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataMDM(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataMDM(project, options);
     }
 
     /*
@@ -2024,8 +2053,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataHL7(org.talend.core.model.general.Project)
      */
-    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getMetadataHL7(project);
+    public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project, boolean... options)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataHL7(project, options);
     }
 
     /*
@@ -2057,6 +2087,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void setFullLogonFinished(boolean fullLogonFinished) {
         this.fullLogonFinished = fullLogonFinished;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.IProxyRepositoryFactory#addRepositoryWorkUnitListener(org.talend.core.model.repository
+     * .IRepositoryWorkUnitListener)
+     */
+    public void addRepositoryWorkUnitListener(IRepositoryWorkUnitListener listener) {
+        repositoryFactoryFromProvider.addRepositoryWorkUnitListener(listener);
     }
 
 }
