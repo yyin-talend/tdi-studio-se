@@ -14,9 +14,11 @@ package org.talend.designer.mapper.managers;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
@@ -61,8 +63,11 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.table.IUIMatchingMode;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
+import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
+import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
@@ -110,12 +115,15 @@ public class MapperManager extends AbstractMapperManager {
 
     private boolean isDieOnErrorValueChanged;
 
+    private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
+
     public MapperManager(MapperComponent mapperComponent) {
         super(mapperComponent);
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager();
         linkManager = new LinkManager();
         problemsManager = new ProblemsManager(this);
+        getDefaultSetting();
     }
 
     public void addTablePair(DataMapTableView view, IDataMapTable data) {
@@ -1084,6 +1092,19 @@ public class MapperManager extends AbstractMapperManager {
         }
 
         return !originalExternalData.equals(currentExternalData) || isDieOnErrorValueChanged;
+    }
+
+    public Map<String, Object> getDefaultSetting() {
+        if (defaultSettingMap.isEmpty()) {
+            defaultSettingMap.put(DataMapTableView.LOOKUP_MODEL_SETTING, TMAP_LOOKUP_MODE.LOAD_ONCE);
+            defaultSettingMap.put(DataMapTableView.MATCH_MODEL_SETTING, new IUIMatchingMode[] { TMAP_MATCHING_MODE.ALL_ROWS,
+                    TMAP_MATCHING_MODE.UNIQUE_MATCH });
+            defaultSettingMap.put(DataMapTableView.JOIN_MODEL_SETTING, false);
+            defaultSettingMap.put(DataMapTableView.PERSISTENCE_MODEL_SETTING, false);
+            defaultSettingMap.put(DataMapTableView.OUTPUT_REJECT, false);
+            defaultSettingMap.put(DataMapTableView.LOOK_UP_INNER_JOIN_REJECT, false);
+        }
+        return defaultSettingMap;
     }
 
     public boolean isPersistentMap() {

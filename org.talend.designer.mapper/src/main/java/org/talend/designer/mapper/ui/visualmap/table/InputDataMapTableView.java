@@ -197,10 +197,14 @@ public class InputDataMapTableView extends DataMapTableView {
                     }
 
                 } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
-                    functComboBox.setItems(new String[] { "true", "false" });
+                    String[] items = new String[] { "Inner Join", "null" };
+                    functComboBox.setItems(items);
                     IDataMapTable parent = bean.getParent();
                     boolean innerJoin = ((InputTable) parent).isInnerJoin();
-                    return String.valueOf(innerJoin);
+                    if (innerJoin) {
+                        return items[0];
+                    }
+                    return items[1];
                 } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
                     functComboBox.setItems(new String[] { "true", "false" });
                     IDataMapTable parent = bean.getParent();
@@ -211,7 +215,10 @@ public class InputDataMapTableView extends DataMapTableView {
             }
 
             public void set(GlobalMapEntry bean, Object value) {
+
+                Object previousValue = null;
                 if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
+                    previousValue = ((InputTable) bean.getParent()).getLookupMode();
                     IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
                             TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
                     for (final IUILookupMode lookupMode : availableJoins) {
@@ -233,7 +240,9 @@ public class InputDataMapTableView extends DataMapTableView {
 
                         }
                     }
+
                 } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
+                    previousValue = ((InputTable) bean.getParent()).getMatchingMode();
                     for (IUIMatchingMode model : TMAP_MATCHING_MODE.values()) {
                         if (value != null && value.equals(model.getLabel())) {
                             ((InputTable) bean.getParent()).setMatchingMode(model);
@@ -241,12 +250,17 @@ public class InputDataMapTableView extends DataMapTableView {
                         }
                     }
                 } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
+                    previousValue = ((InputTable) bean.getParent()).isInnerJoin();
                     IDataMapTable parent = bean.getParent();
-                    if ("true".equals(value) || "false".equals(value)) {
-                        ((InputTable) parent).setInnerJoin(Boolean.valueOf(value.toString()));
-                        previousInnerJoinSelection = Boolean.valueOf(value.toString());
+                    if ("null".equals(value)) {
+                        ((InputTable) parent).setInnerJoin(false);
+                        previousInnerJoinSelection = false;
+                    } else {
+                        ((InputTable) parent).setInnerJoin(true);
+                        previousInnerJoinSelection = true;
                     }
                 } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
+                    previousValue = ((InputTable) bean.getParent()).isPersistent();
                     IDataMapTable parent = bean.getParent();
                     if ("true".equals(value) || "false".equals(value)) {
                         ((InputTable) parent).setPersistent(Boolean.valueOf(value.toString()));
@@ -254,8 +268,116 @@ public class InputDataMapTableView extends DataMapTableView {
                     }
                 }
 
+                refreshCondensedImage((InputTable) bean.getParent(), bean.getName(), previousValue);
+
             }
         };
+    }
+
+    private void refreshCondensedImage(InputTable table, String option, Object previousValue) {
+        if (LOOKUP_MODEL_SETTING.equals(option)) {
+            if (table.getLookupMode().equals(mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING))) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(previousValue)) {
+                if (changedOptions < 4)
+                    changedOptions++;
+            }
+        } else if (MATCH_MODEL_SETTING.equals(option)) {
+            IUIMatchingMode matchingMode = table.getMatchingMode();
+            Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
+            if (object instanceof IUIMatchingMode[]) {
+                IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
+                if (modes.length == 2) {
+                    if (modes[0].equals(matchingMode) || modes[1].equals(matchingMode)) {
+                        if (changedOptions > 0)
+                            changedOptions--;
+                    } else if (modes[0].equals(previousValue) || modes[1].equals(previousValue)) {
+                        if (changedOptions < 4)
+                            changedOptions++;
+                    }
+
+                }
+            }
+        } else if (JOIN_MODEL_SETTING.equals(option)) {
+            if (Boolean.valueOf(table.isInnerJoin()).equals(mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING))) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previousValue)) {
+                if (changedOptions < 4)
+                    changedOptions++;
+            }
+
+        } else if (PERSISTENCE_MODEL_SETTING.equals(option)) {
+            if (Boolean.valueOf(table.isPersistent()).equals(mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING))) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previousValue)) {
+                if (changedOptions < 4)
+                    changedOptions++;
+            }
+        }
+        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
+    }
+
+    protected Color getColumnBgColor(GlobalMapEntry bean) {
+        InputTable inputTable = (InputTable) bean.getParent();
+
+        if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(inputTable.getLookupMode())) {
+                return MAP_SETTING_COLOR;
+            }
+        } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
+            IUIMatchingMode matchingMode = inputTable.getMatchingMode();
+            Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
+            if (object instanceof IUIMatchingMode[]) {
+                IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
+                if (modes.length == 2) {
+                    if (!modes[0].equals(matchingMode) && !modes[1].equals(matchingMode)) {
+                        return MAP_SETTING_COLOR;
+                    }
+
+                }
+            }
+        } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(inputTable.isInnerJoin())) {
+                return MAP_SETTING_COLOR;
+            }
+
+        } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(inputTable.isPersistent())) {
+                return MAP_SETTING_COLOR;
+            }
+        }
+        return null;
+    }
+
+    protected void initCondensedItemImage() {
+        if (!mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(getInputTable().getLookupMode())) {
+            if (changedOptions < 4)
+                changedOptions++;
+        }
+        Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
+        if (object instanceof IUIMatchingMode[]) {
+            IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
+            if (modes.length == 2) {
+                if (!modes[0].equals(getInputTable().getMatchingMode()) && !modes[1].equals(getInputTable().getMatchingMode())) {
+                    if (changedOptions < 4)
+                        changedOptions++;
+                }
+
+            }
+        }
+        if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(getInputTable().isInnerJoin())) {
+            if (changedOptions < 4)
+                changedOptions++;
+        }
+        if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(getInputTable().isPersistent())) {
+            if (changedOptions < 4)
+                changedOptions++;
+        }
+        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
+
     }
 
     /*
@@ -372,7 +494,7 @@ public class InputDataMapTableView extends DataMapTableView {
             condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
             condensedItem.setSelection(table.isActivateCondensedTool());
             condensedItem.setToolTipText("tMap settings");
-            condensedItem.setImage(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+            initCondensedItemImage();
             condensedItem.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -493,11 +615,27 @@ public class InputDataMapTableView extends DataMapTableView {
             boolean stateAtLeastOneHashKey = mapperManager.isTableHasAtLeastOneHashKey(getInputTable());
             if (forceEvaluation || previousStateAtLeastOneHashKey != stateAtLeastOneHashKey) {
                 if (stateAtLeastOneHashKey) {
-
+                    Object previous = getInputTable().getMatchingMode();
                     getInputTable().setMatchingMode(previousMatchingModeSelected);
-                    // selectMatchingModeMenuItem(previousMatchingModeSelected);
+                    Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
+                    if (object instanceof IUIMatchingMode[]) {
+                        IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
+                        if (modes.length == 2) {
+                            if ((modes[0].equals(previous) || modes[1].equals(previous))
+                                    && !modes[0].equals(previousMatchingModeSelected)
+                                    && !modes[1].equals(previousMatchingModeSelected)) {
+                                if (changedOptions < 4)
+                                    changedOptions++;
+                            }
+                        }
+                    }
+                    previous = getInputTable().isInnerJoin();
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
-                    // innerJoinCheck.setEnabled(true);
+                    if (mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previous)
+                            && !mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previousInnerJoinSelection)) {
+                        if (changedOptions < 4)
+                            changedOptions++;
+                    }
                     innerJoinCheckItemEditable = true;
                     updateViewAfterChangeInnerJoinCheck();
                 } else {
@@ -512,13 +650,34 @@ public class InputDataMapTableView extends DataMapTableView {
                         mapperManager.getUiManager().setStatusBarValues(STATUS.EMPTY, null);
                         // selectMatchingModeMenuItem(matchingMode);
                     }
+                    Object previous = getInputTable().getMatchingMode();
                     getInputTable().setMatchingMode(matchingMode);
+                    Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
+                    if (object instanceof IUIMatchingMode[]) {
+                        IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
+                        if (modes.length == 2) {
+                            if (!modes[0].equals(previous) && !modes[1].equals(previous)) {
+                                if (changedOptions > 0)
+                                    changedOptions--;
+
+                            }
+                        }
+                    }
+                    previous = getInputTable().isInnerJoin();
                     getInputTable().setInnerJoin(false);
+                    if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previous)) {
+                        if (changedOptions > 0)
+                            changedOptions--;
+
+                    }
 
                     innerJoinCheckItemEditable = false;
                 }
 
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
+            }
+            if (!forceEvaluation) {
+                condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
             }
             layoutToolBar();
             mapSettingViewerCreator.refresh();
@@ -812,18 +971,30 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private void enableDisablePersistentMode(TMAP_LOOKUP_MODE lookupMode) {
         if (mapperManager.isPersistentMap()) {
-
+            boolean previous = getInputTable().isPersistent();
             switch (lookupMode) {
             case LOAD_ONCE:
             case LOAD_ONCE_AND_UPDATE:
             case RELOAD:
-
                 persistentCheckEditable = true;
                 getInputTable().setPersistent(previousValidPersistentMode);
+                if (mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previous)
+                        && !mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previousValidPersistentMode)) {
+                    if (changedOptions < 4) {
+                        changedOptions++;
+                    }
+                }
+
                 break;
             case CACHE_OR_RELOAD:
                 persistentCheckEditable = false;
+
                 getInputTable().setPersistent(false);
+                if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previous)) {
+                    if (changedOptions > 0)
+                        changedOptions--;
+                }
+
                 break;
             default:
                 break;

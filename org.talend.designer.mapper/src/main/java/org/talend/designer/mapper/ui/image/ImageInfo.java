@@ -41,7 +41,11 @@ public enum ImageInfo {
     REJECT_FILTER_ICON("/icons/rejectfilter.png"), //$NON-NLS-1$
     REJECT_LOOKUP_ICON("/icons/rejectlookup.png"), //$NON-NLS-1$
     LOOKUP_KEY_ICON("/icons/lookup_key16.png"), //$NON-NLS-1$
-    CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"), ;
+    CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"),
+    CONDENSED_TOOL_ICON1("/icons/condensedToolItem1.png"),
+    CONDENSED_TOOL_ICON2("/icons/condensedToolItem2.png"),
+    CONDENSED_TOOL_ICON3("/icons/condensedToolItem3.png"),
+    CONDENSED_TOOL_ICON4("/icons/condensedToolItem4.png"), ;
 
     private String path;
 

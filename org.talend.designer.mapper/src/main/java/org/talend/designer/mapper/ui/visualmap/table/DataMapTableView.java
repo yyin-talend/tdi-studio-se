@@ -89,6 +89,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
@@ -253,9 +254,9 @@ public abstract class DataMapTableView extends Composite {
 
     public static final String PERSISTENCE_MODEL_SETTING = "Store temp data"; //$NON-NLS-1$
 
-    public static final String OUTPUT_REJECT = "Active output reject"; //$NON-NLS-1$
+    public static final String OUTPUT_REJECT = "Catch output reject"; //$NON-NLS-1$
 
-    public static final String LOOK_UP_INNER_JOIN_REJECT = "Look up Inner Join Reject"; //$NON-NLS-1$
+    public static final String LOOK_UP_INNER_JOIN_REJECT = "Catch lookup inner join reject"; //$NON-NLS-1$
 
     public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
@@ -301,6 +302,10 @@ public abstract class DataMapTableView extends Composite {
 
     private boolean customSized;
 
+    protected int changedOptions = 0;
+
+    protected static final Color MAP_SETTING_COLOR = new Color(Display.getDefault(), 238, 238, 0);
+
     /**
      * 
      * Call loaded() method after instanciate this class.
@@ -318,6 +323,7 @@ public abstract class DataMapTableView extends Composite {
         createComponents();
         addListeners();
         mapperManager.addTablePair(DataMapTableView.this, abstractDataMapTable);
+
     }
 
     private void createComponents() {
@@ -485,6 +491,18 @@ public abstract class DataMapTableView extends Composite {
                 // do nothing
             }
         });
+        column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
+
+            public Color getBackgroundColor(GlobalMapEntry bean) {
+
+                return getColumnBgColor(bean);
+            }
+
+            public Color getForegroundColor(GlobalMapEntry bean) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        });
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Value");
@@ -498,11 +516,49 @@ public abstract class DataMapTableView extends Composite {
         column.setCellEditor(cellEditor, comboValueAdapter);
         column.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
         column.setModifiable(true);
+        column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
+
+            public Color getBackgroundColor(GlobalMapEntry bean) {
+
+                return getColumnBgColor(bean);
+            }
+
+            public Color getForegroundColor(GlobalMapEntry bean) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        });
 
     }
 
     protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
         return null;
+    }
+
+    protected Color getColumnBgColor(GlobalMapEntry bean) {
+        return null;
+    }
+
+    // only called when open the tmap
+    protected void initCondensedItemImage() {
+    }
+
+    protected ImageInfo getCondencedItemImage(int i) {
+        System.out.print(i);
+        switch (i) {
+        case 0:
+            return ImageInfo.CONDENSED_TOOL_ICON;
+        case 1:
+            return ImageInfo.CONDENSED_TOOL_ICON1;
+        case 2:
+            return ImageInfo.CONDENSED_TOOL_ICON2;
+        case 3:
+            return ImageInfo.CONDENSED_TOOL_ICON3;
+        case 4:
+            return ImageInfo.CONDENSED_TOOL_ICON4;
+        default:
+            return null;
+        }
     }
 
     /**
@@ -1221,7 +1277,7 @@ public abstract class DataMapTableView extends Composite {
         condensedItem.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
         condensedItem.setSelection(((OutputTable) abstractDataMapTable).isActivateCondensedTool());
         condensedItem.setToolTipText("tMap settings");
-        condensedItem.setImage(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+        initCondensedItemImage();
         condensedItem.addSelectionListener(new SelectionAdapter() {
 
             @Override

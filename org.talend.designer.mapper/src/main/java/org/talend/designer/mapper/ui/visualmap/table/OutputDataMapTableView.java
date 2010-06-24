@@ -54,6 +54,7 @@ import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
+import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -147,13 +148,68 @@ public class OutputDataMapTableView extends DataMapTableView {
                 }
                 IDataMapTable parent = bean.getParent();
                 OutputTable outputTable = (OutputTable) parent;
+                Object previous = null;
                 if (OUTPUT_REJECT.equals(bean.getName())) {
+                    previous = outputTable.isReject();
                     outputTable.setReject(Boolean.valueOf(value.toString()));
                 } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+                    previous = outputTable.isRejectInnerJoin();
                     outputTable.setRejectInnerJoin(Boolean.valueOf(value.toString()));
                 }
+
+                refreshCondensedImage(outputTable, bean.getName(), previous);
             }
         };
+    }
+
+    private void refreshCondensedImage(OutputTable table, String option, Object previousValue) {
+        if (OUTPUT_REJECT.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(table.isReject())) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(previousValue)) {
+                if (changedOptions < 4)
+                    changedOptions++;
+            }
+        } else if (LOOK_UP_INNER_JOIN_REJECT.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(table.isRejectInnerJoin())) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(previousValue)) {
+                if (changedOptions < 4)
+                    changedOptions++;
+            }
+        }
+        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
+    }
+
+    protected Color getColumnBgColor(GlobalMapEntry bean) {
+        OutputTable outputTable = (OutputTable) bean.getParent();
+
+        if (OUTPUT_REJECT.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(outputTable.isReject())) {
+                return MAP_SETTING_COLOR;
+            }
+        } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(outputTable.isRejectInnerJoin())) {
+                return MAP_SETTING_COLOR;
+            }
+        }
+        return null;
+    }
+
+    protected void initCondensedItemImage() {
+        if (!mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(getOutputTable().isReject())) {
+            if (changedOptions < 2)
+                changedOptions++;
+        }
+        if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(getOutputTable().isRejectInnerJoin())) {
+            if (changedOptions < 2)
+                changedOptions++;
+        }
+
+        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
+
     }
 
     /*
