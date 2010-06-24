@@ -97,8 +97,10 @@ public class LoginDialog extends TrayDialog {
         setHelpAvailable(false);
     }
 
-    protected Point getInitialSize() {
-        return super.getInitialSize();
+    protected void initializeBounds() {
+        super.initializeBounds();
+        Point location = getInitialLocation(getShell().getSize());
+        getShell().setLocation(location.x, location.y);
     }
 
     /**

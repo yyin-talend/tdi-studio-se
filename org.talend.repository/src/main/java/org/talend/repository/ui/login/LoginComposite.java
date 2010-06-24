@@ -329,7 +329,7 @@ public class LoginComposite extends Composite {
         existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, 0, SWT.CENTER);
-        data.top = new FormAttachment(manageProjectLabel1, 40);
+        data.top = new FormAttachment(manageProjectLabel1, 25);
         existingLabel.setLayoutData(data);
 
         // open
