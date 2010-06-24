@@ -29,6 +29,8 @@ import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.rowgenerator.PluginUtils;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
@@ -100,19 +102,31 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             // modify for bug 9471
             try {
                 for (Variable varible : variables) {
-                    if (valueContains(expression, varible.getName())) {
+                    if (valueContains(expression, varible.getName())) {                        
                         Integer.parseInt(varible.getValue());
                     }
                 }
                 for (Variable var : variables) {
-                    expression = renameValues(expression, var.getName(), var.getValue());
+                    String talendType = var.getTalendType();
+                    JavaType javaTypeFromId = JavaTypesManager.getJavaTypeFromId(talendType);
+                    String label = null;
+                    String value2 = var.getValue();
+                    if (javaTypeFromId != null) {
+                        label = javaTypeFromId.getLabel();
+                        if ("BigDecimal".equals(label)) {//$NON-NLS-1$
+                            value2 = " new BigDecimal(" + value2 + ")";//$NON-NLS-1$//$NON-NLS-1$
+                        }
+                    }
+                    expression = renameValues(expression, var.getName(), value2);
                 }
             } catch (NumberFormatException e1) {
                 for (Variable var : variables) {
                     expression = renameValues(expression, var.getName(), "\"" + var.getValue() + "\"");//$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            value.put(RowGeneratorComponent.ARRAY, expression + "+\"\""); //$NON-NLS-1$
+
+            value.put(RowGeneratorComponent.ARRAY, "\"\"+(" + expression + ")+\"\""); //$NON-NLS-1$//$NON-NLS-1$
+
             map.add(value);
         }
 
