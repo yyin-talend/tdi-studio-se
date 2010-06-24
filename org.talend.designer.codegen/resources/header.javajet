@@ -93,7 +93,7 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> { 
+ public class <%=process.getName()%> {
  	
  	public final Object obj = new Object();    
 <%
@@ -237,8 +237,20 @@ private final java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputSt
 private final java.io.PrintStream errorMessagePS = new java.io.PrintStream(new java.io.BufferedOutputStream(baos));
 
 public String getExceptionStackTrace() {
-	errorMessagePS.flush();
-	return baos.toString();
+	if ("failure".equals(this.getStatus())) {
+		errorMessagePS.flush();
+		return baos.toString();
+	}
+	return null;
+}
+
+private Exception exception = null;
+
+public Exception getException() {
+	if ("failure".equals(this.getStatus())) {			
+		return this.exception;
+	}
+	return null;
 }
 
 private class TalendException extends Exception {
@@ -264,6 +276,7 @@ private class TalendException extends Exception {
 			}else{
 				e.printStackTrace();
 				e.printStackTrace(errorMessagePS);
+				<%=process.getName() %>.this.exception = e; 
 			}
 	    }
 		if (!(e instanceof TalendException)) {
