@@ -351,6 +351,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 addElementParameter(param);
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
                 Node tmpNode = new Node(component, (Process) source.getProcess());
+                tmpNode.setTemplate(source.isTemplate());
                 tmpNode.addInput(this);
                 IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
                 if (tmpParam != null) {
