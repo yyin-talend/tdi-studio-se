@@ -1393,6 +1393,21 @@ if(columnList != null && columnList.size() > 0) {
             <%
         } else {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+            if("DBORACLE".equalsIgnoreCase(dbType)) {
+			%>
+	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            boolean whetherExist_<%=cid%> = false;
+	            while(rsTable_<%=cid%>.next()) {
+	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
+	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>) && schema_<%=cid%>.equalsIgnoreCase(dbSchema_<%=cid%>)) {
+	                    whetherExist_<%=cid%> = true;
+	                    break;
+	                }
+	            }     
+            <%
+            } else {
             %>
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -1405,6 +1420,8 @@ if(columnList != null && columnList.size() > 0) {
 	                }
 	            }     
             <%
+            }
+            
             if(("CREATE_IF_NOT_EXIST").equals(tableAction)) {
                 %>
                 if(!whetherExist_<%=cid%>) {
