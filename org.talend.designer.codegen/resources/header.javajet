@@ -95,7 +95,18 @@ import java.util.Comparator;
  */                                
  public class <%=process.getName()%> {
  	
- 	public final Object obj = new Object();    
+ 	public final Object obj = new Object();
+ 	
+ 	//for transmiting parameters purpose
+    private Object valueObject = null;
+    
+    public Object getValueObject() {
+    	return this.valueObject;
+    }
+    
+    public void setValueObject(Object valueObject) {
+    	this.valueObject = valueObject;
+    }
 <%
 if(isRunInMultiThread){
 %>
