@@ -349,11 +349,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     if (service != null && service.isMergeRefProject()) {
                         IRepositoryViewObject object = node.getObject();
                         if (object != null) {
-                            org.talend.core.model.properties.Project project = ProjectManager.getInstance().getProject(
-                                    object.getProperty().getItem());
-                            org.talend.core.model.properties.Project curProject = ProjectManager.getInstance()
+                            org.talend.core.model.properties.Project mainProject = ProjectManager.getInstance()
                                     .getCurrentProject().getEmfProject();
-                            if (!curProject.equals(project)) {
+                            String projectLabel = object.getProjectLabel();
+                            if (!mainProject.getLabel().equals(projectLabel)) {
                                 return MERGED_REFERENCED_ITEMS_COLOR;
                             }
                         }

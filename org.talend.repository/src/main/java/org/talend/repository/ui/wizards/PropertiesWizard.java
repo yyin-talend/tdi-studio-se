@@ -30,18 +30,20 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -53,7 +55,7 @@ public class PropertiesWizard extends Wizard {
 
     private PropertiesWizardPage mainPage;
 
-    private IRepositoryViewObject object;
+    private IRepositoryObject object;
 
     private final IPath path;
 
@@ -71,13 +73,14 @@ public class PropertiesWizard extends Wizard {
 
     private String lastVersionFound;
 
-    public PropertiesWizard(RepositoryNode node, IPath path, boolean useLastVersion) {
+    public PropertiesWizard(IRepositoryViewObject repositoryViewObject, IPath path, boolean useLastVersion) {
         super();
 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROPERTIES_WIZ));
         // properties wizard editable status not working for ref items ,because econtainer is null;
-        if (node.getObject() != null && node.getObject().getProperty() != null) {
-            Property property = node.getObject().getProperty();
+        if (repositoryViewObject != null && repositoryViewObject.getProperty() != null) {
+            this.object = new RepositoryObject(repositoryViewObject.getProperty());
+            Property property = object.getProperty();
             Item item = property.getItem();
             if (property.eResource() == null || item != null && item.eContainer() == null) {
                 IProxyRepositoryFactory proxyRepositoryFactory = CorePlugin.getDefault().getRepositoryService()
@@ -86,22 +89,24 @@ public class PropertiesWizard extends Wizard {
                     ItemState state = item.getState();
                     if (useLastVersion) {
                         if (state != null && state.getPath() != null) {
-                            this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId(),
-                                    state.getPath(), node.getObject().getType());
+                            this.object = (IRepositoryObject) proxyRepositoryFactory.getLastVersion(new Project(ProjectManager
+                                    .getInstance().getProject(item)), property.getId(), state.getPath(), object.getType());
                             lastVersionFound = this.object.getVersion();
                         } else {
-                            this.object = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(), property.getId());
+                            this.object = (IRepositoryObject) proxyRepositoryFactory.getLastVersion(new Project(ProjectManager
+                                    .getInstance().getProject(item)), property.getId());
                             lastVersionFound = this.object.getVersion();
                         }
                     } else {
-                        this.object = node.getObject();
                         if (state != null && state.getPath() != null) {
-                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(),
-                                    property.getId(), state.getPath(), node.getObject().getType()).getVersion();
+                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(
+                                    new Project(ProjectManager.getInstance().getProject(item)), property.getId(),
+                                    state.getPath(), object.getType()).getVersion();
                         } else {
-                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(node.getRoot().getProject(),
-                                    property.getId()).getVersion();
+                            this.lastVersionFound = proxyRepositoryFactory.getLastVersion(
+                                    new Project(ProjectManager.getInstance().getProject(item)), property.getId()).getVersion();
                         }
+                        this.object.setProperty(proxyRepositoryFactory.getUptodateProperty(property));
                     }
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
@@ -109,7 +114,7 @@ public class PropertiesWizard extends Wizard {
             }
         }
         if (this.object == null) {
-            this.object = node.getObject();
+            this.object = new RepositoryObject(repositoryViewObject.getProperty());
         }
         this.originaleObjectLabel = this.object.getLabel();
         this.originalVersion = this.object.getVersion();
