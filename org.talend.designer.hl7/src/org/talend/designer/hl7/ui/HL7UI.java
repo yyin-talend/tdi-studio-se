@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
@@ -147,8 +148,8 @@ public class HL7UI {
         linker.setManager(hl7Manager);
         initMessageTree();
         new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
-        initTableViewer();
         initSchemaCombo();
+        initTableViewer();
         initlinkers();
         hl7SchemaEditorView.setReadOnly(isRepository);
     }
@@ -197,16 +198,54 @@ public class HL7UI {
             } else {
                 hl7Manager.getSchemaRelationMap().put(trueTableName, columns);
             }
+            MetadataColumn[] array = new MetadataColumn[columns.size()];
+            int i = 0;
+            for (MetadataColumn column : columns) {
+                MetadataColumn newColumn = copyColumn(column);
+                array[i] = newColumn;
+                i++;
+            }
             if (this.getMetaTableViewer().getSelection() instanceof IStructuredSelection) {
                 IStructuredSelection selection = (IStructuredSelection) this.getMetaTableViewer().getSelection();
                 if (selection.getFirstElement() != null) {
                     String name = ((IModel) selection.getFirstElement()).getDisplayName();
                     if (name.equals(trueTableName)) {
-                        hl7SchemaEditorView.getMetadataEditor().addAll(columns);
+                        for (int j = 0; j < array.length; j++) {
+                            hl7SchemaEditorView.getMetadataEditor().add(array[j]);
+                        }
+                        // hl7SchemaEditorView.getMetadataEditor().addAll(columns);
                     }
                 }
             }
         }
+    }
+
+    protected MetadataColumn copyColumn(MetadataColumn column) {
+        MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+        newColumn.setComment(column.getComment());
+        newColumn.setDefaultValue(column.getDefaultValue());
+        newColumn.setKey(column.isKey());
+        newColumn.setLabel(column.getLabel());
+        newColumn.setPattern(column.getPattern());
+        if (column.getLength() != null && column.getLength() < 0) {
+            newColumn.setLength(null);
+        } else {
+            newColumn.setLength(column.getLength());
+        }
+        newColumn.setNullable(column.isNullable());
+        if (column.getPrecision() != null && column.getPrecision() < 0) {
+            newColumn.setPrecision(null);
+        } else {
+            newColumn.setPrecision(column.getPrecision());
+        }
+        newColumn.setTalendType(column.getTalendType());
+        newColumn.setSourceType(column.getSourceType());
+        if (column.getOriginalField() == null || column.getOriginalField().equals("")) { //$NON-NLS-1$
+            newColumn.setLabel(column.getLabel());
+        } else {
+            newColumn.setOriginalField(column.getOriginalField());
+        }
+        return newColumn;
     }
 
     public void initMessageTree() {

@@ -375,8 +375,9 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
     protected boolean canModifyDBColumn(Object bean) {
         // TODO
         if (bean instanceof MetadataColumnImpl) {
-            if (((MetadataColumnImpl) bean).getLabel().equals(((MetadataColumnImpl) bean).getOriginalField()))
-                return true;
+            // if (((MetadataColumnImpl) bean).getLabel().equals(((MetadataColumnImpl) bean).getOriginalField()))
+            // return true;
+            return !isRepository;
         }
         return false;
     }

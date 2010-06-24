@@ -210,6 +210,8 @@ public class HL7Message2SchemaDragAndDropHandler {
                     String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
                     metacolumn.setLabel(label);
                     metacolumn.setOriginalField(segName);
+                    metacolumn.setLength(226);
+                    metacolumn.setPrecision(null);
                     hl7TableEditorView.getMetadataEditor().add(metacolumn);
                     TreeItem item = SegmentTransfer.getInstance().getDragedItem();
                     TableItem targetitem = targetTable.getSelection()[0];

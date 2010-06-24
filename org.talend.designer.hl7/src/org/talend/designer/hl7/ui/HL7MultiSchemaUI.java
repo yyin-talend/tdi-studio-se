@@ -98,34 +98,6 @@ public class HL7MultiSchemaUI extends HL7UI {
         return currentTable;
     }
 
-    private MetadataColumn copyColumn(MetadataColumn column) {
-        MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-        newColumn.setComment(column.getComment());
-        newColumn.setDefaultValue(column.getDefaultValue());
-        newColumn.setKey(column.isKey());
-        newColumn.setLabel(column.getLabel());
-        newColumn.setPattern(column.getPattern());
-        if (column.getLength() != null && column.getLength() < 0) {
-            newColumn.setLength(null);
-        } else {
-            newColumn.setLength(column.getLength());
-        }
-        newColumn.setNullable(column.isNullable());
-        if (column.getPrecision() != null && column.getPrecision() < 0) {
-            newColumn.setPrecision(null);
-        } else {
-            newColumn.setPrecision(column.getPrecision());
-        }
-        newColumn.setTalendType(column.getTalendType());
-        newColumn.setSourceType(column.getSourceType());
-        if (column.getOriginalField() == null || column.getOriginalField().equals("")) { //$NON-NLS-1$
-            newColumn.setLabel(column.getLabel());
-        } else {
-            newColumn.setOriginalField(column.getOriginalField());
-        }
-        return newColumn;
-    }
-
     private MetadataTable buildCurrentTable(MetadataColumn[] beans, String schemaKey) {
         MetadataTable metatable = ConnectionFactory.eINSTANCE.createMetadataTable();
         String displayName = ""; //$NON-NLS-N$
@@ -133,7 +105,9 @@ public class HL7MultiSchemaUI extends HL7UI {
             MetadataColumn column = beans[i];
             String original = beans[i].getOriginalField();
             if (original != null && !"".equals(original)) {
-                original = original.substring(0, original.indexOf(TalendTextUtils.LBRACKET));
+                if (original.indexOf(TalendTextUtils.LBRACKET) > 0) {
+                    original = original.substring(0, original.indexOf(TalendTextUtils.LBRACKET));
+                }
             }
             if (i != beans.length - 1) {
                 displayName = displayName + TalendTextUtils.QUOTATION_MARK + original + TalendTextUtils.QUOTATION_MARK + ",";

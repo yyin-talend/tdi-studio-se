@@ -600,14 +600,14 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         column.setWeight(25);
         column.setModifiable(!isReadOnly());
         column.setMinimumWidth(45);
-        // final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
-        // column.setCellEditor(cellEditor);
+        final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
+        column.setCellEditor(cellEditor);
 
         column.setColumnCellModifier(new ColumnCellModifier(column) {
 
             @Override
             public boolean canModify(Object bean) {
-                return false;
+                return super.canModify(bean) && canModifyDBColumn(bean);
             }
 
         });

@@ -178,7 +178,9 @@ public class HL7Manager {
                 MetadataColumn column = columns.get(i);
                 String original = columns.get(i).getOriginalField();
                 if (original != null && !"".equals(original)) {
-                    original = original.substring(0, original.indexOf(TalendTextUtils.LBRACKET));
+                    if (original.indexOf(TalendTextUtils.LBRACKET) > 0) {
+                        original = original.substring(0, original.indexOf(TalendTextUtils.LBRACKET));
+                    }
                 }
                 if (i != columns.size() - 1) {
                     displayName = displayName + TalendTextUtils.QUOTATION_MARK + original + TalendTextUtils.QUOTATION_MARK + ",";

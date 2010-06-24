@@ -38,6 +38,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.ResetDBTypesPushButt
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ResetDBTypesPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.extended.command.MetadataEmfExportXmlCommand;
@@ -46,6 +47,7 @@ import org.talend.core.ui.extended.command.MetadataEmfPasteCommand;
 import org.talend.core.ui.metadata.dialog.ExtendedTableResetDBTypesCommand;
 import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 import org.talend.designer.hl7.model.IModel;
+import org.talend.designer.hl7.ui.HL7MultiSchemaUI;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -118,7 +120,24 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
             protected Object getObjectToAdd() {
                 MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
                         .getExtendedControlModel();
-                return tableEditorModel.createNewMetadataColumn(dbmsId);
+                if (tableEditorModel.getMetadataTable() == null) {
+                    tableEditorModel.setMetadataTable(ConnectionFactory.eINSTANCE.createMetadataTable());
+                }
+                MetadataColumn metadatacolumn = tableEditorModel.createNewMetadataColumn(dbmsId);
+                metadatacolumn.setLength(226);
+                metadatacolumn.setPrecision(null);
+                updateCurrentTableModelAndMap(tableEditorModel);
+                return metadatacolumn;
+            }
+
+            private void updateCurrentTableModelAndMap(MetadataEmfTableEditor tableEditorModel) {
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    linker.getManager().updateRelationMapping(key, tableEditorModel.createNewMetadataColumn(dbmsId), true);
+                }
             }
 
             @Override
