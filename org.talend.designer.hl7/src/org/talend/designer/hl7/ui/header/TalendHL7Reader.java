@@ -44,6 +44,8 @@ public class TalendHL7Reader implements ca.uhn.hl7v2.llp.HL7Reader {
     public void setInputStream(java.io.InputStream arg0) throws IOException {
     }
 
+    private boolean isFirst = true;
+
     public synchronized String getMessage() throws java.io.IOException {
         StringBuffer s_buffer = new StringBuffer();
 
@@ -51,7 +53,9 @@ public class TalendHL7Reader implements ca.uhn.hl7v2.llp.HL7Reader {
 
         int c = 0;
         try {
-            c = myReader.read();
+            do {
+                c = myReader.read();
+            } while (c == ' ' || c == '\t' || c == '\r' || c == '\n');
         } catch (Exception e) {
             return null;
         }
@@ -62,9 +66,13 @@ public class TalendHL7Reader implements ca.uhn.hl7v2.llp.HL7Reader {
             return null;
         }
 
-        if (c != startMsg) {
+        if (c != startMsg && !isFirst) {
             // throw new java.io.IOException("no start of message indicator was found.");
             return null;
+        }
+
+        if (isFirst && c != startMsg) {
+            s_buffer.append((char) c);
         }
 
         while (!end_of_message) {
@@ -80,6 +88,7 @@ public class TalendHL7Reader implements ca.uhn.hl7v2.llp.HL7Reader {
                 s_buffer.append((char) c);
             }
         } // end while
+        isFirst = false;
         if (s_buffer.length() > 0) {
             return s_buffer.toString();
         } else {
