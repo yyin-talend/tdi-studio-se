@@ -38,8 +38,10 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTask {
 
-    private static final String MATCH_REGEX = "\\(\\(\\bString\\b\\)\\bglobalMap\\b\\.get\\(" //$NON-NLS-1$
-            + "\"tServerAlive_[1-9]\\d*_SERVER_ALIVE_RESULT\"\\)\\)\\.equals\\(\"(OK|KO)\"\\)"; //$NON-NLS-1$
+    private static final String MATCH_REGEX_GET = "\\(\\(\\bString\\b\\)\\bglobalMap\\b\\.get\\("
+            + "\"tServerAlive_[1-9]\\d*_SERVER_ALIVE_RESULT\"\\)\\)\\.equals\\(\"(OK|KO)\"\\)";//$NON-NLS-1$
+
+    private static final Pattern PATTERN_GET = Pattern.compile(MATCH_REGEX_GET); //$NON-NLS-1$
 
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
@@ -82,7 +84,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
         ECodeLanguage language = getProject().getLanguage();
         EList node = processType.getNode();
         EList connections = processType.getConnection();
-        Pattern pattern = Pattern.compile(MATCH_REGEX);
+
         for (Object n : node) {
             NodeType type = (NodeType) n;
             EList elementParameterList = type.getElementParameter();
@@ -90,9 +92,9 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
                     if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                        Matcher match = pattern.matcher(elemType.getValue());
-                        if (match.matches()) {
-                            String replace = getReplaceValue(match);
+                        Matcher match = PATTERN_GET.matcher(elemType.getValue());
+                        String replace = getReplaceValue(match);
+                        if (replace != null && replace.length() > 0) {
                             elemType.setValue(replace);
                             modified = true;
                         }
@@ -106,10 +108,10 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                     ElementValueType elemVal = (ElementValueType) elemV;
                     if (language.equals(ECodeLanguage.JAVA)) {
                         if (elemVal.getValue() != null && elemVal.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                            Matcher match = pattern.matcher(elemVal.getValue());
-                            if (match.matches()) {
-                                String replace = getReplaceValue(match);
-                                elemVal.setValue(replace);
+                            Matcher match = PATTERN_GET.matcher(elemVal.getValue());
+                            String replace = getReplaceValue(match);
+                            if (replace != null && replace.length() > 0) {
+                                elemType.setValue(replace);
                                 modified = true;
                             }
                         }
@@ -127,9 +129,9 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (language.equals(ECodeLanguage.JAVA)) {
                     if (elemType.getValue() != null && elemType.getValue().contains("tServerAlive")) { //$NON-NLS-1$
-                        Matcher match = pattern.matcher(elemType.getValue());
-                        if (match.matches()) {
-                            String replace = getReplaceValue(match);
+                        Matcher match = PATTERN_GET.matcher(elemType.getValue());
+                        String replace = getReplaceValue(match);
+                        if (replace != null && replace.length() > 0) {
                             elemType.setValue(replace);
                             modified = true;
                         }
