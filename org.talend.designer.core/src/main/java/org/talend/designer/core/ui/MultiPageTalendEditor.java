@@ -114,6 +114,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
      * @param label
      */
     public void setName() {
+        if (getEditorInput() == null) {
+            return;
+        }
         super.setName();
         String label = getEditorInput().getName();
         IProcess process2 = this.getProcess();
@@ -136,7 +139,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             title = title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
         }
         if (revisionNumStr != null) {
-            setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr); 
+            setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr);
         } else {
             setPartName(Messages.getString(title, label, jobVersion)); //$NON-NLS-1$
         }

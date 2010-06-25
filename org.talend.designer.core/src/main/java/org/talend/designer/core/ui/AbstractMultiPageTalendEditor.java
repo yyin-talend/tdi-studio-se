@@ -435,6 +435,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void setName() {
+        if (getEditorInput() == null) {
+            return;
+        }
         String label = getEditorInput().getName();
         oldJobName = label;
     }
