@@ -40,8 +40,7 @@ public class ResourceFilenameHelper {
     }
 
     public static IPath getExpectedFilePath(FileName fileName, IPath parentPath, String extension) {
-        String expectedFileName = getExpectedFileName(fileName.getProperty().getLabel(), fileName.getProperty()
-                .getVersion());
+        String expectedFileName = getExpectedFileName(fileName.getProperty().getLabel(), fileName.getProperty().getVersion());
         return parentPath.append(expectedFileName).addFileExtension(extension);
     }
 
@@ -79,6 +78,11 @@ public class ResourceFilenameHelper {
 
     public static boolean mustChangeLabel(FileName fileName) {
         return !fileName.getResourceLabel().equals(fileName.getLastVersionProperty().getLabel());
+    }
+
+    public static boolean hasSameNameButDifferentCase(FileName fileName) {
+        return !fileName.getResourceLabel().equals(fileName.getLastVersionProperty().getLabel())
+                && fileName.getResourceLabel().equalsIgnoreCase(fileName.getLastVersionProperty().getLabel());
     }
 
     /** * */
