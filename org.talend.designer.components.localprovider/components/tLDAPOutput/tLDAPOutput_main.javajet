@@ -108,14 +108,12 @@ imports="
 					  			if (!"REMOVE_ATTRIBUTE".equals(option)) {
 %>
 							    	for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
-							    			javax.naming.directory.Attribute attrForUpate_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=name%>", value_<%=cid%>); 		
-							    			forUpate<%=cid%>.add(attrForUpate_<%=cid%>);
+							    			forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>", value_<%=cid%>));
 							    	}
 <%
   								} else {
 %>
-							  		javax.naming.directory.Attribute attrForUpate_<%=cid%>= new javax.naming.directory.BasicAttribute("<%=name%>");
-							  		forUpate<%=cid%>.add(attrForUpate_<%=cid%>);
+							  		forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>"));
 <%
   								}
   								if ("ADD".equals(option)) {
