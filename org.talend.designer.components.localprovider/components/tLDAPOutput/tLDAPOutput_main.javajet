@@ -141,6 +141,9 @@ imports="
 							  		}
 <%
   								}
+%>
+								forUpate<%=cid%>.clear();
+<%
   						}  
 %>
   						ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>,mfItem_<%=cid%>.toArray(new javax.naming.directory.ModificationItem[0]));
