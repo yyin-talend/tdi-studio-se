@@ -11,6 +11,7 @@
     STARTABLE="false"
     HAS_CONDITIONAL_OUTPUTS="false"
     SCHEMA_AUTO_PROPAGATE="false"
+    DATA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
