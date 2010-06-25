@@ -13,13 +13,13 @@
 package org.talend.repository.ui.wizards.metadata.table.database;
 
 import org.eclipse.jface.dialogs.IDialogPage;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
@@ -31,7 +31,7 @@ import org.talend.repository.ui.wizards.metadata.table.composites.StateComposite
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
  * Page allows setting a table.
  */
-public class SelectorTableWizardPage extends WizardPage {
+public class SelectorTableWizardPage extends TemplateWizardPage {
 
     private Composite container;
 
@@ -110,7 +110,7 @@ public class SelectorTableWizardPage extends WizardPage {
         GridData data = new GridData(GridData.FILL_BOTH);
         if (isCreateTemplate) {
             data.horizontalSpan = 2;
-            stateCom = new StateComposite(container, SWT.NONE);
+            stateCom = new StateComposite(container, false, SWT.NONE);
             stateCom.setLayoutData(data);
             stateCom.refreshState("step3");//$NON-NLS-1$
         }
@@ -193,6 +193,15 @@ public class SelectorTableWizardPage extends WizardPage {
 
     public void restoreCheckItems() {
         tableForm.restoreCheckItems();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.metadata.table.database.TemplateWizardPage#getConnection()
+     */
+    public Connection getConnection() {
+        return getDatabaseConnection();
     }
 
     // public IMetadataConnection getMetadataConnection() {

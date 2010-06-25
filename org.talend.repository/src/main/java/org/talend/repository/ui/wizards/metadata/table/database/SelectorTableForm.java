@@ -308,12 +308,12 @@ public class SelectorTableForm extends AbstractForm {
         tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
         tableName.setWidth(columnWidth1);
 
-        tableName.addSelectionListener(getColumnSelectionListener());
+        // tableName.addSelectionListener(getColumnSelectionListener());
         TableColumn tableType = new TableColumn(table, SWT.NONE);
         tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
         tableType.setWidth(columnWidth2);
 
-        tableType.addSelectionListener(getColumnSelectionListener());
+        // tableType.addSelectionListener(getColumnSelectionListener());
         TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
         nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
         nbColumns.setWidth(columnWidth3);
@@ -324,7 +324,6 @@ public class SelectorTableForm extends AbstractForm {
 
         scrolledCompositeFileViewer.setContent(table);
         scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
     }
 
     private final Collator col = Collator.getInstance(Locale.getDefault());

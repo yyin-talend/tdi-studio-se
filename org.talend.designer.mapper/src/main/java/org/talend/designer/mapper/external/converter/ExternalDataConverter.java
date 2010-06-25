@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.external.connection.IOConnection;
@@ -300,13 +302,46 @@ public class ExternalDataConverter {
         ExternalMapperTable externalMapperTable = new ExternalMapperTable();
         fillExternalTable(outtable, externalMapperTable);
         ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
+        List<IMetadataColumn> columnList = null;
+        if (mapperManager != null && mapperManager.getAbstractMapComponent() != null) {
+            List<? extends IConnection> connList = mapperManager.getAbstractMapComponent().getOutgoingConnections();
+            if (connList != null && connList.size() >= 1) {
+                List<IMetadataTable> metaList = connList.get(0).getTarget().getMetadataList();
+                if (metaList != null && metaList.size() >= 1) {
+                    columnList = metaList.get(0).getListColumns();
+                }
+            }
+        }
+
         for (ITableEntry dataMapTableEntry : intable.getColumnEntries()) {
-            ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
-            externalMapperTableEntry.setExpression(intable.getName() + "." + dataMapTableEntry.getName());
-            externalMapperTableEntry.setName(dataMapTableEntry.getName());
-            externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn().getTalendType());
-            externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn().isNullable());
-            perTableEntries.add(externalMapperTableEntry);
+            if (columnList != null) {
+                boolean find = false;
+                for (IMetadataColumn column : columnList) {
+                    if (dataMapTableEntry.getName().equals(column.getLabel())) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) {
+                    ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
+                    externalMapperTableEntry.setExpression(intable.getName() + "." + dataMapTableEntry.getName());
+                    externalMapperTableEntry.setName(dataMapTableEntry.getName());
+                    externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                            .getTalendType());
+                    externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                            .isNullable());
+                    perTableEntries.add(externalMapperTableEntry);
+                }
+            } else {
+                ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
+                externalMapperTableEntry.setExpression(intable.getName() + "." + dataMapTableEntry.getName());
+                externalMapperTableEntry.setName(dataMapTableEntry.getName());
+                externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                        .getTalendType());
+                externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                        .isNullable());
+                perTableEntries.add(externalMapperTableEntry);
+            }
         }
         externalMapperTable.setMetadataTableEntries(perTableEntries);
         // }

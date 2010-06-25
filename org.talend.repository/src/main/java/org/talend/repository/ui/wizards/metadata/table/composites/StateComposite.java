@@ -53,20 +53,24 @@ public class StateComposite extends Composite {
 
     private boolean istarget;
 
+    private boolean isJoblet;
+
     /**
      * DOC hwang StateComposite constructor comment.
      * 
      * @param parent
      * @param style
      */
-    public StateComposite(Composite parent, int style) {
+    public StateComposite(Composite parent, boolean isJoblet, int style) {
         super(parent, style);
+        this.isJoblet = isJoblet;
         createControls();
     }
 
-    public StateComposite(Composite parent, int style, boolean istarget) {
+    public StateComposite(Composite parent, int style, boolean istarget, boolean isJoblet) {
         super(parent, style);
         this.istarget = istarget;
+        this.isJoblet = isJoblet;
         createControls();
     }
 
@@ -83,8 +87,10 @@ public class StateComposite extends Composite {
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.horizontalSpan = 5;
         Font font = new Font(Display.getDefault(), "", 9, SWT.NORMAL); //$NON-NLS-1$
+        int i = 1;
         num1 = new Label(checkName, SWT.NONE);
-        num1.setText("1.");//$NON-NLS-1$
+        num1.setText(i + ".");//$NON-NLS-1$
+        i++;
         num1.setLayoutData(data1);
         step1 = new StyledText(checkName, SWT.NONE);
         step1.setEnabled(false);
@@ -93,18 +99,22 @@ public class StateComposite extends Composite {
         step1.setBackground(new Color(Display.getDefault(), new RGB(238, 234, 221)));
         step1.setFont(font);
 
-        num2 = new Label(checkName, SWT.NONE);
-        num2.setText("2.");//$NON-NLS-1$
-        num2.setLayoutData(data1);
-        step2 = new StyledText(checkName, SWT.NONE);
-        step2.setEnabled(false);
-        step2.setText(Messages.getString("StateComposite.FLL_DB_INFOR")); //$NON-NLS-1$
-        step2.setLayoutData(data);
-        step2.setBackground(new Color(Display.getDefault(), new RGB(238, 234, 221)));
-        step2.setFont(font);
+        if (!isJoblet) {
+            num2 = new Label(checkName, SWT.NONE);
+            num2.setText(i + ".");//$NON-NLS-1$
+            i++;
+            num2.setLayoutData(data1);
+            step2 = new StyledText(checkName, SWT.NONE);
+            step2.setEnabled(false);
+            step2.setText(Messages.getString("StateComposite.FLL_DB_INFOR")); //$NON-NLS-1$
+            step2.setLayoutData(data);
+            step2.setBackground(new Color(Display.getDefault(), new RGB(238, 234, 221)));
+            step2.setFont(font);
+        }
 
         num3 = new Label(checkName, SWT.NONE);
-        num3.setText("3.");//$NON-NLS-1$
+        num3.setText(i + ".");//$NON-NLS-1$
+        i++;
         num3.setLayoutData(data1);
         step3 = new StyledText(checkName, SWT.NONE);
         step3.setEnabled(false);
@@ -114,7 +124,8 @@ public class StateComposite extends Composite {
         step3.setFont(font);
 
         num4 = new Label(checkName, SWT.NONE);
-        num4.setText("4.");//$NON-NLS-1$
+        num4.setText(i + ".");//$NON-NLS-1$
+        i++;
         num4.setLayoutData(data1);
         step4 = new StyledText(checkName, SWT.NONE);
         step4.setEnabled(false);
@@ -124,7 +135,8 @@ public class StateComposite extends Composite {
         step4.setFont(font);
 
         num5 = new Label(checkName, SWT.NONE);
-        num5.setText("5.");//$NON-NLS-1$
+        num5.setText(i + ".");//$NON-NLS-1$
+        i++;
         num5.setLayoutData(data1);
         step5 = new StyledText(checkName, SWT.NONE);
         step5.setEnabled(false);
@@ -195,7 +207,7 @@ public class StateComposite extends Composite {
             style.length = step1.getCharCount();// 17
             style.underline = true;
             step1.setStyleRange(style);
-        } else if (state.equals("step2")) {//$NON-NLS-1$
+        } else if (step2 != null && state.equals("step2")) {//$NON-NLS-1$
             step2.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
             StyleRange style = new StyleRange();
             style.start = 0;
