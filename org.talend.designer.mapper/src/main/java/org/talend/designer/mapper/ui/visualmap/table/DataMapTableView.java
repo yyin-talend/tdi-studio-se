@@ -476,6 +476,8 @@ public abstract class DataMapTableView extends Composite {
 
     protected void initMapSettingColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
 
+        final Color color = new Color(Display.getDefault(), 238, 238, 0);
+
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Property");
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
@@ -494,8 +496,10 @@ public abstract class DataMapTableView extends Composite {
         column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
 
             public Color getBackgroundColor(GlobalMapEntry bean) {
-
-                return getColumnBgColor(bean);
+                if (needColumnBgColor(bean)) {
+                    return color;
+                }
+                return null;
             }
 
             public Color getForegroundColor(GlobalMapEntry bean) {
@@ -519,8 +523,10 @@ public abstract class DataMapTableView extends Composite {
         column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
 
             public Color getBackgroundColor(GlobalMapEntry bean) {
-
-                return getColumnBgColor(bean);
+                if (needColumnBgColor(bean)) {
+                    return color;
+                }
+                return null;
             }
 
             public Color getForegroundColor(GlobalMapEntry bean) {
@@ -535,8 +541,8 @@ public abstract class DataMapTableView extends Composite {
         return null;
     }
 
-    protected Color getColumnBgColor(GlobalMapEntry bean) {
-        return null;
+    protected boolean needColumnBgColor(GlobalMapEntry bean) {
+        return false;
     }
 
     // only called when open the tmap
@@ -2677,7 +2683,7 @@ public abstract class DataMapTableView extends Composite {
 
     }
 
-    public static boolean isFilterEqualsToDefault(String value) {
+    public boolean isFilterEqualsToDefault(String value) {
         if (DEFAULT_POST_MATCHING_EXPRESSION_FILTER.equals(value) || DEFAULT_OUT_EXPRESSION_FILTER.equals(value)
                 || DEFAULT_EXPRESSION_FILTER.equals(value)) {
             return true;

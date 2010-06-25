@@ -320,12 +320,12 @@ public class InputDataMapTableView extends DataMapTableView {
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
     }
 
-    protected Color getColumnBgColor(GlobalMapEntry bean) {
+    protected boolean needColumnBgColor(GlobalMapEntry bean) {
         InputTable inputTable = (InputTable) bean.getParent();
 
         if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
             if (!mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(inputTable.getLookupMode())) {
-                return MAP_SETTING_COLOR;
+                return true;
             }
         } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
             IUIMatchingMode matchingMode = inputTable.getMatchingMode();
@@ -334,22 +334,22 @@ public class InputDataMapTableView extends DataMapTableView {
                 IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
                 if (modes.length == 2) {
                     if (!modes[0].equals(matchingMode) && !modes[1].equals(matchingMode)) {
-                        return MAP_SETTING_COLOR;
+                        return true;
                     }
 
                 }
             }
         } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
             if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(inputTable.isInnerJoin())) {
-                return MAP_SETTING_COLOR;
+                return true;
             }
 
         } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
             if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(inputTable.isPersistent())) {
-                return MAP_SETTING_COLOR;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     protected void initCondensedItemImage() {

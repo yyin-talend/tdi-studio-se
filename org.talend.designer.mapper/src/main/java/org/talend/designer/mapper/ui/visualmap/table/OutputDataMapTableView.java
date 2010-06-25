@@ -183,19 +183,19 @@ public class OutputDataMapTableView extends DataMapTableView {
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
     }
 
-    protected Color getColumnBgColor(GlobalMapEntry bean) {
+    protected boolean needColumnBgColor(GlobalMapEntry bean) {
         OutputTable outputTable = (OutputTable) bean.getParent();
 
         if (OUTPUT_REJECT.equals(bean.getName())) {
             if (!mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(outputTable.isReject())) {
-                return MAP_SETTING_COLOR;
+                return true;
             }
         } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
             if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(outputTable.isRejectInnerJoin())) {
-                return MAP_SETTING_COLOR;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     protected void initCondensedItemImage() {

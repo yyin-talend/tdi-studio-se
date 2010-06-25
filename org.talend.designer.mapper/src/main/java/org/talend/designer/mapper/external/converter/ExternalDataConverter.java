@@ -41,7 +41,6 @@ import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
-import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 
 /**
  * Convert external data to internal data and conversely.
@@ -58,6 +57,12 @@ public class ExternalDataConverter {
     private ArrayList<ExternalMapperTable> varsTables;
 
     private MapperManager mapperManager;
+
+    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>"; //$NON-NLS-1$ // DO NOT TRANSLATE IT !
+
+    public static final String DEFAULT_POST_MATCHING_EXPRESSION_FILTER = "";
+
+    public static final String DEFAULT_OUT_EXPRESSION_FILTER = "";
 
     /**
      * DOC amaumont ExternalDataConverter constructor comment.
@@ -431,8 +436,8 @@ public class ExternalDataConverter {
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
         externalMapperTable.setActivateCondensedTool(table.isActivateCondensedTool());
         externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null
-                && DataMapTableView.isFilterEqualsToDefault(table.getExpressionFilter().getExpression()) ? null : table
-                .getExpressionFilter().getExpression());
+                && isFilterEqualsToDefault(table.getExpressionFilter().getExpression()) ? null : table.getExpressionFilter()
+                .getExpression());
         if (mapperManager.isAdvancedMap()) {
             externalMapperTable.setConstraintTableEntries(null);
         } else {
@@ -447,6 +452,14 @@ public class ExternalDataConverter {
         }
 
         outputTables.add(externalMapperTable);
+    }
+
+    public boolean isFilterEqualsToDefault(String value) {
+        if (DEFAULT_POST_MATCHING_EXPRESSION_FILTER.equals(value) || DEFAULT_OUT_EXPRESSION_FILTER.equals(value)
+                || DEFAULT_EXPRESSION_FILTER.equals(value)) {
+            return true;
+        }
+        return false;
     }
 
     /**
