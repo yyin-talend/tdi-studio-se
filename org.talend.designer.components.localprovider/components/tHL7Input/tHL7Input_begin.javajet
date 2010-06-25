@@ -245,7 +245,7 @@ for(IConnection conn : connections){
 	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
 		Map<String, String> mapping = null;
 		for(Map<String, String> schemaMap : schemas){
-			System.out.println("schema:"+schemaMap.get("SCHEMA")+"\tconn:"+conn.getName());
+//			System.out.println("schema:"+schemaMap.get("SCHEMA")+"\tconn:"+conn.getName());
 			if(conn.getName().contains(schemaMap.get("SCHEMA"))){
 				mapping = schemaMap;
 				break;
