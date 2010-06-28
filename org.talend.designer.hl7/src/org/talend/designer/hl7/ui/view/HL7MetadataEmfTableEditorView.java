@@ -14,6 +14,7 @@ package org.talend.designer.hl7.ui.view;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
@@ -31,6 +32,8 @@ import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.TypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
 import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
+import org.talend.designer.hl7.model.IModel;
+import org.talend.designer.hl7.ui.HL7MultiSchemaUI;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -362,6 +365,16 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
 
             public void set(MetadataColumn bean, String value) {
                 bean.setOriginalField(value);
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    linker.getManager().updateRelationMapping(key, bean, false);
+                    // if (columns.indexOf(bean) > 0) {
+                    // columns.get(columns.indexOf(bean)).setOriginalField(value);
+                    // }
+                }
             }
 
         };

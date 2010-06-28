@@ -118,6 +118,7 @@ public class HL7Manager {
                     for (MetadataColumn column : schema) {
                         if (column.getLabel().equals(modifiedColumn.getLabel())) {
                             schema.remove(column);
+                            schema.add(modifiedColumn);
                             break;
                         }
                     }
