@@ -1401,7 +1401,8 @@ if(columnList != null && columnList.size() > 0) {
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
 	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
-	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>) && schema_<%=cid%>.equalsIgnoreCase(dbSchema_<%=cid%>)) {
+	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>) 
+	                	&& (schema_<%=cid%>.equalsIgnoreCase(dbSchema_<%=cid%>) || dbSchema_<%=cid%>.trim().length() == 0)) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
