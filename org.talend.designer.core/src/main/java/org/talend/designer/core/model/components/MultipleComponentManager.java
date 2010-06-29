@@ -28,21 +28,27 @@ import org.talend.core.model.components.IMultipleComponentParameter;
  */
 public class MultipleComponentManager implements IMultipleComponentManager {
 
-    IMultipleComponentItem input;
+    private IMultipleComponentItem input;
 
-    IMultipleComponentItem output;
+    private IMultipleComponentItem output;
 
-    String inputName;
+    private String inputName;
 
-    String outputName;
+    private String outputName;
 
-    String connector = null;
+    private String connector = null;
 
-    boolean existsLinkTo = false;
+    private boolean existsLinkTo = false;
 
-    List<IMultipleComponentItem> itemList = new ArrayList<IMultipleComponentItem>();
+    private List<IMultipleComponentItem> itemList = new ArrayList<IMultipleComponentItem>();
 
-    List<IMultipleComponentParameter> paramList = new ArrayList<IMultipleComponentParameter>();
+    private List<IMultipleComponentParameter> paramList = new ArrayList<IMultipleComponentParameter>();
+
+    private boolean lookupMode;
+
+    public MultipleComponentManager(boolean lookupMode) {
+        this.lookupMode = lookupMode;
+    }
 
     public MultipleComponentManager(String inputName, String outputName) {
         this.inputName = inputName;
@@ -153,6 +159,15 @@ public class MultipleComponentManager implements IMultipleComponentManager {
 
     public void setExistsLinkTo(boolean flag) {
         this.existsLinkTo = flag;
+    }
+
+    /**
+     * Getter for lookupMode.
+     * 
+     * @return the lookupMode
+     */
+    public boolean isLookupMode() {
+        return this.lookupMode;
     }
 
 }

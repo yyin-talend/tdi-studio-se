@@ -2183,12 +2183,15 @@ public class EmfComponent implements IComponent {
             input = templatesType.getINPUT();
             output = templatesType.getOUTPUT();
             connector = templatesType.getCONNECTOR();
+            boolean lookupMode = templatesType.isLOOKUP();
 
-            if (input == null || output == null) {
+            if (!lookupMode && (input == null || output == null)) {
                 continue;
             }
             IMultipleComponentManager multipleComponentManager = null;
-            if (connector == null || connector.equals("")) { //$NON-NLS-1$
+            if (lookupMode) {
+                multipleComponentManager = new MultipleComponentManager(lookupMode);
+            } else if (connector == null || connector.equals("")) { //$NON-NLS-1$
                 multipleComponentManager = new MultipleComponentManager(input, output);
             } else {
                 multipleComponentManager = new MultipleComponentManager(input, output, connector);
@@ -2225,12 +2228,20 @@ public class EmfComponent implements IComponent {
                     source = templateParamType.getSOURCE();
                     target = templateParamType.getTARGET();
 
+                    if (lookupMode) {
+                        target = "LOOKUP." + target;
+                    }
+
                     multipleComponentManager.addParam(source, target);
                 }
                 if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
                     String value, target;
                     value = templateParamType.getVALUE();
                     target = templateParamType.getTARGET();
+
+                    if (lookupMode) {
+                        target = "LOOKUP." + target;
+                    }
 
                     multipleComponentManager.addValue(target, value);
                 }

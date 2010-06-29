@@ -452,6 +452,10 @@ public class DataProcess {
         dataNodeList.remove(previousNode);
 
         for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
+            if (multipleComponentManager.isLookupMode()) {
+                // setup are only for hash component used in lookup
+                continue;
+            }
 
             Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
             prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
@@ -952,6 +956,19 @@ public class DataProcess {
                 hashNode.setIncomingConnections(incomingConnections);
                 hashNode.setOutgoingConnections(outgoingConnections);
                 // hashNode.setVirtualGenerateNode(true);
+
+                if (hashComponent != null) {
+                    List<IMultipleComponentManager> mcms = connection.getTarget().getComponent().getMultipleComponentManagers();
+                    for (IMultipleComponentManager mcm : mcms) {
+                        if (mcm.isLookupMode()) {
+                            Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
+                            mcm.getItemList().clear();
+                            mcm.addItem("LOOKUP", hashComponent);
+                            itemsMap.put(mcm.getItemList().get(0), hashNode);
+                            setMultipleComponentParameters(mcm, itemsMap, connection.getTarget());
+                        }
+                    }
+                }
 
                 addDataNode(hashNode);
 
