@@ -225,13 +225,13 @@ public class OrderedBeanLookupMatchAll<B extends Comparable<B> & IPersistableLoo
      * 
      * @throws IOException
      */
-    public void close() throws IOException {
-        if (keysObjectInStream != null) {
-            keysObjectInStream.close();
-        }
-        if (valuesDataInStream != null) {
-            valuesDataInStream.close();
-        }
-    }
+//    public void close() throws IOException {
+//        if (keysObjectInStream != null) {
+//            keysObjectInStream.close();
+//        }
+//        if (valuesDataInStream != null) {
+//            valuesDataInStream.close();
+//        }
+//    }
 
 }

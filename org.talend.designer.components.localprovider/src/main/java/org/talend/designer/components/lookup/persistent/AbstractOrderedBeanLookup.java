@@ -214,6 +214,9 @@ public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersi
         if (valuesDataInStream != null) {
             valuesObjectInStream.close();
         }
+        if (valuesDataInStream != null) {
+            valuesDataInStream.close();
+        }
     }
 
 }
