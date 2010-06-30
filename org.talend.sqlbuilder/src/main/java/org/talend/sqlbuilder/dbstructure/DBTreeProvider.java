@@ -43,8 +43,9 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -291,11 +292,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             isCleared = true;
         }
         for (Object obj : fromModel.getMembers()) {
-            RepositoryViewObject obj2 = (RepositoryViewObject) obj;
+            RepositoryObject obj2 = (RepositoryObject) obj;
             if (!connectionParameters.getRepositoryId().equals(obj2.getProperty().getId())) {
                 continue;
             }
-            IRepositoryViewObject repositoryObject = obj2.cloneNewObject();
+            IRepositoryObject repositoryObject = obj2.cloneNewObject();
             maps.put((obj2).getId(), obj2);
             addNode(parent, repositoryObject, false, null);
         }
