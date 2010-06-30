@@ -19,6 +19,13 @@ imports="
 
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	
+		private INode node = null;
+		
+		public void beforeComponentProcess(INode node){
+	    	super.beforeComponentProcess(node);
+	    	this.node = node;
+	    }
+	
 		public void setURL(INode node) {
 			
 			String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
@@ -133,11 +140,36 @@ imports="
 	    }
 
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
+	   		boolean isConvert = ("true").equals(ElementParameterParser.getValue(node, "__IS_CONVERT_XMLTYPE__"));    
+			List<Map<String, String>> convertColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONVERT_XMLTYPE__");  
+	   		
 			if(("Object").equals(typeToGenerate)){
+			
+				boolean needConvert = false;
+	   			String convertToJavaType = "";
+				if (isConvert && convertColumns.size() > 0) {
+					for(java.util.Map<String, String> convertcolumn : convertColumns) {
+						if (convertcolumn.get("REFCOL").equals(column.getLabel()) ) {
+							needConvert = true;
+							convertToJavaType = convertcolumn.get("CONVETTYPE");
+						}
+					}
+				} 
+				
 %>
 				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
 				if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
+<%
+				if (needConvert && "String".equals(convertToJavaType)) {
+%>
+					<%=firstConnName%>.<%=column.getLabel()%> = oracle.xdb.XMLType.createXML((oracle.sql.OPAQUE) tmpObj_<%=currentColNo%>_<%=cid %>).getStringVal();
+<%
+				} else {
+%>
 					<%=firstConnName%>.<%=column.getLabel()%> = tmpObj_<%=currentColNo%>_<%=cid %>;
+<%
+				}
+%>
 				} else {
 <%
 					if(column.isNullable()) {

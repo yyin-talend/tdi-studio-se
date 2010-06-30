@@ -65,6 +65,14 @@ if(columnList != null && columnList.size() > 0) {
         }
     }    
 }
+
+boolean xmlTypeExist = false;
+for(Column column : stmtStructure) {
+	if ("XMLTYPE".equals(column.getColumn().getType())) {
+		column.setSqlStmt("XMLType(?)");
+		xmlTypeExist = true;
+	}
+}
 %>
 
 <%
@@ -328,6 +336,44 @@ if(columnList != null && columnList.size()>0) {
 	   <%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
 	   <%
     }
+%>
+<%
+	if (xmlTypeExist) {
+%>
+	class XMLTypeUtil_<%=cid%> {
+		public oracle.sql.CLOB getCLOB(String xmlData, java.sql.Connection conn) throws java.sql.SQLException{
+		  oracle.sql.CLOB tempClob = null;
+		  try{
+		    // If the temporary CLOB has not yet been created, create one
+		    tempClob = oracle.sql.CLOB.createTemporary(conn, true, oracle.sql.CLOB.DURATION_SESSION); 
+		 
+		    // Open the temporary CLOB in readwrite mode, to enable writing
+		    tempClob.open(oracle.sql.CLOB.MODE_READWRITE); 
+		    // Get the output stream to write
+		    java.io.Writer tempClobWriter = tempClob.getCharacterOutputStream(); 
+		    // Write the data into the temporary CLOB
+		    tempClobWriter.write(xmlData); 
+		 
+		    // Flush and close the stream
+		    tempClobWriter.flush();
+		    tempClobWriter.close(); 
+		 
+		    // Close the temporary CLOB 
+		    tempClob.close();    
+		  } catch( java.sql.SQLException sqlexp){
+		    tempClob.freeTemporary(); 
+		    sqlexp.printStackTrace();
+		  } catch(Exception exp){
+		    tempClob.freeTemporary(); 
+		    exp.printStackTrace();
+		  }
+		  return tempClob; 
+		}
+	}
+	XMLTypeUtil_<%=cid%> xmlTypeUtil_<%=cid%> = null;
+	xmlTypeUtil_<%=cid%> = new XMLTypeUtil_<%=cid%>();
+<%
+	}
 }
 %>
 
