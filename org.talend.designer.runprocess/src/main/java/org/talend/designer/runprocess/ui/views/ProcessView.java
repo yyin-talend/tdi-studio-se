@@ -14,18 +14,33 @@ package org.talend.designer.runprocess.ui.views;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -43,12 +58,24 @@ import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProv
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
+import org.talend.core.properties.tab.HorizontalTabFactory;
+import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.designer.core.ui.views.properties.EElementType;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.ui.AdvanceSettingComposite;
+import org.talend.designer.runprocess.ui.TraceDebugProcessComposite;
 import org.talend.designer.runprocess.ui.ProcessComposite;
+import org.talend.designer.runprocess.ui.ProcessContextComposite;
+import org.talend.designer.runprocess.ui.ProcessManager;
+import org.talend.designer.runprocess.ui.TargetExecComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 
 /**
@@ -69,21 +96,55 @@ public class ProcessView extends ViewPart {
 
     public static final int DEBUG_ID = 24;
 
+    public static final int TRACEDEBUG_ID = 25;
+
     private static Logger log = Logger.getLogger(ProcessView.class);
 
     private Label processNameLab;
 
+    private IDynamicProperty dc = null;
+
     private ProcessComposite processComposite;
+
+    private TraceDebugProcessComposite debugTisProcessComposite;
+
+    private AdvanceSettingComposite advanceComposite;
 
     private PropertyChangeListener contextManagerListener;
 
     private ClearPerformanceAction clearPerfAction;
 
+    private HorizontalTabFactory tabFactory = null;
+
+    private TalendPropertyTabDescriptor currentSelectedTab;
+
+    private Element element;
+
+    private Button moveButton;
+
+    private ProcessManager rubjobManager;
+
     public RunAction runAction;
+
+    private SashForm sash;
+
+    private boolean selectedPrimary = true;
+
+    Composite compositeall;
 
     private IProcessViewHelper processViewHelper;
 
+    private static RunProcessContext processContext;
+
+    private IDebugViewHelper debugViewHelper;
+
     private boolean canRun = true;
+
+    private ProcessContextComposite contextComposite;
+
+    private Composite parent;
+
+    private static TargetExecComposite targetComposite;
 
     public static ProcessView findProcessView() {
         try {
@@ -102,13 +163,23 @@ public class ProcessView extends ViewPart {
         super();
         IExtensionPointLimiter extensionPointLimiter = new ExtensionPointLimiterImpl(
                 "org.talend.designer.runprocess.runprocess_view_helper", "runprocess_view_helper"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        IExtensionPointLimiter debugextensionPointLimiter = new ExtensionPointLimiterImpl(
+                "org.talend.designer.runprocess.debugprocess_view_helper", "debugprocess_view_helper");
+        IDebugViewHelper debugViewHelperPrm = ExtensionImplementationProvider.getSingleInstance(debugextensionPointLimiter, null);
         IProcessViewHelper processViewHelperPrm = ExtensionImplementationProvider.getSingleInstance(extensionPointLimiter, null);
+
         if (processViewHelperPrm == null) {
             processViewHelperPrm = new DefaultProcessViewHelper();
         }
-
+        tabFactory = new HorizontalTabFactory();
         setProcessViewHelper(processViewHelperPrm);
+
+        if (debugViewHelperPrm != null) {
+            debugViewHelper = debugViewHelperPrm;
+        } else {
+            debugViewHelper = new DefaultDebugviewHelper();
+        }
+        rubjobManager = ProcessManager.getInstance();
     }
 
     /*
@@ -118,32 +189,179 @@ public class ProcessView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        final Composite container = new Composite(parent, SWT.NONE);
+        this.parent = parent;
+        parent.setLayout(new FillLayout());
+
+        sash = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
+        sash.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        GridLayout layout = new GridLayout();
+        sash.setLayout(layout);
+        Composite left = new Composite(sash, SWT.NONE);
+
+        left.setLayout(new FillLayout());
+
+        Composite right = new Composite(sash, SWT.NONE);
+        right.setLayout(new FormLayout());
+        FormData layouDatag = new FormData();
+        layouDatag.left = new FormAttachment(0, 0);
+        layouDatag.width = 35;
+        layouDatag.top = new FormAttachment(0, 0);
+        layouDatag.bottom = new FormAttachment(100, 0);
+        final Composite buttonComposite = new Composite(right, SWT.ERROR);
+        buttonComposite.setLayoutData(layouDatag);
+        buttonComposite.setLayout(new GridLayout());
+
+        Composite cotextCom = new Composite(right, SWT.NONE);
+        layouDatag = new FormData();
+        layouDatag.left = new FormAttachment(0, 35);
+        layouDatag.right = new FormAttachment(100, 0);
+        layouDatag.top = new FormAttachment(0, 0);
+        layouDatag.bottom = new FormAttachment(100, 0);
+        cotextCom.setLayoutData(layouDatag);
+        cotextCom.setLayout(new GridLayout());
+
+        tabFactory.initComposite(left);
+        moveButton = new Button(buttonComposite, SWT.PUSH);
+        moveButton.setText(">>"); //$NON-NLS-1$
+        moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext"));
+        final GridData layoutData = new GridData();
+        layoutData.verticalAlignment = GridData.CENTER;
+        layoutData.horizontalAlignment = GridData.CENTER;
+        layoutData.grabExcessHorizontalSpace = true;
+        layoutData.grabExcessVerticalSpace = true;
+        moveButton.setLayoutData(layoutData);
+        addListeners();
+        sash.setSashWidth(3);
+        sash.setWeights(new int[] { 18, 5 });
+
+        contextComposite = new ProcessContextComposite(cotextCom, SWT.NONE);
+        contextComposite.setBackground(right.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        // processComposite = new ProcessComposite(tabFactory.getTabComposite(), SWT.H_SCROLL | SWT.V_SCROLL |
+        // SWT.NO_FOCUS);
+        // dc = processComposite;
+        // createBasicComposite(tabFactory.getTabComposite(), element, null);
+        tabFactory.getTabComposite().layout();
+        tabFactory.getTabbedPropertyComposite().getComposite().dispose();
+        tabFactory.getTabbedPropertyComposite().pack();
+        tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
+
+                if (descriptor == null) {
+                    return;
+                }
+
+                if (currentSelectedTab != null && (currentSelectedTab.getCategory() != descriptor.getCategory())) {
+                    for (Control curControl : tabFactory.getTabComposite().getChildren()) {
+                        curControl.dispose();
+                    }
+                }
+
+                if (currentSelectedTab == null || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
+
+                    currentSelectedTab = descriptor;
+                    createDynamicComposite(tabFactory.getTabComposite(), (Element) descriptor.getData(), descriptor.getCategory());
+                    selectedPrimary = false;
+                }
+            }
+        });
+        setElement();
+        rubjobManager.setProcessShell(getSite().getShell());
+    }
+
+    /**
+     * DOC Administrator Comment method "addListeners".
+     */
+    private void addListeners() {
+        // TODO Auto-generated method stub
+        moveButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(final SelectionEvent e) {
+                if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
+                    sash.setWeights(new int[] { 23, 1 });
+                    moveButton.setToolTipText(Messages.getString("ProcessComposite.showContext"));
+                    moveButton.setText("<<");
+                } else if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
+                    sash.setWeights(new int[] { 18, 5 });
+                    moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext"));//$NON-NLS-1$
+                    moveButton.setText(">>");
+                }
+            }
+        });
+    }
+
+    protected Composite createTargetExecutionComposite(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        layout.verticalSpacing = 2;
-        container.setLayout(layout);
+        composite.setLayout(layout);
 
-        processNameLab = new Label(container, SWT.NULL);
-        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        data.verticalIndent = 2;
-        // data.horizontalAlignment = SWT.CENTER;
-        processNameLab.setLayoutData(data);
-        processNameLab.setAlignment(SWT.CENTER);
-        FontData[] fds = processNameLab.getFont().getFontData();
+        StyledText text = new StyledText(composite, SWT.NONE);
+        text.setText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable")); //$NON-NLS-1$
+        text.setWordWrap(true);
+        text.setEditable(false);
+        text.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        for (FontData fd : fds) {
-            fd.setHeight(fd.getHeight() + 2);
-            fd.setStyle(fd.getStyle() | SWT.BOLD);
+        return composite;
+    }
+
+    public void createDynamicComposite(Composite parent, Element element, EComponentCategory category) {
+        // jcomposite = this.processViewHelper.getProcessComposite(parent.getShell());
+        if (category == EComponentCategory.BASICRUN) {
+            processComposite = new ProcessComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
+            dc = processComposite;
+            createBasicComposite(parent, element, category);
+        } else if (category == EComponentCategory.DEBUGRUN) {
+            debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
+            dc = debugTisProcessComposite;
+            createBasicComposite(parent, element, category);
+            // dc = new DebugTisProcessComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
+        } else if (category == EComponentCategory.ADVANCESETTING) {
+            advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
+            dc = advanceComposite;
+            createBasicComposite(parent, element, category);
+        } else if (category == EComponentCategory.TARGET) {
+            targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
+            dc = targetComposite;
+            createBasicComposite(parent, element, category);
         }
+        if (dc != null) {
+            dc.refresh();
+        }
+    }
 
-        Font titleFont = new Font(processNameLab.getDisplay(), fds);
-        processNameLab.setFont(titleFont);
-        processNameLab.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
+    public Composite createBasicComposite(Composite parent, Element element, EComponentCategory category) {
+        // final Composite container = new Composite(parent, SWT.NONE);
+        // // GridLayout layout = new GridLayout();
+        // // layout.marginHeight = 0;
+        // // layout.marginWidth = 0;
+        // // layout.verticalSpacing = 2;
+        // // container.setLayout(layout);
+        //
+        // processNameLab = new Label(container, SWT.NULL);
+        // GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        // data.verticalIndent = 2;
+        // // data.horizontalAlignment = SWT.CENTER;
+        // processNameLab.setLayoutData(data);
+        // processNameLab.setAlignment(SWT.CENTER);
+        // FontData[] fds = processNameLab.getFont().getFontData();
+        //
+        // for (FontData fd : fds) {
+        // fd.setHeight(fd.getHeight() + 2);
+        // fd.setStyle(fd.getStyle() | SWT.BOLD);
+        // }
+        //
+        // Font titleFont = new Font(processNameLab.getDisplay(), fds);
+        // processNameLab.setFont(titleFont);
+        // processNameLab.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
 
-        processComposite = this.processViewHelper.getProcessComposite(container);
-        processComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // processComposite = this.processViewHelper.getProcessComposite(parent);
+        // processComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // fillActionBars();
 
@@ -151,6 +369,7 @@ public class ProcessView extends ViewPart {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
+                    // rubjobManager.setBooleanTrace(false);
                     runningProcessChanged();
                 }
             }
@@ -196,11 +415,69 @@ public class ProcessView extends ViewPart {
             }
         };
 
-        addListenerOnChildren(container, fl);
+        addListenerOnChildren(parent, fl);
+        return parent;
     }
 
     public ProcessComposite getProcessComposite() {
         return processComposite;
+    }
+
+    public void setElement() {
+        EComponentCategory[] categories = getCategories();
+        final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
+        for (EComponentCategory category : categories) {
+            TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
+            // d.setData(data);
+            descriptors.add(d);
+        }
+        tabFactory.setInput(descriptors);
+        tabFactory.setSelection(new IStructuredSelection() {
+
+            public Object getFirstElement() {
+                return null;
+            }
+
+            public Iterator iterator() {
+                return null;
+            }
+
+            public int size() {
+                return 0;
+            }
+
+            public Object[] toArray() {
+                return null;
+            }
+
+            public List toList() {
+                List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
+
+                if (descriptors.size() > 0) {
+                    if (currentSelectedTab != null) {
+                        for (TalendPropertyTabDescriptor ds : descriptors) {
+                            if (ds.getCategory() == currentSelectedTab.getCategory()) {
+                                d.add(ds);
+                                return d;
+                            }
+                        }
+                    }
+                    d.add(descriptors.get(0));
+                }
+                return d;
+            }
+
+            public boolean isEmpty() {
+                return false;
+            }
+
+        });
+    }
+
+    private EComponentCategory[] getCategories() {
+        EComponentCategory[] categories = EElementType.RUN_PROCESS.getCategories();
+        final List<EComponentCategory> list = new ArrayList<EComponentCategory>(Arrays.asList(categories));
+        return categories;
     }
 
     private void addListenerOnChildren(Control parent, FocusListener focusListener) {
@@ -232,8 +509,8 @@ public class ProcessView extends ViewPart {
             RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(contextManagerListener);
             contextManagerListener = null;
         }
-        processComposite.dispose();
-        processComposite = null;
+        // processComposite.dispose();
+        // processComposite = null;
         super.dispose();
     }
 
@@ -244,7 +521,9 @@ public class ProcessView extends ViewPart {
      */
     @Override
     public void setFocus() {
-        processComposite.setFocus();
+        this.parent.setFocus();
+        // selectTab(EComponentCategory.BASICRUN);
+        // processComposite.setFocus();
 
         // IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
         // IContextService.class);
@@ -257,9 +536,40 @@ public class ProcessView extends ViewPart {
 
     public void refresh() {
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        boolean disableAll = false;
+        if (activeContext != null) {
+            disableAll = activeContext.getProcess().disableRunJobView();
+        }
+        this.processContext = activeContext;
+        rubjobManager.setProcessContext(processContext);
+        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
+        rubjobManager.setSaveJobBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSAVEBEFORERUN)
+                && !disableAll);
+        rubjobManager.setExecTime(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISEXECTIMERUN)
+                && !disableAll);
+        rubjobManager.setStat(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSTATISTICSRUN)
+                && !disableAll);
+        rubjobManager.setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISCLEARBEFORERUN)
+                && !disableAll);
+        contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
-        processComposite.setProcessContext(activeContext);
+        if (dc == processComposite) {
+            processComposite.setProcessContext(activeContext);
+        }
 
+        if (dc == debugTisProcessComposite) {
+            debugTisProcessComposite.setProcessContext(activeContext);
+            debugTisProcessComposite.setContextComposite(this.contextComposite);
+        }
+        if (dc == advanceComposite) {
+            advanceComposite.setProcessContext(activeContext);
+        }
+        if (dc == targetComposite)
+            targetComposite.setProcessContext(activeContext);
         if (activeContext != null) {
             String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
             if (activeContext.getProcess().disableRunJobView()) { // ?? joblet
@@ -268,10 +578,12 @@ public class ProcessView extends ViewPart {
             jobName = jobName + " " + activeContext.getProcess().getLabel(); //$NON-NLS-1$
             setTitleToolTip(jobName);
             setPartName(Messages.getString("ProcessView.title", jobName)); //$NON-NLS-1$
-            processNameLab.setText(jobName);
+            // processNameLab.setText(jobName);
+            tabFactory.setTitle(jobName, null);
         } else {
             setPartName(Messages.getString("ProcessView.titleEmpty")); //$NON-NLS-1$
-            processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
+            //processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
+            tabFactory.setTitle(Messages.getString("ProcessView.subtitleEmpty"), null);
         }
 
         // processNameLab.getParent().layout(true, true);
@@ -308,11 +620,13 @@ public class ProcessView extends ViewPart {
                 // e.printStackTrace();
                 ExceptionHandler.process(e);
             }
-
-            if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
-                processComposite.errorMessMap.clear();
-                processComposite.setCurRunMode(EXEC_ID);
-                processComposite.exec();
+            selectTab(EComponentCategory.BASICRUN);
+            if (processComposite != null && !processComposite.isDisposed()) {
+                if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
+                    processComposite.errorMessMap.clear();
+                    processComposite.setCurRunMode(EXEC_ID);
+                    processComposite.exec();
+                }
             }
             canRun = true;
         }
@@ -389,4 +703,25 @@ public class ProcessView extends ViewPart {
         this.processViewHelper = processViewHelper;
     }
 
+    public void selectTab(final EComponentCategory category) {
+        if (tabFactory.getSelection().getCategory().equals(category)) {
+            return;
+        }
+
+        List<TalendPropertyTabDescriptor> allTabs = tabFactory.getInput();
+        final List<TalendPropertyTabDescriptor> selection = new ArrayList<TalendPropertyTabDescriptor>();
+        for (TalendPropertyTabDescriptor talendPropertyTabDescriptor : allTabs) {
+            if (talendPropertyTabDescriptor.getCategory().equals(category)) {
+                dc = new ProcessComposite(tabFactory.getTabComposite(), SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
+                createBasicComposite(tabFactory.getTabComposite(), element, null);
+                selection.add(talendPropertyTabDescriptor);
+            }
+        }
+        tabFactory.setSelection(new StructuredSelection() {
+
+            public List toList() {
+                return selection;
+            }
+        });
+    }
 }

@@ -17,10 +17,21 @@
 <%
 if ((trace)&&(node!=null)&&(!node.isThereLinkWithHash())) {
 %>
+
 if(!isChildJob && (Boolean)globalMap.get("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>")){
-	if (globalMap.get("USE_CONDITION") != null && (Boolean) globalMap.get("USE_CONDITION")) {
+	if (globalMap.get("USE_CONDITION") != null && (Boolean) globalMap.get("USE_CONDITION")) {	    
 		if (globalMap.get("TRACE_CONDITION") != null && (Boolean) globalMap.get("TRACE_CONDITION")) {
-			Thread.sleep(<%=pauseTime%>);								
+		    // if next breakpoint has been clicked on UI or if start job, should wait action of user.
+            if (runTrace.isNextBreakpoint()) {
+            	runTrace.waitForUserAction();
+            } else if (runTrace.isNextRow()) {
+            	runTrace.waitForUserAction();
+            }
+		} else {
+		    // if next row has been clicked on UI or if start job, should wait action of user.
+            if (runTrace.isNextRow()) {
+            	runTrace.waitForUserAction();
+            }
 		}
 	} else { // no condition set
 		Thread.sleep(<%=pauseTime%>);

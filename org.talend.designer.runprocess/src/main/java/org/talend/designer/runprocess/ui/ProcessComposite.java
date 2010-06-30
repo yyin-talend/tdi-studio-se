@@ -22,10 +22,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.BidiMap;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,9 +48,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -63,7 +62,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -74,12 +72,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
@@ -89,12 +85,19 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ReplaceNodesInProcessProvider;
@@ -122,6 +125,7 @@ import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
+import org.talend.designer.runprocess.ui.views.IProcessViewHelper;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
@@ -131,7 +135,7 @@ import org.talend.designer.runprocess.ui.views.ProcessView;
  * 
  * 
  */
-public class ProcessComposite extends Composite {
+public class ProcessComposite extends ScrolledComposite implements IDynamicProperty {
 
     private static final int BUTTON_SIZE = 100;
 
@@ -141,50 +145,50 @@ public class ProcessComposite extends Composite {
 
     private static final int MINIMUM_WIDTH = 530;
 
+    private IProcessViewHelper processViewHelper;
+
     private static RunProcessContext processContext;
 
     /** Context composite. */
     private ProcessContextComposite contextComposite;
 
-    private Composite argumentsComposite;
+    protected Composite argumentsComposite;
 
     private JobVMArgumentsComposite argumentsViewer;
 
+    protected EComponentCategory section;
+
+    private Composite composite;
+
     /** Performance button. */
-    private Button perfBtn;
+    // private Button perfBtn;
 
     /** Trace button. */
-    private Button traceBtn;
+    // private Button traceBtn;
 
     /** Clear trace & performance button. */
     private Button clearTracePerfBtn;
 
-    private Button saveJobBeforeRunButton;
+    // private Button saveJobBeforeRunButton;
 
     /** Clear log button. */
     // private Button clearLogBtn;
-    private Button clearBeforeExec;
+    // private Button clearBeforeExec;
 
     /** Show time button. */
-    private Button watchBtn;
+    // private Button watchBtn;
 
     /** Kill button. */
     private Button killBtn;
 
     /** Move Button */
-    private Button moveButton;
+    // private Button moveButton;
 
     /** Execution console. */
     private StyledText consoleText;
 
     /** RunProcessContext property change listener. */
     private PropertyChangeListener pcl;
-
-    private CTabItem targetExecutionTabItem;
-
-    private CTabItem jobVMTabItem;
-
-    private CTabFolder leftTabFolder;
 
     private IStreamListener streamListener;
 
@@ -196,15 +200,20 @@ public class ProcessComposite extends Composite {
 
     private Text lineLimitText;
 
-    private SashForm sash;
+    // private SashForm sash;
+    private Button run;
 
-    private ToolBar toolBar;
+    // private ToolBar toolBar;
 
-    private ToolItem itemDropDown;
+    private Label processNameLab;
+
+    // private ToolItem itemDropDown;
 
     private Double extend = new Double(0);
 
     public HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
+
+    private ProcessManager processManager;
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -215,7 +224,8 @@ public class ProcessComposite extends Composite {
     public ProcessComposite(Composite parent, int style) {
         super(parent, style);
         initGraphicComponents(parent);
-
+        processManager = ProcessManager.getInstance();
+        this.composite = parent;
     }
 
     /**
@@ -225,7 +235,7 @@ public class ProcessComposite extends Composite {
      * 
      */
     private Point computeSize(String text) {
-        GC gc = new GC(itemDropDown.getDisplay());
+        GC gc = new GC(run.getDisplay());
         final Point p = gc.textExtent(text);
         gc.dispose();
         return p;
@@ -237,78 +247,106 @@ public class ProcessComposite extends Composite {
      * @param parent
      */
     private void initGraphicComponents(Composite parent) {
+        setExpandHorizontal(true);
+        setExpandVertical(true);
+        this.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
+        FormData layouData = new FormData();
+        layouData.left = new FormAttachment(0, 0);
+        layouData.right = new FormAttachment(100, 0);
+        layouData.top = new FormAttachment(0, 0);
+        layouData.bottom = new FormAttachment(100, 0);
+        setLayoutData(layouData);
+
+        this.setLayout(new FormLayout());
+        final Composite panel = new Composite(this, SWT.NONE);
+        setContent(panel);
+        // panel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED));
+
+        FormLayout layout2 = new FormLayout();
+        layout2.marginWidth = 5 + 2;
+        layout2.marginHeight = 4;
+        layout2.spacing = 6 + 1;
+        panel.setLayout(layout2);
+
         GridData data;
         GridLayout layout = new GridLayout();
-        setLayout(layout);
+        // panel.setLayout(layout);
 
         // Splitter
-        sash = new SashForm(this, SWT.HORIZONTAL | SWT.SMOOTH);
-        sash.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        layout = new GridLayout();
-        sash.setLayout(layout);
-
-        leftTabFolder = new CTabFolder(sash, SWT.BORDER);
-        leftTabFolder.setSimple(false);
-
-        leftTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        // Group context
-
-        CTabItem contextTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
-        contextTabItem.setText(Messages.getString("ProcessComposite.contextTab")); //$NON-NLS-1$
-        contextComposite = new ProcessContextComposite(leftTabFolder, SWT.NONE);
-        contextComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        contextTabItem.setControl(contextComposite);
-
-        Composite targetExecutionComposite = createTargetExecutionComposite(leftTabFolder);
-        targetExecutionComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-
-        targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
-        targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
-        // targetExecutionTabItem.setToolTipText(Messages.getString(
-        // "ProcessComposite.targetExecutionTabTooltipAvailable"
-        // ));
-        targetExecutionTabItem.setControl(targetExecutionComposite);
-
-        // Job Run VM Arguments Tab if language is java.
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            jobVMTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
-            jobVMTabItem.setText(Messages.getString("ProcessComposite.JVMTab")); //$NON-NLS-1$
-            argumentsComposite = new Composite(leftTabFolder, SWT.NONE);
-            argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            GridLayout gridLayoutArguments = new GridLayout(1, false);
-            argumentsComposite.setLayout(gridLayoutArguments);
-            argumentsViewer = new JobVMArgumentsComposite("vmarguments", Messages
-                    .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
-                    argumentsComposite);
-            // argumentsViewer.setEnabled(false, argumentsComposite);
-            jobVMTabItem.setControl(argumentsComposite);
-        }
-
-        // group Button
-        // qli,see the feature 6366.
-        Composite buttonComposite = new Composite(sash, SWT.ERROR);
-        buttonComposite.setLayout(new GridLayout());
-
-        moveButton = new Button(buttonComposite, SWT.PUSH);
-        moveButton.setText("<<"); //$NON-NLS-1$
-        moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext")); //$NON-NLS-1$
-
-        final GridData layoutData = new GridData();
-        layoutData.verticalAlignment = GridData.CENTER;
-        layoutData.horizontalAlignment = GridData.CENTER;
-        layoutData.grabExcessHorizontalSpace = true;
-        layoutData.grabExcessVerticalSpace = true;
-        moveButton.setLayoutData(layoutData);
+        // sash = new SashForm(this, SWT.HORIZONTAL | SWT.SMOOTH);
+        // sash.setLayoutData(new GridData(GridData.FILL_BOTH));
+        //
+        // layout = new GridLayout();
+        // sash.setLayout(layout);
+        //
+        // // group Button
+        // // qli,see the feature 6366.
+        //
+        // Composite buttonComposite = new Composite(sash, SWT.ERROR);
+        // buttonComposite.setLayout(new GridLayout());
+        //
+        // moveButton = new Button(buttonComposite, SWT.PUSH);
+        //        moveButton.setText("<<"); //$NON-NLS-1$
+        //        moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext")); //$NON-NLS-1$
+        //
+        // final GridData layoutData = new GridData();
+        // layoutData.verticalAlignment = GridData.CENTER;
+        // layoutData.horizontalAlignment = GridData.CENTER;
+        // layoutData.grabExcessHorizontalSpace = true;
+        // layoutData.grabExcessVerticalSpace = true;
+        // moveButton.setLayoutData(layoutData);
 
         // Group execution
-        Group execGroup = new Group(sash, SWT.NONE);
+        Group execGroup = new Group(panel, SWT.NONE);
         execGroup.setText(Messages.getString("ProcessComposite.execGroup")); //$NON-NLS-1$
         layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         execGroup.setLayout(layout);
+
+        FormData layouDatag = new FormData();
+        layouDatag.left = new FormAttachment(0, 0);
+        layouDatag.right = new FormAttachment(100, 0);
+        layouDatag.top = new FormAttachment(0, 0);
+        layouDatag.bottom = new FormAttachment(100, 0);
+        execGroup.setLayoutData(layouDatag);
+
+        // leftTabFolder = new CTabFolder(this, SWT.BORDER);
+        // leftTabFolder.setSimple(false);
+        // //
+        // leftTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // //
+        // // // Group context
+        // //
+        // CTabItem contextTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+        //        contextTabItem.setText(Messages.getString("ProcessComposite.contextTab")); //$NON-NLS-1$
+        // // contextComposite = new ProcessContextComposite(this, SWT.NONE);
+        // // contextComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        // // contextTabItem.setControl(contextComposite);
+        // //
+        // Composite targetExecutionComposite = createTargetExecutionComposite(leftTabFolder);
+        // targetExecutionComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        // //
+        // targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+        //        targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
+        // targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+        // targetExecutionTabItem.setControl(targetExecutionComposite);
+        // //
+        // // // Job Run VM Arguments Tab if language is java.
+        // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+        // jobVMTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+        //            jobVMTabItem.setText(Messages.getString("ProcessComposite.JVMTab")); //$NON-NLS-1$
+        // argumentsComposite = new Composite(leftTabFolder, SWT.NONE);
+        // argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // GridLayout gridLayoutArguments = new GridLayout(1, false);
+        // argumentsComposite.setLayout(gridLayoutArguments);
+        // argumentsViewer = new JobVMArgumentsComposite("vmarguments", Messages
+        //                    .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+        // argumentsComposite);
+        // // argumentsViewer.setEnabled(false, argumentsComposite);
+        // jobVMTabItem.setControl(argumentsComposite);
+        // }
 
         ScrolledComposite execScroll = new ScrolledComposite(execGroup, SWT.V_SCROLL | SWT.H_SCROLL);
         execScroll.setExpandHorizontal(true);
@@ -317,7 +355,7 @@ public class ProcessComposite extends Composite {
 
         Composite execContent = new Composite(execScroll, SWT.NONE);
         layout = new GridLayout();
-        execContent.setLayout(layout);
+        execContent.setLayout(new FormLayout());
         execScroll.setContent(execContent);
 
         Composite execHeader = new Composite(execContent, SWT.NONE);
@@ -326,82 +364,85 @@ public class ProcessComposite extends Composite {
         formLayout.marginHeight = 4;
         formLayout.spacing = 7;
         execHeader.setLayout(formLayout);
-        execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        FormData layoutData = new FormData();
+        layoutData.left = new FormAttachment(0, 0);
+        layoutData.right = new FormAttachment(100, 0);
+        layoutData.top = new FormAttachment(0, 0);
+        layoutData.bottom = new FormAttachment(0, 50);
+        execHeader.setLayoutData(layoutData);// new GridData(GridData.FILL_HORIZONTAL)
         // qli
         // see the feature 6366
-        toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
+        run = new Button(execHeader, SWT.PUSH);
 
-        itemDropDown = new ToolItem(toolBar, SWT.ARROW);
-        itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-        itemDropDown.setData(ProcessView.EXEC_ID);
-        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
-        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        // itemDropDown = new ToolItem(toolBar, SWT.ARROW);
+        run.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        run.setData(ProcessView.EXEC_ID);
+        run.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
+        run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
 
-        final Menu menu = new Menu(execHeader);
-        itemDropDown.addSelectionListener(new SelectionAdapter() {
+        // final Menu menu = new Menu(execHeader);
+        run.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent event) {
-                if (event.detail == SWT.ARROW) {
-                    Rectangle bounds = itemDropDown.getBounds();
-                    Point point = toolBar.toDisplay(bounds.x, bounds.y + bounds.height);
-                    menu.setLocation(point);
-                    menu.setVisible(true);
-                } else {
-                    // qli modified to fix the bug 6659.
-                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
-                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
-                    ToolItem item = (ToolItem) event.widget;
-                    errorMessMap.clear();
-                    if (item.getData().equals(ProcessView.DEBUG_ID)) {
-                        debug();
-                    } else {
-                        execButtonPressed();
-                    }
-                }
+
+                // qli modified to fix the bug 6659.
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
+                // ToolItem item = (ToolItem) event.widget;
+                errorMessMap.clear();
+                // if (item.getData().equals(ProcessView.DEBUG_ID)) {
+                // debug();
+                // } else {
+                execButtonPressed();
+                // }
             }
         });
 
         // Run
-        final MenuItem menuItem1 = new MenuItem(menu, SWT.PUSH);
-        menuItem1.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-        menuItem1.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-        menuItem1.setData(ProcessView.EXEC_ID);
-        menuItem1.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent event) {
-                if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID) && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
-                    itemDropDown.setText(menuItem1.getText());
-                    itemDropDown.setData(ProcessView.EXEC_ID);
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
-                    toolBar.getParent().layout();
-                }
-            }
-        });
+        // final MenuItem menuItem1 = new MenuItem(menu, SWT.PUSH);
+        //        menuItem1.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        // menuItem1.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        // menuItem1.setData(ProcessView.EXEC_ID);
+        // menuItem1.addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent event) {
+        // if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID) &&
+        // !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+        // itemDropDown.setText(menuItem1.getText());
+        // itemDropDown.setData(ProcessView.EXEC_ID);
+        // itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        //                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
+        // toolBar.getParent().layout();
+        // }
+        // }
+        // });
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-            // Debug
-            debugMenuItem = new MenuItem(menu, SWT.PUSH);
-            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
-            debugMenuItem.setData(ProcessView.DEBUG_ID);
-            debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-            debugMenuItem.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent event) {
-                    if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID)
-                            && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
-                        itemDropDown.setText(debugMenuItem.getText());
-                        itemDropDown.setData(ProcessView.DEBUG_ID);
-                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
-                        toolBar.getParent().layout();
-                    }
-
-                }
-            });
+        // if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+        // // Debug
+        // debugMenuItem = new MenuItem(menu, SWT.PUSH);
+        //            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+        // debugMenuItem.setData(ProcessView.DEBUG_ID);
+        // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        // debugMenuItem.addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent event) {
+        // if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID)
+        // && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+        // itemDropDown.setText(debugMenuItem.getText());
+        // itemDropDown.setData(ProcessView.DEBUG_ID);
+        // itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        //                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
+        // toolBar.getParent().layout();
+        // }
+        //
+        // }
+        // });
+        // }
+        if (processContext == null) {
+            run.setEnabled(false);
         }
-        toolBar.setEnabled(false);
+        // toolBar.setEnabled(false);
         FormData formData = new FormData();
         // see the feature 6366,qli comment.
         // make a judge when the text change in diffrent languages.
@@ -409,26 +450,27 @@ public class ProcessComposite extends Composite {
         Point debugSize = null;
         Point execSize = null;
         formData.left = new FormAttachment(0);
-        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-            // set debug text to judge size
-            itemDropDown.setText(debugMenuItem.getText());
-            debugSize = computeSize(itemDropDown.getText());
+        // if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+        // // set debug text to judge size
+        // itemDropDown.setText(debugMenuItem.getText());
+        // debugSize = computeSize(itemDropDown.getText());
+        //
+        // // set exec text to judge size
+        // itemDropDown.setText(menuItem1.getText());
+        // execSize = computeSize(itemDropDown.getText());
+        // if (debugSize.x > execSize.x) {
+        // formData.right = new FormAttachment(0, debugSize.x + 70);
+        // } else {
+        // formData.right = new FormAttachment(0, execSize.x + 70);
+        // }
+        // } else {
+        // set exec text to judge size
 
-            // set exec text to judge size
-            itemDropDown.setText(menuItem1.getText());
-            execSize = computeSize(itemDropDown.getText());
-            if (debugSize.x > execSize.x) {
-                formData.right = new FormAttachment(0, debugSize.x + 70);
-            } else {
-                formData.right = new FormAttachment(0, execSize.x + 70);
-            }
-        } else {
-            // set exec text to judge size
-            itemDropDown.setText(menuItem1.getText());
-            execSize = computeSize(itemDropDown.getText());
-            formData.right = new FormAttachment(0, execSize.x + 70);
-        }
-        toolBar.setLayoutData(formData);
+        execSize = computeSize(run.getText());
+        formData.right = new FormAttachment(0, execSize.x + 70);
+        formData.height = 30;
+        // }
+        run.setLayoutData(formData);
 
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
@@ -437,115 +479,128 @@ public class ProcessComposite extends Composite {
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
-        formData.top = new FormAttachment(toolBar, 0, SWT.TOP);
-        formData.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
+        formData.top = new FormAttachment(run, 0, SWT.TOP);
+        formData.left = new FormAttachment(run, 0, SWT.RIGHT);
         // qli modified to fix the bug "7302".
         Point killSize = computeSize(killBtn.getText());
-        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-            if ((killSize.x > debugSize.x) && (killSize.x > execSize.x)) {
-                formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
-            } else if (debugSize.x > execSize.x) {
-                formData.right = new FormAttachment(toolBar, debugSize.x + 70, SWT.RIGHT);
-            } else {
-                formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
-            }
-        } else {
-            if (killSize.x > execSize.x) {
-                formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
-            } else {
-                formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
-            }
-        }
+        // if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+        // if ((killSize.x > debugSize.x) && (killSize.x > execSize.x)) {
+        // formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
+        // } else if (debugSize.x > execSize.x) {
+        // formData.right = new FormAttachment(toolBar, debugSize.x + 70, SWT.RIGHT);
+        // } else {
+        // formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
+        // }
+        // } else {
+        // if (killSize.x > execSize.x) {
+        // formData.right = new FormAttachment(toolBar, killSize.x + 70, SWT.RIGHT);
+        // } else {
+        // formData.right = new FormAttachment(toolBar, execSize.x + 70, SWT.RIGHT);
+        // }
+        // }
+        formData.right = new FormAttachment(run, 30 + 70, SWT.RIGHT);
         formData.height = 30;
         killBtn.setLayoutData(formData);
 
-        saveJobBeforeRunButton = new Button(execHeader, SWT.CHECK);
-        saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
-        saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
-        // saveJobBeforeRunButton.setEnabled(false);
-        saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSAVEBEFORERUN));
-        data = new GridData();
-        data.horizontalSpan = 2;
-        data.horizontalAlignment = SWT.END;
-        saveJobBeforeRunButton.setLayoutData(data);
-        formData = new FormData();
-        formData.top = new FormAttachment(toolBar, 0, SWT.BOTTOM);
-        formData.left = new FormAttachment(toolBar, 0, SWT.LEFT);
-        saveJobBeforeRunButton.setLayoutData(formData);
+        // saveJobBeforeRunButton = new Button(execHeader, SWT.CHECK);
+        //        saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
+        //        saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
+        // // saveJobBeforeRunButton.setEnabled(false);
+        // saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISSAVEBEFORERUN));
+        // data = new GridData();
+        // data.horizontalSpan = 2;
+        // data.horizontalAlignment = SWT.END;
+        // saveJobBeforeRunButton.setLayoutData(data);
+        // formData = new FormData();
+        // formData.top = new FormAttachment(toolBar, 0, SWT.BOTTOM);
+        // formData.left = new FormAttachment(toolBar, 0, SWT.LEFT);
+        // saveJobBeforeRunButton.setLayoutData(formData);
 
-        clearBeforeExec = new Button(execHeader, SWT.CHECK);
-        clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
-        clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint")); //$NON-NLS-1$
-        // clearBeforeExec.setEnabled(false);
-        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
-        data = new GridData();
-        data.horizontalSpan = 2;
-        data.horizontalAlignment = SWT.END;
-        clearBeforeExec.setLayoutData(data);
-        formData = new FormData();
-        formData.top = new FormAttachment(toolBar, 0, SWT.BOTTOM);
-        formData.left = new FormAttachment(saveJobBeforeRunButton, 0, SWT.RIGHT);
-        clearBeforeExec.setLayoutData(formData);
+        // clearBeforeExec = new Button(execHeader, SWT.CHECK);
+        //        clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
+        //        clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint")); //$NON-NLS-1$
+        // // clearBeforeExec.setEnabled(false);
+        // clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        // data = new GridData();
+        // data.horizontalSpan = 2;
+        // data.horizontalAlignment = SWT.END;
+        // clearBeforeExec.setLayoutData(data);
+        // formData = new FormData();
+        // formData.top = new FormAttachment(toolBar, 0, SWT.BOTTOM);
+        // formData.left = new FormAttachment(saveJobBeforeRunButton, 0, SWT.RIGHT);
+        // clearBeforeExec.setLayoutData(formData);
+        //
+        // watchBtn = new Button(execHeader, SWT.CHECK);
+        //        watchBtn.setText(Messages.getString("ProcessComposite.execTime")); //$NON-NLS-1$
+        //        watchBtn.setToolTipText(Messages.getString("ProcessComposite.execTimeHint")); //$NON-NLS-1$
+        // watchBtn.setEnabled(false);
+        // watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISEXECTIMERUN));
+        // data = new GridData();
+        // data.horizontalSpan = 2;
+        // data.horizontalAlignment = SWT.END;
+        // watchBtn.setLayoutData(data);
+        // formData = new FormData();
+        // formData.top = new FormAttachment(killBtn, 0, SWT.BOTTOM);
+        // formData.left = new FormAttachment(clearBeforeExec, 0, SWT.RIGHT);
+        // watchBtn.setLayoutData(formData);
+        //
+        // Group statisticsComposite = new Group(execHeader, SWT.NONE);
+        //        statisticsComposite.setText(Messages.getString("ProcessComposite2.statsComposite")); //$NON-NLS-1$
+        // layout = new GridLayout(3, false);
+        // layout.marginWidth = 0;
+        // statisticsComposite.setLayout(layout);
+        // formData = new FormData();
+        // // formData.right = new FormAttachment(100, 0);
+        // / formData.left = new FormAttachment(watchBtn, 0, SWT.RIGHT);
+        // statisticsComposite.setLayoutData(formData);
+        //
+        // Composite statisticsButtonComposite = new Composite(statisticsComposite, SWT.NONE);
+        // layout = new GridLayout(1, false);
+        // layout.marginWidth = 0;
+        // statisticsButtonComposite.setLayout(layout);
+        // statisticsButtonComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
 
-        watchBtn = new Button(execHeader, SWT.CHECK);
-        watchBtn.setText(Messages.getString("ProcessComposite.execTime")); //$NON-NLS-1$
-        watchBtn.setToolTipText(Messages.getString("ProcessComposite.execTimeHint")); //$NON-NLS-1$
-        watchBtn.setEnabled(false);
-        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN));
-        data = new GridData();
-        data.horizontalSpan = 2;
-        data.horizontalAlignment = SWT.END;
-        watchBtn.setLayoutData(data);
-        formData = new FormData();
-        formData.top = new FormAttachment(killBtn, 0, SWT.BOTTOM);
-        formData.left = new FormAttachment(clearBeforeExec, 0, SWT.RIGHT);
-        watchBtn.setLayoutData(formData);
+        // perfBtn = new Button(statisticsButtonComposite, SWT.CHECK);
+        //        perfBtn.setText(Messages.getString("ProcessComposite.stat")); //$NON-NLS-1$
+        //        perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
+        // perfBtn.setEnabled(false);
+        // perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISSTATISTICSRUN));
+        // traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
+        //        traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
+        //        traceBtn.setToolTipText(Messages.getString("ProcessComposite.traceHint")); //$NON-NLS-1$
+        // traceBtn.setEnabled(false);
+        // traceBtn
+        // .setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
 
-        Group statisticsComposite = new Group(execHeader, SWT.NONE);
-        statisticsComposite.setText(Messages.getString("ProcessComposite2.statsComposite")); //$NON-NLS-1$
-        layout = new GridLayout(3, false);
-        layout.marginWidth = 0;
-        statisticsComposite.setLayout(layout);
-        formData = new FormData();
-        // formData.right = new FormAttachment(100, 0);
-        formData.left = new FormAttachment(watchBtn, 0, SWT.RIGHT);
-        statisticsComposite.setLayoutData(formData);
-
-        Composite statisticsButtonComposite = new Composite(statisticsComposite, SWT.NONE);
-        layout = new GridLayout(1, false);
-        layout.marginWidth = 0;
-        statisticsButtonComposite.setLayout(layout);
-        statisticsButtonComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-
-        perfBtn = new Button(statisticsButtonComposite, SWT.CHECK);
-        perfBtn.setText(Messages.getString("ProcessComposite.stat")); //$NON-NLS-1$
-        perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
-        perfBtn.setEnabled(false);
-        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN));
-        traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
-        traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
-        traceBtn.setToolTipText(Messages.getString("ProcessComposite.traceHint")); //$NON-NLS-1$
-        traceBtn.setEnabled(false);
-        traceBtn
-                .setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
-
-        clearTracePerfBtn = new Button(statisticsComposite, SWT.PUSH);
+        clearTracePerfBtn = new Button(execHeader, SWT.PUSH);
         clearTracePerfBtn.setText(Messages.getString("ProcessComposite.clear")); //$NON-NLS-1$
         clearTracePerfBtn.setToolTipText(Messages.getString("ProcessComposite.clearHint")); //$NON-NLS-1$
         clearTracePerfBtn.setImage(ImageProvider.getImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_stat_clear.gif"))); //$NON-NLS-1$
         clearTracePerfBtn.setEnabled(false);
+        formData = new FormData();
+        formData.top = new FormAttachment(killBtn, 0, SWT.TOP);
+        formData.left = new FormAttachment(killBtn, 0, SWT.RIGHT);
+        formData.right = new FormAttachment(killBtn, 10 + 70, SWT.RIGHT);
+        formData.height = 30;
+        clearTracePerfBtn.setLayoutData(formData);
 
         consoleText = new StyledText(execContent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 2;
         data.minimumHeight = MINIMUM_HEIGHT;
         data.minimumWidth = MINIMUM_WIDTH;
-        consoleText.setLayoutData(data);
+        layouData = new FormData();
+        layouData.left = new FormAttachment(0, 10);
+        layouData.right = new FormAttachment(100, 0);
+        layouData.top = new FormAttachment(0, 50);
+        layouData.bottom = new FormAttachment(100, -30);
+
+        consoleText.setLayoutData(layouData);
         // feature 6875, add searching capability, nma
         consoleText.addKeyListener(new KeyListener() {
 
@@ -569,15 +624,16 @@ public class ProcessComposite extends Composite {
 
             }
         });
+
         // see feature 0004895: Font size of the output console are very small
         if (!setConsoleFont()) {
             Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
             consoleText.setFont(font);
         }
 
-        execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-        sash.setSashWidth(0);
-        sash.setWeights(new int[] { 7, 1, H_WEIGHT });
+        // execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        // sash.setSashWidth(1);
+        // sash.setWeights(new int[] { 7, 1, H_WEIGHT });
 
         pcl = new PropertyChangeListener() {
 
@@ -602,7 +658,12 @@ public class ProcessComposite extends Composite {
      */
     private void createLineLimitedControl(Composite container) {
         Composite composite = new Composite(container, SWT.NONE);
-        composite.setLayoutData(new GridData());
+        FormData layouData = new FormData();
+        layouData.left = new FormAttachment(0, 10);
+        layouData.right = new FormAttachment(100, 0);
+        layouData.top = new FormAttachment(100, -30);
+        layouData.bottom = new FormAttachment(100, -3);
+        composite.setLayoutData(layouData);
 
         FormLayout formLayout = new FormLayout();
         formLayout.marginWidth = 7;
@@ -712,52 +773,46 @@ public class ProcessComposite extends Composite {
 
     protected void addListeners() {
         // qli comment "addSelectionListener" .
-        moveButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
-                    sash.setWeights(new int[] { 0, 1, 23 });
-                    moveButton.setText(">>"); //$NON-NLS-1$
-                    moveButton.setToolTipText(Messages.getString("ProcessComposite.showContext")); //$NON-NLS-1$
-                } else if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
-                    sash.setWeights(new int[] { 7, 1, H_WEIGHT });
-                    moveButton.setText("<<"); //$NON-NLS-1$
-                    moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext"));//$NON-NLS-1$
-                }
-            }
-        });
-
-        perfBtn.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                processContext.setMonitorPerf(perfBtn.getSelection());
-            }
-        });
-
-        traceBtn.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                processContext.setMonitorTrace(traceBtn.getSelection());
-                org.talend.core.model.process.IProcess process = processContext.getProcess();
-                List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
-                for (INode node : nodeList) {
-                    for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
-                        ConnectionTrace traceNode = connection.getConnectionTrace();
-                        if (traceNode == null) {
-                            continue;
-                        }
-                        traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
-                        if (connection != null) {
-                            connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
-                        }
-                    }
-                }
-
-            }
-        });
+        /*
+         * moveButton.addSelectionListener(new SelectionAdapter() {
+         * 
+         * @Override public void widgetSelected(final SelectionEvent e) { if (moveButton.getText().equals("<<")) {
+         * //$NON-NLS-1$ sash.setWeights(new int[] { 0, 1, 23 }); moveButton.setText(">>"); //$NON-NLS-1$
+         * moveButton.setToolTipText(Messages.getString("ProcessComposite.showContext")); //$NON-NLS-1$ } else if
+         * (moveButton.getText().equals(">>")) { //$NON-NLS-1$ sash.setWeights(new int[] { 7, 1, H_WEIGHT });
+         * moveButton.setText("<<"); //$NON-NLS-1$
+         * moveButton.setToolTipText(Messages.getString("ProcessComposite.hideContext"));//$NON-NLS-1$ } } });
+         */
+        // perfBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(final SelectionEvent e) {
+        // processContext.setMonitorPerf(perfBtn.getSelection());
+        // }
+        // });
+        //
+        // traceBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(final SelectionEvent e) {
+        // processContext.setMonitorTrace(traceBtn.getSelection());
+        // org.talend.core.model.process.IProcess process = processContext.getProcess();
+        // List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+        // for (INode node : nodeList) {
+        // for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+        // ConnectionTrace traceNode = connection.getConnectionTrace();
+        // if (traceNode == null) {
+        // continue;
+        // }
+        // traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
+        // if (connection != null) {
+        // connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
+        // }
+        // }
+        // }
+        //
+        // }
+        // });
 
         clearTracePerfBtn.addSelectionListener(new SelectionAdapter() {
 
@@ -783,29 +838,29 @@ public class ProcessComposite extends Composite {
                 kill();
             }
         });
-        watchBtn.addSelectionListener(new SelectionAdapter() {
+        // watchBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // processContext.setWatchAllowed(watchBtn.getSelection());
+        // }
+        //
+        // });
+        // saveJobBeforeRunButton.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
+        // }
+        // });
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                processContext.setWatchAllowed(watchBtn.getSelection());
-            }
-
-        });
-        saveJobBeforeRunButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
-            }
-        });
-
-        clearBeforeExec.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                processContext.setClearBeforeExec(clearBeforeExec.getSelection());
-            }
-        });
+        // clearBeforeExec.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // processContext.setClearBeforeExec(clearBeforeExec.getSelection());
+        // }
+        // });
     }
 
     protected boolean checkKillAllowed() {
@@ -817,16 +872,16 @@ public class ProcessComposite extends Composite {
      */
     public void execButtonPressed() {
         if (processContext == null) {
-            toolBar.setEnabled(false);
+            run.setEnabled(false);
             return;
         }
-        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID)) {
+        if (run.getData().equals(ProcessView.PAUSE_ID)) {
             pause(ProcessView.PAUSE_ID);
-        } else if (itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+        } else if (run.getData().equals(ProcessView.RESUME_ID)) {
             pause(ProcessView.RESUME_ID);
-        } else if (itemDropDown.getData().equals(ProcessView.EXEC_ID)) {
+        } else if (run.getData().equals(ProcessView.EXEC_ID)) {
             addInHistoryRunningList();
-            itemDropDown.setData(ProcessView.PAUSE_ID);
+            // run.setData(ProcessView.PAUSE_ID);
             // exec();
 
         }
@@ -835,14 +890,14 @@ public class ProcessComposite extends Composite {
     public void pause(int id) {
         boolean isPause = id == ProcessView.PAUSE_ID;
         setExecBtn(isPause);
-        if (isPause) {
-            itemDropDown.setText(Messages.getString("ProcessComposite.textContent")); //$NON-NLS-1$
-            itemDropDown.setToolTipText(Messages.getString("ProcessComposite.tipTextContent")); //$NON-NLS-1$
-            itemDropDown.setData(ProcessView.RESUME_ID);
-        } else {
-            itemDropDown.setData(ProcessView.PAUSE_ID);
-        }
-        processContext.setTracPause(isPause);
+        // if (isPause) {
+        //            run.setText(Messages.getString("ProcessComposite.textContent")); //$NON-NLS-1$
+        //            run.setToolTipText(Messages.getString("ProcessComposite.tipTextContent")); //$NON-NLS-1$
+        // run.setData(ProcessView.RESUME_ID);
+        // } else {
+        // run.setData(ProcessView.PAUSE_ID);
+        // }
+        // processContext.setTracPause(isPause);
     }
 
     /**
@@ -893,18 +948,17 @@ public class ProcessComposite extends Composite {
         if (processContext != null) {
             processContext.addPropertyChangeListener(pcl);
         }
-        if (argumentsViewer != null) {
-            argumentsViewer.setProcessContext(processContext);
-        }
+        // if (argumentsViewer != null) {
+        // argumentsViewer.setProcessContext(processContext);
+        // }
         boolean disableAll = false;
         if (processContext != null) {
             disableAll = processContext.getProcess().disableRunJobView();
 
         }
-
-        perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
-        traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
-        watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
+        // perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
+        // traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
+        // watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
         // perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore(
         // ).getBoolean(
         // RunProcessPrefsConstants.ISSTATISTICSRUN)
@@ -913,8 +967,9 @@ public class ProcessComposite extends Composite {
         // ().getBoolean(RunProcessPrefsConstants.
         // ISTRACESRUN)
         // && !disableAll);
-        if (this.processContext != null) {
-            this.processContext.setMonitorTrace(traceBtn.getSelection());
+        if (this.processContext == null) {
+            // this.processContext.setMonitorTrace(traceBtn.getSelection());
+            processManager.setBooleanTrace(false);
         }
 
         // watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore
@@ -929,28 +984,28 @@ public class ProcessComposite extends Composite {
         // getPreferenceStore().getBoolean(
         // RunProcessPrefsConstants.ISCLEARBEFORERUN)
         // && !disableAll);
-        saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
+        // saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
         killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
-        clearBeforeExec.setEnabled(processContext != null);
-        clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
-        contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
+        // clearBeforeExec.setEnabled(processContext != null);
+        // clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
+        // contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
     }
 
     protected void setRunnable(boolean runnable) {
-        perfBtn.setEnabled(runnable);
-        traceBtn.setEnabled(runnable);
+        // perfBtn.setEnabled(runnable);
+        // traceBtn.setEnabled(runnable);
         clearTracePerfBtn.setEnabled(runnable);
 
         setExecBtn(runnable);
-        contextComposite.setEnabled(runnable);
-        if (argumentsComposite != null) {
-            argumentsComposite.setEnabled(runnable);
-        }
-        clearBeforeExec.setEnabled(runnable);
-        saveJobBeforeRunButton.setEnabled(runnable);
-        watchBtn.setEnabled(runnable);
+        // contextComposite.setEnabled(runnable);
+        // if (argumentsComposite != null) {
+        // argumentsComposite.setEnabled(runnable);
+        // }
+        // clearBeforeExec.setEnabled(runnable);
+        // saveJobBeforeRunButton.setEnabled(runnable);
+        // watchBtn.setEnabled(runnable);
 
         enableLineLimitButton.setEnabled(runnable);
         lineLimitText.setEnabled(runnable);
@@ -963,39 +1018,37 @@ public class ProcessComposite extends Composite {
      * @param runnable
      */
     private void setExecBtn(final boolean runnable) {
-        if (traceBtn.getSelection()) {
-            boolean b = processContext != null;
-            if (!runnable && b) {
-                itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause")); //$NON-NLS-1$//$NON-NLS-2$
-                itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob")); //$NON-NLS-1$
-                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
-                itemDropDown.setData(ProcessView.PAUSE_ID);
-                toolBar.getParent().layout();
-            } else {
-                itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                itemDropDown.setData(ProcessView.EXEC_ID);
-                itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
-                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-            }
-            toolBar.setEnabled(b);
-        } else {
-            // qli modified to fix the bug 7354.
-            toolBar.setEnabled(runnable);
-            if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
-                debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
-                debugMenuItem.setData(ProcessView.DEBUG_ID);
-                debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-            } else {
-                itemDropDown.setText(" " + Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
-                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-                itemDropDown.setData(ProcessView.EXEC_ID);
-            }
-        }
+        /*
+         * if (traceBtn.getSelection()) { boolean b = processContext != null; if (!runnable && b) {
+         * itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause")); //$NON-NLS-1$//$NON-NLS-2$
+         * itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob")); //$NON-NLS-1$
+         * itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+         * itemDropDown.setData(ProcessView.PAUSE_ID); toolBar.getParent().layout(); } else { itemDropDown.setText(" " +
+         * Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+         * itemDropDown.setData(ProcessView.EXEC_ID);
+         * itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+         * itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION)); } toolBar.setEnabled(b);
+         * } else {
+         */
+        // qli modified to fix the bug 7354.
+        run.setEnabled(runnable);
+        run.redraw();
+        run.getParent().layout();
+        // if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
+        //            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+        // debugMenuItem.setData(ProcessView.DEBUG_ID);
+        // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        // } else {
+        run.setText(" " + Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        run.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+        run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        run.setData(ProcessView.EXEC_ID);
+        // }
+        // }
 
     }
 
-    private void appendToConsole(final IProcessMessage message) {
+    protected void appendToConsole(final IProcessMessage message) {
         getDisplay().asyncExec(new Runnable() {
 
             public void run() {
@@ -1120,7 +1173,7 @@ public class ProcessComposite extends Composite {
         return false;
     }
 
-    private void fillConsole(Collection<IProcessMessage> messages) {
+    protected void fillConsole(Collection<IProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
 
         for (IProcessMessage processMessage : messages) {
@@ -1140,11 +1193,12 @@ public class ProcessComposite extends Composite {
     /**
      * DOC bqian Comment method "addInHistoryRunningList".
      */
-    private void addInHistoryRunningList() {
+    protected void addInHistoryRunningList() {
         if (getProcessContext() == null) {
             return;
         }
         // Add this job to running history list.
+        addTrace(1);
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
             JobLaunchShortcutManager.run(activeEditor);
@@ -1152,6 +1206,26 @@ public class ProcessComposite extends Composite {
             exec();
         }
 
+    }
+
+    private void addTrace(int itemId) {
+        Boolean trace = false;
+        processContext.setMonitorTrace(trace);
+        processManager.setBooleanTrace(trace);
+        org.talend.core.model.process.IProcess process = processContext.getProcess();
+        List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+                ConnectionTrace traceNode = connection.getConnectionTrace();
+                if (traceNode == null) {
+                    continue;
+                }
+                traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), trace);
+                if (connection != null && connection.checkTraceShowEnable()) {
+                    connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), trace);
+                }
+            }
+        }
     }
 
     public void exec() {
@@ -1164,21 +1238,21 @@ public class ProcessComposite extends Composite {
             ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
         }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
-        if (clearBeforeExec.getSelection()) {
+        if (processManager.getClearBeforeExec()) {
             processContext.clearMessages();
         }
-        // if (watchBtn.getSelection()) {
-        // processContext.switchTime();
-        // }
-        processContext.setWatchAllowed(watchBtn.getSelection());
-        processContext.setMonitorPerf(perfBtn.getSelection());
-        processContext.setMonitorTrace(traceBtn.getSelection());
+        if (processManager.getExecTime()) {
+            processContext.switchTime();
+        }
+        processContext.setMonitorTrace(false);
+        processContext.setWatchAllowed(processManager.getExecTime());
+        processContext.setMonitorPerf(processManager.getStat());
+        // processContext.setMonitorTrace(traceBtn.getSelection());
 
-        processContext.setSelectedContext(contextComposite.getSelectedContext());
-        processContext.exec(getShell());
+        processContext.setSelectedContext(processManager.getSelectContext());
+        processContext.exec(processManager.getProcessShell());
 
         checkSaveBeforeRunSelection();
-
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         ILaunch[] launches = manager.getLaunches();
         manager.removeLaunches(launches);
@@ -1321,12 +1395,12 @@ public class ProcessComposite extends Composite {
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
                                             process.getStreamsProxy().getOutputStreamMonitor().addListener(streamListener);
-                                            if (clearBeforeExec.getSelection()) {
-                                                processContext.clearMessages();
-                                            }
-                                            if (watchBtn.getSelection()) {
-                                                processContext.switchTime();
-                                            }
+                                            // if (clearBeforeExec.getSelection()) {
+                                            // processContext.clearMessages();
+                                            // }
+                                            // if (watchBtn.getSelection()) {
+                                            // processContext.switchTime();
+                                            // }
 
                                             ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
                                             clearPerfAction.setProcess(processContext.getProcess());
@@ -1377,7 +1451,7 @@ public class ProcessComposite extends Composite {
      * DOC Administrator Comment method "checkSaveBeforeRunSelection".
      */
     private void checkSaveBeforeRunSelection() {
-        if (saveJobBeforeRunButton.getSelection()) {
+        if (processManager.getSaveJobBeforeRun()) {
             SaveJobBeforeRunAction action = new SaveJobBeforeRunAction(processContext.getProcess());
             action.run();
         }
@@ -1408,9 +1482,9 @@ public class ProcessComposite extends Composite {
                 }
             });
         } else if (RunProcessContext.PROP_MONITOR.equals(propName)) {
-            perfBtn.setSelection(((Boolean) evt.getNewValue()).booleanValue());
+            // perfBtn.setSelection(((Boolean) evt.getNewValue()).booleanValue());
         } else if (RunProcessContext.TRACE_MONITOR.equals(propName)) {
-            traceBtn.setSelection(((Boolean) evt.getNewValue()).booleanValue());
+            // traceBtn.setSelection(((Boolean) evt.getNewValue()).booleanValue());
         } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
 
@@ -1436,18 +1510,18 @@ public class ProcessComposite extends Composite {
      * 
      * @return the targetExecutionTabItem
      */
-    public CTabItem getTargetExecutionTabItem() {
-        return this.targetExecutionTabItem;
-    }
-
-    /**
-     * Getter for leftTabFolder.
-     * 
-     * @return the leftTabFolder
-     */
-    public CTabFolder getLeftTabFolder() {
-        return this.leftTabFolder;
-    }
+    // public CTabItem getTargetExecutionTabItem() {
+    // return this.targetExecutionTabItem;
+    // }
+    //
+    // /**
+    // * Getter for leftTabFolder.
+    // *
+    // * @return the leftTabFolder
+    // */
+    // public CTabFolder getLeftTabFolder() {
+    // return this.leftTabFolder;
+    // }
 
     protected static RunProcessContext getProcessContext() {
         return processContext;
@@ -1648,7 +1722,7 @@ public class ProcessComposite extends Composite {
         return m.find();
     }
 
-    private void addPerlMark(IProcessMessage psMess) {
+    protected void addPerlMark(IProcessMessage psMess) {
         if (psMess.getType().equals(MsgType.STD_ERR)) {
             String content = psMess.getContent();
             String path = null;
@@ -1706,4 +1780,157 @@ public class ProcessComposite extends Composite {
         return trunjobList;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getComposite()
+     */
+    public Composite getComposite() {
+        // TODO Auto-generated method stub
+        return composite;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getCurRowSize()
+     */
+    public int getCurRowSize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getElement()
+     */
+    public Element getElement() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getHashCurControls()
+     */
+    public BidiMap getHashCurControls() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getPart()
+     */
+    public IMultiPageTalendEditor getPart() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.core.properties.tab.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.
+     * ConnectionItem)
+     */
+    public String getRepositoryAliasName(ConnectionItem connectionItem) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
+     */
+    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
+     */
+    public Map<String, Query> getRepositoryQueryStoreMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
+     */
+    public Map<String, IMetadataTable> getRepositoryTableMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getSection()
+     */
+    public EComponentCategory getSection() {
+        // TODO Auto-generated method stub
+        return EComponentCategory.BASICRUN;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbSchemaMap()
+     */
+    public Map<String, String> getTableIdAndDbSchemaMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbTypeMap()
+     */
+    public Map<String, String> getTableIdAndDbTypeMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#refresh()
+     */
+    public void refresh() {
+        // TODO Auto-generated method stub
+        if (!isDisposed()) {
+            getParent().layout();
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.properties.tab.IDynamicProperty#setCurRowSize(int)
+     */
+    public void setCurRowSize(int i) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * DOC Administrator Comment method "setProcessViewHelper".
+     * 
+     * @param processViewHelper
+     */
+    public void setProcessViewHelper(IProcessViewHelper processViewHelper) {
+        // TODO Auto-generated method stub
+        this.processViewHelper = processViewHelper;
+    }
 }

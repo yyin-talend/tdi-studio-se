@@ -39,7 +39,12 @@ public enum EElementType {
              EComponentCategory.DYNAMICS_SETTINGS,
              EComponentCategory.SQL_PATTERN,
              EComponentCategory.VIEW,
-             EComponentCategory.DOC)
+             EComponentCategory.DOC),
+    RUN_PROCESS(
+                EComponentCategory.BASICRUN,
+                EComponentCategory.DEBUGRUN,
+                EComponentCategory.ADVANCESETTING,
+                EComponentCategory.TARGET)
 
     ;
 

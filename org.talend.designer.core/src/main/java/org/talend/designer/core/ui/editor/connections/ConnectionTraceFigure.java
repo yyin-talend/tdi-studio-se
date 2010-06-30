@@ -410,7 +410,6 @@ public class ConnectionTraceFigure extends Figure {
             image = ImageProvider.getImage(ECoreImage.TRACE_OFF);
         }
         if (connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()) != null) {
-
             if ((Boolean) connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).getValue()
                     && (Boolean) connection.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName()).getValue()) {
                 image = ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE));

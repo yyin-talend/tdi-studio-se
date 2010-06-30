@@ -256,11 +256,11 @@ public class ProcessContextComposite extends Composite {
         contextComboViewer.addSelectionChangedListener(contextComboListener);
     }
 
-    protected IContext getSelectedContext() {
+    public IContext getSelectedContext() {
         return (IContext) ((IStructuredSelection) contextComboViewer.getSelection()).getFirstElement();
     }
 
-    protected boolean promptConfirmLauch() {
+    public boolean promptConfirmLauch() {
         return promptConfirmLauch(getShell(), getSelectedContext(), process);
     }
 

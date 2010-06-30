@@ -79,9 +79,13 @@ public class RunProcessContext {
 
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
 
+    public static final String PREVIOUS_ROW = "RunProcessContext.PreviousRow";
+
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
 
     private boolean watchAllowed;
+
+    private Boolean nextBreakpoint = false;
 
     /** Change property listeners. */
     private final transient PropertyChangeSupport pcsDelegate;
@@ -118,6 +122,8 @@ public class RunProcessContext {
 
     /** Kill is in progress. */
     private boolean killing;
+
+    private boolean lastIsRow = false;
 
     private final IProcessMessageManager processMessageManager;
 
@@ -196,6 +202,10 @@ public class RunProcessContext {
 
     public Collection<IProcessMessage> getMessages() {
         return processMessageManager.getMessages();
+    }
+
+    public void addMessage(IProcessMessage message) {
+        processMessageManager.addMessage(message);
     }
 
     /**
@@ -296,6 +306,10 @@ public class RunProcessContext {
     }
 
     Thread processMonitorThread;
+
+    private boolean nextRow = false;
+
+    private boolean priviousRow = false;
 
     private void showErrorMassage(String category) {
         String title = Messages.getString("RunProcessContext.PortErrorTitle", category); //$NON-NLS-1$
@@ -976,6 +990,14 @@ public class RunProcessContext {
 
         private volatile boolean stopThread;
 
+        private volatile boolean userow = false;
+
+        int dataSize = 0;
+
+        int readSize = 0;
+
+        private List connectionSize = new ArrayList();
+
         public TraceMonitor() {
             super();
             isTracPause = false;
@@ -1022,23 +1044,127 @@ public class RunProcessContext {
                 try {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
+
+                    boolean lastIsPrivious = false;
+                    boolean lastRow = false;
+                    final List connectionData = new ArrayList();
                     while (!stopThread) {
                         final String data = reader.readLine();
                         PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                                 processSocket.getOutputStream())), true);
-                        if (isTracPause()) {
-                            pred.println("PAUSE"); //$NON-NLS-1$
-                        } else {
-                            pred.println("RUN"); //$NON-NLS-1$
-                        }
                         if (data == null) {
                             stopThread = true;
-                        } else if ("ID_STATUS".equals(data)) { //$NON-NLS-1$
+                        } else if ("ID_STATUS".equals(data)) {
+                            if (isTracPause()) {
+                                pred.println("PAUSE"); //$NON-NLS-1$
+                            } else if (lastIsRow) {
+                                pred.println("NEXT_ROW");
+                            } else {
+                                // testing only
+                                pred.println("NEXT_BREAKPOINT");
+                            }
+                            continue;
+                        } else if ("UI_STATUS".equals(data)) {
+                            // wait for UI here, for next click, then send STATUS_OK
+                            if (isNextPoint()) {
+                                firePropertyChange(PREVIOUS_ROW, false, true);
+                                pred.println("STATUS_OK");
+                                setNextBreakPoint(false);
+                                lastIsRow = false;
+                            } else if (isNextRow()) {
+                                firePropertyChange(PREVIOUS_ROW, false, true);
+                                if (readSize > 0) {
+                                    pred.println("STATUS_WAITING");
+                                    if (lastIsPrivious) {
+                                        readSize = readSize - connectionSize.size();
+                                        lastIsPrivious = false;
+                                    }
+                                    for (int b = 0; b < connectionSize.size(); b++) {
+                                        if ((dataSize - readSize < connectionData.size())) {
+                                            if (readSize >= 0) {
+                                                TraceData traceData = new TraceData((String) connectionData.get(dataSize
+                                                        - readSize));
+                                                String connectionId = traceData.getElementId();
+                                                final IConnection connection = findConnection(connectionId);
+                                                if (connection != null) {
+                                                    Display.getDefault().syncExec(new Runnable() {
+
+                                                        public void run() {
+                                                            if ((String) connectionData.get(dataSize - readSize) != null) {
+                                                                connection.setTraceData((String) connectionData.get(dataSize
+                                                                        - readSize));
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            readSize = readSize - 1;
+                                        }
+                                    }
+                                    if (readSize == 0) {
+                                        lastIsPrivious = false;
+                                    }
+                                    lastRow = true;
+                                } else {
+                                    pred.println("STATUS_OK");
+                                }
+                                setNextRow(false);
+                                lastIsRow = true;
+
+                            } else if (isPriviousRow()) {
+                                lastIsPrivious = true;
+                                if (lastRow || readSize == 0) {
+                                    readSize = readSize + connectionSize.size();
+                                    lastRow = false;
+                                }
+
+                                for (int b = 0; b < connectionSize.size(); b++) {
+                                    readSize = readSize + 1;
+                                    if (dataSize - readSize >= 0) {
+                                        TraceData traceData = new TraceData((String) connectionData.get(dataSize - readSize));
+                                        String connectionId = traceData.getElementId();
+                                        final IConnection connection = findConnection(connectionId);
+                                        if (connection != null) {
+                                            Display.getDefault().syncExec(new Runnable() {
+
+                                                public void run() {
+                                                    if ((String) connectionData.get(dataSize - readSize) != null) {
+                                                        connection.setTraceData((String) connectionData.get(dataSize - readSize));
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        if (dataSize - readSize == 0) {
+                                            firePropertyChange(PREVIOUS_ROW, true, false);
+                                        }
+                                    } else {
+                                        readSize = dataSize;
+
+                                    }
+                                }
+                                pred.println("STATUS_WAITING");
+                                setPreviousRow(false);
+                            } else {
+                                if (dataSize == connectionSize.size()) {
+                                    firePropertyChange(PREVIOUS_ROW, true, false);
+                                }
+                                lastIsRow = false;
+                                pred.println("STATUS_WAITING");
+                            }
                             continue;
                         } else {
                             TraceData traceData = new TraceData(data);
+
                             String connectionId = traceData.getElementId();
                             final IConnection connection = findConnection(connectionId);
+                            connectionData.add(data);
+                            dataSize++;
+                            if (connectionData.size() > (connectionSize.size() * 6) - 1) {
+                                for (int i = 0; i < connectionSize.size(); i++) {
+                                    connectionData.remove(0);
+                                    dataSize = dataSize - 1;
+                                }
+                            }
                             if (connection != null) {
                                 Display.getDefault().syncExec(new Runnable() {
 
@@ -1077,6 +1203,9 @@ public class RunProcessContext {
                 for (IConnection connec : psNode.getOutgoingConnections()) {
                     if (connec.getName().equals(connectionId)) {
                         connection = connec;
+                        if (!connectionSize.contains(connection)) {
+                            connectionSize.add(connection);
+                        }
                     }
                 }
             }
@@ -1228,4 +1357,55 @@ public class RunProcessContext {
         }
         perMonitorList.clear();
     }
+
+    /**
+     * DOC Administrator Comment method "setNextBreakPoint".
+     */
+    public void setNextBreakPoint(Boolean nextBreakpoint) {
+        // TODO Auto-generated method stub
+        this.nextBreakpoint = nextBreakpoint;
+    }
+
+    /**
+     * DOC Administrator Comment method "isNextPoint".
+     * 
+     * @return
+     */
+    private boolean isNextPoint() {
+        // TODO Auto-generated method stub
+        return nextBreakpoint;
+    }
+
+    /**
+     * DOC Administrator Comment method "setNextRow".
+     * 
+     * @param b
+     */
+    public void setNextRow(boolean b) {
+        // TODO Auto-generated method stub
+        this.nextRow = b;
+    }
+
+    public boolean isNextRow() {
+        return this.nextRow;
+    }
+
+    /**
+     * DOC Administrator Comment method "setPreviousRow".
+     * 
+     * @param b
+     */
+    public void setPreviousRow(boolean b) {
+        // TODO Auto-generated method stub
+        this.priviousRow = b;
+    }
+
+    public boolean isPriviousRow() {
+        return this.priviousRow;
+    }
+
+    public void setLastIsRow(boolean lastIsRow) {
+        this.lastIsRow = lastIsRow;
+    }
+
 }

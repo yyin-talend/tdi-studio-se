@@ -12,29 +12,25 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui.views;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.designer.runprocess.ui.JobJvmComposite;
+import org.talend.designer.runprocess.ui.DebugProcessTosComposite;
+import org.talend.designer.runprocess.ui.TraceDebugProcessComposite;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
- * 
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
- * 
+ * DOC Administrator class global comment. Detailled comment
  */
-public interface IProcessViewHelper {
-
-    /**
-     * DOC amaumont Comment method "getProcessComposite".
-     * 
-     * @param container
-     * @return
-     */
-    public JobJvmComposite getProcessComposite(final Composite container);
+public class DefaultDebugviewHelper implements IDebugViewHelper {
 
     /*
-     * public JobTargetExecutionComposite getTargetComposite(final Composite container);
+     * (non-Javadoc)
      * 
-     * public JvmArgumentsComposite getJvmArgumentsComposite(final Composite container);
+     * @see
+     * org.talend.designer.runprocess.ui.views.IDebugViewHelper#getDebugComposite(org.eclipse.swt.widgets.Composite)
      */
+    public TraceDebugProcessComposite getDebugComposite(Composite container) {
+        // TODO Auto-generated method stub
+        return new DebugProcessTosComposite(container, SWT.NONE);
+    }
 
 }

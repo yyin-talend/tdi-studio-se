@@ -43,7 +43,7 @@ public class FindDialog extends Dialog {
      * 
      * @param parentShell
      */
-    protected FindDialog(Shell parentShell) {
+    public FindDialog(Shell parentShell) {
         super(parentShell);
 
     }

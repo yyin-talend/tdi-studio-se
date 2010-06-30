@@ -12,37 +12,10 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui.views;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ActionHandler;
-import org.eclipse.ui.contexts.IContextActivation;
-import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.handlers.IHandlerService;
-import org.talend.designer.runprocess.RunProcessContext;
-import org.talend.designer.runprocess.RunProcessContextManager;
-import org.talend.designer.runprocess.RunProcessPlugin;
-import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.ui.ProcessComposite;
-import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
+import org.talend.designer.runprocess.ui.JobJvmComposite;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -60,8 +33,8 @@ public class DefaultProcessViewHelper implements IProcessViewHelper {
      * @param container
      * @return
      */
-    public ProcessComposite getProcessComposite(final Composite container) {
-        return new ProcessComposite(container, SWT.NONE);
+    public JobJvmComposite getProcessComposite(final Composite container) {
+        return new JobJvmComposite(container, SWT.NONE);
     }
 
 }

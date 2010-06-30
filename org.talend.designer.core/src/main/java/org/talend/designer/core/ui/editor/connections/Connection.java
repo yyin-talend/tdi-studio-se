@@ -337,7 +337,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setReadOnly(isLocalRepository);
             addElementParameter(param);
             // breakpoint
-            if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
+                    || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
                 param = new ElementParameter(this);
                 param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
                 param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
@@ -922,9 +923,13 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
             setTraceConnection((Boolean) value);
         }
-        if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id) && value instanceof Boolean) {
-            if (PluginChecker.isTIS() && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                this.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).setValue(value);
+        if ((EParameterName.TRACES_SHOW_ENABLE.getName().equals(id) || EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
+                && value instanceof Boolean) {
+            if (PluginChecker.isTIS()
+                    && (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) || lineStyle
+                            .hasConnectionCategory(IConnectionCategory.MERGE))) {
+                if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
+                    this.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName()).setValue(value);
                 if (this.trace != null) {
                     this.trace.setPropertyValue(EParameterName.ACTIVEBREAKPOINT.getName(), value);
                 }

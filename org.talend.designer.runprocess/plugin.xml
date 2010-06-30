@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="runprocess_view_helper" name="Runprocess View Helper" schema="schema/runprocess_view_helper.exsd"/>
    <extension-point id="runprocess_manager" name="Runprocess Mananger" schema="schema/runprocess_manager.exsd"/>
+   <extension-point id="debugprocess_view_helper" name="Debugprocess View Helper" schema="schema/debugprocess_view_helper.exsd"/>
    <extension
          point="org.talend.core.filepreview_provider">
       <preview

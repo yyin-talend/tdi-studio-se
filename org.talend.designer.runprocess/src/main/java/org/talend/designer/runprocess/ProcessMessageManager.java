@@ -115,7 +115,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
             if (messages.isFull()) {
                 messages.remove();
             }
-
+            messages.add(debugResultMessage);
             firePropertyChange(PROP_DEBUG_MESSAGE_ADD, null, debugResultMessage);
         }
 

@@ -54,7 +54,9 @@ if(execStat){
 }
 <%
   }
-}
+}%>
+ 
+<%
 
  if (codePart.equals(ECodePart.MAIN)) {
   boolean traceCodeGenerated = false;     
@@ -78,9 +80,9 @@ if(execStat){
   
   if (<%=conn.getName() %> !=null) {
   globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
-  runTrace.isPause();
   if (runTrace.isPause()) {
    while (runTrace.isPause()) {
+   
    	Thread.sleep(100);
    }
   }	 else {
