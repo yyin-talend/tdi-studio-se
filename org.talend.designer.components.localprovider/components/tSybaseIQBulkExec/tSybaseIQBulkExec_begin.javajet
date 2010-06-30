@@ -177,7 +177,7 @@ if(columnList != null && columnList.size() > 0) {
 %>
 		loadingCols.append("ASCII(" + <%=column.getLength()%> + ")");
 <%			}else{ %>
-        	loadingCols.append("'" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "'");
+        	loadingCols.append("'" + <%=field_separator.replaceAll("\\\\", "\\\\\\\\") %> + "'");
 <%			}
       	}
     }
@@ -204,10 +204,10 @@ if(columnList != null && columnList.size() > 0) {
 <%
     }
 %>
-   
+   strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "'";
     
 <%if(useFixedLength==true){ %>
-	strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "' quotes off";
+	 strSQL=strSQL + " quotes off";
 <%}else{
 		if(useEnclosed){
 %>
