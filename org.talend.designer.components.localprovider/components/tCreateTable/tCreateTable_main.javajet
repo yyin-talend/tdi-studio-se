@@ -477,7 +477,7 @@ class JavaDBManager extends Manager {
         String driver = null;
         if(("EMBEDED").equals(frameworkType)) {
             driver = "org.apache.derby.jdbc.EmbeddedDriver";
-        } if(("JCCJDBC").equals(frameworkType)) {
+        }else if(("JCCJDBC").equals(frameworkType)) {
             driver = "com.ibm.db2.jcc.DB2Driver";
         } else {
             driver = "org.apache.derby.jdbc.ClientDriver";
@@ -532,7 +532,7 @@ class JavaDBManager extends Manager {
         javaCode.append(super.closeConnection());
         if(("EMBEDED").equals(frameworkType)) {
             javaCode.append("try {\r\n");
-            javaCode.append("java.sql.DriverManager.getConnection(\"jdbc:derby:;shutdown=true\");\r\n");
+            javaCode.append("java.sql.DriverManager.getConnection(\"jdbc:derby:\" + " + dbName+ " + \" +;shutdown=true\");\r\n");
             javaCode.append("} catch(java.sql.SQLException se) {\r\n");
             javaCode.append("}\r\n");               
         }
