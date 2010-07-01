@@ -14,7 +14,13 @@ public class <JobName>ListenerAction extends AbstractActionLifecycle
   
   public Message <JobName>(Message message) throws Exception{
 		  <JobName> myJob = new <JobName>();
+		  myJob.setValueObject(message);
 		  myJob.runJob(new String[]{});
+		  Object outputMessage = myJob.getValueObject();
+		  //if the ETL job return value as type of Message, return it directly.
+		  if(outputMessage != null && outputMessage instanceof Message){
+		  	return (Message)outputMessage;
+		  }
 		  return message;
 	}
 }
