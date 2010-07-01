@@ -22,7 +22,9 @@ import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.hl7.managers.HL7Manager;
+import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.HL7MultiSchemaUI;
+import org.talend.designer.hl7.ui.HL7OutputLinkUI;
 import org.talend.designer.hl7.ui.HL7UI;
 
 /**
@@ -43,7 +45,11 @@ public class HL7Main {
 
     public HL7Main(HL7InputComponent connector) {
         this.connector = connector;
-        this.hl7Manager = new HL7Manager(connector);
+        if (connector.isHL7Output()) {
+            this.hl7Manager = new HL7OutputManager(connector);
+        } else {
+            this.hl7Manager = new HL7Manager(connector);
+        }
     }
 
     /**
@@ -53,6 +59,11 @@ public class HL7Main {
      * @return
      */
     public void createUI(Composite parent) {
+        if (connector.isHL7Output()) {
+            generatorUI = new HL7OutputLinkUI(parent, this.hl7Manager);
+            generatorUI.init();
+            return;
+        }
         generatorUI = new HL7MultiSchemaUI(parent, hl7Manager);
         generatorUI.init();
 

@@ -37,7 +37,10 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
@@ -419,6 +422,15 @@ public class HL7UI {
 
     public HeaderComposite getHeader() {
         return this.header;
+    }
+
+    public IConnection getConnection() {
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(hl7Manager.getHl7Component(),
+                IConnectionCategory.FLOW);
+        if (incomingConnections.size() > 0) {
+            return incomingConnections.get(0);
+        }
+        return null;
     }
 
 }

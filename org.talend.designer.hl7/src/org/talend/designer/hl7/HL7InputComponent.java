@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
@@ -60,7 +62,6 @@ public class HL7InputComponent extends AbstractExternalNode {
 
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
-
     }
 
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
@@ -114,7 +115,27 @@ public class HL7InputComponent extends AbstractExternalNode {
     }
 
     public void renameInputConnection(String oldName, String newName) {
+        List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
+        boolean flagRoot = false;
+        String schemaId = oldName + ":";
 
+        for (Map<String, String> map : listRoot) {
+            String rowName = map.get(COLUMN);
+            if (rowName == null) {
+                continue;
+            }
+            if (rowName.equals(oldName)) {
+                map.put(COLUMN, newName);
+                flagRoot = true;
+            } else if (rowName.startsWith(schemaId)) {
+                rowName = newName + rowName.substring(rowName.indexOf(":"));
+                map.put(COLUMN, rowName);
+                flagRoot = true;
+            }
+        }
+        if (flagRoot) {
+            this.getElementParameter(ROOT).setValue(listRoot);
+        }
     }
 
     public void renameOutputConnection(String oldName, String newName) {
@@ -154,6 +175,10 @@ public class HL7InputComponent extends AbstractExternalNode {
         return getComponent().getName().equals("tFileInputHL7"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    public boolean isHL7Output() {
+        return getComponent().getName().equals("tHL7Output");//$NON-NLS-1$
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public boolean setTableElementParameter(List<Map<String, String>> epsl, String paraName) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
@@ -181,6 +206,37 @@ public class HL7InputComponent extends AbstractExternalNode {
         IElementParameter parameter = this.getElementParameter(paraName); //$NON-NLS-N$
         if (parameter != null && value != null) {
             parameter.setValue(value);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.core.model.process.AbstractExternalNode#metadataInputChanged(org.talend.core.model.components.
+     * IODataComponent, java.lang.String)
+     */
+    @Override
+    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
+        super.metadataInputChanged(dataComponent, connectionToApply);
+        List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
+        boolean flagRoot = false;
+
+        String schemaId = ""; //$NON-NLS-1$
+        if (isHL7Output()) {
+            schemaId = dataComponent.getConnection().getMetadataTable().getLabel() + ":"; //$NON-NLS-1$
+        }
+
+        for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
+            for (Map<String, String> map : listRoot) {
+                if (map.get(COLUMN).equals(schemaId + col.getOldName())) {
+                    map.put(COLUMN, schemaId + col.getNewName());
+                    flagRoot = true;
+                }
+            }
+        }
+
+        if (flagRoot) {
+            this.getElementParameter(ROOT).setValue(listRoot);
         }
     }
 

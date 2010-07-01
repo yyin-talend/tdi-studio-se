@@ -67,7 +67,9 @@ public class HL7Manager {
         this.hl7Component = hl7Component;
         this.uiManager = new UIManager(this);
         this.schemaRelationMap = new HashMap<String, List<MetadataColumn>>();
-        readMessageContent();
+        if (!hl7Component.isHL7Output()) {
+            readMessageContent();
+        }
     }
 
     private void readMessageContent() {
