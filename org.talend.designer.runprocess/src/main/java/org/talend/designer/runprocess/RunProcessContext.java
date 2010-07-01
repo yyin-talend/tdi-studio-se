@@ -27,9 +27,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -1012,6 +1014,7 @@ public class RunProcessContext {
             // Waiting connection from process
             Socket processSocket = null;
             ServerSocket serverSock = null;
+            final Map<IConnection, Map<String, String>> connAndTraces = new HashMap<IConnection, Map<String, String>>();
             do {
                 try {
                     serverSock = new ServerSocket(getTracesPort());
@@ -1047,7 +1050,7 @@ public class RunProcessContext {
 
                     boolean lastIsPrivious = false;
                     boolean lastRow = false;
-                    final List connectionData = new ArrayList();
+                    final List<Map<String, String>> connectionData = new ArrayList<Map<String, String>>();
                     while (!stopThread) {
                         final String data = reader.readLine();
                         PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
@@ -1082,20 +1085,23 @@ public class RunProcessContext {
                                     for (int b = 0; b < connectionSize.size(); b++) {
                                         if ((dataSize - readSize < connectionData.size())) {
                                             if (readSize >= 0) {
-                                                TraceData traceData = new TraceData((String) connectionData.get(dataSize
-                                                        - readSize));
-                                                String connectionId = traceData.getElementId();
-                                                final IConnection connection = findConnection(connectionId);
-                                                if (connection != null) {
-                                                    Display.getDefault().syncExec(new Runnable() {
-
-                                                        public void run() {
-                                                            if ((String) connectionData.get(dataSize - readSize) != null) {
-                                                                connection.setTraceData((String) connectionData.get(dataSize
-                                                                        - readSize));
-                                                            }
+                                                final Map<String, String> nextRowTrace = connectionData.get(dataSize - readSize);
+                                                if (nextRowTrace != null) {
+                                                    String connectionId = null;
+                                                    for (String key : nextRowTrace.keySet()) {
+                                                        if (!key.contains("[MAIN]") && !key.contains(":")) {
+                                                            connectionId = key;
                                                         }
-                                                    });
+                                                    }
+                                                    final IConnection connection = findConnection(connectionId);
+                                                    if (connection != null) {
+                                                        Display.getDefault().syncExec(new Runnable() {
+
+                                                            public void run() {
+                                                                connection.setTraceData(nextRowTrace);
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             }
                                             readSize = readSize - 1;
@@ -1121,25 +1127,30 @@ public class RunProcessContext {
                                 for (int b = 0; b < connectionSize.size(); b++) {
                                     readSize = readSize + 1;
                                     if (dataSize - readSize >= 0) {
-                                        TraceData traceData = new TraceData((String) connectionData.get(dataSize - readSize));
-                                        String connectionId = traceData.getElementId();
-                                        final IConnection connection = findConnection(connectionId);
-                                        if (connection != null) {
-                                            Display.getDefault().syncExec(new Runnable() {
-
-                                                public void run() {
-                                                    if ((String) connectionData.get(dataSize - readSize) != null) {
-                                                        connection.setTraceData((String) connectionData.get(dataSize - readSize));
-                                                    }
+                                        final Map<String, String> previousRowTrace = connectionData.get(dataSize - readSize);
+                                        if (previousRowTrace != null) {
+                                            String connectionId = null;
+                                            for (String key : previousRowTrace.keySet()) {
+                                                if (!key.contains("[MAIN]") && !key.contains(":")) {
+                                                    connectionId = key;
                                                 }
-                                            });
-                                        }
-                                        if (dataSize - readSize == 0) {
-                                            firePropertyChange(PREVIOUS_ROW, true, false);
-                                        }
-                                    } else {
-                                        readSize = dataSize;
+                                            }
+                                            final IConnection connection = findConnection(connectionId);
+                                            if (connection != null) {
+                                                Display.getDefault().syncExec(new Runnable() {
 
+                                                    public void run() {
+                                                        connection.setTraceData(previousRowTrace);
+                                                    }
+                                                });
+                                            }
+                                            if (dataSize - readSize == 0) {
+                                                firePropertyChange(PREVIOUS_ROW, true, false);
+                                            }
+                                        } else {
+                                            readSize = dataSize;
+
+                                        }
                                     }
                                 }
                                 pred.println("STATUS_WAITING");
@@ -1154,23 +1165,47 @@ public class RunProcessContext {
                             continue;
                         } else {
                             TraceData traceData = new TraceData(data);
-
-                            String connectionId = traceData.getElementId();
-                            final IConnection connection = findConnection(connectionId);
-                            connectionData.add(data);
-                            dataSize++;
-                            if (connectionData.size() > (connectionSize.size() * 6) - 1) {
-                                for (int i = 0; i < connectionSize.size(); i++) {
-                                    connectionData.remove(0);
-                                    dataSize = dataSize - 1;
+                            final String idPart = traceData.getElementId();
+                            String id = null;
+                            boolean isMapTrace = false;
+                            if (idPart != null) {
+                                if (idPart.endsWith("[MAIN]")) {
+                                    id = idPart.substring(0, idPart.indexOf("[MAIN]"));
+                                    isMapTrace = true;
+                                } else if (idPart.contains(":") && idPart.split(":").length == 2) {
+                                    id = idPart.split(":")[0];
+                                    isMapTrace = true;
+                                } else {
+                                    id = idPart;
                                 }
                             }
+                            final IConnection connection = findConnection(id);
+
                             if (connection != null) {
+                                Map<String, String> traceMap = connAndTraces.get(connection);
+                                if (traceMap == null) {
+                                    traceMap = new HashMap<String, String>();
+                                    connAndTraces.put(connection, traceMap);
+                                }
+                                traceMap.put(idPart, data);
+                                if (isMapTrace) {
+                                    continue;
+                                }
+
+                                connectionData.add(traceMap);
+                                dataSize++;
+                                if (connectionData.size() > (connectionSize.size() * 6) - 1) {
+                                    for (int i = 0; i < connectionSize.size(); i++) {
+                                        connectionData.remove(0);
+                                        dataSize = dataSize - 1;
+                                    }
+                                }
                                 Display.getDefault().syncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
-                                            connection.setTraceData(data);
+                                            connection.setTraceData(connAndTraces.get(connection));
+                                            connAndTraces.clear();
                                         }
                                     }
                                 });

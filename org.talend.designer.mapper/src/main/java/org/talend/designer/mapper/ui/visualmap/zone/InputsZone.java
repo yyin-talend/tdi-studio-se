@@ -13,6 +13,8 @@
 package org.talend.designer.mapper.ui.visualmap.zone;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,6 +49,14 @@ public class InputsZone extends Composite {
         // this.setLayout(layout);
 
         this.mapperManager = mapperManager;
+        this.addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+                if (toolbar != null) {
+                    toolbar.removePropertyChangeListener();
+                }
+            }
+        });
     }
 
     public void createHeaderZoneComponents() {

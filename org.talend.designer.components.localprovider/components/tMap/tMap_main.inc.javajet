@@ -53,6 +53,8 @@
 	boolean isVirtualIn = componentName.endsWith(tMapInName);
 	boolean isVirtualOut = componentName.endsWith(tMapOutName);
 	
+	boolean trace = codeGenArgument.isTrace();
+	
 	String componentNameForKeyProblem = componentName.replaceAll("_" + tMapOutName, "").replaceAll("_" + tMapInName, "");
 	
     List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
@@ -1421,6 +1423,11 @@ if(!isVirtualOut) { // T_TM_M_320
 	            	lastValidOutputTableName = outputTableName;
 	            }
 			} else if(hasJoinedTable(outputTableName,data)&& outputConnection!=null){
+			
+			    if (outputConnection != null) {
+                	sb.append(cr + outputTableName + " = null;");
+            	}
+            	
 				sb.append(cr + outputTableName + "_List.clear();");
                 if(checkingSyntax 
                 || !checkingSyntax && outputConnection != null) {
@@ -1612,7 +1619,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	                        }
 	
 	                        String assignationVar = null;
-	                        if (connectionExists) {
+	                        if (connectionExists) {                       
 	                        	if(outputTable.getIsJoinTableOf()==null){
 	                        		assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",outputColumnName, false);
 	                        	}else {
@@ -1636,17 +1643,45 @@ if(!isVirtualOut) { // T_TM_M_320
 	                        if (checkingSyntax) {
 	                            sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
 	                        }
-	
 	                    } // for entries
 	
 	                    if (connectionExists) {
 	                    	if(hasJoinedTable(outputTableName, data)){
-	                    	 	sb.append(cr + outputTableName + "_List.add(" + outputTableName + "_tmp);");
+	                    		sb.append(cr + outputTableName + "_List.add(" + outputTableName + "_tmp);");
+	                       		sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
+
 	                    	} else if (outputTable.getIsJoinTableOf()!=null) {
 	                    		sb.append(cr + outputTable.getIsJoinTableOf() + "_List.add(" + outputTable.getIsJoinTableOf() + "_tmp);");
+	                    		sb.append(cr + outputTable.getIsJoinTableOf() + " = " + outputTable.getIsJoinTableOf() + "_tmp;");
 	                    	} else {
 	                        	sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
 	                        }
+	                        
+	                        if (trace) { // only for traces to be able to use preview mode in tMap.
+       	                    	if(outputTable.getIsJoinTableOf()==null){ 
+       	                    		String buff = "";        	                              
+       	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
+  	                                   buff += outputTableEntry.getName() + "=\"+"+outputTableName + "_tmp." + outputTableEntry.getName() +"+\"|";
+       	                    		 }
+
+       	                         sb.append("\n").append(
+       	                              "runTrace.sendTrace(\""+ outputTableName + "[MAIN]" +"\",\""+ node.getUniqueName() + "\",\"" +
+       	                              buff + "\"); "
+       	                          );
+		                    	} else  {
+       	                    		String buff = "";        	                              
+      	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
+ 	                                   buff += outputTableEntry.getName() + "=\"+"+outputTable.getIsJoinTableOf() + "_tmp." + outputTableEntry.getName() +"+\"|";
+      	                    		 }
+        							sb.append("\n").append(
+             	                              "runTrace.sendTrace(\""+outputTable.getIsJoinTableOf() +":"+ outputTableName +"\",\""+ node.getUniqueName() + "\",\"" +
+                    					buff
+                						+ "\");"
+						            );
+									
+	                    		}
+	                        }
+	                        
 	                    }
 	                    
 	                    

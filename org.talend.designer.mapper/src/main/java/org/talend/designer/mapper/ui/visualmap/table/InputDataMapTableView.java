@@ -56,6 +56,8 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
@@ -451,6 +453,42 @@ public class InputDataMapTableView extends DataMapTableView {
 
         });
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+
+        if (isMainConnection && PluginChecker.isTIS() && mapperManager.isTracesActive()) {
+            column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+            column.setTitle("Preview");
+            column.setId(DataMapTableView.PREVIEW_COLUMN);
+            column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
+
+                public String get(InputColumnTableEntry bean) {
+                    IMetadataColumn metadataColumn = bean.getMetadataColumn();
+                    if (metadataColumn != null) {
+                        String label = metadataColumn.getLabel();
+                        String preview = bean.getPreviewValue();
+                        if (preview != null) {
+                            String[] split = preview.split("\\|");
+                            for (int i = 0; i < split.length; i++) {
+                                if (split[i] != null) {
+                                    String[] columnValue = split[i].split("=");
+                                    if (columnValue.length == 2 && columnValue[0] != null && columnValue[0].trim().equals(label)) {
+                                        return columnValue[1];
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                    return "";
+                }
+
+                public void set(InputColumnTableEntry bean, String value) {
+                    // do nothing
+                }
+
+            });
+        }
     }
 
     /*

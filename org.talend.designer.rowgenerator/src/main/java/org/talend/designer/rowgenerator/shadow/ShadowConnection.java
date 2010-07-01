@@ -13,6 +13,7 @@
 package org.talend.designer.rowgenerator.shadow;
 
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -135,7 +136,7 @@ public class ShadowConnection implements IConnection {
      * 
      * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
      */
-    public void setTraceData(String traceData) {
+    public void setTraceData(Map<String, String> traceData) {
     }
 
     public boolean isReadOnly() {
@@ -192,6 +193,16 @@ public class ShadowConnection implements IConnection {
      * @see org.talend.core.model.process.IConnection#getTmpNode()
      */
     public INode getTmpNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getTraceData()
+     */
+    public Map<String, String> getTraceData() {
         // TODO Auto-generated method stub
         return null;
     }

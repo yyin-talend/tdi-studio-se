@@ -1131,4 +1131,8 @@ public class MapperManager extends AbstractMapperManager {
     public boolean isDieOnErrorValueChanged() {
         return isDieOnErrorValueChanged;
     }
+
+    public boolean isTracesActive() {
+        return DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
+    }
 }

@@ -12,10 +12,30 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.designer.runprocess.IDebugProcessService;
+import org.talend.designer.runprocess.RunProcessContext;
+import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.ui.ERunprocessImages;
+import org.talend.designer.runprocess.ui.ProcessManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -33,6 +53,18 @@ public class ToolbarInputZone extends ToolbarZone {
 
     private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarInputZone.movedownTooltip"); //$NON-NLS-1$
 
+    private ToolItem previousRow;
+
+    private ToolItem nextRow;
+
+    private ToolItem nextBreakpoint;
+
+    private ToolItem currentRowLabel;
+
+    private ToolItem killBtn;
+
+    private PropertyChangeListener propertyListener;
+
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
      * 
@@ -44,6 +76,7 @@ public class ToolbarInputZone extends ToolbarZone {
     public ToolbarInputZone(Composite parent, int style, MapperManager manager) {
         super(parent, style, manager);
         addCommonsComponents();
+        addPreviewToolItems();
     }
 
     public String getMinimizeTooltipText() {
@@ -72,4 +105,161 @@ public class ToolbarInputZone extends ToolbarZone {
         return MOVE_DOWN_TOOLTIP;
     }
 
+    private void addPreviewToolItems() {
+        if (PluginChecker.isTIS() && getMapperManager().isTracesActive()) {
+            final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager()
+                    .getActiveContext();
+
+            if (activeContext == null) {
+                return;
+            }
+
+            new ToolItem(getToolBarActions(), SWT.SEPARATOR);
+
+            previousRow = new ToolItem(getToolBarActions(), SWT.PUSH);
+            previousRow.setEnabled(activeContext.isRunning());
+            previousRow.setToolTipText("Previous Row");
+            previousRow.setImage(ImageProvider.getImage(EImage.LEFT_ICON));
+
+            currentRowLabel = new ToolItem(getToolBarActions(), SWT.PUSH | SWT.BORDER);
+            currentRowLabel.setEnabled(false);
+            currentRowLabel.setText(getCurrentRowString());
+            currentRowLabel.setToolTipText("Current Row");
+            currentRowLabel.setWidth(50);
+
+            nextRow = new ToolItem(getToolBarActions(), SWT.PUSH);
+            nextRow.setEnabled(!getMapperManager().componentIsReadOnly());
+            nextRow.setToolTipText("Next Row");
+            nextRow.setImage(ImageProvider.getImage(EImage.RIGHT_ICON));
+
+            nextBreakpoint = new ToolItem(getToolBarActions(), SWT.PUSH);
+            nextBreakpoint.setEnabled(activeContext.isRunning());
+            nextBreakpoint.setToolTipText("Next Breakpoint");
+            nextBreakpoint.setImage(ImageProvider.getImage(EImage.RIGHTX_ICON));
+
+            killBtn = new ToolItem(getToolBarActions(), SWT.PUSH);
+            killBtn.setToolTipText("Kill");
+            killBtn.setImage(ImageProvider.getImage(ERunprocessImages.KILL_PROCESS_ACTION));
+            killBtn.setEnabled(activeContext.isRunning());
+
+            previousRow.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    activeContext.setPreviousRow(true);
+                }
+
+            });
+
+            nextRow.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    if (!activeContext.isRunning()) {
+                        activeContext.setLastIsRow(true);
+                        IDebugProcessService service = (IDebugProcessService) GlobalServiceRegister.getDefault().getService(
+                                IDebugProcessService.class);
+                        service.debugProcess();
+                    } else {
+                        activeContext.setNextRow(true);
+                    }
+                }
+
+            });
+            nextBreakpoint.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    activeContext.setNextBreakPoint(true);
+                }
+
+            });
+
+            killBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    IDebugProcessService service = (IDebugProcessService) GlobalServiceRegister.getDefault().getService(
+                            IDebugProcessService.class);
+                    service.debugKill();
+                    killBtn.setEnabled(false);
+                    previousRow.setEnabled(false);
+                    nextBreakpoint.setEnabled(false);
+                }
+
+            });
+
+            propertyListener = new PropertyChangeListener() {
+
+                public void propertyChange(final PropertyChangeEvent evt) {
+                    final String propName = evt.getPropertyName();
+
+                    ProcessManager.getInstance().getProcessShell().getDisplay().syncExec(new Runnable() {
+
+                        public void run() {
+                            if (RunProcessContext.PREVIOUS_ROW.equals(propName)) {
+                                boolean enabled = ((Boolean) evt.getNewValue()).booleanValue();
+                                if (!previousRow.isDisposed() && enabled != previousRow.isEnabled()) {
+                                    previousRow.setEnabled(enabled);
+                                }
+                            } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
+                                boolean enabled = ((Boolean) evt.getNewValue()).booleanValue();
+                                if (!previousRow.isDisposed() && enabled != previousRow.isEnabled()) {
+                                    previousRow.setEnabled(enabled);
+                                }
+                                if (!nextBreakpoint.isDisposed() && enabled != nextBreakpoint.isEnabled()) {
+                                    nextBreakpoint.setEnabled(enabled);
+                                }
+                                if (!killBtn.isDisposed() && enabled != killBtn.isEnabled()) {
+                                    killBtn.setEnabled(enabled);
+                                }
+                            }
+                        }
+                    });
+                }
+
+            };
+
+            activeContext.addPropertyChangeListener(propertyListener);
+
+        }
+    }
+
+    public void removePropertyChangeListener() {
+        final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        if (activeContext != null) {
+            activeContext.removePropertyChangeListener(propertyListener);
+        }
+    }
+
+    private String getCurrentRowString() {
+        if (getMapperManager() != null) {
+            List<? extends IConnection> incomingConnections = getMapperManager().getAbstractMapComponent()
+                    .getIncomingConnections(EConnectionType.FLOW_MAIN);
+            if (incomingConnections != null && incomingConnections.size() == 1) {
+                IConnection connection = incomingConnections.get(0);
+                if (connection != null) {
+                    Map<String, String> traceData = connection.getTraceData();
+                    if (traceData != null) {
+                        String data = traceData.get(connection.getName());
+                        if (data != null) {
+                            int sepIndex = data.indexOf("|"); // index separator for row name
+                            String dataWithoutRowName = data.substring(sepIndex + 1);
+                            sepIndex = dataWithoutRowName.indexOf("|");
+                            return dataWithoutRowName.substring(0, sepIndex);
+                        }
+                    }
+                }
+            }
+
+        }
+        return "Current row";
+    }
+
+    public void refreshCurrentRow() {
+        if (currentRowLabel != null && !currentRowLabel.isDisposed()) {
+            currentRowLabel.setText(getCurrentRowString());
+            getToolBarActions().layout();
+        }
+    }
 }

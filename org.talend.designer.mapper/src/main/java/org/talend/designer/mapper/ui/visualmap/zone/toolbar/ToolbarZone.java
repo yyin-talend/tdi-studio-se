@@ -13,7 +13,8 @@
 package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -61,10 +62,10 @@ public abstract class ToolbarZone {
 
         this.mapperManager = manager;
         composite = new Composite(parent, style);
-        composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+        composite.setLayout(new GridLayout());
 
         toolBarActions = new ToolBar(composite, SWT.FLAT | SWT.RIGHT);
-
+        toolBarActions.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         if (WindowSystem.isGTK()) {
             composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
             composite.setBackgroundMode(SWT.INHERIT_NONE);
@@ -80,13 +81,13 @@ public abstract class ToolbarZone {
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
         upTableButton.setToolTipText(getMoveUpTooltipText());
-        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.UP_ICON)));
+        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
-        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.DOWN_ICON)));
+        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.DOWN_ICON)));
         downTableButton.setToolTipText(getMoveDownTooltipText());
 
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);

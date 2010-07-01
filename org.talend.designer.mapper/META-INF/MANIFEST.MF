@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.designer.components.localprovider,
  org.talend.designer.abstractmap;visibility:=reexport,
  org.talend.libraries.dom4j-jaxen,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.designer.runprocess
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.mapper,

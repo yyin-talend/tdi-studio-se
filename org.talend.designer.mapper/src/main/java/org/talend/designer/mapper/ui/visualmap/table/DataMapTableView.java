@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -113,12 +115,16 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.mapper.MapperMain;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -142,6 +148,7 @@ import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvider;
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
+import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
@@ -152,7 +159,7 @@ import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
  * $Id$
  * 
  */
-public abstract class DataMapTableView extends Composite {
+public abstract class DataMapTableView extends Composite implements PropertyChangeListener {
 
     private final Point realToolbarSize = new Point(0, 0);
 
@@ -242,6 +249,8 @@ public abstract class DataMapTableView extends Composite {
 
     public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN"; //$NON-NLS-1$
 
+    public static final String PREVIEW_COLUMN = "PREVIEW_COLUMN"; //$NON-NLS-1$
+
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN"; //$NON-NLS-1$
 
     public static final String MAP_SETTING_COLUMN = "MAP_SETTING_COLUMN"; //$NON-NLS-1$
@@ -323,6 +332,18 @@ public abstract class DataMapTableView extends Composite {
         createComponents();
         addListeners();
         mapperManager.addTablePair(DataMapTableView.this, abstractDataMapTable);
+        if (abstractDataMapTable instanceof AbstractInOutTable) {
+            IOConnection ioConnection = ((AbstractInOutTable) abstractDataMapTable).getConnection();
+            if (ioConnection != null && ioConnection.getConnecion() != null) {
+                IConnection connection = ioConnection.getConnecion();
+                if (connection instanceof Connection) {
+                    ConnectionTrace connectionTrace = ((Connection) connection).getConnectionTrace();
+                    if (connectionTrace != null) {
+                        connectionTrace.addPropertyChangeListener(this);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -550,7 +571,6 @@ public abstract class DataMapTableView extends Composite {
     }
 
     protected ImageInfo getCondencedItemImage(int i) {
-        System.out.print(i);
         switch (i) {
         case 0:
             return ImageInfo.CONDENSED_TOOL_ICON;
@@ -954,6 +974,29 @@ public abstract class DataMapTableView extends Composite {
         // /////////////////////////////////////////////////////////////////
 
         initShowMessageErrorListener(tableForEntries);
+
+        this.addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+                removeListenerForTrace();
+            }
+        });
+
+    }
+
+    private void removeListenerForTrace() {
+        if (abstractDataMapTable instanceof AbstractInOutTable) {
+            IOConnection ioConnection = ((AbstractInOutTable) abstractDataMapTable).getConnection();
+            if (ioConnection != null && ioConnection.getConnecion() != null) {
+                IConnection connection = ioConnection.getConnecion();
+                if (connection instanceof Connection) {
+                    ConnectionTrace connectionTrace = ((Connection) connection).getConnectionTrace();
+                    if (connectionTrace != null) {
+                        connectionTrace.removePropertyChangeListener(this);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -2813,4 +2856,16 @@ public abstract class DataMapTableView extends Composite {
 
     public abstract void notifyFocusLost();
 
+    public void propertyChange(PropertyChangeEvent evt) {
+        String request = evt.getPropertyName();
+        if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (!tableViewerCreatorForColumns.getTable().isDisposed()) {
+                tableViewerCreatorForColumns.refresh();
+                InputsZone inputsZone = mapperManager.getUiManager().getInputsZone();
+                if (inputsZone != null && !inputsZone.isDisposed() && inputsZone.getToolbar() != null) {
+                    inputsZone.getToolbar().refreshCurrentRow();
+                }
+            }
+        }
+    }
 }

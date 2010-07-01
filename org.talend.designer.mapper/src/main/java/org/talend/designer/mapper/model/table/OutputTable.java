@@ -59,6 +59,12 @@ public class OutputTable extends AbstractInOutTable {
                 name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
     }
 
+    public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, IOConnection connection, String name) {
+        super(mapperManager, metadataTable, connection, name);
+        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(
+                name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
+    }
+
     public void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {

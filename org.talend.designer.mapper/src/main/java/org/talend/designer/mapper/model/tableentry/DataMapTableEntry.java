@@ -13,10 +13,14 @@
 package org.talend.designer.mapper.model.tableentry;
 
 import java.util.List;
+import java.util.Map;
 
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.table.OutputTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -98,6 +102,45 @@ public abstract class DataMapTableEntry implements ITableEntry {
 
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
+    }
+
+    public String getPreviewValue() {
+        if (getParent() instanceof AbstractInOutTable) {
+            AbstractInOutTable abstractTable = (AbstractInOutTable) getParent();
+            if (abstractTable.getConnection() != null) {
+                IConnection connection = abstractTable.getConnection().getConnecion();
+                if (connection != null) {
+                    Map<String, String> traceData = connection.getTraceData();
+                    if (traceData != null) {
+                        if (abstractTable instanceof OutputTable) {
+                            OutputTable output = (OutputTable) abstractTable;
+                            String key = null;
+                            if (output.getIsJoinTableOf() != null) {
+                                key = output.getIsJoinTableOf() + ":" + output.getName();
+                            } else if (hasJoinedTable(output)) {
+                                key = output.getName() + "[MAIN]";
+                            }
+                            return traceData.get(key);
+
+                        } else {
+                            return traceData.get(abstractTable.getName());
+                        }
+                    }
+                }
+            }
+        }
+
+        return "";
+    }
+
+    private boolean hasJoinedTable(OutputTable currentTable) {
+        List<OutputTable> outputTables = currentTable.getMapperManager().getOutputTables();
+        for (OutputTable table : outputTables) {
+            if (table.getIsJoinTableOf() != null && table.getIsJoinTableOf().equals(currentTable.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

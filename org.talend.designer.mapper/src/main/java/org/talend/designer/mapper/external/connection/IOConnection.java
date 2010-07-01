@@ -125,4 +125,8 @@ public class IOConnection {
         return this.connection.isReadOnly();
     }
 
+    public IConnection getConnecion() {
+        return this.connection;
+    }
+
 }

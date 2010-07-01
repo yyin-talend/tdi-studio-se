@@ -95,7 +95,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private boolean readOnly = false;
 
-    private String traceData;
+    private Map<String, String> traceData;
 
     private String connectorName;
 
@@ -714,12 +714,21 @@ public class Connection extends Element implements IConnection, IPerformance {
         return trace;
     }
 
-    public void setTraceData(String traceData) {
-        String oldData = this.traceData;
+    public void setTraceData(Map<String, String> traceData) {
+        Map<String, String> oldData = this.traceData;
         if (!ObjectUtils.equals(oldData, traceData)) {
             this.traceData = traceData;
-            trace.setTrace(traceData);
+            if (traceData != null) {
+                String traceValue = traceData.get(getName());
+                trace.setTrace(traceValue);
+            } else {
+                trace.setTrace(null);
+            }
         }
+    }
+
+    public Map<String, String> getTraceData() {
+        return this.traceData;
     }
 
     /*

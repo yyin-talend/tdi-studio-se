@@ -71,11 +71,11 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.AdvanceSettingComposite;
-import org.talend.designer.runprocess.ui.TraceDebugProcessComposite;
 import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.ProcessManager;
 import org.talend.designer.runprocess.ui.TargetExecComposite;
+import org.talend.designer.runprocess.ui.TraceDebugProcessComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 
 /**
@@ -333,6 +333,10 @@ public class ProcessView extends ViewPart {
         if (dc != null) {
             dc.refresh();
         }
+    }
+
+    public IDebugViewHelper getDebugViewHelper() {
+        return this.debugViewHelper;
     }
 
     public Composite createBasicComposite(Composite parent, Element element, EComponentCategory category) {

@@ -153,10 +153,10 @@ public class ExternalDataConverter {
 
             if (connection != null) {
                 List<ExternalMapperTable> persistentTables = nameToOutpuPersistentTable.get(connection.getName());
-                creatOutputTables(outputDataMapTables, persistentTables, connection.getTable(), connection.getName());
+                creatOutputTables(outputDataMapTables, persistentTables, connection.getTable(), connection, connection.getName());
             } else {
                 List<ExternalMapperTable> persistentTables = nameToOutpuPersistentTable.get(table.getTableName());
-                creatOutputTables(outputDataMapTables, persistentTables, table, table.getTableName());
+                creatOutputTables(outputDataMapTables, persistentTables, table, null, table.getTableName());
             }
 
         }
@@ -165,7 +165,7 @@ public class ExternalDataConverter {
     }
 
     private void creatOutputTables(ArrayList<OutputTable> outputDataMapTables, List<ExternalMapperTable> persistentTables,
-            IMetadataTable metadataTable, String name) {
+            IMetadataTable metadataTable, IOConnection connection, String name) {
         // tables created by connection
         if (persistentTables == null) {
             OutputTable outputTable = new OutputTable(this.mapperManager, metadataTable, name);
@@ -177,9 +177,11 @@ public class ExternalDataConverter {
         for (ExternalMapperTable persistentTable : persistentTables) {
             OutputTable outputTable = null;
             if (persistentTable.getIsJoinTableOf() == null) {
-                outputTable = new OutputTable(this.mapperManager, metadataTable, name);
+                // main table
+                outputTable = new OutputTable(this.mapperManager, metadataTable, connection, name);
             } else {
-                outputTable = new OutputTable(this.mapperManager, metadataTable, persistentTable.getName());
+                // join table
+                outputTable = new OutputTable(this.mapperManager, metadataTable, connection, persistentTable.getName());
             }
             outputTable.initFromExternalData(persistentTable);
             outputDataMapTables.add(outputTable);

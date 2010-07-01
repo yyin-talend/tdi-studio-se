@@ -75,6 +75,20 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         this.connection = connection;
     }
 
+    /**
+     * 
+     * DOC wchen AbstractInOutTable constructor comment.
+     * 
+     * @param metadataTable
+     * @param externalMapperTable can be null
+     * @param name
+     */
+    public AbstractInOutTable(MapperManager mapperManager, IMetadataTable metadataTable, IOConnection connection, String name) {
+        super(mapperManager, name);
+        this.metadataTable = metadataTable;
+        this.connection = connection;
+    }
+
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         expressionFilterEntry = new ExpressionFilterEntry(this);
@@ -116,7 +130,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
      * 
      * @return the connection
      */
-    protected IOConnection getConnection() {
+    public IOConnection getConnection() {
         return this.connection;
     }
 
