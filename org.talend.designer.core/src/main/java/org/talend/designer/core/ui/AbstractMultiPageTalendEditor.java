@@ -73,10 +73,12 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.builder.connection.Properties;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -748,7 +750,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
 
             if (isVirtualNode(node)) {
-                nodeName += "_" + node.getComponent().getMultipleComponentManagers().get(0).getInput().getName(); //$NON-NLS-1$
+                // add for feature 13701
+                for (IMultipleComponentManager mcm : node.getComponent().getMultipleComponentManagers()) {
+                    if (!mcm.isLookupMode()) {
+                        nodeName += "_" + mcm.getInput().getName(); //$NON-NLS-1$
+                    }
+                }
+                // for feature 13701
+                //nodeName += "_" + node.getComponent().getMultipleComponentManagers().get(0).getInput().getName(); //$NON-NLS-1$
             }
             if (node.isFileScaleComponent()) {
                 nodeName += "_fsNode"; //$NON-NLS-1$
@@ -767,10 +776,20 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private boolean isVirtualNode(final INode node) {
         boolean isVirtualNode = false;
 
+        IElementParameter param = node.getElementParameter("IS_VIRTUAL_COMPONENT"); //$NON-NLS-1$
+        if (param != null) { // now only available for tUniqRow.
+            return (Boolean) param.getValue();
+        }
+
         if (node.getUniqueName().startsWith("tMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
         } else {
-            isVirtualNode = node.getComponent().getMultipleComponentManagers().size() > 0;
+            List<IMultipleComponentManager> multipleComponentManagers = node.getComponent().getMultipleComponentManagers();
+            for (IMultipleComponentManager mcm : multipleComponentManagers) {
+                if (!mcm.isLookupMode()) {
+                    return true;
+                }
+            }
         }
 
         return isVirtualNode;
