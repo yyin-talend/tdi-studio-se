@@ -651,6 +651,7 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                setRepositoryContextInContext();
                 dialog.okPressed();
             }
         });
