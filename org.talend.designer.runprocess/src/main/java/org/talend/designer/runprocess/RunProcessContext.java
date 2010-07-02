@@ -107,6 +107,8 @@ public class RunProcessContext {
     /** Trace monitoring activated. */
     private boolean monitorTrace;
 
+    private boolean selectAllTrace = false;
+
     /** Is process running. */
     private boolean running;
 
@@ -388,6 +390,22 @@ public class RunProcessContext {
         if (found) {
             this.monitorTrace = true;
         }
+    }
+
+    public boolean checkBreakpoint() {
+        boolean found = false;
+        // if (this.monitorTrace) {
+        for (IConnection conn : this.getProcess().getAllConnections(null)) {
+            IElementParameter param = conn.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName());
+            IElementParameter param2 = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+            if (param != null && param2 != null && Boolean.TRUE.equals(param.getValue())
+                    && Boolean.TRUE.equals(param2.getValue())) {
+                found = true;
+                break;
+            }
+        }
+        // }
+        return found;
     }
 
     /**
@@ -1441,6 +1459,14 @@ public class RunProcessContext {
 
     public void setLastIsRow(boolean lastIsRow) {
         this.lastIsRow = lastIsRow;
+    }
+
+    public boolean isSelectAllTrace() {
+        return this.selectAllTrace;
+    }
+
+    public void setSelectAllTrace(boolean selectAllTrace) {
+        this.selectAllTrace = selectAllTrace;
     }
 
 }

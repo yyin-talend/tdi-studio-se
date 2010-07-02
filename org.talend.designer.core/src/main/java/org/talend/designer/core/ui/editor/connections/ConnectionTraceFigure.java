@@ -81,7 +81,6 @@ public class ConnectionTraceFigure extends Figure {
             this.setToolTip(tooltip);
             tooltip.setVisible(false);
         }
-
     }
 
     @Override
@@ -389,8 +388,11 @@ public class ConnectionTraceFigure extends Figure {
             }
         }
         if (tooltip != null) {
-            if (flag)
+            if (flag) {
                 tooltip.setTraceData(data, flag, traceFlag);
+            } else {
+                tooltip.setTraceData(data, flag, false);
+            }
         }
         contents = new ArrayList(getChildren());
         refreshCollapseStatus();

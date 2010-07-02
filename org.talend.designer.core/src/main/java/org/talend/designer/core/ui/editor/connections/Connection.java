@@ -1381,4 +1381,5 @@ public class Connection extends Element implements IConnection, IPerformance {
     public ConnectionResuming getResuming() {
         return this.resuming;
     }
+
 }

@@ -194,7 +194,7 @@ public class ProcessView extends ViewPart {
 
         sash = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
         sash.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+        sash.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         GridLayout layout = new GridLayout();
         sash.setLayout(layout);
         Composite left = new Composite(sash, SWT.NONE);
@@ -205,7 +205,7 @@ public class ProcessView extends ViewPart {
         right.setLayout(new FormLayout());
         FormData layouDatag = new FormData();
         layouDatag.left = new FormAttachment(0, 0);
-        layouDatag.width = 35;
+        layouDatag.width = 32;
         layouDatag.top = new FormAttachment(0, 0);
         layouDatag.bottom = new FormAttachment(100, 0);
         final Composite buttonComposite = new Composite(right, SWT.ERROR);
@@ -214,7 +214,7 @@ public class ProcessView extends ViewPart {
 
         Composite cotextCom = new Composite(right, SWT.NONE);
         layouDatag = new FormData();
-        layouDatag.left = new FormAttachment(0, 35);
+        layouDatag.left = new FormAttachment(0, 32);
         layouDatag.right = new FormAttachment(100, 0);
         layouDatag.top = new FormAttachment(0, 0);
         layouDatag.bottom = new FormAttachment(100, 0);
@@ -232,7 +232,7 @@ public class ProcessView extends ViewPart {
         layoutData.grabExcessVerticalSpace = true;
         moveButton.setLayoutData(layoutData);
         addListeners();
-        sash.setSashWidth(3);
+        sash.setSashWidth(5);
         sash.setWeights(new int[] { 18, 5 });
 
         contextComposite = new ProcessContextComposite(cotextCom, SWT.NONE);
@@ -546,7 +546,7 @@ public class ProcessView extends ViewPart {
         }
         this.processContext = activeContext;
         rubjobManager.setProcessContext(processContext);
-        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
+
         rubjobManager.setSaveJobBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
                 RunProcessPrefsConstants.ISSAVEBEFORERUN)
                 && !disableAll);
@@ -564,7 +564,7 @@ public class ProcessView extends ViewPart {
         if (dc == processComposite) {
             processComposite.setProcessContext(activeContext);
         }
-
+        rubjobManager.setSelectContext(contextComposite.getSelectedContext());
         if (dc == debugTisProcessComposite) {
             debugTisProcessComposite.setProcessContext(activeContext);
             debugTisProcessComposite.setContextComposite(this.contextComposite);

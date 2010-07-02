@@ -61,9 +61,8 @@ if(execStat){
  if (codePart.equals(ECodePart.MAIN)) {
   boolean traceCodeGenerated = false;     
   for (IConnection conn : node.getOutgoingConnections()) {
-     boolean use_breakout = ("true").equals(ElementParameterParser.getValue(conn, "__ACTIVEBREAKPOINT__"));
      boolean use_reaceenble = ("true").equals(ElementParameterParser.getValue(conn, "__TRACES_CONNECTION_ENABLE__"));
-  	if(node.isSubProcessStart() && use_breakout && !traceCodeGenerated) {
+  	if(node.isSubProcessStart() && node.isSubProcessContainTraceBreakpoint() && !traceCodeGenerated) {
   	  traceCodeGenerated = true;
   %>
     globalMap.put("USE_CONDITION",Boolean.TRUE);
@@ -96,6 +95,7 @@ if(execStat){
 	}
 	<%
 	    
+     boolean use_breakout = ("true").equals(ElementParameterParser.getValue(conn, "__ACTIVEBREAKPOINT__"));
      boolean use_advanced = ("true").equals(ElementParameterParser.getValue(conn, "__USE_ADVANCED__"));
       List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue( conn,  "__CONDITIONS__");
    		String advancedCondition = ElementParameterParser.getValue(conn, "__ADVANCED_COND__");

@@ -54,6 +54,7 @@ import org.talend.designer.core.ui.action.ParallelExecutionAction;
 import org.talend.designer.core.ui.action.SearchComponentAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
+import org.talend.designer.core.ui.action.ShowBreakpointAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 import org.talend.designer.core.ui.action.TraceDisableAction;
 import org.talend.designer.core.ui.action.TraceEnableAction;
@@ -76,6 +77,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
     private static final String GROUP_CONNECTIONS = "ConnectionsGroup"; //$NON-NLS-1$
 
     private static final String GROUP_OTHER = "OtherGroup"; //$NON-NLS-1$
+
+    private static final String GROUP_BREAKPOINT = "GroupBreakpoint";
 
     private static boolean enableContextMenu = true;
 
@@ -106,6 +109,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         menu.add(new Separator(GEFActionConstants.GROUP_REST));
         menu.add(new Separator(GROUP_OTHER));
         menu.add(new Separator(GEFActionConstants.GROUP_VIEW));
+        menu.add(new Separator(GROUP_BREAKPOINT));
         IAction action;
 
         menu.appendToGroup(GEFActionConstants.GROUP_UNDO, // target group id
@@ -303,21 +307,25 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             action = new TraceEnableAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
+                menu.appendToGroup(GROUP_BREAKPOINT, action);
             }
 
             action = new TraceDisableAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
+                menu.appendToGroup(GROUP_BREAKPOINT, action);
             }
 
             action = new FilterTraceColumnAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
+                menu.appendToGroup(GROUP_BREAKPOINT, action);
             }
-
+            action = new ShowBreakpointAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_BREAKPOINT, action);
+            }
             action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {

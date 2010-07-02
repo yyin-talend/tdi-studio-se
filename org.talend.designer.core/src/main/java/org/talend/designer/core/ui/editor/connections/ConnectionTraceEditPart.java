@@ -24,10 +24,14 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.dialog.FilterColumnDialog;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 
 /**
  * EditPart of the NodeTrace.
@@ -159,11 +163,40 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
             refreshVisuals();
         } else if (request.equals(EParameterName.TRACES_SHOW_ENABLE.getName())
-                || request.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName())
                 || request.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())
                 || request.equals(EParameterName.ACTIVEBREAKPOINT.getName())) {
             refreshVisuals();
+        } else if (request.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName())) {
+            ConnectionTrace connectionTrace = ((ConnectionTrace) this.getModel());
+            Connection connection = connectionTrace.getConnection();
+            PropertyChangeCommand pcc = new PropertyChangeCommand(connection, EParameterName.TRACES_CONNECTION_ENABLE.getName(),
+                    evt.getNewValue());
+            this.getViewer().getEditDomain().getCommandStack().execute(pcc);
+            refreshVisuals();
         }
 
+    }
+
+    public void performRequest(Request req) {
+        if (req.getType().equals(RequestConstants.REQ_OPEN)) {
+            ConnectionTrace a = ((ConnectionTrace) this.getModel());
+            FilterColumnDialog dialog = new FilterColumnDialog(new Shell(), a.getConnection(), this.getViewer().getEditDomain()
+                    .getCommandStack());
+            dialog.open();
+        } else if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)) {
+            ConnectionTrace connectionTrace = ((ConnectionTrace) this.getModel());
+            Connection connection = connectionTrace.getConnection();
+            Boolean flag = (Boolean) connection.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName()).getValue();
+            connection.setPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName(), !flag);
+            // PropertyChangeCommand pcc = new PropertyChangeCommand(connection,
+            // EParameterName.TRACES_CONNECTION_ENABLE.getName(),
+            // !flag);
+            // this.getViewer().getEditDomain().getCommandStack().execute(pcc);
+        }
+    }
+
+    public EditPart getTargetEditPart(Request req) {
+        this.setSelected(1);
+        return this;
     }
 }

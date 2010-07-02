@@ -90,6 +90,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.SynchronizeSchemaHelper;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -3152,5 +3153,57 @@ public class Node extends Element implements INode {
     public String getUniqueShortName() {
         // should't be call from here, should be called from something extends AbstractNode (DataNode, ExternalNode...).
         return null;
+    }
+
+    public List<INode> getNodesFromSubProcess() {
+        List<INode> nodes = new ArrayList<INode>();
+        List<SubjobContainer> subjobContainers = (List<SubjobContainer>) process.getSubjobContainers();
+        if (subjobContainers.size() == 0) {
+            process.updateSubjobContainers();
+        }
+        for (SubjobContainer sjContainer : subjobContainers) {
+            // find in which subjobContainer is this current node
+            boolean found = false;
+            for (NodeContainer nContainer : sjContainer.getNodeContainers()) {
+                if (nContainer.getNode().getUniqueName().equals(getUniqueName())) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // return all nodes from this sjContainer;
+            if (found) {
+                for (NodeContainer nContainer : sjContainer.getNodeContainers()) {
+                    nodes.add(nContainer.getNode());
+                }
+                break;
+            }
+        }
+        return nodes;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#isSubProcessContainTraceBreakpoint()
+     */
+    public boolean isSubProcessContainTraceBreakpoint() {
+        boolean flag = false;
+
+        for (IConnection connection : this.getOutgoingConnections()) {
+            if (getNodesFromSubProcess().contains(connection.getSource())
+                    && getNodesFromSubProcess().contains(connection.getTarget())) {
+                IElementParameter param = connection.getElementParameter(EParameterName.ACTIVEBREAKPOINT.getName());
+                if (param != null && Boolean.TRUE.equals(param.getValue())) {
+                    flag = true;
+                } else {
+                    flag = connection.getTarget().isSubProcessContainTraceBreakpoint();
+                }
+                if (flag) {
+                    break;
+                }
+            }
+        }
+        return flag;
     }
 }

@@ -34,7 +34,11 @@ if(!isChildJob && (Boolean)globalMap.get("ENABLE_TRACES_CONNECTION_<%=startNodeC
             }
 		}
 	} else { // no condition set
-		Thread.sleep(<%=pauseTime%>);
+        if (runTrace.isNextRow()) {
+           runTrace.waitForUserAction();
+        } else {
+		   Thread.sleep(<%=pauseTime%>);
+		}
 	}
 
 }

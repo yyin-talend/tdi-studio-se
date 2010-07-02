@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,37 +15,43 @@ package org.talend.designer.core.ui.action;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.dialog.FilterColumnDialog;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
- * hwang class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public class FilterTraceColumnAction extends SelectionAction {
+public class ShowBreakpointAction extends SelectionAction {
 
-    private static final String SETUP_TRACES_TITLE = Messages.getString("FilterTraceColumnAction.SetupTraces"); //$NON-NLS-1$
-
-    private static final String CONDITION = "CONDITION"; //$NON-NLS-1$
-
-    private static final String COLUMN = "COLUMN"; //$NON-NLS-1$
+    private static final String SHOW_BREAKPOINT_TITLE = Messages.getString("ShowBreakpointAction.ShowBreakpoint"); //$NON-NLS-1$
 
     private Connection connection;
 
     private IWorkbenchPart part;
 
-    public FilterTraceColumnAction(IWorkbenchPart part) {
+    /**
+     * DOC Administrator ShowBreakpointAction constructor comment.
+     * 
+     * @param part
+     */
+    public ShowBreakpointAction(IWorkbenchPart part) {
         super(part);
         this.part = part;
-
-        setText(SETUP_TRACES_TITLE);
-        setToolTipText(SETUP_TRACES_TITLE);
-        setDescription(SETUP_TRACES_TITLE);
+        // TODO Auto-generated constructor stub
+        setText(SHOW_BREAKPOINT_TITLE);
+        setToolTipText(SHOW_BREAKPOINT_TITLE);
+        setDescription(SHOW_BREAKPOINT_TITLE);
     }
 
     /*
@@ -55,19 +61,19 @@ public class FilterTraceColumnAction extends SelectionAction {
      */
     @Override
     protected boolean calculateEnabled() {
+        // TODO Auto-generated method stub
         List parts = getSelectedObjects();
         if (parts.size() != 1) {
             return false;
         }
         Object input = parts.get(0);
-
         if (input instanceof ConnectionPart) {
             ConnectionPart connPart = (ConnectionPart) input;
             List childParts = connPart.getChildren();
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces() && connection.checkTraceShowEnable();
+                    return connection.enableTraces() && PluginChecker.isTIS();
                 }
             }
         }
@@ -78,7 +84,7 @@ public class FilterTraceColumnAction extends SelectionAction {
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces() && connection.checkTraceShowEnable();
+                    return connection.enableTraces() && PluginChecker.isTIS();
                 }
             }
         }
@@ -87,17 +93,29 @@ public class FilterTraceColumnAction extends SelectionAction {
             if (connTrace.getParent() instanceof ConnectionPart) {
                 ConnectionPart connPart = (ConnectionPart) connTrace.getParent();
                 connection = (Connection) connPart.getModel();
-                return connection.enableTraces() && connection.checkTraceShowEnable();
+                return connection.enableTraces() && PluginChecker.isTIS();
             }
         }
         return false;
     }
 
-    @Override
     public void run() {
-        FilterColumnDialog dialog = new FilterColumnDialog(new Shell(part.getSite().getShell()), connection, this
-                .getCommandStack());
-        dialog.open();
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+        ComponentSettingsView view;
+        try {
+            view = (ComponentSettingsView) page.showView(ComponentSettingsView.ID);
+            view.setElement(connection);
+            view.selectTab(EComponentCategory.BREAKPOINT);
+        } catch (PartInitException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
+    public String getViewId() {
+        // return "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
+        return ComponentSettingsView.ID;
+    }
 }

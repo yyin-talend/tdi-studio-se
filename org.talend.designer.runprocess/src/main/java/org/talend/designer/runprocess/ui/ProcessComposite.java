@@ -996,7 +996,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     protected void setRunnable(boolean runnable) {
         // perfBtn.setEnabled(runnable);
         // traceBtn.setEnabled(runnable);
-        clearTracePerfBtn.setEnabled(runnable);
+        if (!clearTracePerfBtn.isDisposed() || clearTracePerfBtn != null)
+            clearTracePerfBtn.setEnabled(runnable);
 
         setExecBtn(runnable);
         // contextComposite.setEnabled(runnable);
@@ -1006,9 +1007,10 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // clearBeforeExec.setEnabled(runnable);
         // saveJobBeforeRunButton.setEnabled(runnable);
         // watchBtn.setEnabled(runnable);
-
-        enableLineLimitButton.setEnabled(runnable);
-        lineLimitText.setEnabled(runnable);
+        if (!enableLineLimitButton.isDisposed() && enableLineLimitButton != null)
+            enableLineLimitButton.setEnabled(runnable);
+        if (!lineLimitText.isDisposed() && lineLimitText != null)
+            lineLimitText.setEnabled(runnable);
 
     }
 

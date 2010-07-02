@@ -164,6 +164,7 @@ public class DataProcess {
         dataNode.setComponent(graphicalNode.getComponent());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
+        dataNode.setSubProcessContainTraceBreakpoint(graphicalNode.isSubProcessContainTraceBreakpoint());
         copyElementParametersValue(graphicalNode, dataNode);
         String uniqueName = graphicalNode.getUniqueName();
         if (prefix != null) {

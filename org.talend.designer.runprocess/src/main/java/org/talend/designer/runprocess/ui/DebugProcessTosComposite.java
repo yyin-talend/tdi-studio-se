@@ -34,6 +34,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
@@ -60,6 +62,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -71,12 +74,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -85,12 +93,18 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ReplaceNodesInProcessProvider;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -117,7 +131,11 @@ import org.talend.designer.runprocess.ui.views.ProcessView;
  */
 public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
-    private Button runButton;
+    private ToolBar toolBar;
+
+    private ToolItem itemDropDown;
+
+    private MenuItem debugMenuItem;
 
     private Button killBtn;
 
@@ -145,11 +163,15 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     private static final int MINIMUM_WIDTH = 530;
 
+    // private static final Control breakpoint = null;
+
     private boolean hideConsoleLine = false;
 
     private Button enableLineLimitButton;
 
     private Text lineLimitText;
+
+    private Menu menu;
 
     private PropertyChangeListener pcl;
 
@@ -223,18 +245,110 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         execHeader.setLayoutData(layoutData);
 
         FormData formData = new FormData();
-        runButton = new Button(execHeader, SWT.PUSH);
-        runButton.setText(" " + "Java Debug");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-        runButton.setData(ProcessView.EXEC_ID);
-        runButton.setToolTipText("Java Debug");//$NON-NLS-1$
-        runButton.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
+
+        itemDropDown = new ToolItem(toolBar, SWT.ARROW);
+        itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        itemDropDown.setData(ProcessView.DEBUG_ID);
+        itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
+        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+
+        menu = new Menu(execHeader);
+        itemDropDown.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                if (event.detail == SWT.ARROW) {
+                    Rectangle bounds = itemDropDown.getBounds();
+                    Point point = toolBar.toDisplay(bounds.x, bounds.y + bounds.height);
+                    menu.setLocation(point);
+                    menu.setVisible(true);
+                } else {
+                    // qli modified to fix the bug 6659.
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
+                    ToolItem item = (ToolItem) event.widget;
+                    errorMessMap.clear();
+                    if (item.getData().equals(ProcessView.DEBUG_ID)) {
+                        debug();
+                    } else /* if (item.getData().equals(ProcessView.TRACEDEBUG_ID)) */{
+                        execButtonPressed();
+                    }
+                }
+            }
+        });
+
+        // debug
+        final MenuItem menuItem1 = new MenuItem(menu, SWT.PUSH);
+        menuItem1.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        menuItem1.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        menuItem1.setData(ProcessView.DEBUG_ID);
+        menuItem1.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID) && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+                    itemDropDown.setText(menuItem1.getText());
+                    itemDropDown.setData(ProcessView.DEBUG_ID);
+                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                    itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
+                    toolBar.getParent().layout();
+                    manager.setBooleanTrace(false);
+                    addTrace(ProcessView.DEBUG_ID);
+                }
+            }
+        });
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            // trace
+            debugMenuItem = new MenuItem(menu, SWT.PUSH);
+            debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
+            debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
+            debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+            debugMenuItem.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent event) {
+                    if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID)
+                            && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+                        itemDropDown.setText(debugMenuItem.getText());
+                        itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
+                        toolBar.getParent().layout();
+                        manager.setBooleanTrace(true);
+                        addTrace(ProcessView.TRACEDEBUG_ID);
+
+                    }
+
+                }
+            });
+        }
+        toolBar.setEnabled(false);
         Point debugSize = null;
         Point execSize = null;
-        formData.left = new FormAttachment(0, 5);
-        formData.top = new FormAttachment(0, 5);
-        formData.bottom = new FormAttachment(0, 35);
-        formData.right = new FormAttachment(0, 120);
-        runButton.setLayoutData(formData);
+        FormData formDatat = new FormData();
+        // see the feature 6366,qli comment.
+        // make a judge when the text change in diffrent languages.
+        formDatat.left = new FormAttachment(0);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            // set debug text to judge size
+            itemDropDown.setText(debugMenuItem.getText());
+            debugSize = computeSize(itemDropDown.getText());
+
+            // set exec text to judge size
+            itemDropDown.setText(menuItem1.getText());
+            execSize = computeSize(itemDropDown.getText());
+            if (debugSize.x > execSize.x) {
+                formDatat.right = new FormAttachment(0, debugSize.x + 50);
+            } else {
+                formDatat.right = new FormAttachment(0, execSize.x + 50);
+            }
+        } else {
+            // set exec text to judge size
+            itemDropDown.setText(menuItem1.getText());
+            execSize = computeSize(itemDropDown.getText());
+            formDatat.right = new FormAttachment(0, execSize.x + 50);
+        }
+        toolBar.setLayoutData(formDatat);
 
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
@@ -243,10 +357,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         FormData formDatap = new FormData();
-        formDatap.left = new FormAttachment(runButton, 0, SWT.RIGHT);
+        formDatap.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
         formDatap.width = 80;
-        formDatap.top = new FormAttachment(0, 5);
-        formDatap.bottom = new FormAttachment(0, 35);
+        formDatap.top = new FormAttachment(0, 0);
+        formDatap.bottom = new FormAttachment(0, 30);
         killBtn.setLayoutData(formDatap);
         clearTracePerfBtn = new Button(execHeader, SWT.PUSH);
         clearTracePerfBtn.setText(Messages.getString("ProcessComposite.clear")); //$NON-NLS-1$
@@ -257,15 +371,15 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         formDatap = new FormData();
         formDatap.left = new FormAttachment(killBtn, 0, SWT.RIGHT);
         formDatap.width = 80;
-        formDatap.top = new FormAttachment(0, 5);
-        formDatap.bottom = new FormAttachment(0, 35);
+        formDatap.top = new FormAttachment(0, 0);
+        formDatap.bottom = new FormAttachment(0, 30);
         clearTracePerfBtn.setLayoutData(formDatap);
         consoleText = new StyledText(execContent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
         FormData formDataco = new FormData();
         formDataco.top = new FormAttachment(0, 50);
         formDataco.left = new FormAttachment(0, 0);
         formDataco.right = new FormAttachment(100, 0);
-        formDataco.bottom = new FormAttachment(100, 0);
+        formDataco.bottom = new FormAttachment(100, -30);
         consoleText.setLayoutData(formDataco);
         // feature 6875, add searching capability, nma
         consoleText.addKeyListener(new KeyListener() {
@@ -313,6 +427,28 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         };
         addListeners();
         createLineLimitedControl(execContent);
+    }
+
+    private void addTrace(int itemId) {
+        Boolean trace = false;
+        if (itemId == ProcessView.TRACEDEBUG_ID) {
+            trace = true;
+        }
+        processContext.setMonitorTrace(trace);
+        org.talend.core.model.process.IProcess process = processContext.getProcess();
+        List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+                ConnectionTrace traceNode = connection.getConnectionTrace();
+                if (traceNode == null) {
+                    continue;
+                }
+                traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), trace);
+                if (connection != null && connection.checkTraceShowEnable()) {
+                    connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), trace);
+                }
+            }
+        }
     }
 
     private void createLineLimitedControl(Composite container) {
@@ -412,18 +548,79 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                 kill();
             }
         });
-        runButton.addSelectionListener(new SelectionAdapter() {
+    }
 
-            public void widgetSelected(SelectionEvent event) {
+    public void execButtonPressed() {
+        if (processContext == null) {
+            toolBar.setEnabled(false);
+            return;
+        }
+        menu.setVisible(false);
+        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID)) {
+            pause(ProcessView.PAUSE_ID);
+        } else if (itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
+            pause(ProcessView.RESUME_ID);
+        } else if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
+            addInHistoryRunningList();
+            itemDropDown.setData(ProcessView.PAUSE_ID);
+            // exec();
+        }
+    }
 
-                // qli modified to fix the bug 6659.
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
-                errorMessMap.clear();
-                debug();
+    public void pause(int id) {
+        boolean isPause = id == ProcessView.PAUSE_ID;
+        setExecBtn(isPause);
+        if (isPause) {
+            itemDropDown.setText(Messages.getString("ProcessComposite.textContent")); //$NON-NLS-1$
+            itemDropDown.setToolTipText(Messages.getString("ProcessComposite.tipTextContent")); //$NON-NLS-1$
+            itemDropDown.setData(ProcessView.RESUME_ID);
+            itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
 
-            }
-        });
+        } else {
+            itemDropDown.setData(ProcessView.PAUSE_ID);
+        }
+        processContext.setTracPause(isPause);
+    }
+
+    protected void addInHistoryRunningList() {
+        if (processContext == null) {
+            return;
+        }
+        exec();
+
+    }
+
+    public void exec() {
+
+        setHideconsoleLine(false);
+        if (getProcessContext() == null) {
+            return;
+        }
+        if (getProcessContext().getProcess() instanceof IProcess2) {
+            ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
+        }
+        CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
+        if (manager.getClearBeforeExec()) {
+            processContext.clearMessages();
+        }
+        if (manager.getExecTime()) {
+            processContext.switchTime();
+        }
+        processContext.setWatchAllowed(manager.getExecTime());
+        processContext.setMonitorPerf(manager.getStat());
+        // processContext.setMonitorTrace(traceBtn.getSelection());
+        processContext.setNextBreakPoint(false);
+        processContext.setSelectedContext(manager.getSelectContext());
+        processContext.exec(manager.getProcessShell());
+
+        checkSaveBeforeRunSelection();
+        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+        ILaunch[] launches = manager.getLaunches();
+        manager.removeLaunches(launches);
+    }
+
+    protected static RunProcessContext getProcessContext() {
+        return processContext;
     }
 
     public void setProcessContext(RunProcessContext processContext) {
@@ -451,6 +648,13 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
         // contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
+        if (processContext == null) {
+            manager.setBooleanTrace(false);
+            itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            itemDropDown.setData(ProcessView.DEBUG_ID);
+            itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
+            itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        }
     }
 
     protected void fillConsole(Collection<IProcessMessage> messages) {
@@ -578,7 +782,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     }
 
     protected void appendToConsole(final IProcessMessage message) {
-        getDisplay().asyncExec(new Runnable() {
+        manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
 
             public void run() {
 
@@ -606,6 +810,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
+        Display dis = Display.getCurrent();
+        if (dis == null) {
+            dis = Display.getDefault();
+        }
         if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
                 || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
             IProcessMessage psMess = (IProcessMessage) evt.getNewValue();
@@ -620,7 +828,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             }
             appendToConsole(psMess);
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
-            getShell().getDisplay().asyncExec(new Runnable() {
+            dis.asyncExec(new Runnable() {
 
                 public void run() {
                     if (!consoleText.isDisposed()) {
@@ -633,7 +841,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         } else if (RunProcessContext.TRACE_MONITOR.equals(propName)) {
             // traceBtn.setSelection(((Boolean) evt.getNewValue()).booleanValue());
         } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
-            getShell().getDisplay().asyncExec(new Runnable() {
+            dis.asyncExec(new Runnable() {
 
                 public void run() {
                     if (isDisposed()) {
@@ -651,7 +859,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     }
 
     private Point computeSize(String text) {
-        GC gc = new GC(runButton.getDisplay());
+        GC gc = new GC(toolBar.getDisplay());
         final Point p = gc.textExtent(text);
         gc.dispose();
         return p;
@@ -670,7 +878,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     }
 
     protected void setRunnable(boolean runnable) {
-        clearTracePerfBtn.setEnabled(runnable);
+        if (!clearTracePerfBtn.isDisposed() || clearTracePerfBtn != null)
+            clearTracePerfBtn.setEnabled(runnable);
         // previousRow.setEnabled(runnable);
         // nextRow.setEnabled(runnable);
         // nextBreakPoint.setEnabled(runnable);
@@ -679,14 +888,49 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         // if (argumentsComposite != null) {
         // argumentsComposite.setEnabled(runnable);
         // }
-        enableLineLimitButton.setEnabled(runnable);
-        lineLimitText.setEnabled(runnable);
+        if (!enableLineLimitButton.isDisposed() && enableLineLimitButton != null)
+            enableLineLimitButton.setEnabled(runnable);
+        if (!lineLimitText.isDisposed() && lineLimitText != null)
+            lineLimitText.setEnabled(runnable);
 
     }
 
     protected void setExecBtn(final boolean runnable) {
-        runButton.setEnabled(runnable);
+        if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
+            toolBar.setEnabled(runnable);
+        }
+        if (processContext != null) {
+            if (processContext.isMonitorTrace()) {
+                boolean b = processContext != null;
+                if (!runnable && b) {
+                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause"));
+                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob"));
+                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+                    itemDropDown.setData(ProcessView.PAUSE_ID);
+                    toolBar.getParent().layout();
+                } else {
+                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
+                    itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
+                }
+                toolBar.setEnabled(b);
+            } else {
+                // qli modified to fix the bug 7354.
+                toolBar.setEnabled(runnable);
 
+                // if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
+                //                debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
+                // debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
+                // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                // } else {
+                itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));
+                itemDropDown.setData(ProcessView.DEBUG_ID);
+                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));
+                // }
+            }
+        }
     }
 
     private boolean setConsoleFont() {
@@ -752,8 +996,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true, monitor);
 
-                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(-1, processContext
-                                .getTracesPort(), null);
+                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(processContext
+                                .getStatisticsPort(), processContext.getTracesPort(), null);
 
                         // see feature 0004820: The run job doesn't verify if
                         // code is correct before launching
@@ -804,14 +1048,15 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     while (debugMode) {
                         final IProcess process = DebugUITools.getCurrentProcess();
                         if (process != null && process.isTerminated()) {
-                            manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
+                            Display dis = Display.getCurrent();
+                            if (dis == null) {
+                                dis = Display.getDefault();
+                            }
+                            dis.asyncExec(new Runnable() {
 
                                 public void run() {
                                     setRunnable(true);
                                     killBtn.setEnabled(false);
-                                    // previousRow.setEnabled(false);
-                                    // nextRow.setEnabled(false);
-                                    // nextBreakPoint.setEnabled(false);
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, oldValueConsoleOnOut);
 
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, oldValueConsoleOnErr);
@@ -843,14 +1088,15 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         } else {
                             if (process != null) { // (one at leat) process
                                 // still running
-                                manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
+                                Display dis = Display.getCurrent();
+                                if (dis == null) {
+                                    dis = Display.getDefault();
+                                }
+                                dis.asyncExec(new Runnable() {
 
                                     public void run() {
                                         setRunnable(false);
                                         killBtn.setEnabled(true);
-                                        // previousRow.setEnabled(true);
-                                        // nextRow.setEnabled(true);
-                                        // nextBreakPoint.setEnabled(true);
                                         processContext.setRunning(true);
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
@@ -881,14 +1127,15 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                                     }
                                 });
                             } else { // no process running
-                                manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
+                                Display dis = Display.getCurrent();
+                                if (dis == null) {
+                                    dis = Display.getDefault();
+                                }
+                                dis.asyncExec(new Runnable() {
 
                                     public void run() {
                                         setRunnable(true);
                                         killBtn.setEnabled(false);
-                                        // previousRow.setEnabled(false);
-                                        // nextRow.setEnabled(false);
-                                        // nextBreakPoint.setEnabled(false);
                                     }
                                 });
                             }
