@@ -1562,7 +1562,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             for (int i = 0; i < linesMess.length; i++) {
                 String tRunJobName = currenctJobName;
                 String linemess = linesMess[i].trim(); //$NON-NLS-1$
-                Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_\\d$");//$NON-NLS-1$
+                Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_(\\d)+$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
                     List<Node> runjobList = getTRunjobList(processContext.getProcess());
@@ -1575,13 +1575,15 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                             // tRunJobName = linesMess[currentI++];
                             // } while ((tRunJobName.lastIndexOf("(") == -1 || tRunJobName.lastIndexOf(".java") == -1)
                             // && currentI < linesMess.length - 1);
+                            boolean haveFind = false;
                             for (int j = currentI + 1; j < linesMess.length - 1; j++) {
                                 tRunJobName = linesMess[j];
-                                if ((tRunJobName.contains(componentName))) {
+                                if ((tRunJobName.contains(componentName + "Process"))) {
+                                    haveFind = true;
                                     break;
                                 }
                             }
-                            if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                            if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
                                 tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
                                         .lastIndexOf(".java"));
                             else
