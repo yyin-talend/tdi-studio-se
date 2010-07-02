@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.utils;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,34 @@ public class JavaProcessUtil {
 
     private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems) {
         Set<String> neededLibraries = new HashSet<String>();
+        IElementParameter headerParameter = process.getElementParameter(EParameterName.HEADER_LIBRARY.getName());
+        if (headerParameter != null) {
+            Object value = headerParameter.getValue();
+            if (value != null) {
+                String headerLibraries = (String) value;
+                if (headerLibraries.indexOf(File.separatorChar) > 0
+                        && headerLibraries.length() > headerLibraries.lastIndexOf(File.separatorChar) + 2) {
+                    String substring = headerLibraries.substring(headerLibraries.lastIndexOf(File.separatorChar) + 2);
+                    if (!"".equals(substring)) {//$NON-NLS-1$
+                        neededLibraries.add(getModuleValue(process, substring));
+                    }
+                }
+            }
+        }
+        IElementParameter footerParameter = process.getElementParameter(EParameterName.FOOTER_LIBRARY.getName());
+        if (footerParameter != null) {
+            Object value = footerParameter.getValue();
+            if (value != null) {
+                String footerLibraries = (String) value;
+                if (footerLibraries.indexOf(File.separatorChar) > 0
+                        && footerLibraries.length() > footerLibraries.lastIndexOf(File.separatorChar) + 2) {
+                    String substring = footerLibraries.substring(footerLibraries.lastIndexOf(File.separatorChar) + 2);
+                    if (!"".equals(substring)) {//$NON-NLS-1$
+                        neededLibraries.add(getModuleValue(process, substring));
+                    }
+                }
+            }
+        }
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();

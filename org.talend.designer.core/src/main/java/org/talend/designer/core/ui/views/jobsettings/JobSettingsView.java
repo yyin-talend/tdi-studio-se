@@ -39,14 +39,13 @@ import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
@@ -55,6 +54,7 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.jobsettings.tabs.HeaderFooterComposite;
 import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
@@ -223,6 +223,15 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.VERSIONS.equals(category)) {
             dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
+        } else if (EComponentCategory.HEADERFOOTER.equals(category)) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+                IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
+                        .getDefault().getService(IHeaderFooterProviderService.class);
+                if (headerFooterService.isVisible()) {
+                    dynamicComposite = new HeaderFooterComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
+                            (IRepositoryViewObject) data);
+                }
+            }
         } else if (EComponentCategory.SVNHISTORY.equals(category) && service != null) {
             dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
@@ -407,6 +416,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.STATSANDLOGS);
             }
             category.add(EComponentCategory.VERSIONS);
+            category.add(EComponentCategory.HEADERFOOTER);
 
             // if svn remote connection, added by nma
             if (service != null && service.isProjectInSvnMode()) {

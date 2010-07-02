@@ -262,6 +262,9 @@ public interface IRepositoryFactory {
     public RootContainer<String, IRepositoryViewObject> getMetadataSAPConnection(Project project, boolean... options)
             throws PersistenceException;
 
+    public RootContainer<String, IRepositoryViewObject> getMetadataHeaderFooter(Project project, boolean... options)
+            throws PersistenceException;
+
     public RootContainer<String, IRepositoryViewObject> getMetadataEBCDIC(Project project, boolean... options)
             throws PersistenceException;
 

@@ -77,8 +77,12 @@ public class JobSettingsManager {
         if (!isJoblet) {
             StatsAndLogsManager.createStatsAndLogsParameters(process);
         }
+
         // for context
         createContextParameters(process);
+        // for feature 13940
+        createHeaderFooterParameters(process);
+
     }
 
     private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
@@ -86,6 +90,112 @@ public class JobSettingsManager {
     private static final String QUOTE = TalendTextUtils.getQuoteChar();
 
     private static final String CONNECTOR = TalendTextUtils.getStringConnect();
+
+    private static void createHeaderFooterParameters(IProcess process) {
+        // for headerFooter Code
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADERFOOTER_HEADERID.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(2);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADER_ENABLED.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.HEADER_ENABLED.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(2);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADER_LIBRARY.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.HEADER_LIBRARY.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(3);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADER_CODE.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.HEADER_CODE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(4);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADER_IMPORT.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.HEADER_IMPORT.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(4);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.HEADERFOOTER_FOOTERID.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(2);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.FOOTER_ENABLED.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(5);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.FOOTER_LIBRARY.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.FOOTER_LIBRARY.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(6);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.FOOTER_CODE.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.FOOTER_CODE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(7);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.FOOTER_IMPORT.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.FOOTER_IMPORT.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.HEADERFOOTER);
+        param.setNumRow(4);
+        param.setShow(false);
+        paramList.add(param);
+    }
 
     /**
      * 

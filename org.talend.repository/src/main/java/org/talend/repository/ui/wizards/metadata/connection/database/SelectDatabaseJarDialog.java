@@ -130,7 +130,10 @@ public class SelectDatabaseJarDialog extends Dialog {
                     jarsList.add(path);
                     jarsViewer.setInput(jarsList);
                 } else {
-                    MessageDialog.openWarning(getShell(), Messages.getString("SelectDatabaseJarDialog.warningTitle"), Messages.getString("SelectDatabaseJarDialog.warningMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+                    MessageDialog
+                            .openWarning(
+                                    getShell(),
+                                    Messages.getString("SelectDatabaseJarDialog.warningTitle"), Messages.getString("SelectDatabaseJarDialog.warningMessage")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
 
@@ -159,9 +162,12 @@ public class SelectDatabaseJarDialog extends Dialog {
         for (String s : jarsList) {
             jarsStr += s + COMMA;
         }
-        char c = jarsStr.charAt(jarsStr.length() - 1);
-        if (COMMA.equals(new Character(c).toString())) {
-            jarsStr = jarsStr.substring(0, jarsStr.length() - 1);
+        int length = jarsStr.length();
+        if (length > 0) {
+            char c = jarsStr.charAt(length - 1);
+            if (COMMA.equals(new Character(c).toString())) {
+                jarsStr = jarsStr.substring(0, length - 1);
+            }
         }
         super.okPressed();
     }

@@ -406,6 +406,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
                     }
 
+                    if (ERepositoryCategoryType.HEADERFOOTER.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                    }
+
                     if (realNode != null) {
                         ConnectionItem connItem = repositoryService.openMetadataConnection(true, realNode, node);
                         if (connItem != null) {

@@ -88,6 +88,9 @@ public class UpdateCheckResult extends UpdateResult {
         case JOB_PROPERTY_STATS_LOGS:
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
             break;
+        case JOB_PROPERTY_HEADERFOOTER:
+            displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.HEADERFOOTER.getTitle());
+            break;
         case CONTEXT_GROUP:
             if (getUpdateObject() != null && getUpdateObject() instanceof IContext) {
                 displayName = ((IContext) getUpdateObject()).getName();
@@ -209,6 +212,7 @@ public class UpdateCheckResult extends UpdateResult {
             break;
         case JOB_PROPERTY_EXTRA:
         case JOB_PROPERTY_STATS_LOGS:
+        case JOB_PROPERTY_HEADERFOOTER:
             boolean isJoblet = false;
             if (getUpdateObject() != null) {
                 if (getUpdateObject() instanceof org.talend.designer.core.ui.editor.process.Process) {

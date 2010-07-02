@@ -64,6 +64,8 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     switch (type) {
                     case JOB_PROPERTY_EXTRA:
                     case JOB_PROPERTY_STATS_LOGS:
+                    case JOB_PROPERTY_HEADERFOOTER:
+
                         image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
                         break;
                     case CONTEXT:

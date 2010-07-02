@@ -62,6 +62,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IHL7ProviderService;
+import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.ui.ISAPProviderService;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -390,6 +391,14 @@ public class RepositoryService implements IRepositoryService {
                             ISAPProviderService.class);
                     if (service != null) {
                         relatedWizard = service.newSAPWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+                    }
+                }
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_HEADER_FOOTER)) {
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+                    IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault()
+                            .getService(IHeaderFooterProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newHeaderFooterWizard(PlatformUI.getWorkbench(), creation, realNode, null);
                     }
                 }
             }

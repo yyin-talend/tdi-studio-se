@@ -257,6 +257,7 @@ public final class UpdateManagerUtils {
                 break;
             case JOB_PROPERTY_EXTRA:
             case JOB_PROPERTY_STATS_LOGS:
+            case JOB_PROPERTY_HEADERFOOTER:
                 jobSetting = true;
                 break;
             case NODE_PROPERTY:
@@ -358,6 +359,7 @@ public final class UpdateManagerUtils {
                 break;
             case JOB_PROPERTY_EXTRA:
             case JOB_PROPERTY_STATS_LOGS:
+            case JOB_PROPERTY_HEADERFOOTER:
                 command = new UpdateMainParameterCommand(result);
                 break;
             case CONTEXT:

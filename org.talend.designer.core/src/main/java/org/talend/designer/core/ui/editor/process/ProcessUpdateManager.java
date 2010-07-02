@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -58,6 +59,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
@@ -427,11 +429,163 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case JOB_PROPERTY_STATS_LOGS:
             mainResults.addAll(checkJobSettingsParameters(EComponentCategory.STATSANDLOGS, type, onlySimpleShow));
             break;
+        case JOB_PROPERTY_HEADERFOOTER:
+            mainResults.addAll(checkJobSettingsHeaderFooterParameters(EComponentCategory.HEADERFOOTER, type, onlySimpleShow));
+            break;
         default:
             return Collections.emptyList();
         }
 
         return mainResults;
+    }
+
+    private List<UpdateResult> checkJobSettingsHeaderFooterParameters(EComponentCategory category, EUpdateItemType type,
+            boolean onlySimpleShow) {
+        List<UpdateResult> jobSettingsResults = new ArrayList<UpdateResult>();
+        boolean sameValues = true;
+
+        final Process process2 = getProcess();
+        UpdateCheckResult result = null;
+
+        IElementParameter headerIDParameter = process2.getElementParameter(EParameterName.HEADERFOOTER_HEADERID.getName());
+        IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) headerIDParameter.getValue());
+        HeaderFooterConnection repositoryConnection = null;
+        String source = null;
+        if (lastVersion != null) {
+            final Item item = lastVersion.getProperty().getItem();
+            if (item != null && item instanceof ConnectionItem) {
+                source = UpdateRepositoryUtils.getRepositorySourceName(item);
+                repositoryConnection = (HeaderFooterConnection) ((HeaderFooterConnectionItem) item).getConnection();
+            }
+        }
+
+        if (repositoryConnection != null) {
+            Boolean isHeader = repositoryConnection.isIsHeader();
+            String libraries = repositoryConnection.getLibraries();
+            String mainCode = repositoryConnection.getMainCode();
+            String imports = repositoryConnection.getImports();
+            for (IElementParameter param : getProcess().getElementParameters()) {
+                if (param.getCategory() == category && isHeader) {
+
+                    if (param.getName().equals(EParameterName.HEADERFOOTER_HEADERID.getName())) {
+
+                        Boolean value = (Boolean) process2.getElementParameter(EParameterName.HEADER_ENABLED.getName())
+                                .getValue();
+                        final Object headerLibrary = process2.getElementParameter(EParameterName.HEADER_LIBRARY.getName())
+                                .getValue();
+                        String value2 = null;
+                        if (headerLibrary != null) {
+                            value2 = (String) headerLibrary;
+                        }
+                        Object headMainCode = process2.getElementParameter(EParameterName.HEADER_CODE.getName()).getValue();
+                        String value3 = null;
+                        if (headMainCode != null) {
+                            value3 = (String) headMainCode;
+                        }
+
+                        Object headImport = process2.getElementParameter(EParameterName.HEADER_IMPORT.getName()).getValue();
+                        String value4 = null;
+                        if (headImport != null) {
+                            value4 = (String) headImport;
+                        }
+                        boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(libraries))
+                                || ((value2 == null || "".equals(value2)) && libraries == null);
+                        boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(mainCode))
+                                || ((value3 == null || "".equals(value3)) && mainCode == null);
+                        boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(imports))
+                                || ((value4 == null || "".equals(value4)) && imports == null);
+                        if (!(value && librariesIsSame && mainCodeIsSame && importsIsSame)) {
+                            sameValues = false;
+                        }
+
+                        if (onlySimpleShow || !sameValues) {
+                            result = new UpdateCheckResult(getProcess());
+                            result.setResult(type, EUpdateResult.UPDATE, repositoryConnection, source);
+                            if (result != null) {
+                                result.setJob(getProcess());
+                                setConfigrationForReadOnlyJob(result);
+                                jobSettingsResults.add(result);
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+            IElementParameter footerIDParameter = process2.getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName());
+            IRepositoryViewObject footerLastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) footerIDParameter
+                    .getValue());
+            HeaderFooterConnection footerRepositoryConnection = null;
+            String footerSource = null;
+            if (footerLastVersion != null) {
+                Item item = footerLastVersion.getProperty().getItem();
+                if (item != null && item instanceof ConnectionItem) {
+                    footerSource = UpdateRepositoryUtils.getRepositorySourceName(item);
+                    footerRepositoryConnection = (HeaderFooterConnection) ((HeaderFooterConnectionItem) item).getConnection();
+                }
+            }
+
+            if (footerRepositoryConnection != null) {
+                Boolean footerIsHeader = footerRepositoryConnection.isIsHeader();
+                String footerLibraries = footerRepositoryConnection.getLibraries();
+                String footerMainCode = footerRepositoryConnection.getMainCode();
+                String footerImports = footerRepositoryConnection.getImports();
+                for (IElementParameter param : getProcess().getElementParameters()) {
+                    if (param.getCategory() == category && !footerIsHeader) {
+
+                        if (param.getName().equals(EParameterName.HEADERFOOTER_FOOTERID.getName())) {
+
+                            Boolean value = (Boolean) process2.getElementParameter(EParameterName.FOOTER_ENABLED.getName())
+                                    .getValue();
+                            Object Library = process2.getElementParameter(EParameterName.FOOTER_LIBRARY.getName()).getValue();
+                            String value2 = null;
+                            if (Library != null) {
+                                value2 = (String) Library;
+                            }
+                            Object mainCode2 = process2.getElementParameter(EParameterName.FOOTER_CODE.getName()).getValue();
+                            String value3 = null;
+                            if (mainCode2 != null) {
+                                value3 = (String) mainCode2;
+                            }
+
+                            Object footerImport = process2.getElementParameter(EParameterName.FOOTER_IMPORT.getName()).getValue();
+                            String value4 = null;
+                            if (footerMainCode != null) {
+                                value4 = (String) footerImport;
+                            }
+
+                            boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(footerLibraries))
+                                    || ((value2 == null || "".equals(value2)) && footerLibraries == null);
+                            boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(footerMainCode))
+                                    || ((value3 == null || "".equals(value3)) && footerMainCode == null);
+                            boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(footerImports))
+                                    || ((value4 == null || "".equals(value4)) && footerImports == null);
+
+                            if (!(value && librariesIsSame && mainCodeIsSame && importsIsSame)) {
+                                sameValues = false;
+                            }
+
+                            if (onlySimpleShow || !sameValues) {
+                                result = new UpdateCheckResult(getProcess());
+                                result.setResult(type, EUpdateResult.UPDATE, footerRepositoryConnection, footerSource);
+                                if (result != null) {
+                                    result.setJob(getProcess());
+                                    setConfigrationForReadOnlyJob(result);
+                                    jobSettingsResults.add(result);
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        return jobSettingsResults;
+
     }
 
     private List<UpdateResult> checkJobSettingsParameters(EComponentCategory category, EUpdateItemType type,
@@ -1572,6 +1726,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             break;
         case JOB_PROPERTY_EXTRA:
         case JOB_PROPERTY_STATS_LOGS:
+        case JOB_PROPERTY_HEADERFOOTER:
             tmpResults = checkMainParameters(type, onlySimpleShow);
             break;
         case CONTEXT:

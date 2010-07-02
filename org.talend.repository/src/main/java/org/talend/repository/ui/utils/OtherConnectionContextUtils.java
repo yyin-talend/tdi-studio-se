@@ -87,6 +87,10 @@ public final class OtherConnectionContextUtils {
         UNIVERSE,
         DATACLUSTER,
         DATAMODEL,
+
+        // DATACERT CONNECTION
+        URL,
+        Directory,
     }
 
     /*
@@ -761,5 +765,4 @@ public final class OtherConnectionContextUtils {
         return connection;
 
     }
-
 }

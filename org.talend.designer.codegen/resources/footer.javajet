@@ -16,6 +16,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		org.talend.core.model.utils.JavaResourcesHelper
+		org.talend.core.model.process.ElementParameterParser
 	" 
 	class="Footer" 
 	skeleton="footer_java.skeleton"	
@@ -313,6 +314,9 @@ if(execStat){
 		}
 %>
 
+<%= ElementParameterParser.getValue(process, "__HEADER_CODE__")%>
+
+
 
 	long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	long endUsedMemory = 0;
@@ -475,7 +479,11 @@ this.globalResumeTicket = true;//to run tPostJob
 <% 
 	}
  }
-%>	
+%>
+
+<%= ElementParameterParser.getValue(process, "__FOOTER_CODE__")%>
+
+	
 		end = System.currentTimeMillis();
 		
 		if (watch) {

@@ -124,6 +124,18 @@ public enum EParameterName {
     USE_EXISTING_CONNECTION(Messages.getString("EParameterName.useExistConn")), //$NON-NLS-1$
     USE_TRANSACTION("use_transaction"), //$NON-NLS-1$
 
+    // feature 13940
+    HEADERFOOTER_HEADERID("headerfooter_headerid"),
+    HEADER_ENABLED("header_enabled"),
+    HEADER_CODE("header_code"),
+    HEADER_IMPORT("header_import"),
+    HEADER_LIBRARY("header_library"),
+    HEADERFOOTER_FOOTERID("headerfooter_footerid"),
+    FOOTER_ENABLED("footer_enabled"),
+    FOOTER_CODE("footer_code"),
+    FOOTER_IMPORT("footer_import"),
+    FOOTER_LIBRARY("footer_library"),
+
     RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$
     FAILURE_INSTRUCTIONS("Failure instructions"), //$NON-NLS-1$

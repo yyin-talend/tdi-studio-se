@@ -334,6 +334,7 @@ public class RepositoryNodeUtilities {
             case METADATA_FILE_RULES:// added by hyWang
             case METADATA_FILE_LINKRULES:
             case METADATA_SAPCONNECTIONS:
+            case METADATA_HEADER_FOOTER:
                 tmpType = ERepositoryObjectType.METADATA;
                 break;
             case ROUTINES:

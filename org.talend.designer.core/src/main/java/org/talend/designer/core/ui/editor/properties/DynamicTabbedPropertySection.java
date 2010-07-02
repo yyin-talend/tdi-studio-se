@@ -56,6 +56,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
@@ -549,6 +550,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                     } else {
                         addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                     }
+                }
+                if ((connection instanceof HeaderFooterConnection)
+                        && (repositoryValue.equals(ERepositoryCategoryType.HEADERFOOTER.getName()))) {
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
             }
 

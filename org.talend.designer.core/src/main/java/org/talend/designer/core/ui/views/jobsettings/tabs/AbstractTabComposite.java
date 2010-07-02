@@ -21,13 +21,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
@@ -54,6 +60,14 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
         super(parent, style);
         this.widgetFactory = widgetFactory;
         this.repositoryObject = iRepositoryViewObject;
+        //
+        final Item item = repositoryObject.getProperty().getItem();
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        if (item instanceof ProcessItem) {
+            IProcess process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
+            process.getElementParameter(EParameterName.HEADER_ENABLED.getName());
+        }
+
     }
 
     public IEditorPart getEditor() {

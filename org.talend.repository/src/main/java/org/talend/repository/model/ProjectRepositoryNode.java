@@ -72,6 +72,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
@@ -86,8 +87,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode,// metadataSAPFunctionNode,
-            metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode,
+            metadataSAPConnectionNode,// metadataSAPFunctionNode,
+            metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
+            metadataHeaderFooterConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -182,6 +185,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 break;
             case METADATA_SAPCONNECTIONS:
                 this.metadataSAPConnectionNode = null;
+                break;
+            case METADATA_HEADER_FOOTER:
+                this.metadataHeaderFooterConnectionNode = null;
                 break;
             // case METADATA_SAP_FUNCTION:
             // this.metadataSAPFunctionNode = null;
@@ -361,6 +367,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataNode.getChildren().add(metadataConNode);
+
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+            IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault().getService(
+                    IHeaderFooterProviderService.class);
+            if (service.isVisible()) {
+                // Metadata Datacert connections
+                metadataHeaderFooterConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataHeaderFooterConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                metadataHeaderFooterConnectionNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                metadataNode.getChildren().add(metadataHeaderFooterConnectionNode);
+            }
+        }
 
         // 7.2. Metadata file delimited
         metadataFileNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -595,6 +614,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataRulesNode) { // feature 6484 added
                 convert(newProject, factory.getMetadataRules(newProject, true), metadataRulesNode,
                         ERepositoryObjectType.METADATA_FILE_RULES, recBinNode);
+            } else if (parent == metadataHeaderFooterConnectionNode) { // feature 6484 added
+                convert(newProject, factory.getMetadataHeaderFooter(newProject, true), metadataHeaderFooterConnectionNode,
+                        ERepositoryObjectType.METADATA_HEADER_FOOTER, recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
@@ -1621,6 +1643,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataSAPConnectionNode;
         case METADATA_SAP_FUNCTION:
             return this.metadataSAPConnectionNode;
+        case METADATA_HEADER_FOOTER:
+            return this.metadataHeaderFooterConnectionNode;
         case SQLPATTERNS:
             return this.sqlPatternNode;
         case METADATA_FILE_DELIMITED:
@@ -1699,6 +1723,16 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     public RepositoryNode getDocNode() {
         return this.docNode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.nodes.IProjectRepositoryNode#getMetadataHeaderFooterConnectionNode()
+     */
+    public RepositoryNode getMetadataHeaderFooterConnectionNode() {
+        // TODO Auto-generated method stub
+        return this.metadataHeaderFooterConnectionNode;
     }
 
 }

@@ -49,11 +49,13 @@ import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
@@ -95,6 +97,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     private boolean hidenTypeSelection;
 
+    private boolean isHeaderButton;
+
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
     /**
@@ -122,6 +126,24 @@ public class RepositoryReviewDialog extends Dialog {
          */
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, Boolean isHeaderButton, String repositoryType) {
+        super(parentShell);
+        setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
+        this.type = type;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
+        this.repositoryType = repositoryType;
+        this.isHeaderButton = isHeaderButton;
+        // setHeaderButton(isHeaderButton);
+        typeProcessor = createTypeProcessor();
+        if (typeProcessor instanceof RepositoryTypeProcessor) {
+            ((RepositoryTypeProcessor) typeProcessor).setHeaderButton(isHeaderButton);
+        }
     }
 
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType, boolean hidenTypeSelection) {
@@ -178,6 +200,9 @@ public class RepositoryReviewDialog extends Dialog {
 
         if (type == ERepositoryObjectType.CONTEXT) {
             return new ContextTypeProcessor(repositoryType);
+        }
+        if (type == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
+            return new HeaderFooterTypeProcessor(repositoryType);
         }
 
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
@@ -622,6 +647,8 @@ class RepositoryTypeProcessor implements ITypeProcessor {
 
     boolean hidenTypeSelection;
 
+    boolean isHeaderButton;
+
     /**
      * DOC bqian RepositoryTypeProcessor constructor comment.
      * 
@@ -813,6 +840,14 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataSAPConnectionNode();
                 }
             }
+            if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataHeaderFooterConnectionNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataHeaderFooterConnectionNode();
+                }
+            }
             if (repositoryType.equals(ERepositoryCategoryType.EBCDIC.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)
@@ -869,6 +904,14 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         this.hidenTypeSelection = hidenTypeSelection;
     }
 
+    public boolean isHeaderButton() {
+        return this.isHeaderButton;
+    }
+
+    public void setHeaderButton(boolean isHeaderButton) {
+        this.isHeaderButton = isHeaderButton;
+    }
+
     public ViewerFilter makeFilter() {
         return new ViewerFilter() {
 
@@ -918,6 +961,20 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                                 return false;
                             }
                         }
+                    }
+                }
+                if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
+                    if (item instanceof HeaderFooterConnectionItem) {
+                        HeaderFooterConnectionItem connectionItem = (HeaderFooterConnectionItem) item;
+                        HeaderFooterConnection connection = (HeaderFooterConnection) connectionItem.getConnection();
+                        boolean isHeader = connection.isIsHeader();
+
+                        if ((isHeader && isHeaderButton) || (!isHeader && !isHeaderButton)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+
                     }
                 }
                 return true;
@@ -1230,6 +1287,85 @@ class SAPFunctionProcessor implements ITypeProcessor {
     }
 
 }
+
+// //
+
+/**
+ * DOC zli class global comment. Detailled comment
+ */
+class HeaderFooterTypeProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * DOC zli HeaderFooterTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public HeaderFooterTypeProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider headerFooterProvider) {
+        RepositoryNode headerFooterNode = headerFooterProvider
+                .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
+        // referenced project.
+        if (headerFooterProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = headerFooterProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    newProject.getChildren().add(refProject.getMetadataConNode());
+
+                    nodesList.add(newProject);
+                }
+                headerFooterNode.getChildren().addAll(nodesList);
+            }
+        }
+        return headerFooterNode;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObjectType() == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getContentType() == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+}
+
+// ////////////
+// //
 
 /**
  * xye class global comment. Detailled comment
