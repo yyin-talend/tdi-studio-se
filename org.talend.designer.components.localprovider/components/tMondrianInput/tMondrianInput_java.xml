@@ -33,10 +33,18 @@
   </CONNECTORS>
 
   <PARAMETERS>
+	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="1"
+		REPOSITORY_VALUE="DB_VERSION">
+		<ITEMS DEFAULT="MONDRAIN_2">
+			<ITEM NAME="MONDRAIN_2" VALUE="mondrian_2.jar"/>
+			<ITEM NAME="MONDRAIN_3" VALUE="mondrian_3.jar" />
+		</ITEMS>
+	</PARAMETER>
+  
     <PARAMETER
       NAME="DBTYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
       <ITEMS DEFAULT="ACCESS">       
         <ITEM NAME="ACCESS"      VALUE="Access" />
@@ -307,7 +315,6 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Mondrian"             MODULE="mondrian.jar" REQUIRED="true" />
 		<IMPORT NAME="log4j"                MODULE="log4j-1.2.9.jar" REQUIRED="true" />
 		<IMPORT NAME="eigenbase-xom"        MODULE="eigenbase-xom.jar" REQUIRED="true" />
 		<IMPORT NAME="eigenbase-resgen"     MODULE="eigenbase-resgen.jar" REQUIRED="true" />

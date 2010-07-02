@@ -18,7 +18,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+String mondrainVersion = ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 // Search outgoing schema
 IMetadataTable metadata = null;
 
@@ -160,9 +160,8 @@ if (metadata != null) {
 	dbquery = dbquery.replaceAll("\n", " ");
 	dbquery = dbquery.replaceAll("\r", " ");
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	
 	%>
-	mondrian.olap.Connection connection_<%=cid%> = mondrian.olap.DriverManager.getConnection(
+		mondrian.olap.Connection connection_<%=cid%> = mondrian.olap.DriverManager.getConnection(
 		"Provider=mondrian;" +
 		"Jdbc='" + <%=transfer.url(node)%> + "';" +
 		"Catalog='" + <%=catalog%> + "';" +
@@ -175,7 +174,15 @@ if (metadata != null) {
 		%> +
 		"JdbcPassword=" + <%=dbpwd%> + ";"<%
 	}
-	%>, null, true);
+	if("mondrian_2.jar".equals(mondrainVersion)){%>
+		, null, true);
+	<%
+	}else if("mondrian_3.jar".equals(mondrainVersion)){
+	%>
+		, null);
+	<%
+	}
+	%>
 	
 	mondrian.olap.Query query_<%=cid%> = connection_<%=cid%>.parseQuery(<%=dbquery%>);
 	mondrian.olap.Result result_<%=cid%> = connection_<%=cid%>.execute(query_<%=cid%>);
