@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,7 +40,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
@@ -163,8 +162,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
                     for (RepositoryNode curNode : currentNode.getChildren()) {
                         deleteElements(factory, curNode);
                     }
-                    IPath path = RepositoryNodeUtilities.getPath(currentNode);
-                    factory.deleteFolder(currentNode.getContentType(), path);
+                    factory.deleteFolder(currentNode.getContentType(), new Path(currentNode.getObject().getProperty().getItem()
+                            .getState().getPath()
+                            + "/" + currentNode.getObject().getProperty().getLabel()));
                 } else {
                     factory.deleteObjectPhysical(objToDelete);
                 }

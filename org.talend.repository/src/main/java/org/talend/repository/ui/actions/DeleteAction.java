@@ -218,6 +218,7 @@ public class DeleteAction extends AContextualAction {
 
                         String fullPath = "";
                         FolderItem curItem = folderItem;
+
                         while (curItem.getParent() instanceof FolderItem
                                 && ((Item) curItem.getParent()).getParent() instanceof FolderItem
                                 && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
@@ -229,11 +230,28 @@ public class DeleteAction extends AContextualAction {
                             }
                             curItem = parentFolder;
                         }
-                        if (objectType == ERepositoryObjectType.SQLPATTERNS) {
+                        if (objectType != ERepositoryObjectType.SQLPATTERNS && curItem.getParent() instanceof FolderItem
+                                && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
+                            FolderItem parentFolder = (FolderItem) curItem.getParent();
                             if ("".equals(fullPath)) {
-                                fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                                fullPath = parentFolder.getProperty().getLabel() + fullPath;
                             } else {
+                                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
+                            }
+                            curItem = parentFolder;
+                        }
+                        if (objectType == ERepositoryObjectType.SQLPATTERNS) {
+                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                                if ("".equals(fullPath)) {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                                } else {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                                }
+                                curItem = (FolderItem) curItem.getParent();
+                            }
+                            while (!((FolderItem) curItem.getParent()).getProperty().getLabel().equals("sqlPatterns")) {
                                 fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                                curItem = (FolderItem) curItem.getParent();
                             }
                         }
                         folderItem.getState().setPath(fullPath);
