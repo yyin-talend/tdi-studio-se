@@ -400,18 +400,19 @@ public class DeleteAction extends AContextualAction {
                 EList nodesList = null;
                 // wzhang added to fix bug 10050
                 Set<Project> refParentProjects = new HashSet<Project>();
-                final Project currentProject = ProjectManager.getInstance().getCurrentProject();
                 try {
-                    if (currentProject != null) {
-                        final Project[] readProject = factory.readProject();
-                        for (Project p : readProject) {
-                            if (p.equals(currentProject)) {
-                                continue;
-                            }
-                            calcParentProjects(currentProject, p, refParentProjects);
-                        }
-                        refParentProjects.add(currentProject); // contain current project
-                    }
+                    refParentProjects.add(ProjectManager.getInstance().getCurrentProject());
+                    refParentProjects.addAll(ProjectManager.getInstance().getReferencedProjects());
+                    // if (currentProject != null) {
+                    // final Project[] readProject = factory.readProject();
+                    // for (Project p : readProject) {
+                    // if (p.equals(currentProject)) {
+                    // continue;
+                    // }
+                    // calcParentProjects(currentProject, p, refParentProjects);
+                    // }
+                    // refParentProjects.add(currentProject); // contain current project
+                    // }
                     for (Project refP : refParentProjects) {
                         List<IRepositoryViewObject> processes = factory.getAll(refP, ERepositoryObjectType.PROCESS);
                         List<IRepositoryViewObject> jobletes = factory.getAll(refP, ERepositoryObjectType.JOBLET);
@@ -503,8 +504,6 @@ public class DeleteAction extends AContextualAction {
                     }
 
                 } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                } catch (BusinessException e) {
                     ExceptionHandler.process(e);
                 }
 

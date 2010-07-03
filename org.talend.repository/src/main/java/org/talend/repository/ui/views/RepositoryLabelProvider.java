@@ -30,14 +30,13 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IReferencedProjectService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -170,31 +169,11 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         // Item item = property.getItem();
         ERepositoryObjectType itemType = object.getType();
         Image img = null;
-        if (itemType == ERepositoryObjectType.JOBLET) {
-            Property property = object.getProperty();
-            img = getJobletCustomIcon(property);
-            // img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
-            img = ImageUtils.propertyLabelScale(property.getId(), img, ICON_SIZE.ICON_16);
+        if (itemType == ERepositoryObjectType.JOBLET && object instanceof RepositoryViewObject
+                && ((RepositoryViewObject) object).getCustomImage() != null) {
+            img = ((RepositoryViewObject) object).getCustomImage();
         } else {
             img = CoreImageProvider.getImage(itemType);
-        }
-
-        // Manage doc extensions:
-        if (itemType == ERepositoryObjectType.DOCUMENTATION) {
-            Property property = object.getProperty();
-            Item item = property.getItem();
-            if (item instanceof DocumentationItem) {
-                img = OverlayImageProvider.getImageWithDocExt(((DocumentationItem) item).getExtension());
-            } else if (item instanceof LinkDocumentationItem) {
-                img = OverlayImageProvider.getImageWithSpecial(img).createImage();
-                /*
-                 * It's slowly, so disable it.
-                 */
-                // LinkType link = ((LinkDocumentationItem) item).getLink();
-                // if (!LinkUtils.validateLink(link)) {
-                // img = OverlayImageProvider.getImageWithError(img).createImage();
-                // }
-            }
         }
 
         ERepositoryStatus repositoryStatus = object.getRepositoryStatus();

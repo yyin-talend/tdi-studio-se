@@ -121,10 +121,8 @@ import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -147,10 +145,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     return;
                 }
                 // propertyIsDirty = true;
-                designerEditor.getProperty().eAdapters().remove(dirtyListener);
-                process = designerEditor.getProcess();
-                process.updateProperties();
-                designerEditor.getProperty().eAdapters().add(dirtyListener);
+                // process = designerEditor.getProcess();
+                // process.getProperty().eAdapters().remove(dirtyListener);
+                // process.updateProperties();
+                // process.getProperty().eAdapters().add(dirtyListener);
 
                 if (Display.getCurrent() != null) {
                     propertyIsDirty = true;
@@ -563,13 +561,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             return;
         }
         updateRunJobContext();
-        designerEditor.getProperty().eAdapters().remove(dirtyListener);
+        designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         display = getSite().getShell().getDisplay();
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
         getEditor(0).doSave(monitor);
-        designerEditor.getProperty().eAdapters().add(dirtyListener);
+        designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
         propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -1022,8 +1020,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
-            designerEditor.getProperty().eAdapters().remove(dirtyListener);
-            Property property = designerEditor.getProperty();
+            process.getProperty().eAdapters().remove(dirtyListener);
+            Property property = process.getProperty();
             if (property.eResource() == null || property.getItem().eResource() == null) {
                 property = repFactory.getUptodateProperty(property);
             }
@@ -1031,28 +1029,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // property = repFactory.reload(property);
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            // e.printStackTrace();
             ExceptionHandler.process(e);
         }
 
-        RepositoryNode repositoryNode = processEditorInput.getRepositoryNode();
-        if (repositoryNode == null) {
-            processEditorInput.setRepositoryNode(null); // retrieve the node.
-            repositoryNode = processEditorInput.getRepositoryNode();
-        }
-        if (repositoryNode != null) {
-            if (repFactory.getStatus(designerEditor.getProperty().getItem()) == ERepositoryStatus.DELETED) {
-                RepositoryManager.refreshDeletedNode(null);
-            } else {
-                RepositoryManager.refresh(repositoryNode.getObjectType());
-            }
+        if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
+            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         } else {
-            if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
-                RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-            } else {
-                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-            }
+            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
         }
         processEditorInput.setLoadedProcess(null);
 

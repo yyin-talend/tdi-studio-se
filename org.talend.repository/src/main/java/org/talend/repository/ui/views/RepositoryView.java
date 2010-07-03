@@ -120,6 +120,7 @@ import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -689,7 +690,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
                 // add for feature 10281
                 String content = null;
-                Property property = object.getProperty();
                 User currentLoginUser = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                         .getUser();
                 String crurentLogin = null;
@@ -697,25 +697,28 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     crurentLogin = currentLoginUser.getLogin();
                 }
                 String login = null;
-                if (property != null) {
-                    Item item2 = property.getItem();
-                    if (item2 != null) {
-                        ItemState state = item2.getState();
-                        if (state != null) {
-                            User locker = state.getLocker();
-                            if (locker != null) {
-                                String lockerLogin = locker.getLogin();
-                                if (lockerLogin != null) {
-                                    if (!lockerLogin.equals(crurentLogin)) {
-                                        login = lockerLogin;
+                if (object.getRepositoryStatus() == ERepositoryStatus.LOCK_BY_OTHER) {
+                    Property property = object.getProperty();
+                    if (property != null) {
+                        Item item2 = property.getItem();
+                        if (item2 != null) {
+                            ItemState state = item2.getState();
+                            if (state != null) {
+                                User locker = state.getLocker();
+                                if (locker != null) {
+                                    String lockerLogin = locker.getLogin();
+                                    if (lockerLogin != null) {
+                                        if (!lockerLogin.equals(crurentLogin)) {
+                                            login = lockerLogin;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                if (login != null && !"".equals(login)) {//$NON-NLS-1$
-                    content = "  locked by :" + login;//$NON-NLS-1$
+                    if (login != null && !"".equals(login)) {//$NON-NLS-1$
+                        content = "  locked by :" + login;//$NON-NLS-1$
+                    }
                 }
                 String description = object.getDescription();
                 if (content == null || "".equals(content)) { //$NON-NLS-1$

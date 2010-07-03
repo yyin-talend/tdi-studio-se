@@ -134,8 +134,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.Project;
-import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -634,8 +632,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected IComponentsFactory components;
 
-    protected Property property;
-
     protected boolean readOnly;
 
     public static final int GRID_SIZE = 32;
@@ -644,9 +640,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected JobResource currentJobResource;
 
-    // protected final String projectName;
-
-    protected Project rootProject;
+    protected String projectName;
 
     protected final Map<String, JobResource> protectedJobs;
 
@@ -779,19 +773,18 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         try {
             if (input instanceof JobEditorInput) {
                 process = ((JobEditorInput) input).getLoadedProcess();
-                property = ((JobEditorInput) input).getItem().getProperty();
-                rootProject = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(
-                        ((RepositoryEditorInput) input).getItem());
+                projectName = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(
+                        ((RepositoryEditorInput) input).getItem()).getLabel();
             }
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
             return;
         }
 
-        if (property.getItem() instanceof ProcessItem) {
-            currentJobResource.setJobInfo(new JobInfo((ProcessItem) property.getItem(), property, process.getContextManager()
-                    .getDefaultContext().getName()));
-            currentJobResource.setProjectName(rootProject.getLabel());
+        if (process.getProperty().getItem() instanceof ProcessItem) {
+            currentJobResource.setJobInfo(new JobInfo((ProcessItem) process.getProperty().getItem(), process.getProperty(),
+                    process.getContextManager().getDefaultContext().getName()));
+            currentJobResource.setProjectName(projectName);
 
             JobResourceManager.getInstance().addProtection(this);
         }
@@ -1121,19 +1114,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     public IProcess2 getProcess() {
         return this.process;
-    }
-
-    public Property getProperty() {
-        return this.property;
-    }
-
-    /**
-     * Sets the property.
-     * 
-     * @param property the property to set
-     */
-    public void setProperty(Property property) {
-        this.property = property;
     }
 
     @SuppressWarnings("unchecked")
@@ -1468,7 +1448,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // achen modify to fix bug 6462
         // Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
 
-        String projectName = rootProject.getLabel();
         // for (JobInfo jobInfo : subJobs) {
         //            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
         //                    projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
