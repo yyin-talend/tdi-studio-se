@@ -233,14 +233,23 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
      * IRepositoryWorkUnitListener)
      */
     public void addRepositoryWorkUnitListener(IRepositoryWorkUnitListener listener) {
-        listeners.add(listener);
+        synchronized (lock) {
+            listeners.add(listener);
+        }
     }
 
-    public synchronized void runRepositoryWorkUnitListeners() {
-        for (IRepositoryWorkUnitListener listener : listeners) {
+    public void runRepositoryWorkUnitListeners() {
+        List<IRepositoryWorkUnitListener> list = new ArrayList<IRepositoryWorkUnitListener>();
+        synchronized (lock) {
+            list.addAll(listeners);
+        }
+        for (IRepositoryWorkUnitListener listener : list) {
             listener.workUnitFinished();
         }
-
-        listeners.clear();
+        synchronized (lock) {
+            listeners.removeAll(list);
+        }
     }
+
+    private Object lock = new Object();
 }

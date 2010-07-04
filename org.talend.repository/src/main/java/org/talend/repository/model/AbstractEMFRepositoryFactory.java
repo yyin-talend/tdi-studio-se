@@ -811,7 +811,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    public synchronized IRepositoryViewObject getLastVersion(Project project, String id) throws PersistenceException {
+    public IRepositoryViewObject getLastVersion(Project project, String id) throws PersistenceException {
         List<IRepositoryViewObject> serializableAllVersion = null;
         serializableAllVersion = getSerializable(project, id, false);
         int size = serializableAllVersion.size();
@@ -848,8 +848,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return message;
     }
 
-    public synchronized IRepositoryViewObject getLastVersion(Project project, String id, String relativeFolder,
-            ERepositoryObjectType type) throws PersistenceException {
+    public IRepositoryViewObject getLastVersion(Project project, String id, String relativeFolder, ERepositoryObjectType type)
+            throws PersistenceException {
         List<IRepositoryViewObject> serializableAllVersion = null;
         Object fullFolder = getFullFolder(project, type, relativeFolder);
         serializableAllVersion = getSerializableFromFolder(project, fullFolder, id, type, false, false, true);
