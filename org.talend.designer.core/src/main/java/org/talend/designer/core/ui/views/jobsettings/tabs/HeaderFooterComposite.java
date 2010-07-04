@@ -118,9 +118,9 @@ public class HeaderFooterComposite extends AbstractTabComposite {
             try {
                 lastVersion = proxyFactory.getLastVersion(id);
                 if (lastVersion != null) {
-                    headerText.setText(lastVersion.getLabel());
+                    headerText.setText("HEADER:" + lastVersion.getLabel());
                 } else {
-                    headerText.setText("");//$NON-NLS-1$
+                    headerText.setText("HEADER:<none>");//$NON-NLS-1$
                 }
             } catch (PersistenceException e1) {
                 ExceptionHandler.process(e1);
@@ -154,7 +154,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
 
                         boolean isHeader = headerFooterConnection.isIsHeader();
                         if (isHeader) {
-                            headerText.setText(connectionItem.getProperty().getLabel());
+                            headerText.setText("HEADER:" + connectionItem.getProperty().getLabel());
 
                             CompoundCommand compoundCommand = new CompoundCommand();
                             IElementParameter headerFooterIdParam = process
@@ -230,7 +230,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
             public void widgetSelected(SelectionEvent e) {
                 if (repositoryObject instanceof IProcess2) {
                     IProcess2 process = (IProcess2) repositoryObject;
-                    headerText.setText("");//$NON-NLS-1$
+                    headerText.setText("HEADER:<none>");//$NON-NLS-1$
                     process.getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName()).setValue(null);
                     process.getElementParameter(EParameterName.HEADER_ENABLED.getName()).setValue(null);
                     process.getElementParameter(EParameterName.HEADER_LIBRARY.getName()).setValue(null);
@@ -283,9 +283,9 @@ public class HeaderFooterComposite extends AbstractTabComposite {
             try {
                 lastVersion = proxyFactory.getLastVersion(id);
                 if (lastVersion != null) {
-                    footerText.setText(lastVersion.getLabel());
+                    footerText.setText("FOOTER:" + lastVersion.getLabel());
                 } else {
-                    footerText.setText("");//$NON-NLS-1$
+                    footerText.setText("FOOTER:<none>");//$NON-NLS-1$
                 }
             } catch (PersistenceException e1) {
                 ExceptionHandler.process(e1);
@@ -321,7 +321,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
                         boolean isFooter = !(headerFooterConnection.isIsHeader());
                         if (isFooter) {
                             CompoundCommand compoundCommand = new CompoundCommand();
-                            footerText.setText(connectionItem.getProperty().getLabel());
+                            footerText.setText("FOOTER:" + connectionItem.getProperty().getLabel());
                             // footerID
                             IElementParameter headerFooterIdParam = process
                                     .getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName());
@@ -394,7 +394,7 @@ public class HeaderFooterComposite extends AbstractTabComposite {
             public void widgetSelected(SelectionEvent e) {
                 if (repositoryObject instanceof IProcess2) {
                     IProcess2 process = (IProcess2) repositoryObject;
-                    footerText.setText("");//$NON-NLS-1$
+                    footerText.setText("FOOTER:<none>");//$NON-NLS-1$
                     process.getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName()).setValue(null);
                     process.getElementParameter(EParameterName.FOOTER_ENABLED.getName()).setValue(null);
                     process.getElementParameter(EParameterName.FOOTER_LIBRARY.getName()).setValue(null);
