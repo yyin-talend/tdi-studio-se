@@ -36,12 +36,20 @@
 			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
 
 			if(validTarget != null) {
+				List<IHashableColumn> hashableColumns = null;
+				IMatchingMode matchingMode = null;
+				String tempFolder = null;
+				String rowsBufferSize = null;
+				IHashConfiguration hashConfiguration = null;				
+				String matchingModeStr = null;
+				
+			    if (validTarget instanceof IHashableInputConnections){
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
-					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
-					List<IHashableColumn> hashableColumns = null;
-					IMatchingMode matchingMode = null;
-					String tempFolder = null;
-					String rowsBufferSize = null;
+					hashConfiguration = target.getHashConfiguration(connection.getName());
+				} else{
+				  	matchingModeStr = "ALL_MATCHES";
+				}
+
 					if(hashConfiguration == null) {
 						hashableColumns = new ArrayList(0);
 						
@@ -54,26 +62,25 @@
 						rowsBufferSize = hashConfiguration.getRowsBufferSize();
 					}
 					
-					String matchingModeStr = null;
-					if(matchingMode == null) {
-						if(hashableColumns.size() > 0) {
+					if (matchingModeStr == null){
+					  if(matchingMode == null) {
+						  if(hashableColumns.size() > 0) {
 							matchingModeStr = "UNIQUE_MATCH";
-						} else {
+						  } else {
 							matchingModeStr = "ALL_ROWS";
-						}
-					} else {
+						  }
+					  } else {
 						matchingModeStr = matchingMode.toString();
+					  }
 					}
 					
 					boolean isAllRows = "ALL_ROWS".equals(matchingModeStr);
-					
-					
 			   %>
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   
 			   <%
-				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
+				if (hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
 					org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   					new org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_Lookup_<%=connectionName%>_"

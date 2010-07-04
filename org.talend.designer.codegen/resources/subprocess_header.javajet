@@ -86,6 +86,19 @@
 										isLookup = true;
     								}
     							}
+    							
+    							// for tRecordMatching    						 
+    							for (INode tRecordMatchingNode : process.getNodesOfType("tRecordMatching")) {
+    								if(conn.getTarget().getUniqueName().equals(tRecordMatchingNode.getUniqueName())){
+    									List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__BLOCKING_DEFINITION__");
+    									for(Map<String, String> joinKeyLine : joinKeys){  
+                                			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
+                                			hashableColumnsNames.add(lookupKey);
+                                			isLookup = true;
+    									}
+    								}
+    							}
+    							
 							}
 													
 							if (!isLookOftJoin && metadata!=null) { 
@@ -94,9 +107,6 @@
 										hashableColumnsNames.add(column.getLabel());
 									}
 								}
-								
-
-								
 							}
 						}
 						boolean hasAtLeastOneKey = hashableColumnsNames.size() > 0;

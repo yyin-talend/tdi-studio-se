@@ -36,10 +36,18 @@
 			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
 
 			if(validTarget != null) { // T_AH_102
-					IHashableInputConnections target = (IHashableInputConnections) validTarget;
-					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
+					String matchingModeStr = null;
 					List<IHashableColumn> hashableColumns = null;
 					IMatchingMode matchingMode = null;
+					IHashConfiguration hashConfiguration = null;
+					
+					if (validTarget instanceof IHashableInputConnections){
+					
+					  IHashableInputConnections target = (IHashableInputConnections) validTarget;
+					  hashConfiguration = target.getHashConfiguration(connection.getName());
+					} else{
+				  	  matchingModeStr = "ALL_MATCHES";
+				    }
 					if(hashConfiguration == null) {
 						hashableColumns = new ArrayList(0);
 					} else {
@@ -47,17 +55,18 @@
 						matchingMode = hashConfiguration.getMatchingMode();
 					}
 					
-					String matchingModeStr = null;
-					if(matchingMode == null) {
+					
+					if (matchingModeStr == null){
+					  if(matchingMode == null) {
 						if(hashableColumns.size() > 0) {
 							matchingModeStr = "UNIQUE_MATCH";
 						} else {
 							matchingModeStr = "ALL_ROWS";
 						}
-					} else {
+					  } else {
 						matchingModeStr = matchingMode.toString();
-					}
-					
+					  }
+			        }
 			   %>
 			   
 			   <%
