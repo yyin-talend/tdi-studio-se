@@ -1111,6 +1111,12 @@
              id="org.talend.repository.model.migration.ChangeJDBCDriverJarTypeForFeature12879"
              name="ChangeJDBCDriverJarTypeForFeature12879">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddBlockingFortRecordMatching"
+             id="org.talend.repository.model.migration.AddBlockingFortRecordMatching"
+             name="add blocking for tRecordMatching 13701">
+       </projecttask>
    </extension>
    
    <extension
