@@ -610,7 +610,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public void deleteObjectPhysical(Project project, IRepositoryViewObject objToDelete, String version)
             throws PersistenceException {
-        if (project == null || objToDelete == null) {
+        if (project == null || objToDelete == null || objToDelete.getProperty() == null) {
             return;
         }
         // RepositoryViewObject is dynamic, so force to use in all case the RepositoryObject with fixed object.
