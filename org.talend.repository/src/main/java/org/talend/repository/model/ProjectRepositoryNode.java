@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
@@ -719,12 +720,20 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
             }
         } else if (item.getState().isDeleted()) {
-            RepositoryNode repNode = new RepositoryNode(new RepositoryViewObject(item.getProperty()), currentParentNode,
-                    ENodeType.REPOSITORY_ELEMENT);
-            repNode.setProperties(EProperties.CONTENT_TYPE, itemType);
-            repNode.setProperties(EProperties.LABEL, item.getProperty().getLabel());
-            currentParentNode.getChildren().add(repNode);
-            repNode.setParent(currentParentNode);
+            try {
+                if (item.getProperty().getVersion().equals(
+                        ProxyRepositoryFactory.getInstance().getLastVersion(item.getProperty().getId()).getVersion())) {
+                    RepositoryNode repNode = new RepositoryNode(new RepositoryViewObject(item.getProperty()), currentParentNode,
+                            ENodeType.REPOSITORY_ELEMENT);
+                    repNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+                    repNode.setProperties(EProperties.LABEL, item.getProperty().getLabel());
+                    currentParentNode.getChildren().add(repNode);
+                    repNode.setParent(currentParentNode);
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
         }
     }
 
