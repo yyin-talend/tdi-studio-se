@@ -87,7 +87,6 @@ public class CLASS {
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {// Only segment could be able to have an attribute
                     tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
                     tmpParent.attribute = tmpNew;
-                    segment=tmpParent;
                 }else {
                     if (tmpParent == null) {
                         tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
@@ -118,7 +117,7 @@ public class CLASS {
     }
     
     private void buildSegmentPath(XMLNode segment){
-        if (segment == null)
+        if (segment == null || segment.parent==null)
             return;
 		XMLNode tmpNode = segment;
 		// remove the root tage part
