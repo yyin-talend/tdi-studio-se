@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -277,17 +278,30 @@ public class DeleteAction extends AContextualAction {
                             }
                         }
                         folderItem.getState().setPath(fullPath);
+                        this.setChildFolderPath(folderItem);
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
                     monitor.done();
                 }
 
+                private void setChildFolderPath(FolderItem folderItem) {
+                    EList childFoderList = folderItem.getChildren();
+                    for (Object o : childFoderList) {
+                        if (o instanceof FolderItem) {
+                            String parentPath = ((FolderItem) ((FolderItem) o).getParent()).getState().getPath();
+                            String parentName = ((FolderItem) ((FolderItem) o).getParent()).getProperty().getLabel();
+                            ((FolderItem) o).getState().setPath(parentPath + File.separator + parentName);
+                            setChildFolderPath((FolderItem) o);
+                        }
+                    }
+                }
             };
             PlatformUI.getWorkbench().getProgressService().run(true, true, op);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+
     }
 
     private void deleteRepositoryNode(RepositoryNode repositoryNode, IProxyRepositoryFactory factory)
