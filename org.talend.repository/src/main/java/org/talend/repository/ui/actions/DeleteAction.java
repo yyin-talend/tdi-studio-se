@@ -230,7 +230,9 @@ public class DeleteAction extends AContextualAction {
                             }
                             curItem = parentFolder;
                         }
-                        if (objectType != ERepositoryObjectType.SQLPATTERNS && curItem.getParent() instanceof FolderItem
+                        if (!objectType.getKey().toString().startsWith("repository.metadata")
+                                && objectType != ERepositoryObjectType.SQLPATTERNS
+                                && objectType != ERepositoryObjectType.ROUTINES && curItem.getParent() instanceof FolderItem
                                 && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
                             FolderItem parentFolder = (FolderItem) curItem.getParent();
                             if ("".equals(fullPath)) {
