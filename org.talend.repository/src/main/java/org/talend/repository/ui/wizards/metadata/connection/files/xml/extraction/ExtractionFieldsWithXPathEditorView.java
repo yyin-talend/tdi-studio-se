@@ -40,6 +40,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.repository.i18n.Messages;
@@ -384,7 +385,20 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
                     @Override
                     protected Object getObjectToAdd() {
-                        return getModel().createNewSchemaTarget();
+                        UniqueStringGenerator<SchemaTarget> generator = new UniqueStringGenerator<SchemaTarget>("column",
+                                getModel().getBeansList()) {
+
+                            @Override
+                            protected String getBeanString(SchemaTarget bean) {
+                                // TODO Auto-generated method stub
+                                return bean.getRelativeXPathQuery();
+                            }
+
+                        };
+                        SchemaTarget tarhe = getModel().createNewSchemaTarget();
+                        tarhe.setRelativeXPathQuery(generator.getUniqueString());
+                        tarhe.setTagName(generator.getUniqueString());
+                        return tarhe;
                     }
 
                 };
