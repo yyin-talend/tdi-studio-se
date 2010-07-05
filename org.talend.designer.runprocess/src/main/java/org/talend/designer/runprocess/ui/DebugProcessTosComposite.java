@@ -896,39 +896,41 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     }
 
     protected void setExecBtn(final boolean runnable) {
-        if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
-            toolBar.setEnabled(runnable);
-        }
-        if (processContext != null) {
-            if (processContext.isMonitorTrace()) {
-                boolean b = processContext != null;
-                if (!runnable && b) {
-                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause"));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob"));
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
-                    itemDropDown.setData(ProcessView.PAUSE_ID);
-                    toolBar.getParent().layout();
-                } else {
-                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
-                    itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
-                }
-                toolBar.setEnabled(b);
-            } else {
-                // qli modified to fix the bug 7354.
+        if (!isDisposed()) {
+            if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
                 toolBar.setEnabled(runnable);
+            }
+            if (processContext != null) {
+                if (processContext.isMonitorTrace()) {
+                    boolean b = processContext != null;
+                    if (!runnable && b) {
+                        itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause"));
+                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob"));
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+                        itemDropDown.setData(ProcessView.PAUSE_ID);
+                        toolBar.getParent().layout();
+                    } else {
+                        itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
+                        itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
+                    }
+                    toolBar.setEnabled(b);
+                } else {
+                    // qli modified to fix the bug 7354.
+                    toolBar.setEnabled(runnable);
 
-                // if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
-                //                debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
-                // debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
-                // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                // } else {
-                itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));
-                itemDropDown.setData(ProcessView.DEBUG_ID);
-                itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));
-                // }
+                    // if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
+                    //                debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
+                    // debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
+                    // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                    // } else {
+                    itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));
+                    itemDropDown.setData(ProcessView.DEBUG_ID);
+                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                    itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));
+                    // }
+                }
             }
         }
     }

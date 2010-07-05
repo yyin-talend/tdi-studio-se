@@ -85,6 +85,8 @@ public class RunProcessContext {
 
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
 
+    public static final String NEXTBREAKPOINT = "RunProcessContext.NextBreakpoint";
+
     private boolean watchAllowed;
 
     private Boolean nextBreakpoint = false;
@@ -1087,7 +1089,13 @@ public class RunProcessContext {
                             continue;
                         } else if ("UI_STATUS".equals(data)) {
                             // wait for UI here, for next click, then send STATUS_OK
+                            if (!checkBreakpoint()) {
+                                firePropertyChange(NEXTBREAKPOINT, true, false);
+                            } else {
+                                firePropertyChange(NEXTBREAKPOINT, false, true);
+                            }
                             if (isNextPoint()) {
+
                                 firePropertyChange(PREVIOUS_ROW, false, true);
                                 pred.println("STATUS_OK");
                                 setNextBreakPoint(false);

@@ -48,7 +48,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -391,14 +390,14 @@ public class ProcessView extends ViewPart {
         IHandler handler1;
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-            Action debugAction = new DebugAction();
-            handler1 = new ActionHandler(debugAction);
-            handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
-        }
-        Action killAction = new KillAction();
-        handler1 = new ActionHandler(killAction);
-        handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);
+        // if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+        // Action debugAction = new DebugAction();
+        // handler1 = new ActionHandler(debugAction);
+        // handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
+        // }
+        // Action killAction = new KillAction();
+        // handler1 = new ActionHandler(killAction);
+        // handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);
 
         FocusListener fl = new FocusListener() {
 
