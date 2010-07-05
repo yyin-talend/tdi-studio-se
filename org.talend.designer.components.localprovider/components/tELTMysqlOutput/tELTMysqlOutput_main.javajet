@@ -44,7 +44,7 @@ imports="
 	}
 	
 	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
-	String tableName = ElementParameterParser.getValue(node,"__ELT_TABLE_NAME__");
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 
     String dbhost = null;
@@ -285,12 +285,12 @@ imports="
 
 		if(("INSERT").equals(dataAction)){
 %>	
-		String insertQuery = "INSERT INTO " + <%=tableName%> + "(<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO <%=dbtable%>(<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		} else if (("UPDATE").equals(dataAction)) {
 %>
-		String updateQuery = "UPDATE " + <%=tableName%> + " SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -304,10 +304,10 @@ imports="
 <%		
 		}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
-		String insertQuery = "INSERT INTO " + <%=tableName%> + "(<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO <%=dbtable%>(<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
-		String updateQuery = "UPDATE " + <%=tableName%> + " SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -321,7 +321,7 @@ imports="
 <%
 		}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
-		String updateQuery = "UPDATE " + <%=tableName%> + " SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -332,12 +332,12 @@ imports="
 		;
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 						
-		String insertQuery = "INSERT INTO " + <%=tableName%> + "(<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO <%=dbtable%>(<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		}else if (("DELETE").equals(dataAction)){
 %>
-		String deleteQuery = "DELETE  FROM ("+select_query+") " + <%=tableName%>
+		String deleteQuery = "DELETE  FROM ("+select_query+") <%=dbtable%>"
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
