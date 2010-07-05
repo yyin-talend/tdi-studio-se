@@ -1658,7 +1658,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	                        }
 	                        
 	                        if (trace) { // only for traces to be able to use preview mode in tMap.
-       	                    	if(outputTable.getIsJoinTableOf()==null){ 
+       	                    	if(hasJoinedTable(outputTableName, data)){ 
        	                    		String buff = "";        	                              
        	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
   	                                   buff += outputTableEntry.getName() + "=\"+"+outputTableName + "_tmp." + outputTableEntry.getName() +"+\"|";
@@ -1668,7 +1668,7 @@ if(!isVirtualOut) { // T_TM_M_320
        	                              "runTrace.sendTrace(\""+ outputTableName + "[MAIN]" +"\",\""+ node.getUniqueName() + "\",\"" +
        	                              buff + "\"); "
        	                          );
-		                    	} else  {
+		                    	} else  if (outputTable.getIsJoinTableOf()!=null) {
        	                    		String buff = "";        	                              
       	                    		 for (ExternalMapperTableEntry outputTableEntry : outputTable.getMetadataTableEntries()) { 
  	                                   buff += outputTableEntry.getName() + "=\"+"+outputTable.getIsJoinTableOf() + "_tmp." + outputTableEntry.getName() +"+\"|";

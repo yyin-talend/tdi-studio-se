@@ -119,6 +119,9 @@ public abstract class DataMapTableEntry implements ITableEntry {
                                 key = output.getIsJoinTableOf() + ":" + output.getName();
                             } else if (hasJoinedTable(output)) {
                                 key = output.getName() + "[MAIN]";
+                            } else {
+                                // single output
+                                key = output.getName();
                             }
                             return traceData.get(key);
 

@@ -133,9 +133,14 @@ public class ToolbarInputZone extends ToolbarZone {
             nextRow.setImage(ImageProvider.getImage(EImage.RIGHT_ICON));
 
             nextBreakpoint = new ToolItem(getToolBarActions(), SWT.PUSH);
-            nextBreakpoint.setEnabled(activeContext.isRunning());
             nextBreakpoint.setToolTipText("Next Breakpoint");
             nextBreakpoint.setImage(ImageProvider.getImage(EImage.RIGHTX_ICON));
+            Boolean bc = activeContext.checkBreakpoint();
+            if (!bc) {
+                nextBreakpoint.setEnabled(bc);
+            } else {
+                nextBreakpoint.setEnabled(activeContext.isRunning());
+            }
 
             killBtn = new ToolItem(getToolBarActions(), SWT.PUSH);
             killBtn.setToolTipText("Kill");
@@ -208,7 +213,13 @@ public class ToolbarInputZone extends ToolbarZone {
                                     previousRow.setEnabled(enabled);
                                 }
                                 if (!nextBreakpoint.isDisposed() && enabled != nextBreakpoint.isEnabled()) {
-                                    nextBreakpoint.setEnabled(enabled);
+                                    Boolean bc = activeContext.checkBreakpoint();
+                                    if (!bc) {
+                                        nextBreakpoint.setEnabled(bc);
+                                    } else {
+                                        nextBreakpoint.setEnabled(enabled);
+                                    }
+
                                 }
                                 if (!killBtn.isDisposed() && enabled != killBtn.isEnabled()) {
                                     killBtn.setEnabled(enabled);
@@ -246,7 +257,7 @@ public class ToolbarInputZone extends ToolbarZone {
                             int sepIndex = data.indexOf("|"); // index separator for row name
                             String dataWithoutRowName = data.substring(sepIndex + 1);
                             sepIndex = dataWithoutRowName.indexOf("|");
-                            return dataWithoutRowName.substring(0, sepIndex);
+                            return "row: " + dataWithoutRowName.substring(0, sepIndex);
                         }
                     }
                 }
