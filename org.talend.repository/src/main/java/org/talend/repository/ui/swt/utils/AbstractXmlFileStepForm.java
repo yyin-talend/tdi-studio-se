@@ -68,9 +68,13 @@ public abstract class AbstractXmlFileStepForm extends AbstractForm {
     }
 
     protected void collectConnParams() {
-        addContextParams(EFileParamName.File, true);
-        addContextParams(EFileParamName.Encoding, true);
-        addContextParams(EParamName.XPathQuery, true);
+        if (getConnection().isInputModel()) {
+            addContextParams(EFileParamName.File, true);
+            addContextParams(EFileParamName.Encoding, true);
+            addContextParams(EParamName.XPathQuery, true);
+        } else {
+            addContextParams(EParamName.OutputFilePath, true);
+        }
 
     }
 }

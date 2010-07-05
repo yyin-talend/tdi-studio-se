@@ -132,7 +132,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      */
     @Override
     protected void initialize() {
-
+        getConnection().setInputModel(true);
         this.treePopulator = new TreePopulator(availableXmlTree);
 
         // add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml

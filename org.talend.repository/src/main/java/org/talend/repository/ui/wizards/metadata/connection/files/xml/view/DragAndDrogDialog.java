@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.ui.edit;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.view;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -20,7 +20,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.designer.fileoutputxml.i18n.Messages;
 
 /**
  * DOC s class global comment. Detailled comment
@@ -53,12 +52,9 @@ public class DragAndDrogDialog extends Dialog {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
         // composite.setLayout(new GridLayout());
-        String[][] namevalues = new String[][] {
-                { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT }, //$NON-NLS-1$
-                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE }, //$NON-NLS-1$
-                { Messages.getString("DragAndDrogDialog.AddText"), CREATE_AS_TEXT } }; //$NON-NLS-1$
-        RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1, //$NON-NLS-1$ //$NON-NLS-2$
-                namevalues, composite, true);
+        String[][] namevalues = new String[][] { { "Create as sub-element of target node", CREATE_AS_SUBELEMENT },
+                { "Create as attribute of target node", CREATE_AS_ATTRIBUTE }, { "Add linker to target node", CREATE_AS_TEXT } };
+        RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", "Select the operation:", 1, namevalues, composite, true);
         GridLayout layout = new GridLayout();
         layout.marginWidth = 12;
         composite.setLayout(layout);
@@ -76,6 +72,6 @@ public class DragAndDrogDialog extends Dialog {
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("DragAndDrogDialog.DialogTitle")); //$NON-NLS-1$
+        newShell.setText("Selection");
     }
 }

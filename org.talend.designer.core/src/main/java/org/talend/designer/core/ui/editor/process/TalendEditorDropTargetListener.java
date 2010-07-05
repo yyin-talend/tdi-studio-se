@@ -69,6 +69,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
@@ -88,6 +89,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
@@ -1065,6 +1067,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // for database, file, webservices, saleforce ...
 
             String productNameWanted = name.getProductName();
+
+            // need improve
+            boolean outputXml = false;
+            if (item instanceof XmlFileConnectionItemImpl) {
+                XmlFileConnection connection = (XmlFileConnection) ((XmlFileConnectionItemImpl) item).getConnection();
+                if (!connection.isInputModel()) {
+                    outputXml = true;
+                    productNameWanted = "XMLOUTPUT";
+                }
+            }
             EmfComponent emfComponent = null;
             List<IComponent> neededComponents = new ArrayList<IComponent>();
             for (IComponent component : components) {
@@ -1077,12 +1089,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             value = false;
                         }
                     }
-
                     boolean flag = filterComponent(component, name, type);
                     if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                         neededComponents.add(emfComponent);
                     }
-
                 }
             }
 

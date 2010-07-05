@@ -25,11 +25,11 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
-import org.talend.designer.fileoutputxml.data.Attribute;
-import org.talend.designer.fileoutputxml.data.Element;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.data.NameSpaceNode;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * DOC ke class global comment. Detailled comment <br/>

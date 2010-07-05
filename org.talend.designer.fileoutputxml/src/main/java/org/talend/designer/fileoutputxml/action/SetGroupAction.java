@@ -15,12 +15,12 @@ package org.talend.designer.fileoutputxml.action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.data.Attribute;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>

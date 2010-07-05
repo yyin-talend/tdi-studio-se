@@ -10,65 +10,45 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.NameSpaceDialog;
 
 /**
- * 
- * $Id: CreateNameSpaceAction.java,v 1.1 2007/10/30 07:20:38 xzhang Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class CreateNameSpaceAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * CreateNode constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public CreateNameSpaceAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public CreateNameSpaceAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public CreateNameSpaceAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
         if (node != null) {
             createChildNode(node);
         }
+        form.updateConnection();
     }
 
-    /**
-     * Create the child node of the input node
-     * 
-     * @param node
-     */
     private void createChildNode(FOXTreeNode node) {
         String label = null;
         String defaultValue = null;
@@ -93,26 +73,7 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
         node.addChild(child);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();
-        foxui.redrawLinkers();
+        form.redrawLinkers();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
-    @Override
-    public void selectionChanged(IStructuredSelection selection) {
-        FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (node != null && node.getClass() != Element.class) {
-            this.setEnabled(false);
-        } else {
-            if (node == null) {
-                this.setEnabled(false);
-            } else {
-                this.setEnabled(true);
-            }
-        }
-    }
 }

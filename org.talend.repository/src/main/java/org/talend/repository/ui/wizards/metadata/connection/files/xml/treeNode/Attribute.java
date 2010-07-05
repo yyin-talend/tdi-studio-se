@@ -10,22 +10,30 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.data;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode;
 
 /**
- * DOC s class global comment. Detailled comment
+ * bqian XML attribute structure. <br/>
+ * 
+ * $Id: Attribute.java,v 1.1 2007/06/12 07:20:39 gke Exp $
  * 
  */
-public class NameSpaceNode extends FOXTreeNode {
+public class Attribute extends FOXTreeNode {
 
-    public NameSpaceNode() {
-    }
-
-    public NameSpaceNode(String label) {
-        setLabel(label);
+    /**
+     * Attribute constructor comment.
+     */
+    public Attribute() {
     }
 
     /**
+     * Attribute constructor comment.
+     */
+    public Attribute(String label) {
+        setLabel(label);
+    }
+
+    /*
      * (non-Javadoc)
      * 
      * @see org.talend.designer.fileoutputxml.data.FOXTreeNode#hasChildren()
@@ -42,11 +50,7 @@ public class NameSpaceNode extends FOXTreeNode {
      */
     @Override
     public String getLabelForViewer() {
-        if (super.getLabel() != null && super.getLabel().length() > 0) {
-            return "xmlns:" + super.getLabel(); //$NON-NLS-1$
-        } else {
-            return "xmlns:(default)"; //$NON-NLS-1$
-        }
+        return "@" + super.getLabel(); //$NON-NLS-1$
     }
 
     @Override

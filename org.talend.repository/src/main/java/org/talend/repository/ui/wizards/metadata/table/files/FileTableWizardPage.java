@@ -38,6 +38,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.positional.Fil
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParseAPI;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceStep3Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaStep4Form;
@@ -123,11 +124,21 @@ public class FileTableWizardPage extends WizardPage {
             }
 
             public Object caseXmlFileConnection(final XmlFileConnection object) {
-                XmlFileStep3Form xmlFileStep3Form = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper
-                        .getTableNames(object, metadataTable.getLabel()));
-                xmlFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
-                xmlFileStep3Form.setListener(listener);
-                return xmlFileStep3Form;
+                XmlFileConnection xmlFileConnection = (XmlFileConnection) connectionItem.getConnection();
+                boolean isInputModel = xmlFileConnection.isInputModel();
+                if (isInputModel) {
+                    XmlFileStep3Form xmlFileStep3Form = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper
+                            .getTableNames(object, metadataTable.getLabel()));
+                    xmlFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
+                    xmlFileStep3Form.setListener(listener);
+                    return xmlFileStep3Form;
+                } else {
+                    XmlFileOutputStep3Form xmlFileOutputStep3Form = new XmlFileOutputStep3Form(parent, connectionItem,
+                            metadataTable, TableHelper.getTableNames(object, metadataTable.getLabel()));
+                    xmlFileOutputStep3Form.setReadOnly(!isRepositoryObjectEditable);
+                    xmlFileOutputStep3Form.setListener(listener);
+                    return xmlFileOutputStep3Form;
+                }
             }
 
             @Override
@@ -177,7 +188,9 @@ public class FileTableWizardPage extends WizardPage {
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch#caseWSDLSchemaConnection(org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection)
+             * @see
+             * org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch#caseWSDLSchemaConnection(org.
+             * talend.core.model.metadata.builder.connection.WSDLSchemaConnection)
              */
             @Override
             public Object caseWSDLSchemaConnection(WSDLSchemaConnection object) {

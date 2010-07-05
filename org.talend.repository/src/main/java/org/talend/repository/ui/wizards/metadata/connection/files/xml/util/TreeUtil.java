@@ -10,11 +10,20 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.util;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.util;
 
-import org.talend.designer.fileoutputxml.data.Attribute;
-import org.talend.designer.fileoutputxml.data.Element;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.MappingTypeRetriever;
+import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 
 /**
  * DOC ke class global comment. Detailled comment <br/>
@@ -362,5 +371,66 @@ public class TreeUtil {
             tmp = tmp.getParent();
         }
         return path.toString();
+    }
+
+    public static List<FOXTreeNode> getFoxTreeNodes(String filePath) {
+        List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+        if (filePath == null) {
+            return list;
+        }
+
+        try {
+            ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, 0);
+            FOXTreeNode root = cloneATreeNode(treeNode);
+            if (root instanceof Element) {
+                root = ((Element) root).getElementChildren().get(0);
+                root.setParent(null);
+                list.add(root);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return list;
+    }
+
+    public static FOXTreeNode cloneATreeNode(ATreeNode treeNode) {
+        FOXTreeNode node = null;
+        if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
+            node = new Attribute();
+        } else {
+            node = new Element();
+        }
+        if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
+            node = new NameSpaceNode();
+            node.setLabel("");//$NON-NLS-1$
+            node.setDefaultValue((String) treeNode.getValue());
+        } else {
+            node.setLabel((String) treeNode.getValue());
+        }
+        MappingTypeRetriever retriever = MetadataTalendType.getMappingTypeRetriever("xsd_id");
+        node.setDataType(retriever.getDefaultSelectedTalendType("xs:" + treeNode.getDataType()));
+        Object[] children = treeNode.getChildren();
+        if (children != null) {
+            for (int i = 0; i < children.length; i++) {
+                if (children[i] instanceof ATreeNode) {
+                    ATreeNode child = (ATreeNode) children[i];
+                    FOXTreeNode foxChild = cloneATreeNode(child);
+                    // foxChild.setRow(schemaName);
+                    node.addChild(foxChild);
+                }
+            }
+        }
+        return node;
+    }
+
+    public static FOXTreeNode getRootFOXTreeNode(FOXTreeNode node) {
+        if (node != null) {
+            FOXTreeNode parent = node.getParent();
+            if (parent == null) {
+                return node;
+            }
+            return getRootFOXTreeNode(parent);
+        }
+        return null;
     }
 }

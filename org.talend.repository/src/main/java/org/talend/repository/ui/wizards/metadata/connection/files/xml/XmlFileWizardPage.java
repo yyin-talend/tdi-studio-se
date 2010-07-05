@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -28,15 +29,17 @@ import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
  */
 public class XmlFileWizardPage extends WizardPage {
 
-    private ConnectionItem connectionItem;
+    protected ConnectionItem connectionItem;
 
-    private int step;
+    protected int step;
 
-    private AbstractXmlFileStepForm currentComposite;
+    protected boolean creation;
 
-    private final String[] existingNames;
+    protected AbstractXmlFileStepForm currentComposite;
 
-    private boolean isRepositoryObjectEditable;
+    protected final String[] existingNames;
+
+    protected boolean isRepositoryObjectEditable;
 
     /**
      * DOC ocarbone XmlFileWizardPage constructor comment.
@@ -46,13 +49,27 @@ public class XmlFileWizardPage extends WizardPage {
      * @param isRepositoryObjectEditable
      * @param existingNames
      */
-    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+    }
+
+    public XmlFileWizardPage(boolean creation, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames) {
+        super("wizardPage"); //$NON-NLS-1$
+        this.creation = creation;
+        this.connectionItem = connectionItem;
+        this.existingNames = existingNames;
+        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+    }
+
+    public XmlFileWizardPage(boolean creation, int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames) {
+        this(step, connectionItem, isRepositoryObjectEditable, existingNames);
+        this.creation = creation;
     }
 
     /**
@@ -67,8 +84,7 @@ public class XmlFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new XmlFileStep2Form(parent, connectionItem);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection())
-                    .getTables().get(0);
+            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection()).getTables().get(0);
             currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((XmlFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
@@ -103,6 +119,27 @@ public class XmlFileWizardPage extends WizardPage {
     public void dispose() {
         XmlArray.setLimitToDefault();
         super.dispose();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+     */
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            ((XmlFileWizard) getWizard()).setCurrentPage(this);
+        }
+    }
+
+    @Override
+    public IWizardPage getPreviousPage() {
+        if (step == 1) {
+            return null;
+        }
+        return super.getPreviousPage();
     }
 
 }

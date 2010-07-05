@@ -1157,13 +1157,23 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     }
 
                                 } else {
-                                    if (param.getField().equals(EParameterFieldType.TABLE)) { // hywang modified for bug
-                                        // 9537
-                                        List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) value;
-                                        if (param.getName().equals("SHEETLIST") && oldMaps != null && objectValue instanceof List) {
+                                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                                        List<Map<String, Object>> oldList = (List<Map<String, Object>>) value;
+                                        String name = param.getName();
+                                        if ("ROOT".equals(name) || "LOOP".equals(name) || "GROUP".equals(name)
+                                                && !oldList.isEmpty() && objectValue instanceof List) {
+                                            List objectList = (List) objectValue;
+                                            // need improve
+                                            if (oldList.size() != objectList.size()) {
+                                                sameValues = false;
+                                            }
+                                        } else if (param.getName().equals("SHEETLIST") && oldList != null
+                                                && objectValue instanceof List) {
+                                            // hywang modified for bug
+                                            // 9537
                                             List repList = (List) objectValue;
-                                            if (oldMaps.size() == repList.size()) {
-                                                for (Map<String, Object> line : oldMaps) {
+                                            if (oldList.size() == repList.size()) {
+                                                for (Map<String, Object> line : oldList) {
                                                     final String sheetName = "SHEETNAME";
                                                     Object oldValue = line.get(sheetName);
                                                     if (oldValue instanceof String && repList.get(0) instanceof Map) {

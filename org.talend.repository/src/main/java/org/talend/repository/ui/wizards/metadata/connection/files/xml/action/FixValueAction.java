@@ -10,62 +10,47 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.i18n.Messages;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
- * 
- * DOC zli class global comment. Detailled comment
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class FixValueAction extends SelectionProviderAction {
 
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * Create constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public FixValueAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public FixValueAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public FixValueAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        setFixValue(node);
-
+        if (node != null) {
+            setFixValue(node);
+        }
     }
 
     private void setFixValue(FOXTreeNode node) {
         String label = null; //$NON-NLS-1$
         while (!StringUtil.validateLabelForFixedValue(label)) {
-            InputDialog dialog = new InputDialog(null, Messages.getString("FixValueAction.1"), //$NON-NLS-1$
-                    Messages.getString("FixValueAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+            InputDialog dialog = new InputDialog(null, "Input a fix value", "Input the default value' valid label", "", null);
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
@@ -80,15 +65,10 @@ public class FixValueAction extends SelectionProviderAction {
         node.setDefaultValue(label);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();
-        foxui.redrawLinkers();
+        form.redrawLinkers();
+        form.updateConnection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
@@ -106,5 +86,4 @@ public class FixValueAction extends SelectionProviderAction {
             }
         }
     }
-
 }

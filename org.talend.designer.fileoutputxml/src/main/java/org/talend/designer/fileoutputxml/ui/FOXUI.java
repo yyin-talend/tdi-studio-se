@@ -64,8 +64,6 @@ import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
 import org.talend.designer.fileoutputxml.action.RemoveGroupAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
 import org.talend.designer.fileoutputxml.action.SetGroupAction;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.edit.FOXTargetTreeViewerProvider;
@@ -73,7 +71,9 @@ import org.talend.designer.fileoutputxml.ui.edit.Schema2XMLLinker;
 import org.talend.designer.fileoutputxml.ui.edit.SchemaTableViewerProvider;
 import org.talend.designer.fileoutputxml.ui.footer.FooterComposite;
 import org.talend.designer.fileoutputxml.ui.header.HeaderComposite;
-import org.talend.designer.fileoutputxml.util.StringUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -125,6 +125,8 @@ public class FOXUI {
 
     private boolean canModify;
 
+    private boolean isRepository;
+
     public FOXUI(Composite parent, FOXManager foxManager) {
         this.foxManager = foxManager;
         this.foxManager.getUiManager().setFoxUI(this);
@@ -158,6 +160,13 @@ public class FOXUI {
         xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
         canModify = externalNode.getProcess().isReadOnly();
+        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE");
+        if (elem != null) {
+            String value = (String) elem.getValue();
+            if (value != null && value.equals("REPOSITORY")) {
+                isRepository = true;
+            }
+        }
         addSchemaViewer(xmlToSchemaSash, 300, 110);
         addXMLViewer(xmlToSchemaSash, 400, 110);
 
@@ -319,7 +328,7 @@ public class FOXUI {
         xmlViewer.setUseHashlookup(true);
         Tree tree = xmlViewer.getTree();
         // see bug 7087
-        if (canModify) {
+        if (canModify || isRepository) {
             tree.setEnabled(false);
         }
         tree.setLinesVisible(true);
@@ -495,7 +504,7 @@ public class FOXUI {
         GridData data2 = new GridData(GridData.FILL_BOTH);
         Table table = schemaViewer.getTable();
         // see bug 7087
-        if (canModify) {
+        if (canModify || isRepository) {
             table.setEnabled(false);
         }
         // table.setLinesVisible(true);

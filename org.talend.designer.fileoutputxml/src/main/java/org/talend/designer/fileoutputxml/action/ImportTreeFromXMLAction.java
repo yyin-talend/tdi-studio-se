@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.designer.fileoutputxml.data.Attribute;
-import org.talend.designer.fileoutputxml.data.Element;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 
 /**
  * bqian Create a xml node. <br/>

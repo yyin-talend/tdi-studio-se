@@ -10,50 +10,34 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
- * bqian Disconnect the schema to xml tree. <br/>
- * 
- * $Id: DisconnectAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class DisconnectAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * CreateNode constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public DisconnectAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public DisconnectAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public DisconnectAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
 
@@ -63,14 +47,10 @@ public class DisconnectAction extends SelectionProviderAction {
         node.setColumn(null);
         xmlViewer.refresh(node);
         xmlViewer.expandAll();
-        foxui.redrawLinkers();
+        form.redrawLinkers();
+        form.updateConnection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();

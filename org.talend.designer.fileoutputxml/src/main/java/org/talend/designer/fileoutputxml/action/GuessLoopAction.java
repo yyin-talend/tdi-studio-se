@@ -15,8 +15,8 @@ package org.talend.designer.fileoutputxml.action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
@@ -57,7 +57,8 @@ public class GuessLoopAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

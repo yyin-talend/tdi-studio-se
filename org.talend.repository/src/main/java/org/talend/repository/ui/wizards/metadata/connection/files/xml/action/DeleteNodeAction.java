@@ -10,61 +10,45 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 
 /**
- * bqian Create a xml node. <br/>
- * 
- * $Id: DeleteNodeAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class DeleteNodeAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * CreateNode constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public DeleteNodeAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public DeleteNodeAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public DeleteNodeAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
         if (node == null) {
             return;
         }
-
         FOXTreeNode parent = node.getParent();
         if (parent == null) {
             return;
@@ -73,23 +57,17 @@ public class DeleteNodeAction extends SelectionProviderAction {
             disconnectSubTree(node);
         }
         parent.removeChild(node);
-        // if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
-        // xmlViewer.refresh();
-        // }
-        if (node.isLoop() || node.isGroup()) {
-            foxui.updateStatus();
+
+        // if (node.isLoop() || node.isGroup())
+        if (node.isLoop()) {
+            form.updateStatus();
         }
         xmlViewer.refresh(parent);
         xmlViewer.expandAll();
-        foxui.redrawLinkers();
-
+        form.redrawLinkers();
+        form.updateConnection();
     }
 
-    /**
-     * DOC ke Comment method "disconnectSubTree".
-     * 
-     * @param node
-     */
     private void disconnectSubTree(FOXTreeNode node) {
         if (node == null) {
             return;
@@ -109,12 +87,6 @@ public class DeleteNodeAction extends SelectionProviderAction {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
@@ -128,4 +100,5 @@ public class DeleteNodeAction extends SelectionProviderAction {
             }
         }
     }
+
 }

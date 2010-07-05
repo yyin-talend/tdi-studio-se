@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.ui.edit;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.view;
 
 import java.util.List;
 
@@ -19,56 +19,32 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
-import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
- * bqian Label provider and content provider for FOX target tree viewer. <br/>
- * 
- * $Id: FOXTargetTreeViewerProvider.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
-public class FOXTargetTreeViewerProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider {
+public class XmlFileTreeViewerProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-     */
     public Object[] getChildren(Object parentElement) {
         FOXTreeNode treeNode = (FOXTreeNode) parentElement;
         List<FOXTreeNode> children = treeNode.getChildren();
         return children.toArray();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-     */
     public Object getParent(Object element) {
         FOXTreeNode treeNode = (FOXTreeNode) element;
         return treeNode.getParent();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-     */
     public boolean hasChildren(Object element) {
         FOXTreeNode treeNode = (FOXTreeNode) element;
         return !treeNode.getChildren().isEmpty();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-     */
     public Object[] getElements(Object inputElement) {
         List list = (List) inputElement;
         return list.toArray();
@@ -112,11 +88,11 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
             } else if (treeNode instanceof NameSpaceNode) {
                 return "-"; //$NON-NLS-1$
             } else if (treeNode.isGroup()) {
-                return Messages.getString("FOXTargetTreeViewerProvider.1"); //$NON-NLS-1$
+                return "group element";
             } else if (treeNode.isLoop()) {
-                return Messages.getString("FOXTargetTreeViewerProvider.2"); //$NON-NLS-1$
+                return "loop element";
             } else if (TreeUtil.isSubLoopNode(treeNode)) {
-                return Messages.getString("FOXTargetTreeViewerProvider.3"); //$NON-NLS-1$
+                return "group";
             } else {
                 return ""; //$NON-NLS-1$
             }
@@ -126,5 +102,4 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
             return ""; //$NON-NLS-1$
         }
     }
-
 }

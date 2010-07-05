@@ -10,69 +10,51 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
- * bqian Create a xml node. <br/>
- * 
- * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
-public class RemoveGroupAction extends SelectionProviderAction {
+public class SetGroupAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * CreateNode constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
-    public RemoveGroupAction(TreeViewer xmlViewer, String text) {
+    public SetGroupAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public RemoveGroupAction(TreeViewer xmlViewer, String text, FOXUI foxui) {
+    public SetGroupAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        node.setGroup(false);
-        // TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-        // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-
+        if (node.isGroup()) {
+            return;
+        }
+        FOXTreeNode rootTreeData = TreeUtil.getRootFOXTreeNode(node);
+        TreeUtil.clearSubGroupNode(rootTreeData);
+        node.setGroup(true);
+        form.updateStatus();
         xmlViewer.refresh();
-        foxui.updateStatus();
-
+        form.updateConnection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
@@ -80,15 +62,16 @@ public class RemoveGroupAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
-        if (node instanceof Attribute) {
-            this.setEnabled(false);
+        if (((node instanceof Attribute) || node.hasLink())) {
+            this.setEnabled(TreeUtil.checkTreeGoupNode(node));
             return;
+
         }
 
         if (node instanceof NameSpaceNode) {
             this.setEnabled(false);
             return;
         }
-        this.setEnabled(node.isGroup());
+        this.setEnabled(TreeUtil.checkTreeGoupNode(node));
     }
 }

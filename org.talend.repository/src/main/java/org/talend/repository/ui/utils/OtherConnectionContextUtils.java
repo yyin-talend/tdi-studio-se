@@ -54,6 +54,7 @@ public final class OtherConnectionContextUtils {
         // Encoding,
         XmlFilePath,
         XPathQuery,
+        OutputFilePath,
 
         // Salesforce
         WebServiceUrl,
@@ -166,30 +167,39 @@ public final class OtherConnectionContextUtils {
         List<IContextParameter> varList = new ArrayList<IContextParameter>();
         prefixName = prefixName + ConnectionContextHelper.LINE;
         String paramName = null;
-        String xmlFilePath = conn.getXmlFilePath();
-        String encoding = conn.getEncoding();
-        if (LANGUAGE.equals(ECodeLanguage.PERL)) {
-            xmlFilePath = TalendTextUtils.addQuotes(xmlFilePath);
-            encoding = TalendTextUtils.addQuotes(encoding);
-        }
-        paramName = prefixName + EParamName.XmlFilePath;
-        ConnectionContextHelper.createParameters(varList, paramName, xmlFilePath, JavaTypesManager.FILE);
+        if (!conn.isInputModel()) {
+            String outputFilePath = conn.getOutputFilePath();
+            if (outputFilePath != null) {
+                paramName = prefixName + EParamName.OutputFilePath;
+                ConnectionContextHelper.createParameters(varList, paramName, outputFilePath, JavaTypesManager.FILE);
+            }
+        } else {
 
-        paramName = prefixName + EParamName.Encoding;
-        ConnectionContextHelper.createParameters(varList, paramName, encoding);
+            String xmlFilePath = conn.getXmlFilePath();
+            String encoding = conn.getEncoding();
 
-        EList schema = conn.getSchema();
-        if (schema != null) {
-            Object object = schema.get(0);
-            if (object instanceof XmlXPathLoopDescriptor) {
-                XmlXPathLoopDescriptor loopDesc = (XmlXPathLoopDescriptor) object;
-                paramName = prefixName + EParamName.XPathQuery;
-                String absoluteXPathQuery = loopDesc.getAbsoluteXPathQuery();
-                if (LANGUAGE.equals(ECodeLanguage.PERL)) {
-                    absoluteXPathQuery = TalendTextUtils.addQuotes(absoluteXPathQuery);
+            if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+                xmlFilePath = TalendTextUtils.addQuotes(xmlFilePath);
+                encoding = TalendTextUtils.addQuotes(encoding);
+            }
+            paramName = prefixName + EParamName.XmlFilePath;
+            ConnectionContextHelper.createParameters(varList, paramName, xmlFilePath, JavaTypesManager.FILE);
+
+            paramName = prefixName + EParamName.Encoding;
+            ConnectionContextHelper.createParameters(varList, paramName, encoding);
+
+            EList schema = conn.getSchema();
+            if (schema != null) {
+                Object object = schema.get(0);
+                if (object instanceof XmlXPathLoopDescriptor) {
+                    XmlXPathLoopDescriptor loopDesc = (XmlXPathLoopDescriptor) object;
+                    paramName = prefixName + EParamName.XPathQuery;
+                    String absoluteXPathQuery = loopDesc.getAbsoluteXPathQuery();
+                    if (LANGUAGE.equals(ECodeLanguage.PERL)) {
+                        absoluteXPathQuery = TalendTextUtils.addQuotes(absoluteXPathQuery);
+                    }
+                    ConnectionContextHelper.createParameters(varList, paramName, absoluteXPathQuery);
                 }
-                ConnectionContextHelper.createParameters(varList, paramName, absoluteXPathQuery);
-
             }
         }
 
@@ -203,20 +213,23 @@ public final class OtherConnectionContextUtils {
         prefixName = prefixName + ConnectionContextHelper.LINE;
         String paramName = null;
 
-        paramName = prefixName + EParamName.XmlFilePath;
-        conn.setXmlFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        EList schema = conn.getSchema();
-        if (schema != null) {
-            if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
-                XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
-                paramName = prefixName + EParamName.XPathQuery;
-                descriptor.setAbsoluteXPathQuery(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+        if (conn.isInputModel()) {
+            paramName = prefixName + EParamName.XmlFilePath;
+            conn.setXmlFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            paramName = prefixName + EParamName.Encoding;
+            conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            EList schema = conn.getSchema();
+            if (schema != null) {
+                if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
+                    XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
+                    paramName = prefixName + EParamName.XPathQuery;
+                    descriptor.setAbsoluteXPathQuery(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                }
             }
+        } else {
+            paramName = prefixName + EParamName.OutputFilePath;
+            conn.setOutputFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
         }
-
-        paramName = prefixName + EParamName.Encoding;
-        conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
     }
 
@@ -224,24 +237,29 @@ public final class OtherConnectionContextUtils {
         if (conn == null || contextType == null) {
             return;
         }
-        String filePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getXmlFilePath());
-        String encoding = ConnectionContextHelper.getOriginalValue(contextType, conn.getEncoding());
+        if (!conn.isInputModel()) {
+            String outputFilePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getOutputFilePath());
+            outputFilePath = TalendTextUtils.removeQuotes(outputFilePath);
+            conn.setOutputFilePath(outputFilePath);
+        } else {
+            String filePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getXmlFilePath());
+            String encoding = ConnectionContextHelper.getOriginalValue(contextType, conn.getEncoding());
 
-        filePath = TalendTextUtils.removeQuotes(filePath);
-        conn.setXmlFilePath(filePath);
-        encoding = TalendTextUtils.removeQuotes(encoding);
-        conn.setEncoding(encoding);
-
-        EList schema = conn.getSchema();
-        if (schema != null) {
-            if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
-                XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
-                String xPahtQuery = ConnectionContextHelper.getOriginalValue(contextType, descriptor.getAbsoluteXPathQuery());
-                xPahtQuery = TalendTextUtils.removeQuotes(xPahtQuery);
-                descriptor.setAbsoluteXPathQuery(xPahtQuery);
+            filePath = TalendTextUtils.removeQuotes(filePath);
+            conn.setXmlFilePath(filePath);
+            encoding = TalendTextUtils.removeQuotes(encoding);
+            conn.setEncoding(encoding);
+            EList schema = conn.getSchema();
+            if (schema != null) {
+                if (schema.get(0) instanceof XmlXPathLoopDescriptor) {
+                    XmlXPathLoopDescriptor descriptor = (XmlXPathLoopDescriptor) schema.get(0);
+                    String xPahtQuery = ConnectionContextHelper.getOriginalValue(contextType, descriptor.getAbsoluteXPathQuery());
+                    xPahtQuery = TalendTextUtils.removeQuotes(xPahtQuery);
+                    descriptor.setAbsoluteXPathQuery(xPahtQuery);
+                }
             }
-        }
 
+        }
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$

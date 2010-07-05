@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -79,19 +80,19 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
 
     private static Logger log = Logger.getLogger(XmlFileWizard.class);
 
-    private PropertiesWizardPage xmlFileWizardPage0;
+    private PropertiesWizardPage propertiesWizardPage;
 
-    private XmlFileWizardPage xmlFileWizardPage1;
+    private XmlFileSelectWizardPage xmlFileSelectPage;
 
-    private XmlFileWizardPage xmlFileWizardPage2;
-
-    private XmlFileWizardPage xmlFileWizardPage3;
+    private IWizardPage currentPage;
 
     private XmlFileConnection connection;
 
     private Property connectionProperty;
 
     private XmlFileConnectionItem connectionItem;
+
+    private List<IWizardPage> dynamicWizardPages;
 
     private boolean isToolbar;
 
@@ -105,7 +106,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
 
     private String originalStatus;
 
-    protected static final String DEFAULT_LABEL = "Column"; //$NON-NLS-1$
+    protected static final String DEFAULT_LABEL = "Column";
 
     /**
      * Sets the isToolbar.
@@ -248,69 +249,81 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         if (isToolbar) {
             pathToSave = null;
         }
-        xmlFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_XML,
+        propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_XML,
                 !isRepositoryObjectEditable(), creation);
-        xmlFileWizardPage1 = new XmlFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
-        xmlFileWizardPage2 = new XmlFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
+
+        xmlFileSelectPage = new XmlFileSelectWizardPage(creation, connectionItem, isRepositoryObjectEditable(), existingNames);
 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_WIZ));
 
         if (creation) {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleCreate")); //$NON-NLS-1$
 
-            xmlFileWizardPage0
+            propertiesWizardPage
                     .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 4"); //$NON-NLS-1$
-            xmlFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage0);
+                            + " 5"); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
+            addPage(propertiesWizardPage);
+            propertiesWizardPage.setPageComplete(false);
 
-            xmlFileWizardPage1
+            xmlFileSelectPage
                     .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 4"); //$NON-NLS-1$
-            xmlFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage1);
-
-            xmlFileWizardPage2
-                    .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 4"); //$NON-NLS-1$
-            xmlFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage2);
-
-            xmlFileWizardPage3 = new XmlFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            xmlFileWizardPage3
-                    .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 4"); //$NON-NLS-1$
-            xmlFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage3);
-
-            xmlFileWizardPage1.setPageComplete(false);
-            xmlFileWizardPage2.setPageComplete(false);
-            xmlFileWizardPage3.setPageComplete(false);
+                            + " 5");
+            xmlFileSelectPage.setDescription("Select input or output model to create XML metadata connection");
+            addPage(xmlFileSelectPage);
+            xmlFileSelectPage.setPageComplete(true);
 
         } else {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleUpdate")); //$NON-NLS-1$
 
-            xmlFileWizardPage0
+            propertiesWizardPage
                     .setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 3"); //$NON-NLS-1$
-            xmlFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage0);
+                            + " 4"); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
+            addPage(propertiesWizardPage);
 
-            xmlFileWizardPage1
+            xmlFileSelectPage
                     .setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 3"); //$NON-NLS-1$
-            xmlFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage1);
-
-            xmlFileWizardPage2
-                    .setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " 3"); //$NON-NLS-1$
-            xmlFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
-            addPage(xmlFileWizardPage2);
-
-            xmlFileWizardPage1.setPageComplete(true);
-            xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
+                            + " 4");
+            xmlFileSelectPage.setDescription("Select input or output model to create XML metadata connection");
+            addPage(xmlFileSelectPage);
+            xmlFileSelectPage.setPageComplete(true);
         }
+    }
+
+    @Override
+    public IWizardPage getNextPage(IWizardPage page) {
+        IWizardPage nextPage = null;
+        if (page instanceof XmlFileWizardPage) {
+            if (page instanceof XmlFileSelectWizardPage) {
+                nextPage = dynamicWizardPages.get(0);
+            } else if (page instanceof XmlFileOutputWizardPage) {
+                int curStep = ((XmlFileOutputWizardPage) page).step;
+                for (IWizardPage curPage : dynamicWizardPages) {
+                    if (curPage instanceof XmlFileOutputWizardPage) {
+                        if (((XmlFileOutputWizardPage) curPage).step == curStep + 1) {
+                            nextPage = curPage;
+                        }
+                    }
+                }
+            } else {
+                int curStep = ((XmlFileWizardPage) page).step;
+                for (IWizardPage curPage : dynamicWizardPages) {
+                    if (curPage instanceof XmlFileWizardPage && !(curPage instanceof XmlFileSelectWizardPage)
+                            && !(curPage instanceof XmlFileOutputWizardPage)) {
+                        if (((XmlFileWizardPage) curPage).step == curStep + 1) {
+                            nextPage = curPage;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (nextPage != null) {
+            return nextPage;
+        }
+
+        return super.getNextPage(page);
     }
 
     /**
@@ -318,23 +331,37 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
      * the wizard. We will create an operation and run it using wizard as execution context.
      */
     public boolean performFinish() {
+        boolean formIsPerformed = false;
+        IWizardPage finalPage = getCurrentPage();
+        if (finalPage == null) {
+            finalPage = propertiesWizardPage;
+        }
+        if (connection.isInputModel()) {
 
-        boolean formIsPerformed;
-        if (xmlFileWizardPage3 == null) {
-            formIsPerformed = xmlFileWizardPage2.isPageComplete();
-            if (formIsPerformed) {
-                List schemas = connection.getSchema();
-                List tables = connection.getTables();
-                if (!schemas.isEmpty() && !tables.isEmpty()) {
-                    XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
-                    MetadataTable currentTable = (MetadataTable) tables.get(0);
-                    if (currentSchema.getSchemaTargets().size() != currentTable.getColumns().size()) {
-                        resetMetadata(currentSchema.getSchemaTargets());
+            if (finalPage instanceof XmlFileWizardPage) {
+                int step = ((XmlFileWizardPage) finalPage).step;
+                if (step == 2) {
+                    formIsPerformed = finalPage.isPageComplete();
+                    if (formIsPerformed) {
+                        List schemas = connection.getSchema();
+                        List tables = connection.getTables();
+                        if (!schemas.isEmpty() && !tables.isEmpty()) {
+                            XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
+                            MetadataTable currentTable = (MetadataTable) tables.get(0);
+                            if (currentSchema.getSchemaTargets().size() != currentTable.getColumns().size()) {
+                                resetMetadata(currentSchema.getSchemaTargets());
+                            }
+                        }
                     }
+                } else {
+                    formIsPerformed = finalPage.isPageComplete();
                 }
+            } else {
+                formIsPerformed = finalPage.isPageComplete();
             }
+
         } else {
-            formIsPerformed = xmlFileWizardPage3.isPageComplete();
+            formIsPerformed = finalPage.isPageComplete();
         }
 
         if (formIsPerformed) {
@@ -343,7 +370,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    factory.create(connectionItem, xmlFileWizardPage0.getDestinationPath());
+                    factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
                 } else {
                     // update
                     RepositoryUpdateManager.updateFileConnection(connectionItem);
@@ -567,6 +594,46 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         EList columns = ((MetadataTable) connection.getTables().get(0)).getColumns();
         columns.clear();
         columns.addAll(newColumns);
+    }
+
+    @Override
+    public boolean canFinish() {
+        if (!creation) {
+            return true;
+        } else {
+            if (currentPage == null) {
+                return false;
+            } else if (currentPage instanceof XmlFileOutputWizardPage) {
+                int step = ((XmlFileOutputWizardPage) currentPage).step;
+                if (step == 3) {
+                    return true;
+                }
+            } else if (currentPage instanceof XmlFileWizardPage && !(currentPage instanceof XmlFileSelectWizardPage)
+                    && !(currentPage instanceof XmlFileOutputWizardPage)) {
+                int step = ((XmlFileWizardPage) currentPage).step;
+                if (step == 3) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public List<IWizardPage> getDynamicWizardPages() {
+        return this.dynamicWizardPages;
+    }
+
+    public void setDynamicWizardPages(List<IWizardPage> dynamicWizardPages) {
+        this.dynamicWizardPages = dynamicWizardPages;
+    }
+
+    public IWizardPage getCurrentPage() {
+        return this.currentPage;
+    }
+
+    public void setCurrentPage(IWizardPage currentPage) {
+        this.currentPage = currentPage;
     }
 
 }

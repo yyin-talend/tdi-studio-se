@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.ui.edit;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.view;
 
 import java.util.List;
 
@@ -38,54 +38,39 @@ import org.talend.commons.ui.swt.dnd.LocalDataTransfer;
 import org.talend.commons.ui.swt.dnd.LocalDraggedData;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.IConnection;
-import org.talend.designer.fileoutputxml.i18n.Messages;
-import org.talend.designer.fileoutputxml.managers.FOXManager;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.DragAndDrogDialog;
 
 /**
- * amaumont class global comment. Detailled comment <br/>
- * 
- * $Id: Schema2XMLDragAndDropHandler.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
-public class Schema2XMLDragAndDropHandler {
+public class XmlFileDragAndDropHandler {
 
-    private Schema2XMLLinker linker;
+    private XmlFileSchema2TreeLinker linker;
 
     private DragSource dragSource;
 
-    protected int dropDefaultOperation = DND.DROP_LINK;
-
     private DropTarget loopDropTarget;
 
-    /**
-     * amaumont TreeToTableDragAndDropHandler constructor comment.
-     * 
-     * @param linker
-     */
-    public Schema2XMLDragAndDropHandler(Schema2XMLLinker linker) {
+    public XmlFileDragAndDropHandler(XmlFileSchema2TreeLinker linker) {
         this.linker = linker;
         init();
     }
 
-    /**
-     * amaumont Comment method "init".
-     */
     private void init() {
         createDragSource();
         createDropTarget();
     }
 
-    /**
-     * 
-     * amaumont Comment method "createDragSource".
-     * 
-     * @param sourceListener
-     */
+    private XmlFileOutputStep2Form getMainForm() {
+        return linker.getForm();
+    }
+
     private void createDragSource() {
         if (dragSource != null) {
             dragSource.dispose();
@@ -98,10 +83,6 @@ public class Schema2XMLDragAndDropHandler {
         dragSource.addDragListener(sourceListener);
     }
 
-    /**
-     * 
-     * create DropTarget.
-     */
     private void createDropTarget() {
 
         if (loopDropTarget != null) {
@@ -116,21 +97,9 @@ public class Schema2XMLDragAndDropHandler {
 
     /**
      * 
-     * DOC wzhang Comment method "getManager".
-     * 
-     * @return
+     * DOC wzhang XmlFileDragAndDropHandler class global comment. Detailled comment
      */
-    private FOXManager getManager() {
-        return linker.getManager();
-    }
 
-    /**
-     * 
-     * amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment <br/>
-     * 
-     * $Id: Schema2XMLDragAndDropHandler.java,v 1.1 2007/06/12 07:20:38 gke Exp $
-     * 
-     */
     class TreeDragSourceListener implements TransferDragSourceListener {
 
         public void dragFinished(DragSourceEvent event) {
@@ -147,53 +116,32 @@ public class Schema2XMLDragAndDropHandler {
                 event.doit = false;
             } else {
                 LocalDraggedData draggedData = new LocalDraggedData();
-                for (TableItem treeItem : items) {
-                    draggedData.add(treeItem.getData());
+                for (TableItem tableItem : items) {
+                    draggedData.add(tableItem.getData());
                 }
-                IConnection connection = getManager().getUiManager().getFoxUI().getConnection();
-                if (connection != null) {
-                    draggedData.setTable(connection.getMetadataTable());
-                }
+                draggedData.setTable(getMainForm().getMetadataTable());
                 LocalDataTransfer.getInstance().setLocalDraggedData(draggedData);
             }
+
         }
 
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
-    };
+    }
 
     /**
      * 
-     * amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment <br/>
-     * 
-     * $Id: Schema2XMLDragAndDropHandler.java,v 1.1 2007/06/12 07:20:38 gke Exp $
-     * 
+     * DOC wzhang XmlFileDragAndDropHandler class global comment. Detailled comment
      */
-    public class TableDropTargetListener implements TransferDropTargetListener {
+    class TableDropTargetListener implements TransferDropTargetListener {
 
         public void dragEnter(DropTargetEvent event) {
-        }
 
-        /**
-         * 
-         * DOC wzhang Comment method "getRootElement".
-         * 
-         * @param curElement
-         * @return
-         */
-        private FOXTreeNode getRootElement(FOXTreeNode curElement) {
-            if (curElement != null) {
-                FOXTreeNode parent = curElement.getParent();
-                if (parent != null) {
-                    return getRootElement(parent);
-                }
-                return curElement;
-            }
-            return null;
         }
 
         public void dragLeave(DropTargetEvent event) {
+
         }
 
         public void dragOperationChanged(DropTargetEvent event) {
@@ -203,49 +151,20 @@ public class Schema2XMLDragAndDropHandler {
 
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
-         */
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
-         */
         public boolean isEnabled(DropTargetEvent event) {
-            FOXManager manager = getManager();
-            if (manager != null) {
-                String currentSchema = manager.getCurrentSchema();
-                if (currentSchema != null) {
-                    Item targetItem = (Item) event.item;
-                    if (targetItem != null) {
-                        Object data = targetItem.getData();
-                        if (data instanceof FOXTreeNode) {
-                            FOXTreeNode rootElement = getRootElement((FOXTreeNode) data);
-                            if (rootElement != null) {
-                                return currentSchema.equals(rootElement.getRow());
-                            }
-                        }
-                    }
-                }
-            }
             return true;
         }
 
         public void dragOver(DropTargetEvent event) {
-            // System.out.println("\n>>drop");
-            DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
-            if (targetItem == null || !isEnabled(event)) {
+            if (targetItem == null) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
-
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
             List<Object> dragdedData = draggedData.getTransferableEntryList();
@@ -279,42 +198,40 @@ public class Schema2XMLDragAndDropHandler {
             return false;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
-         */
+        private void setDefaultFixValue(FOXTreeNode treeNode) {
+            String fixValue = treeNode.getDefaultValue();
+            if (fixValue == null) {
+                return;
+            }
+            treeNode.setDefaultValue(null);
+        }
+
         public void drop(DropTargetEvent event) {
-            // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
             if (targetItem == null) {
                 return;
             }
-
             Control control = dropTarget.getControl();
-            // add by wzhang. get current row.
-            String row = (String) control.getData("row"); //$NON-NLS-1$
-            if (getManager().getFoxComponent().istFileOutputMSXML()) {
-                row = getManager().getCurrentSchema();
-            }
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
-
             List<Object> dragdedData = draggedData.getTransferableEntryList();
             IMetadataTable table = null;
-            if (draggedData.getTable() instanceof IMetadataTable) {
-                table = (IMetadataTable) draggedData.getTable();
+            if (draggedData.getTable() instanceof MetadataTable) {
+                table = ConvertionHelper.convert((MetadataTable) draggedData.getTable());
             }
 
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
             if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
                 if (!targetNode.hasChildren()) {
-                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    // IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    IMetadataColumn metaColumn = ConvertionHelper.convertToIMetaDataColumn((MetadataColumn) dragdedData.get(0));
                     targetNode.setDefaultValue(null);
                     targetNode.setColumn(metaColumn);
                     targetNode.setTable(table);
-                    targetNode.setRow(row);
+                    targetNode.setDataType(metaColumn.getTalendType());
+                    // targetNode.setRow(row);
+
                     linker.getXMLViewer().refresh(targetNode);
                     linker.getXMLViewer().expandAll();
 
@@ -332,51 +249,53 @@ public class Schema2XMLDragAndDropHandler {
                 if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
                     return;
                 }
-                // add by xzhang
+
                 if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_TEXT)) {
                     if (targetNode.hasChildren()) {
-                        // add for bug 11723.
                         List<FOXTreeNode> children = targetNode.getChildren();
                         for (FOXTreeNode foxTreeNode : children) {
                             if (!(foxTreeNode instanceof Attribute)) {
-                                MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                        "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
-                                                + Messages.getString("Schema2XMLDragAndDropHandler.HasChildrenWarning")); //$NON-NLS-1$
+                                MessageDialog.openConfirm(control.getShell(), "Warning", "\"" + targetNode.getLabel()
+                                        + "\" has element children, can not have linker.");
                                 return;
                             }
                         }
-
                     } else if (targetNode.getParent() == null) {
-                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsRootWarning")); //$NON-NLS-1$
+                        MessageDialog.openConfirm(control.getShell(), "Warning", "\"" + targetNode.getLabel()
+                                + "\" is root, can not have linker.");
                         return;
                     }
-                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    // IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    IMetadataColumn metaColumn = ConvertionHelper.convertToIMetaDataColumn((MetadataColumn) dragdedData.get(0));
+
                     targetNode.setColumn(metaColumn);
+                    targetNode.setDataType(metaColumn.getTalendType());
                     setDefaultFixValue(targetNode);
+
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
                     if (!(targetNode instanceof Element)) {
-                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsNotElementWarning")); //$NON-NLS-1$
+                        MessageDialog.openConfirm(control.getShell(), "Warning", "\"" + targetNode.getLabel()
+                                + "\" isn't a Element, can not create sub-elements or attributes.");
                         return;
                     }
                     if (targetNode.getColumn() != null) {
-                        if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                Messages.getString("CreateElementAction.1") //$NON-NLS-1$
-                                        + targetNode.getLabel() + "\"?")) { //$NON-NLS-1$
+                        if (!MessageDialog.openConfirm(control.getShell(), "Warning",
+                                "Do you want to disconnect the existing linker and then add an sub element for the selected element \""
+                                        + targetNode.getLabel() + "\"?")) {
                             return;
                         }
                         targetNode.setColumn(null);
                     }
                     for (Object obj : dragdedData) {
-                        IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        // IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        IMetadataColumn metaColumn = ConvertionHelper.convertToIMetaDataColumn((MetadataColumn) obj);
+
                         boolean isContain = false;
                         for (FOXTreeNode node : ((Element) targetNode).getElementChildren()) {
                             if (node.getLabel().equals(metaColumn.getLabel())) {
                                 node.setColumn(metaColumn);
-                                node.setRow(row);
+                                node.setDataType(metaColumn.getTalendType());
+                                // node.setRow(row);
                                 node.setTable(table);
                                 setDefaultFixValue(node);
                                 isContain = true;
@@ -385,27 +304,30 @@ public class Schema2XMLDragAndDropHandler {
                         if (!isContain) {
                             FOXTreeNode child = new Element(metaColumn.getLabel());
                             child.setColumn(metaColumn);
+                            child.setDataType(metaColumn.getTalendType());
                             child.setTable(table);
-                            child.setRow(row);
+                            // child.setRow(row);
                             targetNode.addChild(child);
                         }
                     }
                     setDefaultFixValue(targetNode);
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
                     if (!(targetNode instanceof Element)) {
-                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsNotElementWarning")); //$NON-NLS-1$
+                        MessageDialog.openConfirm(control.getShell(), "Warning", "\"" + targetNode.getLabel()
+                                + "\" isn't a Element, can not create sub-elements or attributes.");
                         return;
                     }
                     for (Object obj : dragdedData) {
-                        IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        // IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        IMetadataColumn metaColumn = ConvertionHelper.convertToIMetaDataColumn((MetadataColumn) obj);
+
                         boolean isContain = false;
                         for (FOXTreeNode node : ((Element) targetNode).getAttributeChildren()) {
                             if (node.getLabel().equals(metaColumn.getLabel())) {
                                 node.setColumn(metaColumn);
                                 node.setTable(table);
-                                node.setRow(row);
+                                node.setDataType(metaColumn.getTalendType());
+                                // node.setRow(row);
                                 setDefaultFixValue(node);
                                 isContain = true;
                             }
@@ -413,20 +335,13 @@ public class Schema2XMLDragAndDropHandler {
                         if (!isContain) {
                             FOXTreeNode child = new Attribute(metaColumn.getLabel());
                             child.setColumn(metaColumn);
+                            child.setDataType(metaColumn.getTalendType());
                             child.setTable(table);
-                            child.setRow(row);
+                            // child.setRow(row);
                             targetNode.addChild(child);
                         }
                     }
                     setDefaultFixValue(targetNode);
-                }
-
-                if (row != null) {
-                    targetNode.setRow(row);
-                    if (!getManager().getFoxComponent().istFileOutputMSXML()) {
-                        FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
-                        setTreeNodeRow(root, row);
-                    }
                 }
                 linker.getXMLViewer().refresh();
                 linker.getXMLViewer().expandAll();
@@ -439,61 +354,12 @@ public class Schema2XMLDragAndDropHandler {
 
                 linker.getSource().getShell().setCursor(null);
             }
-            if (row != null) {
-                targetNode.setRow(row);
-                if (!getManager().getFoxComponent().istFileOutputMSXML()) {
-                    FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
-                    setTreeNodeRow(root, row);
-                }
-            }
             linker.getXMLViewer().refresh();
             linker.getXMLViewer().expandAll();
-
             linker.updateLinksStyleAndControlsSelection(control);
-        }
-
-        /**
-         * DOC wzhang Comment method "setDefaultFixValue".
-         * 
-         * @param treeNode
-         */
-        private void setDefaultFixValue(FOXTreeNode treeNode) {
-            String fixValue = treeNode.getDefaultValue();
-            if (fixValue == null) {
-                return;
-            }
-            treeNode.setDefaultValue(null);
-        }
-
-        // reset all the treenode add row to relative column
-        // private void resetTree(FOXTreeNode root, String row) {
-        // root.getChildren();
-        // for (TreeItem item : items) {
-        // setTreeNodeRow(item, row);
-        // }
-        // }
-
-        // reset all the treeNode add row to relative column
-        private void setTreeNodeRow(FOXTreeNode root, String row) {
-            if (root == null)
-                return;
-            root.setRow(row);
-            if (root instanceof Element) {
-                Element element = (Element) root;
-                List<FOXTreeNode> children = element.getElementChildren();
-                for (FOXTreeNode child : children) {
-                    setTreeNodeRow(child, row);
-                }
-                children = element.getNameSpaceChildren();
-                for (FOXTreeNode child : children) {
-                    setTreeNodeRow(child, row);
-                }
-            }
-            List<FOXTreeNode> children = root.getChildren();
-            for (FOXTreeNode child : children) {
-                setTreeNodeRow(child, row);
-            }
-
+            linker.getForm().updateConnection();
+            linker.getForm().updateStatus();
         }
     }
+
 }

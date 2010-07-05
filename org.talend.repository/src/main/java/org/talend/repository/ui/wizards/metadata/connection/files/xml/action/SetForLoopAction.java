@@ -10,74 +10,44 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.managers.FOXManager;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
- * bqian Create a xml node. <br/>
- * 
- * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class SetForLoopAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    private boolean value;
-
-    /**
-     * SetForLoopAction constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public SetForLoopAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    /**
-     * 
-     * SetForLoopAction constructor comment.
-     * 
-     * @param xmlViewer
-     * @param text
-     * @param foxui
-     */
-    public SetForLoopAction(TreeViewer xmlViewer, FOXUI foxui, String text, boolean value) {
+    public SetForLoopAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
-        this.value = value;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
         if (node.isLoop()) {
             return;
         }
-
-        FOXManager foxManager = foxui.getFoxManager();
-
-        FOXTreeNode rootTreeData = foxManager.getRootFOXTreeNode(node);
+        FOXTreeNode rootTreeData = TreeUtil.getRootFOXTreeNode(node);
         TreeUtil.clearSubGroupNode(node);
         // make sure group element is a ancestor of loop, or no group element.
         if (TreeUtil.findUpGroupNode(node) == null) {
@@ -90,28 +60,17 @@ public class SetForLoopAction extends SelectionProviderAction {
             node.setGroup(false);
         }
         node.setLoop(true);
-        if (this.value) {
-            if (foxui != null && node.isGroup()) {
-                foxui.updateStatus();
-            }
-            TreeUtil.upsetMainNode(node);
-            xmlViewer.refresh();
-        } else {
-            if (foxui != null) {
-                foxui.updateStatus();
-            }
-            TreeUtil.upsetMainNode(node);
-            xmlViewer.refresh();
+
+        if (form != null) {
+            form.updateStatus();
         }
-        this.foxui.updateStatus();
+        TreeUtil.upsetMainNode(node);
+        xmlViewer.refresh();
+
+        form.updateStatus();
+        form.updateConnection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();

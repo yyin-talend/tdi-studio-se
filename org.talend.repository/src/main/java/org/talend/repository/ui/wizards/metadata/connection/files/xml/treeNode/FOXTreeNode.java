@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.data;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,8 @@ public abstract class FOXTreeNode {
     private boolean isAttribute = false;
 
     private boolean isNameSpace = false;
+
+    private String dataType;
 
     public boolean hasLink() {
         return column != null;
@@ -362,6 +364,14 @@ public abstract class FOXTreeNode {
 
     public void setNameSpace(boolean isNameSpace) {
         this.isNameSpace = isNameSpace;
+    }
+
+    public String getDataType() {
+        return this.dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 
 }

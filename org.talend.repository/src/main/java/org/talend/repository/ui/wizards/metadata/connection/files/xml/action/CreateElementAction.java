@@ -10,15 +10,14 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.action;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.i18n.Messages;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -26,67 +25,46 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.N
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
- * bqian Create a xml node. <br/>
- * 
- * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
- * 
+ * wzhang class global comment. Detailled comment
  */
 public class CreateElementAction extends SelectionProviderAction {
 
-    // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
-    private FOXUI foxui;
+    private XmlFileOutputStep2Form form;
 
-    /**
-     * CreateNode constructor comment.
-     * 
-     * @param provider
-     * @param text
-     */
     public CreateElementAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public CreateElementAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public CreateElementAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
+        this.form = form;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
         if (createChildNode(node)) {
-            foxui.redrawLinkers();
+            form.redrawLinkers();
         }
+        form.updateConnection();
     }
 
-    /**
-     * Create the child node of the input node
-     * 
-     * @param node
-     */
     private boolean createChildNode(FOXTreeNode node) {
         if (node.getColumn() != null) {
-            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                    Messages.getString("CreateElementAction.1") //$NON-NLS-1$
-                            + node.getLabel() + "\"?")) { //$NON-NLS-1$
+            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), "Warning",
+                    "Do you want to disconnect the existing linker and then add an sub element for the selected element "
+                            + node.getLabel() + " \"?")) {
                 return false;
             }
             node.setColumn(null);
         }
-        String label = ""; //$NON-NLS-1$
+        String label = "";
         while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null,
-                    Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
-                    "", null); //$NON-NLS-1$
+            InputDialog dialog = new InputDialog(null, "Input element's label", "nput the new element's valid label", "", null);
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
@@ -96,8 +74,7 @@ public class CreateElementAction extends SelectionProviderAction {
             }
         }
         FOXTreeNode child = new Element(label);
-        // add by wzhang. set the row name
-        child.setRow(node.getRow());
+        // child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
         this.xmlViewer.expandAll();
@@ -107,8 +84,7 @@ public class CreateElementAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.ISelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
@@ -126,15 +102,6 @@ public class CreateElementAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
-        // let user can add more children to a root.
-        // Element e = (Element) node;
-        // if (e.getParent() == null) {
-        // if (e.getElementChildren().size() >= 1) {
-        // this.setEnabled(false);
-        // return;
-        // }
-        // }
         this.setEnabled(true);
-
     }
 }

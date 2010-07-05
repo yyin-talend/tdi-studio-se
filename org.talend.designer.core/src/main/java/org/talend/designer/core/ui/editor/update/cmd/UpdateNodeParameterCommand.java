@@ -230,7 +230,12 @@ public class UpdateNodeParameterCommand extends Command {
                                 } else {
                                     // update tFileInputExcel job
                                     if (param.getField().equals(EParameterFieldType.TABLE)) {
-                                        if (param.getName().equals("SHEETLIST") && objectValue instanceof List) {
+                                        String name = param.getName();
+                                        if (name.equals("ROOT") || name.equals("LOOP") || name.equals("GROUP")
+                                                && objectValue instanceof List) {
+                                            param.setValue(objectValue);
+
+                                        } else if (param.getName().equals("SHEETLIST") && objectValue instanceof List) {
                                             List<Map<String, Object>> paramMaps = (List<Map<String, Object>>) param.getValue();
                                             if (paramMaps == null) {
                                                 paramMaps = new ArrayList<Map<String, Object>>();

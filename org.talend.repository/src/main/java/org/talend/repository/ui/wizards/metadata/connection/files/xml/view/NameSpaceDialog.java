@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.fileoutputxml.ui.edit;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.view;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -24,8 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.formtools.LabelledText;
-import org.talend.designer.fileoutputxml.i18n.Messages;
-import org.talend.designer.fileoutputxml.util.StringUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wzhang class global comment. Detailled comment
@@ -36,7 +35,7 @@ public class NameSpaceDialog extends TitleAreaDialog {
 
     private LabelledText nsValueLabel;
 
-    private static final String DEFAULT = Messages.getString("NameSpaceDialog.defaultMessage"); //$NON-NLS-1$
+    private static final String DEFAULT = "Input the prefix and value of the namespace";
 
     private String prefixValue = "";
 
@@ -54,9 +53,9 @@ public class NameSpaceDialog extends TitleAreaDialog {
     @Override
     protected Control createContents(Composite parent) {
         super.createContents(parent);
-        this.getShell().setText(Messages.getString("NameSpaceDialog.dialogtext")); //$NON-NLS-1$
-        this.setTitle(Messages.getString("NameSpaceDialog.dialogTitle")); //$NON-NLS-1$
-        this.setMessage(Messages.getString("NameSpaceDialog.defaultMessage")); //$NON-NLS-1$
+        this.getShell().setText("Namespace dialog");
+        this.setTitle("Input new namespace");
+        this.setMessage("Input the prefix and value of the namespace");
         return parent;
     }
 
@@ -65,7 +64,7 @@ public class NameSpaceDialog extends TitleAreaDialog {
         super.createDialogArea(parent);
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(6, true));
-        prefixLabel = new LabelledText(composite, Messages.getString("NameSpaceDialog.prefix"), 5); //$NON-NLS-1$
+        prefixLabel = new LabelledText(composite, "Prefix", 5); //$NON-NLS-1$
         prefixLabel.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -74,7 +73,7 @@ public class NameSpaceDialog extends TitleAreaDialog {
             }
         });
 
-        nsValueLabel = new LabelledText(composite, Messages.getString("NameSpaceDialog.nsValue"), 5); //$NON-NLS-1$
+        nsValueLabel = new LabelledText(composite, "Namespace Value", 5); //$NON-NLS-1$
         nsValueLabel.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -89,13 +88,13 @@ public class NameSpaceDialog extends TitleAreaDialog {
 
     private void validateField() {
         if (!StringUtil.validateLabelForNameSpace(prefixValue)) {
-            setMessage(Messages.getString("NameSpaceDialog.prefixInvalid"), IMessageProvider.ERROR); //$NON-NLS-1$
+            setMessage("Prefix value is invalid!", IMessageProvider.ERROR); //$NON-NLS-1$
             return;
         } else {
             setMessage(DEFAULT);
         }
         if (!StringUtil.validateLabelForFixedValue(nsValue)) {
-            setMessage(Messages.getString("NameSpaceDialog.nsValueInvalid"), IMessageProvider.ERROR); //$NON-NLS-1$
+            setMessage("NameSpace value is invalid!", IMessageProvider.ERROR); //$NON-NLS-1$
             return;
         } else {
             setMessage(DEFAULT);
