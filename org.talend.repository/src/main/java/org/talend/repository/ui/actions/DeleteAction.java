@@ -242,6 +242,26 @@ public class DeleteAction extends AContextualAction {
                             }
                             curItem = parentFolder;
                         }
+                        if (objectType.getKey().toString().startsWith("repository.metadata")) {
+                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                                if ("".equals(fullPath)) {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                                } else {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                                }
+                                curItem = (FolderItem) curItem.getParent();
+                            }
+                        }
+                        if (objectType == ERepositoryObjectType.ROUTINES) {
+                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                                if ("".equals(fullPath)) {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                                } else {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                                }
+                                curItem = (FolderItem) curItem.getParent();
+                            }
+                        }
                         if (objectType == ERepositoryObjectType.SQLPATTERNS) {
                             while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
                                 if ("".equals(fullPath)) {
