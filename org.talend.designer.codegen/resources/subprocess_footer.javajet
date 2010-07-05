@@ -15,6 +15,7 @@
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	boolean stat = codeGenArgument.isStatistics();
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 	
 	for (INode node : subTree.getNodes()) {
@@ -195,8 +196,18 @@
 
 		throw new TalendException(e, currentComponent, globalMap);
 	
-	}
+	} catch(Error error) {
 	
+<%
+	if(stat){
+%>
+		runStat.stopThreadStat();
+<%
+	}
+%>
+		throw new Error(error);
+
+	}
 <%
 	//generate the code to free memory for lookup link and virtual component buffered datas 
 	boolean firstIn = true;
