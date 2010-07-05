@@ -14,9 +14,11 @@ package org.talend.designer.core.ui.editor.process;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.draw2d.IFigure;
@@ -45,6 +47,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -68,8 +71,11 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.FileItem;
@@ -78,11 +84,14 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -93,6 +102,8 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
@@ -106,6 +117,8 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -114,6 +127,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * Performs a native Drop for the talendEditor. see feature
@@ -193,28 +207,37 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     public void dragOver(DropTargetEvent event) {
-        // multi-drag for job only
+        // multi-drag for job,context, sqlPattern.
         IStructuredSelection selection = getSelection();
-        boolean allowed = true;
-        Iterator iter = selection.iterator();
-        selection.size();
-        while (iter.hasNext()) {
-            Object next = iter.next();
-            if (next instanceof RepositoryNode) {
-                RepositoryNode sourceNode = (RepositoryNode) next;
-                IRepositoryViewObject object = sourceNode.getObject();
-                if (object != null) {
-                    Item item = object.getProperty().getItem();
-                    if (!(item instanceof ProcessItem)) {
-                        allowed = false;
+        if (selection.size() > 1) {
+            boolean allowed = true;
+            Item temItem = null;
+            Iterator iter = selection.iterator();
+            while (iter.hasNext()) {
+                Object next = iter.next();
+                if (next instanceof RepositoryNode) {
+                    RepositoryNode sourceNode = (RepositoryNode) next;
+                    IRepositoryViewObject object = sourceNode.getObject();
+                    if (object != null) {
+                        Item selectItem = object.getProperty().getItem();
+                        if (temItem == null) {
+                            temItem = selectItem;
+                            continue;
+                        }
+                        if (selectItem instanceof ProcessItem && !(temItem instanceof ProcessItem)) {
+                            allowed = false;
+                        } else if (selectItem instanceof ContextItem && !(temItem instanceof ContextItem)) {
+                            allowed = false;
+                        } else if (selectItem instanceof SQLPatternItem && !(temItem instanceof SQLPatternItem)) {
+                            allowed = false;
+                        }
                     }
                 }
             }
+            if (!allowed) {
+                event.detail = DND.DROP_NONE;
+            }
         }
-        if (selection.size() > 1 && !allowed) {
-            event.detail = DND.DROP_NONE;
-        }
-
     }
 
     @Override
@@ -279,22 +302,168 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             return;
         }
-        //
-        if (!(getTargetEditPart() instanceof NodeContainerPart)) {
 
-            try {
-                createNewComponent(getCurrentEvent());
-            } catch (OperationCanceledException e) {
-                return;
-            }
-
+        List<Object> sources = getSelectSource();
+        if (containsContextSource(sources)) {
+            createContext(sources);
         } else {
-            createSchema(getSelection().getFirstElement(), getTargetEditPart());
-            createQuery(getSelection().getFirstElement(), getTargetEditPart());
-            createProperty(getSelection().getFirstElement(), getTargetEditPart());
-            createChildJob(getSelection().getFirstElement(), getTargetEditPart());
+            if (!(getTargetEditPart() instanceof NodeContainerPart)) {
+
+                try {
+                    createNewComponent(getCurrentEvent());
+                } catch (OperationCanceledException e) {
+                    return;
+                }
+
+            } else {
+                if (containsSQLPatternSource(sources)) {
+                    createSQLPattern(sources);
+                } else {
+                    createSchema(getSelection().getFirstElement(), getTargetEditPart());
+                    createQuery(getSelection().getFirstElement(), getTargetEditPart());
+                    createProperty(getSelection().getFirstElement(), getTargetEditPart());
+                    createChildJob(getSelection().getFirstElement(), getTargetEditPart());
+                }
+            }
         }
         this.eraseTargetFeedback();
+    }
+
+    private void createSQLPattern(List<Object> sourceList) {
+        if (sourceList.size() == 0) {
+            return;
+        }
+        NodeContainerPart nodePart = (NodeContainerPart) getTargetEditPart();
+        Object model = nodePart.getModel();
+        if (model instanceof NodeContainer) {
+            Node node = ((NodeContainer) model).getNode();
+            IElementParameter sqlPatternValue = node.getElementParameter(EParameterName.SQLPATTERN_VALUE.getName());
+            if (sqlPatternValue != null) {
+                boolean created = false;
+                for (Object source : sourceList) {
+                    if (source instanceof RepositoryNode) {
+                        RepositoryNode sourceNode = (RepositoryNode) source;
+                        Item item = sourceNode.getObject().getProperty().getItem();
+                        if (item instanceof SQLPatternItem) {
+                            SQLPatternItem pattern = (SQLPatternItem) item;
+                            Property property = pattern.getProperty();
+                            String propertyId = property.getId();
+                            String propertyLabel = property.getLabel();
+                            List<Map> values = (List<Map>) sqlPatternValue.getValue();
+                            Map<String, String> patternMap = new HashMap<String, String>();
+                            boolean contains = false;
+                            for (Map map : values) {
+                                String compoundId = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
+                                String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
+                                String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
+                                if (id.equals(propertyId) && name.equals(propertyLabel)) {
+                                    contains = true;
+                                    break;
+                                }
+                            }
+                            if (!contains) {
+                                patternMap.put(SQLPatternUtils.SQLPATTERNLIST, propertyId + SQLPatternUtils.ID_SEPARATOR
+                                        + propertyLabel);
+                                values.add(patternMap);
+                                sqlPatternValue.setValue(values);
+                                created = true;
+                            }
+                        }
+                    }
+                }
+                if (created) {
+                    RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurComponentSettingsView();
+                }
+            }
+        }
+    }
+
+    private void createContext(List<Object> sourceList) {
+        if (sourceList.size() == 0) {
+            return;
+        }
+        boolean created = false;
+        for (Object source : sourceList) {
+            if (source instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) source;
+                Item item = sourceNode.getObject().getProperty().getItem();
+                if (item instanceof ContextItem) {
+                    ContextItem contextItem = (ContextItem) item;
+                    EList context = contextItem.getContext();
+                    Set<String> contextSet = new HashSet<String>();
+                    Iterator iterator = context.iterator();
+                    while (iterator.hasNext()) {
+                        Object obj = iterator.next();
+                        if (obj instanceof ContextTypeImpl) {
+                            EList contextParameters = ((ContextTypeImpl) obj).getContextParameter();
+                            Iterator contextParas = contextParameters.iterator();
+                            while (contextParas.hasNext()) {
+                                ContextParameterTypeImpl contextParameterType = (ContextParameterTypeImpl) contextParas.next();
+                                String name = contextParameterType.getName();
+                                contextSet.add(name);
+                            }
+                        }
+                    }
+                    IEditorInput editorInput = editor.getEditorInput();
+                    if (editorInput instanceof JobEditorInput) {
+                        JobEditorInput jobInput = (JobEditorInput) editorInput;
+                        IProcess2 process = jobInput.getLoadedProcess();
+                        IContextManager contextManager = process.getContextManager();
+                        Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem, contextSet,
+                                contextManager, false);
+                        if (addedContext != null && addedContext.size() > 0) {
+                            ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                            created = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (created) {
+            RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
+        }
+    }
+
+    private List<Object> getSelectSource() {
+        List<Object> sourceList = new ArrayList<Object>();
+        Iterator iterator = getSelection().iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            sourceList.add(obj);
+        }
+        return sourceList;
+    }
+
+    private boolean containsContextSource(List<Object> source) {
+        if (source.size() == 0) {
+            return false;
+        }
+        for (Object object : source) {
+            if (object instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) object;
+                Item item = sourceNode.getObject().getProperty().getItem();
+                if (item instanceof ContextItem) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean containsSQLPatternSource(List<Object> source) {
+        if (source.size() == 0) {
+            return false;
+        }
+        for (Object object : source) {
+            if (object instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) object;
+                Item item = sourceNode.getObject().getProperty().getItem();
+                if (item instanceof SQLPatternItem) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
