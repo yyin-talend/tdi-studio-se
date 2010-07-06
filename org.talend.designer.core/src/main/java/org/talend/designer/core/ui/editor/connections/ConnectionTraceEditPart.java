@@ -183,20 +183,7 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
             FilterColumnDialog dialog = new FilterColumnDialog(new Shell(), a.getConnection(), this.getViewer().getEditDomain()
                     .getCommandStack());
             dialog.open();
-        } else if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)) {
-            ConnectionTrace connectionTrace = ((ConnectionTrace) this.getModel());
-            Connection connection = connectionTrace.getConnection();
-            Boolean flag = (Boolean) connection.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName()).getValue();
-            connection.setPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName(), !flag);
-            // PropertyChangeCommand pcc = new PropertyChangeCommand(connection,
-            // EParameterName.TRACES_CONNECTION_ENABLE.getName(),
-            // !flag);
-            // this.getViewer().getEditDomain().getCommandStack().execute(pcc);
         }
     }
 
-    public EditPart getTargetEditPart(Request req) {
-        this.setSelected(1);
-        return this;
-    }
 }
