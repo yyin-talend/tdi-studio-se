@@ -95,7 +95,7 @@
 			NAME="CONNECTION_HIVE" 
 			FIELD="COMPONENT_LIST"
 			FILTER="REGEXP:^tHiveConnection|tJDBCConnection$" 
-			NUM_ROW="3"
+			NUM_ROW="2"
 			SHOW_IF="DBTYPE=='HIVE'" 
 		/>
 		
