@@ -29,6 +29,10 @@ imports="
 	String dbschema = ElementParameterParser.getValue(node,"__ELT_SCHEMA_NAME__");
 	String uniqueNameConnection = null;
 	INode previousNode = null;
+
+	String differenttable = ElementParameterParser.getValue(node, "__DIFFERENT_TABLE_NAME__");
+	boolean useDifferentTable = "true".equals(ElementParameterParser.getValue(node, "__USE_DIFFERENT_TABLE__"));
+	
 %>
 	String select_query = null;
 	String tableName_<%=cid%> = null;
@@ -46,11 +50,11 @@ imports="
 	}
 	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
-		tableName_<%=cid%> = <%=dbschema%> + "." + "<%=dbtable%>" ;
+		tableName_<%=cid%> = <%=dbschema%> + "." + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
 	<%
 	}else {
 	%>
-		tableName_<%=cid%> = "<%=dbtable%>";
+		tableName_<%=cid%> = <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
 	<%
 	}
 	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
@@ -307,12 +311,12 @@ imports="
 
 		if(("INSERT").equals(dataAction)){
 %>	
-		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		} else if (("UPDATE").equals(dataAction)) {
 %>
-		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -326,10 +330,10 @@ imports="
 <%		
 		}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
-		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
-		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -343,7 +347,7 @@ imports="
 <%
 		}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
-		String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -354,12 +358,12 @@ imports="
 		;
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 						
-		String insertQuery = "INSERT INTO <%=dbtable%> (<%=insertColName.toString()%>) ("+select_query+")";
+		String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) ("+select_query+")";
 		pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 <%
 		}else if (("DELETE").equals(dataAction)){
 %>
-		String deleteQuery = "DELETE  FROM ("+select_query+") <%=dbtable%>"
+		String deleteQuery = "DELETE  FROM ("+select_query+") "+tableName_<%=cid%>
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>

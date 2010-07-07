@@ -29,6 +29,9 @@ imports="
 	String dbschema = ElementParameterParser.getValue(node,"__ELT_SCHEMA_NAME__");
 	String uniqueNameConnection = null;
 	INode previousNode = null;
+
+	String differenttable = ElementParameterParser.getValue(node, "__DIFFERENT_TABLE_NAME__");
+	boolean useDifferentTable = "true".equals(ElementParameterParser.getValue(node, "__USE_DIFFERENT_TABLE__"));
 	%>
 	String select_query = null;	
 	String tableName_<%=cid%> = null;
@@ -49,11 +52,11 @@ imports="
 	
 	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
-		tableName_<%=cid%> = <%=dbschema%> + "." + "<%=dbtable%>" ;
+		tableName_<%=cid%> = <%=dbschema%> + "." + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
 	<%
 	}else {
 	%>
-		tableName_<%=cid%> = "<%=dbtable%>";
+		tableName_<%=cid%> = <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
 	<%
 	}
 	
