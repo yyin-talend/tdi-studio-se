@@ -50,11 +50,20 @@
     
   </PARAMETERS>
   
-  <ADVANCED_PARAMETERS/>
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="10"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+   </ADVANCED_PARAMETERS>
   
   <CODEGENERATION>
 	<IMPORTS>
-		<IMPORT NAME="json" MODULE="json_simple.jar" REQUIRED="true" />
+		<IMPORT NAME="json" MODULE="json_simple-1.1.jar" REQUIRED="true" />
 	</IMPORTS>
   </CODEGENERATION>
   

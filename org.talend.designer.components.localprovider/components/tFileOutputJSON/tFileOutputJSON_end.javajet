@@ -15,7 +15,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String datablockname = ElementParameterParser.getValue(node, "__DATABLOCKNAME__");
-String filename = ElementParameterParser.getValue(node, "__FILENAME__");		
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+boolean create = "true".equals(ElementParameterParser.getValue(node, "__CREATE__"));
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 
@@ -24,11 +25,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 org.json.simple.JSONObject jsonOut<%=cid%> = new org.json.simple.JSONObject();
 jsonOut<%=cid%>.put(<%=datablockname%>,jsonSet<%=cid%>);
-java.io.PrintWriter out<%=cid%>
-   = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>)));
-
-	 out<%=cid%>.print(jsonOut<%=cid%>);
-	 
-	 out<%=cid%>.close();
-
-  globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
+java.io.File dir_<%=cid%> = file_<%=cid%>.getParentFile();
+<%
+if(create){
+%>
+	if(!dir_<%=cid%>.exists()){
+		dir_<%=cid%>.mkdirs();
+	}
+<%
+}
+%>
+java.io.PrintWriter out<%=cid%> = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.FileWriter(<%=filename%>)));
+out<%=cid%>.print(jsonOut<%=cid%>);
+out<%=cid%>.close();
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
