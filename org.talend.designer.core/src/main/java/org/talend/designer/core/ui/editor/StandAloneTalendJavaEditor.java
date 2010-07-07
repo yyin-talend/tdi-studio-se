@@ -128,8 +128,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
             if (!rEditorInput.isReadOnly()) {
-                item.getProperty().eAdapters().add(dirtyListener);
-                repFactory.lock(item);
+                if (getRepositoryFactory().getStatus(item).isPotentiallyEditable()) {
+                    item.getProperty().eAdapters().add(dirtyListener);
+                    repFactory.lock(item);
+                }
             } else {
                 rEditorInput.getFile().setReadOnly(true);
             }
