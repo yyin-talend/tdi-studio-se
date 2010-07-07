@@ -140,7 +140,7 @@
 %>
 				java.io.File isRemoved_<%=cid %> = new java.io.File(<%=fileName%>);
 				if(isRemoved_<%=cid %>.exists()) {
-					System.err.println("The source file is open and could not be removed from the folder.\n");
+					System.err.println("The source file could not be removed from the folder because it is open or you only have read-only rights.\n");
 				}
 			
 <%			}
