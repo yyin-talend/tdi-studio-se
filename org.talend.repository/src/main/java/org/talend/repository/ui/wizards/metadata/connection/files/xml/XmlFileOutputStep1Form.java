@@ -140,7 +140,7 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
             encodingCombo.select(0);
         }
         encodingCombo.clearSelection();
-        if (getConnection().getOutputFilePath() != null && !getConnection().getOutputFilePath().equals("")) {
+        if (getConnection().getOutputFilePath() != null) {
             outputFilePath.setText(getConnection().getOutputFilePath());
         }
         adaptFormToEditable();

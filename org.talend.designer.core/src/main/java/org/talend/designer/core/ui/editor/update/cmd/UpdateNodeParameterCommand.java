@@ -36,6 +36,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
@@ -166,7 +167,9 @@ public class UpdateNodeParameterCommand extends Command {
                 if (result.isChecked()) {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
-                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                        if ((repositoryValue != null)
+                                && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
+                                        .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
                                     || param.getField() == EParameterFieldType.MEMO_SQL) {
                                 continue;

@@ -488,12 +488,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (headImport != null) {
                             value4 = (String) headImport;
                         }
-                        boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(libraries))
-                                || ((value2 == null || "".equals(value2)) && libraries == null);
-                        boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(mainCode))
-                                || ((value3 == null || "".equals(value3)) && mainCode == null);
-                        boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(imports))
-                                || ((value4 == null || "".equals(value4)) && imports == null);
+                        boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(libraries)) //$NON-NLS-1$
+                                || ((value2 == null || "".equals(value2)) && libraries == null); //$NON-NLS-1$
+                        boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(mainCode)) //$NON-NLS-1$
+                                || ((value3 == null || "".equals(value3)) && mainCode == null); //$NON-NLS-1$
+                        boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(imports)) //$NON-NLS-1$
+                                || ((value4 == null || "".equals(value4)) && imports == null); //$NON-NLS-1$
                         if (!(value && librariesIsSame && mainCodeIsSame && importsIsSame)) {
                             sameValues = false;
                         }
@@ -555,12 +555,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 value4 = (String) footerImport;
                             }
 
-                            boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(footerLibraries))
-                                    || ((value2 == null || "".equals(value2)) && footerLibraries == null);
-                            boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(footerMainCode))
-                                    || ((value3 == null || "".equals(value3)) && footerMainCode == null);
-                            boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(footerImports))
-                                    || ((value4 == null || "".equals(value4)) && footerImports == null);
+                            boolean librariesIsSame = (value2 != null && !"".equals(value2) && value2.equals(footerLibraries)) //$NON-NLS-1$
+                                    || ((value2 == null || "".equals(value2)) && footerLibraries == null); //$NON-NLS-1$
+                            boolean mainCodeIsSame = (value3 != null && !"".equals(value3) && value3.equals(footerMainCode)) //$NON-NLS-1$
+                                    || ((value3 == null || "".equals(value3)) && footerMainCode == null); //$NON-NLS-1$
+                            boolean importsIsSame = (value4 != null && !"".equals(value4) && value4.equals(footerImports)) //$NON-NLS-1$
+                                    || ((value4 == null || "".equals(value4)) && footerImports == null); //$NON-NLS-1$
 
                             if (!(value && librariesIsSame && mainCodeIsSame && importsIsSame)) {
                                 sameValues = false;
@@ -1102,7 +1102,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     // if the repository connection exists then test the values
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
-                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                        if ((repositoryValue != null)
+                                && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
+                                        .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
                             if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
@@ -1160,21 +1162,41 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     if (param.getField().equals(EParameterFieldType.TABLE)) {
                                         List<Map<String, Object>> oldList = (List<Map<String, Object>>) value;
                                         String name = param.getName();
-                                        if ("ROOT".equals(name) || "LOOP".equals(name) || "GROUP".equals(name)
+                                        // update for tAdvancedFileOutputXML wizard
+                                        if ("ROOT".equals(name) || "LOOP".equals(name) || "GROUP".equals(name) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                                 && !oldList.isEmpty() && objectValue instanceof List) {
                                             List objectList = (List) objectValue;
-                                            // need improve
                                             if (oldList.size() != objectList.size()) {
                                                 sameValues = false;
+                                            } else {
+                                                for (int i = 0; i < oldList.size(); i++) {
+                                                    Map<String, Object> oldMap = oldList.get(i);
+                                                    Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
+                                                    if (oldMap.get("PATH").equals(objectMap.get("PATH")) //$NON-NLS-1$ //$NON-NLS-2$
+                                                            && oldMap.get("ATTRIBUTE").equals(objectMap.get("ATTRIBUTE")) //$NON-NLS-1$ //$NON-NLS-2$
+                                                            && ((oldMap.get("VALUE") == null && objectMap.get("VALUE") == null) || (oldMap //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    .get("VALUE") != null //$NON-NLS-1$
+                                                                    && objectMap.get("VALUE") != null && oldMap.get("VALUE") //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    .equals(objectMap.get("VALUE")))) //$NON-NLS-1$
+                                                            && ((oldMap.get("COLUMN") == null && objectMap.get("COLUMN") == null) || (oldMap //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    .get("COLUMN") != null //$NON-NLS-1$
+                                                                    && oldMap.get("COLUMN") != null && oldMap.get("COLUMN") //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    .equals(objectMap.get("COLUMN"))))) { //$NON-NLS-1$
+                                                        sameValues = true;
+                                                    } else {
+                                                        sameValues = false;
+                                                        break;
+                                                    }
+                                                }
                                             }
-                                        } else if (param.getName().equals("SHEETLIST") && oldList != null
+                                        } else if (param.getName().equals("SHEETLIST") && oldList != null //$NON-NLS-1$
                                                 && objectValue instanceof List) {
                                             // hywang modified for bug
                                             // 9537
                                             List repList = (List) objectValue;
                                             if (oldList.size() == repList.size()) {
                                                 for (Map<String, Object> line : oldList) {
-                                                    final String sheetName = "SHEETNAME";
+                                                    final String sheetName = "SHEETNAME"; //$NON-NLS-1$
                                                     Object oldValue = line.get(sheetName);
                                                     if (oldValue instanceof String && repList.get(0) instanceof Map) {
                                                         boolean found = false;
@@ -1200,9 +1222,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     if (value instanceof String && objectValue instanceof String) {
                                         if (!value.equals("CustomModule") && !value.equals(objectValue)) {//$NON-NLS-1$
                                             if (repositoryConnection instanceof XmlFileConnection) {
-                                                if ((((XmlFileConnection) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnection) repositoryConnection)
-                                                        .getXmlFilePath().endsWith("xsd\""))
-                                                        && repositoryValue.equals("FILE_PATH")) {
+                                                if ((((XmlFileConnection) repositoryConnection).getXmlFilePath().endsWith("xsd") || ((XmlFileConnection) repositoryConnection) //$NON-NLS-1$
+                                                        .getXmlFilePath().endsWith("xsd\"")) //$NON-NLS-1$
+                                                        && repositoryValue.equals("FILE_PATH")) { //$NON-NLS-1$
                                                 } else {
                                                     sameValues = false;
                                                 }
@@ -1282,7 +1304,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     // sameValues = false;
                                     // }
                                 }
-                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
+                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) { //$NON-NLS-1$
                                 objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, param.getName(), node
                                         .getMetadataList().get(0));
                                 if (value == null) {
@@ -1298,7 +1320,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 List repList = (List) objectValue;
                                 if (oldMaps.size() == repList.size()) {
                                     for (Map<String, Object> line : oldMaps) {
-                                        final String sheetName = "VALUE";
+                                        final String sheetName = "VALUE"; //$NON-NLS-1$
                                         Object oldValue = line.get(sheetName);
                                         if (oldValue instanceof String && repList.get(0) instanceof String) {
                                             boolean found = false;

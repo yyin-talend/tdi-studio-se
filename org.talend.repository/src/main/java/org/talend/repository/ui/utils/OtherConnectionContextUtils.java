@@ -169,10 +169,8 @@ public final class OtherConnectionContextUtils {
         String paramName = null;
         if (!conn.isInputModel()) {
             String outputFilePath = conn.getOutputFilePath();
-            if (outputFilePath != null) {
-                paramName = prefixName + EParamName.OutputFilePath;
-                ConnectionContextHelper.createParameters(varList, paramName, outputFilePath, JavaTypesManager.FILE);
-            }
+            paramName = prefixName + EParamName.OutputFilePath;
+            ConnectionContextHelper.createParameters(varList, paramName, outputFilePath, JavaTypesManager.FILE);
         } else {
 
             String xmlFilePath = conn.getXmlFilePath();
