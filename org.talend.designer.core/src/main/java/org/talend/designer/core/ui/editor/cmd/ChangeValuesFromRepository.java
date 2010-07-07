@@ -237,9 +237,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || (elem instanceof INode
-                        && (((INode) elem).getComponent().getName().equals("tHL7Input")) || ((INode) elem).getComponent() //$NON-NLS-1$
-                        .getName().equals("tAdvancedFileOutputXML"))) //$NON-NLS-1$
+                boolean b = elem instanceof INode && (((INode) elem).getComponent().getName().equals("tHL7Input") //$NON-NLS-1$
+                        || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML")); //$NON-NLS-1$
+                if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || b) //$NON-NLS-1$
                         && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                             param.getCategory());
