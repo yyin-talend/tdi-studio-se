@@ -31,6 +31,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.repository.UpdateRepositoryUtils;
 
 /**
@@ -204,13 +205,35 @@ public class UpdateMainParameterCommand extends Command {
                             elementParameter.setValue(EmfComponent.BUILTIN);
                         }
                     }
+
                     // built-in
+                    IElementParameter dbTypeParam = null;
+                    IElementParameter impliciteDbType = null;
                     for (IElementParameter param : process.getElementParameters()) {
                         if (param.getCategory() != category) {
                             continue;
                         }
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(process.getElementParameters()) && (repositoryValue != null)) {
+                            // for mysql db verion
+                            if (EParameterName.DB_TYPE.getName().equals(param.getName()) && "TYPE".equals(repositoryValue)) {
+                                dbTypeParam = param;
+                            }
+                            if ("DB_TYPE_IMPLICIT_CONTEXT".equals(param.getName()) && "TYPE".equals(repositoryValue)) {
+                                impliciteDbType = param;
+                            }
+                            if (EParameterName.DB_VERSION.getName().equals(repositoryValue) && dbTypeParam != null
+                                    && dbTypeParam.getValue() != null) {
+                                final int indexOfItem = dbTypeParam.getIndexOfItemFromList(dbTypeParam.getValue().toString());
+                                String dbType = dbTypeParam.getListItemsDisplayCodeName()[indexOfItem];
+                                setDBVersionForMysql(param, dbType);
+                            } else if (EParameterName.DB_VERSION.getName().equals(repositoryValue) && impliciteDbType != null
+                                    && impliciteDbType.getValue() != null) {
+                                final int indexOfItem = impliciteDbType.getIndexOfItemFromList(impliciteDbType.getValue()
+                                        .toString());
+                                String dbType = impliciteDbType.getListItemsDisplayCodeName()[indexOfItem];
+                                setDBVersionForMysql(param, dbType);
+                            }
                             param.setRepositoryValueUsed(false);
                             param.setReadOnly(false);
                         }
@@ -219,6 +242,22 @@ public class UpdateMainParameterCommand extends Command {
             }
         }
 
+    }
+
+    private void setDBVersionForMysql(IElementParameter dbVersionParam, String dbType) {
+        if ("MYSQL".equals(dbType)) {
+            String[] drivers = StatsAndLogsConstants.MYSQL_VERSION_DRIVER;
+            // if driver is not set , set to the default
+            boolean found = false;
+            for (int i = 0; i < drivers.length; i++) {
+                if (drivers[i].equals(dbVersionParam.getValue())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                dbVersionParam.setValue(drivers[0]);
+            }
+        }
     }
 
 }
