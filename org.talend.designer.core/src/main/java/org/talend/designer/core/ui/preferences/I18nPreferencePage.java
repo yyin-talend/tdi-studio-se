@@ -126,13 +126,42 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             russian = "Russian"; //$NON-NLS-1$
         }
 
+        String greek = "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"; //$NON-NLS-1$
+        try {
+            utf8Bytes = greek.getBytes("UTF8"); //$NON-NLS-1$
+            greek = new String(utf8Bytes, "UTF8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e1) {
+            // could be translated, but it's only in case of error when change UTF8 characters.
+            greek = "Greek"; //$NON-NLS-1$
+        }
+
+        String arabic = "\u0627\u0644\u0639\u0631\u0628\u064a\u0647"; //$NON-NLS-1$
+        try {
+            utf8Bytes = arabic.getBytes("UTF8"); //$NON-NLS-1$
+            arabic = new String(utf8Bytes, "UTF8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e1) {
+            // could be translated, but it's only in case of error when change UTF8 characters.
+            arabic = "Arabic"; //$NON-NLS-1$
+        }
+
+        String serbian = "\u0421\u0440\u043f\u0441\u043a\u0438"; //$NON-NLS-1$
+        try {
+            utf8Bytes = serbian.getBytes("UTF8"); //$NON-NLS-1$
+            serbian = new String(utf8Bytes, "UTF8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e1) {
+            // could be translated, but it's only in case of error when change UTF8 characters.
+            serbian = "Serbian"; //$NON-NLS-1$
+        }
+
         String[][] entryNamesAndValues = { { Locale.ENGLISH.getDisplayLanguage(Locale.ENGLISH), Locale.ENGLISH.getLanguage() },
                 { Locale.FRENCH.getDisplayLanguage(Locale.FRENCH), Locale.FRENCH.getLanguage() },
                 { Locale.CHINESE.getDisplayLanguage(Locale.CHINESE), Locale.CHINESE.getLanguage() },
                 { Locale.GERMAN.getDisplayLanguage(Locale.GERMAN), Locale.GERMAN.getLanguage() },
                 { Locale.JAPANESE.getDisplayLanguage(Locale.JAPANESE), Locale.JAPANESE.getLanguage() },
-                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                { spanish, "es" }, { russian, "ru" } }; //$NON-NLS-1$ //$NON-NLS-2$
+                { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ 
+                { spanish, "es" }, { russian, "ru" }, //$NON-NLS-1$ //$NON-NLS-2$ 
+                { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ 
+                { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ /$NON-NLS-7$ 
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Messages
                 .getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
