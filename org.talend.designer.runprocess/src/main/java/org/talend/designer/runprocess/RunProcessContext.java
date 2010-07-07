@@ -973,7 +973,7 @@ public class RunProcessContext {
         }
 
         public void stopThread() {
-            // stopThread = true;
+            stopThread = true;
             synchronized (this) {
                 notify();
             }
