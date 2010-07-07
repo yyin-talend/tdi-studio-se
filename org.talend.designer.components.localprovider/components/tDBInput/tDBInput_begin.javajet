@@ -75,11 +75,11 @@
 	    } 
 	    
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
+	   		String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
 %>
-			Object value_<%=cid%> = rs_<%=cid %>.getObject(<%=currentColNo%>);
+			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(<%=currentColNo%>);
 			if(value_<%=cid%> != null) {
 <%
-				String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
 				if(("Integer").equals(javaType)) {
 %>
 					value_<%=cid%> = new <%=javaType%>(<%=javaType%>.parse<%=javaType.substring(0,3)%>(value_<%=cid%>.toString()));
