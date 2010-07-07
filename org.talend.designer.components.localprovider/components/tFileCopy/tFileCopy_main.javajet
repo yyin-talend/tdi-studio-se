@@ -135,6 +135,16 @@
 			}
 %>           
 			org.talend.FileCopy.copyFile(srcFile_<%=cid %>.getPath(), desFile_<%=cid %>.getPath(), <%=reFile %>);
+<%
+			if(reFile) {
+%>
+				java.io.File isRemoved_<%=cid %> = new java.io.File(<%=fileName%>);
+				if(isRemoved_<%=cid %>.exists()) {
+					System.err.println("The source file is open and could not be removed from the folder.\n");
+				}
+			
+<%			}
+%>
 
 		}
 
