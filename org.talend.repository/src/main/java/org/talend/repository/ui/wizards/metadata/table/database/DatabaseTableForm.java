@@ -515,10 +515,11 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        addTableButton = new UtilsButton(button,
+                Messages.getString("DatabaseTableForm.AddTable"), width - 30, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
         Composite rmButton = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        removeTableButton = new UtilsButton(rmButton, "Remove Schema", width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        removeTableButton = new UtilsButton(rmButton, "Remove Schema", width - 30, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -566,7 +567,7 @@ public class DatabaseTableForm extends AbstractForm {
         addTableButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!addTableButton.getEnabled()) {
+                if (addTableButton.getEnabled()) {
                     addTableButton.setEnabled(true);
                     addMetadataTable();
                 } else {
@@ -579,7 +580,7 @@ public class DatabaseTableForm extends AbstractForm {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (!removeTableButton.getEnabled()) {
+                if (removeTableButton.getEnabled()) {
                     removeTableButton.setEnabled(true);
                     TableItem[] selection = tableNavigator.getSelection();
                     if (selection != null && selection.length > 0) {
