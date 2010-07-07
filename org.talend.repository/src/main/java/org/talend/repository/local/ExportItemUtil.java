@@ -478,7 +478,8 @@ public class ExportItemUtil {
 
     private void saveResources(ResourceSet resourceSet) throws IOException, PersistenceException {
         for (Resource resource : resourceSet.getResources()) {
-            EmfHelper.saveResource(resource);
+            if (resource.getURI().isFile())
+                EmfHelper.saveResource(resource);
         }
     }
 
