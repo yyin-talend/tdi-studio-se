@@ -316,6 +316,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             monitorWrap.worked(1);
         }
+        getLinksManager().sortLinks(getDrawingLinksComparator());
+        getBackgroundRefresher().refreshBackground();
     }
 
     /**
@@ -356,7 +358,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         final ILineSelectionListener afterLineSelectionListener = new ILineSelectionListener() {
 
             public void handle(LineSelectionEvent e) {
-                updateLinksStyleAndControlsSelection(e.source.getTable());
+                updateLinksStyleAndControlsSelection(e.source.getTable(), true);
             }
         };
         selectionHelper.addAfterSelectionListener(afterLineSelectionListener);
@@ -406,7 +408,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         final ILineSelectionListener afterLineSelectionListener = new ILineSelectionListener() {
 
             public void handle(LineSelectionEvent e) {
-                updateLinksStyleAndControlsSelection(e.source.getTable());
+                updateLinksStyleAndControlsSelection(e.source.getTable(), true);
             }
         };
         selectionHelper.addAfterSelectionListener(afterLineSelectionListener);
@@ -508,7 +510,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param dataItem2
      */
     public void addLoopLink(TreeItem treeItem, Object dataItem1, Table table, XmlXPathLoopDescriptor dataItem2) {
-        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2);
+        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2, true);
         link.setStyleLink(getSelectedLoopStyleLink());
     }
 
@@ -521,13 +523,13 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param dataItem2
      */
     private LinkDescriptor<TreeItem, Object, Table, Object> addLink(TreeItem treeItem, Object dataItem1, Table table,
-            Object dataItem2) {
+            Object dataItem2, Boolean flag) {
         LinkDescriptor<TreeItem, Object, Table, Object> link = new LinkDescriptor<TreeItem, Object, Table, Object>(
                 new TreeExtremityDescriptor(treeItem, dataItem1), new ExtremityLink<Table, Object>(table, dataItem2));
 
         link.setStyleLink(getUnselectedStyleLink());
         getLinksManager().addLink(link);
-        updateLinksStyleAndControlsSelection(table);
+        updateLinksStyleAndControlsSelection(table, flag);
         return link;
     }
 
@@ -540,7 +542,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param dataItem2
      */
     public void addFieldLink(TreeItem treeItem, Object dataItem1, Table table, SchemaTarget dataItem2) {
-        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2);
+        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2, false);
         // link.setStyleLink(getSelectedStyleLink());
     }
 
@@ -787,9 +789,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         return this.loopTableEditorView;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public void updateLinksStyleAndControlsSelection(Control currentControl) {
+    public void updateLinksStyleAndControlsSelection(Control currentControl, Boolean flag) {
 
         boolean selectedControlIsTable = false;
         if (currentControl instanceof Table) {
@@ -876,6 +877,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             link.setStyleLink(styleLink);
 
         }
+
         if (selectedControlIsTable) {
             (getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
         } else {
@@ -893,8 +895,10 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             }
             fieldsTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
-        getLinksManager().sortLinks(getDrawingLinksComparator());
-        getBackgroundRefresher().refreshBackground();
+        if (flag) {
+            getLinksManager().sortLinks(getDrawingLinksComparator());
+            getBackgroundRefresher().refreshBackground();
+        }
     }
 
     /**

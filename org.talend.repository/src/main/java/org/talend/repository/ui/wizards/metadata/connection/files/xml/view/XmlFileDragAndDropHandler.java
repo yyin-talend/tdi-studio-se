@@ -356,7 +356,7 @@ public class XmlFileDragAndDropHandler {
             }
             linker.getXMLViewer().refresh();
             linker.getXMLViewer().expandAll();
-            linker.updateLinksStyleAndControlsSelection(control);
+            linker.updateLinksStyleAndControlsSelection(control, true);
             linker.getForm().updateConnection();
             linker.getForm().updateStatus();
         }

@@ -317,7 +317,7 @@ public class XmlToSchemaDragAndDropHandler {
                 }
 
             }
-            linker.updateLinksStyleAndControlsSelection(control);
+            linker.updateLinksStyleAndControlsSelection(control, true);
         }
 
     }

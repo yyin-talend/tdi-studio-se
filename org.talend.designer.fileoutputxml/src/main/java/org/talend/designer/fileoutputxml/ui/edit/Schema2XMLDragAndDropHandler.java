@@ -449,7 +449,7 @@ public class Schema2XMLDragAndDropHandler {
             linker.getXMLViewer().refresh();
             linker.getXMLViewer().expandAll();
 
-            linker.updateLinksStyleAndControlsSelection(control);
+            linker.updateLinksStyleAndControlsSelection(control, true);
         }
 
         /**
