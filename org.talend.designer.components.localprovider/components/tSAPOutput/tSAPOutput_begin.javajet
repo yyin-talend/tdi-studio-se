@@ -104,13 +104,18 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			            				 <%=groupName%> );  // group name    
 	<%}%>	        				 
 		// Open the connection
-		client_<%=cid %>.connect();
+		//client_<%=cid %>.connect();
 <%}%> 	
       
         com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
 
         com.sap.mw.jco.IFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate(<%=functionName %>);
 
+		if(functionTemplate_<%=cid %> == null){
+			com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
+			throw new RuntimeException("The RFC can't support the function: " + <%=functionName %> + ".");
+		}      
+		
         com.sap.mw.jco.JCO.Function function_<%=cid %> = functionTemplate_<%=cid %>.getFunction();
 
         com.sap.mw.jco.JCO.ParameterList importParameterList_<%=cid %> = function_<%=cid %>.getImportParameterList();

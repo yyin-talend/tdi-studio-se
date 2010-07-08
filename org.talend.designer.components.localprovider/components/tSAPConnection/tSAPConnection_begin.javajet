@@ -53,6 +53,6 @@ client_<%=cid %> = com.sap.mw.jco.JCO.createClient( <%=client %>,      // SAP cl
 			            				 <%=groupName%> );  // group name    
 <%}%>
 // Open the connection
-client_<%=cid %>.connect();
+//client_<%=cid %>.connect();
 
 globalMap.put("conn_<%=cid %>", client_<%=cid %>);

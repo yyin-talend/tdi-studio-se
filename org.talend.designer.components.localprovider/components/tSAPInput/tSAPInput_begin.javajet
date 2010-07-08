@@ -139,6 +139,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 %>
 
 	  	  com.sap.mw.jco.JCO.Client client_<%=cid %> = null;
+try{
 <%if(useExistingConn){%>	    
 	  client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("conn_<%=connection %>");	
 <%}else{%>
