@@ -40,6 +40,19 @@ for(Map<String, String> schema_o : schemas_o){
 	schema.put("KEY_COLUMN_INDEX", TalendTextUtils.removeQuotes(schema_o.get("KEY_COLUMN_INDEX")));
 	schema.put("CARDINALITY", TalendTextUtils.removeQuotes(schema_o.get("CARDINALITY")));
 	schema.put("FIELDDELIMITED",schema_o.get("FIELDDELIMITED"));
+	String strInfinitude = "false"; // used to support *
+	if(!("\"\"").equals(schema.get("PARENT_RECORD"))){//has parent node
+		String cardString = schema.get("CARDINALITY");
+		if(("*").equals(cardString)){
+			strInfinitude = "true";
+		}else if(cardString.contains(",")){
+			String[] cards = cardString.split(",");
+			if(("*").equals(cards[1])){
+				strInfinitude = "true";
+			}
+		}
+	}
+	schema.put("IS_INFINITUDE",strInfinitude);
 }
 
 String filename_o = ElementParameterParser.getValue(node,"__FILENAME__");
@@ -119,7 +132,7 @@ String key_<%=schemaName %>_<%=cid %> = "";
 %>
 int count_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
 final int lowBound_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
-final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;
+<%if(("false").equals(schema.get("IS_INFINITUDE"))){%>final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;<%}%>
 <%
 		}
 	}//FIM_001
@@ -168,7 +181,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				String cardinality = schema2.get("CARDINALITY");
 				String childRecord = schema2.get("RECORD");
 %>
-		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>) || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)){
+		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>)<%if(("false").equals(schema2.get("IS_INFINITUDE"))){%> || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)<%}%>){
 			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
 		}
 		count_<%=schemaNameChild %>_<%=cid %> = 0;
@@ -179,7 +192,7 @@ while (fid_<%=cid %>.nextRecord()) {
 			String cardinality = schema.get("CARDINALITY");
 %>
 		count_<%=schemaName %>_<%=cid %>++;
-		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>) || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)){
+		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>)<%if(("false").equals(schema.get("IS_INFINITUDE"))){%> || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)<%}%>){
 			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
 		}
 <%
@@ -372,7 +385,7 @@ String key_<%=schemaName %>_<%=cid %> = "";
 %>
 int count_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
 final int lowBound_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
-final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;
+<%if(("false").equals(schema.get("IS_INFINITUDE"))){%>final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;<%}%>
 <%
 		}
 	}//FIM_001
