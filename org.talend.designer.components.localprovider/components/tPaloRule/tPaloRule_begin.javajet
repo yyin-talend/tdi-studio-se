@@ -1,0 +1,133 @@
+<%@ jet
+	imports="
+	java.util.ArrayList
+	java.util.HashMap
+	java.util.List
+	java.util.Map
+	
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.process.INode
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+
+
+    String sServer = ElementParameterParser.getValue(node, "__SERVER__");
+    String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
+    String sUsername = ElementParameterParser.getValue(node, "__USERNAME__");
+    String sPassword = ElementParameterParser.getValue(node, "__PASS__");
+
+    String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
+    String sCubeName = ElementParameterParser.getValue(node,"__CUBE__");
+    //String sCubeType = ElementParameterParser.getValue(node,"__CUBE_TYPE__");
+    String sCubeType = "CUBE_NORMAL";
+
+    List<Map<String, String>> tCubeRules = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CUBE_RULES__");
+    
+
+    String sDeploypalolibs = ElementParameterParser.getValue(node, "__DEPLOY_PALO_LIBS__");
+    boolean bDeploypalolibs=false;
+    if(sDeploypalolibs.equals("true"))bDeploypalolibs=true;
+
+%>
+
+org.talend.jpalo.palo p_<%=cid %> = null;
+org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
+
+<%
+if(useExistingConnection){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String p = "p_" + connection;
+	String pConn = "pConn_" + connection;
+
+%>
+	// Use Existing
+	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
+	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+<%
+}else{
+%>
+	// Initialize jpalo
+	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
+	// Open the connection
+	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+<%
+}
+%>
+
+
+org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
+
+if(pDB_<%=cid %> == null){
+	 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
+}
+
+
+org.talend.jpalo.palocubes pCBs_<%=cid %> = pDB_<%=cid %>.getCubes(org.talend.jpalo.palocubes.<%=sCubeType%>);
+org.talend.jpalo.palocube pCB_<%=cid %> = pCBs_<%=cid %>.getCube(<%=sCubeName%>);
+
+if(pCB_<%=cid %> == null){
+	 throw new RuntimeException ("Cube '" + <%=sCubeName%> + "' not found in database '" + <%=sDatabaseName%> + "'. exiting..." );
+}
+
+org.talend.jpalo.palorules pRLs_<%=cid %> = pCB_<%=cid %>.getCubeRules();
+
+<%
+
+int iNbOfCubeRules = tCubeRules.size();
+for(int i=0; i<iNbOfCubeRules; i++){
+	Map<String, String> CubeRules = tCubeRules.get(i);
+	String strRuleDefinition = CubeRules.get("RULE_DEFINITION");
+	String strRuleExtern_ID = CubeRules.get("RULE_EXTERN_ID");
+	String strRuleComment = CubeRules.get("RULE_COMMENT");
+	String strRuleAction = CubeRules.get("RULE_ACTION");
+	boolean bRuleActivate = "true".equals(CubeRules.get("RULE_ACTIVATE"));
+
+	if(("RULE_CREATE").equals(strRuleAction)){
+		if(null==strRuleExtern_ID || strRuleExtern_ID.length()<3 || strRuleExtern_ID.equals("\"\"")){
+%>
+		try{
+			pRLs_<%=cid %>.addRule(<%=strRuleDefinition%>, true, "tPaloRule_"+ pRLs_<%=cid %>.getNumberOfRules(),  <%=strRuleComment%>, <%=bRuleActivate%>);
+		}catch(PaloAPIException e){
+			System.err.println ("data manipulation failed: " + e.getLocalizedMessage());
+		}
+
+<%
+		}else{
+%>
+			// Check if Rule exists
+			if(null==pRLs_<%=cid %>.getRule(<%=strRuleExtern_ID%>))
+				pRLs_<%=cid %>.addRule(<%=strRuleDefinition%>, true, <%=strRuleExtern_ID%>,  <%=strRuleComment%>, <%=bRuleActivate%>);
+<%
+		}
+	}else if(("RULE_DELETE").equals(strRuleAction)){
+%>
+		pRLs_<%=cid %>.deleteRule(<%=strRuleExtern_ID%>);
+<%
+	}else if(("RULE_UPDATE").equals(strRuleAction)){
+%>
+		org.talend.jpalo.palorule pRL_<%=cid %> = pRLs_<%=cid %>.getRule(<%=strRuleExtern_ID%>);
+		if(null!=pRL_<%=cid%>){
+			pRL_<%=cid%>.setDefinition(<%=strRuleDefinition%>);
+			pRL_<%=cid%>.setComment(<%=strRuleComment%>);
+			pRL_<%=cid%>.setActivated(<%=bRuleActivate%>);
+			pRL_<%=cid%>.modifyRule();
+		}
+<%
+	}
+}
+%>
+
