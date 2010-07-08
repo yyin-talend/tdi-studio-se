@@ -111,7 +111,7 @@ public class ChangeReturnTypeOfServerAliveResult extends AbstractJobMigrationTas
                             Matcher match = PATTERN_GET.matcher(elemVal.getValue());
                             String replace = getReplaceValue(match);
                             if (replace != null && replace.length() > 0) {
-                                elemType.setValue(replace);
+                                elemVal.setValue(replace);
                                 modified = true;
                             }
                         }
