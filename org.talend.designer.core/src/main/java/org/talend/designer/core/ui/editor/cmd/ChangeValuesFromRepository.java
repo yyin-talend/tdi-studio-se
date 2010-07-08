@@ -273,6 +273,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                 }
                             }
+
                             IElementParameter elementParameter = null;
                             IElementParameter elementParameter2 = null;
                             if (EParameterName.DB_TYPE.getName().equals(param.getName())) {
@@ -284,6 +285,33 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 elementParameter2 = elem.getElementParameter(JobSettingsConstants
                                         .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
                             }
+                            String dbType = "";
+                            if (param.getValue() != null) {
+                                int indexOfItemFromList = param.getIndexOfItemFromList(param.getValue().toString());
+                                if (indexOfItemFromList != -1) {
+                                    dbType = param.getListItemsDisplayCodeName()[indexOfItemFromList];
+                                }
+                            }
+                            if (StatsAndLogsConstants.JDBC.equals(dbType)) {
+                                IElementParameter dbNameParm = elem.getElementParameter(EParameterName.DBNAME.getName());
+                                if (dbNameParm != null) {
+                                    dbNameParm.setValue("");
+                                }
+                            } else {
+                                IElementParameter rulParam = elem.getElementParameter(EParameterName.URL.getName());
+                                if (rulParam != null) {
+                                    rulParam.setValue("");
+                                }
+                                IElementParameter classParam = elem.getElementParameter(EParameterName.DRIVER_CLASS.getName());
+                                if (classParam != null) {
+                                    classParam.setValue("");
+                                }
+                                IElementParameter jarParam = elem.getElementParameter(EParameterName.DRIVER_JAR.getName());
+                                if (jarParam != null) {
+                                    jarParam.setValue(new ArrayList<Map<String, Object>>());
+                                }
+                            }
+
                             setDbVersion(elementParameter, dbVersion);
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)

@@ -283,7 +283,27 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                         return getRepositoryItemFromRepositoryName(param, repositoryName);
                     }
-                    return (String) param.getValue();
+                    if (param.getValue() instanceof String) {
+                        return (String) param.getValue();
+                    } else if (param.getValue() instanceof List) {
+                        // for jdbc parm driver jar
+                        String value = "";
+                        List list = (List) param.getValue();
+                        for (int i = 0; i < list.size(); i++) {
+                            Object object = list.get(i);
+                            if (object instanceof Map) {
+                                Map valueMap = (Map) object;
+                                if (valueMap.get("JAR_NAME") != null) {
+                                    if (value.equals("")) {
+                                        value = value + valueMap.get("JAR_NAME");
+                                    } else {
+                                        value = value + ";" + valueMap.get("JAR_NAME");
+                                    }
+                                }
+                            }
+                        }
+                        return value;
+                    }
                 }
             }
         }
@@ -305,7 +325,28 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                         return getRepositoryItemFromRepositoryName(param, repositoryName);
                     }
-                    return (String) param.getValue();
+                    if (param.getValue() instanceof String) {
+                        return (String) param.getValue();
+                    } else if (param.getValue() instanceof List) {
+                        // for jdbc parm driver jar
+                        String value = "";
+                        List list = (List) param.getValue();
+                        for (int i = 0; i < list.size(); i++) {
+                            Object object = list.get(i);
+                            if (object instanceof Map) {
+                                Map valueMap = (Map) object;
+                                if (valueMap.get("JAR_NAME") != null) {
+                                    if (value.equals("")) {
+                                        value = value + valueMap.get("JAR_NAME");
+                                    } else {
+                                        value = value + ";" + valueMap.get("JAR_NAME");
+                                    }
+                                }
+                            }
+                        }
+                        return value;
+                    }
+
                 }
             }
         }
@@ -329,7 +370,27 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     if (param.getName().contains(parameterName)) {
-                        return (String) param.getValue();
+                        if (param.getValue() instanceof String) {
+                            return (String) param.getValue();
+                        } else if (param.getValue() instanceof List) {
+                            // for jdbc parm driver jar
+                            String value = "";
+                            List list = (List) param.getValue();
+                            for (int i = 0; i < list.size(); i++) {
+                                Object object = list.get(i);
+                                if (object instanceof Map) {
+                                    Map valueMap = (Map) object;
+                                    if (valueMap.get("JAR_NAME") != null) {
+                                        if (value.equals("")) {
+                                            value = value + valueMap.get("JAR_NAME");
+                                        } else {
+                                            value = value + ";" + valueMap.get("JAR_NAME");
+                                        }
+                                    }
+                                }
+                            }
+                            return value;
+                        }
                     }
                 }
             }
@@ -1399,14 +1460,32 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private String fetchElementParameterValue(IElement elem, IContext context, String actualKey) {
         IElementParameter elemParam = elem.getElementParameter(actualKey);
         if (elemParam != null) {
-            String value = (String) elemParam.getValue();
-            if (value != null)
-                return ContextParameterUtils.parseScriptContextCode(value, context);
-            else
-                return ""; //$NON-NLS-1$
-        } else {
-            return ""; //$NON-NLS-1$
+            Object value = elemParam.getValue();
+
+            if (value instanceof String) {
+                return ContextParameterUtils.parseScriptContextCode((String) value, context);
+            } else if (value instanceof List) {
+                // for jdbc parm driver jars
+                String jarValues = "";
+                List list = (List) value;
+                for (int i = 0; i < list.size(); i++) {
+                    Object object = list.get(i);
+                    if (object instanceof Map) {
+                        Map valueMap = (Map) object;
+                        if (valueMap.get("JAR_NAME") != null) {
+                            if (jarValues.equals("")) {
+                                jarValues = jarValues + valueMap.get("JAR_NAME");
+                            } else {
+                                jarValues = jarValues + ";" + valueMap.get("JAR_NAME");
+                            }
+                        }
+                    }
+                }
+                return ContextParameterUtils.parseScriptContextCode(jarValues, context);
+            }
+
         }
+        return "";
     }
 
     Node connectionNode = null;

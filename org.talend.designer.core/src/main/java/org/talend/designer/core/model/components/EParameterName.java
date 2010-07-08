@@ -181,6 +181,16 @@ public enum EParameterName {
     SHARED_CONNECTION_NAME(Messages.getString("EParameterName.sharedConnectionName")), //$NON-NLS-1$
     SAP_FUNCTION(Messages.getString("EParameterName.FunName")), //$NON-NLS-1$
 
+    URL(Messages.getString("EParameterName.jdbcURL")), //$NON-NLS-1$
+    DRIVER_JAR(Messages.getString("EParameterName.driverJar")), //$NON-NLS-1$
+    DRIVER_CLASS(Messages.getString("EParameterName.className")), //$NON-NLS-1$
+    MAPPING_FILE(Messages.getString("EParameterName.mappingFile")), //$NON-NLS-1$
+
+    IMPLICITE_JDBC_URL(Messages.getString("EParameterName.jdbcURL")), //$NON-NLS-1$
+    IMPLICITE_DRIVER_JAR(Messages.getString("EParameterName.driverJar")), //$NON-NLS-1$
+    IMPLICITE_DRIVER_CLASS(Messages.getString("EParameterName.className")), //$NON-NLS-1$
+    IMPLICITE_MAPPING_FILE(Messages.getString("EParameterName.mappingFile")), //$NON-NLS-1$
+
     /**
      * For Job Settings extra parameters.
      */

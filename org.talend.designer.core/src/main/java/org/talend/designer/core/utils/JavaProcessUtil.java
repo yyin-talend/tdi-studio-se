@@ -85,6 +85,12 @@ public class JavaProcessUtil {
                 }
             }
         }
+
+        IElementParameter elementParameter = process.getElementParameter(EParameterName.DRIVER_JAR.getName());
+        if (elementParameter != null && elementParameter.getField() == EParameterFieldType.TABLE) {
+            getModulsInTable(process, elementParameter, neededLibraries);
+        }
+
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
@@ -100,26 +106,7 @@ public class JavaProcessUtil {
                         neededLibraries.add(getModuleValue(process, (String) curParam.getValue()));
                     }
                 } else if (curParam.getField() == EParameterFieldType.TABLE) {
-                    List<Map<String, Object>> values = (List<Map<String, Object>>) curParam.getValue();
-                    if (values != null && !values.isEmpty()) {
-                        Object[] listItemsValue = curParam.getListItemsValue();
-                        if (listItemsValue != null && listItemsValue.length > 0 && listItemsValue[0] instanceof IElementParameter) {
-                            for (Object o : listItemsValue) {
-                                IElementParameter param = (IElementParameter) o;
-                                if (param.getField() == EParameterFieldType.MODULE_LIST) {
-                                    for (Map<String, Object> line : values) {
-                                        String moduleName = (String) line.get(param.getName());
-                                        if (moduleName != null && !"".equals(moduleName)) {
-                                            moduleName = getModuleValue(process, moduleName);
-                                            if (!neededLibraries.contains(moduleName)) {
-                                                neededLibraries.add(moduleName);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    getModulsInTable(process, curParam, neededLibraries);
                 }
 
                 // see feature 4720 Add libraries for different version DB components and tMomInput components
@@ -163,6 +150,31 @@ public class JavaProcessUtil {
             }
         }
         return neededLibraries;
+
+    }
+
+    private static void getModulsInTable(final IProcess process, IElementParameter curParam, Set<String> neededLibraries) {
+
+        List<Map<String, Object>> values = (List<Map<String, Object>>) curParam.getValue();
+        if (values != null && !values.isEmpty()) {
+            Object[] listItemsValue = curParam.getListItemsValue();
+            if (listItemsValue != null && listItemsValue.length > 0 && listItemsValue[0] instanceof IElementParameter) {
+                for (Object o : listItemsValue) {
+                    IElementParameter param = (IElementParameter) o;
+                    if (param.getField() == EParameterFieldType.MODULE_LIST) {
+                        for (Map<String, Object> line : values) {
+                            String moduleName = (String) line.get(param.getName());
+                            if (moduleName != null && !"".equals(moduleName)) {
+                                moduleName = getModuleValue(process, moduleName);
+                                if (!neededLibraries.contains(moduleName)) {
+                                    neededLibraries.add(moduleName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     }
 

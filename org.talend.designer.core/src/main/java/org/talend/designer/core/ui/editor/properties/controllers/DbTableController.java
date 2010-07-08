@@ -60,6 +60,7 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -268,32 +269,35 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createOpenSQLCommand(Button button, IContextManager contextManager) {
         final Button btn = button;
 
-        SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-        DatabaseConnection connection = getExistConnection();
-        if (connection == null) {
-            initConnectionParameters();
-            connection = manager.createConnection(connParameters);
-        }
-        boolean isStatus = false;
-
-        if (connection != null) {
-            String contextId = connection.getContextId();
-            if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
-                IMetadataConnection metadataConnection = null;
-                metadataConnection = ConvertionHelper.convert(connection);
-                isStatus = checkConnection(metadataConnection, contextManager);
-            } else {
-                isStatus = true;
-            }
-        }
-
-        if (isStatus) {
-            if (!isUseExistingConnection()) {
-                initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
-            } else {
+        initConnectionParameters();
+        if (this.connParameters != null) {
+            if (isUseExistingConnection()) {
                 initConnectionParametersWithContext(connectionNode, contextManager.getDefaultContext());
+            } else {
+                initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
             }
-            openSQLBuilderWithParamer(button);
+
+            SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+            DatabaseConnection connection = getExistConnection();
+            if (connection == null) {
+                connection = manager.createConnection(connParameters);
+            }
+            boolean isStatus = false;
+
+            if (connection != null) {
+                String contextId = connection.getContextId();
+                if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
+                    IMetadataConnection metadataConnection = null;
+                    metadataConnection = ConvertionHelper.convert(connection);
+                    isStatus = checkConnection(metadataConnection);
+                } else {
+                    isStatus = true;
+                }
+            }
+
+            if (isStatus) {
+                openSQLBuilderWithParamer(button);
+            }
         } else {
             Display.getDefault().asyncExec(new Runnable() {
 
@@ -503,7 +507,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                     // for general jdbc, there will always no db name and data source as the label, So
                                     // ...
                                     if (connO.getLabel() == null || connO.getLabel().equals("")) { //$NON-NLS-1$
-                                        connO.setLabel(elem.getElementName());
+                                        if (elem instanceof INode) {
+                                            connO.setLabel(elem.getElementName());
+                                        } else {
+                                            connO.setLabel("tJDBCConnection");
+                                        }
                                     }
 
                                     connO.setType(ObjectType.DB);
