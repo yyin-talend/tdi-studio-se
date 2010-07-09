@@ -55,7 +55,7 @@
       />
       <IMPORT
         NAME="Log4j"
-        MODULE="log4j.jar"
+        MODULE="log4j-1.2.15.jar"
         REQUIRED="true"
       />
     </IMPORTS>
