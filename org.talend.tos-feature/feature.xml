@@ -87,7 +87,7 @@
       <import plugin="org.talend.commons.ui"/>
       <import plugin="org.talend.designer.core"/>
       <import plugin="org.eclipse.xsd"/>
-      <import plugin="org.apache.log4j-1.2.15"/>
+      <import plugin="org.apache.log4j"/>
       <import plugin="org.eclipse.datatools.enablement.oda.xml"/>
       <import plugin="org.talend.repository"/>
       <import plugin="org.talend.core"/>
