@@ -89,7 +89,7 @@
 			<IMPORT NAME="hapi_structures_V26" MODULE="hapi-structures-v26-1.0.1.jar" REQUIRED="true" />
 			<IMPORT NAME="jboss_j2ee" MODULE="jboss-j2ee-4.0.2.jar" REQUIRED="true" />
 			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" />
-			<IMPORT NAME="log4j" MODULE="log4j-1.2.9.jar" REQUIRED="true" />
+			<IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
 			<IMPORT NAME="XercesImpl" MODULE="xercesImpl-2.4.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
