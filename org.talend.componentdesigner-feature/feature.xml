@@ -29,7 +29,7 @@
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
       <import plugin="org.eclipse.datatools.connectivity.oda" version="3.0.1" match="greaterOrEqual"/>
-      <import plugin="org.apache.log4j" version="1.2.13" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.talend.libraries.apache"/>
       <import plugin="org.talend.libraries.jdbc.jtds"/>
@@ -438,7 +438,7 @@
          id="org.apache.log4j"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.15"
          unpack="false"/>
 
    <plugin
