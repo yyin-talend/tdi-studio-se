@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -123,8 +125,16 @@ public class OutputDataMapTableView extends DataMapTableView {
         }
         tableForMapSettingGridData.exclude = !mappingSettingVisible;
         mapSettingTable.setVisible(mappingSettingVisible);
+        mapSettingViewerCreator.getTableViewer().setSelection(null);
+        mapSettingTable.addFocusListener(new FocusListener() {
 
-        // mapSettingViewerCreator.setCellModifier(new TableCellModifier(mapSettingViewerCreator));
+            public void focusLost(FocusEvent e) {
+                mapSettingViewerCreator.getTableViewer().setSelection(null);
+            }
+
+            public void focusGained(FocusEvent e) {
+            }
+        });
 
     }
 

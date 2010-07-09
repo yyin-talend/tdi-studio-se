@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -165,7 +167,16 @@ public class InputDataMapTableView extends DataMapTableView {
         mapSettingTable.setVisible(mappingSettingVisible);
 
         mapSettingViewerCreator.setCellModifier(new TableCellModifier(mapSettingViewerCreator));
+        mapSettingViewerCreator.getTableViewer().setSelection(null);
+        mapSettingTable.addFocusListener(new FocusListener() {
 
+            public void focusLost(FocusEvent e) {
+                mapSettingViewerCreator.getTableViewer().setSelection(null);
+            }
+
+            public void focusGained(FocusEvent e) {
+            }
+        });
     }
 
     protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {

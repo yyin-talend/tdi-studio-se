@@ -1152,7 +1152,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             if (WindowSystem.isGTK()) {
                 mapSettingViewerCreator.layout();
             }
-
+            mapSettingViewerCreator.getTableViewer().setSelection(null);
         } else {
             tableForMapSettingGridData.exclude = true;
             mapSettingTable.setVisible(false);
