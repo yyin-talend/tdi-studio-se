@@ -224,7 +224,7 @@
        <IMPORT NAME="JBOSS MDR" MODULE="jboss-mdr.jar" REQUIRED="true" />
        <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
        <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
-       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" /> 
+       <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" REQUIRED="false" /> 
      </IMPORTS>
   </CODEGENERATION>
 
