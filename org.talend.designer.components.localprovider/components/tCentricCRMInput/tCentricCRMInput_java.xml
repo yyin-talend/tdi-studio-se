@@ -618,7 +618,7 @@
       <IMPORT NAME="Servlet-api" MODULE="servlet-api.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-darkhorseventures" MODULE="darkhorseventures.jar" REQUIRED="true" />
       <IMPORT NAME="CentricCRM-zeroio-iteam" MODULE="zeroio-iteam.jar" REQUIRED="true" />
-      <IMPORT NAME="Log4J" MODULE="log4j-1.2.9.jar" REQUIRED="true" />
+      <IMPORT NAME="Log4J" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    <RETURNS>
