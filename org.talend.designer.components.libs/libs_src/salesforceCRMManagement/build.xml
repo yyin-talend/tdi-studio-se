@@ -18,7 +18,7 @@
 		<pathelement location="${component.plugin.home}/tWebServiceInput/saaj.jar" />
 		<pathelement location="${component.plugin.home}/tWebServiceInput/jaxrpc.jar" />
 		<pathelement location="${component.plugin.home}/tXMLRPCInput/commons-logging-1.1.jar" />
-		<pathelement location="${component.plugin.home}/tCentricCRMInput/log4j-1.2.9.jar" />
+		<pathelement location="${component.plugin.home}/tCentricCRMInput/log4j-1.2.15.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputXML/dom4j-1.6.1.jar" />
 	</path>
 
