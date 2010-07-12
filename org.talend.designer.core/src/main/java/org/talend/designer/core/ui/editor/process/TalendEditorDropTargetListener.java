@@ -69,6 +69,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
@@ -128,6 +129,7 @@ import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
+import org.talend.repository.model.SAPIDocRepositoryObject;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
@@ -818,6 +820,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         command1.setSapFunctionLabel(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getLabel());
                     }
                 }
+                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_IDOC) {
+                    IRepositoryViewObject selectedObj = selectedNode.getObject();
+                    if (selectedObj instanceof SAPIDocRepositoryObject) {
+                        SAPIDocRepositoryObject sapObj = (SAPIDocRepositoryObject) selectedObj;
+                        command1.setSapIDocLabel(((SAPIDocUnit) sapObj.getAbstractMetadataObject()).getLabel());
+
+                    }
+                }
                 list.add(command1);
             }
 
@@ -1077,12 +1087,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     productNameWanted = "XMLOUTPUT";
                 }
             }
+            
             EmfComponent emfComponent = null;
             List<IComponent> neededComponents = new ArrayList<IComponent>();
             for (IComponent component : components) {
                 if (component instanceof EmfComponent) {
                     emfComponent = (EmfComponent) component;
                     String componentProductname = emfComponent.getRepositoryType();
+                    if (componentProductname != null && componentProductname.contains("SAP")) {
+                        componentProductname.toString();
+                    }
                     boolean value = true;
                     if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
                         if (emfComponent.getName().toUpperCase().endsWith("MAP")) {

@@ -47,6 +47,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -1260,6 +1261,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // add functions
             createSAPFunctionNodes(recBinNode, repObj, metadataConnection, functionNode);
 
+            RepositoryNode iDocNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.sapIDoc"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            node.getChildren().add(iDocNode);
+
+            // add functions
+            createSAPIDocNodes(recBinNode, repObj, metadataConnection, iDocNode);
+
         } else {
             createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
         }
@@ -1292,6 +1300,34 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     /**
+     * DOC zli Comment method "createSAPIDocNodes".
+     * 
+     * @param recBin
+     * @param rebObj
+     * @param metadataConnection
+     * @param iDocNode
+     */
+    private void createSAPIDocNodes(final RepositoryNode recBin, IRepositoryViewObject rebObj, Connection metadataConnection,
+            RepositoryNode iDocNode) {
+        EList iDocs = ((SAPConnection) metadataConnection).getIDocs();
+        if (iDocs == null || iDocs.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < iDocs.size(); i++) {
+            SAPIDocUnit unit = (SAPIDocUnit) iDocs.get(i);
+            RepositoryNode tableNode = createSAPNode(rebObj, iDocNode, unit);
+
+            // createTables(recBin, tableNode, rebObj, unit.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
+            if (SubItemHelper.isDeleted(unit)) {
+                recBin.getChildren().add(tableNode);
+            } else {
+                iDocNode.getChildren().add(tableNode);
+            }
+
+        }
+    }
+
+    /**
      * DOC YeXiaowei Comment method "createSAPNode".
      * 
      * @param rebObj
@@ -1305,6 +1341,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         RepositoryNode tableNode = new RepositoryNode(modelObj, functionNode, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAP_FUNCTION);
+        return tableNode;
+    }
+
+    private RepositoryNode createSAPNode(IRepositoryViewObject rebObj, RepositoryNode functionNode, SAPIDocUnit unit) {
+        SAPIDocRepositoryObject modelObj = new SAPIDocRepositoryObject(rebObj, functionNode, unit);
+        modelObj.setLabel(unit.getName());
+        RepositoryNode tableNode = new RepositoryNode(modelObj, functionNode, ENodeType.REPOSITORY_ELEMENT);
+        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
+        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAP_IDOC);
         return tableNode;
     }
 
@@ -1651,6 +1696,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_SAPCONNECTIONS:
             return this.metadataSAPConnectionNode;
         case METADATA_SAP_FUNCTION:
+            return this.metadataSAPConnectionNode;
+        case METADATA_SAP_IDOC:
             return this.metadataSAPConnectionNode;
         case METADATA_HEADER_FOOTER:
             return this.metadataHeaderFooterConnectionNode;

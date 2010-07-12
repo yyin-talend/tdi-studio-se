@@ -116,6 +116,7 @@ public enum EDatabaseComponentName {
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     FILEXMLOUTPUT(XmlFileConnectionItem.class, (String) null, "tAdvancedFileOutputXML", "XMLOUTPUT"), //$NON-NLS-1$ //$NON-NLS-2$
     SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    SAPIDOC(SAPConnectionItem.class, "tSAPIDocInput", "tSAPIDocOutput", "SAPIDOC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"), //$NON-NLS-1$
 
     FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -283,6 +284,9 @@ public enum EDatabaseComponentName {
                 }
             }
             return null;
+        } else if (type == ERepositoryObjectType.METADATA_SAP_IDOC) {
+            return EDatabaseComponentName.SAPIDOC;
+
         } else {
             return getCorrespondingComponentName(item, true);
         }

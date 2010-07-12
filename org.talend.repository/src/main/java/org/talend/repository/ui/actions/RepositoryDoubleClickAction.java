@@ -39,6 +39,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
+import org.talend.repository.model.SAPIDocRepositoryObject;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -174,7 +175,7 @@ public class RepositoryDoubleClickAction extends Action {
         if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
             node = node.getParent();
             nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            if (nodeType == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+            if (nodeType == ERepositoryObjectType.METADATA_SAP_FUNCTION || nodeType == ERepositoryObjectType.METADATA_SAP_IDOC) {
                 return true;
             }
         }
@@ -235,9 +236,15 @@ public class RepositoryDoubleClickAction extends Action {
                 return null; // for cdc system table
                 // end
             } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_SAP_FUNCTION)) {
-                if (current.getClassForDoubleClick().equals(SAPFunctionRepositoryObject.class)) {
+                if (current.getClassForDoubleClick().equals(SAPFunctionRepositoryObject.class)
+                        || current.getClassForDoubleClick().equals(SAPIDocRepositoryObject.class)) {
                     return current;
                 }
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_SAP_IDOC)) {
+                if (current.getClassForDoubleClick().equals(SAPIDocRepositoryObject.class)) {
+                    return current;
+                }
+
             } else if (obj.getObject() != null
                     && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
                 if (obj.getObject().getProperty().getItem() instanceof JobletProcessItem) {

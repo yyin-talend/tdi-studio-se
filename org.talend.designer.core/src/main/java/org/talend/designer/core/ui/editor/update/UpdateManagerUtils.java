@@ -354,6 +354,7 @@ public final class UpdateManagerUtils {
             case NODE_PROPERTY:
             case NODE_SCHEMA:
             case NODE_QUERY:
+            case NODE_SAP_IDOC:
             case NODE_SAP_FUNCTION:
                 command = new UpdateNodeParameterCommand(result);
                 break;

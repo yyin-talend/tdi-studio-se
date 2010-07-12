@@ -116,6 +116,7 @@ public class DuplicateAction extends AContextualAction {
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_VIEW
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_SYNONYM
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_IDOC
                             || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.MDM_CONCEPT) {
                         canWork = false;
                     }

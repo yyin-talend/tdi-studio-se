@@ -17,16 +17,202 @@ import java.util.Map;
 
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.SAPConnectionUtils;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment
  */
 public final class SAPParametersUtils {
+
+    /**
+     * DOC zli Comment method "getSAPIDocParams".
+     * 
+     * @param elem
+     * @param connection
+     * @param param
+     * @param sapIDocName
+     */
+    public static void getSAPIDocParams(final Element elem, final Connection connection, final IElementParameter param,
+            final String sapIDocName) {
+
+        if (param.getRepositoryValue() == null) {
+            return;
+        }
+        if (connection != null && sapIDocName != null) {
+            SAPConnection sapConnection = (SAPConnection) connection;
+            SAPIDocUnit iDocUnit = SAPConnectionUtils.findExistIDocUnit(sapConnection, sapIDocName);
+            if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(TalendTextUtils.addQuotes(iDocUnit.getGatewayService()));
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(TalendTextUtils.addQuotes(iDocUnit.getProgramId()));
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(iDocUnit.isUseXmlOutput());
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(TalendTextUtils.addQuotes(iDocUnit.getXmlFile()));
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(iDocUnit.isUseHtmlOutput());
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
+                if (iDocUnit != null) {
+                    param.setValue(TalendTextUtils.addQuotes(iDocUnit.getHtmlFile()));
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                } else {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC zli Comment method "retrieveSAPIDocParams".
+     * 
+     * @param elem
+     * @param connection
+     * @param param
+     * @param sapFunctionName
+     */
+    public static void retrieveSAPIDocParams(final Element elem, final Connection connection, final IElementParameter param,
+            final String sapFunctionName) {
+        if (param.getRepositoryValue() == null) {
+            return;
+        }
+        SAPIDocUnit iDocUnit = null;
+        if (connection != null && sapFunctionName != null) {
+            SAPConnection sapConnection = (SAPConnection) connection;
+            iDocUnit = SAPConnectionUtils.findExistIDocUnit(sapConnection, sapFunctionName);
+        }
+        if (param.getRepositoryValue().equals("SAPIDOC")) { //$NON-NLS-1$
+            if (connection != null && sapFunctionName != null) {
+                param.setValue(TalendTextUtils.addQuotes(sapFunctionName));
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(TalendTextUtils.addQuotes(iDocUnit.getGatewayService()));
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(TalendTextUtils.addQuotes(iDocUnit.getProgramId()));
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(iDocUnit.isUseXmlOutput());
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(TalendTextUtils.addQuotes(iDocUnit.getXmlFile()));
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(iDocUnit.isUseHtmlOutput());
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+        if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
+            if (iDocUnit != null) {
+                param.setValue(TalendTextUtils.addQuotes(iDocUnit.getHtmlFile()));
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            } else {
+                param.setRepositoryValueUsed(false);
+                param.setReadOnly(false);
+            }
+        }
+
+    }
+
+    public static void setNoRepositoryIDocParams(final IElementParameter param) {
+        if (param == null) {
+            return;
+        }
+        if ((param.getField().equals(EParameterFieldType.TEXT) && param.getName().equals("GATEWAYSERVICE")) //$NON-NLS-1$
+                || (param.getField().equals(EParameterFieldType.TEXT) && param.getName().equals("PROGRAMID")) //$NON-NLS-1$
+                || (param.getField().equals(EParameterFieldType.CHECK) && (param.getName().equals("FORMAT_XML"))) || (param.getField().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_XML")) //$NON-NLS-1$ //$NON-NLS-2$
+                || (param.getField().equals(EParameterFieldType.CHECK) && param.getName().equals("FORMAT_HTML")) || (param.getField().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_HTML"))) { //$NON-NLS-1$
+            param.setRepositoryValueUsed(false);
+            param.setReadOnly(false);
+        }
+    }
 
     /**
      * DOC xye Comment method "retrieveSAPParams".

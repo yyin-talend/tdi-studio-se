@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
@@ -94,6 +95,9 @@ public class UpdateNodeParameterCommand extends Command {
         case NODE_SAP_FUNCTION:
             updateSAPParameters();
             break;
+        case NODE_SAP_IDOC:
+            updateSAPIDocParameters();
+            break;
         default:
             return;
         }
@@ -106,6 +110,35 @@ public class UpdateNodeParameterCommand extends Command {
                 ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
             }
         }
+    }
+
+    private void updateSAPIDocParameters() {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
+        }
+        boolean builtin = true;
+        if (updateObject instanceof Node) {
+            Node node = (Node) updateObject;
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                if (result.isChecked()) {
+                    if (result.getParameter() instanceof SAPIDocUnit) {
+                        SAPIDocUnit unit = (SAPIDocUnit) result.getParameter();
+                        for (IElementParameter param : node.getElementParameters()) {
+                            SAPParametersUtils.getSAPIDocParams(node, unit.getConnection(), param, unit.getName());
+                        }
+                        builtin = false;
+                    }
+                }
+            }
+            if (builtin) { // built-in
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                for (IElementParameter param : node.getElementParameters()) {
+                    SAPParametersUtils.setNoRepositoryIDocParams(param);
+                }
+            }
+        }
+
     }
 
     /**

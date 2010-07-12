@@ -133,6 +133,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
             case METADATA_CON_CDC:
+            case METADATA_SAP_IDOC:
             case METADATA_SAP_FUNCTION:
                 String label = object.getLabel();
                 if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {

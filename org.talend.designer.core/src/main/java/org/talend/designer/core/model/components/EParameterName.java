@@ -180,6 +180,7 @@ public enum EParameterName {
     USE_SHARED_CONNECTION(Messages.getString("EParameterName.useSharedConnection")), //$NON-NLS-1$
     SHARED_CONNECTION_NAME(Messages.getString("EParameterName.sharedConnectionName")), //$NON-NLS-1$
     SAP_FUNCTION(Messages.getString("EParameterName.FunName")), //$NON-NLS-1$
+    SAP_IDOC(Messages.getString("EParameterName.IDocName")), //$NON-NLS-1$
 
     URL(Messages.getString("EParameterName.jdbcURL")), //$NON-NLS-1$
     DRIVER_JAR(Messages.getString("EParameterName.driverJar")), //$NON-NLS-1$

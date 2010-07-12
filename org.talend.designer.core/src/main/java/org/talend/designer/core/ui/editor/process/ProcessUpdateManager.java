@@ -43,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -714,12 +715,103 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             case NODE_SAP_FUNCTION:
                 nodesResults.addAll(checkNodeSAPFunctionFromRepository(node, onlySimpleShow));
                 break;
+            case NODE_SAP_IDOC:
+                nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
+                break;
             default:
                 return Collections.emptyList();
             }
         }
         getSchemaRenamedMap().clear();
         return nodesResults;
+    }
+
+    private List<UpdateResult> checkNodeSAPIDocFromRepository(final Node node, boolean onlySimpleShow) {
+        if (node == null) {
+            return Collections.emptyList();
+        }
+        List<UpdateResult> updateResults = new ArrayList<UpdateResult>();
+        String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        if (propertyType != null) {
+            if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
+                ConnectionItem connectionItem = null;
+                connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(propertyValue);
+
+                // IRepositoryViewObject footerLastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String)
+                // footerIDParameter
+                // .getValue());
+                // HeaderFooterConnection footerRepositoryConnection = null;
+                // String footerSource = null;
+                // if (footerLastVersion != null) {
+                // Item item = footerLastVersion.getProperty().getItem();
+                // if (item != null && item instanceof ConnectionItem) {
+                // footerSource = UpdateRepositoryUtils.getRepositorySourceName(item);
+
+                if (connectionItem != null) {
+                    boolean same = true;
+                    IElementParameter sapNodeParam = node.getElementParameter("LABEL"); //$NON-NLS-1$
+
+                    if (sapNodeParam == null) {
+                        return updateResults;
+                    }
+
+                    String iDocName = TalendTextUtils.removeQuotes((String) sapNodeParam.getValue());
+                    SAPConnection connection = (SAPConnection) connectionItem.getConnection();
+                    SAPIDocUnit iDocUnit = SAPConnectionUtils.findExistIDocUnit(connection, iDocName);
+                    if (iDocUnit == null) {
+                        for (IElementParameter param : node.getElementParameters()) {
+                            SAPParametersUtils.setNoRepositoryParams(param);
+                        }
+                        return updateResults;
+                    }
+                    String gatewayService = (String) node.getElementParameter("GATEWAYSERVICE").getValue();
+                    gatewayService = TalendTextUtils.removeQuotes(gatewayService);
+                    String programId = (String) node.getElementParameter("PROGRAMID").getValue();
+                    programId = TalendTextUtils.removeQuotes(programId);
+                    Boolean formatXml = (Boolean) node.getElementParameter("FORMAT_XML").getValue();
+                    Boolean formatHtml = (Boolean) node.getElementParameter("FORMAT_HTML").getValue();
+                    String fileXml = (String) node.getElementParameter("FILE_IDOC_XML").getValue();
+                    fileXml = TalendTextUtils.removeQuotes(fileXml);
+                    String fileHtml = (String) node.getElementParameter("FILE_IDOC_HTML").getValue();
+                    fileHtml = TalendTextUtils.removeQuotes(fileHtml);
+                    if (!((gatewayService == null && iDocUnit.getGatewayService() == null) || (gatewayService != null && gatewayService
+                            .equals(iDocUnit.getGatewayService())))) {
+                        same = false;
+                    }
+                    if (!((programId == null && iDocUnit.getProgramId() == null) || (programId != null && programId
+                            .equals(iDocUnit.getProgramId())))) {
+                        same = false;
+                    }
+                    if (!((formatXml && iDocUnit.isUseXmlOutput()) || (!formatXml && !iDocUnit.isUseXmlOutput()))) {
+                        same = false;
+                    }
+                    if (!((formatHtml && iDocUnit.isUseHtmlOutput()) || (!formatHtml && !iDocUnit.isUseHtmlOutput()))) {
+                        same = false;
+                    }
+
+                    if (!((fileXml == null && iDocUnit.getXmlFile() == null) || (fileXml != null && fileXml.equals(iDocUnit
+                            .getXmlFile())))) {
+                        same = false;
+                    }
+                    if (!((fileHtml == null && iDocUnit.getHtmlFile() == null) || (fileHtml != null && fileHtml.equals(iDocUnit
+                            .getHtmlFile())))) {
+                        same = false;
+                    }
+
+                    if (!same || onlySimpleShow) {
+                        String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                        UpdateCheckResult result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_SAP_IDOC, EUpdateResult.UPDATE, iDocUnit, source);
+                        setConfigrationForReadOnlyJob(result);
+                        updateResults.add(result);
+                    }
+                }
+
+            }
+        }
+        return updateResults;
     }
 
     /**
@@ -1753,6 +1845,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case NODE_PROPERTY:
         case NODE_SCHEMA:
         case NODE_QUERY:
+        case NODE_SAP_IDOC:
         case NODE_SAP_FUNCTION:
             tmpResults = checkNodesParameters(type, onlySimpleShow);
             break;

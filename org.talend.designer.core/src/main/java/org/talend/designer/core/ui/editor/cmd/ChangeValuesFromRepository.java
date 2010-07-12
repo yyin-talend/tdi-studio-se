@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
@@ -84,6 +85,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     // use for SAP
     private String sapFunctionLabel = null;
+
+    private String sapIDocLabel = null;
 
     // for jobtemplate plugin(true, bug 5198)
     private boolean ignoreContextMode = false;
@@ -385,7 +388,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         param.setRepositoryValueUsed(true);
                     } else {
                         // For SAP
-                        SAPParametersUtils.retrieveSAPParams(elem, connection, param, getSapFunctionLabel());
+                        String paramName = param.getName();
+                        if ("INPUT_PARAMS".equals(paramName) || "SAP_FUNCTION".equals(paramName)
+                                || "OUTPUT_PARAMS".equals(paramName) || "SAP_ITERATE_OUT_TYPE".equals(paramName)
+                                || "SAP_ITERATE_OUT_TABLENAME".equals(paramName)) {
+                            SAPParametersUtils.retrieveSAPParams(elem, connection, param, getSapFunctionLabel());
+                        }
+                        if ("GATEWAYSERVICE".equals(paramName) || "PROGRAMID".equals(paramName) || "FORMAT_XML".equals(paramName)
+                                || "FILE_IDOC_XML".equals(paramName) || "FORMAT_HTML".equals(paramName)
+                                || "FILE_IDOC_HTML".equals(paramName)) {
+                            SAPParametersUtils.getSAPIDocParams(elem, connection, param, getSapIDocLabel());
+                        }
                     }
 
                     if (param.isRepositoryValueUsed()) {
@@ -812,6 +825,29 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      */
     public void setSapFunctionLabel(String sapFunctionName) {
         this.sapFunctionLabel = sapFunctionName;
+    }
+
+    public String getSapIDocLabel() {
+        // Use the first function
+        if (this.sapIDocLabel == null) {
+
+            if (connection == null) {
+                return null;
+            }
+
+            if (!(connection instanceof SAPConnection)) {
+                return null;
+            }
+            SAPConnection sapConn = (SAPConnection) connection;
+            if (sapConn.getIDocs() != null && !sapConn.getIDocs().isEmpty()) {
+                return ((SAPIDocUnit) sapConn.getIDocs().get(0)).getName();
+            }
+        }
+        return this.sapIDocLabel;
+    }
+
+    public void setSapIDocLabel(String sapIDocLabel) {
+        this.sapIDocLabel = sapIDocLabel;
     }
 
     public boolean isIgnoreContextMode() {
