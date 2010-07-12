@@ -43,6 +43,7 @@
 				String rowsBufferSize = null;
 				IHashConfiguration hashConfiguration = null;				
 				String matchingModeStr = null;
+				boolean bSortOnDisk = "true".equals(ElementParameterParser.getValue(node, "__SORT_ON_DISK__")); 
 				
 			    if (validTarget instanceof IHashableInputConnections){
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
@@ -50,6 +51,8 @@
 				} else{
 				    List<java.util.Map<String, String>> listBlockings = (List<java.util.Map<String, String>>)ElementParameterParser.getObjectValue(node, "__BLOCKING_DEFINITION__");
 				  	matchingModeStr = (listBlockings == null || listBlockings.size() == 0) ? "ALL_ROWS" : "ALL_MATCHES";
+                    tempFolder = ElementParameterParser.getValue(node, "__TMP_DIRECTORY__");
+				  	rowsBufferSize = ElementParameterParser.getValue(node, "__ROWS_BUFFER_SIZE__");
 				}
 
 					if(hashConfiguration == null) {
@@ -82,7 +85,7 @@
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   
 			   <%
-				if (hashConfiguration != null && hashConfiguration.isPersistent()) {
+				if (hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk) {
 				%>
 					org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   					new org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_Lookup_<%=connectionName%>_"
