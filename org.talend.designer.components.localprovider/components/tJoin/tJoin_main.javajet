@@ -7,6 +7,7 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
 		java.util.List
 		java.util.Map
 "
@@ -55,12 +56,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
         boolean useLookup = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOOKUP_COLS__"));
         boolean useReject = ("true").equals(ElementParameterParser.getValue(node, "__USE_INNER_JOIN__"));
         
-    	List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+    	List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
 		List<? extends IConnection> connsFilter = node.getOutgoingConnections("FLOW");
 		List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
     	
     	for (IConnection conn : outConns) {
     		if(!conn.isActivate()) continue;
+    		if(!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) continue;
     		String outputConnName = conn.getName();    		
 %>
 	<%=outputConnName %> = null;	
@@ -69,6 +71,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 if(inRefCon != null){//exist lookup		    	
     	for (IConnection conn : outConns) {
     		if(!conn.isActivate()) continue;
+    		if(!conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) continue;
     		String outputConnName = conn.getName();
 %>
 	
