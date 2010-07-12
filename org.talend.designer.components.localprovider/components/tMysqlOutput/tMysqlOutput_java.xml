@@ -369,7 +369,7 @@
   	  NAME="ON_DUPLICATE_KEY_UPDATE" 
   	  FIELD="CHECK"
 	  NUM_ROW="20"
-	  SHOW_IF="(DATA_ACTION == 'INSERT') AND (EXTENDINSERT =='true')"
+	  SHOW_IF="(DATA_ACTION == 'INSERT')"
 	  >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER> 
@@ -381,7 +381,7 @@
       REQUIRED="false" 
       NUM_ROW="20"
       NB_LINES="2"
-	  SHOW_IF="(DATA_ACTION == 'INSERT') AND (EXTENDINSERT =='true') AND (ON_DUPLICATE_KEY_UPDATE == 'true') "
+	  SHOW_IF="(DATA_ACTION == 'INSERT') AND (ON_DUPLICATE_KEY_UPDATE == 'true') "
     >
       <ITEMS>
         <ITEM NAME="DUPLICATED_KEY" VALUE='"colname"'/>

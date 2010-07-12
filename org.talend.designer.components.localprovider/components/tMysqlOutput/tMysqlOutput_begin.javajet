@@ -250,10 +250,42 @@ if(columnList != null && columnList.size() > 0) {
     boolean supportDuplicateUpdate = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__ON_DUPLICATE_KEY_UPDATE__"));
     
 	if(("INSERT").equals(dataAction)) {
-	    if(!extendedInsert) {
-	        %>
-	        String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-	        <%@ include file="../templates/_hintInsert.javajet" %>
+	
+		if (supportDuplicateUpdate) {
+			List<Map<String, String>> duplicateKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue( node,"__DUPLICATED_KEYS__" );
+			          			
+			if (duplicateKeys.size() > 0) {
+			%>
+			StringBuffer duplidateClause_<%=cid%> = new StringBuffer(" ON DUPLICATE KEY UPDATE ");	
+				<%
+				for (int i=0; i< duplicateKeys.size() ; i++) {
+					if (i >0) {
+					%>
+						duplidateClause_<%=cid%>.append(",");
+					<%
+					}
+					%>						
+						duplidateClause_<%=cid%>.append ("`" +  <%=duplicateKeys.get(i).get("DUPLICATED_KEY")%> + "`");
+						duplidateClause_<%=cid%>.append ("=");
+						duplidateClause_<%=cid%>.append (<%=duplicateKeys.get(i).get("DUPLICATED_VALUE")%>);
+				<%
+				}
+			}
+		}
+%>
+				       
+<%				       
+		    if(!extendedInsert) {
+		        %>
+		        String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+<%	
+				if (supportDuplicateUpdate) {
+%>            
+				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+<%	
+				}
+%>
+				<%@ include file="../templates/_hintInsert.javajet" %>
 
                 <%
                 //to fixed: bug8422
@@ -333,39 +365,15 @@ if(columnList != null && columnList.size() > 0) {
                 }
                
 
-				String insert_<%=cid%> = "INSERT INTO `"+<%=table%>+"` (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();	            
-			    <%if (supportDuplicateUpdate) {
-			    %>
-			    <%
-			    List<Map<String, String>> duplicateKeys =
-			      			(List<Map<String,String>>)ElementParameterParser.getObjectValue(
-			          			node,"__DUPLICATED_KEYS__" );
-			          			
-					if (duplicateKeys.size() > 0) {
-					%>
-					insert_<%=cid%> += " ON DUPLICATE KEY UPDATE ";
-					StringBuffer duplidateClause_<%=cid%> = new StringBuffer("");	
-					<%
-					for (int i=0; i< duplicateKeys.size() ; i++) {
-						if (i >0) {
-						%>
-							duplidateClause_<%=cid%>.append(",");
-						<%
-						}
-						%>						
-						duplidateClause_<%=cid%>.append ("`" +  <%=duplicateKeys.get(i).get("DUPLICATED_KEY")%> + "`");
-						duplidateClause_<%=cid%>.append ("=");
-						duplidateClause_<%=cid%>.append (<%=duplicateKeys.get(i).get("DUPLICATED_VALUE")%>);
-						<%
-					}
-					%>
-					insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();				
-				<%
+				String insert_<%=cid%> = "INSERT INTO `"+<%=table%>+"` (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+<%	
+				if (supportDuplicateUpdate) {
+%>            
+				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+<%	
 				}
-			        %>	            
-			        <%
-			       }%>
-					<%@ include file="../templates/_hintInsert.javajet" %>
+%>
+				<%@ include file="../templates/_hintInsert.javajet" %>
 	            java.sql.PreparedStatement pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	            
 	            String insertColName<%=cid%> = "<%=insertColName.toString()%>";
@@ -375,6 +383,13 @@ if(columnList != null && columnList.size() > 0) {
 			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
 %>
 				String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+<%	
+				if (supportDuplicateUpdate) {
+%>            
+				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+<%	
+				}
+%>
 		        int batchSize_<%=cid%> = <%=numPerInsert%>;
 	   			int batchSizeCounter_<%=cid%>=0;
 		        <%@ include file="../templates/_hintInsert.javajet" %>
