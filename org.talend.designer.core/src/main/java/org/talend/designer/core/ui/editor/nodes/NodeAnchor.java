@@ -99,11 +99,6 @@ public class NodeAnchor extends ChopboxAnchor {
 
             sourceRect = new Rectangle(sourceLocation, source.getSize());
             targetRect = new Rectangle(targetLocation, target.getSize());
-
-            sourceLocation = sourceLocation.getTranslated(diff);
-            targetLocation = targetLocation.getTranslated(diff);
-            sourceRect = sourceRect.getTranslated(diff);
-            targetRect = targetRect.getTranslated(diff);
             if (pane != null) {
                 double scale = pane.getScale();
                 sourceLocation.performScale(scale);
@@ -111,6 +106,10 @@ public class NodeAnchor extends ChopboxAnchor {
                 sourceRect.performScale(scale);
                 targetRect.performScale(scale);
             }
+            sourceLocation = sourceLocation.getTranslated(diff);
+            targetLocation = targetLocation.getTranslated(diff);
+            sourceRect = sourceRect.getTranslated(diff);
+            targetRect = targetRect.getTranslated(diff);
 
             int nb = 0;
             int connectionId = 0;
