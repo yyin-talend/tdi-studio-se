@@ -116,11 +116,17 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			<%
 			for (IConnection connection : allSubProcessConnection) {
         		IMetadataTable table = connection.getMetadataTable();
-				List<IMetadataColumn> listColumns = table.getListColumns();
-            	for (IMetadataColumn column : listColumns) {
-					%>this.<%= connection.getName() %>.<%= column.getLabel() %> = <%= connection.getName() %>.<%= column.getLabel() %>;
-	            	<%
+        		%>
+        		if(<%= connection.getName() %> != null){
+            		<%
+    				List<IMetadataColumn> listColumns = table.getListColumns();
+                	for (IMetadataColumn column : listColumns) {
+    					%>this.<%= connection.getName() %>.<%= column.getLabel() %> = <%= connection.getName() %>.<%= column.getLabel() %>;
+    	            	<%
+            		}
+            		%>
         		}
+        		<%
 			} 
 			%>
 			synchronized (<%=process.getName()%>.this.obj) {
