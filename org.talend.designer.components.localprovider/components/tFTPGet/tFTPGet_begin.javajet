@@ -258,11 +258,18 @@ if(sftp){ // *** sftp *** //
                 com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
             ftpClient.chdir(remoteDirectory);
             String path = ftpClient.pwd();
-            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
-            //use dir() for Bug9562 with FTP server in AS400
-            String[] ftpFileNames = ftpClient.dir(".");
+            String[] ftpFileNames = null;
+            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = null;
+            try{
+	            //use dir() for Bug9562 with FTP server in AS400
+	            ftpFileNames = ftpClient.dir(null, false);
+	        //Bug 13272, the same as getFiles().
+	        }catch(com.enterprisedt.net.ftp.FTPException e){
+	        	ftpFileNames = null;
+            	ftpFiles = ftpClient.dirDetails(".");
+	        }
             //if dirDetails(...) doesn't work, then use dir(...), distinguish file type by FTPException
-            if((ftpFiles.length == 0) && (ftpFileNames.length != 0)){
+            if((ftpFiles == null) && (ftpFileNames != null)){
             	//if the file is folder, catch the FTPException and recur
             	for(String ftpFileName : ftpFileNames){
             		try{
@@ -297,11 +304,18 @@ if(sftp){ // *** sftp *** //
         public void getFiles(String remoteDirectory, String localDirectory, String maskStr) throws java.io.IOException,
                 com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
             ftpClient.chdir(remoteDirectory);
-            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
-            //use dir() for Bug9562 with FTP server in AS400 (the same way as getAllFiles())
-            String[] ftpFileNames = ftpClient.dir(".");
+            String[] ftpFileNames = null;
+            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = null;
+            try{
+	            //use dir() for Bug9562 with FTP server in AS400 (the same way as getAllFiles())
+            	ftpFileNames = ftpClient.dir(null, false);
+            //Bug 13272, if dir() throw exception, use dirDetails().
+            }catch(com.enterprisedt.net.ftp.FTPException e){
+            	ftpFileNames = null;
+	            ftpFiles = ftpClient.dirDetails(".");
+            }
             //if dirDetails(...) doesn't work, then use dir(...), but can not distinguish file type
-            if((ftpFiles.length == 0) && (ftpFileNames.length != 0)){
+            if((ftpFiles == null) && (ftpFileNames != null)){
 	            for (String ftpFileName : ftpFileNames) {
                     if (ftpFileName.matches(maskStr)) {
                         downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
@@ -310,8 +324,9 @@ if(sftp){ // *** sftp *** //
             }else{
 	            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
 	                if (!ftpFile.isDir() && !ftpFile.isLink()) {
-	                    if (ftpFile.getName().matches(maskStr)) {
-	                        downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+	                	String fileName = ftpFile.getName();
+	                    if (fileName.matches(maskStr)) {
+	                        downloadFile(localDirectory + "/" + fileName,fileName);
 	                    }
 	                }
 	            }
