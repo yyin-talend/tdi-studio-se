@@ -71,10 +71,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 		
 		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
-		
-		if(uncompress){
 %>
 int nb_line_<%=cid%> = 0;
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
+try{
+<%
+		if(uncompress){
+%>
 
 Object filename_<%=cid %> = <%=filename %>;	
 java.util.zip.ZipInputStream zis_<%=cid %> = null;
@@ -84,7 +87,6 @@ if(filename_<%=cid %> instanceof java.io.InputStream){
 	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
 }
 java.util.zip.ZipEntry entry_<%=cid %> = null;
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
 
 while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
 	if(entry_<%=cid %>.isDirectory()){ //directory
@@ -94,7 +96,7 @@ while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
 <%
 		}else{
 %>
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = 
+fid_<%=cid %> = 
 	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 <%
 		}
@@ -387,6 +389,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		Object filename_<%=cid %> = <%=filename %>;		
 		com.csvreader.CsvReader csvReader<%=cid %> = null;
 
+		try{
 <%
 		if(uncompress){
 %>
