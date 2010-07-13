@@ -219,6 +219,11 @@ do {
 							<%=conn.getName() %>.<%=column.getLabel() %> = (byte[])attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>").get();
 <%
 						}else{
+							if("dn".equals(column.getLabel().toLowerCase())){
+%>
+								<%=conn.getName()%>.<%=column.getLabel()%> = ("".equals(sr_<%=cid%>.getName())?sr_<%=cid%>.getName():(sr_<%=cid%>.getName()+ ",")) + <%=baseDN%>;
+<%
+							}else{
 %>
 			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>");
 			if(attr_<%=column.getLabel()%>_<%=cid%> != null){
@@ -235,6 +240,7 @@ do {
 			}
 			
 <%
+							}
 						}
                 	}//5
 %>
