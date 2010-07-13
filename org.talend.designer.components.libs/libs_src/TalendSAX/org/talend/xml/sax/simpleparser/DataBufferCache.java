@@ -65,6 +65,9 @@ public class DataBufferCache {
 
     public boolean hasData() {
         getCurrReadBuffer();
+        if (currentReadBuff == null) {
+            return false;
+        }
         return this.currentReadBuff.hasNext();
     }
 

@@ -128,23 +128,19 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
             long startall = Runtime.getRuntime().maxMemory();
             long timeStart = System.currentTimeMillis();
 
-            String file = "./libs_src/TalendSAX/org/talend/xml/sax/dol_login.xml";
+            String file = "C:/Documents and Settings/Administrator/桌面/in.xml";
             // String file = "D:/test/outMain.xml";
-            String[] query = new String[] { "@swid", "@login_date", "@login_type_name", "@affiliate_id" };
+            String[] query = new String[] { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" };
             boolean[] asXMLs = new boolean[] { false, false, false, false };
-            String loopPath = "/Table/Row";
+            String loopPath = "/orderdata/order/header";
 
             SimpleSAXLooper looper = new SimpleSAXLooper(loopPath, query, asXMLs);
-            looper.parse(file, "UTF-8");
-            DataBufferCache cache = DataBufferCache.getInstance();
+            looper.parse(file, "ISO-8859-15");
+            Iterator<Map<String, String>> iter = looper.iterator();
             long num = 0;
-            while (cache.hasData()) {
-                num++;
-                Map<String, String> map = cache.readData();
-                for (int i = 0; i < query.length; i++) {
-                    System.out.print(map.get(query[i]) + "#");
-                }
-                System.out.println();
+            while (iter.hasNext()) {
+                Map<String, String> map = iter.next();
+                System.out.println(map.get("cust-vendor-num") + "\t" + map.get("cust"));
             }
 
             System.out.println("==Taltal==" + num);

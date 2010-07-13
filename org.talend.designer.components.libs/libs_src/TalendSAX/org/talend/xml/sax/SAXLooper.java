@@ -71,11 +71,11 @@ public class SAXLooper {
     }
 
     private void judgeIsSimple() {
-        if (this.loopPath.indexOf("..") >= 0 || this.loopPath.indexOf("*") >= 0 || this.loopPath.indexOf(".")>=0) {
+        if (this.loopPath.indexOf("..") >= 0 || this.loopPath.indexOf("*") >= 0) {
             this.isSimpleParse = false;
         }
         for (int i = 0; i < nodePaths.length; i++) {
-            if (nodePaths[i].indexOf("..") >= 0 || nodePaths[i].indexOf("*") >= 0  || nodePaths[i].indexOf(".")>=0) {
+            if (nodePaths[i].indexOf("..") >= 0 || nodePaths[i].indexOf("*") >= 0) {
                 this.isSimpleParse = false;
                 break;
             }
@@ -88,18 +88,18 @@ public class SAXLooper {
     }
 
     private void judegeMultiIsSimple() {
-        if (this.rootPath.indexOf("..") >= 0 || this.rootPath.indexOf("*") >= 0 || this.rootPath.indexOf(".")>=0) {
+        if (this.rootPath.indexOf("..") >= 0 || this.rootPath.indexOf("*") >= 0) {
             this.isSimpleParse = false;
         }
         for (int i = 0; isSimpleParse && i < arrOrigLoopPath.length; i++) {
-            if (arrOrigLoopPath[i].indexOf("..") >= 0 || arrOrigLoopPath[i].indexOf("*") >= 0 || arrOrigLoopPath[i].indexOf(".") >= 0) {
+            if (arrOrigLoopPath[i].indexOf("..") >= 0 || arrOrigLoopPath[i].indexOf("*") >= 0) {
                 this.isSimpleParse = false;
                 break;
             }
         }
         for (int i = 0; isSimpleParse && i < arrNodePaths.length; i++) {
             for (int j = 0; j < arrNodePaths[i].length; j++) {
-                if (arrNodePaths[i][j].indexOf("..") >= 0 || arrNodePaths[i][j].indexOf("*") >= 0 || arrNodePaths[i][j].indexOf(".") >= 0) {
+                if (arrNodePaths[i][j].indexOf("..") >= 0 || arrNodePaths[i][j].indexOf("*") >= 0) {
                     this.isSimpleParse = false;
                     break;
                 }
