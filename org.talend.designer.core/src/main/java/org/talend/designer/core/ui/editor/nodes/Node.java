@@ -2018,7 +2018,7 @@ public class Node extends Element implements INode {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
                 String infoValue = (String) param.getValue();
-                if (infoValue != null && !infoValue.equals("")) { //$NON-NLS-1$
+                if (infoValue != null && !infoValue.equals("")) { //$NON-NLS-1$                                             
                     Problems.add(ProblemStatus.INFO, this, infoValue);
                 }
             }
@@ -2043,6 +2043,8 @@ public class Node extends Element implements INode {
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
+                    } else if ("tELTJDBCMap".equals(component.getName())) {
+                        // don't check this here.
                     } else {
                         if (tableValues == null || tableValues.size() == 0) {
                             String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
