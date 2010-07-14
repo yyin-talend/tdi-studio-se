@@ -1267,9 +1267,13 @@ public class DataProcess {
             }
         }
 
+        // if there is at least 2 merge components in the same flow, then use hash to keep temporary datas.
+        // if only one merge in the same flow, don't use any hash system, to keep best performances / memory
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                checkMergeComponents(node);
+                if (!hasSingleMergeComponent(node)) {
+                    checkMergeComponents(node);
+                }
             }
         }
 
@@ -1359,6 +1363,39 @@ public class DataProcess {
         buildGraphicalMap = null;
         connectionsToIgnoreInMerge = null;
         shortUniqueNameList = null;
+    }
+
+    private boolean hasSingleMergeComponent(INode node) {
+        return hasSingleMergeComponent(node, new ArrayList<INode>(), false);
+    }
+
+    private boolean hasSingleMergeComponent(final INode node, final List<INode> checkedNodes, final boolean mergeFound) {
+        if (checkedNodes.contains(node)) {
+            return true;
+        }
+        checkedNodes.add(node);
+        boolean merge = false;
+        AbstractNode dataNode;
+        dataNode = (AbstractNode) buildCheckMap.get(node);
+        if (dataNode.getComponent().useMerge()) {
+            merge = true;
+            if (mergeFound) {
+                return false;
+            }
+            if (dataNode.getLinkedMergeInfo() != null && dataNode.getLinkedMergeInfo().size() > 0) {
+                // if a tUnite hold any merge information, means it holds information from another tUnite.
+                // so in this case there is at least 2 tUnite in the same flow
+                return false;
+            }
+        }
+        for (IConnection connection : node.getOutgoingConnections()) {
+            if (connection.isActivate()) {
+                if (!hasSingleMergeComponent(connection.getTarget(), checkedNodes, mergeFound || merge)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void checkMergeComponents(INode node) {
