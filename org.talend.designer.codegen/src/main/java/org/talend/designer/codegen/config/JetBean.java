@@ -14,6 +14,7 @@ package org.talend.designer.codegen.config;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.utils.StringUtils;
@@ -50,6 +51,8 @@ public class JetBean {
 
     private String family = "common"; //$NON-NLS-1$
 
+    private static Map<String, String> pluginIdToBundle = new HashMap<String, String>();
+
     private long crc = 0;
 
     /**
@@ -84,8 +87,8 @@ public class JetBean {
      * @param classpathParameter
      * @param templateRelativeUri
      */
-    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version,
-            String language, String codePart) {
+    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version, String language,
+            String codePart) {
         this.classPath = new HashMap<String, String>();
         this.jetPluginRepository = jetPluginRepository;
         this.templateRelativeUri = templateRelativeUri;
@@ -204,7 +207,13 @@ public class JetBean {
      * @return
      */
     private String getUri(String pluginId, String relativeUri) {
-        String base = Platform.getBundle(pluginId).getEntry("/").toString(); //$NON-NLS-1$
+        String base = null;
+        if (pluginIdToBundle.containsKey(pluginId)) {
+            base = pluginIdToBundle.get(pluginId);
+        } else {
+            base = Platform.getBundle(pluginId).getEntry("/").toString(); //$NON-NLS-1$
+            pluginIdToBundle.put(pluginId, base);
+        }
         String result = base + relativeUri;
         return result;
     }
