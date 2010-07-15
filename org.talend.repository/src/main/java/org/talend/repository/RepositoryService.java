@@ -13,11 +13,16 @@
 package org.talend.repository;
 
 import java.beans.PropertyChangeEvent;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
@@ -34,15 +39,22 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -57,22 +69,28 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.properties.User;
+import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IHL7ProviderService;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.ui.ISAPProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
@@ -250,6 +268,9 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#openLoginDialog()
      */
     public void openLoginDialog() {
+        if (isloginDialogDisabled()) {
+            return;
+        }
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
             return;
@@ -279,6 +300,121 @@ public class RepositoryService implements IRepositoryService {
 
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#openLoginDialog(org.eclipse.swt.widgets.Shell, boolean)
+     */
+    public boolean openLoginDialog(Shell shell, boolean inuse) {
+        if (isloginDialogDisabled()) {
+            return true;
+        }
+        LoginDialog loginDialog = new LoginDialog(shell, inuse);
+        boolean logged = loginDialog.open() == LoginDialog.OK;
+        return logged;
+
+    }
+
+    private boolean isloginDialogDisabled() {
+        if (ArrayUtils.contains(Platform.getApplicationArgs(), "--disableLoginDialog")) {
+            boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist");
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            brandingService.getBrandingConfiguration().setUseProductRegistration(false);
+            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+
+            String projectName = "AUTO_LOGIN_PROJECT";
+            int index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-project");
+            if (index > 0) {
+                if (index + 1 < Platform.getApplicationArgs().length) {
+                    projectName = Platform.getApplicationArgs()[index + 1];
+                }
+            }
+
+            String language = "java";
+            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-language");
+            if (index > 0) {
+                if (index + 1 < Platform.getApplicationArgs().length) {
+                    language = Platform.getApplicationArgs()[index + 1];
+                }
+            }
+
+            String login = "auto@login.com";
+            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-login");
+            if (index > 0) {
+                if (index + 1 < Platform.getApplicationArgs().length) {
+                    login = Platform.getApplicationArgs()[index + 1];
+                }
+            }
+
+            String password = "";
+            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-password");
+            if (index > 0) {
+                if (index + 1 < Platform.getApplicationArgs().length) {
+                    password = Platform.getApplicationArgs()[index + 1];
+                }
+            }
+
+            User userInfo = PropertiesFactoryImpl.eINSTANCE.createUser();
+            userInfo.setLogin(login);
+            try {
+                userInfo.setPassword(PasswordHelper.encryptPasswd(password));
+            } catch (NoSuchAlgorithmException e) {
+                ExceptionHandler.process(e);
+            }
+
+            try {
+                ConnectionBean bean = ConnectionBean.getDefaultConnectionBean();
+                repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
+                        .getRepositoryId()));
+                Project project = null;
+                for (Project p : repositoryFactory.readProject()) {
+                    if (p.getLabel().equals(projectName)) {
+                        project = p;
+                        break;
+                    }
+                }
+                if (deleteProjectIfExist && project != null) {
+                    ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
+                }
+                if (project == null || deleteProjectIfExist) {
+                    project = repositoryFactory.createProject(projectName, "", ECodeLanguage.getCodeLanguage(language), userInfo);
+                }
+                Context ctx = CorePlugin.getContext();
+                RepositoryContext repositoryContext = new RepositoryContext();
+                repositoryContext.setUser(userInfo);
+                repositoryContext.setClearPassword(password);
+                repositoryContext.setProject(project);
+                repositoryContext.setFields(bean.getDynamicFields());
+                String branch = null;
+                if (project != null) {
+                    String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR
+                            + project.getTechnicalLabel();
+                    if (branch != null) {
+                        repositoryContext.getFields().put(branchKey, branch);
+                    } else {
+                        repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
+                    }
+                }
+
+                ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+
+                repositoryFactory.logOnProject(project, new NullProgressMonitor());
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            } catch (LoginException e) {
+                ExceptionHandler.process(e);
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+
+            return true;
+        }
+        return false;
     }
 
     /*
