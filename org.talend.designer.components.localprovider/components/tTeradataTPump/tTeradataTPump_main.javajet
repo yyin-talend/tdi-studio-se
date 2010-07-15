@@ -35,6 +35,9 @@ String returnCode= ElementParameterParser.getValue(node, "__RETURN_CODE__");
 boolean specifyLogTable= ElementParameterParser.getValue(node, "__SPECIFY_LOG_TABLE__").equals("true");
 String logTable= ElementParameterParser.getValue(node, "__LOG_TABLE_TABLE__");
 
+String defineCharset = ElementParameterParser.getValue(node, "__DEFINE_CHARSET__");
+String charset = ElementParameterParser.getValue(node, "__CHARSET__");
+
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
@@ -148,7 +151,12 @@ fw_<%=cid %>.write(".LOGOFF;\r\n");
 fw_<%=cid %>.close();
 
 <%//run tPump command----------------------------------------------------%>
+<%if("true".equals(defineCharset)) {
+	if(!("".equals(charset))) {%>
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>tpump -c "+<%=charset%>+" < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+<%}} else {%>	
 String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>tpump < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+<%}%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
     public void run() {

@@ -170,6 +170,23 @@
     > 
     <DEFAULT>8</DEFAULT> 
  	</PARAMETER>
+	<PARAMETER 
+	    NAME="DEFINE_CHARSET" 
+	    FIELD="CHECK" 
+	    NUM_ROW="4" 
+	    REQUIRED="true" 
+	> 
+	    <DEFAULT>false</DEFAULT> 
+	</PARAMETER>
+	<PARAMETER 
+	    NAME="CHARSET" 
+	    FIELD="TEXT" 
+	    NUM_ROW="4" 
+	    REQUIRED="true"
+		SHOW_IF="DEFINE_CHARSET=='true'"
+	> 
+	    <DEFAULT>"ASCII"</DEFAULT> 
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
