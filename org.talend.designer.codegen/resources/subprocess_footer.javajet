@@ -46,7 +46,8 @@
 						}					
 			            pool.setErrorThread(this);
 			            pool.stopAllThreads();
-			            e.printStackTrace();					
+			            
+			            new TalendException(e, currentComponent, globalMap).printStackTrace();					
 					}
 					this.isRunning = false;
 					
@@ -62,6 +63,8 @@
 			
 					pool.getTalendThreadResult().setErrorCode(this.errorCode);
 					pool.getTalendThreadResult().setStatus(this.status);	
+					
+					this.setFree(true);
 				}//Run method
 			}//ParallelThread class
 
