@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -678,10 +679,9 @@ public class PerlProcessor extends Processor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(boolean)
+     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
-    public void computeLibrariesPath(boolean clear) {
-        // TODO Please improve perl library
+    public void computeLibrariesPath(Set<String> jobModuleList) {
     }
 
 }

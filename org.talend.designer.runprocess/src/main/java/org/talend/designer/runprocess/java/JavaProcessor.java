@@ -81,6 +81,7 @@ import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.exception.SystemException;
@@ -1129,7 +1130,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         /*
          * When launch debug progress, just share all libraries between farther job and child jobs
          */
-        computeLibrariesPath(false);
+        // computeLibrariesPath(this.getProcess().getNeededLibraries(true));
 
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
@@ -1154,7 +1155,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         /*
          * When launch debug progress, just share all libraries between farther job and child jobs
          */
-        computeLibrariesPath(false);
+        // computeLibrariesPath(this.getProcess().getNeededLibraries(true));
 
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
@@ -1176,10 +1177,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     // // see bug 3914, make the order of the jar files consistent with the
     // command
     // // line in run mode
-    private void sortClasspath() throws CoreException {
+    private void sortClasspath(Set<String> jobModuleList) throws CoreException, BusinessException {
         IClasspathEntry[] entries = javaProject.getRawClasspath();
 
-        Set<String> listModulesReallyNeeded = process.getNeededLibraries(true);
+        Set<String> listModulesReallyNeeded = jobModuleList;
         if (listModulesReallyNeeded == null) {
             listModulesReallyNeeded = new HashSet<String>();
         } else {
@@ -1192,19 +1193,25 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         // sort
         int exchange = 2; // The first,second library is JVM and SRC.
+        boolean changesDone = false;
         for (String jar : listModulesReallyNeeded) {
             int index = indexOfEntry(entries, jar);
+            if (index < 0) {
+                throw new BusinessException("Missing jar:" + jar);
+            }
             if (index >= 0 && index != exchange) {
                 // exchange
                 IClasspathEntry entry = entries[index];
                 IClasspathEntry first = entries[exchange];
                 entries[index] = first;
                 entries[exchange] = entry;
-                exchange++;
+                changesDone = true;
             }
+            exchange++;
         }
-
-        javaProject.setRawClasspath(entries, null);
+        if (changesDone) {
+            javaProject.setRawClasspath(entries, null);
+        }
     }
 
     private static int indexOfEntry(final IClasspathEntry[] dest, final String jarName) {
@@ -1474,16 +1481,33 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
     }
 
+    private static String projectSetup;
+
     /*
      * @see bug 0005633. Classpath error when current job inlcude some tRunJob-es.
      * 
-     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(boolean)
+     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
-    public void computeLibrariesPath(boolean clear) {
+    public void computeLibrariesPath(Set<String> jobModuleList) {
         try {
-            updateClasspath();
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            Project project = repositoryContext.getProject();
+            if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
+                updateClasspath();
+                projectSetup = project.getTechnicalLabel();
+            }
             // see bug 5633
-            sortClasspath();
+            try {
+                sortClasspath(jobModuleList);
+            } catch (BusinessException be) {
+                updateClasspath();
+                try {
+                    sortClasspath(jobModuleList);
+                } catch (BusinessException be1) {
+                    ExceptionHandler.process(be1);
+                }
+            }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }

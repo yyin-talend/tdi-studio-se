@@ -437,7 +437,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 values.add(line);
             }
         }
-        setPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName(), values);
+        getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()).setValue(values);
         if (trace != null) {
             this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
         }
@@ -1300,7 +1300,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (this.trace != null) {
                 this.trace.setPropertyValue(parameterName, traceConnection);
             }
-            setProcessStates();
+            if (propertyValue != null) {
+                setProcessStates();
+            }
 
             firePropertyChange(parameterName, null, traceConnection);
         }
@@ -1315,8 +1317,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (this.resuming != null) {
                 this.resuming.setPropertyValue(parameterName, resumingConnBool);
             }
-            setProcessStates();
-
+            if (propertyValue != null) {
+                setProcessStates();
+            }
             firePropertyChange(parameterName, null, resumingConnBool);
         }
     }
@@ -1331,7 +1334,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                 this.resuming.setPropertyValue(parameterName, resumingLabelValue);
             }
             setProcessStates();
-
             firePropertyChange(parameterName, null, resumingLabelValue);
         }
     }

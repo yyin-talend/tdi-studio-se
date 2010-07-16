@@ -43,14 +43,16 @@ public class JavaProcessUtil {
     public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens) {
         // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
-        ProcessItem processItem = null;
-        if (process.getProperty().getVersion() != null) {
-            processItem = ItemCacheManager.getProcessItem(process.getProperty().getId(), process.getProperty().getVersion());
-        } else {
-            processItem = ItemCacheManager.getProcessItem(process.getProperty().getId());
-        }
-        if (processItem != null) {
-            searchItems.add(processItem);
+        if (withChildrens) {
+            ProcessItem processItem = null;
+            if (process.getProperty().getVersion() != null) {
+                processItem = ItemCacheManager.getProcessItem(process.getProperty().getId(), process.getProperty().getVersion());
+            } else {
+                processItem = ItemCacheManager.getProcessItem(process.getProperty().getId());
+            }
+            if (processItem != null) {
+                searchItems.add(processItem);
+            }
         }
         return getNeededLibraries(process, withChildrens, searchItems);
     }

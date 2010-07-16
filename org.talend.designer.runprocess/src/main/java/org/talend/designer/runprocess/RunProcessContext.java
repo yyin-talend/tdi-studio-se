@@ -231,9 +231,6 @@ public class RunProcessContext {
     public void setMonitorPerf(boolean monitorPerf) {
         if (this.monitorPerf != monitorPerf) {
             this.monitorPerf = monitorPerf;
-            if (process instanceof IProcess2) {
-                ((IProcess2) process).setNeedRegenerateCode(true);
-            }
             firePropertyChange(PROP_MONITOR, Boolean.valueOf(!monitorPerf), Boolean.valueOf(monitorPerf));
         }
     }
