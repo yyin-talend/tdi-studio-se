@@ -769,16 +769,40 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             return updateResults;
                         }
 
-                        String gatewayService = (String) node.getElementParameter("GATEWAYSERVICE").getValue();
-                        gatewayService = TalendTextUtils.removeQuotes(gatewayService);
-                        String programId = (String) node.getElementParameter("PROGRAMID").getValue();
-                        programId = TalendTextUtils.removeQuotes(programId);
-                        Boolean formatXml = (Boolean) node.getElementParameter("FORMAT_XML").getValue();
-                        Boolean formatHtml = (Boolean) node.getElementParameter("FORMAT_HTML").getValue();
-                        String fileXml = (String) node.getElementParameter("FILE_IDOC_XML").getValue();
-                        fileXml = TalendTextUtils.removeQuotes(fileXml);
-                        String fileHtml = (String) node.getElementParameter("FILE_IDOC_HTML").getValue();
-                        fileHtml = TalendTextUtils.removeQuotes(fileHtml);
+                        String gatewayService = "";
+                        String programId = "";
+                        Boolean formatXml = false;
+                        Boolean formatHtml = false;
+                        String fileXml = "";
+                        String fileHtml = "";
+                        IElementParameter elementParameter = node.getElementParameter("GATEWAYSERVICE");
+                        if (elementParameter != null) {
+                            gatewayService = (String) elementParameter.getValue();
+                            gatewayService = TalendTextUtils.removeQuotes(gatewayService);
+                        }
+                        IElementParameter elementParameter2 = node.getElementParameter("PROGRAMID");
+                        if (elementParameter2 != null) {
+                            programId = (String) elementParameter2.getValue();
+                            programId = TalendTextUtils.removeQuotes(programId);
+                        }
+                        IElementParameter elementParameter3 = node.getElementParameter("FORMAT_XML");
+                        if (elementParameter3 != null) {
+                            formatXml = (Boolean) elementParameter3.getValue();
+                        }
+                        IElementParameter elementParameter4 = node.getElementParameter("FORMAT_HTML");
+                        if (elementParameter4 != null) {
+                            formatHtml = (Boolean) elementParameter4.getValue();
+                        }
+                        IElementParameter elementParameter5 = node.getElementParameter("FILE_IDOC_XML");
+                        if (elementParameter5 != null) {
+                            fileXml = (String) elementParameter5.getValue();
+                            fileXml = TalendTextUtils.removeQuotes(fileXml);
+                        }
+                        IElementParameter elementParameter6 = node.getElementParameter("FILE_IDOC_HTML");
+                        if (elementParameter6 != null) {
+                            fileHtml = (String) elementParameter6.getValue();
+                            fileHtml = TalendTextUtils.removeQuotes(fileHtml);
+                        }
                         if (!((gatewayService == null && iDocUnit.getGatewayService() == null) || (gatewayService != null && gatewayService
                                 .equals(iDocUnit.getGatewayService())))) {
                             same = false;
