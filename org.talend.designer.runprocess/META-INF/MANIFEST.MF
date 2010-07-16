@@ -19,7 +19,8 @@ Require-Bundle: org.junit,
  org.talend.commons.ui,
  org.eclipse.jdt.ui,
  org.epic.perleditor,
- org.talend.utils
+ org.talend.utils,
+ org.eclipse.core.expressions
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.i18n,

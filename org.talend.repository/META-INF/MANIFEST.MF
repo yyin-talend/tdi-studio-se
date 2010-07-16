@@ -24,7 +24,8 @@ Require-Bundle: org.apache.axis,
  javax.wsdl,
  org.eclipse.jdt.core.manipulation,
  org.epic.perleditor,
- org.talend.utils
+ org.talend.utils,
+ org.eclipse.core.expressions
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,
