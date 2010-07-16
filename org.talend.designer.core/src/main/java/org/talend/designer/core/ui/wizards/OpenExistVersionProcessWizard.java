@@ -203,8 +203,9 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     fileEditorInput = new RoutineEditorInput(file, routineItem);
                 } else if (item instanceof SQLPatternItem) {
                     SQLPatternItem patternItem = (SQLPatternItem) item;
-                    ISQLPatternSynchronizer routineSynchronizer = codeGenService.getSQLPatternSynchronizer();
-                    IFile file = routineSynchronizer.getSQLPatternFile(patternItem);
+                    ISQLPatternSynchronizer SQLPatternSynchronizer = codeGenService.getSQLPatternSynchronizer();
+                    SQLPatternSynchronizer.syncSQLPattern(patternItem, true);
+                    IFile file = SQLPatternSynchronizer.getSQLPatternFile(patternItem);
                     fileEditorInput = new RepositoryEditorInput(file, patternItem);
                 }
 
