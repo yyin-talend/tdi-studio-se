@@ -12,7 +12,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
+String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 boolean paging =("true").equals(ElementParameterParser.getValue(node, "__ISPAGING__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -39,7 +39,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)&&(metadatas.get(0) != null)) {
 <%}%>
 
 rootSchema_<%=cid%>.close();
-ctx_<%=cid%>.close();
+<%
+if(("false").equals(useExistingConn)){
+%>
+	ctx_<%=cid%>.close();
+<%
+}
+%>
 globalMap.put("<%=cid%>_NB_LINE", <%=cid%>_NB_LINE);
 
 <%

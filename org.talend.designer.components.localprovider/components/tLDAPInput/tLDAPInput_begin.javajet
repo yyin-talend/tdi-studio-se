@@ -25,29 +25,36 @@ imports="
 
 	List<IMetadataColumn> columnList = metadata.getListColumns();
 	String cid = node.getUniqueName();
-	String host=ElementParameterParser.getValue(node, "__HOST__");
-	String port=ElementParameterParser.getValue(node, "__PORT__");
-	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
-	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String filter=ElementParameterParser.getValue(node, "__FILTER__");
 	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));	
+	boolean paging =("true").equals(ElementParameterParser.getValue(node, "__ISPAGING__"));	
+	String pageSize =ElementParameterParser.getValue(node, "__PAGESIZE__");
+	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
+	String timeout =ElementParameterParser.getValue(node, "__TIMEOUT__");
+	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
+	
+	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+	String exConn= "conn_" + connection;
+	String exConnBaseDN = "connBaseDN_" + connection;
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+%>
+	String baseDN_<%=cid%> = "";
+<%
+if(("false").equals(useExistingConn)){
+	String host=ElementParameterParser.getValue(node, "__HOST__");
+	String port=ElementParameterParser.getValue(node, "__PORT__");
+	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
 	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
 	boolean alwaysTrust = ("true").equals(ElementParameterParser.getValue(node, "__ALWAYS_TRUST__"));
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
-	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
-	String timeout =ElementParameterParser.getValue(node, "__TIMEOUT__");
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
-	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));	
-	
-	boolean paging =("true").equals(ElementParameterParser.getValue(node, "__ISPAGING__"));	
-	String pageSize =ElementParameterParser.getValue(node, "__PAGESIZE__");
 %>
-	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
     env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
@@ -103,7 +110,15 @@ imports="
     javax.net.ssl.SSLSession session_<%=cid%> = tls_<%=cid%>.negotiate((javax.net.ssl.SSLSocketFactory)talend.ssl.AdvancedSocketFactory.getDefault());
 <%
 	}
+}else{
 %>
+	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = (javax.naming.ldap.InitialLdapContext)globalMap.get("<%=exConn%>");
+	baseDN_<%=cid%> = (String)globalMap.get("<%=exConnBaseDN%>");
+<%
+}
+%>
+	int <%=cid%>_NB_LINE = 0;
+	
 	javax.naming.directory.SearchControls searchCtls_<%=cid%> = new javax.naming.directory.SearchControls();
     searchCtls_<%=cid%>.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
     searchCtls_<%=cid%>.setReturningAttributes(new String[]{
@@ -118,6 +133,7 @@ imports="
     searchCtls_<%=cid%>.setTimeLimit(<%=timeout%>*1000);
     searchCtls_<%=cid%>.setCountLimit(<%=limit %>);
 <%
+				if(("false").equals(useExistingConn)){
 					if(baseDN == null || baseDN.length()<=2){
 %>
 	//get basce dn
@@ -136,11 +152,16 @@ imports="
 <%
 					}else{
 %>
-		String searchBase_<%=cid%> = <%=baseDN %>;
+		String searchBase_<%=cid%> = <%=baseDN%>;
 <%
 					}
+				}else{
 %>
-
+					String searchBase_<%=cid%> = "";
+<%
+				}
+%>
+		baseDN_<%=cid%> = searchBase_<%=cid%>;
 <%if(paging){%>
     // Set the page size and initialize the cookie that we pass back in subsequent pages
     int pageSize_<%=cid%> = <%=pageSize %>;
@@ -221,7 +242,7 @@ do {
 						}else{
 							if("dn".equals(column.getLabel().toLowerCase())){
 %>
-								<%=conn.getName()%>.<%=column.getLabel()%> = ("".equals(sr_<%=cid%>.getName())?sr_<%=cid%>.getName():(sr_<%=cid%>.getName()+ ",")) + <%=baseDN%>;
+								<%=conn.getName()%>.<%=column.getLabel()%> = ("".equals(sr_<%=cid%>.getName())?sr_<%=cid%>.getName():(sr_<%=cid%>.getName()+ ",")) + baseDN_<%=cid%>;
 <%
 							}else{
 %>
