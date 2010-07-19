@@ -1209,7 +1209,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
             exchange++;
         }
-        if (changesDone) {
+        if (!CommonsPlugin.isHeadless() && changesDone) {
             javaProject.setRawClasspath(entries, null);
         }
     }
