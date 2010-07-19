@@ -180,11 +180,17 @@ if(execStat){
      if (outputMetadata != null) {
       for (IConnection outputConnection : node.getOutgoingConnections()) {
        if (outputConnection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || outputConnection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-        for (IMetadataColumn column : outputMetadata.getListColumns()) {
-%>
- <%=outputConnection.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
-<% 
-       	}
+       
+       	//void the case: row1.username=row1.username
+       	if(!outputConnection.getName().equals(inputColName)){//111
+			//void the case: row1Struct row1 = new row1Struct(); row1Struct row3 = row1;
+            //for (IMetadataColumn column : outputMetadata.getListColumns()) {
+    %>
+     <%=outputConnection.getName() %> = <%=inputColName %>;
+    <% 
+           	//}
+       	}//111
+       	
        }
       }
      }
