@@ -19,6 +19,7 @@
 	String inputFile  = ElementParameterParser.getValue(node, "__INPUT_FILE__");
 	String outputFile  = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
 	String password  = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+	boolean noTTY  = "true".equals(ElementParameterParser.getValue(node, "__NOTTY__"));
 	
 	//"cmd /c " + gpgBin + " --yes -q  -d --passphrase " + password + " -o " + outputFile + " " + inputFile;
 	
@@ -26,7 +27,10 @@
 	// cmd.exe /c dir (for example)
 %>
 			String[] cmdArray_<%=cid %> = new String[]{
-											<%=gpgBin %>, 
+											<%=gpgBin %>,
+											<%if(noTTY){%>
+												"--no-tty",
+											<%}%>
 											"--yes",
 											"-q",
 											"-d",
@@ -36,7 +40,6 @@
 											<%=outputFile %>,
 											<%=inputFile %>
 							 				};
-            
             Runtime runtime_<%=cid %> = Runtime.getRuntime();
             final Process ps_<%=cid %> = runtime_<%=cid %>.exec(cmdArray_<%=cid %>);
             Thread normal_<%=cid %> = new Thread() {

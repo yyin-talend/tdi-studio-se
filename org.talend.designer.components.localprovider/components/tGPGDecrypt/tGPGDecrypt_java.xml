@@ -63,6 +63,13 @@
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+    <PARAMETER
+      NAME="NOTTY"
+      FIELD="CHECK"
+      NUM_ROW="60"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
   </PARAMETERS>
 
