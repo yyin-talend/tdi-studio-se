@@ -55,6 +55,8 @@ if (isFunction) {
 	spArgs.add(0, returnValue);
 }
 
+boolean containsMultiSelecct = ("true").equals(ElementParameterParser.getValue(node,"__CONTAIN_MULTI_SELECT__"));
+
 class JavaToDbType {
 	public String convert(String javaType) {
 		if (("String").equals(javaType)) {
@@ -211,7 +213,17 @@ if (canGenerate) {
 		}
 		
 		%>
+<%
+	if (!containsMultiSelecct) {
+%>
 		statement_<%=cid%>.execute();
+<%
+	} else {
+%>
+		statement_<%=cid%>.executeQuery();
+<%
+	}
+%>
 		<%
 		
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
