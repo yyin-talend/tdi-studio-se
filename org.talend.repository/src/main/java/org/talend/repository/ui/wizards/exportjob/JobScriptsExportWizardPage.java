@@ -159,6 +159,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private String suDestinationFilePath;
 
+    private String initDestinationFilePath;
+
+    private String getInitDestinationFilePath() {
+        return this.initDestinationFilePath;
+    }
+
+    private void setInitDestinationFilePath(String initDestinationFilePath) {
+        this.initDestinationFilePath = initDestinationFilePath;
+    }
+
     public String getSuDestinationFilePath() {
         return this.suDestinationFilePath;
     }
@@ -276,7 +286,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
             }
         }
-
+        setInitDestinationFilePath(path.toOSString());
         setDestinationValue(path.toOSString());
     }
 
@@ -822,7 +832,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (isNotFirstTime) {
                 setTopFolder(resourcesToExport, this.originalRootFolderName);
             } else {
-                setTopFolder(resourcesToExport, this.getRootFolderName());
+                setTopFolder(resourcesToExport, this.getOriginalRootFolderName());// this.getOriginalRootFolderName()
+                                                                                  // getRootFolderName()
             }
         }
 
@@ -965,7 +976,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected String getTempDestinationValue() {
         String idealSuffix = getOutputSuffix();
-        String destinationText = getDestinationValue();
+        String destinationText = this.getInitDestinationFilePath();// getDestinationValue();//
         String tempdestination = JavaJobExportReArchieveCreator.getTmpDestinationFolder();
         if (destinationText.indexOf("\\") != -1) {
             int lastIndexOf = destinationText.lastIndexOf("\\");
@@ -1022,6 +1033,24 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             path = new Path(getSuDestinationFilePath());
         } else {
             path = new Path(this.getDestinationValue());// y
+        }
+
+        String subjectString = path.lastSegment();
+        Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+                | Pattern.UNICODE_CASE);
+        Matcher regexMatcher = regex.matcher(subjectString);
+        if (regexMatcher.find()) {
+            subjectString = regexMatcher.group(0);
+        }
+        return subjectString.trim();
+    }
+
+    private String getOriginalRootFolderName() {
+        IPath path = null;
+        if (manager instanceof PetalsJobJavaScriptsManager) {
+            path = new Path(getSuDestinationFilePath());
+        } else {
+            path = new Path(this.getInitDestinationFilePath());// y
         }
 
         String subjectString = path.lastSegment();
