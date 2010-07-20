@@ -640,7 +640,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
             }
             IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
-            listModulesReallyNeeded.addAll(iProcess.getNeededLibraries(true));
+            Set<String> neededLibraries = iProcess.getNeededLibraries(true);
+            if (neededLibraries != null) {
+                listModulesReallyNeeded.addAll(neededLibraries);
+            }
         }
 
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
