@@ -26,12 +26,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -65,23 +68,31 @@ public class ParallelExecutionAction extends SelectionAction {
         if (getSelectedObjects() == null || getSelectedObjects().isEmpty()) {
             return false;
         }
+        node = getCurrentNode();
+        if (node == null) {
+            return false;
+        }
+        IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
+        if (enableParallelizeParameter != null) {
+            parallelEnable = (Boolean) enableParallelizeParameter.getValue();
+        }
+        return node.getComponent().canParallelize();
 
+    }
+
+    protected Node getCurrentNode() {
         List parts = getSelectedObjects();
         if (parts.size() != 1) {
-            return false;
+            return null;
         }
 
         Object o = parts.get(0);
         if (o instanceof NodePart) {
             NodePart nodePart = (NodePart) o;
             node = (Node) nodePart.getModel();
-            IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
-            if (enableParallelizeParameter != null) {
-                parallelEnable = (Boolean) enableParallelizeParameter.getValue();
-            }
-            return node.getComponent().canParallelize();
+            return node;
         }
-        return false;
+        return null;
     }
 
     /*
@@ -99,7 +110,8 @@ public class ParallelExecutionAction extends SelectionAction {
             }
         }
         if (hasFlowConnection) {
-            MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages.getString("ParallelExecutionAction.gotLink"), //$NON-NLS-1$
+            MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages
+                    .getString("ParallelExecutionAction.gotLink"), //$NON-NLS-1$
                     Messages.getString("ParallelExecutionAction.noOutputLink")); //$NON-NLS-1$
             return;
         }
@@ -143,10 +155,16 @@ public class ParallelExecutionAction extends SelectionAction {
         protected Control createDialogArea(Composite parent) {
 
             Composite bgComposite = new Composite(parent, SWT.NULL);
-            bgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+            GridData gData = new GridData(GridData.FILL_BOTH);
+            gData.minimumHeight = 50;
+            gData.heightHint = 50;
+            gData.minimumWidth = 350;
+            gData.widthHint = 350;
+            bgComposite.setLayoutData(gData);
 
             GridLayout gridLayout = new GridLayout();
-            gridLayout.numColumns = 2;
+            gridLayout.numColumns = 3;
             bgComposite.setLayout(gridLayout);
 
             enableButton = new Button(bgComposite, SWT.CHECK);
@@ -154,6 +172,8 @@ public class ParallelExecutionAction extends SelectionAction {
             data.horizontalSpan = 2;
             enableButton.setLayoutData(data);
             enableButton.setText(EParameterName.PARALLELIZE.getDisplayName());
+
+            Label label = new Label(bgComposite, SWT.NONE);
 
             numberText = new LabelledText(bgComposite, EParameterName.PARALLELIZE_NUMBER.getDisplayName(), true);
 
@@ -173,6 +193,9 @@ public class ParallelExecutionAction extends SelectionAction {
             enableButton.setSelection(parallelEnable);
             numberText.setText(numberParallel);
             numberText.setEditable(parallelEnable);
+            // for feature 12372
+            IProcess process = node.getProcess();
+            TalendProposalUtils.installOn(numberText.getTextControl(), process);
 
             return bgComposite;
         }
@@ -188,7 +211,10 @@ public class ParallelExecutionAction extends SelectionAction {
                 setParametersValue();
                 super.okPressed();
             } else {
-                MessageDialog.openError(null, Messages.getString("ParallelExecutionAction.talend"), Messages.getString("ParallelExecutionCommand.numberInvalid")); //$NON-NLS-1$ //$NON-NLS-2$
+                MessageDialog
+                        .openError(
+                                null,
+                                Messages.getString("ParallelExecutionAction.talend"), Messages.getString("ParallelExecutionCommand.numberInvalid")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -212,18 +238,13 @@ public class ParallelExecutionAction extends SelectionAction {
          * 
          * @return
          */
+
         private boolean numberTextValid() {
             String text = numberText.getText().trim();
             if (text == null || text.equals("")) { //$NON-NLS-1$
                 return false;
             }
-            try {
-                int number = Integer.parseInt(text);
-                return number >= 0;
-            } catch (Exception e) {
-                return false;
-            }
+            return true;
         }
-
     }
 }
