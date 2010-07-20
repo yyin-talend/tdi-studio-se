@@ -200,8 +200,11 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         String jobVersion = item.getProperty().getVersion();
         Map<String, String> elementNameToValue = new LinkedHashMap<String, String>(7);
 
-        elementNameToValue.put("petalsCDK:wsdl", jobName + ".wsdl"); //$NON-NLS-1$ //$NON-NLS-2$
+        // VZ: reversed the order of the two next lines
         elementNameToValue.put("petalsCDK:validate-wsdl", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        elementNameToValue.put("petalsCDK:wsdl", jobName + ".wsdl"); //$NON-NLS-1$ //$NON-NLS-2$
+        // VZ
+
         elementNameToValue.put("talend:name", jobName); //$NON-NLS-1$
 
         String projectName = getCorrespondingProjectName(item);
@@ -225,13 +228,23 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
 
         sb.append("\t\t<jbi:provides\n"); //$NON-NLS-1$
         sb.append("\t\t\tinterface-name=\"generatedNs:" + jobName + "ServicePortType\"\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        sb.append("\t\t\tservice-name=\"generatedNs:" + jobName + "Service\"\n"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // VZ: append the job version to the service's name
+        sb.append("\t\t\tservice-name=\"generatedNs:" + jobName + "Service_" + jobVersion + "\"\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        // VZ
+
         sb.append("\t\t\tendpoint-name=\""); //$NON-NLS-1$
 
-        String endpoint = genEndpoint ? "autogenerate" : (jobName + "Endpoint"); //$NON-NLS-1$ //$NON-NLS-2$
+        // VZ: add the job's version in the end-point name
+        String endpoint = genEndpoint ? "autogenerate" : (jobName + "_" + jobVersion + "_Endpoint"); //$NON-NLS-1$ //$NON-NLS-2$
+        // VZ
+
         sb.append(endpoint + "\"\n"); //$NON-NLS-1$
+
+        // VZ: append the job's name to the TNS
         sb.append("\t\t\txmlns:generatedNs=\"" //$NON-NLS-1$
-                + SU_NAMESPACE_URI_PREFIX + "\">\n\n"); //$NON-NLS-1$
+                + SU_NAMESPACE_URI_PREFIX + jobName + "/\">\n\n"); //$NON-NLS-1$
+        // VZ
 
         // SU parameters
         for (Map.Entry<String, String> entry : elementNameToValue.entrySet()) {
@@ -304,9 +317,18 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         // Prepare the parameters
         String jobName = item.getProperty().getLabel();
 
+        // VZ
+        String jobVersion = item.getProperty().getVersion();
+        // VZ
+
         // Prepare the parameters for the generation
         PetalsWsdlBean wsdlBean = new PetalsWsdlBean();
         wsdlBean.setJobName(jobName);
+
+        // VZ
+        wsdlBean.setJobVersion(jobVersion);
+        // VZ
+
         wsdlBean.setContextDefinitions(PetalsTemporaryOptionsKeeper.INSTANCE.getContexts());
         wsdlBean.setAutogenerate(PetalsTemporaryOptionsKeeper.INSTANCE.isGenerateEndpoint());
 

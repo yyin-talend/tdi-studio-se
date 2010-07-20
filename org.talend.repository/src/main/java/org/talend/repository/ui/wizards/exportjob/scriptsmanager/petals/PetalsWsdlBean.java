@@ -42,6 +42,14 @@ public class PetalsWsdlBean {
      */
     String jobName;
 
+    // VZ
+    /**
+     * The job version.
+     */
+    String jobVersion;
+
+    // VZ
+
     /**
      * Generate the end-point?
      */
@@ -81,4 +89,13 @@ public class PetalsWsdlBean {
     public void setAutogenerate(boolean autogenerate) {
         this.autogenerate = autogenerate;
     }
+
+    // VZ
+    /**
+     * @param jobVersion the jobVersion to set
+     */
+    public void setJobVersion(String jobVersion) {
+        this.jobVersion = jobVersion;
+    }
+    // VZ
 }
