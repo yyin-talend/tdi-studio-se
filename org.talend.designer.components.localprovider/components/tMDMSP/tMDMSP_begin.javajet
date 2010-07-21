@@ -1,0 +1,71 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        java.util.List
+		"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+	
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		// if output columns are defined
+		if (outgoingConns != null && outgoingConns.size() > 0){
+		
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+	
+	String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
+	String username = ElementParameterParser.getValue(node, "__USERNAME__");
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
+//	String concept = ElementParameterParser.getValue(node, "__CONCEPT__");
+	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
+	
+	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+	String spName = ElementParameterParser.getValue(node, "__SPNAME__");
+	
+%>       
+int nb_line_<%=cid %> = 0;
+
+org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
+xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
+org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
+org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
+
+// Authentification
+<%if(universe==null || ("").equals(universe.trim())){%>
+stub_<%=cid %>.setUsername(<%=username %>);
+<%}else{%>
+stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
+<%}%>
+stub_<%=cid %>.setPassword(<%=password %>);
+
+org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
+
+org.talend.mdm.webservice.WSExecuteStoredProcedure wsExeProc_<%=cid %> = new org.talend.mdm.webservice.WSExecuteStoredProcedure();
+wsExeProc_<%=cid %>.setWsDataClusterPK(dataCluster_<%=cid %>);
+org.talend.mdm.webservice.WSStoredProcedurePK wsStoredProcPK_<%=cid %> = new org.talend.mdm.webservice.WSStoredProcedurePK();
+wsStoredProcPK_<%=cid %>.setPk(<%=spName %>);
+wsExeProc_<%=cid %>.setWsStoredProcedurePK(wsStoredProcPK_<%=cid %>);
+<%
+			}
+		}
+	}
+}
+%>
