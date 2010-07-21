@@ -36,8 +36,10 @@ public class SubJobHierarchyViewer extends JobHierarchyViewer {
         refresh();
 
         if (expand) {
-            int expandLevel = 2;
-            expandToLevel(expandLevel);
+            // for bug 14303
+            expandAll();
+            // int expandLevel = 3;
+            // expandToLevel(expandLevel);
         }
         getTree().setRedraw(true);
     }
