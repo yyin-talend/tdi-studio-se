@@ -28,7 +28,6 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.ProjectManager;
@@ -175,8 +174,8 @@ public class DetecteViewImpactAction extends AContextualAction {
                     RepositoryUpdateManager.updateSAPFunction((SAPFunctionUnit) metadataObject, false, isOnlySimpleShow());
                 }
             }
-        } else if (node.getObject() instanceof IRepositoryObject) {
-            IRepositoryObject object = (IRepositoryObject) node.getObject();
+        } else if (node.getObject() instanceof IRepositoryViewObject) {
+            IRepositoryViewObject object = (IRepositoryViewObject) node.getObject();
             if (object != null) {
                 Item item = object.getProperty().getItem();
                 if (item != null) {
