@@ -31,7 +31,7 @@ String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");	
 String dbuser= ElementParameterParser.getValue(node, "__USER__");	
 String dbpwd= ElementParameterParser.getValue(node, "__PASS__");	
-String tableName = ElementParameterParser.getValue(node,"__TABLE__");	
+String table = ElementParameterParser.getValue(node,"__TABLE__");	
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");	
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
@@ -110,7 +110,7 @@ if(("true").equals(useExistingConn)) {
     String conn = "conn_" + connection;
     String tableschema = "tableschema_" + connection;
     %>
-    String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");    
+    String dbschema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");    
     java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
 } else {       
@@ -119,7 +119,7 @@ if(("true").equals(useExistingConn)) {
     String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
     String dbUser_<%=cid %> = <%=dbuser%>;    
     String dbPwd_<%=cid %> = <%=dbpwd%>;
-    String schema_<%=cid%> = <%=tableSchema%>;    
+    String dbschema_<%=cid%> = <%=tableSchema%>;    
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%
 }
@@ -134,65 +134,18 @@ if(!("true").equals(useExistingConn)) {
 }
 %>
 String tableName_<%=cid%> = null;
-if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
-    tableName_<%=cid%> = <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+    tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
-    tableName_<%=cid%> = schema_<%=cid%> + "\".\"" + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+    tableName_<%=cid%> = dbschema_<%=cid%> + "\".\"" + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 }
 
 <%
 if(columnList != null && columnList.size() > 0) {        
-    if(!("NONE").equals(tableAction)) {
-        Manager manager = getManager(dbmsId, cid);
-        if(("DROP_CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            <%
-        } else if(("CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-            %>
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-            boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
-                    whetherExist_<%=cid%> = true;
-                    break;
-                }
-            }
-            <%
-            if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-                %>
-                if(!whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
-                }                
-                <%
-            } else {
-                %>
-                if(whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-                }
-                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");                
-            <%
-            }
-        } else if(("CLEAR").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-            <%
-        }
-    }    
+       Manager manager = null;
+    %>
+    <%@ include file="../templates/_tableActionForOutput.javajet"%>
+    <%   
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
