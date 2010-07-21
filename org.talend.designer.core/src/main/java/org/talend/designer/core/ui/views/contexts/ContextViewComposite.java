@@ -68,10 +68,11 @@ public class ContextViewComposite extends ContextComposite {
 
     public void setPart(AbstractMultiPageTalendEditor part) {
         this.part = part;
-        refreshRelationship();
         super.refreshTemplateTab();
         super.refreshTableTab();
         super.refreshTreeTab();
+        refreshRelationship();
+        // for bug 13730
     }
 
     private void refreshRelationship() {
