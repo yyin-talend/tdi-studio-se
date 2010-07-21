@@ -15,6 +15,7 @@ package org.talend.repository.model.migration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -124,7 +125,7 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
      * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
      */
     public Date getOrder() {
-        // TODO Auto-generated method stub
-        return null;
+        GregorianCalendar gc = new GregorianCalendar(2010, 7, 21, 12, 0, 0);
+        return gc.getTime();
     }
 }

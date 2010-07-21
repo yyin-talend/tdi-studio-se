@@ -27,7 +27,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -87,10 +86,8 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.SQLPatternUtils;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -1185,9 +1182,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     }
 
     public boolean isItemIndexChecked() {
-        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-        IPreferenceStore preferenceStore = designerCoreService.getDesignerCorePreferenceStore();
-        return preferenceStore.getBoolean(ITalendCorePrefConstants.ITEM_INDEX);
+        // IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        // IPreferenceStore preferenceStore = designerCoreService.getDesignerCorePreferenceStore();
+        // return preferenceStore.getBoolean(ITalendCorePrefConstants.ITEM_INDEX);
+        return true;
     }
 
 }

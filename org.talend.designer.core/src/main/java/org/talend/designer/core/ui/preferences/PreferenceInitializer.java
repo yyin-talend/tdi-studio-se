@@ -122,7 +122,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, true);
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, 15);
 
-        store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
+        // store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         if (!CommonsPlugin.isHeadless()) {
