@@ -320,19 +320,24 @@ public class ChangeMetadataCommand extends Command {
                                             true);
                                 }
                                 IMetadataTable toCopy = newOutputMetadata.clone();
-                                // to keep customs
-                                // MetadataTool.copyTable(toCopy, tmpClone);
+
                                 // wzhang modify to add feature 7611
-                                String dbmsId = targetNode.getMetadataFromConnector(baseConnector).getDbms();
-                                MetadataTool.copyTable(dbmsId, toCopy, tmpClone);
-                                toCopy = tmpClone;
+                                String dbmsId = null;
                                 IMetadataTable copy;
                                 if (((Node) targetNode).getMetadataFromConnector(baseConnector) != null) {
+                                    dbmsId = targetNode.getMetadataFromConnector(baseConnector).getDbms();
+                                    MetadataTool.copyTable(dbmsId, toCopy, tmpClone);
+                                    toCopy = tmpClone;
+
                                     // only if the target node have exactly the same connector
                                     copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
                                 } else {
                                     // if don't have the same connector, take the main connector of the component.
                                     final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
+
+                                    dbmsId = targetNode.getMetadataFromConnector(mainConnector).getDbms();
+                                    MetadataTool.copyTable(dbmsId, toCopy, tmpClone);
+                                    toCopy = tmpClone;
                                     copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
                                 }
                                 // MetadataTool.copyTable(toCopy, copy);
