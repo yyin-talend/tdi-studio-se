@@ -81,7 +81,13 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
             true
           <%}%>        
           ) {
-            <%=typeSelected%> tester_<%=cid%> = <%=typeSelected%>.valueOf(<%=_sInConnName%>.<%=colName%>);
+			<% if(typeSelected.equals("BigDecimal") ) {%>
+				<%=typeSelected%> tester_<%=cid%> = new <%=typeSelected%>(<%=_sInConnName%>.<%=colName%>);
+			<% } else if(typeSelected.equals("Object")){%>
+        		<%=typeSelected%> tester_<%=cid%> = new <%=typeSelected%>();
+			<% } else {%>
+        		<%=typeSelected%> tester_<%=cid%> = <%=typeSelected%>.valueOf(<%=_sInConnName%>.<%=colName%>);
+			<%}%>
           }
              
         } catch(Exception e) {
