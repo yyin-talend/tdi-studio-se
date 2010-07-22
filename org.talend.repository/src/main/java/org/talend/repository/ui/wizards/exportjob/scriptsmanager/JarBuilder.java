@@ -48,7 +48,7 @@ public class JarBuilder {
 
     List<File> excludeFiles = null;
 
-    List<File> includeSystemRoutines = null;
+    List<File> includeRoutines = null;
 
     private static final String SYSTEM = "system"; //$NON-NLS-1$
 
@@ -83,8 +83,8 @@ public class JarBuilder {
         this.excludeFiles = excludeFiles;
     }
 
-    public void setIncludeSystemRoutines(List<File> includeSystemRoutines) {
-        this.includeSystemRoutines = includeSystemRoutines;
+    public void setIncludeRoutines(List<File> includeRoutines) {
+        this.includeRoutines = includeRoutines;
     }
 
     /**
@@ -107,8 +107,12 @@ public class JarBuilder {
         if (excludeFiles != null) {
             includeFiles.removeAll(excludeFiles);
         }
-        if (includeSystemRoutines != null) {
-            includeFiles.addAll(includeSystemRoutines);
+        if (includeRoutines != null) {
+            for (File f : includeRoutines) {
+                if (!includeFiles.contains(f)) {
+                    includeFiles.add(f);
+                }
+            }
         }
 
         return includeFiles;

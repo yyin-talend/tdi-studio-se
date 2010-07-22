@@ -141,7 +141,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
             ProcessEditorInput fileEditorInput;
             try {
                 // Set readonly to false since created job will always be editable.
-                fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false, true, false);
+                fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), true, true, false);
 
                 fileEditorInput.setView(getViewPart());
                 RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(fileEditorInput.getItem().getProperty()

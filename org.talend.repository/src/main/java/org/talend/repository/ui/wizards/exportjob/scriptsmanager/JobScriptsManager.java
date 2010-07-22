@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,19 +41,13 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -59,7 +55,6 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -517,12 +512,6 @@ public abstract class JobScriptsManager {
         return root;
     }
 
-    protected IPath getEmfContextRootPath(Item item) throws Exception {
-        IPath root = getCorrespondingProjectRootPath(item).append(
-                ERepositoryObjectType.getFolderName(ERepositoryObjectType.CONTEXT));
-        return root;
-    }
-
     /**
      * ggu Comment method "getCorrespondingProjectRootPath".
      * 
@@ -560,144 +549,47 @@ public abstract class JobScriptsManager {
         if (!needDependencies) {
             return;
         }
-        addContext(allResources, processItem, resource);
-        addMetadata(allResources, processItem, resource);
-    }
+        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(Arrays
+                .asList(new Item[] { processItem }), false);
 
-    /**
-     * DOC qwei Comment method "addMetadata".
-     * 
-     * @param processItem
-     * @param resource
-     */
-    private void addMetadata(ExportFileResource[] allResources, ProcessItem processItem, ExportFileResource resource) {
-        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-        if (designerCoreService == null) {
-            return;
-        }
-        IProcess process = null;
-        process = designerCoreService.getProcessFromProcessItem(processItem);
-        if (process != null) {
-            List<INode> nodes = (List<INode>) process.getGraphicalNodes();
-            for (INode node : nodes) {
-                List<IElementParameter> eleParams = (List<IElementParameter>) node.getElementParameters();
-                for (IElementParameter elementParameter : eleParams) {
-                    String repositoryMetadataId = ""; //$NON-NLS-1$
-                    if (elementParameter.getName().equals("PROPERTY")) { //$NON-NLS-1$
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE") //$NON-NLS-1$
-                                .getValue();
-                    }
-                    if (elementParameter.getName().equals("SCHEMA")) { //$NON-NLS-1$
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_SCHEMA_TYPE") //$NON-NLS-1$
-                                .getValue();
-                    }
-                    if (elementParameter.getName().equals("QUERYSTORE")) { //$NON-NLS-1$
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE") //$NON-NLS-1$
-                                .getValue();
-                    }
+        for (IRepositoryViewObject object : allDependencies) {
+            Item item = object.getProperty().getItem();
 
-                    if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) { //$NON-NLS-1$
-                        String[] id = repositoryMetadataId.split(" - "); //$NON-NLS-1$
-                        if (id.length > 0) {
-                            repositoryMetadataId = id[0];
-                            try {
-                                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                                IRepositoryViewObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
-                                if (lastVersion != null) {
-                                    Item item2 = lastVersion.getProperty().getItem();
-                                    if (item2 != null) {
-                                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item2);
-                                        IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
-                                        String metadataName = item2.getProperty().getLabel();
-                                        String metadataVersion = item2.getProperty().getVersion();
-                                        String metadataPath = item2.getState().getPath();
+            try {
+                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+                IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
+                String itemName = item.getProperty().getLabel();
+                String itemVersion = item.getProperty().getVersion();
+                String itemPath = item.getState().getPath();
 
-                                        metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath; //$NON-NLS-1$ //$NON-NLS-2$
-                                        IPath projectRootPath = getCorrespondingProjectRootPath(item2);
-                                        String projectName = getCorrespondingProjectName(item2);
-                                        // project file
-                                        IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
-                                                FileConstants.LOCAL_PROJECT_FILENAME);
-                                        checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR
-                                                + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+                itemPath = (itemPath == null || itemPath.equals("")) ? "" : itemPath; //$NON-NLS-1$ //$NON-NLS-2$
+                IPath projectRootPath = getCorrespondingProjectRootPath(item);
+                String projectName = getCorrespondingProjectName(item);
+                // project file
+                IPath projectFilePath = getCorrespondingProjectRootPath(item).append(FileConstants.LOCAL_PROJECT_FILENAME);
+                checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                        FileLocator.toFileURL(projectFilePath.toFile().toURI().toURL()));
 
-                                        IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
-                                                metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                                        IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(metadataPath)
-                                                .append(metadataName + "_" + metadataVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
-                                                        + FileConstants.PROPERTIES_EXTENSION);
-                                        List<URL> metadataNameFileUrls = new ArrayList<URL>();
-                                        metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-                                        metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                                        String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                                                + typeFolderPath.toOSString();
-                                        resource.addResources(basePath, metadataNameFileUrls);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                ExceptionHandler.process(e);
-                            }
+                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
+                        itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
+                        itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                                + FileConstants.PROPERTIES_EXTENSION);
 
-                        }
-                    }
+                List<URL> metadataNameFileUrls = new ArrayList<URL>();
 
-                }
+                metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+                metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
 
+                String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                        + typeFolderPath.toOSString();
+
+                resource.addResources(basePath, metadataNameFileUrls);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
-
         }
-    }
 
-    /**
-     * DOC qwei Comment method "addContext".
-     * 
-     * @param processItem
-     * @param resource
-     */
-    private void addContext(ExportFileResource[] allResources, ProcessItem processItem, ExportFileResource resource) {
-        ProcessType process = processItem.getProcess();
-        if (process != null) {
-            ContextType contextType = (ContextType) process.getContext().get(0);
-            for (ContextParameterType param : (List<ContextParameterType>) contextType.getContextParameter()) {
-                String repositoryContextId = param.getRepositoryContextId();
-                if (repositoryContextId != null && !"".equals(repositoryContextId)) { //$NON-NLS-1$
-                    try {
-                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                        IRepositoryViewObject lastVersion = factory.getLastVersion(repositoryContextId);
-                        if (lastVersion != null) {
-                            Item item2 = lastVersion.getProperty().getItem();
-                            String contextName = item2.getProperty().getLabel();
-                            String contextVersion = item2.getProperty().getVersion();
-                            String contextPath = item2.getState().getPath();
-
-                            contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath; //$NON-NLS-1$ //$NON-NLS-2$
-                            IPath emfContextRootPath = getEmfContextRootPath(item2);
-                            String projectName = getCorrespondingProjectName(item2);
-                            // project file
-                            IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
-                                    FileConstants.LOCAL_PROJECT_FILENAME);
-                            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR
-                                    + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
-
-                            IPath itemFilePath = emfContextRootPath.append(contextPath).append(
-                                    contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                            IPath propertiesFilePath = emfContextRootPath.append(contextPath).append(
-                                    contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                            List<URL> contextFileUrls = new ArrayList<URL>();
-                            contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-                            contextFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                            String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                                    + JOB_CONTEXT_FOLDER;
-                            resource.addResources(basePath, contextFileUrls);
-                        }
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-
-                }
-            }
-
-        }
     }
 
     protected void checkAndAddProjectResource(ExportFileResource[] allResources, ExportFileResource curResource,

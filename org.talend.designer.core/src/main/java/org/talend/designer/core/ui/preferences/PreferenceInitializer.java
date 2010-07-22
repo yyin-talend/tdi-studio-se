@@ -121,7 +121,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         // db connection time out
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, true);
         store.setDefault(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, 15);
+        // store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
+        // Add dependencies routines for job
+        store.setDefault(ITalendCorePrefConstants.ADD_USER_ROUTINES, true);
+        store.setDefault(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES, true);
+
+        // have removed this function
         // store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);

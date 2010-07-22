@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
@@ -44,9 +46,9 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
@@ -57,6 +59,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -67,7 +70,6 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
@@ -113,6 +115,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
                         progressMonitor);
             }
+
             List<URL> resources = new ArrayList<URL>();
             String contextName = context.getName();
             if (contextName != null) {
@@ -129,18 +132,19 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // Exports the system libs
         List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
+
         // Add the java system libraries
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
+        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
+        List<URL> talendLibraries = getExternalLibraries(process, isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -189,6 +193,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
+
+        addDependenciesSourceCode(process, process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
 
         addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
 
@@ -270,18 +276,19 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // Exports the system libs
         List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
+
         // Add the java system libraries
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
+        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
+        List<URL> talendLibraries = getExternalLibraries(process, isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -483,13 +490,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File file = path.toFile();
             if (file.exists() && file.isDirectory()) {
                 for (File curFile : file.listFiles(filter)) {
-                    javaFileUrls.add(FileLocator.toFileURL(curFile.toURL()));
+                    javaFileUrls.add(FileLocator.toFileURL(curFile.toURI().toURL()));
                 }
             }
 
             resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName,
                     javaFileUrls);
 
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    protected void addDependenciesSourceCode(ExportFileResource[] process, ExportFileResource resource, boolean needSource) {
+        if (!needSource) {
+            return;
+        }
+        try {
             // get different routines.
 
             IRunProcessService service = CorePlugin.getDefault().getRunProcessService();
@@ -512,12 +529,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY, systemRoutinesFileUrls);
             }
 
+            List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
+            collectRoutines.addAll(collectRoutines(process));
+
+            Set<String> dependedRoutines = new HashSet<String>();
+            for (IRepositoryViewObject obj : collectRoutines) {
+                dependedRoutines.add(obj.getLabel() + "." //$NON-NLS-1$
+                        + ECodeLanguage.JAVA.getExtension());
+            }
+
             rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
             List<URL> userRoutinesFileUrls = new ArrayList<URL>();
             if (rep.exists()) {
                 for (IResource fileResource : rep.members()) {
                     if (fileResource instanceof IFile
-                            && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())) {
+                            && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())
+                            && dependedRoutines.contains(((IFile) fileResource).getName())) {
                         userRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
                     }
                 }
@@ -604,7 +631,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param boolean1
      * @return
      */
-    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process) {
+    protected List<URL> getExternalLibraries(ExportFileResource[] process, boolean needLibraries) {
         List<URL> list = new ArrayList<URL>();
         if (!needLibraries) {
             return list;
@@ -623,10 +650,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
         IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
+        List<Item> processItems = new ArrayList<Item>();
+
         for (int i = 0; i < process.length; i++) {
             ExportFileResource resource = process[i];
             ProcessItem item = (ProcessItem) resource.getItem();
-
+            processItems.add(item);
             String version = item.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 version = this.getSelectedJobVersion();
@@ -644,17 +673,30 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (neededLibraries != null) {
                 listModulesReallyNeeded.addAll(neededLibraries);
             }
+
         }
 
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+        // jar from routines
+        List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
+        collectRoutines.addAll(collectRoutines(process));
+
+        for (IRepositoryViewObject object : collectRoutines) {
+            Item item = object.getProperty().getItem();
+            if (item instanceof RoutineItem) {
+                RoutineItem routine = (RoutineItem) item;
+                EList imports = routine.getImports();
+                for (Object o : imports) {
+                    IMPORTType type = (IMPORTType) o;
+                    listModulesReallyNeeded.add(type.getMODULE());
+                }
+            }
         }
 
         for (int i = 0; i < files.length; i++) {
             File tempFile = files[i];
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
-                    list.add(tempFile.toURL());
+                    list.add(tempFile.toURI().toURL());
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -801,7 +843,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needSystemRoutine
      * @return
      */
-    protected List<URL> getSystemRoutine(boolean needSystemRoutine) {
+    protected List<URL> getSystemRoutine(ExportFileResource[] process, boolean needSystemRoutine) {
         List<URL> list = new ArrayList<URL>();
         if (!needSystemRoutine) {
             return list;
@@ -816,11 +858,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
-            jarbuilder.setIncludeSystemRoutines(getExcludeUerRoutines());
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, true));
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
-            URL url = jarFile.toURL();
+            URL url = jarFile.toURI().toURL();
             list.add(url);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -829,12 +871,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets system routine.
+     * Gets user routine.
      * 
-     * @param needSystemRoutine
+     * @param needUserRoutine
      * @return
      */
-    protected List<URL> getUserRoutine(boolean needUserRoutine) {
+    protected List<URL> getUserRoutine(ExportFileResource[] process, boolean needUserRoutine) {
         List<URL> list = new ArrayList<URL>();
         if (!needUserRoutine) {
             return list;
@@ -846,23 +888,88 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             List<String> excludes = new ArrayList<String>();
             excludes.add(SYSTEM_ROUTINES_PATH);
+            excludes.add(USER_ROUTINES_PATH); // remove all
 
             String jarPath = getTmpFolder() + PATH_SEPARATOR + USERROUTINE_JAR;
 
             // make a jar file of user routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, false));
             jarbuilder.setExcludeDir(excludes);
-            jarbuilder.setExcludeFiles(getExcludeUerRoutines());
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
-            URL url = jarFile.toURL();
+            URL url = jarFile.toURI().toURL();
             list.add(url);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
         return list;
+    }
+
+    private List<File> getRoutineDependince(ExportFileResource[] process, boolean system) {
+        List<File> userRoutines = null;
+        try {
+            String classRoot = getClassRootLocation();
+            userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+
+            List<IRepositoryViewObject> collectRoutines = collectRoutines(process, system);
+
+            Iterator<File> iterator = userRoutines.iterator();
+            while (iterator.hasNext()) {
+                File file = (File) iterator.next();
+                boolean found = false;
+                for (IRepositoryViewObject object : collectRoutines) {
+                    RoutineItem item = (RoutineItem) object.getProperty().getItem();
+                    /*
+                     * only support like "ABC.class", "ABC$1.class" and "ABC$XYZ.class",
+                     * 
+                     * Do not support the class in one routine file.
+                     */
+                    String pattern = item.getProperty().getLabel() + "(\\$.+)*\\.class"; //$NON-NLS-1$
+                    if (file.getName().matches(pattern)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    iterator.remove();
+                }
+            }
+
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return userRoutines;
+
+    }
+
+    protected List<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system) {
+        Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process);
+
+        List<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
+
+        for (IRepositoryViewObject object : collectRoutines) {
+            Item item = object.getProperty().getItem();
+            if (item instanceof RoutineItem && (((RoutineItem) item).isBuiltIn() == system)) {
+                allRoutines.add(object);
+            }
+        }
+
+        return allRoutines;
+    }
+
+    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process) {
+        List<Item> processItems = new ArrayList<Item>();
+        for (ExportFileResource resource : process) {
+            if (resource.getItem() instanceof ProcessItem) {
+                processItems.add(resource.getItem());
+            }
+        }
+        return ProcessUtils.getProcessDependencies(ERepositoryObjectType.ROUTINES, processItems);
     }
 
     /**
@@ -1011,32 +1118,32 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return map;
     }
 
-    private List<File> getExcludeUerRoutines() {
-        List<File> userRoutines = null;
-
-        try {
-            String classRoot = getClassRootLocation();
-            userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
-            List<IRepositoryViewObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
-                    ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.ROUTINES);
-            Iterator<File> iterator = userRoutines.iterator();
-            while (iterator.hasNext()) {
-                File file = (File) iterator.next();
-                for (IRepositoryViewObject object : allRoutines) {
-                    RoutineItem item = (RoutineItem) object.getProperty().getItem();
-                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) { //$NON-NLS-1$
-                        iterator.remove();
-                    }
-                }
-            }
-
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return userRoutines;
-    }
+    // private List<File> getExcludeUerRoutines(ExportFileResource[] process) {
+    // List<File> userRoutines = null;
+    //
+    // try {
+    // String classRoot = getClassRootLocation();
+    // userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+    // List<IRepositoryViewObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
+    // ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.ROUTINES);
+    // Iterator<File> iterator = userRoutines.iterator();
+    // while (iterator.hasNext()) {
+    // File file = (File) iterator.next();
+    // for (IRepositoryViewObject object : allRoutines) {
+    // RoutineItem item = (RoutineItem) object.getProperty().getItem();
+    //                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) { //$NON-NLS-1$
+    // iterator.remove();
+    // }
+    // }
+    // }
+    //
+    // } catch (PersistenceException e) {
+    // ExceptionHandler.process(e);
+    // } catch (Exception e) {
+    // ExceptionHandler.process(e);
+    // }
+    // return userRoutines;
+    // }
 
     private List<File> getAllFiles(String rootPath, String childPath) {
         final List<File> list = new ArrayList<File>();

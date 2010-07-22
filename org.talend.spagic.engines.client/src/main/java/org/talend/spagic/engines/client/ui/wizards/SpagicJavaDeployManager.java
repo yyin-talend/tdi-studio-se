@@ -95,14 +95,14 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
         list.add(spagicResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
+        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries), process);
+        List<URL> talendLibraries = getExternalLibraries(process, isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
         rootResource.addResources(talendLibraries);
 
         return list;

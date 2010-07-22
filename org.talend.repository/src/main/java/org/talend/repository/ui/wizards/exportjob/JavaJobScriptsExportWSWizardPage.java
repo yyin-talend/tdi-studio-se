@@ -1295,6 +1295,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         this.setErrorMessage(buff.toString());
                         this.setPageComplete(false);
                         noError = false;
+                        break;
                     }
                 }
             }

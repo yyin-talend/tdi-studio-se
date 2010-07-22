@@ -1130,6 +1130,13 @@
              id="org.talend.repository.model.migration.RelationShipIndexMigrationTask"
              name="RelationShipIndexMigrationTask">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddRoutineDependenciesMigrationTask"
+             description="Add Routine Dependencies for job"
+             id="org.talend.repository.model.migration.AddRoutineDependenciesMigrationTask"
+             name="Add Routine Dependencies">
+       </projecttask>
    </extension>
    
    <extension

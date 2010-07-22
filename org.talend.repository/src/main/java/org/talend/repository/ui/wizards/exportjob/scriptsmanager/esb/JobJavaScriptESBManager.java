@@ -105,7 +105,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(true, process);
+        List<URL> talendLibraries = getExternalLibraries(process, true);
         libResource.addResources(talendLibraries);
 
         for (int i = 0; i < process.length; i++) {
@@ -160,10 +160,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         list.add(metaInfoFolder);
 
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(true);
+        List<URL> systemRoutineList = getSystemRoutine(process, true);
         libResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(true);
+        List<URL> userRoutineList = getUserRoutine(process, true);
         libResource.addResources(userRoutineList);
 
         // copy jbm-queue-service.xml or jbmq-queue-service.xml

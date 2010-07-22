@@ -13,7 +13,9 @@
 package org.talend.designer.core.ui.wizards;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -25,6 +27,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -99,8 +103,17 @@ public class NewProcessWizard extends Wizard {
 
             ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
 
+            // add depended routines.
+            EList routinesDependencies = process.getRoutinesDependencies();
+            routinesDependencies.clear();
+            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+            if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES)) {
+                routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));
+            }
+            if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_USER_ROUTINES)) {
+                routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
+            }
             processItem.setProcess(process);
-
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
 
         } catch (PersistenceException e) {

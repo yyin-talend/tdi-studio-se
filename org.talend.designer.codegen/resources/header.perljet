@@ -65,7 +65,7 @@ use <%=library.get("LIBRARY")%>;
 
 }
 
-for (String routine : CodeGeneratorRoutine.getRoutineName(process)) {
+for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
 %>
 use <%=routine%>;
 <%

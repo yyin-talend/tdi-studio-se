@@ -251,6 +251,15 @@
             isReadAction="true"
             level="12"
             name="Open Job Hierarchy"/>
+      <Action
+            class="org.talend.designer.core.ui.action.SetupProcessDependenciesRoutinesAction"
+            id="org.talend.designer.core.ui.action.SetupProcessDependenciesRoutinesAction"
+            isEditAction="false"
+            isPropertiesAction="false"
+            isReadAction="false"
+            level="12"
+            name="Setup routine dependencies">
+      </Action>
             
             
       

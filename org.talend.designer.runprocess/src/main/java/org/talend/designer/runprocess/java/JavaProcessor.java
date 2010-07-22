@@ -98,7 +98,9 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.IRulesProviderService;
@@ -934,6 +936,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         Set<String> neededLibraries = process.getNeededLibraries(true);
 
+        Property property = process.getProperty();
         if (neededLibraries == null) {
             neededLibraries = new HashSet<String>();
             for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
@@ -942,8 +945,17 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         } else { // this will avoid to add all libraries, only the needed
             // libraries will be added
-            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                neededLibraries.add(moduleNeeded.getModuleName());
+            if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
+                        .getItem());
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
             }
         }
 
@@ -996,7 +1008,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
             exportJar = classPathSeparator
                     + (!win32 && exportingJob ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
-            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
             for (JobInfo jobInfo : jobInfos) {
                 if (jobInfo.getJobVersion() != null) {
                     version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
@@ -1186,8 +1198,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } else {
             // see bug 0005559: Import cannot be resolved in routine after
             // opening Job Designer
-            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+            if (process instanceof IProcess2 && process.getProperty() != null
+                    && process.getProperty().getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) process
+                        .getProperty().getItem());
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                    listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+                }
             }
         }
 

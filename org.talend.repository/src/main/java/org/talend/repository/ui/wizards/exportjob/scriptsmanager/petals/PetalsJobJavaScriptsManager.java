@@ -102,18 +102,17 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             ExportFileResource libResource = new ExportFileResource(processItem, null);
             resources.add(libResource);
 
-            List<URL> talendLibraries = getExternalLibraries(true, process);
+            List<URL> talendLibraries = getExternalLibraries(process, true);
             libResource.addResources(talendLibraries);
 
-            List<URL> systemRoutineList = getSystemRoutine(true);
+            List<URL> systemRoutineList = getSystemRoutine(process, true);
             libResource.addResources(systemRoutineList);
 
             addDependencies(process, processItem, needDependencies, libResource);
             if (needUserRoutines) {
-                List<URL> userRoutineList = getUserRoutine(true);
+                List<URL> userRoutineList = getUserRoutine(process, true);
                 libResource.addResources(userRoutineList);
             }
-
             // Generate jar file for the job
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, true));
 
@@ -141,6 +140,10 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             ExportFileResource wsdlFile = generateWsdlFile(processItem);
             resources.add(wsdlFile);
         }
+        // routines src
+        ExportFileResource routinesSrcResource = new ExportFileResource();
+        addDependenciesSourceCode(process, routinesSrcResource, needSource);
+        resources.add(routinesSrcResource);
 
         return resources;
     }
