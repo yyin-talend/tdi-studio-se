@@ -41,6 +41,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
         TextElementParameter param10 = new TextElementParameter("REMOVE_EMPTY_ROW", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param11 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param12 = new TextElementParameter("SPLIT_EVERY", "1000"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param13 = new TextElementParameter("CREATE", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
         addParameter(param0);
         addParameter(param1);
@@ -55,6 +56,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
         addParameter(param10);
         addParameter(param11);
         addParameter(param12);
+        addParameter(param13);
 
     }
 
