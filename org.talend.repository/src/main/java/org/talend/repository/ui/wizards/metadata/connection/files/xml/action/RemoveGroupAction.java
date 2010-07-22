@@ -15,7 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
+import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
@@ -27,14 +27,14 @@ public class RemoveGroupAction extends SelectionProviderAction {
 
     private TreeViewer xmlViewer;
 
-    private XmlFileOutputStep2Form form;
+    private AbstractXmlStepForm form;
 
     public RemoveGroupAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public RemoveGroupAction(TreeViewer xmlViewer, String text, XmlFileOutputStep2Form form) {
+    public RemoveGroupAction(TreeViewer xmlViewer, String text, AbstractXmlStepForm form) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
         this.form = form;

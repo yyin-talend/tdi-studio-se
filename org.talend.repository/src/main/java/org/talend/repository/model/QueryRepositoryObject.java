@@ -12,7 +12,12 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Iterator;
+
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -69,5 +74,26 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
 
     public void removeFromParent() {
         query.getQueries().getQuery().remove(query);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.properties.ConnectionItem
+     * )
+     */
+    public void removeFromParent(Connection connection) {
+        if (connection instanceof DatabaseConnection) {
+            DatabaseConnection dbConn = (DatabaseConnection) connection;
+            QueriesConnection queries = dbConn.getQueries();
+            Iterator iterator = queries.getQuery().iterator();
+            while (iterator.hasNext()) {
+                Object next = iterator.next();
+                if (next instanceof Query && query.getLabel() != null && query.getLabel().equals(((Query) next).getLabel())) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 }

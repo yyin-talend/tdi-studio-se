@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.swt.utils;
 
+import java.util.List;
+
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -19,6 +22,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
 import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
@@ -26,7 +30,7 @@ import org.talend.repository.ui.utils.OtherConnectionContextUtils.EParamName;
  * $Id$
  * 
  */
-public abstract class AbstractXmlFileStepForm extends AbstractForm {
+public abstract class AbstractXmlFileStepForm extends AbstractXmlStepForm {
 
     protected XmlFileConnection connection;
 
@@ -76,5 +80,29 @@ public abstract class AbstractXmlFileStepForm extends AbstractForm {
             addContextParams(EParamName.OutputFilePath, true);
         }
 
+    }
+
+    public void redrawLinkers() {
+    }
+
+    public void updateConnection() {
+    }
+
+    public void updateStatus() {
+    }
+
+    public List<FOXTreeNode> getTreeData() {
+        return null;
+    }
+
+    public void setSelectedText(String label) {
+    }
+
+    public MetadataTable getMetadataTable() {
+        return null;
+    }
+
+    public TableViewer getSchemaViewer() {
+        return null;
     }
 }

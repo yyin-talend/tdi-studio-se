@@ -393,6 +393,44 @@ public class TreeUtil {
         return list;
     }
 
+    public static List<FOXTreeNode> getFoxTreeNodes(String filePath, String selectedEntity) {
+        if (selectedEntity == null || "".equals(selectedEntity)) {
+            return getFoxTreeNodes(filePath);
+        } else {
+            List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+            if (filePath == null) {
+                return list;
+            }
+
+            try {
+                ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, 0);
+                ATreeNode selectedNode = null;
+                if (treeNode != null) {
+                    for (Object obj : treeNode.getChildren()) {
+                        if (obj instanceof ATreeNode) {
+                            ATreeNode node = (ATreeNode) obj;
+                            if (selectedEntity.equals(node.getValue())) {
+                                selectedNode = node;
+                                break;
+                            }
+                        }
+                    }
+                    if (selectedNode != null) {
+                        FOXTreeNode root = cloneATreeNode(selectedNode);
+                        if (root instanceof Element) {
+                            root.setParent(null);
+                            list.add(root);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            return list;
+        }
+
+    }
+
     public static FOXTreeNode cloneATreeNode(ATreeNode treeNode) {
         FOXTreeNode node = null;
         if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
@@ -408,7 +446,7 @@ public class TreeUtil {
             node.setLabel((String) treeNode.getValue());
         }
         MappingTypeRetriever retriever = MetadataTalendType.getMappingTypeRetriever("xsd_id");
-        node.setDataType(retriever.getDefaultSelectedTalendType("xs:" + treeNode.getDataType()));
+        node.setDataType(retriever.getDefaultSelectedTalendType("xs:" + treeNode.getOriginalDataType()));
         Object[] children = treeNode.getChildren();
         if (children != null) {
             for (int i = 0; i < children.length; i++) {

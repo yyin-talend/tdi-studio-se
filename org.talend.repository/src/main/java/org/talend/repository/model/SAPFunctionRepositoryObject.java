@@ -12,7 +12,11 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Iterator;
+
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -110,4 +114,28 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
         functionUnit.getConnection().getFuntions().remove(functionUnit);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.metadata.builder.connection
+     * .Connection)
+     */
+    public void removeFromParent(Connection connection) {
+        if (connection instanceof SAPConnection) {
+            SAPConnection sapConnection = (SAPConnection) connection;
+            if (sapConnection.getFuntions() != null) {
+                Iterator iterator = sapConnection.getFuntions().iterator();
+                while (iterator.hasNext()) {
+                    Object fObj = iterator.next();
+                    if (fObj instanceof SAPFunctionUnit) {
+                        SAPFunctionUnit unit = (SAPFunctionUnit) fObj;
+                        if (functionUnit.getLabel() != null && functionUnit.getLabel().equals(unit.getLabel())) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

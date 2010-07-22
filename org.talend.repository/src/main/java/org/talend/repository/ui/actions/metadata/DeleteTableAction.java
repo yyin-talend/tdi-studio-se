@@ -33,6 +33,11 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -100,10 +105,26 @@ public class DeleteTableAction extends AContextualAction {
                     ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                     connection = (item).getConnection();
                     ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) node.getObject();
+                    // this one is the old metadataObject
                     AbstractMetadataObject abstractMetadataObject = subRepositoryObject.getAbstractMetadataObject();
                     if (abstractMetadataObject instanceof SubscriberTable) {
                         return;
                     }
+                    abstractMetadataObject = getNewMetadataObjectFromConnection(connection, abstractMetadataObject);
+
+                    // for (Object table : connection.getTables()) {
+                    // if (table instanceof AbstractMetadataObject) {
+                    // AbstractMetadataObject metadataTable = (AbstractMetadataObject) table;
+                    // if (metadataTable.getLabel() != null
+                    // && metadataTable.getLabel().equals(abstractMetadataObject.getLabel())) {
+                    // abstractMetadataObject = metadataTable;
+                    // }
+                    // }
+                    // }
+                    if (abstractMetadataObject == null) {
+                        return;
+                    }
+
                     if (SubItemHelper.isDeleted(abstractMetadataObject)) {
                         if (confirm == null) {
                             String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
@@ -112,7 +133,7 @@ public class DeleteTableAction extends AContextualAction {
                             confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
                         }
                         if (confirm) {
-                            subRepositoryObject.removeFromParent();
+                            subRepositoryObject.removeFromParent(connection);
                         }
                     } else {
                         SubItemHelper.setDeleted(abstractMetadataObject, true);
@@ -154,6 +175,58 @@ public class DeleteTableAction extends AContextualAction {
         // viewPart.setFocus();
         // repositoryView.getViewSite().getSelectionProvider().setSelection(null);
         // repositoryView.expand(recycleBinNode, true);
+
+    }
+
+    private AbstractMetadataObject getNewMetadataObjectFromConnection(Connection connection,
+            AbstractMetadataObject oldMetadataObject) {
+        if (oldMetadataObject.getLabel() == null) {
+            return null;
+        }
+        if (connection instanceof SAPConnection) {
+            SAPConnection sapConnection = (SAPConnection) connection;
+            if (oldMetadataObject instanceof SAPFunctionUnit) {
+                if (sapConnection.getFuntions() != null) {
+                    for (Object fObj : sapConnection.getFuntions()) {
+                        if (fObj instanceof SAPFunctionUnit) {
+                            SAPFunctionUnit unit = (SAPFunctionUnit) fObj;
+                            if (oldMetadataObject.getLabel().equals(unit.getLabel())) {
+                                return unit;
+                            }
+                        }
+                    }
+                }
+            } else if (oldMetadataObject instanceof SAPIDocUnit) {
+                for (Object fObj : sapConnection.getIDocs()) {
+                    if (fObj instanceof SAPIDocUnit) {
+                        SAPIDocUnit unit = (SAPIDocUnit) fObj;
+                        if (oldMetadataObject.getLabel().equals(unit.getLabel())) {
+                            return unit;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (oldMetadataObject instanceof Query && connection instanceof DatabaseConnection) {
+                DatabaseConnection dbConn = (DatabaseConnection) connection;
+                QueriesConnection queries = dbConn.getQueries();
+                for (Object query : queries.getQuery()) {
+                    if (query instanceof Query && oldMetadataObject.getLabel().equals(((Query) query).getLabel())) {
+                        return (Query) query;
+                    }
+                }
+            } else {
+                for (Object table : connection.getTables()) {
+                    if (table instanceof AbstractMetadataObject) {
+                        AbstractMetadataObject metadataTable = (AbstractMetadataObject) table;
+                        if (metadataTable.getLabel().equals(oldMetadataObject.getLabel())) {
+                            return metadataTable;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
 
     }
 

@@ -28,6 +28,8 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -145,8 +147,13 @@ public class EmptyRecycleBinAction extends AContextualAction {
         if (objToDelete instanceof ISubRepositoryObject) {
             ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
             if (!isRootNodeDeleted(currentNode)) {
-                subRepositoryObject.removeFromParent();
-                factory.save(subRepositoryObject.getProperty().getItem());
+                Item item = subRepositoryObject.getProperty().getItem();
+                if (item instanceof ConnectionItem) {
+                    subRepositoryObject.removeFromParent(((ConnectionItem) item).getConnection());
+                } else {
+                    subRepositoryObject.removeFromParent();
+                }
+                factory.save(item);
             }
         } else {
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();

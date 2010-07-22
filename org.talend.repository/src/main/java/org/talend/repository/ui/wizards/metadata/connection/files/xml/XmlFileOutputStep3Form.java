@@ -193,7 +193,6 @@ public class XmlFileOutputStep3Form extends AbstractXmlFileStepForm {
             }
         }
         return columnList;
-
     }
 
 }

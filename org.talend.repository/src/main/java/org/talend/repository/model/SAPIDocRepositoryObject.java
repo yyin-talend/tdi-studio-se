@@ -12,7 +12,11 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Iterator;
+
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -100,6 +104,29 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
      */
     public void removeFromParent() {
         iDocUnit.getConnection().getIDocs().remove(iDocUnit);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.metadata.builder.connection
+     * .Connection)
+     */
+    public void removeFromParent(Connection connection) {
+        if (connection instanceof SAPConnection) {
+            SAPConnection sapConnection = (SAPConnection) connection;
+            Iterator iterator = sapConnection.getIDocs().iterator();
+            while (iterator.hasNext()) {
+                Object fObj = iterator.next();
+                if (fObj instanceof SAPIDocUnit) {
+                    SAPIDocUnit unit = (SAPIDocUnit) fObj;
+                    if (iDocUnit.getLabel() != null && iDocUnit.getLabel().equals(unit.getLabel())) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
     }
 
 }

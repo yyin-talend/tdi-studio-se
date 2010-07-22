@@ -64,8 +64,10 @@ import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
+import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -85,6 +87,7 @@ import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
@@ -806,8 +809,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion("")
             if (propertyParam != null) {
                 // command used to set property type
-                ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, propertyParam.getName()
-                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId, true); //$NON-NLS-1$
+                IMetadataTable metadataTable = null;
+                if (selectedNode.getContentType() == ERepositoryObjectType.METADATA_MDMCONNECTION
+                        && selectedNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+                    if (selectedNode.getObject() instanceof IMetadataTable) {
+                        metadataTable = (IMetadataTable) selectedNode.getObject();
+                    }
+                }
+                ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, metadataTable,
+                        propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId, true); //$NON-NLS-1$
                 command1.setMaps(repositoryTableMap);
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
                     command1.setGuessQuery(true);
@@ -1087,7 +1097,24 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     productNameWanted = "XMLOUTPUT";
                 }
             }
-            
+            // for mdm
+            boolean inputModel = false;
+            if (item instanceof MDMConnectionItem) {
+                MDMConnectionItem mdmItem = (MDMConnectionItem) item;
+                if (store.seletetedNode != null && store.seletetedNode.getObject() instanceof MetadataTableRepositoryObject) {
+                    MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) store.seletetedNode.getObject();
+                    if (mdmItem.getConnection() instanceof MDMConnection) {
+                        MDMConnection connection = (MDMConnection) mdmItem.getConnection();
+                        for (Object obj : connection.getSchemas()) {
+                            if (obj instanceof Concept && object.getLabel().equals(((Concept) obj).getLabel())) {
+                                inputModel = ((Concept) obj).isInputModel();
+                            }
+
+                        }
+                    }
+                }
+            }
+
             EmfComponent emfComponent = null;
             List<IComponent> neededComponents = new ArrayList<IComponent>();
             for (IComponent component : components) {
@@ -1105,7 +1132,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                     boolean flag = filterComponent(component, name, type);
                     if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
-                        neededComponents.add(emfComponent);
+                        if (item instanceof MDMConnectionItem) {
+                            if (inputModel && emfComponent.getName().endsWith("Input")) {
+                                neededComponents.add(emfComponent);
+                            } else if (!inputModel && emfComponent.getName().endsWith("Output")) {
+                                neededComponents.add(emfComponent);
+                            }
+
+                        } else {
+                            neededComponents.add(emfComponent);
+                        }
                     }
                 }
             }

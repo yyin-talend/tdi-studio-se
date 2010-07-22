@@ -99,6 +99,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private String currentTableName;
 
+    private IMetadataTable table;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -153,6 +155,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
         EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+    }
+
+    public ChangeValuesFromRepository(Element elem, Connection connection, IMetadataTable table, String propertyName,
+            String value, boolean reOpenXSDBool) {
+        this(elem, connection, propertyName, value, reOpenXSDBool);
+        this.table = table;
     }
 
     @SuppressWarnings("unchecked")
@@ -241,7 +249,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 boolean b = elem instanceof INode && (((INode) elem).getComponent().getName().equals("tHL7Input") //$NON-NLS-1$
-                        || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML")); //$NON-NLS-1$
+                        || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML") //$NON-NLS-1$
+                || ((INode) elem).getComponent().getName().equals("tMDMOutput")); //$NON-NLS-1$
                 if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || b) //$NON-NLS-1$
                         && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
@@ -256,7 +265,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);
                     } else {
-                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
+                        objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                     }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());

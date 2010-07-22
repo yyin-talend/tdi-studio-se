@@ -12,8 +12,14 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Iterator;
+
+import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.Concept;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -87,5 +93,38 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
         }
         table.getConnection().getTables().remove(table);
         return;
+    }
+
+    public void removeFromParent(Connection connection) {
+        EList tables = connection.getTables();
+        if (tables != null) {
+            Iterator iterator = tables.iterator();
+            while (iterator.hasNext()) {
+                Object obj = iterator.next();
+                if (obj instanceof org.talend.core.model.metadata.builder.connection.MetadataTable) {
+                    org.talend.core.model.metadata.builder.connection.MetadataTable repObj = (org.talend.core.model.metadata.builder.connection.MetadataTable) obj;
+                    if (table != null && table.getLabel() != null && table.getLabel().equals(repObj.getLabel())) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+            if (connection instanceof MDMConnection) {
+                EList schemas = ((MDMConnection) connection).getSchemas();
+                Iterator iterator2 = schemas.iterator();
+                while (iterator2.hasNext()) {
+                    Object object = iterator2.next();
+                    if (object instanceof Concept) {
+                        Concept concept = (Concept) object;
+                        if (concept.getLabel() != null && concept.getLabel().equals(table.getLabel())) {
+                            iterator2.remove();
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+
     }
 }

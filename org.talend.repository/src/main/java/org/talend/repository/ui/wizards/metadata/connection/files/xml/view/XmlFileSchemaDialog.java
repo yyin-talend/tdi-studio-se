@@ -30,14 +30,14 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
+import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
 
 /**
  * wzhang class global comment. Detailled comment
  */
 public class XmlFileSchemaDialog extends Dialog {
 
-    private XmlFileOutputStep2Form form;
+    private AbstractXmlStepForm form;
 
     private MetadataEmfTableEditor tableEditor;
 
@@ -45,7 +45,7 @@ public class XmlFileSchemaDialog extends Dialog {
 
     private Map<MetadataColumn, String> changedNameColumns = new HashMap<MetadataColumn, String>();
 
-    public XmlFileSchemaDialog(Shell parent, XmlFileOutputStep2Form form) {
+    public XmlFileSchemaDialog(Shell parent, AbstractXmlStepForm form) {
         super(parent);
         this.form = form;
 

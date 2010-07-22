@@ -57,6 +57,11 @@ public class TreePopulator {
      * 
      */
     public boolean populateTree(String filePath, ATreeNode treeNode) {
+
+        return populateTree(filePath, treeNode, null);
+    }
+
+    public boolean populateTree(String filePath, ATreeNode treeNode, String selectedEntity) {
         availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) { //$NON-NLS-1$
@@ -78,7 +83,23 @@ public class TreePopulator {
                 return false;
             } else {
                 Object[] childs = treeNode.getChildren();
-                populateTreeItems(availableXmlTree, childs, 0, ""); //$NON-NLS-1$
+                if (selectedEntity != null) {
+                    Object selected = null;
+                    for (int i = 0; i < childs.length; i++) {
+                        if (childs[i] instanceof ATreeNode) {
+                            if (selectedEntity.equals(((ATreeNode) childs[i]).getValue())) {
+                                selected = childs[i];
+                                break;
+                            }
+                        }
+                    }
+                    if (selected == null && childs.length > 0) {
+                        selected = childs[0];
+                    }
+                    populateTreeItems(availableXmlTree, new Object[] { selected }, 0, ""); //$NON-NLS-1$
+                } else {
+                    populateTreeItems(availableXmlTree, childs, 0, ""); //$NON-NLS-1$
+                }
                 this.filePath = filePath;
                 return true;
             }

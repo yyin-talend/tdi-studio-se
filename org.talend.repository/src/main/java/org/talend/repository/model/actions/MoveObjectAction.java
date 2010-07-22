@@ -110,6 +110,11 @@ public class MoveObjectAction {
             return false;
         }
 
+        // can't drag mdm connection
+        if (sourceNode.getObjectType() == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+            return false;
+        }
+
         if (targetNode == null) {
             switch (sourceNode.getType()) {
             case REPOSITORY_ELEMENT:

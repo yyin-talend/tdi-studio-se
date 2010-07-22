@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
+import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -31,14 +31,14 @@ public class CreateElementAction extends SelectionProviderAction {
 
     private TreeViewer xmlViewer;
 
-    private XmlFileOutputStep2Form form;
+    private AbstractXmlStepForm form;
 
     public CreateElementAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public CreateElementAction(TreeViewer xmlViewer, XmlFileOutputStep2Form form, String text) {
+    public CreateElementAction(TreeViewer xmlViewer, AbstractXmlStepForm form, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
         this.form = form;
