@@ -51,53 +51,57 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
      * @see org.eclipse.ui.part.PluginDropAdapter#performDrop(java.lang.Object)
      */
     @Override
-    public boolean performDrop(Object data) {
+    public boolean performDrop(final Object data) {
         int operation = getCurrentOperation();
         final RepositoryNode targetNode = (RepositoryNode) getCurrentTarget();
         boolean toReturn = true;
 
-        for (Object obj : ((StructuredSelection) data).toArray()) {
-            final RepositoryNode sourceNode = (RepositoryNode) obj;
-            try {
-                RepositoryWorkUnit<Object> repositoryWorkUnit = null;
-                switch (operation) {
-                case DND.DROP_COPY:
-                    String copyName = "User action : Copy Object"; //$NON-NLS-1$
-                    repositoryWorkUnit = new RepositoryWorkUnit<Object>(copyName, CopyObjectAction.getInstance()) {
+        try {
+            RepositoryWorkUnit<Object> repositoryWorkUnit = null;
+            switch (operation) {
+            case DND.DROP_COPY:
+                String copyName = "User action : Copy Object"; //$NON-NLS-1$
+                repositoryWorkUnit = new RepositoryWorkUnit<Object>(copyName, CopyObjectAction.getInstance()) {
 
-                        @Override
-                        protected void run() throws LoginException, PersistenceException {
-                            try {
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
+                        try {
+                            for (Object obj : ((StructuredSelection) data).toArray()) {
+                                final RepositoryNode sourceNode = (RepositoryNode) obj;
                                 CopyObjectAction.getInstance().execute(sourceNode, targetNode);
-                            } catch (Exception e) {
-                                throw new PersistenceException(e);
                             }
+                        } catch (Exception e) {
+                            throw new PersistenceException(e);
                         }
-                    };
-                    ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
-                    break;
-                case DND.DROP_MOVE:
-                    String moveName = "User action : Move Object"; //$NON-NLS-1$
-                    repositoryWorkUnit = new RepositoryWorkUnit<Object>(moveName, MoveObjectAction.getInstance()) {
+                    }
+                };
+                ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
+                break;
+            case DND.DROP_MOVE:
+                String moveName = "User action : Move Object"; //$NON-NLS-1$
+                repositoryWorkUnit = new RepositoryWorkUnit<Object>(moveName, MoveObjectAction.getInstance()) {
 
-                        @Override
-                        protected void run() throws LoginException, PersistenceException {
-                            try {
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
+                        try {
+                            for (Object obj : ((StructuredSelection) data).toArray()) {
+                                final RepositoryNode sourceNode = (RepositoryNode) obj;
                                 MoveObjectAction.getInstance().execute(sourceNode, targetNode);
-                            } catch (Exception e) {
-                                throw new PersistenceException(e);
                             }
+                        } catch (Exception e) {
+                            throw new PersistenceException(e);
                         }
-                    };
-                    ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
-                    break;
-                default:
-                    // Nothing to do
-                }
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+                    }
+                };
+                ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
+                break;
+            default:
+                // Nothing to do
             }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
+
         return toReturn;
     }
 
