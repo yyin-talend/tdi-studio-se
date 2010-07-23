@@ -13,6 +13,7 @@
 package org.talend.componentdesigner.ui.action.provider;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
+import org.talend.componentdesigner.util.XSDValidator;
 import org.talend.componentdesigner.util.file.FileCopy;
 import org.talend.core.CorePlugin;
 
@@ -107,23 +109,85 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
             // user components folder are the same.
             String projectURL = ComponentDesigenerPlugin.getDefault().getPreferenceStore().getString(PluginConstant.PROJECT_URL);
             File source = new File(projectURL);
-            if (!targetFile.equals(source)) {
-                for (IFolder selectedFolder : selectedFolderList) {
-                    File sourceFile = selectedFolder.getRawLocation().toFile();
-                    String sourceComponentFolder = sourceFile.getAbsolutePath();
-                    String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
 
-                    FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
+            List<String> invalidXMLs = new ArrayList();
+            for (IFolder selectedFolder : selectedFolderList) {
+                List<String> result = checkComponentXMLinFolder(selectedFolder.getRawLocation().toString());
+                invalidXMLs.addAll(result);
+            }
+
+            // all XML are OK
+            if (invalidXMLs.size() == 0) {
+
+                if (!targetFile.equals(source)) {
+                    for (IFolder selectedFolder : selectedFolderList) {
+                        File sourceFile = selectedFolder.getRawLocation().toFile();
+                        String sourceComponentFolder = sourceFile.getAbsolutePath();
+                        String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
+
+                        FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
+
+                    }
+                }
+
+                MessageDialog warningMessageDialog = new MessageDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.getString("PushToPaletteActionProvider.Information"), null, Messages.getString("PushToPaletteActionProvider.InformationMSG"), MessageDialog.INFORMATION, //$NON-NLS-1$ //$NON-NLS-2$
+                        new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
+                warningMessageDialog.open();
+
+                CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
+            } else {
+                StringBuffer sbuffer = new StringBuffer();
+                for (String invalidXML : invalidXMLs) {
+                    sbuffer.append(invalidXML).append("\n"); //$NON-NLS-1$
+                }
+
+                String waringInfo = Messages.getString("PushToPaletteActionProvider.PushToPaletteActionProvider.failed") + sbuffer.toString(); //$NON-NLS-1$
+
+                MessageDialog warningMessageDialog = new MessageDialog(
+
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("PushToPaletteActionProvider.PushToPaletteActionProvider.result"), null, waringInfo, //$NON-NLS-1$
+                        MessageDialog.WARNING, new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
+
+                warningMessageDialog.open();
+            }
+
+        }
+
+        private List<String> checkComponentXMLinFolder(String folderPath) {
+
+            List<String> invalidXMLs = new ArrayList();
+            File componentFolder = new File(folderPath);
+            // get the correct XML file for components
+            File[] list = componentFolder.listFiles(new FilenameFilter() {
+
+                public boolean accept(File dir, String name) {
+                    // _java.xml
+                    String javaXmlName = dir.getName() + "_java.xml"; //$NON-NLS-1$
+                    String perlXmlName = dir.getName() + "_perl.xml"; //$NON-NLS-1$
+                    if (name.equals(javaXmlName) || name.equals(perlXmlName)) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            if (list != null) {
+                // check the xml one by one(for perl/java)
+                for (File xmlFile : list) {
+                    try {
+                        String message = new XSDValidator().checkXSD(xmlFile.getCanonicalPath());
+                        if (message.length() > 0) {
+                            invalidXMLs.add(xmlFile.getName());
+                        }
+                    } catch (Exception e) {
+                        org.talend.componentdesigner.exception.ExceptionHandler.process(e);
+                    }
                 }
             }
 
-            MessageDialog warningMessageDialog = new MessageDialog(
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                    Messages.getString("PushToPaletteActionProvider.Information"), null, Messages.getString("PushToPaletteActionProvider.InformationMSG"), MessageDialog.INFORMATION, //$NON-NLS-1$ //$NON-NLS-2$
-                    new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
-            warningMessageDialog.open();
-
-            CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
+            return invalidXMLs;
         }
     }
 }

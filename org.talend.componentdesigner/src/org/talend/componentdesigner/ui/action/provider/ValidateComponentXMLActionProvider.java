@@ -12,10 +12,7 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.action.provider;
 
-import java.net.URL;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -26,7 +23,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.i18n.internal.Messages;
-import org.talend.core.model.ModelPlugin;
+import org.talend.componentdesigner.util.XSDValidator;
 
 /**
  * DOC gke class global comment. Detailled comment
@@ -80,33 +77,8 @@ public class ValidateComponentXMLActionProvider extends CommonActionProvider {
         public void run() {
             //
             try {
-                URL url = ModelPlugin.getDefault().getBundle().getResource("/model/Component.xsd"); //$NON-NLS-1$
-                url = FileLocator.toFileURL(url);
-                String componentXSDFile = url.getFile();
-                //
-                javax.xml.validation.SchemaFactory factorytXSDValidator = javax.xml.validation.SchemaFactory
-                        .newInstance("http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$
-                java.io.File schemaLocationtXSDValidator = new java.io.File(componentXSDFile);
-                String message = null;
+                String message = new XSDValidator().checkXSD(selectedFile.getRawLocation().toString());
 
-                TalendErrorHandler errorHandler = new TalendErrorHandler();
-
-                try {
-                    javax.xml.validation.Schema schematXSDValidator = factorytXSDValidator
-                            .newSchema(schemaLocationtXSDValidator);
-                    javax.xml.validation.Validator validatortXSDValidator = schematXSDValidator.newValidator();
-                    java.io.File xmlfiletXSDValidator = new java.io.File(selectedFile.getLocationURI());
-                    javax.xml.transform.Source sourcetXSDValidator = new javax.xml.transform.stream.StreamSource(
-                            xmlfiletXSDValidator);
-
-                    validatortXSDValidator.setErrorHandler(errorHandler);
-
-                    validatortXSDValidator.validate(sourcetXSDValidator);
-
-                } catch (org.xml.sax.SAXParseException extXSDValidator) {
-                    errorHandler.error(extXSDValidator);
-                }
-                message = errorHandler.returnMessage();
                 if (message.length() > 0) {
                     message = Messages.getString("ValidateComponentXMLActionProvider.invalid") + message; //$NON-NLS-1$
                 } else {
@@ -124,40 +96,5 @@ public class ValidateComponentXMLActionProvider extends CommonActionProvider {
             }
 
         }
-
     }
-
-    /**
-     * DOC gke ValidateWithComponentXSDActionProvider class global comment. Detailled comment
-     */
-    class TalendErrorHandler implements org.xml.sax.ErrorHandler {
-
-        String errorMessage = ""; //$NON-NLS-1$
-
-        public void warning(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException {
-            errorMessage = errorMessage
-                    + Messages.getString("ValidateComponentXMLActionProvider.warning", String.valueOf(ex.getLineNumber())) + " : " //$NON-NLS-1$//$NON-NLS-2$
-                    + ex.getMessage();
-        }
-
-        public void error(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException {
-            errorMessage = errorMessage
-                    + Messages.getString("ValidateComponentXMLActionProvider.error", String.valueOf(ex.getLineNumber())) + " : " //$NON-NLS-1$//$NON-NLS-2$
-                    + ex.getMessage();
-        }
-
-        public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException {
-
-            errorMessage = errorMessage
-                    + Messages.getString("ValidateComponentXMLActionProvider.fatalerror", String.valueOf(ex.getLineNumber())) + " : " //$NON-NLS-1$//$NON-NLS-2$
-                    + ex.getMessage();
-
-        }
-
-        private String returnMessage() {
-            return errorMessage == null ? "" : errorMessage; //$NON-NLS-1$
-        }
-
-    }
-
 }
