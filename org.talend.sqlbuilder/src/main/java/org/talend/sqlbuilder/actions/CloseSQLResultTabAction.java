@@ -14,8 +14,6 @@ package org.talend.sqlbuilder.actions;
 
 import java.net.URL;
 
-import org.talend.sqlbuilder.util.URLUtil;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -23,6 +21,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.util.URLUtil;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>

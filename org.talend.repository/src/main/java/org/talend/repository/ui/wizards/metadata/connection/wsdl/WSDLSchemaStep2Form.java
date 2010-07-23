@@ -47,7 +47,6 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
@@ -57,6 +56,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -107,8 +107,8 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
     }
 
     public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
-        super(parent, connectionItem, (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0),
-                null);
+        super(parent, connectionItem,
+                ConnectionHelper.getTables(connectionItem.getConnection()).toArray(new MetadataTable[0])[0], null);
         setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
@@ -501,7 +501,7 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);
                 } else {
-                    metadataColumn.setPrecision(null);
+                    metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));

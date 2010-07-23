@@ -26,6 +26,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -35,6 +36,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -47,6 +50,8 @@ import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
+import orgomg.cwm.resource.record.RecordFactory;
+import orgomg.cwm.resource.record.RecordFile;
 
 /**
  * DOC yexiaowei class global comment. Detailled comment
@@ -116,10 +121,20 @@ public class ExcelFileWizard extends CheckLastVersionRepositoryWizard implements
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createFileExcelConnection();
+            connection.setName(ERepositoryObjectType.METADATA_FILE_EXCEL.getKey());
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
-            connection.getTables().add(metadataTable);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    RecordFile.class);
+            if (record != null) { // hywang
+                PackageHelper.addMetadataTable(metadataTable, record);
+            } else {
+                RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                newrecord.setName(connection.getName());
+                ConnectionHelper.addPackage(newrecord, connection);
+                PackageHelper.addMetadataTable(metadataTable, newrecord);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -172,10 +187,20 @@ public class ExcelFileWizard extends CheckLastVersionRepositoryWizard implements
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createFileExcelConnection();
+            connection.setName(ERepositoryObjectType.METADATA_FILE_EXCEL.getKey());
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
-            connection.getTables().add(metadataTable);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    RecordFile.class);
+            if (record != null) { // hywang
+                PackageHelper.addMetadataTable(metadataTable, record);
+            } else {
+                RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                newrecord.setName(connection.getName());
+                ConnectionHelper.addPackage(newrecord, connection);
+                PackageHelper.addMetadataTable(metadataTable, newrecord);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))

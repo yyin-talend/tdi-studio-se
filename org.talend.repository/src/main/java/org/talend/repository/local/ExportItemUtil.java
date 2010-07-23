@@ -47,6 +47,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -514,6 +515,8 @@ public class ExportItemUtil {
                 }
             }
         }
+
+        MetadataManager.addPackges(item, objects); // hywang 13221
 
         if (item instanceof TDQItem && isTDQ()) {
             final Collection<EObject> tdqObjects = service.needCopyObjects((TDQItem) item);

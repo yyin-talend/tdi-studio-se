@@ -63,6 +63,8 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
@@ -70,6 +72,8 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
+import orgomg.cwm.resource.record.RecordFactory;
+import orgomg.cwm.resource.record.RecordFile;
 
 /**
  * wzhang class global comment. Detailled comment
@@ -262,11 +266,19 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
             return;
         }
         List<FOXTreeNode> nodeList = TreeUtil.getFoxTreeNodes(file);
-        if (getConnection().getTables().isEmpty()) {
+        if (ConnectionHelper.getTables(getConnection()).isEmpty()) {
             MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
-            getConnection().getTables().add(table);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(getConnection().getName(), getConnection(), RecordFile.class);
+            if (record != null) { // hywang
+                PackageHelper.addMetadataTable(table, record);
+            } else {
+                RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                newrecord.setName(connection.getName());
+                ConnectionHelper.addPackage(newrecord, connection);
+                PackageHelper.addMetadataTable(table, newrecord);
+            }
         }
-        EList schemaMetadataColumn = ((MetadataTable) getConnection().getTables().get(0)).getColumns();
+        EList schemaMetadataColumn = ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0].getColumns();
         schemaMetadataColumn.clear();
         initMetadataTable(nodeList, schemaMetadataColumn);
         if (nodeList.isEmpty()) {
@@ -586,7 +598,8 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
                 availableXmlTree.setEnabled(false);
                 fileContentText.setEnabled(false);
                 getConnection().setXmlFilePath("");
-                ((MetadataTable) getConnection().getTables().get(0)).getColumns().clear();
+                ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0].getColumns().clear();
+                // ((MetadataTable) getConnection().getTables().get(0)).getColumns().clear();
                 getConnection().getRoot().clear();
                 getConnection().getLoop().clear();
                 getConnection().getGroup().clear();

@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -71,7 +71,6 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
@@ -81,6 +80,10 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.cwm.helper.CatalogHelper;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.RepositoryPlugin;
@@ -93,6 +96,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
+import orgomg.cwm.resource.relational.Catalog;
 
 /**
  * @author ocarbone
@@ -245,13 +249,14 @@ public class DatabaseTableForm extends AbstractForm {
      */
     private void initTreeNavigatorNodes() {
 
-        if (metadataTable == null || getConnection().getTables() != null && getConnection().getTables().isEmpty()) {
+        if (metadataTable == null || ConnectionHelper.getTables(getConnection()) != null
+                && ConnectionHelper.getTables(getConnection()).isEmpty()) {
 
-            if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
+            if (ConnectionHelper.getTables(getConnection()) != null && !ConnectionHelper.getTables(getConnection()).isEmpty()) {
                 boolean isAllDeleted = true;
-                for (int i = 0; i < getConnection().getTables().size(); i++) {
-                    if (!TableHelper.isDeleted((MetadataTable) getConnection().getTables().get(i))) {
-                        metadataTable = (MetadataTable) getConnection().getTables().get(i);
+                for (int i = 0; i < ConnectionHelper.getTables(getConnection()).size(); i++) {
+                    if (!TableHelper.isDeleted((MetadataTable) ConnectionHelper.getTables(getConnection()).toArray()[i])) {
+                        metadataTable = (MetadataTable) ConnectionHelper.getTables(getConnection()).toArray()[i];
                         isAllDeleted = false;
                     }
                 }
@@ -589,7 +594,7 @@ public class DatabaseTableForm extends AbstractForm {
                         if (openConfirm) {
                             for (TableItem item : selection) {
                                 if (tableNavigator.indexOf(item) != -1) {
-                                    Iterator iterator = getConnection().getTables().iterator();
+                                    Iterator iterator = ConnectionHelper.getTables(getConnection()).iterator();
                                     while (iterator.hasNext()) {
                                         MetadataTable table = (MetadataTable) iterator.next();
                                         if (table.getLabel() != null && table.getLabel().equals(item.getText())) {
@@ -611,7 +616,7 @@ public class DatabaseTableForm extends AbstractForm {
                             if (size >= 1) {
                                 index = size - 1;
                                 String tableName = tableNavigator.getItem(index).getText();
-                                for (Object obj : getConnection().getTables()) {
+                                for (Object obj : ConnectionHelper.getTables(getConnection())) {
                                     if (obj instanceof MetadataTable) {
                                         if (((MetadataTable) obj).getLabel().equals(tableName)) {
                                             metadataTable = (MetadataTable) obj;
@@ -640,7 +645,15 @@ public class DatabaseTableForm extends AbstractForm {
         // Create a new metadata and Add it on the connection
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        getConnection().getTables().add(metadataTable);
+        Catalog c = (Catalog) ConnectionHelper.getPackage((getConnection().getSID()), getConnection(), Catalog.class);
+        if (c != null) {
+            PackageHelper.addMetadataTable(metadataTable, c);
+        } else {
+            c = CatalogHelper.createCatalog(getConnection().getSID());
+            c.getDataManager().add(getConnection());
+            PackageHelper.addMetadataTable(metadataTable, c);
+            ConnectionHelper.addCatalog(c, getConnection());
+        }
         metadataTable.setId(factory.getNextId());
 
         // initExistingNames();
@@ -882,9 +895,10 @@ public class DatabaseTableForm extends AbstractForm {
      * @return
      */
     private boolean checkAllTablesIsCorrect() {
-        EList tables = getConnection().getTables();
-        for (int i = 0; i < tables.size(); i++) {
-            MetadataTable table = (MetadataTable) tables.get(i);
+        Set<MetadataTable> tableset = ConnectionHelper.getTables(getConnection());
+        MetadataTable[] tables = tableset.toArray(new MetadataTable[0]);
+        for (int i = 0; i < tables.length; i++) {
+            MetadataTable table = (MetadataTable) tables[i];
 
             String[] exisNames = TableHelper.getTableNames(getConnection(), table.getLabel());
             List existNames = existingNames == null ? Collections.EMPTY_LIST : Arrays.asList(exisNames);

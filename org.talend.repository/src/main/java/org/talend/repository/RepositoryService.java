@@ -81,6 +81,7 @@ import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.ui.ISAPProviderService;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -736,7 +737,7 @@ public class RepositoryService implements IRepositoryService {
                                 SAPFunctionUnit function = (SAPFunctionUnit) obj;
                                 String functionName = (String) functionParam.getValue();
                                 if (function.getName().equals(functionName.substring(1, functionName.length() - 1))) {
-                                    String document = function.getDocument();
+                                    String document = ModelElementHelper.getFirstDocument(function).getReference();
                                     if (document != null && !"".equals(document)) { //$NON-NLS-1$
 
                                         internalNodeHTMLMap.put(node.getUniqueName(), document.substring(document

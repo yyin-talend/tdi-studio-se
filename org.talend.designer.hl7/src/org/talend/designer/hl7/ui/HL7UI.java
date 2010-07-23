@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -31,6 +32,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -140,6 +144,7 @@ public class HL7UI {
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 300;
         hl7SchemaEditorView.initGraphicComponents();
+
         final Composite tableEditorComposite = hl7SchemaEditorView.getMainComposite();
         tableEditorComposite.setLayoutData(data2);
         tableEditorComposite.setBackground(null);
@@ -147,6 +152,7 @@ public class HL7UI {
         metadataEditor.setDefaultLabel("newColumn"); //$NON-NLS-1$
         metadataEditor.registerDataList(new ArrayList());
         hl7SchemaEditorView.setMetadataEditor(metadataEditor);
+
         linker.init(messageViewer, hl7SchemaEditorView);
         linker.setManager(hl7Manager);
         initMessageTree();
@@ -155,6 +161,16 @@ public class HL7UI {
         initTableViewer();
         initlinkers();
         hl7SchemaEditorView.setReadOnly(isRepository);
+        final ICellModifier cellModifier = hl7SchemaEditorView.getTableViewerCreator().getCellModifier();
+        if (cellModifier instanceof DefaultCellModifier) {
+            ((DefaultCellModifier) cellModifier).addCellEditorAppliedListener(new ITableCellValueModifiedListener() {
+
+                public void cellValueModified(TableCellValueModifiedEvent e) {
+                    // uu
+
+                }
+            });
+        }
     }
 
     private void judgeRepository() {
@@ -230,14 +246,14 @@ public class HL7UI {
         newColumn.setKey(column.isKey());
         newColumn.setLabel(column.getLabel());
         newColumn.setPattern(column.getPattern());
-        if (column.getLength() != null && column.getLength() < 0) {
-            newColumn.setLength(null);
+        if (column.getLength() < 0) {
+            newColumn.setLength(0);
         } else {
             newColumn.setLength(column.getLength());
         }
         newColumn.setNullable(column.isNullable());
-        if (column.getPrecision() != null && column.getPrecision() < 0) {
-            newColumn.setPrecision(null);
+        if (column.getPrecision() < 0) {
+            newColumn.setPrecision(0);
         } else {
             newColumn.setPrecision(column.getPrecision());
         }
@@ -315,6 +331,7 @@ public class HL7UI {
 
     public void redrawLinkers() {
         linker.removeAllLinks();
+        linker.getBackgroundRefresher().refreshBackground();
         List<PrimitiveModel> pms = this.labelProvider.getAllPrimitives();
         initLinkersByPrimitiveModels(pms);
     }

@@ -57,6 +57,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -107,8 +108,8 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
     }
 
     public LDAPSchemaStep4Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
-        super(parent, connectionItem, (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0),
-                null);
+        super(parent, connectionItem, (MetadataTable) ConnectionHelper.getTables(
+                (LDAPSchemaConnection) connectionItem.getConnection()).toArray(new MetadataTable[0])[0], null);
         setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
@@ -517,7 +518,7 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);
                 } else {
-                    metadataColumn.setPrecision(null);
+                    metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));

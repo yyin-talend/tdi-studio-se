@@ -221,14 +221,14 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         splitwayRecordForJavaFID.setSelection(getConnection().isSplitRecord());
 
-        if (Escape.DELIMITED_LITERAL.equals(getConnection().getEscapeType())) {
+        if (Escape.DELIMITED.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(false);
             delimitedRadio.setSelection(true);
             textEnclosureCombo.setEnabled(false);
             escapeCharCombo.setEnabled(false);
             splitwayRecordForJavaFID.setEnabled(true);
         }
-        if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
+        if (Escape.CSV.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(true);
             delimitedRadio.setSelection(false);
             splitwayRecordForJavaFID.setEnabled(false);
@@ -694,7 +694,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
                 public void widgetSelected(SelectionEvent e) {
                     Boolean b = !(csvRadio.getSelection());
-                    getConnection().setEscapeType(b ? Escape.DELIMITED_LITERAL : Escape.CSV_LITERAL);
+                    getConnection().setEscapeType(b ? Escape.DELIMITED : Escape.CSV);
                     textEnclosureCombo.setEnabled(!b);
                     escapeCharCombo.setEnabled(!b);
                     splitwayRecordForJavaFID.setEnabled(b);
@@ -1227,7 +1227,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
+                if (Escape.CSV.equals(getConnection().getEscapeType())) {
 
                     csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_CSV", true); //$NON-NLS-1$
                     if (csvArray == null) {

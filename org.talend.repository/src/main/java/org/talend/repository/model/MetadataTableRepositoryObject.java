@@ -13,6 +13,7 @@
 package org.talend.repository.model;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.metadata.MetadataTable;
@@ -23,6 +24,8 @@ import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.cwm.helper.ConnectionHelper;
+import orgomg.cwm.objectmodel.core.Package;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -91,12 +94,19 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
             funUnit.getTables().remove(table);
             return;
         }
-        table.getConnection().getTables().remove(table);
+        if (table.getNamespace() instanceof Package) {
+            Package pkg = (Package) table.getNamespace();
+            if (pkg.getOwnedElement().contains(table)) {
+                pkg.getOwnedElement().remove(table);
+            }
+
+        }
+        // table.getConnection().getTables().remove(table);
         return;
     }
 
     public void removeFromParent(Connection connection) {
-        EList tables = connection.getTables();
+        Set tables = ConnectionHelper.getTables(connection);
         if (tables != null) {
             Iterator iterator = tables.iterator();
             while (iterator.hasNext()) {

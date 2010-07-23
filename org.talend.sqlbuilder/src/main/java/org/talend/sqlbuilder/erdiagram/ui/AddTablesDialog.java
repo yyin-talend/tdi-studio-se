@@ -13,7 +13,9 @@
 package org.talend.sqlbuilder.erdiagram.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -25,12 +27,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -41,12 +44,12 @@ public class AddTablesDialog extends Dialog {
 
     private RepositoryNode rootNode;
 
-    private List<MetadataTable> tables;
+    private Set<MetadataTable> tables;
 
     private List<MetadataTable> selectedTables;
 
     /**
-     *  admin AddTablesDialog constructor comment.
+     * admin AddTablesDialog constructor comment.
      * 
      * @param parentShell
      */
@@ -101,8 +104,8 @@ public class AddTablesDialog extends Dialog {
     public void setRootNode(RepositoryNode rootNode) {
         this.rootNode = rootNode;
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());
-        tables = new ArrayList<MetadataTable>();
-        tables.addAll(((DatabaseConnection) item.getConnection()).getTables());
+        tables = new HashSet<MetadataTable>();
+        tables.addAll(ConnectionHelper.getTables((DatabaseConnection) item.getConnection()));
     }
 
     public List<MetadataTable> getTables() {
@@ -121,7 +124,7 @@ public class AddTablesDialog extends Dialog {
     }
 
     /**
-     *  admin Comment method "setTables".
+     * admin Comment method "setTables".
      */
     private void setTables() {
         selectedTables = new ArrayList<MetadataTable>();

@@ -194,7 +194,7 @@ public class CatalogNode extends AbstractNode {
         if (databaseConnection == null) {
             return null;
         }
-        String schema = databaseConnection.getSchema();
+        String schema = databaseConnection.getUiSchema();
         if (schema != null && schema.length() == 0) {
             return null;
         }

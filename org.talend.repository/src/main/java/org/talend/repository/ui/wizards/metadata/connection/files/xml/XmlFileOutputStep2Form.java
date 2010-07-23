@@ -64,6 +64,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.CreateAttributeAction;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.CreateElementAction;
@@ -157,7 +158,7 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
     }
 
     private void initSchemaTable() {
-        EList columns = ((MetadataTable) getConnection().getTables().get(0)).getColumns();
+        EList columns = ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0].getColumns();
         List<MetadataColumn> columnList = new ArrayList<MetadataColumn>();
         for (int i = 0; i < columns.size(); i++) {
             columnList.add((MetadataColumn) columns.get(i));
@@ -383,7 +384,7 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
                     schemaViewer.setInput(inputList);
                     schemaViewer.refresh();
 
-                    EList columnList = ((MetadataTable) getConnection().getTables().get(0)).getColumns();
+                    EList columnList = ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0].getColumns();
                     columnList.clear();
                     columnList.addAll(inputList);
 
@@ -451,8 +452,9 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
 
     public IMetadataTable getIMetadataTable() {
         IMetadataTable metadataTable = null;
-        if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
-            metadataTable = ConvertionHelper.convert((MetadataTable) getConnection().getTables().get(0));
+        if (ConnectionHelper.getTables(getConnection()) != null && !ConnectionHelper.getTables(getConnection()).isEmpty()) {
+            metadataTable = ConvertionHelper
+                    .convert(ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0]);
         } else {
             metadataTable = new org.talend.core.model.metadata.MetadataTable();
         }
@@ -497,7 +499,7 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
     }
 
     private IMetadataColumn getColumn(String columnName) {
-        EList columns = ((MetadataTable) getConnection().getTables().get(0)).getColumns();
+        EList columns = ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0].getColumns();
         for (int i = 0; i < columns.size(); i++) {
             MetadataColumn column = (MetadataColumn) columns.get(i);
             if (column.getLabel().equals(columnName)) {
@@ -689,7 +691,7 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
     }
 
     public MetadataTable getMetadataTable() {
-        return (MetadataTable) getConnection().getTables().get(0);
+        return ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[0];
     }
 
     public TableViewer getSchemaViewer() {
@@ -697,7 +699,7 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
     }
 
     public void updateConnection() {
-        getConnection().getTables();
+        ConnectionHelper.getTables(getConnection());
         EList root = getConnection().getRoot();
         EList loop = getConnection().getLoop();
         EList group = getConnection().getGroup();

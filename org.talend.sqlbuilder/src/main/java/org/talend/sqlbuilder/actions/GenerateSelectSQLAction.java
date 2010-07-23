@@ -38,7 +38,8 @@ import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.TextUtil;
 
 /**
- * Detailled comment for this class. <br/> $Id: GenerateSelectSQLAction.java,v 1.13 2006/11/09 07:24:13 tangfn Exp $
+ * Detailled comment for this class. <br/>
+ * $Id: GenerateSelectSQLAction.java,v 1.13 2006/11/09 07:24:13 tangfn Exp $
  * 
  * @author phou
  * 
@@ -244,8 +245,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot(node);
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
                 .getConnection();
-        if (connection.getSchema() != null && !connection.getSchema().trim().equals("")) { //$NON-NLS-1$
-            return connection.getSchema();
+        if (connection.getUiSchema() != null && !connection.getUiSchema().trim().equals("")) { //$NON-NLS-1$
+            return connection.getUiSchema();
         } else {
             return ""; //$NON-NLS-1$
         }

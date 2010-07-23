@@ -31,7 +31,6 @@ import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.TypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
-import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 import org.talend.designer.hl7.model.IModel;
 import org.talend.designer.hl7.ui.HL7MultiSchemaUI;
 
@@ -45,8 +44,6 @@ import org.talend.designer.hl7.ui.HL7MultiSchemaUI;
 public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEditorView<MetadataColumn> {
 
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME"; //$NON-NLS-1$
-
-    private HL7Tree2SchemaLinker linker;
 
     private boolean isRepository;
 
@@ -161,10 +158,10 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
     }
 
     @Override
-    protected IBeanPropertyAccessors<MetadataColumn, Integer> getPrecisionAccessor() {
-        return new IBeanPropertyAccessors<MetadataColumn, Integer>() {
+    protected IBeanPropertyAccessors<MetadataColumn, Long> getPrecisionAccessor() {
+        return new IBeanPropertyAccessors<MetadataColumn, Long>() {
 
-            public Integer get(MetadataColumn bean) {
+            public Long get(MetadataColumn bean) {
                 // String dbmsId = getCurrentDbms();
                 // if (dbmsId != null && bean.getPrecision() < 0) {
                 // Dbms dbms = MetadataTalendType.getDbms(dbmsId);
@@ -181,7 +178,7 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
                 return bean.getPrecision();
             }
 
-            public void set(MetadataColumn bean, Integer value) {
+            public void set(MetadataColumn bean, Long value) {
                 bean.setPrecision(value);
             }
 
@@ -189,10 +186,10 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
     }
 
     @Override
-    protected IBeanPropertyAccessors<MetadataColumn, Integer> getLengthAccessor() {
-        return new IBeanPropertyAccessors<MetadataColumn, Integer>() {
+    protected IBeanPropertyAccessors<MetadataColumn, Long> getLengthAccessor() {
+        return new IBeanPropertyAccessors<MetadataColumn, Long>() {
 
-            public Integer get(MetadataColumn bean) {
+            public Long get(MetadataColumn bean) {
                 // String dbmsId = getCurrentDbms();
                 // if (dbmsId != null && bean.getLength() <= 0) {
                 // Dbms dbms = MetadataTalendType.getDbms(dbmsId);
@@ -210,7 +207,7 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
                 return bean.getLength();
             }
 
-            public void set(MetadataColumn bean, Integer value) {
+            public void set(MetadataColumn bean, Long value) {
                 bean.setLength(value);
             }
 
@@ -413,14 +410,6 @@ public class HL7MetadataEmfTableEditorView extends AbstractHL7MetadataTableEdito
 
     public TableViewerCreatorColumn getNameColumn() {
         return this.nameColumn;
-    }
-
-    public HL7Tree2SchemaLinker getLinker() {
-        return this.linker;
-    }
-
-    public void setLinker(HL7Tree2SchemaLinker linker) {
-        this.linker = linker;
     }
 
     public boolean isRepository() {

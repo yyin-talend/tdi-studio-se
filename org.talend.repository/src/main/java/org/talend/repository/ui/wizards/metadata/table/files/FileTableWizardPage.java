@@ -25,11 +25,11 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileStep3Form;
@@ -43,6 +43,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileSte
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaStep4Form;
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaStep2Form;
+import orgomg.cwm.objectmodel.core.Package;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -93,7 +94,15 @@ public class FileTableWizardPage extends WizardPage {
         };
 
         Composite theForm = null;
-        Connection connection = metadataTable.getConnection();
+        Connection connection = null;
+        if (metadataTable.getNamespace() != null) {
+            if (metadataTable.getNamespace() instanceof Package) {
+                Package pkg = (Package) metadataTable.getNamespace();
+                if (!pkg.getDataManager().isEmpty()) {
+                    connection = (Connection) pkg.getDataManager().get(0);
+                }
+            }
+        }
         theForm = (Composite) new ConnectionSwitch() {
 
             @Override

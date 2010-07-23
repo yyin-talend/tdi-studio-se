@@ -17,8 +17,9 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -69,11 +70,10 @@ public class GenericSchemaWizardPage extends WizardPage {
         // currentComposite.setWizardPage(this);
         // } else
         if (step == 2) {
-            MetadataTable metadataTable = (MetadataTable) ((GenericSchemaConnection) connectionItem.getConnection())
-                    .getTables().get(0);
-            currentComposite = new GenericSchemaStep2Form(parent, connectionItem, metadataTable,
-                    TableHelper.getTableNames(((GenericSchemaConnection) connectionItem.getConnection()), metadataTable
-                            .getLabel()));
+            MetadataTable metadataTable = ConnectionHelper.getTables(connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0];
+            currentComposite = new GenericSchemaStep2Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((GenericSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

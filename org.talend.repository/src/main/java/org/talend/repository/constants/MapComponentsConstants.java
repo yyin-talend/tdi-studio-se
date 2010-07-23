@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.constants;
 
-import org.talend.repository.i18n.Messages;
 
 /**
  * This class is stored the kind of Map components. <br/>

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.MetadataTool;
@@ -27,6 +27,7 @@ import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -43,7 +44,7 @@ public class ConvertLabelForConnectionItemMigrationTask extends AbstractItemMigr
         if (item instanceof ConnectionItem) {
             ConnectionItem conItem = (ConnectionItem) item;
             Connection connection = conItem.getConnection();
-            EList tables = connection.getTables();
+            Set tables = ConnectionHelper.getTables(connection);
             for (Object tableObj : tables) {
                 MetadataTable table = (MetadataTable) tableObj;
                 String label = table.getLabel();

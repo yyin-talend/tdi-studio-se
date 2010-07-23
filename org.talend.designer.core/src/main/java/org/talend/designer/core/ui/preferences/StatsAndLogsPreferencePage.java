@@ -237,7 +237,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
 
         if (schemaField.getTextControl(parent).isEnabled()) {
-            schemaField.getTextControl(parent).setText(processQuotes(conn.getSchema()));
+            schemaField.getTextControl(parent).setText(processQuotes(conn.getUiSchema()));
             schemaField.getTextControl(parent).setEditable(false);
         } else {
             schemaField.getTextControl(parent).setText(""); //$NON-NLS-1$

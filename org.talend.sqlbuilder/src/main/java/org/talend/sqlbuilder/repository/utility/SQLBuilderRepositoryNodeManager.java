@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.custom.CTabItem;
 import org.talend.commons.exception.ExceptionHandler;
@@ -49,6 +50,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -116,7 +118,7 @@ public class SQLBuilderRepositoryNodeManager {
         Object type = node.getProperties(EProperties.CONTENT_TYPE);
         if (type.equals(RepositoryNodeType.DATABASE)) {
             DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
-            List<MetadataTable> tables = connection.getTables();
+            Set<MetadataTable> tables = ConnectionHelper.getTables(connection);
             for (MetadataTable table : tables) {
                 List<MetadataColumn> columns = table.getColumns();
                 for (MetadataColumn column : columns) {
@@ -326,7 +328,7 @@ public class SQLBuilderRepositoryNodeManager {
         Map<String, List<String>> allNames = new HashMap<String, List<String>>();
         DatabaseConnectionItem item = getItem(getRoot(node));
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        List<MetadataTable> tablesFromEMF = connection.getTables();
+        Set<MetadataTable> tablesFromEMF = ConnectionHelper.getTables(connection);
         boolean isOdbc = connection.getSID() == null || connection.getSID().length() == 0;
         String sid = isOdbc ? connection.getDatasourceName() : connection.getSID();
         for (MetadataTable table : tablesFromEMF) {
@@ -408,8 +410,9 @@ public class SQLBuilderRepositoryNodeManager {
             List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(iMetadataConnection);
             // Get MetadataTable From EMF(Old RepositoryNode)
 
-            List<MetadataTable> tablesFromEMF = connection.getTables();
-
+            Set<MetadataTable> tablesetFromEMF = ConnectionHelper.getTables(connection);
+            List<MetadataTable> tablesFromEMF = new ArrayList<MetadataTable>();
+            tablesFromEMF.addAll(tablesetFromEMF);
             if (oldNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                 modifyOldConnection(tablesFromEMF, iMetadataConnection, tablesFromDB, oldNode);
                 restoreConnection(connection, tablesFromEMF);
@@ -436,7 +439,9 @@ public class SQLBuilderRepositoryNodeManager {
                 modifyOneColumnFromDB(iMetadataConnection, tablesFromDB, metadataColumn);
             }
         } else {
-            List<MetadataTable> tablesFromEMF = connection.getTables();
+            Set<MetadataTable> tableset = ConnectionHelper.getTables(connection);
+            List<MetadataTable> tablesFromEMF = new ArrayList<MetadataTable>();
+            tablesFromEMF.addAll(tableset);
             for (MetadataTable tableFromEMF : tablesFromEMF) {
                 List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
                 for (MetadataColumn column : columnsFromEMF) {
@@ -506,8 +511,8 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void restoreConnection(DatabaseConnection connection, List<MetadataTable> tablesFromEMF) {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
-        connection.getTables().clear();
-        connection.getTables().addAll(tablesFromEMF);
+        ConnectionHelper.getTables(connection).clear();
+        ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
     }
 
     /**
@@ -546,7 +551,7 @@ public class SQLBuilderRepositoryNodeManager {
         ManagerConnection managerConnection = new ManagerConnection();
         boolean status = managerConnection.check(iMetadataConnection);
         connection.setDivergency(!status);
-        connection.getTables().clear();
+        ConnectionHelper.getTables(connection).clear();
         if (status) {
             try {
                 List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase
@@ -561,7 +566,7 @@ public class SQLBuilderRepositoryNodeManager {
                         table.getColumns().add(column);
                     }
                     table.setLabel(""); //$NON-NLS-1$
-                    connection.getTables().add(table);
+                    ConnectionHelper.getTables(connection).add(table);
                 }
                 ExtractMetaDataUtils.isReconnect = true;
             } catch (Exception e) {
@@ -663,7 +668,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (!isSchemaInValid && isNeedSchema) {
             schema = schema.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
             schema = schema.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            connection.setSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
+            connection.setUiSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
         }
         connection.setServerName(parameters.getHost());
         connection.setAdditionalParams(parameters.getJdbcProperties());
@@ -1095,7 +1100,9 @@ public class SQLBuilderRepositoryNodeManager {
         DatabaseConnectionItem item = getEMFItem(id);
         final DatabaseConnection connection = (DatabaseConnection) item.getConnection();
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
-        final List<MetadataTable> tables = connection.getTables();
+        Set<MetadataTable> tableset = ConnectionHelper.getTables(connection);
+        List<MetadataTable> tables = new ArrayList<MetadataTable>();
+        tables.addAll(tableset);
         List<MetadataColumn> emfCols = new ArrayList<MetadataColumn>();
         List<MetadataColumn> dbCols = new ArrayList<MetadataColumn>();
         for (MetadataColumn col : columnNodes) {
@@ -1169,7 +1176,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     private boolean isEquivalent(MetadataColumn info, MetadataColumn column) {
 
-        if (info.getLength() != null && !info.getLength().equals(column.getLength())) {
+        if (info.getLength() != column.getLength()) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
@@ -1185,7 +1192,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (info.isKey() != column.isKey()) {
             return false;
         }
-        if (info.getPrecision() != null && !info.getPrecision().equals(column.getPrecision())) {
+        if (info.getPrecision() != column.getPrecision()) {
             return false;
         }
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {

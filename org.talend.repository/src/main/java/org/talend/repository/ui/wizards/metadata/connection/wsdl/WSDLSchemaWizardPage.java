@@ -12,17 +12,21 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
-import org.eclipse.emf.common.util.EList;
+import java.util.Set;
+
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.GenericPackage;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -76,21 +80,30 @@ public class WSDLSchemaWizardPage extends WizardPage {
         Connection connection = connectionItem.getConnection();
         switch (step) {
         case 1:
-            EList tables = ((WSDLSchemaConnection) connection).getTables();
+            Set tables = ConnectionHelper.getTables(connection);
             if (tables.size() == 0) {
                 // add for bug 7149
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 metadataTable.setId(factory.getNextId());
-                connection.getTables().add(metadataTable);
+                GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        GenericPackage.class);
+                if (g != null) { // hywang
+                    g.getOwnedElement().add(metadataTable);
+                } else {
+                    GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                    PackageHelper.addMetadataTable(metadataTable, gpkg);
+                    ConnectionHelper.addPackage(gpkg, connection);
+
+                }
             } else {
-                metadataTable = (MetadataTable) tables.get(0);
+                metadataTable = (MetadataTable) tables.toArray(new MetadataTable[0])[0];
             }
             currentComposite = new WSDLSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((WSDLSchemaConnection) connection), metadataTable.getLabel()), contextModeManager);
             break;
         case 2:
-            metadataTable = (MetadataTable) ((WSDLSchemaConnection) connection).getTables().get(0);
+            metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
             currentComposite = new WSDLSchemaStep2Form(parent, connectionItem, contextModeManager);
             break;
         default:

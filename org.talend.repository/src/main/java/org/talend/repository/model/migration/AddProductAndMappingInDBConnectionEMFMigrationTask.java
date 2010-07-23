@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;

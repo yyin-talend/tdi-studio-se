@@ -439,7 +439,7 @@ public class TableNode extends AbstractNode {
         // if (!info.getLabel().equals(column.getLabel())) {
         // return false;
         // }
-        if (info.getLength() != null && !info.getLength().equals(column.getLength())) {
+        if (info.getLength() != column.getLength()) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
@@ -455,7 +455,7 @@ public class TableNode extends AbstractNode {
         if (info.isKey() != column.isKey()) {
             return false;
         }
-        if (info.getPrecision() != null && !info.getPrecision().equals(column.getPrecision())) {
+        if (info.getPrecision() != column.getPrecision()) {
             return false;
         }
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {

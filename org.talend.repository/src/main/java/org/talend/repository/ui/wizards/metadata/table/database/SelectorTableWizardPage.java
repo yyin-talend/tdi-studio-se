@@ -24,8 +24,10 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.table.composites.StateComposite;
+import orgomg.cwm.resource.relational.Catalog;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -118,7 +120,11 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 7;
         if (isCreateTemplate) {
-            templateConnection.getConnection().getTables().clear();
+            Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) templateConnection.getConnection()).getSID(),
+                    templateConnection.getConnection(), Catalog.class);
+            if (c != null) { // hywang
+                c.getOwnedElement().clear();
+            }
             tableForm = new SelectorTableForm(container, templateConnection, this, isCreateTemplate);
         } else {
             tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
@@ -184,7 +190,11 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
         if (tableForm != null) {
             tableForm.setTemplateConntion(templateConnection);
             tableForm.setIMetadataConnection(metadataConnection);
-            tableForm.getConnection().getTables().clear();
+            Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) tableForm.getConnection()).getSID(),
+                    tableForm.getConnection(), Catalog.class);
+            if (c != null) { // hywang
+                c.getOwnedElement().clear();
+            }
             if (isCreateTemplate) {
                 tableForm.initControlData(false);
             }

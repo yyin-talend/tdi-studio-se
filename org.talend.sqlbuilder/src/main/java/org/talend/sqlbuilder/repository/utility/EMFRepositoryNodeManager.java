@@ -18,6 +18,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +38,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -126,7 +128,7 @@ public final class EMFRepositoryNodeManager {
                 root = node;
                 DatabaseConnection connection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(node)
                         .getConnection();
-                for (MetadataTable table : (List<MetadataTable>) connection.getTables()) {
+                for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(connection)) {
                     if (!tables.contains(table)) {
                         tables.add(table);
                         selectedColumns.addAll(table.getColumns());

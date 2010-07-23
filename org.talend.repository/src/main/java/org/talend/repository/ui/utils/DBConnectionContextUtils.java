@@ -112,12 +112,12 @@ public final class DBConnectionContextUtils {
                     break;
                 case Schema:
                     if (conn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
-                        String schema = conn.getSchema();
+                        String schema = conn.getUiSchema();
                         if (schema != null) {
-                            conn.setSchema(schema.toUpperCase());
+                            conn.setUiSchema(schema.toUpperCase());
                         }
                     }
-                    ConnectionContextHelper.createParameters(varList, paramName, conn.getSchema());
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getUiSchema());
                     break;
                 case Server:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getServerName());
@@ -181,7 +181,7 @@ public final class DBConnectionContextUtils {
                     conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
                     break;
                 case Schema:
-                    conn.setSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    conn.setUiSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
                     break;
                 case Server:
                     conn.setServerName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
@@ -223,7 +223,7 @@ public final class DBConnectionContextUtils {
         String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
         String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
-        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUiSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
         String driverClassName = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverClass());
@@ -273,7 +273,7 @@ public final class DBConnectionContextUtils {
         String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
         String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
-        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUiSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
         // hshen
@@ -322,7 +322,7 @@ public final class DBConnectionContextUtils {
         String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
         String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
-        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUiSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
         String url = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getURL());
@@ -353,7 +353,7 @@ public final class DBConnectionContextUtils {
         }
 
         cloneConn.setPort(port);
-        cloneConn.setSchema(schemaOracle);
+        cloneConn.setUiSchema(schemaOracle);
         cloneConn.setServerName(server);
         cloneConn.setSID(sidOrDatabase);
         cloneConn.setUsername(username);
@@ -418,7 +418,7 @@ public final class DBConnectionContextUtils {
         String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, conn.getSID());
         String datasource = ConnectionContextHelper.getOriginalValue(contextType, conn.getDatasourceName());
         String filePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getFileFieldName());
-        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, conn.getSchema());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, conn.getUiSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, conn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, conn.getAdditionalParams());
         // hshen
@@ -439,7 +439,7 @@ public final class DBConnectionContextUtils {
             ExceptionHandler.process(e);
         }
         conn.setPort(port);
-        conn.setSchema(schemaOracle);
+        conn.setUiSchema(schemaOracle);
         conn.setServerName(server);
         conn.setSID(sidOrDatabase);
         conn.setUsername(username);

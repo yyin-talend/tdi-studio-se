@@ -29,10 +29,12 @@ import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
+import org.talend.core.model.metadata.builder.connection.GenericPackage;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
@@ -40,7 +42,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
@@ -60,6 +61,9 @@ import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -78,6 +82,8 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
+import orgomg.cwm.resource.record.RecordFactory;
+import orgomg.cwm.resource.record.RecordFile;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -221,7 +227,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -268,7 +282,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -316,7 +338,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -364,7 +394,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -412,7 +450,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -461,7 +507,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        RecordFile.class);
+                if (record != null) { // hywang
+                    PackageHelper.addMetadataTable(metadataTable, record);
+                } else {
+                    RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                    ConnectionHelper.addPackage(newrecord, connection);
+                    PackageHelper.addMetadataTable(metadataTable, newrecord);
+                }
                 creation = true;
                 break;
             default:
@@ -502,7 +556,15 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        GenericPackage.class);
+                if (g != null) { // hywang
+                    g.getOwnedElement().add(metadataTable);
+                } else {
+                    GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                    PackageHelper.addMetadataTable(metadataTable, gpkg);
+                    ConnectionHelper.addPackage(gpkg, connection);
+                }
                 creation = true;
                 break;
             default:
@@ -549,7 +611,16 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        GenericPackage.class);
+                if (g != null) { // hywang
+                    g.getOwnedElement().add(metadataTable);
+                } else {
+                    GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                    PackageHelper.addMetadataTable(metadataTable, gpkg);
+                    ConnectionHelper.addPackage(gpkg, connection);
+
+                }
                 creation = true;
                 break;
             default:
@@ -598,7 +669,16 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        GenericPackage.class);
+                if (g != null) { // hywang
+                    g.getOwnedElement().add(metadataTable);
+                } else {
+                    GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                    PackageHelper.addMetadataTable(metadataTable, gpkg);
+                    ConnectionHelper.addPackage(gpkg, connection);
+
+                }
                 creation = true;
                 break;
             default:
@@ -645,7 +725,16 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                connection.getTables().add(metadataTable);
+                GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                        GenericPackage.class);
+                if (g != null) { // hywang
+                    g.getOwnedElement().add(metadataTable);
+                } else {
+                    GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                    PackageHelper.addMetadataTable(metadataTable, gpkg);
+                    ConnectionHelper.addPackage(gpkg, connection);
+
+                }
                 creation = true;
                 break;
             default:

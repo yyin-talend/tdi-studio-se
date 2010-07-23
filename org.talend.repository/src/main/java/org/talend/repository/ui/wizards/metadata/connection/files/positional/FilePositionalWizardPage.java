@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
 import org.talend.repository.ui.swt.utils.AbstractForm.ICheckListener;
@@ -72,8 +73,8 @@ public class FilePositionalWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new FileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((PositionalFileConnection) connectionItem.getConnection()).getTables()
-                    .get(0);
+            MetadataTable metadataTable = ConnectionHelper.getTables(connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0];
             currentComposite = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((PositionalFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }

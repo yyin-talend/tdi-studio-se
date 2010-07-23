@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.talend.sqlbuilder.SqlBuilderPlugin;
-
 import net.sourceforge.squirrel_sql.fw.util.EnumerationIterator;
 import net.sourceforge.squirrel_sql.fw.util.Utilities;
+
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
  * 

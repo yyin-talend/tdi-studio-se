@@ -38,7 +38,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -46,6 +45,8 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -401,7 +402,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
      */
     private void createTables(RepositoryNode node, final IRepositoryViewObject repObj, Connection metadataConnection,
             boolean isBuildIn) {
-        for (Object currentTable : metadataConnection.getTables()) {
+        for (Object currentTable : ConnectionHelper.getTables(metadataConnection)) {
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
             RepositoryNode tableNode = createMetatable(node, repObj, metadataTable, isBuildIn);
             if (TableHelper.isDeleted(metadataTable)) {

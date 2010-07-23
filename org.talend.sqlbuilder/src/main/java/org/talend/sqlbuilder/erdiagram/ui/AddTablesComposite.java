@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.sqlbuilder.erdiagram.ui;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -43,7 +44,7 @@ public class AddTablesComposite extends Composite {
 
     private CTabFolder tabFolder;
 
-    private List<MetadataTable> tables;
+    private Set<MetadataTable> tables;
 
     /**
      * DOC admin AddTablesComposite constructor comment.
@@ -110,7 +111,7 @@ public class AddTablesComposite extends Composite {
         listTables = new org.eclipse.swt.widgets.List(div1, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         listTables.setLayoutData(new GridData(GridData.FILL_BOTH));
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());
-        tables = ((DatabaseConnection) item.getConnection()).getTables();
+        tables = ConnectionHelper.getTables((DatabaseConnection) item.getConnection());
         for (MetadataTable table : tables) {
             if (table.getSourceName() != null) {
                 listTables.add(table.getSourceName());

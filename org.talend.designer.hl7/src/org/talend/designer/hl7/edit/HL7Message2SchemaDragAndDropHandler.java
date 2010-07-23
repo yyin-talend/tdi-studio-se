@@ -211,14 +211,15 @@ public class HL7Message2SchemaDragAndDropHandler {
                     metacolumn.setLabel(label);
                     metacolumn.setOriginalField(segName);
                     metacolumn.setLength(226);
-                    metacolumn.setPrecision(null);
+                    metacolumn.setPrecision(0);
                     hl7TableEditorView.getMetadataEditor().add(metacolumn);
                     TreeItem item = SegmentTransfer.getInstance().getDragedItem();
                     TableItem targetitem = targetTable.getSelection()[0];
                     createLinks(item, targetitem);
                     final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();
                     String key = combo.getItem(combo.getSelectionIndex()).toString();
-                    linker.getManager().updateRelationMapping(key, metacolumn, true);
+                    MetadataColumn copied = copyColumn(metacolumn);
+                    linker.getManager().updateRelationMapping(key, copied, true);
                 }
                 linker.updateLinksStyleAndControlsSelection(control);
             }
@@ -229,6 +230,34 @@ public class HL7Message2SchemaDragAndDropHandler {
     public void createLinks(TreeItem itemSource, TableItem itemTarget) {
 
         linker.addLinks(itemSource, itemSource.getData(), itemTarget.getParent(), itemTarget.getData());
+    }
+
+    protected MetadataColumn copyColumn(MetadataColumn column) {
+        MetadataColumn newColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+        newColumn.setComment(column.getComment());
+        newColumn.setDefaultValue(column.getDefaultValue());
+        newColumn.setKey(column.isKey());
+        newColumn.setLabel(column.getLabel());
+        newColumn.setPattern(column.getPattern());
+        if (column.getLength() < 0) {
+            newColumn.setLength(0);
+        } else {
+            newColumn.setLength(column.getLength());
+        }
+        newColumn.setNullable(column.isNullable());
+        if (column.getPrecision() < 0) {
+            newColumn.setPrecision(0);
+        } else {
+            newColumn.setPrecision(column.getPrecision());
+        }
+        newColumn.setTalendType(column.getTalendType());
+        newColumn.setSourceType(column.getSourceType());
+        if (column.getOriginalField() == null || column.getOriginalField().equals("")) { //$NON-NLS-1$
+            newColumn.setLabel(column.getLabel());
+        } else {
+            newColumn.setOriginalField(column.getOriginalField());
+        }
+        return newColumn;
     }
 
 }

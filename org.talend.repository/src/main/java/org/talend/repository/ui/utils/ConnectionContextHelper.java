@@ -72,6 +72,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
@@ -86,6 +88,8 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
+import orgomg.cwm.objectmodel.core.Package;
+import orgomg.cwm.resource.relational.Catalog;
 
 /**
  * ggu class global comment. Detailled comment
@@ -862,9 +866,17 @@ public final class ConnectionContextHelper {
             targetConn.setQueries(cloneQueriesConnection);
 
         }
-        //
-        targetConn.getTables().clear();
-        List<MetadataTable> tables = (List<MetadataTable>) sourceConn.getTables();
+        if (targetConn instanceof DatabaseConnection) { // hywang
+            Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(), targetConn,
+                    Catalog.class);
+            if (c != null) {
+                c.getOwnedElement().clear();
+            }
+        } else {
+            Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
+            pkg.getOwnedElement().clear();
+        }
+        Set<MetadataTable> tables = (Set<MetadataTable>) ConnectionHelper.getTables(sourceConn);
         for (MetadataTable table : tables) {
             MetadataTable cloneTable = ConnectionFactory.eINSTANCE.createMetadataTable();
 
@@ -897,8 +909,24 @@ public final class ConnectionContextHelper {
                 cloneColumn.setTable(cloneTable);
                 cloneTable.getColumns().add(cloneColumn);
             }
-            cloneTable.setConnection(targetConn);
-            targetConn.getTables().add(cloneTable);
+            if (cloneTable.getNamespace() instanceof Package) {
+                Package pkg = (Package) cloneTable.getNamespace();
+                pkg.getDataManager().add(targetConn);
+            }
+            if (targetConn instanceof DatabaseConnection) { // hywang
+                Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(), targetConn,
+                        Catalog.class);
+                if (c != null) {
+                    PackageHelper.addMetadataTable(cloneTable, c);
+                }
+            } else {
+                Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
+                if (pkg != null) {
+                    PackageHelper.addMetadataTable(cloneTable, pkg);
+                }
+            }
+            // cloneTable.setConnection(targetConn);
+            // targetConn.getTables().add(cloneTable);
         }
 
     }

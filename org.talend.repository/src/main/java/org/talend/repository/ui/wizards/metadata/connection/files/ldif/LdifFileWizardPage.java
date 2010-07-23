@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
 
@@ -70,8 +71,8 @@ public class LdifFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new LdifFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((LdifFileConnection) connectionItem.getConnection()).getTables()
-                    .get(0);
+            MetadataTable metadataTable = ConnectionHelper.getTables(connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0];
             currentComposite = new LdifFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((LdifFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }

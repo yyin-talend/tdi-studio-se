@@ -41,6 +41,8 @@ import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -51,6 +53,7 @@ import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
 import org.talend.designer.core.ui.celleditor.JavaTypeComboValueAdapter;
+import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -104,6 +107,8 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
     protected String dbmsId;
 
     protected TableViewerCreatorColumn nameColumn;
+
+    protected HL7Tree2SchemaLinker linker;
 
     /**
      * DOC amaumont AbstractMetadataTableEditorView constructor comment.
@@ -339,7 +344,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
      * 
      * @return
      */
-    protected abstract IBeanPropertyAccessors<B, Integer> getPrecisionAccessor();
+    protected abstract IBeanPropertyAccessors<B, Long> getPrecisionAccessor();
 
     /**
      * DOC amaumont Comment method "configureLengthColumn".
@@ -366,7 +371,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
      * 
      * @return
      */
-    protected abstract IBeanPropertyAccessors<B, Integer> getLengthAccessor();
+    protected abstract IBeanPropertyAccessors<B, Long> getLengthAccessor();
 
     /**
      * DOC amaumont Comment method "configurePatternColumn".
@@ -609,7 +614,13 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
             public boolean canModify(Object bean) {
                 return super.canModify(bean) && canModifyDBColumn(bean);
             }
+        });
+        column.setCellEditorAppliedListener(new ITableCellValueModifiedListener() {
 
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                linker.getMainui().redrawLinkers();
+                linker.getBackgroundRefresher().refreshBackground();
+            }
         });
         if (!dbColumnNameWritable) {
             column.setColorProvider(new IColumnColorProvider() {
@@ -863,5 +874,13 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
             return new JavaSimpleDateFormatProposalProvider().getProposals(null, 0)[0].getContent();
         }
         return ""; //$NON-NLS-1$
+    }
+
+    public HL7Tree2SchemaLinker getLinker() {
+        return this.linker;
+    }
+
+    public void setLinker(HL7Tree2SchemaLinker linker) {
+        this.linker = linker;
     }
 }

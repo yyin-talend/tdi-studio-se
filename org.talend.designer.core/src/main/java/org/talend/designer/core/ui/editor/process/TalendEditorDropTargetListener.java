@@ -108,6 +108,7 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -772,7 +773,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             // fore EBCDIC, by cli
             if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC
                     && PluginChecker.isEBCDICPluginLoaded()) {
-                for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
+                for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
                     Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
                             .getLabel(), ConvertionHelper.convert(table));
                     list.add(ebcdicCmd);
@@ -806,7 +807,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
 
                 }
-                for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
+                for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
                     Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
                     list.add(hl7Cmd);
@@ -823,7 +824,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             Map<String, IMetadataTable> repositoryTableMap = new HashMap<String, IMetadataTable>();
 
             if (!originalConnection.isReadOnly()) {
-                for (Object tableObj : originalConnection.getTables()) {
+                for (Object tableObj : ConnectionHelper.getTables(originalConnection)) {
                     org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
                     table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
@@ -893,7 +894,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             } else {
                 if (connection instanceof DatabaseConnection && hasQuery(node)) {
                     DatabaseConnection connection2 = (DatabaseConnection) connection;
-                    String schema = connection2.getSchema();
+                    String schema = connection2.getUiSchema();
                     String dbType = connection2.getDatabaseType();
                     QueryGuessCommand queryGuessCommand = null;
                     if (node.getMetadataList().size() == 0) {
@@ -973,7 +974,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (connectionItem.getConnection() instanceof DatabaseConnection) {
                 DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
                 if (connection instanceof DatabaseConnection) {
-                    etlSchema = connection.getSchema();
+                    etlSchema = connection.getUiSchema();
                 }
                 if (!"".equals(etlSchema)) {
                     IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME");

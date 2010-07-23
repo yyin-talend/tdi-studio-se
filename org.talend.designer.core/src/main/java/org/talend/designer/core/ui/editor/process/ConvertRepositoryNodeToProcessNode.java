@@ -92,7 +92,7 @@ public class ConvertRepositoryNodeToProcessNode {
         IElementParameter propertyParam = ((Node) node).getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
         IElementParameter schemaParam = ((Node) node).getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
         String propertyId = connectionItem.getProperty().getId();
-        String schema = databaseConnection.getSchema();
+        String schema = databaseConnection.getUiSchema();
         String dbType = databaseConnection.getDatabaseType();
         String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
 

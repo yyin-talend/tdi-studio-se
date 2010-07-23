@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
@@ -70,8 +71,8 @@ public class ExcelFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new ExcelFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((FileExcelConnection) connectionItem.getConnection()).getTables().get(
-                    0);
+            MetadataTable metadataTable = ConnectionHelper.getTables((FileExcelConnection) connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0]; // hywang
             currentComposite = new ExcelFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((FileExcelConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }

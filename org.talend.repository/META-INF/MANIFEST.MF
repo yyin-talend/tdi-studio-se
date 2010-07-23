@@ -94,4 +94,7 @@ Export-Package: org.talend.repository,
  org.talend.repository.ui.wizards.routines,
  org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
+Import-Package: org.eclipse.emf.ecore.xmi,
+ org.eclipse.m2m.atl.core,
+ org.talend.model.migration
 

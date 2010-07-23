@@ -14,8 +14,6 @@ package org.talend.sqlbuilder.sessiontree.model;
 
 import java.util.ArrayList;
 
-import org.talend.sqlbuilder.Messages;
-
 /**
  * The root node in the session tree; It shows the number of active sessions.
  */

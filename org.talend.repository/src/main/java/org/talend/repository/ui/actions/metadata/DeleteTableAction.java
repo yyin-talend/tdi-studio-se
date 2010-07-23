@@ -38,7 +38,6 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
-import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -46,6 +45,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
@@ -216,7 +217,7 @@ public class DeleteTableAction extends AContextualAction {
                     }
                 }
             } else {
-                for (Object table : connection.getTables()) {
+                for (Object table : ConnectionHelper.getTables(connection)) {
                     if (table instanceof AbstractMetadataObject) {
                         AbstractMetadataObject metadataTable = (AbstractMetadataObject) table;
                         if (metadataTable.getLabel().equals(oldMetadataObject.getLabel())) {

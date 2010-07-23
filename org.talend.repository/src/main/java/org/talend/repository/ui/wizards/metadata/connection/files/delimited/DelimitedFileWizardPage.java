@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractDelimitedFileStepForm;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
@@ -71,8 +72,8 @@ public class DelimitedFileWizardPage extends WizardPage {
             currentComposite = new DelimitedFileStep2Form(parent, connectionItem, contextModeManager);
             currentComposite.setWizardPage(this);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((DelimitedFileConnection) connectionItem.getConnection()).getTables()
-                    .get(0);
+            MetadataTable metadataTable = ConnectionHelper.getTables((DelimitedFileConnection) connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0]; // hywang
             currentComposite = new DelimitedFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((DelimitedFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }

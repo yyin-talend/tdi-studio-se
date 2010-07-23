@@ -62,24 +62,33 @@ import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.commons.utils.threading.TalendCustomThreadPoolExecutor;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.cwm.helper.CatalogHelper;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.SchemaHelper;
+import org.talend.cwm.helper.TableHelper;
+import org.talend.cwm.relational.RelationalFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * @author cantoine
@@ -101,7 +110,7 @@ public class SelectorTableForm extends AbstractForm {
 
     private IMetadataConnection iMetadataConnection = null;
 
-    private MetadataTable metadataTable;
+    private MetadataTable dbtable;
 
     private MetadataEmfTableEditor metadataEditor;
 
@@ -168,7 +177,7 @@ public class SelectorTableForm extends AbstractForm {
         this.parentWizardPage = page;
         this.tableInfoParameters = page.getTableInfoParameters();
         this.forTemplate = forTemplate;
-        if (forTemplate && getConnection().getTables().size() <= 0) {
+        if (forTemplate && ConnectionHelper.getTables(getConnection()).size() <= 0) {
             page.setPageComplete(false);
         }
         setupForm();
@@ -507,7 +516,7 @@ public class SelectorTableForm extends AbstractForm {
                             countPending--;
                         }
                     }
-                    if (forTemplate && (getConnection().getTables().size() <= 0)) {
+                    if (forTemplate && (ConnectionHelper.getTables(getConnection()).size() <= 0)) {
                         parentWizardPage.setPageComplete(false);
                     }
                 }
@@ -640,6 +649,15 @@ public class SelectorTableForm extends AbstractForm {
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
                     managerConnection.getMessageException());
         } else {
+
+            if (ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString).equals(ETableTypes.TABLETYPE_TABLE.getName())) {
+                dbtable = RelationalFactory.eINSTANCE.createTdTable();
+            } else if (ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString).equals(
+                    ETableTypes.TABLETYPE_VIEW.getName())) {
+                dbtable = RelationalFactory.eINSTANCE.createTdView();
+            } else {
+                dbtable = RelationalFactory.eINSTANCE.createTdTable();
+            }
             List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
             metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableItem
                     .getText(0));
@@ -650,7 +668,7 @@ public class SelectorTableForm extends AbstractForm {
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-            metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            dbtable = ConnectionFactory.eINSTANCE.createMetadataTable();
 
             initExistingNames();
             String labelName = IndiceHelper.getIndexedLabel(tableString, existingNames);
@@ -658,10 +676,10 @@ public class SelectorTableForm extends AbstractForm {
             if (forTemplate) {
                 labelName = MetadataTool.validateValue(labelName);
             }
-            metadataTable.setLabel(labelName);
-            metadataTable.setSourceName(tableItem.getText(0));
-            metadataTable.setId(factory.getNextId());
-            metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
+            dbtable.setLabel(labelName);
+            dbtable.setSourceName(tableItem.getText(0));
+            dbtable.setId(factory.getNextId());
+            dbtable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
 
             List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
             Iterator iterate = metadataColumns.iterator();
@@ -671,11 +689,23 @@ public class SelectorTableForm extends AbstractForm {
 
                 // Check the label and add it to the table
                 metadataColumnsValid.add(metadataColumn);
-                metadataTable.getColumns().add(metadataColumn);
+                dbtable.getColumns().add(metadataColumn);
             }
-            if (!getConnection().getTables().contains(metadataTable) && !limitTemplateTable(metadataTable)) {
-                getConnection().getTables().add(metadataTable);
+            if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
+                Catalog c = (Catalog) ConnectionHelper.getPackage((getConnection().getSID()), getConnection(), Catalog.class);
+                if (c != null) {
+                    PackageHelper.addMetadataTable(dbtable, c);
+                } else {
+                    Schema s = (Schema) ConnectionHelper.getPackage((getConnection().getSID()), getConnection(), Schema.class);
+                    if (s != null) {
+                        PackageHelper.addMetadataTable(dbtable, s);
+                    }
+                }
+                // getConnection().getTables().add(metadataTable); hywang
             }
+            // if (!getConnection().getTables().contains(metadataTable) && !limitTemplateTable(metadataTable)) {
+            // getConnection().getTables().add(metadataTable);
+            // }
 
         }
     }
@@ -690,14 +720,18 @@ public class SelectorTableForm extends AbstractForm {
         if (itemTableName != null && !itemTableName.isEmpty()) {
             // fill the combo
             Collection tables = new ArrayList();
-            Iterator<MetadataTable> iterate = getConnection().getTables().iterator();
+            Iterator<MetadataTable> iterate = ConnectionHelper.getTables(getConnection()).iterator();
             while (iterate.hasNext()) {
                 MetadataTable metadata = iterate.next();
                 if (metadata != null && metadata.getLabel().equals(tableItem.getText(0))) {
                     tables.add(metadata);
                 }
             }
-            getConnection().getTables().removeAll(tables);
+            Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), (Connection) getConnection(),
+                    Catalog.class); // hywang
+            if (c != null) {
+                c.getOwnedElement().removeAll(tables);
+            }
         }
     }
 
@@ -833,17 +867,25 @@ public class SelectorTableForm extends AbstractForm {
             }
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-            metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            if (ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString).equals(ETableTypes.TABLETYPE_TABLE.getName())) {
+                dbtable = RelationalFactory.eINSTANCE.createTdTable();
+            } else if (ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString).equals(
+                    ETableTypes.TABLETYPE_VIEW.getName())) {
+                dbtable = RelationalFactory.eINSTANCE.createTdView();
+            } else {
+                dbtable = RelationalFactory.eINSTANCE.createTdTable();
+            }
+            // metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             initExistingNames();
             String lableName = IndiceHelper.getIndexedLabel(tableString, existingNames);
 
             // if (forTemplate) { //hywang modified for 0010012
             lableName = MetadataTool.validateValue(lableName);
             // }
-            metadataTable.setLabel(lableName);
-            metadataTable.setSourceName(tableString);
-            metadataTable.setId(factory.getNextId());
-            metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
+            dbtable.setLabel(lableName);
+            dbtable.setSourceName(tableString);
+            dbtable.setId(factory.getNextId());
+            dbtable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
             List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
             Iterator iterate = metadataColumns.iterator();
             while (iterate.hasNext()) {
@@ -856,10 +898,29 @@ public class SelectorTableForm extends AbstractForm {
                 }
                 // Check the label and add it to the table
                 metadataColumnsValid.add(metadataColumn);
-                metadataTable.getColumns().add(metadataColumn);
+                dbtable.getColumns().add(metadataColumn);
             }
-            if (!getConnection().getTables().contains(metadataTable) && !limitTemplateTable(metadataTable)) {
-                getConnection().getTables().add(metadataTable);
+            if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
+                Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class);
+                Schema s = (Schema) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Schema.class);
+                if (c != null) {
+                    PackageHelper.addMetadataTable(dbtable, c);
+                } else if (s != null) {
+                    PackageHelper.addMetadataTable(dbtable, s);
+                } else {
+                    if (getConnection().getUiSchema() != null && !"".equals(getConnection().getUiSchema())) {
+                        s = SchemaHelper.createSchema(getConnection().getUiSchema());
+                        s.getDataManager().add(getConnection());
+                        PackageHelper.addMetadataTable(dbtable, s);
+                        ConnectionHelper.addSchema(s, getConnection());
+                    } else if (getConnection().getSID() != null && !"".equals(getConnection().getSID())) {
+                        c = CatalogHelper.createCatalog(getConnection().getSID());
+                        c.getDataManager().add(getConnection());
+                        PackageHelper.addMetadataTable(dbtable, c);
+                        ConnectionHelper.addCatalog(c, getConnection());
+                    }
+                }
+                // getConnection().getTables().add(metadataTable);hywang
             }
 
             checkConnectionIsDone = true;
@@ -952,8 +1013,8 @@ public class SelectorTableForm extends AbstractForm {
      */
     private void initExistingNames() {
         String[] exisNames;
-        if (metadataTable != null) {
-            exisNames = TableHelper.getTableNames(getConnection(), metadataTable.getLabel());
+        if (dbtable != null) {
+            exisNames = TableHelper.getTableNames(getConnection(), dbtable.getLabel());
         } else {
             exisNames = TableHelper.getTableNames(getConnection());
         }
@@ -1004,7 +1065,7 @@ public class SelectorTableForm extends AbstractForm {
      */
     protected void restoreCheckItems() {
         Set<String> checkedItems = new HashSet<String>();
-        for (Object obj : getConnection().getTables()) {
+        for (Object obj : ConnectionHelper.getTables(getConnection())) {
             if (obj == null) {
                 continue;
             }
@@ -1036,8 +1097,8 @@ public class SelectorTableForm extends AbstractForm {
             return false;
         }
         String[] existedNames;
-        if (metadataTable != null) {
-            existedNames = TableHelper.getTableNames(getConnection(), metadataTable.getLabel());
+        if (dbtable != null) {
+            existedNames = TableHelper.getTableNames(getConnection(), dbtable.getLabel());
         } else {
             existedNames = TableHelper.getTableNames(getConnection());
         }
@@ -1156,9 +1217,9 @@ public class SelectorTableForm extends AbstractForm {
         if (!forTemplate) {
             return exist;
         }
-        for (int i = 0; i < getConnection().getTables().size(); i++) {
+        for (int i = 0; i < ConnectionHelper.getTables(getConnection()).size(); i++) {
             String sourceName = tabel.getSourceName();
-            if (((MetadataTable) getConnection().getTables().get(i)).getSourceName().equals(sourceName)) {
+            if ((ConnectionHelper.getTables(getConnection()).toArray(new MetadataTable[0])[i].getSourceName().equals(sourceName))) {
                 exist = true;
                 break;
             }

@@ -29,6 +29,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -199,7 +200,7 @@ public final class PerlItemOldTypesConverter {
         String newPerlType = null;
         String oldPerlType = null;
 
-        for (Object tableObject : connectionItem.getConnection().getTables()) {
+        for (Object tableObject : ConnectionHelper.getTables(connectionItem.getConnection())) {
             MetadataTable metadataTable = (MetadataTable) tableObject;
             for (Object columnObject : metadataTable.getColumns()) {
                 MetadataColumn metadataColumn = (MetadataColumn) columnObject;

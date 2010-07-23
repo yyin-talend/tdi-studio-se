@@ -1137,6 +1137,13 @@
              id="org.talend.repository.model.migration.AddRoutineDependenciesMigrationTask"
              name="Add Routine Dependencies">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.MergeTosMetadataMigrationTask"
+             description="merge metadata"
+             id="org.talend.repository.MergeTosMetadataMigrationTask"
+             name="MergeTosMetadataMigrationTask">
+       </projecttask>
    </extension>
    
    <extension

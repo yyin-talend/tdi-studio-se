@@ -265,10 +265,10 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
                         if (equals && !c.isContextMode()) {
-                            if (c.getSchema() == null) {
-                                c.setSchema(""); //$NON-NLS-1$
+                            if (c.getUiSchema() == null) {
+                                c.setUiSchema(""); //$NON-NLS-1$
                             } else {
-                                c.setSchema(c.getSchema().toUpperCase());
+                                c.setUiSchema(c.getUiSchema().toUpperCase());
                             }
                         }
                     }
@@ -278,10 +278,10 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
                         if (equals && !c.isContextMode()) {
-                            if (c.getSchema() == null) {
-                                c.setSchema(""); //$NON-NLS-1$
+                            if (c.getUiSchema() == null) {
+                                c.setUiSchema(""); //$NON-NLS-1$
                             } else {
-                                c.setSchema(c.getSchema().toUpperCase());
+                                c.setUiSchema(c.getUiSchema().toUpperCase());
                             }
                         }
                         // update

@@ -506,7 +506,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
                     metadataColumn.setPrecision(precisionValue);
                 } else {
-                    metadataColumn.setPrecision(null);
+                    metadataColumn.setPrecision(0);
                 }
             } else {
                 talendType = PerlTypesManager.getNewTypeName(MetadataTalendType

@@ -488,7 +488,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                     if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
                         metadataColumn.setPrecision(precisionValue);
                     } else {
-                        metadataColumn.setPrecision(null);
+                        metadataColumn.setPrecision(0);
                     }
                 } else {
                     talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
@@ -496,7 +496,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                     if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                         metadataColumn.setPrecision(precisionValue);
                     } else {
-                        metadataColumn.setPrecision(null);
+                        metadataColumn.setPrecision(0);
                     }
                 }
 

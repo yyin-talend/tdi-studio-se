@@ -707,7 +707,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);
                 } else {
-                    metadataColumn.setPrecision(null);
+                    metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));

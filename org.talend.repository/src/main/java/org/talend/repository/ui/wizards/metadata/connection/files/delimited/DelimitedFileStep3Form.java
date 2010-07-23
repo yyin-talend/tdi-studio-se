@@ -323,7 +323,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            if (Escape.CSV_LITERAL.equals(originalValueConnection.getEscapeType())) {
+            if (Escape.CSV.equals(originalValueConnection.getEscapeType())) {
                 CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(originalValueConnection), "FILE_CSV"); //$NON-NLS-1$
                 if (csvArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$

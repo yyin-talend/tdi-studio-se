@@ -318,9 +318,9 @@ public class MultiSchemasUI {
 
         getConnection().setCsvOption((Boolean) getMultiSchemaManager().getParameterObjectValue(EParameterName.CSV_OPTION));
         if (isUseMuliSaparator || getConnection().isCsvOption()) {
-            getConnection().setEscapeType(Escape.CSV_LITERAL);
+            getConnection().setEscapeType(Escape.CSV);
         } else {
-            getConnection().setEscapeType(Escape.DELIMITED_LITERAL);
+            getConnection().setEscapeType(Escape.DELIMITED);
         }
         getConnection().setTextEnclosure(getMultiSchemaManager().getParameterValue(EParameterName.TEXT_ENCLOSURE));
         getConnection().setEscapeChar(getMultiSchemaManager().getParameterValue(EParameterName.ESCAPE_CHAR));
@@ -358,13 +358,13 @@ public class MultiSchemasUI {
         textEnclosureCombo.select(0);
         escapeCharCombo.select(0);
 
-        if (Escape.DELIMITED_LITERAL.equals(getConnection().getEscapeType())) {
+        if (Escape.DELIMITED.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(false);
             delimitedRadio.setSelection(true);
             textEnclosureCombo.setEnabled(false);
             escapeCharCombo.setEnabled(false);
         }
-        if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
+        if (Escape.CSV.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(true);
             delimitedRadio.setSelection(false);
         }
@@ -730,7 +730,7 @@ public class MultiSchemasUI {
 
                 public void widgetSelected(SelectionEvent e) {
                     Boolean b = !(csvRadio.getSelection());
-                    getConnection().setEscapeType(b ? Escape.DELIMITED_LITERAL : Escape.CSV_LITERAL);
+                    getConnection().setEscapeType(b ? Escape.DELIMITED : Escape.CSV);
                     textEnclosureCombo.setEnabled(!b);
                     escapeCharCombo.setEnabled(!b);
                     if (b) {

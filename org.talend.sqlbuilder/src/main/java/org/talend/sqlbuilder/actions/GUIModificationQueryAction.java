@@ -28,7 +28,6 @@ import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramDialog;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
-import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SqlEditDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;

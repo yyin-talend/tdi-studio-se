@@ -31,7 +31,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.GenericPackage;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -40,6 +42,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -103,10 +107,20 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
 
         if (selection == null || existingNames == null) {
             connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
+            connection.setName(ERepositoryObjectType.METADATA_GENERIC_SCHEMA.getKey());
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
-            connection.getTables().add(metadataTable);
+            GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    GenericPackage.class);
+            if (g != null) { // hywang
+                g.getOwnedElement().add(metadataTable);
+            } else {
+                GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                gpkg.setName(connection.getName());
+                PackageHelper.addMetadataTable(metadataTable, gpkg);
+                ConnectionHelper.addPackage(gpkg, connection);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -137,10 +151,19 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
+            connection.setName(ERepositoryObjectType.METADATA_GENERIC_SCHEMA.getKey());
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
-            connection.getTables().add(metadataTable);
+            GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    GenericPackage.class);
+            if (g != null) { // hywang
+                g.getOwnedElement().add(metadataTable);
+            } else {
+                GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                PackageHelper.addMetadataTable(metadataTable, gpkg);
+                ConnectionHelper.addPackage(gpkg, connection);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -187,10 +210,20 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
+            connection.setName(ERepositoryObjectType.METADATA_GENERIC_SCHEMA.getKey());
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
-            connection.getTables().add(metadataTable);
+            GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    GenericPackage.class);
+            if (g != null) { // hywang
+                g.getOwnedElement().add(metadataTable);
+            } else {
+                GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+                gpkg.setName(connection.getName());
+                PackageHelper.addMetadataTable(metadataTable, gpkg);
+                ConnectionHelper.addPackage(gpkg, connection);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))

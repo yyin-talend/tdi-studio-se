@@ -27,7 +27,6 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 

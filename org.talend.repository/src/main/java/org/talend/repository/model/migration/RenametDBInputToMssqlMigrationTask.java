@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
@@ -25,7 +25,6 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**

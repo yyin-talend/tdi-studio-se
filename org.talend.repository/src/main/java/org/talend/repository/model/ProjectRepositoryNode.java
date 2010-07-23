@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
@@ -49,8 +51,6 @@ import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.SubItemHelper;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.process.Problem;
@@ -77,6 +77,9 @@ import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SubItemHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -1190,7 +1193,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(synonymsNode);
 
-            Iterator metadataTables = metadataConnection.getTables().iterator();
+            Iterator metadataTables = ConnectionHelper.getTables(metadataConnection).iterator();
             while (metadataTables.hasNext()) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataTables
                         .next();
@@ -1269,7 +1272,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             createSAPIDocNodes(recBinNode, repObj, metadataConnection, iDocNode);
 
         } else {
-            createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
+            Set<org.talend.core.model.metadata.builder.connection.MetadataTable> tableset = ConnectionHelper
+                    .getTables(metadataConnection);
+            EList tables = new BasicEList();
+            tables.addAll(tableset);
+            createTables(recBinNode, node, repObj, tables, ERepositoryObjectType.METADATA_CON_TABLE);
         }
     }
 

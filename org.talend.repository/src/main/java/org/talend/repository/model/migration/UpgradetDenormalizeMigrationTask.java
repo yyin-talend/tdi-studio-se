@@ -28,7 +28,6 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;

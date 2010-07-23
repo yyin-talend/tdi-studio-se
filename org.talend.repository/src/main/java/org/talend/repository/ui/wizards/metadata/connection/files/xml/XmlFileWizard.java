@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +37,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -56,6 +58,8 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.utils.CsvArray;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -71,6 +75,8 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
+import orgomg.cwm.resource.record.RecordFactory;
+import orgomg.cwm.resource.record.RecordFile;
 
 /**
  * FileWizard present the FileForm. Use to create a new connection to a DB.
@@ -148,12 +154,21 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createXmlFileConnection();
+            connection.setName(ERepositoryObjectType.METADATA_FILE_XML.getKey());
             // MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
             // connection.getTables().add(metadataSchema);
-            connection.getTables().add(metadataTable);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), connection, RecordFile.class);
+            if (record != null) { // hywang
+                PackageHelper.addMetadataTable(metadataTable, record);
+            } else {
+                RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                newrecord.setName(connection.getName());
+                ConnectionHelper.addPackage(newrecord, connection);
+                PackageHelper.addMetadataTable(metadataTable, newrecord);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -205,12 +220,22 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createXmlFileConnection();
+            connection.setName(ERepositoryObjectType.METADATA_FILE_XML.getKey());
             // MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
             // connection.getTables().add(metadataSchema);
-            connection.getTables().add(metadataTable);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                    RecordFile.class);
+            if (record != null) { // hywang
+                PackageHelper.addMetadataTable(metadataTable, record);
+            } else {
+                RecordFile newrecord = RecordFactory.eINSTANCE.createRecordFile();
+                newrecord.setName(connection.getName());
+                ConnectionHelper.addPackage(newrecord, connection);
+                PackageHelper.addMetadataTable(metadataTable, newrecord);
+            }
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -344,10 +369,10 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                     formIsPerformed = finalPage.isPageComplete();
                     if (formIsPerformed) {
                         List schemas = connection.getSchema();
-                        List tables = connection.getTables();
+                        Set tables = ConnectionHelper.getTables(connection);
                         if (!schemas.isEmpty() && !tables.isEmpty()) {
                             XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
-                            MetadataTable currentTable = (MetadataTable) tables.get(0);
+                            MetadataTable currentTable = (MetadataTable) tables.toArray(new MetadataTable[0])[0];
                             if (currentSchema.getSchemaTargets().size() != currentTable.getColumns().size()) {
                                 resetMetadata(currentSchema.getSchemaTargets());
                             }
@@ -573,7 +598,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                     if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
                         metadataColumn.setPrecision(precisionValue);
                     } else {
-                        metadataColumn.setPrecision(null);
+                        metadataColumn.setPrecision(0);
                     }
                 } else {
                     talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
@@ -581,7 +606,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                     if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                         metadataColumn.setPrecision(precisionValue);
                     } else {
-                        metadataColumn.setPrecision(null);
+                        metadataColumn.setPrecision(0);
                     }
                 }
                 metadataColumn.setTalendType(talendType);
@@ -591,7 +616,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                 newColumns.add(i, metadataColumn);
             }
         }
-        EList columns = ((MetadataTable) connection.getTables().get(0)).getColumns();
+        EList columns = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0].getColumns();
         columns.clear();
         columns.addAll(newColumns);
     }

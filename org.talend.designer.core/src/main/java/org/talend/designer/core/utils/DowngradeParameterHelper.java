@@ -13,6 +13,7 @@
 package org.talend.designer.core.utils;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
@@ -29,6 +30,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -289,7 +291,7 @@ public final class DowngradeParameterHelper {
                     }
                     break;
                 case METADATA_CON_TABLE:
-                    for (MetadataTable table : (List<MetadataTable>) connectionItem.getConnection().getTables()) {
+                    for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(connectionItem.getConnection())) {
                         if (table.getId().equals(id)) {
                             return connectionItem.getProperty().getId() + SEPARATOR + table.getLabel();
                         }

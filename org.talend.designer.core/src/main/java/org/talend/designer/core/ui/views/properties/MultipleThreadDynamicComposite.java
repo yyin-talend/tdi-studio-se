@@ -80,6 +80,7 @@ import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -318,7 +319,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             } else {
                                 repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                             }
-                            for (Object tableObj : connection.getTables()) {
+                            for (Object tableObj : ConnectionHelper.getTables(connection)) {
                                 org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
                                 table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
@@ -330,7 +331,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                                 newTable);
                                         if (connection instanceof DatabaseConnection) {
                                             String dbType = ((DatabaseConnection) connection).getDatabaseType();
-                                            String schema = ((DatabaseConnection) connection).getSchema();
+                                            String schema = ((DatabaseConnection) connection).getUiSchema();
                                             tableIdAndDbTypeMap.put(newTable.getId(), dbType);
                                             if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                                 tableIdAndDbSchemaMap.put(newTable.getId(), schema);

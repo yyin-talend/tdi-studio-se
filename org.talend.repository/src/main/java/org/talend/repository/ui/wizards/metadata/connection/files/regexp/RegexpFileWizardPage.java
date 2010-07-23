@@ -18,8 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.swt.utils.AbstractRegexpFileStepForm;
 
@@ -70,8 +71,8 @@ public class RegexpFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new RegexpFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((RegexpFileConnection) connectionItem.getConnection()).getTables()
-                    .get(0);
+            MetadataTable metadataTable = ConnectionHelper.getTables(connectionItem.getConnection())
+                    .toArray(new MetadataTable[0])[0];
             currentComposite = new RegexpFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((RegexpFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }

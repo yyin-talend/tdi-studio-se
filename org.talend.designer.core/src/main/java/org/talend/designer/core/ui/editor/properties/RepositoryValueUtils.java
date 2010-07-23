@@ -32,6 +32,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -117,7 +118,7 @@ public class RepositoryValueUtils {
                     repositoryDBIdAndNameMap.put(connectionItem.getProperty().getId(), getRepositoryAliasName(connectionItem)
                             + ":" //$NON-NLS-1$
                             + connectionItem.getProperty().getLabel());
-                    for (Object tableObj : connection.getTables()) {
+                    for (Object tableObj : ConnectionHelper.getTables(connection)) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
@@ -132,7 +133,7 @@ public class RepositoryValueUtils {
                                 repositoryTableMap.put(value, newTable);
                                 if (connection instanceof DatabaseConnection) {
                                     String dbType = ((DatabaseConnection) connection).getDatabaseType();
-                                    String schema = ((DatabaseConnection) connection).getSchema();
+                                    String schema = ((DatabaseConnection) connection).getUiSchema();
                                     tableIdAndDbTypeMap.put(newTable.getId(), dbType);
                                     if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                         tableIdAndDbSchemaMap.put(newTable.getId(), schema);

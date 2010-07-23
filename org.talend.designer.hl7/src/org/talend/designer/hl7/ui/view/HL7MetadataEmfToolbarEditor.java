@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
@@ -116,18 +117,39 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
     protected AddPushButton createAddPushButton() {
         return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
 
+            boolean hasSchema = false;
+
             @Override
             protected Object getObjectToAdd() {
-                MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
-                        .getExtendedControlModel();
-                if (tableEditorModel.getMetadataTable() == null) {
-                    tableEditorModel.setMetadataTable(ConnectionFactory.eINSTANCE.createMetadataTable());
+                if (hasSchema) {
+                    MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
+                            .getExtendedControlModel();
+                    if (tableEditorModel.getMetadataTable() == null) {
+                        tableEditorModel.setMetadataTable(ConnectionFactory.eINSTANCE.createMetadataTable());
+                    }
+                    MetadataColumn metadatacolumn = tableEditorModel.createNewMetadataColumn(dbmsId);
+                    metadatacolumn.setLength(226);
+                    metadatacolumn.setPrecision(0);
+                    updateCurrentTableModelAndMap(tableEditorModel);
+                    return metadatacolumn;
                 }
-                MetadataColumn metadatacolumn = tableEditorModel.createNewMetadataColumn(dbmsId);
-                metadatacolumn.setLength(226);
-                metadatacolumn.setPrecision(null);
-                updateCurrentTableModelAndMap(tableEditorModel);
-                return metadatacolumn;
+                return null;
+            }
+
+            @Override
+            protected void beforeCommandExecution() {
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    hasSchema = true;
+                    super.beforeCommandExecution();
+                } else {
+                    hasSchema = false;
+                    MessageDialog.openError(HL7MetadataEmfToolbarEditor.this.getParentComposite().getShell(),
+                            "Can't add new column!", "Need to init a schema by choosing a file at first");
+                }
+
             }
 
             private void updateCurrentTableModelAndMap(MetadataEmfTableEditor tableEditorModel) {
@@ -207,6 +229,37 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
             @Override
             public boolean getEnabledState() {
                 return super.getEnabledState() && !isRepository; // 13749
+            }
+
+            @Override
+            protected void beforeCommandExecution() {
+
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    super.beforeCommandExecution();
+                } else {
+                    MessageDialog.openError(HL7MetadataEmfToolbarEditor.this.getParentComposite().getShell(),
+                            "Can't import xml file", "Need to init a schema by choosing a file at first");
+                }
+
+            }
+
+            protected void afterCommandExecution(Command executedCommand) {
+                MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
+                        .getExtendedControlModel();
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    for (MetadataColumn col : tableEditorModel.getMetadataColumnList()) {
+                        linker.getManager().updateRelationMapping(key, col, true);
+                    }
+                }
+                linker.getMainui().redrawLinkers();
+                linker.getBackgroundRefresher().refreshBackground();
             }
 
         };

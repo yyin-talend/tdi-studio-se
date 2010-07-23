@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.preview.PreviewHandlerEvent.TYPE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

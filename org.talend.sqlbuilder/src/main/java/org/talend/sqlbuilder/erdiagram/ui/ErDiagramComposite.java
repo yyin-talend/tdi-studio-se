@@ -229,7 +229,7 @@ public class ErDiagramComposite extends SashForm {
     private String getSchema() {
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
                 .getConnection();
-        return connection.getSchema();
+        return connection.getUiSchema();
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$

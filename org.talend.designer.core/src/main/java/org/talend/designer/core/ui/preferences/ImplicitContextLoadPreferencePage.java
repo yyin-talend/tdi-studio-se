@@ -368,7 +368,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             processDbField(hostField, processQuotes(conn.getServerName()));
             processDbField(portField, processQuotes(conn.getPort()));
             processDbField(dbNameField, processQuotes(conn.getSID()));
-            processDbField(schemaField, processQuotes(conn.getSchema()));
+            processDbField(schemaField, processQuotes(conn.getUiSchema()));
             processDbField(userField, processQuotes(conn.getUsername()));
             processDbField(passwordField, processQuotes(conn.getPassword()));
 

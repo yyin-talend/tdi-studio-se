@@ -24,6 +24,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.GenericPackage;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -33,9 +34,12 @@ import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
+import orgomg.cwm.objectmodel.core.Package;
 
 /**
  * Administrator class global comment. Detailed comment <br/>
@@ -88,14 +92,17 @@ public class CopyToGenericSchemaHelper {
         }
 
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        metadataTable.setConnection(connection);
+        if (metadataTable.getNamespace() instanceof Package) {
+            Package pkg = (Package) metadataTable.getNamespace();
+            pkg.getDataManager().add(connection);
+        }
         EList listColumns;
         if (tableToMove instanceof MetadataTableRepositoryObject) {
             listColumns = ((MetadataTableRepositoryObject) tableToMove).getTable().getColumns();
         } else {
             Connection sourceConnection = ((GenericSchemaConnectionItem) tableToMove.getProperty().getItem()).getConnection();
             GenericSchemaConnection dbConnection = (GenericSchemaConnection) sourceConnection;
-            listColumns = ((MetadataTable) dbConnection.getTables().get(0)).getColumns();
+            listColumns = (ConnectionHelper.getTables(dbConnection).toArray(new MetadataTable[0])[0]).getColumns();
         }
 
         boolean isConnectionTableSchema = checkIsConnectionTableSchema(tableToMove);
@@ -137,7 +144,16 @@ public class CopyToGenericSchemaHelper {
         connectionProperty.setLabel(connectionLabel);
         metadataTable.setId(factory.getNextId());
 
-        connection.getTables().add(metadataTable);
+        GenericPackage g = (GenericPackage) ConnectionHelper.getPackage(connection.getName(), (Connection) connection,
+                GenericPackage.class);
+        if (g != null) { // hywang
+            g.getOwnedElement().add(metadataTable);
+        } else {
+            GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
+            PackageHelper.addMetadataTable(metadataTable, gpkg);
+            ConnectionHelper.addPackage(gpkg, connection);
+
+        }
         connectionItem.setConnection(connection);
         connectionProperty.setItem(connectionItem);
         connectionProperty.setId(factory.getNextId());

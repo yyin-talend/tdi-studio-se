@@ -22,8 +22,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.sqlbuilder.erdiagram.ui.actions.CreateRelationAction;
-import org.talend.sqlbuilder.erdiagram.ui.actions.TableAddAction;
 import org.talend.sqlbuilder.erdiagram.ui.actions.ErDiagramItemDeleteAction;
+import org.talend.sqlbuilder.erdiagram.ui.actions.TableAddAction;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>

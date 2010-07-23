@@ -227,7 +227,7 @@ public class DatabaseForm extends AbstractForm {
         datasourceText.setText(getConnection().getDatasourceName());
         additionParamText.setText(getConnection().getAdditionalParams());
         sidOrDatabaseText.setText(getConnection().getSID());
-        schemaText.setText(getConnection().getSchema());
+        schemaText.setText(getConnection().getUiSchema());
 
         if (getConnection().getDbVersionString() != null) {
             dbVersionCombo.setText(getConnection().getDbVersionString());
@@ -261,7 +261,7 @@ public class DatabaseForm extends AbstractForm {
         generalJdbcPasswordText.setText(getConnection().getPassword());
         if (getConnection().getDatabaseType().equals(EDatabaseTypeName.GENERAL_JDBC.getXmlName())
                 && generalJdbcUrlText.getText().contains("sqlserver")) {//$NON-NLS-1$
-            jDBCschemaText.setText(getConnection().getSchema());
+            jDBCschemaText.setText(getConnection().getUiSchema());
         }
         generalJdbcDriverjarText.setText(getConnection().getDriverJarPath());
         generalMappingFileText.setText(getConnection().getDbmsId());
@@ -972,7 +972,7 @@ public class DatabaseForm extends AbstractForm {
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
-                        getConnection().setSchema(schemaText.getText());
+                        getConnection().setUiSchema(schemaText.getText());
                         modifyFieldValue();
                     }
                 }
@@ -1421,7 +1421,7 @@ public class DatabaseForm extends AbstractForm {
                     String text = jDBCschemaText.getText();
                     schemaText.setText(text);
                     if (validText(schemaText.getText())) {
-                        getConnection().setSchema(schemaText.getText());
+                        getConnection().setUiSchema(schemaText.getText());
                         checkFieldsValue();
                     }
                 }

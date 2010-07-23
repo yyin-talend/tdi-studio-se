@@ -16,11 +16,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.talend.sqlbuilder.Messages;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
-
 import net.sourceforge.sqlexplorer.IConstants;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
+
+import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
  * @author k709335
