@@ -131,6 +131,7 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
         SetupProcessDependenciesRoutinesDialog dialog = new SetupProcessDependenciesRoutinesDialog(PlatformUI.getWorkbench()
                 .getDisplay().getActiveShell(), process, readonly);
         if (dialog.open() == Window.OK && !readonly) {
+            process.getRoutinesDependencies().clear();
 
             createRoutinesDependencies(process, dialog.getSystemRoutines());
             createRoutinesDependencies(process, dialog.getUserRoutines());
