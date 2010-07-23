@@ -115,6 +115,16 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             readonly = true;
         }
         ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
+        // try {
+        // IRepositoryViewObject lastVersion =
+        // repFactory.getLastVersion(ProjectManager.getInstance().getCurrentProject(),
+        // processItem.getProperty().getId());
+        // if (lastVersion != null) {
+        // processItem = (ProcessItem) lastVersion.getProperty().getItem();
+        // }
+        // } catch (PersistenceException e1) {
+        // ExceptionHandler.process(e1);
+        // }
 
         ProcessType process = processItem.getProcess();
 
@@ -122,12 +132,9 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
                 .getDisplay().getActiveShell(), process, readonly);
         if (dialog.open() == Window.OK && !readonly) {
 
-            process.getRoutinesDependencies().clear();
-
             createRoutinesDependencies(process, dialog.getSystemRoutines());
             createRoutinesDependencies(process, dialog.getUserRoutines());
             try {
-                processItem.setProcess(process);
                 CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(processItem);
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
@@ -140,14 +147,28 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             return;
         }
         for (RoutineItemRecord r : routineRecords) {
-            ItemInforType itemRecordType = TalendFileFactory.eINSTANCE.createItemInforType();
-            itemRecordType.setSystem(r.isSystem());
-            if (r.isSystem()) {
-                itemRecordType.setIdOrName(r.getLabel());
-            } else {
-                itemRecordType.setIdOrName(r.getId());
+            List<ItemInforType> routinesDependencies = (List<ItemInforType>) process.getRoutinesDependencies();
+            boolean found = false;
+            for (ItemInforType type : routinesDependencies) {
+                if (r.isSystem() == type.isSystem()) {
+                    if (r.isSystem() && type.getIdOrName().equals(r.getLabel()) || !r.isSystem()
+                            && type.getIdOrName().equals(r.getId())) {
+                        found = true;
+                        break;
+                    }
+                }
             }
-            process.getRoutinesDependencies().add(itemRecordType);
+            if (!found) {
+                ItemInforType itemRecordType = TalendFileFactory.eINSTANCE.createItemInforType();
+                itemRecordType.setSystem(r.isSystem());
+                if (r.isSystem()) {
+                    itemRecordType.setIdOrName(r.getLabel());
+                } else {
+                    itemRecordType.setIdOrName(r.getId());
+                }
+
+                process.getRoutinesDependencies().add(itemRecordType);
+            }
         }
     }
 }

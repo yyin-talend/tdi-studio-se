@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
@@ -25,6 +24,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 
 /**
  * ggu class global comment. Detailled comment
@@ -45,20 +45,37 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
         }
         try {
             ProcessItem item2 = (ProcessItem) item;
-            EList routinesDependencies = item2.getProcess().getRoutinesDependencies();
+            List<ItemInforType> routinesDependencies = (List<ItemInforType>) item2.getProcess().getRoutinesDependencies();
 
-            routinesDependencies.clear();
-            routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));
-            routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
+            List<ItemInforType> neededRoutineDependencies = new ArrayList<ItemInforType>();
+            neededRoutineDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));
+            neededRoutineDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
+            boolean modified = false;
 
-            CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(item, true);
+            for (ItemInforType added : neededRoutineDependencies) {
+                boolean found = false;
+                for (ItemInforType type : routinesDependencies) {
+                    if (added.isSystem() == type.isSystem() && added.getIdOrName().equals(type.getIdOrName())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    routinesDependencies.add(added);
+                    modified = true;
+                }
+            }
+            if (modified) {
+                CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(item, true);
 
-            return ExecutionResult.SUCCESS_WITH_ALERT;
+                return ExecutionResult.SUCCESS_WITH_ALERT;
+            }
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
     public Date getOrder() {

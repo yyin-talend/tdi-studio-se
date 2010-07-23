@@ -105,7 +105,6 @@ public class NewProcessWizard extends Wizard {
 
             // add depended routines.
             EList routinesDependencies = process.getRoutinesDependencies();
-            routinesDependencies.clear();
             IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
             if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES)) {
                 routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));

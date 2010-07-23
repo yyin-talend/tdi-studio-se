@@ -110,6 +110,7 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
+import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
@@ -128,6 +129,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListC
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.routine.RoutineItemRecord;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
@@ -168,6 +170,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     protected List<SubjobContainer> subjobContainers = new ArrayList<SubjobContainer>();
 
     protected List<Note> notes = new ArrayList<Note>();
+
+    private List<RoutineItemRecord> routinesDependencies = new ArrayList<RoutineItemRecord>();
 
     private final String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
@@ -1019,6 +1023,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
                 processType);
+        saveRoutinesDependencies(fileFact, processType);
 
         EList nList = processType.getNode();
         EList cList = processType.getConnection();
@@ -1151,6 +1156,20 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
+    private void saveRoutinesDependencies(TalendFileFactory fileFact, ProcessType process) {
+        process.getRoutinesDependencies().clear();
+        for (RoutineItemRecord record : routinesDependencies) {
+            ItemInforType itemInforType = fileFact.createItemInforType();
+            itemInforType.setSystem(record.isSystem());
+            if (record.isSystem()) {
+                itemInforType.setIdOrName(record.getLabel());
+            } else {
+                itemInforType.setIdOrName(record.getId());
+            }
+            process.getRoutinesDependencies().add(itemInforType);
+        }
+    }
+
     /**
      * DOC qzhang Comment method "createNodeType".
      * 
@@ -1194,6 +1213,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (processType.getParameters() != null) {
             loadElementParameters(this, processType.getParameters().getElementParameter());
         }
+        loadRoutinesDependencies(processType);
 
         try {
             loadNodes(processType, nodesHashtable);
@@ -1283,6 +1303,21 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
+        }
+    }
+
+    private void loadRoutinesDependencies(ProcessType process) {
+        for (Iterator iter = process.getRoutinesDependencies().iterator(); iter.hasNext();) {
+            ItemInforType itemInforType = (ItemInforType) iter.next();
+
+            RoutineItemRecord record = new RoutineItemRecord();
+            record.setSystem(itemInforType.isSystem());
+            if (record.isSystem()) {
+                record.setLabel(itemInforType.getIdOrName());
+            } else {
+                record.setId(itemInforType.getIdOrName());
+            }
+            routinesDependencies.add(record);
         }
     }
 
