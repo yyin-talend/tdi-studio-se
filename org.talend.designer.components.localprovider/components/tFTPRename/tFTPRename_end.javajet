@@ -28,9 +28,14 @@
 	if(sftp){
 %>
 	}
-    session_<%=cid%>.disconnect(); 
-    
-<%}else{%>
+<%
+	if(!("true").equals(useExistingConn)){
+%>
+    	session_<%=cid%>.disconnect(); 
+<%
+	}
+	}else{
+%>
 	}
 <%
 	if(!("true").equals(useExistingConn)){

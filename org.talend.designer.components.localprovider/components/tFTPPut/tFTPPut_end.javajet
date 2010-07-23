@@ -29,7 +29,13 @@
 	if(sftp){
 %>
  	}
-    session_<%=cid%>.disconnect(); 
+<%
+	if(!("true").equals(useExistingConn)){
+%>
+    	session_<%=cid%>.disconnect(); 
+<%
+	}
+%>
     msg_<%=cid%>.add(nb_file_<%=cid%> + " files have been uploaded.");  
     	
 	StringBuffer sb_<%=cid %> = new StringBuffer();

@@ -40,9 +40,13 @@
             sb_<%=cid %>.append(item_<%=cid %>).append("\n");
         }
     	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", sb_<%=cid %>.toString());
-    	
-    	session_<%=cid%>.disconnect(); 
-    	
+<% 
+		if(!("true").equals(useExistingConn)){
+%>
+    		session_<%=cid%>.disconnect(); 
+<%
+		}
+%>  	
   
     
 <%}else{%>
