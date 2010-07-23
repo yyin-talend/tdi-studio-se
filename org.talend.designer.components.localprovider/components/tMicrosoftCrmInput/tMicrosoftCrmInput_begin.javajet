@@ -40,7 +40,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			String domain = ElementParameterParser.getValue(node, "__DOMAIN__");
 			String host = ElementParameterParser.getValue(node, "__HOST__");
-			int port = Integer.parseInt(ElementParameterParser.getValue(node, "__PORT__"));
+			String port = ElementParameterParser.getValue(node, "__PORT__");
 			String timeoutSecTemp = ElementParameterParser.getValue(node, "__TIMEOUT__");
 			String timeoutSec = (timeoutSecTemp!=null&&!("").equals(timeoutSecTemp))?timeoutSecTemp:"2";
 			int timeout = (int)(Double.valueOf(timeoutSec) * 1000);
