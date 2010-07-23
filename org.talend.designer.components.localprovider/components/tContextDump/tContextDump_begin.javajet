@@ -39,24 +39,30 @@
             for(IConnection outgoingConn : outgoingConns) {
                 if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                     %>
-                    <%if(hidePassword){%>
-		                <%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
-                   		<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
-		                <%for (IContextParameter param :params){
-	                    	if(("id_Password").equals(param.getType())){
-	                    		String str = param.getName(); 
-	                    %>
-								if(("<%=str%>").equals(key_<%=cid %>.toString())){
-			                    	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().replaceAll(".","*");
+                    <%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
+                    <%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
+                    <%for (IContextParameter param :params){
+	                  	if(("id_Password").equals(param.getType()) && hidePassword){
+	                  		String str = param.getName(); 
+	                %>
+							if(("<%=str%>").equals(key_<%=cid %>.toString())){
+			                    <%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().replaceAll(".","*");
+			                }
+						<%
+						}else if(("id_Date").equals(param.getType())){
+							String str = param.getName();
+						%>
+							if(("<%=str%>").equals(key_<%=cid %>.toString())){
+								if(value_<%=cid %>.toString().indexOf(";")>-1){
+			                    	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().substring(value_<%=cid %>.toString().indexOf(";")+1);
 			                    }
-		                    <%}%>
-		                  <%
-		                  }%>
-                    <%}else{%>
-                    	<%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
-                    	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
-                    <%}%>
-                    <%
+			                }
+						<%
+						}
+						%>
+					<%}%>
+                    
+<%
                 }
             }
     }
