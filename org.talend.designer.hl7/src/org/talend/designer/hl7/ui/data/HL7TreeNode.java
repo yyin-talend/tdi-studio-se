@@ -49,6 +49,8 @@ public abstract class HL7TreeNode {
 
     private boolean isNameSpace = false;
 
+    private String columnName = null;
+
     public boolean hasLink() {
         return column != null;
     }
@@ -110,17 +112,35 @@ public abstract class HL7TreeNode {
      * @return
      */
     public String getColumnLabel() {
-        if (column == null) {
-            if (getRow() != null) {
-                return getRow();
-            }
-            return ""; //$NON-NLS-1$
-        } else {
+        if (column != null) {
             if (getRow() != null) {
                 return getRow() + ":" + this.column.getLabel(); //$NON-NLS-1$
             }
             return this.column.getLabel();
+        } else if (columnName != null) {
+            if (getRow() != null) {
+                return getRow() + ":" + this.getColumnName();
+            }
+            return this.getColumnName();
+
+        } else {
+            if (getRow() != null) {
+                return getRow();
+            }
+            return ""; //$NON-NLS-1$
         }
+
+        // if (column == null) {
+        // if (getRow() != null) {
+        // return getRow();
+        // }
+        //            return ""; //$NON-NLS-1$
+        // } else {
+        // if (getRow() != null) {
+        //                return getRow() + ":" + this.column.getLabel(); //$NON-NLS-1$
+        // }
+        // return this.column.getLabel();
+        // }
     }
 
     /**
@@ -348,5 +368,23 @@ public abstract class HL7TreeNode {
 
     public void setNameSpace(boolean isNameSpace) {
         this.isNameSpace = isNameSpace;
+    }
+
+    /**
+     * Getter for columnName.
+     * 
+     * @return the columnName
+     */
+    public String getColumnName() {
+        return this.columnName;
+    }
+
+    /**
+     * Sets the columnName.
+     * 
+     * @param columnName the columnName to set
+     */
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 }

@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Disconnect the schema to xml tree. <br/>
@@ -30,6 +31,8 @@ public class HL7DisconnectAction extends SelectionProviderAction {
 
     private HL7UI hl7ui;
 
+    private AbstractForm form;
+
     /**
      * CreateNode constructor comment.
      * 
@@ -39,6 +42,12 @@ public class HL7DisconnectAction extends SelectionProviderAction {
     public HL7DisconnectAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+    }
+
+    public HL7DisconnectAction(TreeViewer xmlViewer, String text, AbstractForm form) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.form = form;
     }
 
     public HL7DisconnectAction(TreeViewer xmlViewer, HL7UI hl7ui, String text) {
@@ -67,7 +76,11 @@ public class HL7DisconnectAction extends SelectionProviderAction {
         node.setColumn(null);
         xmlViewer.refresh(node);
         xmlViewer.expandAll();
-        hl7ui.redrawLinkers();
+        if (hl7ui != null) {
+            hl7ui.redrawLinkers();
+        } else if (form != null) {
+            form.refreshLinks();
+        }
     }
 
 }

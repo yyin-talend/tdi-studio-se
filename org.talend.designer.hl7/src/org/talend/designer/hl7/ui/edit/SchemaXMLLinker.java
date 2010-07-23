@@ -48,6 +48,7 @@ import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.ItemExtremityDescriptor;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
+import org.talend.commons.ui.swt.drawing.link.LinksManager;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.commons.ui.utils.TableUtils;
@@ -169,7 +170,7 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
                 if (getManager().getHl7Component().isHL7Output()) {
                     if (getManager() instanceof HL7OutputManager) {
                         List<HL7TreeNode> treeData = ((HL7OutputManager) getManager())
-                                .getTreeData(((HL7OutputManager) getManager()).getCurrentSchema());
+                                .getTreeData(((HL7OutputManager) getManager()).getCurrentSchema(false));
                         if (treeData != null && treeData.size() > 0) {
                             HL7TreeNode rootTreeData = treeData.get(0);
                             for (TreeItem item : xmlViewer.getTree().getItems()) {
@@ -512,4 +513,23 @@ public class SchemaXMLLinker extends TableToTreeLinker<Object, Object> {
         }
         return this.drawingLinksComparator;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.linking.TableToTreeLinker#getLinksManager()
+     */
+    @Override
+    public LinksManager<Item, Object, Tree, Object> getLinksManager() {
+        return super.getLinksManager();
+    }
+
+    public boolean isNoLinker() {
+        List<LinkDescriptor<Item, Object, Tree, Object>> links = getLinksManager().getLinks();
+        if (links == null || links.size() == 0) {
+            return true;
+        }
+        return false;
+    }
+
 }

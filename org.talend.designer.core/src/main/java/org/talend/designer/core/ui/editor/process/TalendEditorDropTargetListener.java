@@ -67,16 +67,20 @@ import org.talend.core.model.metadata.builder.connection.CDCType;
 import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.HL7Connection;
+import org.talend.core.model.metadata.builder.connection.HL7FileNode;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
@@ -108,6 +112,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -774,7 +779,33 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
             // fore HL7, by gcui
-            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
+            if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
+                    || (selectedNode.getParent() != null
+                            && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
+                            .isHL7PluginLoaded())) {
+                if (originalConnection instanceof HL7ConnectionImpl) {
+                    if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
+                        List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
+                        for (Object obj : ((HL7ConnectionImpl) originalConnection).getRoot()) {
+                            if (obj instanceof HL7FileNode) {
+                                Map<String, String> newMap = new HashMap<String, String>();
+                                newMap.put(IHL7Constant.ATTRIBUTE, ((HL7FileNode) obj).getAttribute());
+                                newMap.put(IHL7Constant.PATH, ((HL7FileNode) obj).getFilePath());
+                                newMap.put(IHL7Constant.COLUMN, ((HL7FileNode) obj).getRelatedColumn());
+                                newMap.put(IHL7Constant.ORDER, String.valueOf(((HL7FileNode) obj).getOrder()));
+                                newMap.put(IHL7Constant.VALUE, ((HL7FileNode) obj).getDefaultValue());
+                                newMap.put(IHL7Constant.REPEATABLE, String.valueOf(((HL7FileNode) obj).isRepeatable()));
+                                mapList.add(newMap);
+                            }
+                        }
+                        IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) {
+                            externalNode.getElementParameter("ROOT").setValue(mapList);
+                        }
+
+                    }
+
+                }
                 for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
                     Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
@@ -1097,6 +1128,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     productNameWanted = "XMLOUTPUT";
                 }
             }
+
+            boolean hl7Output = false;
+            if (item instanceof HL7ConnectionItem) {
+                EList list = ((HL7Connection) ((HL7ConnectionItem) item).getConnection()).getRoot();
+                if (list != null && list.size() > 0) {
+                    hl7Output = true;
+                }
+            }
+
             // for mdm
             boolean inputModel = false;
             if (item instanceof MDMConnectionItem) {
@@ -1131,6 +1171,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         }
                     }
                     boolean flag = filterComponent(component, name, type);
+                    if (hl7Output && !component.getName().equals("tHL7Output")) {
+                        value = false;
+                    }
                     if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                         if (item instanceof MDMConnectionItem) {
                             if (inputModel && emfComponent.getName().endsWith("Input")) {

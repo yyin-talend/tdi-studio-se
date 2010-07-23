@@ -547,4 +547,8 @@ public abstract class AbstractForm extends Composite {
     protected void processWhenDispose() {
         //
     }
+
+    public void refreshLinks() {
+
+    }
 }

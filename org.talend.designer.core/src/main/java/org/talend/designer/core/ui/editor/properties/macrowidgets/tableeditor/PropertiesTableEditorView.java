@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -53,6 +54,8 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
@@ -64,6 +67,7 @@ import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.event.CheckColumnSelectionListener;
 
 /**
@@ -242,6 +246,24 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             }
                             return returnedValue;
                         };
+                    });
+                    cellEditor.addListener(new ICellEditorListener() {
+
+                        public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+                        }
+
+                        public void cancelEditor() {
+                        }
+
+                        public void applyEditorValue() {
+                            if (element instanceof Node) {
+                                IProcess process = ((Node) element).getProcess();
+                                if (process instanceof IProcess2) {
+                                    ((IProcess2) process).checkProcess();
+                                }
+                            }
+
+                        }
                     });
                     break;
                 case MODULE_LIST:

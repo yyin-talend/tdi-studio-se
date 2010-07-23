@@ -14,12 +14,12 @@ package org.talend.designer.hl7.action;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.data.NameSpaceNode;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>
@@ -36,6 +36,8 @@ public class SetRepetableAction extends SelectionProviderAction {
 
     private boolean value;
 
+    private AbstractForm form;
+
     /**
      * SetForLoopAction constructor comment.
      * 
@@ -45,6 +47,12 @@ public class SetRepetableAction extends SelectionProviderAction {
     public SetRepetableAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+    }
+
+    public SetRepetableAction(TreeViewer xmlViewer, String text, AbstractForm form) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.form = form;
     }
 
     /**
@@ -105,7 +113,7 @@ public class SetRepetableAction extends SelectionProviderAction {
             return;
         }
 
-        HL7Manager hl7Manager = hl7ui.gethl7Manager();
+        // HL7Manager hl7Manager = hl7ui.gethl7Manager();
 
         // HL7TreeNode rootTreeData = hl7Manager.getRootHL7TreeNode(node);
         // TreeUtil.clearSubGroupNode(node);
@@ -135,6 +143,10 @@ public class SetRepetableAction extends SelectionProviderAction {
         }
         upsetMainNode(node);
         xmlViewer.refresh();
+        if (form != null) {
+            form.refreshLinks();
+        }
+
         // this.hl7ui.updateStatus();
     }
 

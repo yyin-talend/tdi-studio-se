@@ -50,7 +50,9 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.hl7.HL7InputComponent;
 import org.talend.designer.hl7.action.CreateHL7AttributeAction;
 import org.talend.designer.hl7.action.CreateHL7ElementAction;
@@ -209,7 +211,7 @@ public class HL7OutputUI extends HL7UI {
         TreeItem root = xmlViewer.getTree().getItem(0);
         if (this.gethl7Manager().getHl7Component().isHL7Output()) {
             if (this.hl7Manager != null) {
-                List<HL7TreeNode> treeData = this.hl7Manager.getTreeData(this.hl7Manager.getCurrentSchema());
+                List<HL7TreeNode> treeData = this.hl7Manager.getTreeData(this.hl7Manager.getCurrentSchema(false));
                 if (treeData != null && treeData.size() > 0) {
                     HL7TreeNode rootTreeData = treeData.get(0);
                     for (TreeItem item : xmlViewer.getTree().getItems()) {
@@ -233,13 +235,20 @@ public class HL7OutputUI extends HL7UI {
 
         updateStatus();
 
-        xmlViewer.getTree().setData("row", hl7Manager.getCurrentSchema());
+        xmlViewer.getTree().setData("row", hl7Manager.getCurrentSchema(false));
         this.xmlViewer.refresh();
     }
 
     protected void initSchemaTable() {
         if (externalNode.isHL7Output()) {// !externalNode.istWriteXMLField() && !externalNode.istMDMOutput()) {
-            IMetadataTable metadataTable = this.externalNode.getMetadataList().get(0);
+            IMetadataTable metadataTable = null;
+            List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
+                    IConnectionCategory.FLOW);
+            if (incomingConnections.size() <= 0) {
+                metadataTable = this.externalNode.getMetadataList().get(0);
+            } else {
+                metadataTable = incomingConnections.get(0).getMetadataTable();
+            }
             if (metadataTable != null) {
                 List<IMetadataColumn> columnList = metadataTable.getListColumns();
                 schemaViewer.setInput(columnList);

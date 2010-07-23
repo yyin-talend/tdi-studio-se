@@ -3058,4 +3058,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#checkTableParameters()
+     */
+    public void checkTableParameters() {
+        checkNodeTableParameters();
+    }
+
 }

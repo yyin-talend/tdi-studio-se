@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 
 /**
  * DOC hwan class global comment. Detailled comment
@@ -61,14 +62,21 @@ public class HL7OutputTableViewerProvider extends LabelProvider implements ITabl
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
     public String getColumnText(Object element, int columnIndex) {
-        IMetadataColumn metaTable = (IMetadataColumn) element;
-        switch (columnIndex) {
-        case 0:
-            return metaTable.getLabel();
-            // case 1:
-            // return metaTable.get
+        if (element instanceof IMetadataColumn) {
+            IMetadataColumn metaTable = (IMetadataColumn) element;
+            switch (columnIndex) {
+            case 0:
+                return metaTable.getLabel();
+                // case 1:
+                // return metaTable.get
+            }
+        } else if (element instanceof MetadataColumn) {
+            MetadataColumn metaTable = (MetadataColumn) element;
+            switch (columnIndex) {
+            case 0:
+                return metaTable.getLabel();
+            }
         }
-
         return "<none>"; //$NON-NLS-1$
     }
 

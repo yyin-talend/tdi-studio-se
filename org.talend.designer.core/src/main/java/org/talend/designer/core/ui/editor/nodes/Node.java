@@ -2362,6 +2362,45 @@ public class Node extends Element implements INode {
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }
             }
+
+            if (isHL7Output()) {
+                if (getIncomingConnections(EConnectionType.FLOW_MERGE).size() <= 0) {
+                    String errorMessage = "Do not have merge link";
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                } else {
+                    List<Map<String, String>> maps = (List<Map<String, String>>) ElementParameterParser.getObjectValue(this,
+                            "__SCHEMAS__"); //$NON-NLS-1$
+                    List<IMetadataTable> tables = this.getMetadataList();
+                    for (IConnection connection : getIncomingConnections(EConnectionType.FLOW_MERGE)) {
+                        IMetadataTable metadataTable = connection.getMetadataTable();
+                        // metadataTable.setLabel(connection.getUniqueName());
+                        // String metadataTableName = metadataTable.getLabel();
+                        String rowName = connection.getUniqueName();
+                        String schemaName = null;
+                        for (Map<String, String> map : maps) {
+                            if (map.containsValue(rowName)) {
+                                if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
+                                    schemaName = map.get("SCHEMA");
+                                    int first = schemaName.indexOf("_");
+                                    int second = schemaName.lastIndexOf("_");
+                                    if (first > 0 && first < second) {
+                                        schemaName = schemaName.substring(first + 1, second);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        for (IMetadataTable nodeTable : tables) {
+                            if (schemaName != null && nodeTable.getLabel() != null && nodeTable.getLabel().equals(schemaName)) {
+                                if (!metadataTable.sameMetadataAs(nodeTable, IMetadataColumn.OPTIONS_NONE)) {
+                                    String errorMessage = "MetadataTable is not synchronized";
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         int jobletBuildConnectorNum = 0;
         for (INodeConnector nodeConnector : listConnector) {
@@ -2823,6 +2862,10 @@ public class Node extends Element implements INode {
         return getComponent().getOriginalFamilyName().equals("FileScale"); //$NON-NLS-1$
     }
 
+    public boolean isHL7Output() {
+        return getComponent().getName().equals("tHL7Output");
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -3208,4 +3251,5 @@ public class Node extends Element implements INode {
         }
         return flag;
     }
+
 }

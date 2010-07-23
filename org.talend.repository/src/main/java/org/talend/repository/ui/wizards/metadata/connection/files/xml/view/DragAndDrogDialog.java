@@ -37,8 +37,15 @@ public class DragAndDrogDialog extends Dialog {
 
     private String value = CREATE_AS_SUBELEMENT;
 
+    private boolean hideAttr = false;
+
     public DragAndDrogDialog(Shell parentShell) {
         super(parentShell);
+    }
+
+    public DragAndDrogDialog(Shell parentShell, boolean hideAttr) {
+        super(parentShell);
+        this.hideAttr = hideAttr;
     }
 
     public String getSelectValue() {
@@ -52,8 +59,20 @@ public class DragAndDrogDialog extends Dialog {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
         // composite.setLayout(new GridLayout());
-        String[][] namevalues = new String[][] { { "Create as sub-element of target node", CREATE_AS_SUBELEMENT },
-                { "Create as attribute of target node", CREATE_AS_ATTRIBUTE }, { "Add linker to target node", CREATE_AS_TEXT } };
+        // String[][] namevalues = new String[][] { { "Create as sub-element of target node", CREATE_AS_SUBELEMENT },
+        // { "Create as attribute of target node", CREATE_AS_ATTRIBUTE }, { "Add linker to target node", CREATE_AS_TEXT
+        // } };
+
+        String[][] namevalues = null;
+        if (hideAttr) {
+            namevalues = new String[][] { { "Create as sub-element of target node", CREATE_AS_SUBELEMENT },
+                    { "Add linker to target node", CREATE_AS_TEXT } };
+        } else {
+            namevalues = new String[][] { { "Create as sub-element of target node", CREATE_AS_SUBELEMENT },
+                    { "Create as attribute of target node", CREATE_AS_ATTRIBUTE },
+                    { "Add linker to target node", CREATE_AS_TEXT } };
+        }
+
         RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", "Select the operation:", 1, namevalues, composite, true);
         GridLayout layout = new GridLayout();
         layout.marginWidth = 12;

@@ -210,7 +210,7 @@ public class SchemaXMLDragAndDropHandler {
         public boolean isEnabled(DropTargetEvent event) {
             HL7Manager manager = getManager();
             if (manager != null && manager instanceof HL7OutputManager) {
-                String currentSchema = ((HL7OutputManager) manager).getCurrentSchema();
+                String currentSchema = ((HL7OutputManager) manager).getCurrentSchema(true);
                 if (currentSchema != null) {
                     Item targetItem = (Item) event.item;
                     if (targetItem != null) {
@@ -288,7 +288,7 @@ public class SchemaXMLDragAndDropHandler {
             String row = (String) control.getData("row"); //$NON-NLS-1$
             if (getManager().getHl7Component().isHL7Output()) {
                 if (getManager() instanceof HL7OutputManager) {
-                    row = ((HL7OutputManager) getManager()).getCurrentSchema();
+                    row = ((HL7OutputManager) getManager()).getCurrentSchema(true);
                 }
 
             }

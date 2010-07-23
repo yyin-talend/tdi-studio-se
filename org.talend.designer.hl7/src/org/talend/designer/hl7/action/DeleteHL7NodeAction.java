@@ -21,6 +21,7 @@ import org.talend.designer.hl7.ui.data.Attribute;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.data.NameSpaceNode;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * bqian Create a xml node. <br/>
@@ -35,6 +36,8 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
 
     private HL7UI hl7ui;
 
+    private AbstractForm form;
+
     /**
      * CreateNode constructor comment.
      * 
@@ -44,6 +47,12 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
     public DeleteHL7NodeAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+    }
+
+    public DeleteHL7NodeAction(TreeViewer xmlViewer, String text, AbstractForm form) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.form = form;
     }
 
     public DeleteHL7NodeAction(TreeViewer xmlViewer, HL7UI hl7ui, String text) {
@@ -93,8 +102,11 @@ public class DeleteHL7NodeAction extends SelectionProviderAction {
         }
         xmlViewer.refresh(parent);
         xmlViewer.expandAll();
-        hl7ui.redrawLinkers();
-
+        if (hl7ui != null) {
+            hl7ui.redrawLinkers();
+        } else if (form != null) {
+            form.refreshLinks();
+        }
     }
 
     /**
