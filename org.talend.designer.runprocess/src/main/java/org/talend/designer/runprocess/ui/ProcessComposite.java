@@ -1240,12 +1240,13 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
         }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
-        if (processManager.getClearBeforeExec()) {
+        if (processContext.isClearBeforeExec()) {
             processContext.clearMessages();
         }
-        if (processManager.getExecTime()) {
-            processContext.switchTime();
-        }
+        // processContext.
+        // if (processContext.isWatchAllowed()) {
+        // processContext.switchTime();
+        // }
         processContext.setMonitorTrace(false);
         processContext.setWatchAllowed(processManager.getExecTime());
         processContext.setMonitorPerf(processManager.getStat());

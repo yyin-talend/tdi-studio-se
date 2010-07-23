@@ -849,7 +849,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     }
                     boolean running = ((Boolean) evt.getNewValue()).booleanValue();
                     setRunnable(!running);
-                    killBtn.setEnabled(running);
+                    if (!killBtn.isDisposed() && killBtn != null)
+                        killBtn.setEnabled(running);
                     // previousRow.setEnabled(running);
                     // nextRow.setEnabled(running);
                     // nextBreakPoint.setEnabled(running);
@@ -878,7 +879,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
     }
 
     protected void setRunnable(boolean runnable) {
-        if (!clearTracePerfBtn.isDisposed() || clearTracePerfBtn != null)
+        if (!clearTracePerfBtn.isDisposed() && clearTracePerfBtn != null)
             clearTracePerfBtn.setEnabled(runnable);
         // previousRow.setEnabled(runnable);
         // nextRow.setEnabled(runnable);
@@ -1058,7 +1059,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
                                 public void run() {
                                     setRunnable(true);
-                                    killBtn.setEnabled(false);
+                                    if (!killBtn.isDisposed() && killBtn != null)
+                                        killBtn.setEnabled(false);
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, oldValueConsoleOnOut);
 
                                     preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, oldValueConsoleOnErr);
@@ -1098,7 +1100,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
                                     public void run() {
                                         setRunnable(false);
-                                        killBtn.setEnabled(true);
+                                        if (!killBtn.isDisposed() && killBtn != null)
+                                            killBtn.setEnabled(true);
                                         processContext.setRunning(true);
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
@@ -1137,7 +1140,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
                                     public void run() {
                                         setRunnable(true);
-                                        killBtn.setEnabled(false);
+                                        if (!killBtn.isDisposed() && killBtn != null)
+                                            killBtn.setEnabled(false);
                                     }
                                 });
                             }

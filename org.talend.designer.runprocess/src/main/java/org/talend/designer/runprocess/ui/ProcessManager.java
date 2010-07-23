@@ -39,15 +39,15 @@ public class ProcessManager {
 
     private static RunProcessContext processContext;
 
-    private Boolean saveJobBeforeRun;
+    private Boolean saveJobBeforeRun = true;
 
-    private Boolean execTime;
+    private Boolean execTime = false;
 
-    private Boolean stat;
+    private Boolean stat = true;
 
-    private Boolean clearBeforeExec;
+    private Boolean clearBeforeExec = true;
 
-    private boolean trace;
+    private boolean trace = true;
 
     public static ProcessManager getInstance() {
         if (manager == null) {

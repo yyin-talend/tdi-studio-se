@@ -100,8 +100,7 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         perfBtn.setLayoutData(layouData);
         perfBtn.setText(Messages.getString("ProcessComposite.stat"));
         perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
-        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN));
+
         perfBtn.setEnabled(false);
         saveJobBeforeRunButton = new Button(panel, SWT.CHECK);
         FormData layouDatac = new FormData();
@@ -123,14 +122,12 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         watchBtn.setLayoutData(layouDatad);
         watchBtn.setText(Messages.getString("ProcessComposite.execTime"));
         watchBtn.setToolTipText(Messages.getString("ProcessComposite.execTimeHint"));
-        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN));
+
         watchBtn.setEnabled(false);
         clearBeforeExec = new Button(panel, SWT.CHECK);
         clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore"));
         clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint"));
-        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
+
         FormData layouDatacb = new FormData();
         layouDatacb.left = new FormAttachment(watchBtn, 0, SWT.RIGHT);
         layouDatacb.right = new FormAttachment(0, 300);
@@ -169,6 +166,13 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             execScroll.setMinSize(execGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         }
         addListeners();
+
+        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISEXECTIMERUN));
+        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSTATISTICSRUN));
     }
 
     /**

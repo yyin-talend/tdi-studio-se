@@ -68,7 +68,6 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.AdvanceSettingComposite;
 import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
@@ -545,19 +544,12 @@ public class ProcessView extends ViewPart {
         }
         this.processContext = activeContext;
         rubjobManager.setProcessContext(processContext);
-
-        rubjobManager.setSaveJobBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSAVEBEFORERUN)
-                && !disableAll);
-        rubjobManager.setExecTime(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN)
-                && !disableAll);
-        rubjobManager.setStat(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN)
-                && !disableAll);
-        rubjobManager.setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN)
-                && !disableAll);
+        // if (processContext != null) {
+        // activeContext.setSaveBeforeRun(rubjobManager.getSaveJobBeforeRun());
+        // activeContext.setWatchAllowed(rubjobManager.getExecTime());
+        // activeContext.setMonitorPerf(rubjobManager.getStat());
+        // activeContext.setClearBeforeExec(rubjobManager.getClearBeforeExec());
+        // }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
         if (dc == processComposite) {
