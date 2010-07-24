@@ -41,6 +41,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -248,9 +249,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                boolean b = elem instanceof INode && (((INode) elem).getComponent().getName().equals("tHL7Input") //$NON-NLS-1$
-                        || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML") //$NON-NLS-1$
-                || ((INode) elem).getComponent().getName().equals("tMDMOutput")); //$NON-NLS-1$
+                boolean b = elem instanceof INode
+                        && (((INode) elem).getComponent().getName().equals("tHL7Input") //$NON-NLS-1$
+                                || ((INode) elem).getComponent().getName().equals("tAdvancedFileOutputXML") //$NON-NLS-1$
+                                || ((INode) elem).getComponent().getName().equals("tMDMOutput") || ((INode) elem).getComponent().getName().equals("tWebService")); //$NON-NLS-1$
+
                 if (("TYPE".equals(repositoryValue) || (param.isShow(elem.getElementParameters())) || b) //$NON-NLS-1$
                         && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
@@ -583,6 +586,63 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                                 }
                                             }
                                         }
+                                    } else if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                            && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 2) {
+                                        final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
+                                        if (tables != null && !tables.isEmpty()) {
+                                            if (param.getName().equals("INPUT_SCHEMA")) {
+                                                repositoryTable = item.getProperty().getId() + " - " + "Input";
+                                                repositorySchemaTypeParameter.setValue(repositoryTable);
+                                            } else {
+                                                repositoryTable = item.getProperty().getId() + " - " + "OutPut";
+                                                repositorySchemaTypeParameter.setValue(repositoryTable);
+                                            }
+                                            if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
+                                                param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                                        EmfComponent.REPOSITORY);
+
+                                                IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                                if (table != null) {
+                                                    table = table.clone();
+                                                    setDBTableFieldValue(node, table.getTableName(), null);
+                                                    setSAPFunctionName(node, table.getLabel());
+                                                    INodeConnector mainConnector = node
+                                                            .getConnectorFromType(EConnectionType.FLOW_MAIN);
+                                                    IMetadataTable stable = null;
+                                                    INodeConnector outputConnector = mainConnector;
+                                                    if (mainConnector.getMaxLinkOutput() == 0) {
+                                                        for (INodeConnector currentConnector : node.getListConnector()) {
+                                                            if (!currentConnector.getBaseSchema().equals(
+                                                                    EConnectionType.FLOW_MAIN.getName())
+                                                                    && currentConnector.getMaxLinkOutput() > 0) {
+                                                                outputConnector = currentConnector;
+
+                                                            }
+                                                        }
+                                                    }
+                                                    if (param.getName().equals("INPUT_SCHEMA")) {
+                                                        stable = node.getMetadataFromConnector("FLOW");
+
+                                                    } else if (param.getName().equals("SCHEMA")) {
+                                                        stable = node.getMetadataFromConnector("OUTPUT");
+                                                    }
+                                                    if (stable != null) {
+                                                        table.setTableName(stable.getTableName());
+                                                        if (!table.sameMetadataAs(stable)) {
+                                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param,
+                                                                    null, table, param);
+                                                            cmd.setConnection(connection);
+                                                            cmd.setRepositoryMode(true);
+                                                            cmd.execute(true);
+                                                            // break;
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+
                                     }
                                 }
 

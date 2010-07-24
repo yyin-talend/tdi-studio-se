@@ -253,9 +253,9 @@ public class ShadowProcess<T extends IProcessDescription> {
             WSDLSchemaInputNode inWSDLSchemaNode = new WSDLSchemaInputNode(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding(), description.getSchema(),
                     description.getWsdlSchemaBean(), description.getWsdlSchemaBean().getParameters());
-
             outNode.setMetadataList(inWSDLSchemaNode.getMetadataList());
             ps = new FileinToDelimitedProcess<WSDLSchemaInputNode>(inWSDLSchemaNode, outNode);
+
             break;
 
         case SALESFORCE_SCHEMA:

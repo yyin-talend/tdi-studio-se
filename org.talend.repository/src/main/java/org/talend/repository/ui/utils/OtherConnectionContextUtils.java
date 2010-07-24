@@ -82,7 +82,6 @@ public final class OtherConnectionContextUtils {
         MethodName,
         EndpointURI,
         Encoding,
-
         // MDM
         MDMURL,
         UNIVERSE,
@@ -618,29 +617,32 @@ public final class OtherConnectionContextUtils {
 
         paramName = prefixName + EParamName.WSDL;
         ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getWSDL());
-
-        paramName = prefixName + EParamName.MethodName;
-        ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getMethodName());
-
+        if (wsdlConn.isIsInputModel()) {
+            paramName = prefixName + EParamName.MethodName;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getMethodName());
+        }
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            paramName = prefixName + EParamName.UserName;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getUserName());
+            if (wsdlConn.isIsInputModel()) {
+                paramName = prefixName + EParamName.UserName;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getUserName());
 
-            paramName = prefixName + EParamName.Password;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getPassword(), JavaTypesManager.PASSWORD);
+                paramName = prefixName + EParamName.Password;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getPassword(), JavaTypesManager.PASSWORD);
 
-            paramName = prefixName + EParamName.ProxyHost;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyHost());
+                paramName = prefixName + EParamName.ProxyHost;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyHost());
 
-            paramName = prefixName + EParamName.ProxyPort;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPort(), JavaTypesManager.INTEGER);
+                paramName = prefixName + EParamName.ProxyPort;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPort(), JavaTypesManager.INTEGER);
 
-            paramName = prefixName + EParamName.ProxyUser;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyUser());
+                paramName = prefixName + EParamName.ProxyUser;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyUser());
 
-            paramName = prefixName + EParamName.ProxyPassword;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPassword(), JavaTypesManager.PASSWORD);
+                paramName = prefixName + EParamName.ProxyPassword;
+                ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPassword(),
+                        JavaTypesManager.PASSWORD);
+            }
             break;
         case PERL:
         default:
@@ -664,29 +666,31 @@ public final class OtherConnectionContextUtils {
 
         paramName = prefixName + EParamName.WSDL;
         wsdlConn.setWSDL(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EParamName.MethodName;
-        wsdlConn.setMethodName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
+        if (wsdlConn.isIsInputModel()) {
+            paramName = prefixName + EParamName.MethodName;
+            wsdlConn.setMethodName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+        }
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            paramName = prefixName + EParamName.UserName;
-            wsdlConn.setUserName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            if (wsdlConn.isIsInputModel()) {
+                paramName = prefixName + EParamName.UserName;
+                wsdlConn.setUserName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            paramName = prefixName + EParamName.Password;
-            wsdlConn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                paramName = prefixName + EParamName.Password;
+                wsdlConn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            paramName = prefixName + EParamName.ProxyHost;
-            wsdlConn.setProxyHost(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                paramName = prefixName + EParamName.ProxyHost;
+                wsdlConn.setProxyHost(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            paramName = prefixName + EParamName.ProxyPort;
-            wsdlConn.setProxyPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                paramName = prefixName + EParamName.ProxyPort;
+                wsdlConn.setProxyPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            paramName = prefixName + EParamName.ProxyUser;
-            wsdlConn.setProxyUser(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                paramName = prefixName + EParamName.ProxyUser;
+                wsdlConn.setProxyUser(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            paramName = prefixName + EParamName.ProxyPassword;
-            wsdlConn.setProxyPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                paramName = prefixName + EParamName.ProxyPassword;
+                wsdlConn.setProxyPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            }
             break;
         case PERL:
         default:
@@ -705,26 +709,28 @@ public final class OtherConnectionContextUtils {
             return;
         }
         String wsdl = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getWSDL());
-        String username = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getUserName());
-        String password = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getPassword());
-        String proxyHost = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyHost());
-        String proxyPort = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPort());
-        String proxyUser = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyUser());
-        String proxyPassword = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPassword());
-        String methodName = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getMethodName());
-        String encoding = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEncoding());
-        String endpointURL = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEndpointURI());
+        if (wsdlConn.isIsInputModel()) {
+            String username = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getUserName());
+            String password = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getPassword());
+            String proxyHost = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyHost());
+            String proxyPort = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPort());
+            String proxyUser = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyUser());
+            String proxyPassword = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPassword());
+            String methodName = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getMethodName());
+            String encoding = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEncoding());
+            String endpointURL = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEndpointURI());
 
+            wsdlConn.setUserName(username);
+            wsdlConn.setPassword(password);
+            wsdlConn.setProxyHost(proxyHost);
+            wsdlConn.setProxyPort(proxyPort);
+            wsdlConn.setProxyUser(proxyUser);
+            wsdlConn.setProxyPassword(proxyPassword);
+            wsdlConn.setMethodName(methodName);
+            wsdlConn.setEncoding(encoding);
+            wsdlConn.setEndpointURI(endpointURL);
+        }
         wsdlConn.setWSDL(wsdl);
-        wsdlConn.setUserName(username);
-        wsdlConn.setPassword(password);
-        wsdlConn.setProxyHost(proxyHost);
-        wsdlConn.setProxyPort(proxyPort);
-        wsdlConn.setProxyUser(proxyUser);
-        wsdlConn.setProxyPassword(proxyPassword);
-        wsdlConn.setMethodName(methodName);
-        wsdlConn.setEncoding(encoding);
-        wsdlConn.setEndpointURI(endpointURL);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -737,30 +743,31 @@ public final class OtherConnectionContextUtils {
         WSDLSchemaConnection cloneConn = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
 
         String wsdl = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getWSDL());
-        String username = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getUserName());
-        String password = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getPassword());
-        String proxyHost = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyHost());
-        String proxyPort = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPort());
-        String proxyUser = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyUser());
-        String proxyPassword = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPassword());
-        String methodName = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getMethodName());
-        String encoding = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEncoding());
-        String endpointURL = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEndpointURI());
+        if (wsdlConn.isIsInputModel()) {
+            String username = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getUserName());
+            String password = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getPassword());
+            String proxyHost = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyHost());
+            String proxyPort = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPort());
+            String proxyUser = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyUser());
+            String proxyPassword = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPassword());
+            String methodName = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getMethodName());
+            String encoding = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEncoding());
+            String endpointURL = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEndpointURI());
 
+            cloneConn.setUserName(username);
+            cloneConn.setPassword(password);
+            cloneConn.setProxyHost(proxyHost);
+            cloneConn.setProxyPort(proxyPort);
+            cloneConn.setProxyUser(proxyUser);
+            cloneConn.setProxyPassword(proxyPassword);
+            cloneConn.setMethodName(methodName);
+            cloneConn.setEncoding(encoding);
+            cloneConn.setEndpointURI(endpointURL);
+
+            cloneConn.setNeedAuth(wsdlConn.isNeedAuth());
+            cloneConn.setUseProxy(wsdlConn.isUseProxy());
+        }
         cloneConn.setWSDL(wsdl);
-        cloneConn.setUserName(username);
-        cloneConn.setPassword(password);
-        cloneConn.setProxyHost(proxyHost);
-        cloneConn.setProxyPort(proxyPort);
-        cloneConn.setProxyUser(proxyUser);
-        cloneConn.setProxyPassword(proxyPassword);
-        cloneConn.setMethodName(methodName);
-        cloneConn.setEncoding(encoding);
-        cloneConn.setEndpointURI(endpointURL);
-
-        cloneConn.setNeedAuth(wsdlConn.isNeedAuth());
-        cloneConn.setUseProxy(wsdlConn.isUseProxy());
-
         ConnectionContextHelper.cloneConnectionProperties(wsdlConn, cloneConn);
 
         cloneConn.setParameters((ArrayList) wsdlConn.getParameters().clone());

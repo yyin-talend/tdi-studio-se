@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -27,6 +32,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
@@ -42,6 +48,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.webService.WebServiceSaveManager;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -77,7 +84,9 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
 
     private boolean isSinglePageOnly;
 
-    private static final String ALL_STEPS = "3"; //$NON-NLS-1$
+    private static final String ALL_STEPS = "4"; //$NON-NLS-1$
+
+    private static final String TOS_STEP = "3";
 
     private Map<String, String> oldTableMap;
 
@@ -85,7 +94,23 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
 
     private List<IMetadataTable> oldMetadataTable;
 
+    private WSDLSchemaSelectWizardPage wsdlSelectPage;
+
     private boolean isToolbar;
+
+    private List<IWizardPage> dynamicWizardPages;
+
+    private String originaleObjectLabel;
+
+    private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
+
+    WebServiceSaveManager manager = WebServiceSaveManager.getInstance();
 
     /**
      * Sets the isToolbar.
@@ -200,6 +225,13 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
             initLockStrategy();
             break;
         }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
+        }
         initTable();
         initConnection();
     }
@@ -265,6 +297,14 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
             initLockStrategy();
             break;
         }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getLabel();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
+        }
+
         initTable();
         initConnection();
     }
@@ -297,37 +337,50 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
         if (isToolbar) {
             pathToSave = null;
         }
-
+        List<IWizardPage> wizardPages = new ArrayList<IWizardPage>();
         if (creation) {
             setWindowTitle(Messages.getString("WSDLSchemaWizard.CreateNewWSDLSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleCreate"
             // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
+
             wsdlSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_WSDL_SCHEMA, !isRepositoryObjectEditable(), creation);
             wsdlSchemaWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage1);
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage2);
+            if (PluginChecker.isTIS()) {
+                wsdlSelectPage = new WSDLSchemaSelectWizardPage(creation, 1, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager, isSinglePageOnly);
+                wsdlSelectPage
+                        .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + ALL_STEPS);
+                wsdlSelectPage.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+                addPage(wsdlSelectPage);
+                wsdlSelectPage.setPageComplete(true);
+            } else {
+                wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(creation, 2, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage1);
+                wizardPages.add(wsdlSchemaWizardPage1);
+                wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(creation, 3, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage2);
+                wizardPages.add(wsdlSchemaWizardPage2);
+                wsdlSchemaWizardPage1.setPageComplete(false);
+                wsdlSchemaWizardPage2.setPageComplete(isRepositoryObjectEditable());
+                setDynamicWizardPages(wizardPages);
+            }
             wsdlSchemaWizardPage0.setPageComplete(false);
-            wsdlSchemaWizardPage1.setPageComplete(false);
-            wsdlSchemaWizardPage2.setPageComplete(isRepositoryObjectEditable());
-
         } else if (this.isSinglePageOnly == false) {
-
             setWindowTitle(Messages.getString("WSDLSchemaWizard.UpdateWSDLSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
@@ -341,19 +394,37 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage1);
+            if (PluginChecker.isTIS()) {
+                wsdlSelectPage = new WSDLSchemaSelectWizardPage(creation, 1, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager, isSinglePageOnly);
+                wsdlSelectPage
+                        .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + ALL_STEPS);
+                wsdlSelectPage.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+                addPage(wsdlSelectPage);
+            } else {
+                // wsdlSchemaWizardPage0.setWizard(this);
 
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage2);
+                // wizardPages.add(wsdlSchemaWizardPage0);
+                wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage1);
+                wizardPages.add(wsdlSchemaWizardPage1);
+                // wizardPages.add(wsdlSchemaWizardPage1);
+                wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage2);
+                wizardPages.add(wsdlSchemaWizardPage2);
+                setDynamicWizardPages(wizardPages);
+                // wsdlSchemaWizardPage2.setWizard(this);
+                // wizardPages.add(wsdlSchemaWizardPage2);
+            }
 
         } else {
             setWindowTitle(Messages.getString("WSDLSchemaWizard.SaveAsWSDLSchema"));// Messages.getString( //$NON-NLS-1$
@@ -368,20 +439,31 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
 
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage1);
-
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
-                    contextModeManager);
-            wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-            wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
-            addPage(wsdlSchemaWizardPage2);
-
+            if (PluginChecker.isTIS()) {
+                wsdlSelectPage = new WSDLSchemaSelectWizardPage(creation, 1, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager, isSinglePageOnly);
+                wsdlSelectPage
+                        .setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " + Messages.getString("FileWizardPage.of") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " 4");
+                wsdlSelectPage.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+                addPage(wsdlSelectPage);
+            } else {
+                wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage1);
+                wizardPages.add(wsdlSchemaWizardPage1);
+                wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                        contextModeManager);
+                wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileWizardPage.of") + " " + TOS_STEP); //$NON-NLS-1$ //$NON-NLS-2$
+                wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
+                addPage(wsdlSchemaWizardPage2);
+                wizardPages.add(wsdlSchemaWizardPage2);
+                setDynamicWizardPages(wizardPages);
+            }
         }
     }
 
@@ -410,16 +492,38 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
      */
     @Override
     public boolean performFinish() {
+
         if (isSinglePageOnly) {
             return true;
         }
 
-        boolean formIsPerformed;
-        if (wsdlSchemaWizardPage2 == null) {
-            formIsPerformed = wsdlSchemaWizardPage1.isPageComplete();
-        } else {
-            formIsPerformed = wsdlSchemaWizardPage2.isPageComplete();
+        boolean formIsPerformed = true;
+        IWizardPage finalPage = null;
+        if (finalPage == null) {
+            finalPage = wsdlSchemaWizardPage0;
         }
+
+        if (((WSDLSchemaConnection) connectionItem.getConnection()).isIsInputModel()) {
+            if (finalPage instanceof WSDLSchemaWizardPage) {
+                int step = ((WSDLSchemaWizardPage) finalPage).step;
+                if (step == 2) {
+                    formIsPerformed = finalPage.isPageComplete();
+                } else {
+                    formIsPerformed = finalPage.isPageComplete();
+                }
+            } else {
+                formIsPerformed = finalPage.isPageComplete();
+            }
+
+        } else {
+            formIsPerformed = finalPage.isPageComplete();
+        }
+        manager.saveValue();
+        // if (wsdlSchemaWizardPage2 == null) {
+        // formIsPerformed = wsdlSchemaWizardPage1.isPageComplete();
+        // } else {
+        // formIsPerformed = wsdlSchemaWizardPage2.isPageComplete();
+        // }
 
         if (formIsPerformed) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -448,6 +552,17 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
         }
     }
 
+    public boolean performCancel() {
+        if (!creation) {
+            connectionItem.getProperty().setVersion(this.originalVersion);
+            connectionItem.getProperty().setLabel(this.originaleObjectLabel);
+            connectionItem.getProperty().setDescription(this.originalDescription);
+            connectionItem.getProperty().setPurpose(this.originalPurpose);
+            connectionItem.getProperty().setStatusCode(this.originalStatus);
+        }
+        return super.performCancel();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -457,4 +572,55 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
         return this.connectionItem;
     }
 
+    public List<IWizardPage> getDynamicWizardPages() {
+        return this.dynamicWizardPages;
+    }
+
+    public void setDynamicWizardPages(List<IWizardPage> dynamicWizardPages) {
+        this.dynamicWizardPages = dynamicWizardPages;
+    }
+
+    public IWizardPage getNextPage(IWizardPage page) {
+        IWizardPage nextPage = null;
+        if (page instanceof WSDLSchemaWizardPage) {
+            if (page instanceof WSDLSchemaSelectWizardPage) {
+                nextPage = dynamicWizardPages.get(0);
+            } else if (page instanceof WebServiceSchemaWizardPage) {
+                int curStep = ((WebServiceSchemaWizardPage) page).step;
+                for (IWizardPage curPage : dynamicWizardPages) {
+                    if (curPage instanceof WebServiceSchemaWizardPage) {
+                        manager.saveValue();
+                        if (((WebServiceSchemaWizardPage) curPage).step == curStep + 1) {
+                            nextPage = curPage;
+
+                        }
+                    }
+                }
+            } else {
+                int curStep = ((WSDLSchemaWizardPage) page).step;
+                for (IWizardPage curPage : dynamicWizardPages) {
+                    if (curPage instanceof WSDLSchemaWizardPage && !(curPage instanceof WSDLSchemaSelectWizardPage)
+                            && !(curPage instanceof WebServiceSchemaWizardPage)) {
+                        if (((WSDLSchemaWizardPage) curPage).step == curStep + 1) {
+                            nextPage = curPage;
+
+                        }
+                    }
+                }
+            }
+        }
+
+        if (nextPage != null) {
+            return nextPage;
+        }
+
+        return super.getNextPage(page);
+    }
+
+    private void warningDialog(String title) {
+        MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
+        box.setText("WARNING"); //$NON-NLS-1$
+        box.setMessage(title); //$NON-NLS-1$
+        box.open();
+    }
 }

@@ -1128,7 +1128,23 @@ public class Node extends Element implements INode {
         IMetadataTable tableTarget = nodeTarget.getMetadataFromConnector(connector);
 
         IElementParameter schemaParamTarget = paramTarget.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-        IElementParameter param = getSchemaParameterFromConnector(connector);
+
+        INodeConnector mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
+        INodeConnector outputConnector = mainConnector;
+        if (mainConnector.getMaxLinkOutput() == 0) {
+            // check each connector
+            // if any of the connector is not based on FLOW_MAIN
+            // if this connector has any MaxLinkOutput > 0 => use this connector instead of main
+            for (INodeConnector currentConnector : this.getListConnector()) {
+                if (!currentConnector.getBaseSchema().equals(EConnectionType.FLOW_MAIN.getName())
+                        && currentConnector.getMaxLinkOutput() > 0) {
+                    outputConnector = currentConnector;
+                    break;
+                }
+            }
+        }
+
+        IElementParameter param = getSchemaParameterFromConnector(outputConnector.getName());
 
         ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, param, null, tableTarget);
         CommandStack cmdStack = getCommandStack();

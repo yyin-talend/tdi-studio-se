@@ -750,93 +750,94 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 // footerSource = UpdateRepositoryUtils.getRepositorySourceName(item);
 
                 if (connectionItem != null) {
-                    boolean same = true;
-                    IElementParameter sapNodeParam = node.getElementParameter("LABEL"); //$NON-NLS-1$
+                    if (connectionItem.getConnection() instanceof SAPConnection) {
+                        boolean same = true;
+                        IElementParameter sapNodeParam = node.getElementParameter("LABEL"); //$NON-NLS-1$
 
-                    if (sapNodeParam == null) {
-                        return updateResults;
-                    }
-
-                    String iDocName = TalendTextUtils.removeQuotes((String) sapNodeParam.getValue());
-                    Connection connection = connectionItem.getConnection();
-                    if (connection instanceof SAPConnection) {
-                        SAPConnection sapConnection = (SAPConnection) connection;
-                        SAPIDocUnit iDocUnit = SAPConnectionUtils.findExistIDocUnit(sapConnection, iDocName);
-                        if (iDocUnit == null) {
-                            for (IElementParameter param : node.getElementParameters()) {
-                                SAPParametersUtils.setNoRepositoryParams(param);
-                            }
+                        if (sapNodeParam == null) {
                             return updateResults;
                         }
 
-                        String gatewayService = "";
-                        String programId = "";
-                        Boolean formatXml = false;
-                        Boolean formatHtml = false;
-                        String fileXml = "";
-                        String fileHtml = "";
-                        IElementParameter elementParameter = node.getElementParameter("GATEWAYSERVICE");
-                        if (elementParameter != null) {
-                            gatewayService = (String) elementParameter.getValue();
-                            gatewayService = TalendTextUtils.removeQuotes(gatewayService);
-                        }
-                        IElementParameter elementParameter2 = node.getElementParameter("PROGRAMID");
-                        if (elementParameter2 != null) {
-                            programId = (String) elementParameter2.getValue();
-                            programId = TalendTextUtils.removeQuotes(programId);
-                        }
-                        IElementParameter elementParameter3 = node.getElementParameter("FORMAT_XML");
-                        if (elementParameter3 != null) {
-                            formatXml = (Boolean) elementParameter3.getValue();
-                        }
-                        IElementParameter elementParameter4 = node.getElementParameter("FORMAT_HTML");
-                        if (elementParameter4 != null) {
-                            formatHtml = (Boolean) elementParameter4.getValue();
-                        }
-                        IElementParameter elementParameter5 = node.getElementParameter("FILE_IDOC_XML");
-                        if (elementParameter5 != null) {
-                            fileXml = (String) elementParameter5.getValue();
-                            fileXml = TalendTextUtils.removeQuotes(fileXml);
-                        }
-                        IElementParameter elementParameter6 = node.getElementParameter("FILE_IDOC_HTML");
-                        if (elementParameter6 != null) {
-                            fileHtml = (String) elementParameter6.getValue();
-                            fileHtml = TalendTextUtils.removeQuotes(fileHtml);
-                        }
-                        if (!((gatewayService == null && iDocUnit.getGatewayService() == null) || (gatewayService != null && gatewayService
-                                .equals(iDocUnit.getGatewayService())))) {
-                            same = false;
-                        }
-                        if (!((programId == null && iDocUnit.getProgramId() == null) || (programId != null && programId
-                                .equals(iDocUnit.getProgramId())))) {
-                            same = false;
-                        }
-                        if (!((formatXml && iDocUnit.isUseXmlOutput()) || (!formatXml && !iDocUnit.isUseXmlOutput()))) {
-                            same = false;
-                        }
-                        if (!((formatHtml && iDocUnit.isUseHtmlOutput()) || (!formatHtml && !iDocUnit.isUseHtmlOutput()))) {
-                            same = false;
+                        String iDocName = TalendTextUtils.removeQuotes((String) sapNodeParam.getValue());
+                        Connection connection = connectionItem.getConnection();
+                        if (connection instanceof SAPConnection) {
+                            SAPConnection sapConnection = (SAPConnection) connection;
+                            SAPIDocUnit iDocUnit = SAPConnectionUtils.findExistIDocUnit(sapConnection, iDocName);
+                            if (iDocUnit == null) {
+                                for (IElementParameter param : node.getElementParameters()) {
+                                    SAPParametersUtils.setNoRepositoryParams(param);
+                                }
+                                return updateResults;
+                            }
+
+                            String gatewayService = "";
+                            String programId = "";
+                            Boolean formatXml = false;
+                            Boolean formatHtml = false;
+                            String fileXml = "";
+                            String fileHtml = "";
+                            IElementParameter elementParameter = node.getElementParameter("GATEWAYSERVICE");
+                            if (elementParameter != null) {
+                                gatewayService = (String) elementParameter.getValue();
+                                gatewayService = TalendTextUtils.removeQuotes(gatewayService);
+                            }
+                            IElementParameter elementParameter2 = node.getElementParameter("PROGRAMID");
+                            if (elementParameter2 != null) {
+                                programId = (String) elementParameter2.getValue();
+                                programId = TalendTextUtils.removeQuotes(programId);
+                            }
+                            IElementParameter elementParameter3 = node.getElementParameter("FORMAT_XML");
+                            if (elementParameter3 != null) {
+                                formatXml = (Boolean) elementParameter3.getValue();
+                            }
+                            IElementParameter elementParameter4 = node.getElementParameter("FORMAT_HTML");
+                            if (elementParameter4 != null) {
+                                formatHtml = (Boolean) elementParameter4.getValue();
+                            }
+                            IElementParameter elementParameter5 = node.getElementParameter("FILE_IDOC_XML");
+                            if (elementParameter5 != null) {
+                                fileXml = (String) elementParameter5.getValue();
+                                fileXml = TalendTextUtils.removeQuotes(fileXml);
+                            }
+                            IElementParameter elementParameter6 = node.getElementParameter("FILE_IDOC_HTML");
+                            if (elementParameter6 != null) {
+                                fileHtml = (String) elementParameter6.getValue();
+                                fileHtml = TalendTextUtils.removeQuotes(fileHtml);
+                            }
+                            if (!((gatewayService == null && iDocUnit.getGatewayService() == null) || (gatewayService != null && gatewayService
+                                    .equals(iDocUnit.getGatewayService())))) {
+                                same = false;
+                            }
+                            if (!((programId == null && iDocUnit.getProgramId() == null) || (programId != null && programId
+                                    .equals(iDocUnit.getProgramId())))) {
+                                same = false;
+                            }
+                            if (!((formatXml && iDocUnit.isUseXmlOutput()) || (!formatXml && !iDocUnit.isUseXmlOutput()))) {
+                                same = false;
+                            }
+                            if (!((formatHtml && iDocUnit.isUseHtmlOutput()) || (!formatHtml && !iDocUnit.isUseHtmlOutput()))) {
+                                same = false;
+                            }
+
+                            if (!((fileXml == null && iDocUnit.getXmlFile() == null) || (fileXml != null && fileXml
+                                    .equals(iDocUnit.getXmlFile())))) {
+                                same = false;
+                            }
+                            if (!((fileHtml == null && iDocUnit.getHtmlFile() == null) || (fileHtml != null && fileHtml
+                                    .equals(iDocUnit.getHtmlFile())))) {
+                                same = false;
+                            }
+                            if (!same || onlySimpleShow) {
+                                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                                UpdateCheckResult result = new UpdateCheckResult(node);
+                                result.setResult(EUpdateItemType.NODE_SAP_IDOC, EUpdateResult.UPDATE, iDocUnit, source);
+                                setConfigrationForReadOnlyJob(result);
+                                updateResults.add(result);
+                            }
                         }
 
-                        if (!((fileXml == null && iDocUnit.getXmlFile() == null) || (fileXml != null && fileXml.equals(iDocUnit
-                                .getXmlFile())))) {
-                            same = false;
-                        }
-                        if (!((fileHtml == null && iDocUnit.getHtmlFile() == null) || (fileHtml != null && fileHtml
-                                .equals(iDocUnit.getHtmlFile())))) {
-                            same = false;
-                        }
-                        if (!same || onlySimpleShow) {
-                            String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
-                            UpdateCheckResult result = new UpdateCheckResult(node);
-                            result.setResult(EUpdateItemType.NODE_SAP_IDOC, EUpdateResult.UPDATE, iDocUnit, source);
-                            setConfigrationForReadOnlyJob(result);
-                            updateResults.add(result);
-                        }
                     }
-
                 }
-
             }
         }
         return updateResults;

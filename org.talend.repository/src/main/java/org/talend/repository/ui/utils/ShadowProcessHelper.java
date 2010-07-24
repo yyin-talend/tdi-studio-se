@@ -34,6 +34,7 @@ import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.WSDLParameter;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
@@ -509,39 +510,82 @@ public class ShadowProcessHelper {
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
 
         IMetadataTable table = new MetadataTable();
-
+        IMetadataTable outtable = new MetadataTable();
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+        if (connection.isIsInputModel()) {
+            if (connection.getValue() != null && !connection.getValue().isEmpty()) {
+                Iterator<String> iterate = connection.getValue().iterator();
 
-        if (connection.getValue() != null && !connection.getValue().isEmpty()) {
-            Iterator<String> iterate = connection.getValue().iterator();
+                while (iterate.hasNext()) {
+                    IMetadataColumn iMetadataColumn = new MetadataColumn();
+                    iMetadataColumn.setLabel(iterate.next());
+                    iMetadataColumn.setKey(false);
+                    iMetadataColumn.setLength(0);
+                    iMetadataColumn.setNullable(false);
+                    iMetadataColumn.setType("String"); //$NON-NLS-1$
+                    iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
 
-            while (iterate.hasNext()) {
-                IMetadataColumn iMetadataColumn = new MetadataColumn();
-                iMetadataColumn.setLabel(iterate.next());
-                iMetadataColumn.setKey(false);
-                iMetadataColumn.setLength(0);
-                iMetadataColumn.setNullable(false);
-                iMetadataColumn.setType("String"); //$NON-NLS-1$
-                iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+                    schema.add(iMetadataColumn);
+                }
+            } else {
 
-                schema.add(iMetadataColumn);
+                IMetadataColumn iMetadataDn = new MetadataColumn();
+                iMetadataDn.setLabel(connection.getMethodName());
+                iMetadataDn.setKey(false);
+                iMetadataDn.setLength(0);
+                iMetadataDn.setNullable(false);
+                iMetadataDn.setType("String"); //$NON-NLS-1$
+                iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
+
+                schema.add(iMetadataDn);
             }
+
+            table.setTableName("tWebServiceInput"); //$NON-NLS-1$
+            table.setListColumns(schema);
+            tableSchema.add(table);
         } else {
+            if (connection.getParameters() != null && !connection.getParameters().isEmpty()) {
+                List para = connection.getParameters();
+                for (int i = 0; i < para.size(); i++) {
+                    WSDLParameter parameter = (WSDLParameter) para.get(i);
+                    if (parameter.getElement() != null) {
+                        IMetadataColumn iMetadataColumn = new MetadataColumn();
+                        iMetadataColumn.setLabel(parameter.getElement());
+                        iMetadataColumn.setKey(false);
+                        iMetadataColumn.setLength(0);
+                        iMetadataColumn.setNullable(false);
+                        iMetadataColumn.setType("String"); //$NON-NLS-1$
+                        iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
 
-            IMetadataColumn iMetadataDn = new MetadataColumn();
-            iMetadataDn.setLabel(connection.getMethodName());
-            iMetadataDn.setKey(false);
-            iMetadataDn.setLength(0);
-            iMetadataDn.setNullable(false);
-            iMetadataDn.setType("String"); //$NON-NLS-1$
-            iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
+                        schema.add(iMetadataColumn);
+                    }
+                }
+                table.setTableName("tWebService");
+                table.setListColumns(schema);
+                tableSchema.add(table);
+            }
+            if (connection.getOutputParameter() != null && !connection.getOutputParameter().isEmpty()) {
+                List para = connection.getOutputParameter();
+                for (int i = 0; i < para.size(); i++) {
+                    WSDLParameter parameter = (WSDLParameter) para.get(i);
+                    if (parameter.getColumn() != null) {
+                        IMetadataColumn iMetadataColumn = new MetadataColumn();
+                        iMetadataColumn.setLabel(parameter.getColumn());
+                        iMetadataColumn.setKey(false);
+                        iMetadataColumn.setLength(0);
+                        iMetadataColumn.setNullable(false);
+                        iMetadataColumn.setType("String"); //$NON-NLS-1$
+                        iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
 
-            schema.add(iMetadataDn);
+                        schema.add(iMetadataColumn);
+                    }
+                }
+                outtable.setTableName("OUTPUT");
+                outtable.setListColumns(schema);
+                tableSchema.add(outtable);
+            }
         }
 
-        table.setTableName("tWebServiceInput"); //$NON-NLS-1$
-        table.setListColumns(schema);
-        tableSchema.add(table);
         processDescription.setSchema(tableSchema);
         WSDLSchemaBean bean = new WSDLSchemaBean();
         // TODO: added properties here...
@@ -558,6 +602,11 @@ public class ShadowProcessHelper {
         bean.setProxyUser(TalendTextUtils.addQuotes(connection.getProxyUser()));
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
         bean.setTimeOut(connection.getTimeOut());
+        bean.setIsInputModel(connection.isIsInputModel());
+        bean.setServerName(connection.getServerName());
+        bean.setServerNS(connection.getServerNameSpace());
+        bean.setPortName(connection.getPortName());
+        bean.setPortNS(connection.getPortNameSpace());
         processDescription.setWsdlSchemaBean(bean);
         if (connection.getEncoding() != null && !connection.getEncoding().equals("")) { //$NON-NLS-1$
             processDescription.setEncoding(connection.getEncoding());

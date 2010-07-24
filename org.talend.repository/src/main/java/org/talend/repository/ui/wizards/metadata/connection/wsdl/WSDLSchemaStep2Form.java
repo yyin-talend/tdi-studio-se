@@ -102,15 +102,22 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
      * 
      * @param Composite
      */
-    public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem) {
-        this(parent, connectionItem, null);
-    }
+    // public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem) {
+    // this(parent, connectionItem, null);
+    // }
 
     public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem,
                 ConnectionHelper.getTables(connectionItem.getConnection()).toArray(new MetadataTable[0])[0], null);
         setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
+        setupForm();
+    }
+
+    public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem, MetadataTable table) {
+        super(parent, connectionItem, table, null);
+        setConnectionItem(connectionItem);
+        // setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -169,7 +176,7 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
                         guessButton.setEnabled(true);
                         if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
                                 .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
-                            runShadowProcess();
+                            // runShadowProcess();
                         }
                     } else {
                         guessButton.setEnabled(false);
@@ -179,7 +186,7 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        runShadowProcess();
+                        // runShadowProcess();
                     } else {
                         guessButton.setEnabled(false);
                     }

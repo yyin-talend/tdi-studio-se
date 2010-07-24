@@ -112,6 +112,20 @@ public class WSDLSchemaInputNode extends FileInputNode {
 
         param = new TextElementParameter("TIMEOUT", "" + schemaBean.getTimeOut()); //$NON-NLS-1$
         addParameter(param);
+        if (!schemaBean.getIsInputModel()) {
+            param = new TextElementParameter("PORT_NAME", schemaBean.getPortName()); //$NON-NLS-1$
+            addParameter(param);
+
+            param = new TextElementParameter("PORT_NS", schemaBean.getPortNS()); //$NON-NLS-1$
+            addParameter(param);
+
+            param = new TextElementParameter("SERVICE_NAME", schemaBean.getServerName()); //$NON-NLS-1$
+            addParameter(param);
+
+            param = new TextElementParameter("SERVICE_NS", "" + schemaBean.getServerNS()); //$NON-NLS-1$
+            addParameter(param);
+        }
+
     }
 
     private void addPerlParameters(WSDLSchemaBean schemaBean) {

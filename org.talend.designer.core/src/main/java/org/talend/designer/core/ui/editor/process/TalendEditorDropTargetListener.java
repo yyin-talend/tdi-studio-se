@@ -74,6 +74,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
@@ -97,6 +98,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -1127,6 +1129,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (!connection.isInputModel()) {
                     outputXml = true;
                     productNameWanted = "XMLOUTPUT";
+                }
+            }
+            boolean webserviceXml = false;
+            if (item instanceof WSDLSchemaConnectionItem) {
+                WSDLSchemaConnection connection = (WSDLSchemaConnection) ((WSDLSchemaConnectionItem) item).getConnection();
+                if (!connection.isIsInputModel()) {
+                    webserviceXml = true;
+                    productNameWanted = "WEBSERVICE";
                 }
             }
 

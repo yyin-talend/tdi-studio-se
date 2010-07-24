@@ -203,7 +203,7 @@ public class FileTableWizardPage extends WizardPage {
              */
             @Override
             public Object caseWSDLSchemaConnection(WSDLSchemaConnection object) {
-                WSDLSchemaStep2Form sadkSchemaStep2Form = new WSDLSchemaStep2Form(parent, connectionItem);
+                WSDLSchemaStep2Form sadkSchemaStep2Form = new WSDLSchemaStep2Form(parent, connectionItem, metadataTable);
                 sadkSchemaStep2Form.setReadOnly(!isRepositoryObjectEditable);
                 sadkSchemaStep2Form.setListener(listener);
                 return sadkSchemaStep2Form;

@@ -152,6 +152,7 @@ public class ChangeMetadataCommand extends Command {
         } else {
             currentConnector = this.schemaParam.getContext();
         }
+
         this.inputNode = null;
         this.currentInputMetadata = null;
         this.newInputMetadata = null;
@@ -160,7 +161,9 @@ public class ChangeMetadataCommand extends Command {
         if (this.currentOutputMetadata == null) {
             this.currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
         }
-
+        if (currentOutputMetadata == null) {
+            currentOutputMetadata = newOutputMetadata;
+        }
         oldOutputMetadata = this.currentOutputMetadata.clone(true);
         this.newOutputMetadata = newOutputMetadata.clone(true);
         this.newOutputMetadata.setReadOnly(this.currentOutputMetadata.isReadOnly());
@@ -322,6 +325,7 @@ public class ChangeMetadataCommand extends Command {
                                 IMetadataTable toCopy = newOutputMetadata.clone();
 
                                 // wzhang modify to add feature 7611
+
                                 String dbmsId = null;
                                 IMetadataTable copy;
                                 if (((Node) targetNode).getMetadataFromConnector(baseConnector) != null) {
@@ -332,12 +336,13 @@ public class ChangeMetadataCommand extends Command {
                                     // only if the target node have exactly the same connector
                                     copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
                                 } else {
-                                    // if don't have the same connector, take the main connector of the component.
                                     final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
 
                                     dbmsId = targetNode.getMetadataFromConnector(mainConnector).getDbms();
                                     MetadataTool.copyTable(dbmsId, toCopy, tmpClone);
                                     toCopy = tmpClone;
+                                    // if don't have the same connector, take the main connector of the component.
+
                                     copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
                                 }
                                 // MetadataTool.copyTable(toCopy, copy);

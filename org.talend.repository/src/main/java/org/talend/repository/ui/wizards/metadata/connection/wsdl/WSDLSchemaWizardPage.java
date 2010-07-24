@@ -39,19 +39,21 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  */
 public class WSDLSchemaWizardPage extends WizardPage {
 
-    private ConnectionItem connectionItem;
+    protected ConnectionItem connectionItem;
 
-    private int step;
+    public int step;
 
     private AbstractForm currentComposite;
 
     private final String[] existingNames;
 
-    private boolean isRepositoryObjectEditable;
+    protected boolean isRepositoryObjectEditable;
 
     private MetadataTable metadataTable;
 
-    private IMetadataContextModeManager contextModeManager;
+    protected IMetadataContextModeManager contextModeManager;
+
+    protected Boolean creation;
 
     /**
      * DelimitedFileWizardPage constructor comment.
@@ -71,6 +73,17 @@ public class WSDLSchemaWizardPage extends WizardPage {
         this.contextModeManager = contextModeManager;
     }
 
+    public WSDLSchemaWizardPage(Boolean creation, int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
+        super("wizardPage"); //$NON-NLS-1$
+        this.creation = creation;
+        this.step = step;
+        this.connectionItem = connectionItem;
+        this.existingNames = existingNames;
+        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
+    }
+
     /**
      * 
      * @see IDialogPage#createControl(Composite)
@@ -79,7 +92,7 @@ public class WSDLSchemaWizardPage extends WizardPage {
         currentComposite = null;
         Connection connection = connectionItem.getConnection();
         switch (step) {
-        case 1:
+        case 2:
             Set tables = ConnectionHelper.getTables(connection);
             if (tables.size() == 0) {
                 // add for bug 7149
@@ -102,7 +115,7 @@ public class WSDLSchemaWizardPage extends WizardPage {
             currentComposite = new WSDLSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((WSDLSchemaConnection) connection), metadataTable.getLabel()), contextModeManager);
             break;
-        case 2:
+        case 3:
             metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
             currentComposite = new WSDLSchemaStep2Form(parent, connectionItem, contextModeManager);
             break;
