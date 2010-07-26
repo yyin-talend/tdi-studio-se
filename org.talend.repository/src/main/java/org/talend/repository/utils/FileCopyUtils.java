@@ -14,6 +14,9 @@ package org.talend.repository.utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.talend.commons.exception.ExceptionHandler;
 
@@ -26,6 +29,11 @@ import org.talend.commons.exception.ExceptionHandler;
 public class FileCopyUtils {
 
     /**
+     * 
+     */
+    private static final int COPY_BUF_SIZE = 512;
+
+    /**
      * This method is used for coping file from one place to the other.
      * 
      * @param srcFilePath
@@ -33,36 +41,51 @@ public class FileCopyUtils {
      * @throws Exception
      */
     public static void copy(String srcFilePath, String destFilePath) {
+        try {
+            copyFiles(srcFilePath, destFilePath);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * This method is used for coping file from one place to the other.
+     * 
+     * @param srcFilePath
+     * @param destFilePath
+     * @throws IOException
+     * @throws IOException in case some problems occured
+     */
+    public static void copyFiles(String srcFilePath, String destFilePath) throws IOException {
         FileInputStream input = null;
         FileOutputStream output = null;
         try {
-            byte[] bytearray = new byte[512];
-            int len = 0;
             input = new FileInputStream(srcFilePath);
             output = new FileOutputStream(destFilePath);
-            while ((len = input.read(bytearray)) != -1) {
-                output.write(bytearray, 0, len);
-            }
-
-        } catch (Exception fe) {
-            ExceptionHandler.process(fe);
-        }
-
-        finally {
+            copyStreams(input, output);
+        } finally {
             if (input != null) {
-                try {
-                    input.close();
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
+                input.close();
             }
             if (output != null) {
-                try {
-                    output.close();
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
+                output.close();
             }
         }
     }
+
+    /**
+     * copy is to os.
+     * 
+     * @param is
+     * @param os
+     * @throws IOException thrown if copy fails
+     */
+    public static void copyStreams(InputStream is, OutputStream os) throws IOException {
+        byte[] bytearray = new byte[COPY_BUF_SIZE];
+        int len = 0;
+        while ((len = is.read(bytearray)) != -1) {
+            os.write(bytearray, 0, len);
+        }
+    }
+
 }
