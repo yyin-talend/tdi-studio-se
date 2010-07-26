@@ -19,6 +19,8 @@ INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();
 String standardOutput = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
 String errorOutput = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
+String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
+boolean pty = "true".equals(ElementParameterParser.getValue(node, "__PTY__"));
 List<IMetadataTable> metadatas = node.getMetadataList();
 String cid = node.getUniqueName();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -28,25 +30,45 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
        	String commandSeparator = ElementParameterParser.getValue(node,"__COMMANDSEPARATOR__");
         List<Map<String, String>> commands =(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__COMMANDS__");
-        if(commands.size() > 0){
-%>
-        	StringBuilder command_<%=cid %> = new StringBuilder();
-<%  
-			for(java.util.Map<String, String> map : commands){
-%>
-                if(command_<%=cid %>.length() > 0){
-                	command_<%=cid %>.append(<%=commandSeparator%>);
-                }
-                <%String cmd = map.get("COMMAND");%>
-       		    command_<%=cid %>.append(<%=cmd %>);
-<% 
-			}
-        }
 %>
 		/* Create a session */
- 		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
-		sess_<%=cid%>.execCommand((command_<%=cid %>).toString());
-		
+		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+<%
+        if (pty) {
+%>
+			sess_<%=cid%>.requestDumbPTY();
+	        sess_<%=cid%>.startShell();
+<%
+        	if(commands.size() > 0){
+        		for(java.util.Map<String, String> map : commands){
+        			String cmd = map.get("COMMAND");
+%>
+					sess_<%=cid%>.getStdin().write((<%=cmd%>+"\n").getBytes());
+<%
+				}
+			}
+		}else{
+        	if(commands.size() > 0){
+%>
+        		StringBuilder command_<%=cid %> = new StringBuilder();
+<%  
+				for(java.util.Map<String, String> map : commands){
+%>
+	                if(command_<%=cid %>.length() > 0){
+	                	command_<%=cid %>.append(<%=commandSeparator%>);
+	                }
+	                <%String cmd = map.get("COMMAND");%>
+	       		    command_<%=cid %>.append(<%=cmd %>);
+<% 
+				}
+        	}
+%>
+			sess_<%=cid%>.execCommand((command_<%=cid %>).toString());
+
+<%
+		}
+%>
+
 		java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
 		java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
         String line_<%=cid%> = "";

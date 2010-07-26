@@ -76,6 +76,14 @@
       <DEFAULT>"secret"</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="PTY"
+      FIELD="CHECK"
+      NUM_ROW="60"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
 	<PARAMETER NAME="STANDARDOUTPUT" FIELD="CLOSED_LIST" NUM_ROW="140">
        <ITEMS DEFAULT="TO_CONSOLE">
           <ITEM NAME="TO_CONSOLE" VALUE="TO_CONSOLE" />
@@ -124,6 +132,7 @@
       NAME="COMMANDSEPARATOR"
       FIELD="TEXT"
       NUM_ROW="90"
+      NOT_SHOW_IF="PTY == 'true'"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
