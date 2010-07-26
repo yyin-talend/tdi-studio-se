@@ -167,7 +167,7 @@ public class WebServiceStep2Form extends AbstractWSDLSchemaStepForm {
                         guessButton.setEnabled(true);
                         if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
                                 .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
-                            runShadowProcess();
+                            // runShadowProcess();
                         }
                     } else {
                         guessButton.setEnabled(false);
@@ -177,7 +177,7 @@ public class WebServiceStep2Form extends AbstractWSDLSchemaStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        runShadowProcess();
+                        // runShadowProcess();
                     } else {
                         guessButton.setEnabled(false);
                     }

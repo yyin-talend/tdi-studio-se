@@ -544,8 +544,8 @@ public class ShadowProcessHelper {
             table.setListColumns(schema);
             tableSchema.add(table);
         } else {
-            if (connection.getParameters() != null && !connection.getParameters().isEmpty()) {
-                List para = connection.getParameters();
+            if (connection.getParameterValue() != null && !connection.getParameterValue().isEmpty()) {
+                List para = connection.getParameterValue();
                 for (int i = 0; i < para.size(); i++) {
                     WSDLParameter parameter = (WSDLParameter) para.get(i);
                     if (parameter.getElement() != null) {
