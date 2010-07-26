@@ -35,8 +35,6 @@ public class VtigerManager implements IVtigerManager {
 
     private String port;
 
-    private String vtigerPath;
-
     private static final String OUTLOOK = "outlook";
 
     private static final String FIREFOX = "firefox";
@@ -51,8 +49,7 @@ public class VtigerManager implements IVtigerManager {
 
     private static HashMap<String, Object> moduleMap = new HashMap<String, Object>();
 
-    public VtigerManager(String userName, String password, String version, String serverAddr, String port, String vtigerPath)
-            throws Exception {
+    public VtigerManager(String userName, String password, String version, String serverAddr, String port) throws Exception {
 
         this.userName = userName;
 
@@ -64,39 +61,33 @@ public class VtigerManager implements IVtigerManager {
 
         this.port = port;
 
-        this.vtigerPath = vtigerPath;
-
         initModule();
     }
 
     private void initModule() throws Exception {
 
         moduleMap.put(OUTLOOK, new org.talend.vtiger.module.outlook.VtigerolserviceBindingStub(new URL(constructEndPoint(
-                serverAddr, port, vtigerPath, OUTLOOK)), new Service(), serverAddr));
+                serverAddr, port, OUTLOOK)), new Service(), serverAddr));
 
         moduleMap.put(WORDPLUGIN, new org.talend.vtiger.module.wordplugin.VtigersoapBindingStub(new URL(constructEndPoint(
-                serverAddr, port, vtigerPath, WORDPLUGIN)), new Service(), serverAddr));
+                serverAddr, port, WORDPLUGIN)), new Service(), serverAddr));
 
         moduleMap.put(THUNDERBIRD, new org.talend.vtiger.module.thunderbird.VtigersoapBindingStub(new URL(constructEndPoint(
-                serverAddr, port, vtigerPath, THUNDERBIRD)), new Service(), serverAddr));
+                serverAddr, port, THUNDERBIRD)), new Service(), serverAddr));
 
         moduleMap.put(CUSTOMERPORTAL, new org.talend.vtiger.module.customerportal.CustomerportalBindingStub(new URL(
-                constructEndPoint(serverAddr, port, vtigerPath, CUSTOMERPORTAL)), new Service(), serverAddr));
+                constructEndPoint(serverAddr, port, CUSTOMERPORTAL)), new Service(), serverAddr));
 
         moduleMap.put(WEBFORM, new org.talend.vtiger.module.webform.VtigersoapBindingStub(new URL(constructEndPoint(serverAddr,
-                port, vtigerPath, WEBFORM)), new Service(), serverAddr));
+                port, WEBFORM)), new Service(), serverAddr));
 
         moduleMap.put(FIREFOX, new org.talend.vtiger.module.firefox.VtigersoapBindingStub(new URL(constructEndPoint(serverAddr,
-                port, vtigerPath, FIREFOX)), new Service(), serverAddr));
+                port, FIREFOX)), new Service(), serverAddr));
 
     }
 
-    private String constructEndPoint(String serverAddr, String port, String vtigerPath, String module) {
-        if (vtigerPath != null && !"".equals(vtigerPath)) {
-            return "http://" + serverAddr + ":" + port + "/" + vtigerPath + "/vtigerservice.php?service=" + module;
-        } else {
-            return "http://" + serverAddr + ":" + port + "/vtigerservice.php?service=" + module;
-        }
+    private String constructEndPoint(String serverAddr, String port, String module) {
+        return "http://" + serverAddr + ":" + port + "/vtigerservice.php?service=" + module;
     }
 
     public String addClndr(Clndrdetail[] clndrdtls) throws Exception {
