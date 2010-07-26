@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -42,6 +43,8 @@ import org.talend.repository.model.URIHelper;
  * DOC hywang class global comment. Detailled comment
  */
 public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
+
+    private static Logger log = Logger.getLogger(MergeTosMetadataMigrationTask.class);
 
     TosMetadataMigrationFrom400to410 metadata400to410 = new TosMetadataMigrationFrom400to410();
 
@@ -71,9 +74,11 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 }
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (ATLCoreException e) {
+                log.error(e);
                 ExceptionHandler.process(e);
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (IOException e) {
+                log.error(e);
                 ExceptionHandler.process(e);
                 return ExecutionResult.FAILURE;
             }
