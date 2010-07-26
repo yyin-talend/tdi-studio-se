@@ -47,6 +47,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 				}
 			}
+%>
+			sess_<%=cid%>.getStdin().write("exit\n".getBytes());
+<%
 		}else{
         	if(commands.size() > 0){
 %>
