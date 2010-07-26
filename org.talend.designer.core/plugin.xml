@@ -174,7 +174,7 @@
                   <view
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.contexts.ContextsView"
-                        icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
+                        icon="platform:/plugin/org.talend.commons.ui/icons1/context_icon.gif"
                         id="org.talend.designer.core.ui.views.ContextsView"
                         name="%contexts"/>
                   <view
@@ -197,7 +197,7 @@
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.jobsettings.JobSettingsView"
-                        icon="platform:/plugin/org.talend.core/icons/process_icon.gif"
+                        icon="platform:/plugin/org.talend.commons.ui/icons1/process_icon.gif"
                         id="org.talend.designer.core.ui.views.jobsettings.JobSettingsView"
                         name="%jobSettingsView">
                   </view>
