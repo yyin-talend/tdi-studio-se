@@ -11,12 +11,13 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String serverAddr = ElementParameterParser.getValue(node, "__SERVERADDR__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
+String vtigerPath = ElementParameterParser.getValue(node, "__VTIGERPATH__");
 String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 String version = ElementParameterParser.getValue(node, "__VERSION__");
 String method = ElementParameterParser.getValue(node, "__METHODNAME__");
 %>
-org.talend.vtiger.IVtigerManager vtigerManager_<%=cid%> = new org.talend.vtiger.VtigerManager(<%=userName%>, <%=password%>, <%=version%>, <%=serverAddr%>, <%=port%>);
+org.talend.vtiger.IVtigerManager vtigerManager_<%=cid%> = new org.talend.vtiger.VtigerManager(<%=userName%>, <%=password%>, <%=version%>, <%=serverAddr%>, <%=port%>, <%=vtigerPath%>);
 <%
 if(("addClndr").equals(method) || ("updateClndr").equals(method)) {
     %>

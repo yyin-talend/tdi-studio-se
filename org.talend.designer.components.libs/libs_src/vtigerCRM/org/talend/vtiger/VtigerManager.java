@@ -33,7 +33,7 @@ public class VtigerManager implements IVtigerManager {
 
     private String serverAddr;
 
-    private String port;
+    private String soapActionServerAddr;
 
     private static final String OUTLOOK = "outlook";
 
@@ -49,7 +49,8 @@ public class VtigerManager implements IVtigerManager {
 
     private static HashMap<String, Object> moduleMap = new HashMap<String, Object>();
 
-    public VtigerManager(String userName, String password, String version, String serverAddr, String port) throws Exception {
+    public VtigerManager(String userName, String password, String version, String hostPath, String port, String vtigerPath)
+            throws Exception {
 
         this.userName = userName;
 
@@ -57,37 +58,48 @@ public class VtigerManager implements IVtigerManager {
 
         this.version = version;
 
-        this.serverAddr = serverAddr;
-
-        this.port = port;
+        if (!hostPath.equals("")) {
+            this.serverAddr = hostPath;
+            this.soapActionServerAddr = hostPath;
+        }
+        if (!port.equals("")) {
+            this.serverAddr += ":";
+            this.serverAddr += port;
+        }
+        if (!vtigerPath.equals("")) {
+            this.serverAddr += "/";
+            this.serverAddr += vtigerPath;
+            this.soapActionServerAddr += "/";
+            this.soapActionServerAddr += vtigerPath;
+        }
 
         initModule();
     }
 
     private void initModule() throws Exception {
 
-        moduleMap.put(OUTLOOK, new org.talend.vtiger.module.outlook.VtigerolserviceBindingStub(new URL(constructEndPoint(
-                serverAddr, port, OUTLOOK)), new Service(), serverAddr));
+        moduleMap.put(OUTLOOK, new org.talend.vtiger.module.outlook.VtigerolserviceBindingStub(
+                new URL(constructEndPoint(OUTLOOK)), new Service(), soapActionServerAddr));
 
-        moduleMap.put(WORDPLUGIN, new org.talend.vtiger.module.wordplugin.VtigersoapBindingStub(new URL(constructEndPoint(
-                serverAddr, port, WORDPLUGIN)), new Service(), serverAddr));
+        moduleMap.put(WORDPLUGIN, new org.talend.vtiger.module.wordplugin.VtigersoapBindingStub(new URL(
+                constructEndPoint(WORDPLUGIN)), new Service(), soapActionServerAddr));
 
-        moduleMap.put(THUNDERBIRD, new org.talend.vtiger.module.thunderbird.VtigersoapBindingStub(new URL(constructEndPoint(
-                serverAddr, port, THUNDERBIRD)), new Service(), serverAddr));
+        moduleMap.put(THUNDERBIRD, new org.talend.vtiger.module.thunderbird.VtigersoapBindingStub(new URL(
+                constructEndPoint(THUNDERBIRD)), new Service(), soapActionServerAddr));
 
         moduleMap.put(CUSTOMERPORTAL, new org.talend.vtiger.module.customerportal.CustomerportalBindingStub(new URL(
-                constructEndPoint(serverAddr, port, CUSTOMERPORTAL)), new Service(), serverAddr));
+                constructEndPoint(CUSTOMERPORTAL)), new Service(), soapActionServerAddr));
 
-        moduleMap.put(WEBFORM, new org.talend.vtiger.module.webform.VtigersoapBindingStub(new URL(constructEndPoint(serverAddr,
-                port, WEBFORM)), new Service(), serverAddr));
+        moduleMap.put(WEBFORM, new org.talend.vtiger.module.webform.VtigersoapBindingStub(new URL(constructEndPoint(WEBFORM)),
+                new Service(), soapActionServerAddr));
 
-        moduleMap.put(FIREFOX, new org.talend.vtiger.module.firefox.VtigersoapBindingStub(new URL(constructEndPoint(serverAddr,
-                port, FIREFOX)), new Service(), serverAddr));
+        moduleMap.put(FIREFOX, new org.talend.vtiger.module.firefox.VtigersoapBindingStub(new URL(constructEndPoint(FIREFOX)),
+                new Service(), soapActionServerAddr));
 
     }
 
-    private String constructEndPoint(String serverAddr, String port, String module) {
-        return "http://" + serverAddr + ":" + port + "/vtigerservice.php?service=" + module;
+    private String constructEndPoint(String module) {
+        return "http://" + serverAddr + "/vtigerservice.php?service=" + module;
     }
 
     public String addClndr(Clndrdetail[] clndrdtls) throws Exception {
