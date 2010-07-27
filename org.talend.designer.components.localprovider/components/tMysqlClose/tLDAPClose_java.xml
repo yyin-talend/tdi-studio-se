@@ -14,7 +14,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Databases/MySQL</FAMILY>
+    <FAMILY>Databases/LDAP</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tMysqlConnection"
+      FILTER="tLDAPConnection"
       NUM_ROW="10"
       DYNAMIC_SETTINGS="true"
     />
