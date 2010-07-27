@@ -920,7 +920,6 @@ public class RunProcessContext {
                         // if (data != null && data.split("\\|").length == 2) {
                         // continue;
                         // }
-                        System.out.println(data);
                         if (data == null) {
                             stopThread = true;
                         } else {
