@@ -45,6 +45,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -584,8 +585,21 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             final Map<String, String> nameMap = manager.getNameMap();
 
             // gcui:add a progressDialog.
-            ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
-                    .getActiveShell().getShell());
+            Shell shell = null;
+            Display display = PlatformUI.getWorkbench().getDisplay();
+            if (display != null) {
+                shell = display.getActiveShell();
+            }
+            if (shell == null) {
+                display = Display.getCurrent();
+                if (display == null) {
+                    display = Display.getDefault();
+                }
+                if (display != null) {
+                    shell = display.getActiveShell();
+                }
+            }
+            ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(shell);
             IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) {

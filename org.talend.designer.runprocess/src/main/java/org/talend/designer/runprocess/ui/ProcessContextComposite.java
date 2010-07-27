@@ -222,12 +222,17 @@ public class ProcessContextComposite extends Composite {
         Collections.sort(internalContextList, new ContextCompare());
         contextComboViewer.setInput(internalContextList);
 
+        ProcessManager processManager = ProcessManager.getInstance();
+
         if (newSelectedCopiedContext != null) {
             setContextComboSelection(new StructuredSelection(newSelectedCopiedContext));
+            processManager.setSelectContext(newSelectedCopiedContext);
             contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
         } else {
-            setContextComboSelection(new StructuredSelection(internalContextList.get(0)));
-            contextTableViewer.setInput(internalContextList.get(0).getContextParameterList());
+            IContext element = internalContextList.get(0);
+            processManager.setSelectContext(element);
+            setContextComboSelection(new StructuredSelection(element));
+            contextTableViewer.setInput(element.getContextParameterList());
         }
 
     }

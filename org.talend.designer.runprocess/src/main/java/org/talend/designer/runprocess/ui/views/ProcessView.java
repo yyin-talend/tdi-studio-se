@@ -550,6 +550,9 @@ public class ProcessView extends ViewPart {
         // activeContext.setMonitorPerf(rubjobManager.getStat());
         // activeContext.setClearBeforeExec(rubjobManager.getClearBeforeExec());
         // }
+        if (contextComposite.isDisposed()) {
+            return;
+        }
         contextComposite.setProcess(((activeContext != null) && !disableAll ? activeContext.getProcess() : null));
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
         if (dc == processComposite) {

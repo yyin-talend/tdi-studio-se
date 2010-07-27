@@ -986,7 +986,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // && !disableAll);
         // saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
-        killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
+        if (killBtn != null && !killBtn.isDisposed()) {
+            killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
+        }
         // clearBeforeExec.setEnabled(processContext != null);
         // clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
         // contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
@@ -996,7 +998,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     protected void setRunnable(boolean runnable) {
         // perfBtn.setEnabled(runnable);
         // traceBtn.setEnabled(runnable);
-        if (!clearTracePerfBtn.isDisposed() || clearTracePerfBtn != null)
+        if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed())
             clearTracePerfBtn.setEnabled(runnable);
 
         setExecBtn(runnable);
@@ -1007,9 +1009,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // clearBeforeExec.setEnabled(runnable);
         // saveJobBeforeRunButton.setEnabled(runnable);
         // watchBtn.setEnabled(runnable);
-        if (!enableLineLimitButton.isDisposed() && enableLineLimitButton != null)
+        if (enableLineLimitButton != null && !enableLineLimitButton.isDisposed())
             enableLineLimitButton.setEnabled(runnable);
-        if (!lineLimitText.isDisposed() && lineLimitText != null)
+        if (lineLimitText != null && !lineLimitText.isDisposed())
             lineLimitText.setEnabled(runnable);
 
     }
@@ -1033,18 +1035,20 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
          * } else {
          */
         // qli modified to fix the bug 7354.
-        run.setEnabled(runnable);
-        run.redraw();
-        run.getParent().layout();
-        // if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
-        //            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
-        // debugMenuItem.setData(ProcessView.DEBUG_ID);
-        // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-        // } else {
-        run.setText(" " + Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-        run.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
-        run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-        run.setData(ProcessView.EXEC_ID);
+        if (run != null && !run.isDisposed()) {
+            run.setEnabled(runnable);
+            run.redraw();
+            run.getParent().layout();
+            // if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
+            //            debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+            // debugMenuItem.setData(ProcessView.DEBUG_ID);
+            // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+            // } else {
+            run.setText(" " + Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            run.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+            run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+            run.setData(ProcessView.EXEC_ID);
+        }
         // }
         // }
 
@@ -1176,6 +1180,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     }
 
     protected void fillConsole(Collection<IProcessMessage> messages) {
+        if (consoleText == null || consoleText.isDisposed()) {
+            return;
+        }
         consoleText.setText(""); //$NON-NLS-1$
 
         for (IProcessMessage processMessage : messages) {
