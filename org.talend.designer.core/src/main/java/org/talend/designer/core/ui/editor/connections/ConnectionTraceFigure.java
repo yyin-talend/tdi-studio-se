@@ -185,12 +185,14 @@ public class ConnectionTraceFigure extends Figure {
                     for (Object o1 : (ArrayList) value) {
                         if (o1 instanceof HashMap) {
                             String columnValue = o.toString();
-                            if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
-                                    columnValue.substring(0, columnValue.indexOf("=")).trim())
-                                    && Boolean.TRUE.toString().equals(
-                                            ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
-                                lineInfo += columnValue;
-                                break;
+                            if (columnValue.indexOf("=") > 0) {
+                                if (((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN).toString().equals(
+                                        columnValue.substring(0, columnValue.indexOf("=")).trim())
+                                        && Boolean.TRUE.toString().equals(
+                                                ((HashMap) o1).get(IConnection.TRACE_SCHEMA_COLUMN_CHECKED).toString())) {
+                                    lineInfo += columnValue;
+                                    break;
+                                }
                             }
                         }
                     }

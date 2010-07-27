@@ -870,8 +870,8 @@ public class RunProcessContext {
             do {
                 try {
                     serverSock = new ServerSocket(getStatisticsPort());
-                    // serverSock.setSoTimeout(acceptTimeout);
                     processSocket = serverSock.accept();
+
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                     stopThread |= !isRunning();
@@ -892,9 +892,7 @@ public class RunProcessContext {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
-
                         String line = reader.readLine();
-
                         if (line != null) {
                             if (line.startsWith("0")) {
                                 // 0 = job information
@@ -918,12 +916,11 @@ public class RunProcessContext {
                             }
                         }
                         final String data = line;
-
                         // // for feature:11356
                         // if (data != null && data.split("\\|").length == 2) {
                         // continue;
                         // }
-
+                        System.out.println(data);
                         if (data == null) {
                             stopThread = true;
                         } else {
@@ -938,7 +935,7 @@ public class RunProcessContext {
                                     performance.resetStatus();
                                 }
                                 performanceDataSet.add(performance);
-                                Display.getDefault().syncExec(new Runnable() {
+                                Display.getDefault().asyncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
@@ -957,8 +954,9 @@ public class RunProcessContext {
                     for (IPerformance performance : performanceDataSet) {
                         performance.resetStatus();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     // Do nothing : process is ended
+                    e.printStackTrace();
                 } finally {
                     try {
                         processSocket.close();
