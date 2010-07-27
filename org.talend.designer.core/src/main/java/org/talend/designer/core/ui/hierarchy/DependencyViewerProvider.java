@@ -45,7 +45,7 @@ public class DependencyViewerProvider extends LabelProvider implements IStructur
     public Image getImage(Object element) {
         IRepositoryObject object = (IRepositoryObject) element;
 
-        return provider.getImage(object.getProperty());
+        return provider.getImage(object);
     }
 
     @Override

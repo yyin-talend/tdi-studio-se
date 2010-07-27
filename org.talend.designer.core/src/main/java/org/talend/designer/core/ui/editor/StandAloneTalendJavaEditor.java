@@ -149,7 +149,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
         setTitleImage(labelProvider.getImage(rEditorInput.getRepositoryNode().getObject()));
-        setPartName(labelProvider.getText(item.getProperty()));
+        setPartName(labelProvider.getText(rEditorInput.getRepositoryNode().getObject()));
     }
 
     /*

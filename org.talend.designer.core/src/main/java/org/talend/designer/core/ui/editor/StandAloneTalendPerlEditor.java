@@ -122,7 +122,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
         setTitleImage(labelProvider.getImage(rEditorInput.getRepositoryNode().getObject()));
-        setPartName(labelProvider.getText(item.getProperty()));
+        setPartName(labelProvider.getText(rEditorInput.getRepositoryNode().getObject()));
     }
 
     @Override
@@ -268,7 +268,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         if (item != null) {
             IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
             ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-            return labelProvider.getImage(item.getProperty());
+            return labelProvider.getImage(rEditorInput.getRepositoryNode().getObject());
         }
         return super.getTitleImage();
     }
