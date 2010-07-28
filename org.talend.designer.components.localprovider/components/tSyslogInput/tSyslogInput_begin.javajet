@@ -1,0 +1,37 @@
+<%@ jet 
+  imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+  " 
+%>
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+
+if (outConns == null || outConns.size() == 0){
+  return "";
+}
+IMetadataTable table = node.getMetadataList().get(0);
+String filePath = ElementParameterParser.getValue(node, "__FILENAME__"); 
+String locale = ElementParameterParser.getValue(node, "__LOCALE__"); 
+
+if (table != null){
+  %>
+    org.talend.syslog.SyslogMessageUtil smu_<%=cid%> = new org.talend.syslog.SyslogMessageUtil();
+    smu_<%=cid%>.setFilePath(<%=filePath%>);
+    smu_<%=cid%>.setLocale(<%=locale%>);
+    smu_<%=cid%>.read();
+    java.util.List<org.talend.syslog.SyslogMessage> logRows_<%=cid%> = smu_<%=cid%>.getLogRows();
+    
+    for (org.talend.syslog.SyslogMessage logRow_<%=cid%> : logRows_<%=cid%>){
+  <%
+}
+%>
