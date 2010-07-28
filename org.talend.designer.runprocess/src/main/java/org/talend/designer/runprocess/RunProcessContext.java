@@ -44,6 +44,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
@@ -899,11 +901,13 @@ public class RunProcessContext {
                                 // 1 = connection information
                                 continue;
                             }
-                            String[] infos = line.split("\\|");
-                            if (infos.length < 5 || !infos[1].equals(infos[2]) || !infos[1].equals(infos[3])) {
-                                // we only take actually informations for the main jobs, other informations won't be
-                                // used.
-                                continue;
+                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                                String[] infos = line.split("\\|");
+                                if (infos.length < 5 || !infos[1].equals(infos[2]) || !infos[1].equals(infos[3])) {
+                                    // we only take actually informations for the main jobs, other informations won't be
+                                    // used.
+                                    continue;
+                                }
                             }
 
                             // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
@@ -955,7 +959,6 @@ public class RunProcessContext {
                     }
                 } catch (Exception e) {
                     // Do nothing : process is ended
-                    e.printStackTrace();
                 } finally {
                     try {
                         processSocket.close();
