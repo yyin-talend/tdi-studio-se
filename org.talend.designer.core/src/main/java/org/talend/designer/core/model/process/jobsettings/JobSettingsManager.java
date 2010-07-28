@@ -25,6 +25,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.param.ERepositoryCategoryType;
@@ -930,6 +931,13 @@ public class JobSettingsManager {
 
             String dbType = getDatabaseTypeFromParameter(process);
             if (dbType != null) {
+                EDatabaseTypeName dbTypeName = EDatabaseTypeName.getTypeFromDbType(dbType);
+                if (EDatabaseTypeName.ORACLE_OCI.equals(dbTypeName) || EDatabaseTypeName.ORACLEFORSID.equals(dbTypeName)
+                        || EDatabaseTypeName.ORACLESN.equals(dbTypeName)) {
+                    for (IMetadataColumn column : table.getListColumns()) {
+                        column.setOriginalDbColumnName(column.getOriginalDbColumnName().toUpperCase());
+                    }
+                }
                 String query = TalendTextUtils.addSQLQuotes(QueryUtil
                         .generateNewQuery(null, table, dbType, schema, realTableName));
                 paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
@@ -941,7 +949,6 @@ public class JobSettingsManager {
                     }
                 }
                 final String quoteByDBType = TalendTextUtils.getQuoteByDBType(dbType, false);
-                EDatabaseTypeName dbTypeName = EDatabaseTypeName.getTypeFromDbType(dbType);
                 if (dbTypeName == EDatabaseTypeName.MSSQL) {
                     query = query.replaceAll("(?i)\bkey\b", //$NON-NLS-1$ 
                             "\\\\" + quoteByDBType + "key\\\\" + quoteByDBType); //$NON-NLS-1$  //$NON-NLS-2$ 
