@@ -66,8 +66,8 @@ java.util.Map<String,String> replace_<%=cid%> = new java.util.HashMap<String,Str
 
 for (Object o : tMap_<%=lookup%>_<%=cid %>.keySet()) {
     
-    String search = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupSearchName%>;
-    String replacement = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupReplacementName%>;
+    String search = String.valueOf(tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupSearchName%>);
+    String replacement = String.valueOf(tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupReplacementName%>);
     replace_<%=cid%>.put(search,replacement);
 }
 
