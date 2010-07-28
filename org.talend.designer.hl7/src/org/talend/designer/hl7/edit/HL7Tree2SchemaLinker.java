@@ -134,7 +134,7 @@ public class HL7Tree2SchemaLinker extends TreeToTablesLinker<Object, Object> {
     // setSelectedStyleLink(selectedStyleLink);
     // }
 
-    public void updateLinksStyleAndControlsSelection(Control currentControl) {
+    public void updateLinksStyleAndControlsSelection(Control currentControl, Boolean flag) {
 
         boolean selectedControlIsTable = false;
         if (currentControl instanceof Table) {

@@ -221,7 +221,7 @@ public class HL7Message2SchemaDragAndDropHandler {
                     MetadataColumn copied = copyColumn(metacolumn);
                     linker.getManager().updateRelationMapping(key, copied, true);
                 }
-                linker.updateLinksStyleAndControlsSelection(control);
+                linker.updateLinksStyleAndControlsSelection(control, true); // solve drag pb on 13749
             }
             // linker.getBackgroundRefresher().refreshBackground();
         }
