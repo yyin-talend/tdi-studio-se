@@ -202,24 +202,27 @@ public class HL7Message2SchemaDragAndDropHandler {
 
                 // ExtendedTableModel<MetadataColumn> extendedTableModel = hl7TableEditorView.getExtendedTableModel();
                 if (transferableEntryList.size() > 0) {
-                    String segName = transferableEntryList.get(0).getPm().getDisplayName();
-                    Display display = linker.getTree().getDisplay();
-                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
-                    linker.getTree().getShell().setCursor(cursor);
-                    MetadataColumn metacolumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                    String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
-                    metacolumn.setLabel(label);
-                    metacolumn.setOriginalField(segName);
-                    metacolumn.setLength(226);
-                    metacolumn.setPrecision(0);
-                    hl7TableEditorView.getMetadataEditor().add(metacolumn);
-                    TreeItem item = SegmentTransfer.getInstance().getDragedItem();
-                    TableItem targetitem = targetTable.getSelection()[0];
-                    createLinks(item, targetitem);
-                    final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();
-                    String key = combo.getItem(combo.getSelectionIndex()).toString();
-                    MetadataColumn copied = copyColumn(metacolumn);
-                    linker.getManager().updateRelationMapping(key, copied, true);
+                    for (TransferableSegmentEntry entry : transferableEntryList) {
+                        String segName = entry.getPm().getDisplayName();
+                        Display display = linker.getTree().getDisplay();
+                        Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                        linker.getTree().getShell().setCursor(cursor);
+                        MetadataColumn metacolumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+                        String label = hl7TableEditorView.getMetadataEditor().getNextGeneratedColumnName(defaultLabel);
+                        metacolumn.setLabel(label);
+                        metacolumn.setOriginalField(segName);
+                        metacolumn.setLength(226);
+                        metacolumn.setPrecision(0);
+                        hl7TableEditorView.getMetadataEditor().add(metacolumn);
+                        TreeItem item = SegmentTransfer.getInstance().getDragedItem();
+                        TableItem targetitem = targetTable.getSelection()[0];
+                        createLinks(item, targetitem);
+                        final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();
+                        String key = combo.getItem(combo.getSelectionIndex()).toString();
+                        MetadataColumn copied = copyColumn(metacolumn);
+                        linker.getManager().updateRelationMapping(key, copied, true);
+                    }
+
                 }
                 linker.updateLinksStyleAndControlsSelection(control, true); // solve drag pb on 13749
             }
