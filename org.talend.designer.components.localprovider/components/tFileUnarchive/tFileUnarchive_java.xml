@@ -43,8 +43,11 @@
     <PARAMETER NAME="ROOTNAME" FIELD="CHECK" REQUIRED="true" NUM_ROW="3">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+     <PARAMETER NAME="INTEGRITY" FIELD="CHECK" REQUIRED="true" NUM_ROW="4">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
     
-    <PARAMETER NAME="EXTRACTPATH" FIELD="CHECK" REQUIRED="true" NUM_ROW="4">
+    <PARAMETER NAME="EXTRACTPATH" FIELD="CHECK" REQUIRED="true" NUM_ROW="5">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
        
@@ -52,7 +55,9 @@
 
    <CODEGENERATION>
      <IMPORTS>
+     
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" REQUIRED="true" />
+       <IMPORT NAME="Check-Archive" MODULE="checkArchive.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION> 
   
