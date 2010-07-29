@@ -40,6 +40,7 @@
             
             String pattern1 = ElementParameterParser.getValue(node, "__PATTERN__");
             
+            boolean useByte = ("true").equals(ElementParameterParser.getValue(node, "__USE_BYTE__"));
             boolean advanced = ("true").equals(ElementParameterParser.getValue(node, "__ADVANCED_OPTION__"));
             
 			String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
@@ -229,17 +230,39 @@ if(footer_<%=cid %> > 0){
 String row_<%=cid %> = null;   
 <%
 	if(advanced){
+		if(useByte){
+%>
+byte[] byteArray_<%=cid %> = new byte[0];
+<%
+		}
 %>
 String column_<%=cid %> = null;
 <%
 	}else{
+		if(useByte){
+%>
+byte[][] byteArray_<%=cid %> = new byte[<%=metadata.getListColumns().size()%>][];
+<%
+		}
 %>
 String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
 <%
 	}
 %>
+int rowLen_<%=cid %> = 0;
 while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
+<%
+	if(useByte){
+%>
+	rowLen_<%=cid %> = row_<%=cid %>.getBytes(<%=encoding %>).length;
+<%
+	}else{
+%>
+	rowLen_<%=cid %> = row_<%=cid %>.length();
+<%
+	}
+%>
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<? extends IConnection> connsFlow = node.getOutgoingConnections("FLOW");
@@ -296,16 +319,41 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
     					}
     					if(valueN == sizeListColumns - 1 && useStar){ //last column
 %>
-    if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
-    	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+    if(begins_<%=cid %>[<%=valueN %>] < rowLen_<%=cid %>){
+<%
+							if(useByte){
+%>
+		byteArray_<%=cid %>=java.util.Arrays.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),begins_<%=cid %>[<%=valueN %>],rowLen_<%=cid %>);
+    	column_<%=cid %> = TalendString.talendTrim(new String(byteArray_<%=cid %>,<%=encoding %>), <%=paddingChar %>, <%=align %>);
+<%
+							}else{
+%>
+		column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+<%
+							}
+%>
     }else{
     	column_<%=cid %> = "";
     }
 <%
 						}else{//other column
+							if(useByte){
 %>
-	if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
-        if(ends_<%=cid %>[<%=valueN %>] <= row_<%=cid %>.length()){
+	if(begins_<%=cid %>[<%=valueN %>] < rowLen_<%=cid %>){
+        if(ends_<%=cid %>[<%=valueN %>] <= rowLen_<%=cid %>){
+        	byteArray_<%=cid %> = java.util.Arrays.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),begins_<%=cid %>[<%=valueN %>],ends_<%=cid %>[<%=valueN %>]);
+        }else{
+        	byteArray_<%=cid %> = java.util.Arrays.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),begins_<%=cid %>[<%=valueN %>],rowLen_<%=cid %>);
+		}
+		column_<%=cid %> = TalendString.talendTrim(new String(byteArray_<%=cid %>,<%=encoding %>), <%=paddingChar %>, <%=align %>);
+    }else{
+    	column_<%=cid %> = "";
+    }
+<%
+							}else{
+%>
+	if(begins_<%=cid %>[<%=valueN %>] < rowLen_<%=cid %>){
+        if(ends_<%=cid %>[<%=valueN %>] <= rowLen_<%=cid %>){
         	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>], ends_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
         }else{
         	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
@@ -314,6 +362,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
     	column_<%=cid %> = "";
     }
 <%
+							}
 						}
 						if(isTrimAll || ("true").equals(trimSelects.get(valueN).get("TRIM"))){
 %>
@@ -374,26 +423,33 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 				continue;
 			}
 %>
-		    if(substringBegin<%=cid %> >= row_<%=cid %>.length()){
+		    if(substringBegin<%=cid %> >= rowLen_<%=cid %>){
 		    	columnValue<%=cid %>[<%=i%>]= "";
     		}else{
 <%
 					if(("*").equals(positions[i])){
 %>
-        			 	substringEnd<%=cid %>=row_<%=cid %>.length();
+        			 	substringEnd<%=cid %>=rowLen_<%=cid %>;
 <%
 					} else{
 %>
         				substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
         
-				        if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-				        	substringEnd<%=cid %> = row_<%=cid %>.length();
+				        if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+				        	substringEnd<%=cid %> = rowLen_<%=cid %>;
 				    	}
 <%
 					}
+					if(useByte){
+%>
+					byteArray_<%=cid %>[<%=i%>] = java.util.Arrays.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
+					columnValue<%=cid %>[<%=i%>] = new String(byteArray_<%=cid %>[<%=i%>],<%=encoding %>);
+<%
+					}else{
 %>
         			columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
 <% 
+					}
        				if(isTrimAll || ("true").equals(trimSelects.get(i).get("TRIM"))){
 %>
 						columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
@@ -424,20 +480,29 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 				continue;
 			}
 			 
-		    if (substringBegin<%=cid %> >= row_<%=cid %>.length()) {
+		    if (substringBegin<%=cid %> >= rowLen_<%=cid %>) {
 		    	columnValue<%=cid %>[i_<%=cid %>] = "";
 		    } else{
 		    
 				if (("*").equals(arrFieldSeparator<%=cid%>[i_<%=cid %>])){
-					substringEnd<%=cid %> = row_<%=cid %>.length();
+					substringEnd<%=cid %> = rowLen_<%=cid %>;
 				} else{
 	    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i_<%=cid %>]);
-			        if(substringEnd<%=cid %> > row_<%=cid %>.length())
-			        	substringEnd<%=cid %> = row_<%=cid %>.length();
+			        if(substringEnd<%=cid %> > rowLen_<%=cid %>)
+			        	substringEnd<%=cid %> = rowLen_<%=cid %>;
 				}
-				
+<%
+		if(useByte){
+%>
+				byteArray_<%=cid %>[i_<%=cid %>] = java.util.Arrays.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
+				columnValue<%=cid %>[i_<%=cid %>] = new String(byteArray_<%=cid %>[i_<%=cid %>],<%=encoding %>);
+<%
+		}else{
+%>
 	        	columnValue<%=cid %>[i_<%=cid %>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);	
-	        	
+<%
+		}
+%>
 	        	if (<%=isTrimAll%>)
 	        		columnValue<%=cid %>[i_<%=cid %>] = columnValue<%=cid %>[i_<%=cid %>].trim();
 	        	
