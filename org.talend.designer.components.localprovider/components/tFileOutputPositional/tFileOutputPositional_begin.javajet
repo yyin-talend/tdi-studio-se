@@ -52,6 +52,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             );
         
         boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+        
+        boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
+        String writerClass = null;
+    	if(isInRowMode){
+    		writerClass = "routines.system.BufferedOutput";
+    	}else{
+    		writerClass = "java.io.BufferedWriter";
+    	}
 %>
 		int nb_line_<%=cid%> = 0;
 		
@@ -98,11 +106,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
 	    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
 	    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(createFile<%=cid%>.getName()));
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%= encoding%>));
+		final <%=writerClass %> out<%=cid %> = new <%=writerClass %>(new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%= encoding%>));
 <%
 			}else{
 %>
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+		final <%=writerClass %> out<%=cid %> = new <%=writerClass %>(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
 <%
 			}
@@ -113,12 +121,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    			new java.io.BufferedOutputStream(<%=outStream %>));
 	    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputPositional"));
 		java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>,<%= encoding%>);
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
+		final <%=writerClass %> out<%=cid %> = new <%=writerClass %>(outWriter_<%=cid %>);
 <%
 			}else{
 %>
 		java.io.OutputStreamWriter outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>,<%= encoding%>);
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);  
+		final <%=writerClass %> out<%=cid %> = new <%=writerClass %>(outWriter_<%=cid %>);  
 <%
 			}
 		}
