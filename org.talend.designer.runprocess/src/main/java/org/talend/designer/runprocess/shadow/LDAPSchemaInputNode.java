@@ -19,6 +19,7 @@ import org.talend.repository.preview.LDAPSchemaBean;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -32,20 +33,19 @@ public class LDAPSchemaInputNode extends FileInputNode {
      * @param schemaBean
      * @param string
      */
-    public LDAPSchemaInputNode(String fileName, List<IMetadataTable> metadatas, String encoding,
-            LDAPSchemaBean schemaBean) {
+    public LDAPSchemaInputNode(String fileName, List<IMetadataTable> metadatas, String encoding, LDAPSchemaBean schemaBean) {
         super("tLDAPInput"); //$NON-NLS-1$
         int limit = 50;
         this.setColumnNumber(limit);
 
-        String[] paramNames = new String[] { "FILENAME", "ENCODING", "HOST", "PORT", "PROTOCOL", "AUTHENTIFICATION", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        String[] paramNames = new String[] {
+                "USE_EXISTING_CONNECTION", "FILENAME", "ENCODING", "HOST", "PORT", "PROTOCOL", "AUTHENTIFICATION", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$//$NON-NLS-7$
                 "USER", "PASSWD", "FILTER", "BASEDN", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 "MULTI_VALUE_SEPARATOR", "LIMIT", "TIMEOUT", "ALIASES", "REFERRALS" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        String[] paramValues = new String[] { fileName, encoding, schemaBean.getHost(), schemaBean.getPort(),
+        String[] paramValues = new String[] { "false", fileName, encoding, schemaBean.getHost(), schemaBean.getPort(),//$NON-NLS-1$
                 schemaBean.getEncryMethod(), schemaBean.isAuthen() + "", schemaBean.getUser(), schemaBean.getPasswd(), //$NON-NLS-1$
-                schemaBean.getFilter(), schemaBean.getBaseDN(), schemaBean.getMultiValueSeparator(),
-                schemaBean.getCountLimit(), schemaBean.getTimeOutLimit(), schemaBean.getAliasDereferenring(),
-                schemaBean.getReferrals() };
+                schemaBean.getFilter(), schemaBean.getBaseDN(), schemaBean.getMultiValueSeparator(), schemaBean.getCountLimit(),
+                schemaBean.getTimeOutLimit(), schemaBean.getAliasDereferenring(), schemaBean.getReferrals() };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
