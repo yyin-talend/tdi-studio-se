@@ -63,6 +63,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
@@ -87,6 +88,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 
 /**
  * Detailled comment <br/>
@@ -740,4 +742,14 @@ public class DesignerCoreService implements IDesignerCoreService {
         Problems.refreshProblemTreeView();
     }
 
+    public void reloadParamFromProjectSettings(ParametersType processType, String paramName) {
+        if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+            ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType, ProjectManager.getInstance()
+                    .getCurrentProject());
+        } else if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
+            ProjectSettingManager.reloadImplicitValuesFromProjectSettings(processType, ProjectManager.getInstance()
+                    .getCurrentProject());
+        }
+
+    }
 }
