@@ -16,6 +16,8 @@
 	boolean extractPath = ("true").equals(ElementParameterParser.getValue(node, "__EXTRACTPATH__"));
 	
 	boolean isArchiveValid = ("true").equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	
 %>      
 		class UnzippedFile_<%=cid %> {
 			public String fileName;
@@ -211,28 +213,47 @@
 	}else { 
 		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(tmpFileURL_<%=cid%>))){
 			throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
-
 		}
 		//the others all use the ZIP to decompression
- 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
-        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
-        java.io.InputStream is_<%=cid %> = null;
-        while (enuFiles_<%=cid %>.hasMoreElements()) {
-            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
-            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
-            if (!isDirectory_<%=cid%>) {
-                //get the input stream
-                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+		 if(!<%=password%>.equals("") ){
+			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
+			 target_<%=cid%> = 
+				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
+						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
+			 
+			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(target_<%=cid%>); 
+		     java.util.zip.ZipEntry entry_<%=cid%> = input_<%=cid%>.getNextEntry(); 
+		     java.io.InputStream is_<%=cid %> = null;
+		     while (entry_<%=cid%> != null) { 
+		            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
+		            //System.out.println("Contents: "+toString(input)); 
+		    	    
+		            entry_<%=cid%> = input_<%=cid%>.getNextEntry(); 
+		            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+		            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+		            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
+		     }
+			 
+        }
+		else {
+	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+	        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+	        java.io.InputStream is_<%=cid %> = null;
+	        while (enuFiles_<%=cid %>.hasMoreElements()) {
+	            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+	            if (!isDirectory_<%=cid%> ) {
+	                //get the input stream
+	                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+				}
+	            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);
 			}
-            String filename_<%=cid %> =  entry_<%=cid %>.getName();
-            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);
+			zip_<%=cid %>.close();
 		}
-		zip_<%=cid %>.close();
 	}
+	
 
-<%
-	// iterate output
-%>
 	for (UnzippedFile_<%=cid %> uf<%=cid %> : util_<%=cid %>.unzippedFiles) {
 		globalMap.put("<%=cid %>_CURRENT_FILE", uf<%=cid %>.fileName);
 		globalMap.put("<%=cid %>_CURRENT_FILEPATH", uf<%=cid %>.filePath);

@@ -55,7 +55,7 @@
         <ITEM NAME="FAST" VALUE="0" />
       </ITEMS>
     </PARAMETER>
-
+    
     <PARAMETER NAME="ALL_FILES" FIELD="CHECK" REQUIRED="true" NUM_ROW="5">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -73,12 +73,21 @@
     <PARAMETER NAME="OVERWRITE" FIELD="CHECK" REQUIRED="true" NUM_ROW="8">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="ENCRYPT_FILES" FIELD="CHECK" REQUIRED="false" NUM_ROW="9">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+     <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="false" NUM_ROW="10" SHOW_IF="ENCRYPT_FILES == 'true'">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
   </PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" REQUIRED="true" />
-       
+       <IMPORT NAME="Encrypt-Zip" MODULE="checkArchive.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION> 
   

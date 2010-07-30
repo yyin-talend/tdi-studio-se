@@ -20,6 +20,9 @@
 	boolean subDir = ("true").equals(ElementParameterParser.getValue(node, "__SUB_DIRECTROY__"));
 	boolean overwrite = ("true").equals(ElementParameterParser.getValue(node, "__OVERWRITE__"));
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	boolean isEncrypted = ("true").equals(ElementParameterParser.getValue(node, "__ENCRYPT_FILES__"));
+	String password = ElementParameterParser.getValue(node,"__PASSWORD__");
+	
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 	%>
 
@@ -115,7 +118,12 @@
       org.apache.tools.zip.ZipOutputStream out_<%=cid %> = null;
       if (list_<%=cid %>.size() > 0) {
       	int beginIndex_<%=cid %> = file_<%=cid %>.getPath().length()+1;
-        out_<%=cid %> = new org.apache.tools.zip.ZipOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipFile_<%=cid %>))); 
+      	java.io.OutputStream output_stream_<%=cid%> = new java.io.FileOutputStream(zipFile_<%=cid %>);
+      	if( <%=isEncrypted%> && !<%=password%>.equals("")){
+      		output_stream_<%=cid%> = new javax.crypto.CipherOutputStream(output_stream_<%=cid%>, 
+      				                       org.talend.archive.IntegrityUtil.createCipher( javax.crypto.Cipher.ENCRYPT_MODE, <%=password%>)); 
+      	}
+        out_<%=cid %> = new org.apache.tools.zip.ZipOutputStream(new java.io.BufferedOutputStream(output_stream_<%=cid%>)); 
         out_<%=cid %>.setLevel(level_<%=cid %>);
         out_<%=cid %>.setEncoding(<%=encoding%>);
         // here get the file list
