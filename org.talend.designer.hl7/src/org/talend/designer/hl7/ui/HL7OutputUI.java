@@ -53,6 +53,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.NodeUtil;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
 import org.talend.designer.hl7.action.CreateHL7AttributeAction;
 import org.talend.designer.hl7.action.CreateHL7ElementAction;
@@ -112,6 +113,8 @@ public class HL7OutputUI extends HL7UI {
 
     private String endChar;
 
+    private boolean isRespo = false;
+
     public HL7OutputUI(Composite parent, HL7Manager hl7Manager) {
         super(parent, hl7Manager);
         if (hl7Manager instanceof HL7OutputManager) {
@@ -152,6 +155,11 @@ public class HL7OutputUI extends HL7UI {
         xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
         canModify = externalNode.getProcess().isReadOnly();
+        IElementParameter propertyParam = externalNode.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+        if (propertyParam != null) {
+            isRespo = propertyParam.getValue().equals("REPOSITORY");
+        }
+
         addSchemaViewer(xmlToSchemaSash, 300, 110);
         addXMLViewer(xmlToSchemaSash, 400, 110);
 
@@ -166,7 +174,6 @@ public class HL7OutputUI extends HL7UI {
         if (xmlTree.getItems().length > 0) {
             TreeItem root = xmlTree.getItem(0);
             TableItem[] tableItems = schemaViewer.getTable().getItems();
-
             initLinker(root, tableItems);
         }
 
@@ -294,7 +301,7 @@ public class HL7OutputUI extends HL7UI {
         xmlViewer.getControl().setLayoutData(gridData);
         xmlViewer.setUseHashlookup(true);
         Tree tree = xmlViewer.getTree();
-        if (canModify) {
+        if (canModify || isRespo) {
             tree.setEnabled(false);
         }
         tree.setLinesVisible(true);
@@ -458,7 +465,7 @@ public class HL7OutputUI extends HL7UI {
         GridData data2 = new GridData(GridData.FILL_BOTH);
         Table table = schemaViewer.getTable();
         // see bug 7087
-        if (canModify) {
+        if (canModify || isRespo) {
             table.setEnabled(false);
         }
         // table.setLinesVisible(true);

@@ -806,7 +806,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             externalNode.getElementParameter("ROOT").setValue(mapList);
                         }
 
-                        String fileName = ((HL7ConnectionImpl) originalConnection).getFilePath();
+                        String fileName = ((HL7ConnectionImpl) originalConnection).getOutputFilePath();
                         if (externalNode != null && externalNode.getElementParameter("FILENAME") != null && fileName != null) {
                             externalNode.getElementParameter("FILENAME").setValue(TalendTextUtils.addQuotes(fileName));
                         }

@@ -59,7 +59,7 @@ public class HL7OutputLinkUI extends HL7OutputUI {
      */
     @Override
     protected void createCombo(Composite mainComposite) {
-        metaTableViewer = new ComboViewer(mainComposite, SWT.NONE);
+        metaTableViewer = new ComboViewer(mainComposite, SWT.NONE | SWT.READ_ONLY);
         metaTableViewer.setContentProvider(new ArrayContentProvider());
         metaTableViewer.setLabelProvider(new LabelProvider() {
 
