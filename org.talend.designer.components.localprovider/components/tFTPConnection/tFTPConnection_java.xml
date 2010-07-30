@@ -69,7 +69,25 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+
+    <PARAMETER
+      NAME="KEYSTORE_FILE"
+      FIELD="FILE"
+      NUM_ROW="5"
+      SHOW_IF="(FTPS=='true')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="KEYSTORE_PASS"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      SHOW_IF="(FTPS=='true')"
+    >
+      <DEFAULT>"123456"</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="PRIVATEKEY"
       FIELD="FILE"
@@ -100,11 +118,15 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="8">
+    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="8" SHOW_IF="(FTPS == 'false')">
       <DEFAULT>false</DEFAULT>
     </PARAMETER> 
     
-    <PARAMETER NAME="CONNECT_MODE" FIELD="CLOSED_LIST" NUM_ROW="100" SHOW_IF="(SFTP=='false')">
+    <PARAMETER NAME="FTPS" FIELD="CHECK" REQUIRED="true" NUM_ROW="8" SHOW_IF="(SFTP == 'false')">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>   
+    
+    <PARAMETER NAME="CONNECT_MODE" FIELD="CLOSED_LIST" NUM_ROW="100" NOT_SHOW_IF="(SFTP == 'true') OR (FTPS == 'true')">
       <ITEMS DEFAULT="PASSIVE">
         <ITEM NAME="PASSIVE"  VALUE="PASSIVE" />        
      	<ITEM NAME="ACTIVE"  VALUE="ACTIVE" />

@@ -34,7 +34,7 @@
 	try{
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
     	String dir_<%=cid %> = root_<%=cid %>;
-    	String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;  
+    	String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;
     	int i_<%=cid %> = mask_<%=cid %>.lastIndexOf('/');   
     	if (i_<%=cid %>!=-1)
     	{

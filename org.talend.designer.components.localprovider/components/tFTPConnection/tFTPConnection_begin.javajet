@@ -25,6 +25,9 @@ imports="
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
+	boolean ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__"));
+    String keystoreFile = ElementParameterParser.getValue(node,"__KEYSTORE_FILE__");
+    String keystorePass = ElementParameterParser.getValue(node,"__KEYSTORE_PASS__");
 if(useProxy){	    
 %>	
     java.util.Properties props_<%=cid%> = System.getProperties();
@@ -34,7 +37,7 @@ if(useProxy){
     props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);
 <%
 }
-if(!sftp){
+if(!sftp && !ftps){ // *** ftp *** //
 %>
 	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
@@ -55,7 +58,7 @@ if(!sftp){
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
 	globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
 <%
-}else{
+}else if(!ftps){ // *** sftp *** //
 %>
     class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
     
@@ -96,6 +99,50 @@ if(!sftp){
     session_<%=cid%>.connect();
     
     globalMap.put("conn_<%=cid%>",session_<%=cid%>);
+<%
+}else{  // *** ftps *** //
+%>
+	class MyTrust_<%=cid%>{
+        
+	    private javax.net.ssl.TrustManager[] getTrustManagers() 
+	    	throws java.security.KeyStoreException, java.security.NoSuchAlgorithmException, 
+	    	java.security.cert.CertificateException, java.security.UnrecoverableKeyException,
+	        java.io.FileNotFoundException, java.io.IOException{
+	        java.security.KeyStore ks = java.security.KeyStore.getInstance("JKS");
+	        ks.load(new java.io.FileInputStream(<%=keystoreFile%>), <%=keystorePass%>.toCharArray());
+	        javax.net.ssl.TrustManagerFactory tmf = javax.net.ssl.TrustManagerFactory.getInstance(javax.net.ssl.KeyManagerFactory.getDefaultAlgorithm());
+	        tmf.init(ks);
+	        return tmf.getTrustManagers();
+	    }
+    
+    }
+    
+    javax.net.ssl.SSLContext sslContext = null;
+    javax.net.ssl.TrustManager[] trustManager = null;
+    javax.net.ssl.SSLSocketFactory sslSocketFactory = null;
+	it.sauronsoftware.ftp4j.FTPClient ftp_<%=cid %> =null;
+	MyTrust_<%=cid%> myTrust_<%=cid%>= null;
+	try{
+    	sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+	    myTrust_<%=cid%> = new MyTrust_<%=cid%>();
+    	trustManager = myTrust_<%=cid%>.getTrustManagers();
+    	sslContext.init(null, trustManager, new java.security.SecureRandom());
+    	sslSocketFactory = sslContext.getSocketFactory();
+		ftp_<%=cid %> = new it.sauronsoftware.ftp4j.FTPClient();
+		ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory);
+        ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+		ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
+		ftp_<%=cid %>.login(<%=user %>, <%=pass %>);;
+    } catch (java.lang.IllegalStateException e) {
+        e.printStackTrace();
+    } catch (java.io.IOException e) {
+        e.printStackTrace();
+    } catch (it.sauronsoftware.ftp4j.FTPIllegalReplyException e) {
+        e.printStackTrace();
+    } catch (it.sauronsoftware.ftp4j.FTPException e) {
+        e.printStackTrace();
+    }
+    globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
 <%
 }
 %>
