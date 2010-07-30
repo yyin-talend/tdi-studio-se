@@ -7,6 +7,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.Map
 " 
@@ -32,7 +34,8 @@ String lookupReplacementColumn = ElementParameterParser.getValue(
     "__LOOKUP_REPLACEMENT_COLUMN__"
 );
 String lookupReplacementName = null;
-
+String typeToGenerate_lookup="";
+String typeToGenerate_replacement="";
 if (metadatas != null && metadatas.size() > 0) {
     String lookup = null;
 
@@ -42,17 +45,19 @@ if (metadatas != null && metadatas.size() > 0) {
         if (connection == null) {
             continue;
         }
-
         if (connection.getLineStyle() == EConnectionType.FLOW_REF) {
             lookup = connection.getName();
             IMetadataTable lookupMetadata = connection.getSource().getMetadataList().get(0);
-          
             int colnum = 0; 
             for(IMetadataColumn column: lookupMetadata.getListColumns()){
-                if (lookupSearchColumn.equals(column.getLabel())) 
-                       lookupSearchName = column.getLabel();     
-                if (lookupReplacementColumn.equals(column.getLabel()))  
-                       lookupReplacementName = column.getLabel();  
+                if (lookupSearchColumn.equals(column.getLabel())){
+                	typeToGenerate_lookup = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                	lookupSearchName = column.getLabel();
+                }
+                if (lookupReplacementColumn.equals(column.getLabel())){
+                	typeToGenerate_replacement = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()); 
+                	lookupReplacementName = column.getLabel();
+                }
                 colnum++;
             }
           
@@ -62,12 +67,12 @@ if (metadatas != null && metadatas.size() > 0) {
 %>
 
 java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>  tMap_<%=lookup%>_<%=cid %> = (java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>) globalMap.get("tHash_<%=lookup %>");
-java.util.Map<String,String> replace_<%=cid%> = new java.util.HashMap<String,String>();
+java.util.Map<<%=typeToGenerate_lookup%>,<%=typeToGenerate_replacement%>> replace_<%=cid%> = new java.util.HashMap<<%=typeToGenerate_lookup%>,<%=typeToGenerate_replacement%>>();
 
 for (Object o : tMap_<%=lookup%>_<%=cid %>.keySet()) {
     
-    String search = String.valueOf(tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupSearchName%>);
-    String replacement = String.valueOf(tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupReplacementName%>);
+    <%=typeToGenerate_lookup%> search = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupSearchName%>;
+    <%=typeToGenerate_replacement%> replacement = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupReplacementName%>;
     replace_<%=cid%>.put(search,replacement);
 }
 
