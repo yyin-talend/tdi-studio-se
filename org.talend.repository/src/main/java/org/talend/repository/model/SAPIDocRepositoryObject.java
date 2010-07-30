@@ -18,6 +18,8 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -28,7 +30,7 @@ import org.talend.core.model.repository.RepositoryObject;
  */
 public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRepositoryObject {
 
-    private final SAPIDocUnit iDocUnit;
+    private SAPIDocUnit iDocUnit;
 
     private final IRepositoryViewObject repObj;
 
@@ -75,7 +77,9 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
 
     @Override
     public Property getProperty() {
-        return repObj.getProperty();
+        Property property = repObj.getProperty();
+        updateIdocUnit(property);
+        return property;
     }
 
     @Override
@@ -106,14 +110,16 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
         iDocUnit.getConnection().getIDocs().remove(iDocUnit);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.metadata.builder.connection
-     * .Connection)
-     */
-    public void removeFromParent(Connection connection) {
+    private void updateIdocUnit(Property property) {
+        if (property == null) {
+            return;
+        }
+        Connection connection = null;
+        Item item = property.getItem();
+        if (item instanceof ConnectionItem) {
+            ConnectionItem cItem = (ConnectionItem) item;
+            connection = cItem.getConnection();
+        }
         if (connection instanceof SAPConnection) {
             SAPConnection sapConnection = (SAPConnection) connection;
             Iterator iterator = sapConnection.getIDocs().iterator();
@@ -122,11 +128,11 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
                 if (fObj instanceof SAPIDocUnit) {
                     SAPIDocUnit unit = (SAPIDocUnit) fObj;
                     if (iDocUnit.getLabel() != null && iDocUnit.getLabel().equals(unit.getLabel())) {
-                        iterator.remove();
+                        iDocUnit = unit;
                     }
                 }
             }
         }
-    }
 
+    }
 }

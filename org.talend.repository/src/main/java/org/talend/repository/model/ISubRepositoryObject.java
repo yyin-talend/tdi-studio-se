@@ -13,7 +13,6 @@
 package org.talend.repository.model;
 
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.properties.Property;
 
 /**
@@ -24,8 +23,6 @@ public interface ISubRepositoryObject {
     public AbstractMetadataObject getAbstractMetadataObject();
 
     public void removeFromParent();
-
-    public void removeFromParent(Connection connection);
 
     public Property getProperty();
 }

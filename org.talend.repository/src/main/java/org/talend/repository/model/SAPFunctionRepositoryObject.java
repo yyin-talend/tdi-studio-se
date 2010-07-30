@@ -18,6 +18,8 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -28,7 +30,7 @@ import org.talend.core.model.repository.RepositoryObject;
  */
 public class SAPFunctionRepositoryObject extends RepositoryObject implements ISubRepositoryObject {
 
-    private final SAPFunctionUnit functionUnit;
+    private SAPFunctionUnit functionUnit;
 
     private final IRepositoryViewObject repObj;
 
@@ -83,7 +85,9 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
 
     @Override
     public Property getProperty() {
-        return repObj.getProperty();
+        Property property = repObj.getProperty();
+        updateFunctionUnit(property);
+        return property;
     }
 
     @Override
@@ -114,14 +118,16 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
         functionUnit.getConnection().getFuntions().remove(functionUnit);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.metadata.builder.connection
-     * .Connection)
-     */
-    public void removeFromParent(Connection connection) {
+    private void updateFunctionUnit(Property property) {
+        if (property == null) {
+            return;
+        }
+        Connection connection = null;
+        Item item = property.getItem();
+        if (item instanceof ConnectionItem) {
+            ConnectionItem cItem = (ConnectionItem) item;
+            connection = cItem.getConnection();
+        }
         if (connection instanceof SAPConnection) {
             SAPConnection sapConnection = (SAPConnection) connection;
             if (sapConnection.getFuntions() != null) {
@@ -131,11 +137,12 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
                     if (fObj instanceof SAPFunctionUnit) {
                         SAPFunctionUnit unit = (SAPFunctionUnit) fObj;
                         if (functionUnit.getLabel() != null && functionUnit.getLabel().equals(unit.getLabel())) {
-                            iterator.remove();
+                            functionUnit = unit;
                         }
                     }
                 }
             }
         }
+
     }
 }

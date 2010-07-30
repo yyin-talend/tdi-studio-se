@@ -19,6 +19,8 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 
@@ -29,7 +31,7 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
 
     private final IRepositoryViewObject repObj;
 
-    private final Query query;
+    private Query query;
 
     @Override
     public Object getAdapter(Class adapter) {
@@ -46,7 +48,9 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
 
     @Override
     public Property getProperty() {
-        return repObj.getProperty();
+        Property property = repObj.getProperty();
+        updataQuery(property);
+        return property;
     }
 
     @Override
@@ -76,14 +80,16 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
         query.getQueries().getQuery().remove(query);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.model.ISubRepositoryObject#removeFromParent(org.talend.core.model.properties.ConnectionItem
-     * )
-     */
-    public void removeFromParent(Connection connection) {
+    private void updataQuery(Property property) {
+        if (property == null) {
+            return;
+        }
+        Connection connection = null;
+        Item item = property.getItem();
+        if (item instanceof ConnectionItem) {
+            ConnectionItem cItem = (ConnectionItem) item;
+            connection = cItem.getConnection();
+        }
         if (connection instanceof DatabaseConnection) {
             DatabaseConnection dbConn = (DatabaseConnection) connection;
             QueriesConnection queries = dbConn.getQueries();
@@ -91,9 +97,11 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
             while (iterator.hasNext()) {
                 Object next = iterator.next();
                 if (next instanceof Query && query.getLabel() != null && query.getLabel().equals(((Query) next).getLabel())) {
-                    iterator.remove();
+                    query = (Query) next;
                 }
             }
         }
+
     }
+
 }

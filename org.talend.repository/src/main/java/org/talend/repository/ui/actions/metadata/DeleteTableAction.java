@@ -33,11 +33,6 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.QueriesConnection;
-import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.metadata.builder.connection.SAPConnection;
-import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
-import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -45,7 +40,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
-import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -111,7 +105,6 @@ public class DeleteTableAction extends AContextualAction {
                     if (abstractMetadataObject instanceof SubscriberTable) {
                         return;
                     }
-                    abstractMetadataObject = getNewMetadataObjectFromConnection(connection, abstractMetadataObject);
 
                     // for (Object table : connection.getTables()) {
                     // if (table instanceof AbstractMetadataObject) {
@@ -134,7 +127,7 @@ public class DeleteTableAction extends AContextualAction {
                             confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
                         }
                         if (confirm) {
-                            subRepositoryObject.removeFromParent(connection);
+                            subRepositoryObject.removeFromParent();
                         }
                     } else {
                         SubItemHelper.setDeleted(abstractMetadataObject, true);
@@ -176,58 +169,6 @@ public class DeleteTableAction extends AContextualAction {
         // viewPart.setFocus();
         // repositoryView.getViewSite().getSelectionProvider().setSelection(null);
         // repositoryView.expand(recycleBinNode, true);
-
-    }
-
-    private AbstractMetadataObject getNewMetadataObjectFromConnection(Connection connection,
-            AbstractMetadataObject oldMetadataObject) {
-        if (oldMetadataObject.getLabel() == null) {
-            return null;
-        }
-        if (connection instanceof SAPConnection) {
-            SAPConnection sapConnection = (SAPConnection) connection;
-            if (oldMetadataObject instanceof SAPFunctionUnit) {
-                if (sapConnection.getFuntions() != null) {
-                    for (Object fObj : sapConnection.getFuntions()) {
-                        if (fObj instanceof SAPFunctionUnit) {
-                            SAPFunctionUnit unit = (SAPFunctionUnit) fObj;
-                            if (oldMetadataObject.getLabel().equals(unit.getLabel())) {
-                                return unit;
-                            }
-                        }
-                    }
-                }
-            } else if (oldMetadataObject instanceof SAPIDocUnit) {
-                for (Object fObj : sapConnection.getIDocs()) {
-                    if (fObj instanceof SAPIDocUnit) {
-                        SAPIDocUnit unit = (SAPIDocUnit) fObj;
-                        if (oldMetadataObject.getLabel().equals(unit.getLabel())) {
-                            return unit;
-                        }
-                    }
-                }
-            }
-        } else {
-            if (oldMetadataObject instanceof Query && connection instanceof DatabaseConnection) {
-                DatabaseConnection dbConn = (DatabaseConnection) connection;
-                QueriesConnection queries = dbConn.getQueries();
-                for (Object query : queries.getQuery()) {
-                    if (query instanceof Query && oldMetadataObject.getLabel().equals(((Query) query).getLabel())) {
-                        return (Query) query;
-                    }
-                }
-            } else {
-                for (Object table : ConnectionHelper.getTables(connection)) {
-                    if (table instanceof AbstractMetadataObject) {
-                        AbstractMetadataObject metadataTable = (AbstractMetadataObject) table;
-                        if (metadataTable.getLabel().equals(oldMetadataObject.getLabel())) {
-                            return metadataTable;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
 
     }
 
