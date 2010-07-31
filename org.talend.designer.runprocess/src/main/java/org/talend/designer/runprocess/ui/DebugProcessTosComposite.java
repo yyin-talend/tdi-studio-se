@@ -1528,4 +1528,9 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             return -1;
         }
     }
+
+    public boolean hasProcess() {
+        // TODO Auto-generated method stub
+        return processContext != null;
+    }
 }

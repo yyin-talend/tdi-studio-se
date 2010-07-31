@@ -858,4 +858,14 @@ public class TraceDebugProcessComposite extends ScrolledComposite implements IDy
             return -1;
         }
     }
+
+    /**
+     * DOC gldu Comment method "hasProcess".
+     * 
+     * @return
+     */
+    public boolean hasProcess() {
+        // TODO Auto-generated method stub
+        return processContext != null;
+    }
 }

@@ -48,6 +48,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -267,6 +268,40 @@ public class ProcessView extends ViewPart {
             }
         });
         setElement();
+
+        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+        IHandler handler1;
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
+            Action debugAction = new DebugAction();
+            handler1 = new ActionHandler(debugAction);
+            handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
+        }
+        Action killAction = new KillAction();
+        handler1 = new ActionHandler(killAction);
+        handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);
+
+        FocusListener fl = new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+                log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
+                ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
+            }
+
+            public void focusLost(FocusEvent e) {
+                log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
+                if (ca != null) {
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
+                    contextService.deactivateContext(ca);
+                }
+            }
+        };
+
+        addListenerOnChildren(parent, fl);
         rubjobManager.setProcessShell(getSite().getShell());
     }
 
@@ -380,44 +415,10 @@ public class ProcessView extends ViewPart {
 
         runningProcessChanged();
 
-        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
-
         runAction = new RunAction();
         // IHandler handler2 = new ActionHandler(runAction);
         // handlerService.activateHandler(runAction.getActionDefinitionId(), handler2);
 
-        IHandler handler1;
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        // if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
-        // Action debugAction = new DebugAction();
-        // handler1 = new ActionHandler(debugAction);
-        // handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
-        // }
-        // Action killAction = new KillAction();
-        // handler1 = new ActionHandler(killAction);
-        // handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);
-
-        FocusListener fl = new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-                log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
-                ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
-            }
-
-            public void focusLost(FocusEvent e) {
-                log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
-                if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
-                    contextService.deactivateContext(ca);
-                }
-            }
-        };
-
-        addListenerOnChildren(parent, fl);
         return parent;
     }
 
@@ -649,10 +650,19 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-
-            if (processComposite.hasProcess()) {
-                processComposite.errorMessMap.clear();
-                processComposite.debug();
+            // IWorkbench workbench = PlatformUI.getWorkbench();
+            // IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            // try {
+            //                page.showView("org.talend.designer.runprocess.ui.views.processview"); //$NON-NLS-1$
+            // } catch (PartInitException e) {
+            // // TODO Auto-generated catch block
+            // // e.printStackTrace();
+            // ExceptionHandler.process(e);
+            // }
+            selectTab(EComponentCategory.DEBUGRUN);
+            if (debugTisProcessComposite.hasProcess()) {
+                debugTisProcessComposite.errorMessMap.clear();
+                debugTisProcessComposite.debug();
             }
         }
 
@@ -676,8 +686,9 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            if (processComposite.hasProcess()) {
-                processComposite.kill();
+            selectTab(EComponentCategory.DEBUGRUN);
+            if (debugTisProcessComposite.hasProcess()) {
+                debugTisProcessComposite.kill();
             }
         }
 
