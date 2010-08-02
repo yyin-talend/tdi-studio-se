@@ -5,6 +5,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.metadata.types.JavaTypesManager
@@ -232,7 +233,7 @@ class="MomInput"
 		/*---------------------------------------------------------end 4----------------------------------------------------------------*/	
 %>	    
 <%
-	} else { //server judgement   /***WebSphere MQ*****/
+	} else if ("WebSphere".equals(serverType)){ //server judgement   /***WebSphere MQ*****/
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 		String qm=ElementParameterParser.getValue(node, "__QM__");
 		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
@@ -377,6 +378,19 @@ class="MomInput"
 			}
 		}
 	}
+} else { //msmq
+  List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  
+  if (outConns != null && outConns.size() > 0){
+    String connNameOut = outConns.get(0).getName();
+    %>
+    org.talend.msmq.MsmqUtil msgu_<%=cid%> = new org.talend.msmq.MsmqUtil();
+    msgu_<%=cid%>.setHost(<%=host%>);
+    msgu_<%=cid%>.setQueue(<%=from%>); 
+    msgu_<%=cid%>.open();
+    <%=connNameOut%>.<%=columns.get(0).getLabel()%> = msgu_<%=cid%>.receive();
+  <%
+  }
 }
 %>
 

@@ -50,7 +50,7 @@
         connection_<%=cid %>.close();
 
 <%		
-	}else{
+	} else if ("WebSphere".equals(serverType)){//server judgement   /***WebSphere MQ*****/
 %>
 		}	
 		System.out.println("Closing connection");
@@ -63,5 +63,9 @@
 		remoteQ<%=cid%>.close();
 	}
 <%
-	}
+	} else {
 	%>
+	  msgu_<%=cid%>.close();
+	<%
+	}
+%>
