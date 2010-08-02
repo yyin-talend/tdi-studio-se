@@ -107,7 +107,7 @@ if(either){
 		}
 %>
     }
-    globalMap.put("<%=cid %>_DELETE_PATH",<%=path%>);
+    globalMap.put("<%=cid %>_DELETE_PATH",<%=dirName%>);
 <%
 }else{
 %>
