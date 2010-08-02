@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,6 +48,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.hsqldb.lib.StringUtil;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -91,7 +91,6 @@ import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
@@ -314,7 +313,7 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             typeText.setText(Messages.getString("DatabaseTableForm.typeTable")); //$NON-NLS-1$
         }
-        String sourceName = metadataTable.getSourceName();
+        String sourceName = metadataTable.getName();
         // tableCombo.setReadOnly(sourceName != null);
         tableCombo.setText(sourceName);
         updateRetreiveSchemaButton();
@@ -539,7 +538,7 @@ public class DatabaseTableForm extends AbstractForm {
             public void widgetSelected(final SelectionEvent e) {
                 if (retreiveSchemaButton.getEnabled()) {
                     pressRetreiveSchemaButton();
-                    metadataTable.setSourceName(tableCombo.getText());
+                    metadataTable.setName(tableCombo.getText());
                 }
             }
         });
@@ -550,7 +549,7 @@ public class DatabaseTableForm extends AbstractForm {
             public void widgetSelected(final SelectionEvent e) {
                 if (guessSchemaButton.getEnabled()) {
                     pressGuessSchemaButton();
-                    metadataTable.setSourceName(tableCombo.getText());
+                    metadataTable.setName(tableCombo.getText());
                 }
             }
         });
@@ -676,7 +675,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
         if (metadataTable != null) {
-            String sourceName = this.metadataTable.getSourceName();
+            String sourceName = this.metadataTable.getName();
             // tableCombo.setReadOnly(sourceName != null);
         } else {
             tableCombo.setReadOnly(true);
@@ -757,7 +756,7 @@ public class DatabaseTableForm extends AbstractForm {
                                             // fill the combo
                                             for (int i = 0; i < filterTableNames.size(); i++) {
                                                 tableCombo.add(filterTableNames.get(i));
-                                                if (filterTableNames.get(i).equals(metadataTable.getSourceName())) {
+                                                if (filterTableNames.get(i).equals(metadataTable.getName())) {
                                                     tableCombo.select(i);
                                                 }
                                             }
@@ -820,7 +819,7 @@ public class DatabaseTableForm extends AbstractForm {
                     tableCombo.setVisibleItemCount(visiblecount);
                     for (int i = 0; i < filterTableNames.size(); i++) {
                         tableCombo.add(filterTableNames.get(i));
-                        if (filterTableNames.get(i).equals(metadataTable.getSourceName())) {
+                        if (filterTableNames.get(i).equals(metadataTable.getName())) {
                             tableCombo.select(i);
                         }
                     }
@@ -903,7 +902,7 @@ public class DatabaseTableForm extends AbstractForm {
             String[] exisNames = TableHelper.getTableNames(getConnection(), table.getLabel());
             List existNames = existingNames == null ? Collections.EMPTY_LIST : Arrays.asList(exisNames);
 
-            if (table.getLabel().equals("")) { //$NON-NLS-1$
+            if (StringUtil.isEmpty(table.getLabel())) { //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlert")); //$NON-NLS-1$
                 return false;
 
@@ -917,11 +916,8 @@ public class DatabaseTableForm extends AbstractForm {
             } else if (existNames.contains(table.getLabel())) {
                 updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
-            } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_SCHEMA_PATTERN, table.getLabel())) {
+            } else if (!MetadataTool.isValidSchemaName(table.getLabel())) {
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.invalidChar", table.getLabel())); //$NON-NLS-1$
-                return false;
-            } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, table.getLabel())) {
-                updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameInvalid", table.getLabel())); //$NON-NLS-1$
                 return false;
             }
             if (table.getColumns().size() == 0) {
@@ -939,6 +935,9 @@ public class DatabaseTableForm extends AbstractForm {
             int index = tableCombo.getCombo().indexOf(tableCombo.getText());
             if (index > -1) {
                 enable = true;
+                if (!tableCombo.getText().equals(metadataTable.getName())) {
+                    metadataTable.setName(tableCombo.getText());
+                }
             }
         }
         // for bug 13099

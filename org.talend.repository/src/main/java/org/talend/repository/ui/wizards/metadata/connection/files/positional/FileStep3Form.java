@@ -561,7 +561,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$
             return false;
-        } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
+        } else if (!MetadataTool.isValidSchemaName(metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
             return false;

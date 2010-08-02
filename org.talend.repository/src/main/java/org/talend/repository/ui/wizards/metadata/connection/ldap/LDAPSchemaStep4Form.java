@@ -14,7 +14,6 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -60,7 +59,6 @@ import org.talend.core.utils.CsvArray;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -300,13 +298,9 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert")); //$NON-NLS-1$
             return false;
-        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_SCHEMA_PATTERN, metadataNameText.getText())) {
+        } else if (!MetadataTool.isValidSchemaName(metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$
-            return false;
-        } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
-            metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep3Form.nameInvalid")); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$

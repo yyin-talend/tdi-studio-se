@@ -1373,9 +1373,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             final org.talend.core.model.metadata.builder.connection.MetadataTable table,
             ERepositoryObjectType repositoryObjectType) {
         MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
-        modelObj.setLabel(table.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
-        tableNode.setProperties(EProperties.LABEL, table.getLabel());
+        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, repositoryObjectType);
         return tableNode;
 

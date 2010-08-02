@@ -14,7 +14,6 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
@@ -38,7 +37,6 @@ import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 
 /**
@@ -143,13 +141,9 @@ public class XmlFileOutputStep3Form extends AbstractXmlFileStepForm {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, "Name must be specified");
             return false;
-        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_SCHEMA_PATTERN, metadataNameText.getText())) {
+        } else if (!MetadataTool.isValidSchemaName(metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, "Name content illegals characters");
-            return false;
-        } else if (!Pattern.matches(RepositoryConstants.SCHEMA_NAME_VALIDATED, metadataNameText.getText())) {
-            metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, ""); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
             updateStatus(IStatus.ERROR, "This name is already existing");
