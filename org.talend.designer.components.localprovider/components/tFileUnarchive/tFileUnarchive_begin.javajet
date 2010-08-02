@@ -211,9 +211,6 @@
 		util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>,is_<%=cid%>);
 		zip_<%=cid %>.close();
 	}else { 
-		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(tmpFileURL_<%=cid%>))){
-			throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
-		}
 		//the others all use the ZIP to decompression
 		 if(!<%=password%>.equals("") ){
 			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
@@ -221,14 +218,11 @@
 				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
 						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
 			 
-			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(target_<%=cid%>); 
-		     java.util.zip.ZipEntry entry_<%=cid%> = input_<%=cid%>.getNextEntry(); 
-		     java.io.InputStream is_<%=cid %> = null;
-		     while (entry_<%=cid%> != null) { 
+			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
+		     java.util.zip.ZipEntry entry_<%=cid%> ; 
+		     while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
 		            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
-		            //System.out.println("Contents: "+toString(input)); 
 		    	    
-		            entry_<%=cid%> = input_<%=cid%>.getNextEntry(); 
 		            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
 		            String filename_<%=cid %> =  entry_<%=cid %>.getName();
 		            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
@@ -236,6 +230,9 @@
 			 
         }
 		else {
+			if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(tmpFileURL_<%=cid%>))){
+				throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+			}
 	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
 	        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
 	        java.io.InputStream is_<%=cid %> = null;
