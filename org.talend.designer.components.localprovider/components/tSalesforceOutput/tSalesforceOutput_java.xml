@@ -44,7 +44,10 @@
 	</CONNECTORS>
 
 	<PARAMETERS>
-
+        <PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
+			NUM_ROW="5" REPOSITORY_VALUE="SALESFORCE" />
+		
+	     
 		<PARAMETER
 	      NAME="USE_EXISTING_CONNECTION"
 	      FIELD="CHECK"
@@ -62,17 +65,17 @@
 	    />
 	    
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			REQUIRED="true" REPOSITORY_VALUE="ENDPOINT" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"https://www.salesforce.com/services/Soap/u/16.0"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			REQUIRED="true"  REPOSITORY_VALUE="USER_NAME" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="30"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			REQUIRED="true" REPOSITORY_VALUE="PASSWORD" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
 
@@ -80,6 +83,7 @@
 			NAME="TIMEOUT" 
 			FIELD="TEXT"
 			NUM_ROW="35"
+			REPOSITORY_VALUE="TIMEOUT"
 			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>60000</DEFAULT>
 		</PARAMETER>
@@ -98,7 +102,7 @@
 		</PARAMETER>
 
 		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50"
-			REQUIRED="true">
+			REQUIRED="true" REPOSITORY_VALUE="MODULENAME"> 
 			<ITEMS DEFAULT="Account">
 				<ITEM NAME="Account" VALUE="Account" />
 				<ITEM NAME="AccountContactRole"
@@ -215,7 +219,7 @@
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="70"
 			REQUIRED="true">
 
-			<TABLE IF="ACTION=='delete'">
+			<TABLE IF="(ACTION=='delete') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
@@ -223,7 +227,7 @@
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 			<TABLE
-				IF="(MODULENAME=='Account') and (ACTION=='insert')">
+				IF="(MODULENAME=='Account') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Type"
@@ -280,7 +284,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountContactRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='AccountContactRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -291,16 +295,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountPartner') and (ACTION=='insert')">
+				IF="(MODULENAME=='AccountPartner') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='AccountShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ActivityHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='ActivityHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='insert')">
+				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CallCenterId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -311,7 +315,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexClass') and (ACTION=='insert')">
+				IF="(MODULENAME=='ApexClass') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="15" NAME="NamespacePrefix"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -328,7 +332,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexTrigger') and (ACTION=='insert')">
+				IF="(MODULENAME=='ApexTrigger') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="15" NAME="NamespacePrefix"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -365,7 +369,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Approval') and (ACTION=='insert')">
+				IF="(MODULENAME=='Approval') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="OwnerId"
@@ -377,7 +381,7 @@
 				<COLUMN KEY="false" LENGTH="4000" NAME="ApproveComment"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -406,10 +410,10 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AssignmentRule') and (ACTION=='insert')">
+				IF="(MODULENAME=='AssignmentRule') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Attachment') and (ACTION=='insert')">
+				IF="(MODULENAME=='Attachment') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -424,7 +428,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BrandTemplate') and (ACTION=='insert')">
+				IF="(MODULENAME=='BrandTemplate') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsActive"
@@ -435,7 +439,7 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessHours') and (ACTION=='insert')">
+				IF="(MODULENAME=='BusinessHours') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="SundayStart"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="40" NAME="SundayEnd"
@@ -466,7 +470,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessProcess') and (ACTION=='insert')">
+				IF="(MODULENAME=='BusinessProcess') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Description"
@@ -475,14 +479,14 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CallCenter') and (ACTION=='insert')">
+				IF="(MODULENAME=='CallCenter') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="InternalName"
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Campaign') and (ACTION=='insert')">
+				IF="(MODULENAME=='Campaign') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Type"
@@ -511,7 +515,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMember') and (ACTION=='insert')">
+				IF="(MODULENAME=='CampaignMember') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CampaignId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="LeadId"
@@ -522,7 +526,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CampaignId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="765" NAME="Label"
@@ -534,7 +538,7 @@
 				<COLUMN KEY="false" LENGTH="0" NAME="HasResponded"
 					TYPE="id_Boolean" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Case') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Case') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -567,7 +571,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseComment') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseComment') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsPublished"
@@ -576,7 +580,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseContactRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseContactRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CasesId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -585,30 +589,30 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseSolution') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseSolution') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CaseId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="SolutionId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='CaseStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryData') and (ACTION=='insert')">
+				IF="(MODULENAME=='CategoryData') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="CategoryNodeId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="RelatedSobjectId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryNode') and (ACTION=='insert')">
+				IF="(MODULENAME=='CategoryNode') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="40" NAME="MasterLabel"
@@ -619,7 +623,7 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contact') and (ACTION=='insert')">
+				IF="(MODULENAME=='Contact') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -680,10 +684,10 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContactShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='ContactShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contract') and (ACTION=='insert')">
+				IF="(MODULENAME=='Contract') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40"
@@ -723,7 +727,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractContactRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='ContractContactRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ContractId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -734,13 +738,13 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='ContractHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='ContractStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Document') and (ACTION=='insert')">
+				IF="(MODULENAME=='Document') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="FolderId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -765,7 +769,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='insert')">
+				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="DocumentId"
@@ -774,10 +778,10 @@
 					TYPE="id_Integer" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='EmailStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailTemplate') and (ACTION=='insert')">
+				IF="(MODULENAME=='EmailTemplate') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="OwnerId"
@@ -803,7 +807,7 @@
 				<COLUMN KEY="false" LENGTH="32000" NAME="Body"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Event') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Event') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhatId"
@@ -858,12 +862,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EventAttendee') and (ACTION=='insert')">
+				IF="(MODULENAME=='EventAttendee') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='insert')">
+				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="AccessType"
@@ -874,9 +878,9 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ForecastShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='ForecastShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Group') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Group') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Type"
@@ -887,13 +891,13 @@
 					NAME="DoesSendEmailToMembers" TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='GroupMember') and (ACTION=='insert')">
+				IF="(MODULENAME=='GroupMember') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="GroupId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="UserOrGroupId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="FirstName"
@@ -946,16 +950,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='LeadHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='LeadShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='LeadStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='insert')">
+				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Description"
@@ -965,9 +969,9 @@
 				<COLUMN KEY="false" LENGTH="0" NAME="Body"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Name') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Name') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Note') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Note') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Title"
@@ -980,13 +984,13 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='insert')">
+				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpenActivity') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpenActivity') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Opportunity') and (ACTION=='insert')">
+				IF="(MODULENAME=='Opportunity') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsPrivate"
@@ -1022,7 +1026,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="OpportunityId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="CompetitorName"
@@ -1033,7 +1037,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="OpportunityId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1044,10 +1048,10 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="OpportunityId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="PricebookEntryId"
@@ -1064,19 +1068,19 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityShare') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityShare') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityStage') and (ACTION=='insert')">
+				IF="(MODULENAME=='OpportunityStage') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Organization') and (ACTION=='insert')">
+				IF="(MODULENAME=='Organization') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Partner') and (ACTION=='insert')">
+				IF="(MODULENAME=='Partner') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="OpportunityId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountFromId"
@@ -1089,12 +1093,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PartnerRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='PartnerRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Period') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Period') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Pricebook2') and (ACTION=='insert')">
+				IF="(MODULENAME=='Pricebook2') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsActive"
@@ -1103,7 +1107,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PricebookEntry') and (ACTION=='insert')">
+				IF="(MODULENAME=='PricebookEntry') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="Pricebook2Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="Product2Id"
@@ -1116,19 +1120,19 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstance') and (ACTION=='insert')">
+				IF="(MODULENAME=='ProcessInstance') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='insert')">
+				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='insert')">
+				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Product2') and (ACTION=='insert')">
+				IF="(MODULENAME=='Product2') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="ProductCode"
@@ -1141,17 +1145,17 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Profile') and (ACTION=='insert')">
+				IF="(MODULENAME=='Profile') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='QueueSobject') and (ACTION=='insert')">
+				IF="(MODULENAME=='QueueSobject') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="QueueId"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="SobjectType"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='RecordType') and (ACTION=='insert')">
+				IF="(MODULENAME=='RecordType') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Description"
@@ -1162,7 +1166,7 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Scontrol') and (ACTION=='insert')">
+				IF="(MODULENAME=='Scontrol') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="DeveloperName"
@@ -1185,7 +1189,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='insert')">
+				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="FirstName"
@@ -1206,7 +1210,7 @@
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Solution') and (ACTION=='insert')">
+				IF="(MODULENAME=='Solution') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="255" NAME="SolutionName"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsPublished"
@@ -1221,12 +1225,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionHistory') and (ACTION=='insert')">
+				IF="(MODULENAME=='SolutionHistory') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='SolutionStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Task') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='Task') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
 					TYPE="id_String" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhatId"
@@ -1258,12 +1262,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskPriority') and (ACTION=='insert')">
+				IF="(MODULENAME=='TaskPriority') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskStatus') and (ACTION=='insert')">
+				IF="(MODULENAME=='TaskStatus') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
-			<TABLE IF="(MODULENAME=='User') and (ACTION=='insert')">
+			<TABLE IF="(MODULENAME=='User') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="80" NAME="Username"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -1340,13 +1344,13 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserLicense') and (ACTION=='insert')">
+				IF="(MODULENAME=='UserLicense') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserPreference') and (ACTION=='insert')">
+				IF="(MODULENAME=='UserPreference') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserRole') and (ACTION=='insert')">
+				IF="(MODULENAME=='UserRole') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentRoleId"
@@ -1362,7 +1366,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='WebLink') and (ACTION=='insert')">
+				IF="(MODULENAME=='WebLink') and (ACTION=='insert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="false" LENGTH="40" NAME="PageOrSobjectType"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="240" NAME="Name"
@@ -1410,7 +1414,7 @@
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 			<TABLE
-				IF="(MODULENAME=='Account') and (ACTION=='update')">
+				IF="(MODULENAME=='Account') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -1469,7 +1473,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountContactRole') and (ACTION=='update')">
+				IF="(MODULENAME=='AccountContactRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1480,22 +1484,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountPartner') and (ACTION=='update')">
+				IF="(MODULENAME=='AccountPartner') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountShare') and (ACTION=='update')">
+				IF="(MODULENAME=='AccountShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ActivityHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='ActivityHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='update')">
+				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="CallCenterId"
@@ -1508,7 +1512,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexClass') and (ACTION=='update')">
+				IF="(MODULENAME=='ApexClass') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -1525,7 +1529,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexTrigger') and (ACTION=='update')">
+				IF="(MODULENAME=='ApexTrigger') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -1562,7 +1566,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Approval') and (ACTION=='update')">
+				IF="(MODULENAME=='Approval') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="OwnerId"
@@ -1574,7 +1578,7 @@
 				<COLUMN KEY="false" LENGTH="4000" NAME="ApproveComment"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1605,12 +1609,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AssignmentRule') and (ACTION=='update')">
+				IF="(MODULENAME=='AssignmentRule') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Attachment') and (ACTION=='update')">
+				IF="(MODULENAME=='Attachment') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -1625,7 +1629,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BrandTemplate') and (ACTION=='update')">
+				IF="(MODULENAME=='BrandTemplate') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -1638,7 +1642,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessHours') and (ACTION=='update')">
+				IF="(MODULENAME=='BusinessHours') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="SundayStart"
@@ -1671,7 +1675,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessProcess') and (ACTION=='update')">
+				IF="(MODULENAME=='BusinessProcess') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -1682,12 +1686,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CallCenter') and (ACTION=='update')">
+				IF="(MODULENAME=='CallCenter') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Campaign') and (ACTION=='update')">
+				IF="(MODULENAME=='Campaign') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -1718,14 +1722,14 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMember') and (ACTION=='update')">
+				IF="(MODULENAME=='CampaignMember') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Status"
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="SortOrder"
@@ -1735,7 +1739,7 @@
 				<COLUMN KEY="false" LENGTH="0" NAME="HasResponded"
 					TYPE="id_Boolean" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Case') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Case') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1770,7 +1774,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseComment') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseComment') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsPublished"
@@ -1779,7 +1783,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseContactRole') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseContactRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1788,27 +1792,27 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseShare') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseSolution') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseSolution') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='CaseStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryData') and (ACTION=='update')">
+				IF="(MODULENAME=='CategoryData') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="CategoryNodeId"
@@ -1817,7 +1821,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryNode') and (ACTION=='update')">
+				IF="(MODULENAME=='CategoryNode') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
@@ -1830,7 +1834,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contact') and (ACTION=='update')">
+				IF="(MODULENAME=='Contact') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -1893,12 +1897,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContactShare') and (ACTION=='update')">
+				IF="(MODULENAME=='ContactShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contract') and (ACTION=='update')">
+				IF="(MODULENAME=='Contract') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -1940,7 +1944,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractContactRole') and (ACTION=='update')">
+				IF="(MODULENAME=='ContractContactRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -1951,17 +1955,17 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='ContractHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='ContractStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Document') and (ACTION=='update')">
+				IF="(MODULENAME=='Document') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="FolderId"
@@ -1988,7 +1992,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='update')">
+				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
@@ -1999,16 +2003,16 @@
 					TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='EmailStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailTemplate') and (ACTION=='update')">
+				IF="(MODULENAME=='EmailTemplate') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Event') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Event') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
@@ -2063,16 +2067,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EventAttendee') and (ACTION=='update')">
+				IF="(MODULENAME=='EventAttendee') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='update')">
+				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -2083,11 +2087,11 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ForecastShare') and (ACTION=='update')">
+				IF="(MODULENAME=='ForecastShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Group') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Group') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -2098,11 +2102,11 @@
 					NAME="DoesSendEmailToMembers" TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='GroupMember') and (ACTION=='update')">
+				IF="(MODULENAME=='GroupMember') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -2155,22 +2159,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='LeadHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadShare') and (ACTION=='update')">
+				IF="(MODULENAME=='LeadShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='LeadStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='update')">
+				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -2178,11 +2182,11 @@
 				<COLUMN KEY="false" LENGTH="255" NAME="Description"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Name') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Name') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Note') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Note') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Title"
@@ -2195,17 +2199,17 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='update')">
+				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpenActivity') and (ACTION=='update')">
+				IF="(MODULENAME=='OpenActivity') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Opportunity') and (ACTION=='update')">
+				IF="(MODULENAME=='Opportunity') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -2242,7 +2246,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="CompetitorName"
@@ -2253,7 +2257,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -2264,12 +2268,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="Quantity"
@@ -2284,22 +2288,22 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityShare') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityShare') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityStage') and (ACTION=='update')">
+				IF="(MODULENAME=='OpportunityStage') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Organization') and (ACTION=='update')">
+				IF="(MODULENAME=='Organization') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -2340,21 +2344,21 @@
 					NAME="WebToCaseDefaultOrigin" TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Partner') and (ACTION=='update')">
+				IF="(MODULENAME=='Partner') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PartnerRole') and (ACTION=='update')">
+				IF="(MODULENAME=='PartnerRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Period') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Period') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Pricebook2') and (ACTION=='update')">
+				IF="(MODULENAME=='Pricebook2') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -2365,7 +2369,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PricebookEntry') and (ACTION=='update')">
+				IF="(MODULENAME=='PricebookEntry') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="UnitPrice"
@@ -2376,22 +2380,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstance') and (ACTION=='update')">
+				IF="(MODULENAME=='ProcessInstance') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='update')">
+				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='update')">
+				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ProcessInstanceId"
@@ -2402,7 +2406,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Product2') and (ACTION=='update')">
+				IF="(MODULENAME=='Product2') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -2417,7 +2421,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Profile') and (ACTION=='update')">
+				IF="(MODULENAME=='Profile') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -2508,12 +2512,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='QueueSobject') and (ACTION=='update')">
+				IF="(MODULENAME=='QueueSobject') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='RecordType') and (ACTION=='update')">
+				IF="(MODULENAME=='RecordType') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -2526,7 +2530,7 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Scontrol') and (ACTION=='update')">
+				IF="(MODULENAME=='Scontrol') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -2549,7 +2553,7 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='update')">
+				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -2570,7 +2574,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Solution') and (ACTION=='update')">
+				IF="(MODULENAME=='Solution') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="SolutionName"
@@ -2587,16 +2591,16 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionHistory') and (ACTION=='update')">
+				IF="(MODULENAME=='SolutionHistory') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='SolutionStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Task') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='Task') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
@@ -2630,16 +2634,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskPriority') and (ACTION=='update')">
+				IF="(MODULENAME=='TaskPriority') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskStatus') and (ACTION=='update')">
+				IF="(MODULENAME=='TaskStatus') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='User') and (ACTION=='update')">
+			<TABLE IF="(MODULENAME=='User') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Username"
@@ -2724,17 +2728,17 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserLicense') and (ACTION=='update')">
+				IF="(MODULENAME=='UserLicense') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserPreference') and (ACTION=='update')">
+				IF="(MODULENAME=='UserPreference') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserRole') and (ACTION=='update')">
+				IF="(MODULENAME=='UserRole') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -2751,7 +2755,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='WebLink') and (ACTION=='update')">
+				IF="(MODULENAME=='WebLink') and (ACTION=='update') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="240" NAME="Name"
@@ -2798,7 +2802,7 @@
 			<!-- UPSERT SCHEMAS -->
 
 			<TABLE
-				IF="(MODULENAME=='Account') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Account') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -2857,7 +2861,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountContactRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='AccountContactRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -2868,22 +2872,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountPartner') and (ACTION=='upsert')">
+				IF="(MODULENAME=='AccountPartner') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AccountShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='AccountShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ActivityHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ActivityHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='upsert')">
+				IF="(MODULENAME=='AdditionalNumber') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="CallCenterId"
@@ -2896,7 +2900,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexClass') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ApexClass') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -2913,7 +2917,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ApexTrigger') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ApexTrigger') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -2950,7 +2954,7 @@
 					NAME="LengthWithoutComments" TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Approval') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Approval') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="OwnerId"
@@ -2962,7 +2966,7 @@
 				<COLUMN KEY="false" LENGTH="4000" NAME="ApproveComment"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Asset') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -2993,12 +2997,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='AssignmentRule') and (ACTION=='upsert')">
+				IF="(MODULENAME=='AssignmentRule') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Attachment') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Attachment') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3013,7 +3017,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BrandTemplate') and (ACTION=='upsert')">
+				IF="(MODULENAME=='BrandTemplate') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -3026,7 +3030,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessHours') and (ACTION=='upsert')">
+				IF="(MODULENAME=='BusinessHours') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="SundayStart"
@@ -3059,7 +3063,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='BusinessProcess') and (ACTION=='upsert')">
+				IF="(MODULENAME=='BusinessProcess') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3070,12 +3074,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CallCenter') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CallCenter') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Campaign') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Campaign') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3106,14 +3110,14 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMember') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CampaignMember') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Status"
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CampaignMemberStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="SortOrder"
@@ -3123,7 +3127,7 @@
 				<COLUMN KEY="false" LENGTH="0" NAME="HasResponded"
 					TYPE="id_Boolean" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Case') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Case') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -3158,7 +3162,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseComment') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseComment') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="IsPublished"
@@ -3167,7 +3171,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseContactRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseContactRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -3176,27 +3180,27 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseSolution') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseSolution') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CaseStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CaseStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryData') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CategoryData') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="CategoryNodeId"
@@ -3205,7 +3209,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='CategoryNode') and (ACTION=='upsert')">
+				IF="(MODULENAME=='CategoryNode') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
@@ -3218,7 +3222,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contact') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Contact') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -3281,12 +3285,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContactShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ContactShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Contract') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Contract') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -3328,7 +3332,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractContactRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ContractContactRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -3339,17 +3343,17 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ContractHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ContractStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ContractStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Document') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Document') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="FolderId"
@@ -3376,7 +3380,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='upsert')">
+				IF="(MODULENAME=='DocumentAttachmentMap') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ParentId"
@@ -3387,16 +3391,16 @@
 					TYPE="id_Integer" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='EmailStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EmailTemplate') and (ACTION=='upsert')">
+				IF="(MODULENAME=='EmailTemplate') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Event') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Event') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
@@ -3451,16 +3455,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='EventAttendee') and (ACTION=='upsert')">
+				IF="(MODULENAME=='EventAttendee') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='upsert')">
+				IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Folder') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -3471,11 +3475,11 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ForecastShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ForecastShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Group') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Group') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -3486,11 +3490,11 @@
 					NAME="DoesSendEmailToMembers" TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='GroupMember') and (ACTION=='upsert')">
+				IF="(MODULENAME=='GroupMember') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Lead') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -3543,22 +3547,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='LeadHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='LeadShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='LeadStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='LeadStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='upsert')">
+				IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3566,11 +3570,11 @@
 				<COLUMN KEY="false" LENGTH="255" NAME="Description"
 					TYPE="id_String" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Name') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Name') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Note') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Note') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Title"
@@ -3583,17 +3587,17 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='upsert')">
+				IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpenActivity') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpenActivity') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Opportunity') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Opportunity') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="AccountId"
@@ -3630,7 +3634,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="CompetitorName"
@@ -3641,7 +3645,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityContactRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ContactId"
@@ -3652,12 +3656,12 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="Quantity"
@@ -3672,22 +3676,22 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityPartner') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityShare') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityShare') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='OpportunityStage') and (ACTION=='upsert')">
+				IF="(MODULENAME=='OpportunityStage') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Organization') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Organization') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3728,21 +3732,21 @@
 					NAME="WebToCaseDefaultOrigin" TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Partner') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Partner') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PartnerRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='PartnerRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Period') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Period') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Pricebook2') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Pricebook2') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -3753,7 +3757,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='PricebookEntry') and (ACTION=='upsert')">
+				IF="(MODULENAME=='PricebookEntry') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="0" NAME="UnitPrice"
@@ -3764,22 +3768,22 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstance') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ProcessInstance') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='upsert')">
+				IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="ProcessInstanceId"
@@ -3790,7 +3794,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Product2') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Product2') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -3805,7 +3809,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Profile') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Profile') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="Name"
@@ -3896,12 +3900,12 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='QueueSobject') and (ACTION=='upsert')">
+				IF="(MODULENAME=='QueueSobject') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='RecordType') and (ACTION=='upsert')">
+				IF="(MODULENAME=='RecordType') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3914,7 +3918,7 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Scontrol') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Scontrol') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Name"
@@ -3937,7 +3941,7 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='upsert')">
+				IF="(MODULENAME=='SelfServiceUser') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="LastName"
@@ -3958,7 +3962,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='Solution') and (ACTION=='upsert')">
+				IF="(MODULENAME=='Solution') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="255" NAME="SolutionName"
@@ -3975,16 +3979,16 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionHistory') and (ACTION=='upsert')">
+				IF="(MODULENAME=='SolutionHistory') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='SolutionStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='SolutionStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='Task') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='Task') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="18" NAME="WhoId"
@@ -4018,16 +4022,16 @@
 					TYPE="id_Boolean" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskPriority') and (ACTION=='upsert')">
+				IF="(MODULENAME=='TaskPriority') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='TaskStatus') and (ACTION=='upsert')">
+				IF="(MODULENAME=='TaskStatus') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
-			<TABLE IF="(MODULENAME=='User') and (ACTION=='upsert')">
+			<TABLE IF="(MODULENAME=='User') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="80" NAME="Username"
@@ -4112,17 +4116,17 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserLicense') and (ACTION=='upsert')">
+				IF="(MODULENAME=='UserLicense') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserPreference') and (ACTION=='upsert')">
+				IF="(MODULENAME=='UserPreference') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='UserRole') and (ACTION=='upsert')">
+				IF="(MODULENAME=='UserRole') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="40" NAME="Name"
@@ -4139,7 +4143,7 @@
 					TYPE="id_String" />
 			</TABLE>
 			<TABLE
-				IF="(MODULENAME=='WebLink') and (ACTION=='upsert')">
+				IF="(MODULENAME=='WebLink') and (ACTION=='upsert') and (PROPERTY=='BUILT_IN')">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
 					TYPE="id_String" NULLABLE="false" READONLY="true" />
 				<COLUMN KEY="false" LENGTH="240" NAME="Name"
@@ -4182,7 +4186,7 @@
 					NAME="RequireRowSelection" TYPE="id_Boolean" />
 			</TABLE>
 			
-			<TABLE IF="MODULENAME=='CustomModule'">
+			<TABLE IF="(MODULENAME=='CustomModule') and (PROPERTY=='BUILT_IN')">
 			</TABLE>
 		</PARAMETER>
 
