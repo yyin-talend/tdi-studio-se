@@ -318,9 +318,26 @@ public final class Expression {
                             || param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
                             || param.getField().equals(EParameterFieldType.QUERYSTORE_TYPE)
                             || param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+
                         boolean child = false;
+                        Map<String, IElementParameter> childParameters = param.getChildParameters();
+
+                        if ("PROPERTY".equals(param.getName())) {
+                            if (childParameters != null) {
+                                IElementParameter iElementParameter = childParameters.get("PROPERTY_TYPE");
+                                if (iElementParameter != null) {
+                                    Object value2 = iElementParameter.getValue();
+                                    if (variableValue.equals(value2.toString())) {
+                                        child = true;
+                                        found = true;
+                                        value = value2.toString();
+                                    }
+                                }
+                            }
+                        }
+
                         if (varNames.length > 1 && varNames[1] != null) {
-                            IElementParameter tempParam = param.getChildParameters().get(varNames[1]);
+                            IElementParameter tempParam = childParameters.get(varNames[1]);
                             if (tempParam != null) {
                                 value = tempParam.getValue();
                                 if (value.equals(variableValue)) {

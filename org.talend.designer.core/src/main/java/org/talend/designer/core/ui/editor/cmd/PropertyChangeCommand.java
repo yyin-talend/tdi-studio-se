@@ -428,17 +428,32 @@ public class PropertyChangeCommand extends Command {
                     IMetadataTable metadataTable = null;
                     IMetadataTable newMetadataTable = null;
                     if (node.getComponent() != null && "tSalesforceOutput".equals(node.getComponent().getName())) {
-                        metadataTable = node.getMetadataFromConnector(testedParam.getContext());
-                        testedParam.setValueToDefault(node.getElementParameters());
-                        IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
-                        // for bug 14473
-                        // newMetadataTable = defaultMetadataTable;
-
-                        if (testedParam.getName().equals("SCHEMA")) {
-                            newMetadataTable = defaultMetadataTable;
+                        // for feature 0014652
+                        boolean isBuiltIn = false;
+                        final IElementParameter elementParameter = node.getElementParameter(EParameterName.PROPERTY_TYPE
+                                .getName());
+                        if (elementParameter != null) {
+                            Object value = elementParameter.getValue();
+                            if ("BUILT_IN".equals(value.toString())) {//$NON-NLS-1$
+                                isBuiltIn = true;
+                            }
                         }
+                        if (isBuiltIn) {
+                            metadataTable = node.getMetadataFromConnector(testedParam.getContext());
+                            testedParam.setValueToDefault(node.getElementParameters());
+                            IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
+                            if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
+                                newMetadataTable = defaultMetadataTable;
+                            }
 
-                        if (testedParam.getName().equals("SCHEMA_FLOW")) {
+                        } else {
+                            metadataTable = node.getMetadataFromConnector(testedParam.getContext());
+                            if (testedParam.getName().equals("SCHEMA")) {//$NON-NLS-1$
+                                newMetadataTable = metadataTable;
+                            }
+                        }
+                        IMetadataTable defaultMetadataTable = (IMetadataTable) testedParam.getValue();
+                        if (testedParam.getName().equals("SCHEMA_FLOW")) {//$NON-NLS-1$
                             IElementParameter param = node.getElementParameter(EParameterName.SCHEMA.getName());
                             IMetadataTable meta = node.getMetadataFromConnector(param.getContext());
                             newMetadataTable = meta.clone(true);
@@ -458,7 +473,6 @@ public class PropertyChangeCommand extends Command {
                                 newMetadataTable.getListColumns().addAll(toAdd);
                             }
                         }
-
                     } else {
                         metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                         testedParam.setValueToDefault(node.getElementParameters());
