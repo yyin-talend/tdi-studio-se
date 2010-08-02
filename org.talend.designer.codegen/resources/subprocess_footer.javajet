@@ -44,10 +44,9 @@
 								this.errorCode = localErrorCode;
 							}
 						}					
-			            pool.setErrorThread(this);
+			            //pool.setErrorThread(this, new TalendException(e, currentComponent, globalMap));
+			            pool.setErrorThread(this,e);
 			            pool.stopAllThreads();
-			            
-			            new TalendException(e, currentComponent, globalMap).printStackTrace();					
 					}
 					this.isRunning = false;
 					
