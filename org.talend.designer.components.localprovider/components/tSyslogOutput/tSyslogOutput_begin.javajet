@@ -39,6 +39,10 @@ if (table != null){
     smu_<%=cid%>.setLocale(<%=locale%>);
     smu_<%=cid%>.initWrite();
   <%
+  } else {
+  %>
+    System.err.println("make sure number of input columns greater than or equal to 5");
+  <%
   }
 }
 %>

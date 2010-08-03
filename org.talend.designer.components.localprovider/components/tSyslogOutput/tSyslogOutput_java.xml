@@ -51,6 +51,10 @@
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/syslog.log"</DEFAULT>
     </PARAMETER>
     
+    <PARAMETER NAME="NOTICE" FIELD="LABEL" NUM_ROW="30" REQUIRED="true">
+      <DEFAULT>Notice: make sure number of input columns greater than or equal to 5</DEFAULT>
+    </PARAMETER>
+    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
