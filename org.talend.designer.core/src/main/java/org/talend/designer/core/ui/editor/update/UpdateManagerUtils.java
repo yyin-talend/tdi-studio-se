@@ -182,6 +182,7 @@ public final class UpdateManagerUtils {
             }
 
         };
+        repositoryWorkUnit.setAvoidUnloadResources(true);
         ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
         return repositoryWorkUnit.getResult();
     }
