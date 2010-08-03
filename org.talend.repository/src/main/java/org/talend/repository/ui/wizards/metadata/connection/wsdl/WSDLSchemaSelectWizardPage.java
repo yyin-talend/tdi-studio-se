@@ -24,9 +24,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.IWebService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -53,7 +55,7 @@ public class WSDLSchemaSelectWizardPage extends WSDLSchemaWizardPage {
     private WebServiceSchemaWizardPage webServiceStepPage2;
 
     private WebServiceSchemaWizardPage webServiceStepPage3;
-
+    private IWebService webService= CorePlugin.getDefault().getWebService();;
     private boolean isSinglePageOnly;
 
     private boolean isRepositoryObjectEditable;
@@ -152,6 +154,7 @@ public class WSDLSchemaSelectWizardPage extends WSDLSchemaWizardPage {
                 wsdlSchemaWizardPage2.setPageComplete(!creation);
                 wsdlSchemaWizardPage2.setWizard(getWizard());
             } else {
+                
                 webServiceStepPage1 = new WebServiceSchemaWizardPage(creation, 2, connectionItem, isRepositoryObjectEditable,
                         null, contextModeManager);
                 webServiceStepPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 "
@@ -167,7 +170,7 @@ public class WSDLSchemaSelectWizardPage extends WSDLSchemaWizardPage {
                         + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS);
                 webServiceStepPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
                 wizardPages.add(webServiceStepPage2);
-                webServiceStepPage2.setPageComplete(creation);
+                webServiceStepPage2.setPageComplete(!creation);
                 webServiceStepPage2.setWizard(getWizard());
 
             }

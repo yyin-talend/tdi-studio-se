@@ -55,7 +55,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
-import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -98,13 +97,13 @@ public class WebServiceStep2Form extends AbstractWSDLSchemaStepForm {
      * @param Composite
      */
     public WebServiceStep2Form(Composite parent, ConnectionItem connectionItem) {
-        this(parent, connectionItem, null);
+        this(parent, connectionItem, null, null);
     }
 
-    public WebServiceStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
+    public WebServiceStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager,
+            MetadataTable metadataTable) {
 
-        super(parent, connectionItem, (MetadataTable) (ConnectionHelper.getTables(connectionItem.getConnection()).toArray(
-                new MetadataTable[0])[0]), null);
+        super(parent, connectionItem, metadataTable, null);
         setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();

@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -27,7 +30,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * DOC gldu class global comment. Detailled comment
  */
 public class WebServiceSchemaWizardPage extends WSDLSchemaWizardPage {
 
@@ -68,24 +71,32 @@ public class WebServiceSchemaWizardPage extends WSDLSchemaWizardPage {
                     GenericPackage.class);
             if (g != null) { // hywang
                 g.getOwnedElement().add(inPutMetadataTable);
+                ConnectionHelper.getTables(connection).add(inPutMetadataTable);
             } else {
                 GenericPackage gpkg = ConnectionFactory.eINSTANCE.createGenericPackage();
                 PackageHelper.addMetadataTable(inPutMetadataTable, gpkg);
                 ConnectionHelper.addPackage(gpkg, connection);
-
             }
             // connection.getTables().add(inPutMetadataTable);
+            MetadataTable metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
+            metadataTable.setLabel("OutPut");
         }
-        MetadataTable metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
-        metadataTable.setLabel("OutPut");
+
         switch (step) {
         case 2:
             currentComposite = new WebServiceStep1Form(parent, connectionItem, null, new String[] {}, contextModeManager);
             break;
         case 3:
-            MetadataTable metadataTable2 = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[1];
-
-            currentComposite = new WebServiceStep2Form(parent, connectionItem, contextModeManager);
+            MetadataTable metadataTable2 = null;
+            Set<MetadataTable> tables = ConnectionHelper.getTables(connection);
+            Iterator<MetadataTable> it = tables.iterator();
+            while (it.hasNext()) {
+                MetadataTable table = (MetadataTable) it.next();
+                if (table.getLabel().equals("OutPut")) {
+                    metadataTable2 = table;
+                }
+            }
+            currentComposite = new WebServiceStep2Form(parent, connectionItem, contextModeManager, metadataTable2);
             break;
         default:
             System.out.println("error...");

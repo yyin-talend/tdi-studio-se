@@ -548,9 +548,9 @@ public class ShadowProcessHelper {
                 List para = connection.getParameterValue();
                 for (int i = 0; i < para.size(); i++) {
                     WSDLParameter parameter = (WSDLParameter) para.get(i);
-                    if (parameter.getElement() != null) {
+                    if (parameter.getExpression() != null) {
                         IMetadataColumn iMetadataColumn = new MetadataColumn();
-                        iMetadataColumn.setLabel(parameter.getElement());
+                        iMetadataColumn.setLabel(parameter.getExpression());
                         iMetadataColumn.setKey(false);
                         iMetadataColumn.setLength(0);
                         iMetadataColumn.setNullable(false);
@@ -560,7 +560,7 @@ public class ShadowProcessHelper {
                         schema.add(iMetadataColumn);
                     }
                 }
-                table.setTableName("tWebService");
+                table.setTableName("tWebServiceInput");
                 table.setListColumns(schema);
                 tableSchema.add(table);
             }
@@ -588,8 +588,12 @@ public class ShadowProcessHelper {
 
         processDescription.setSchema(tableSchema);
         WSDLSchemaBean bean = new WSDLSchemaBean();
-        // TODO: added properties here...
-        bean.setWslUrl(TalendTextUtils.addQuotes(connection.getWSDL()));
+        // TODO: added properties here..
+        if (connection.isIsInputModel()) {
+            bean.setWslUrl(TalendTextUtils.addQuotes(connection.getWSDL()));
+        } else {
+            bean.setWslUrl(connection.getWSDL());
+        }
         bean.setEndpointURI(TalendTextUtils.addQuotes(connection.getEndpointURI()));
         bean.setMethod(TalendTextUtils.addQuotes(connection.getMethodName()));
         bean.setNeedAuth(connection.isNeedAuth());
