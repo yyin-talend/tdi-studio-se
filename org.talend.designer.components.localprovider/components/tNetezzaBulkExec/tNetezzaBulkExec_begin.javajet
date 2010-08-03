@@ -36,6 +36,8 @@ String timeDelim = ElementParameterParser.getValue(node,"__TIME_DELIM__");
 String enableLogging = ElementParameterParser.getValue(node,"__ENABLE_LOGGING__");
 String logDir = ElementParameterParser.getValue(node,"__LOG_DIR__");
 String additionalOptions = ElementParameterParser.getValue(node,"__ADDITIONAL_OPTIONS__");
+boolean setEncoding = "true".equals(ElementParameterParser.getValue(node,"__SET_ENCODING__"));
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 boolean convertToUppercase = false; // not active this function
 boolean useExistingConnection= false;// not active this function
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -73,7 +75,7 @@ String skiprows = ElementParameterParser.getValue(node, "__SKIPROWS__");
 			+ " ESCAPECHAR '"+<%= escapeChar %>+"' "
 			<%
 			}%>
-			+ "	MAXERRORS <%=maxerrors%> SKIPROWS <%=skiprows%> LOGDIR '')";
+			+ "	MAXERRORS <%=maxerrors%> SKIPROWS <%=skiprows%> LOGDIR '' <%=setEncoding? "encoding '" + encoding +"'":""%>)";
 
 java.lang.Class.forName("org.netezza.Driver").newInstance();
 java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:netezza://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
