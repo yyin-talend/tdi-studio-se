@@ -69,6 +69,8 @@ public class StatsAndLogsManager {
 
     public static final String ENCODING_TYPE_CUSTOM = "CUSTOM"; //$NON-NLS-1$
 
+    public static final String CONNECTION_UID = "connectionStatsLogs";//$NON-NLS-1$
+
     public static boolean isStatsAndLogsActivated(IProcess process) {
         String dbOutput = null;
         boolean dbFlag = ((Boolean) process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).getValue())
@@ -140,7 +142,7 @@ public class StatsAndLogsManager {
             basePath = basePath.replace("\\", "/") + "+ \"/\" +"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         DataNode connectionNode = null;
-        String connectionUID = "connectionStatsLogs";//$NON-NLS-1$
+        //        String connectionUID = "connectionStatsLogs";//$NON-NLS-1$
 
         DataNode commitNode = null;
         String connectionUID2;
@@ -170,11 +172,11 @@ public class StatsAndLogsManager {
                         isNotInformixDB = false;
                     }
                     if (commitComponent != null) {
-                        connectionUID2 = connectionUID + "_Commit";//$NON-NLS-1$ 
+                        connectionUID2 = CONNECTION_UID + "_Commit";//$NON-NLS-1$ 
                         commitNode = new DataNode(commitComponent, connectionUID2);
                         commitNode.setSubProcessStart(true);
                         commitNode.setActivate(true);
-                        commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
+                        commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(CONNECTION_UID);
                         IElementParameter elementParameter = commitNode.getElementParameter("CLOSE");
                         if (elementParameter != null) {
                             elementParameter.setValue(Boolean.FALSE); //$NON-NLS-1$
@@ -199,9 +201,9 @@ public class StatsAndLogsManager {
             }
             if (dbFlag) {
                 if (commitNode != null && isNotInformixDB) {
-                    connectionNode = addConnection(connectionNode, process, connectionUID, logsNode, nodeList, commitNode);
+                    connectionNode = addConnection(connectionNode, process, CONNECTION_UID, logsNode, nodeList, commitNode);
                 } else {
-                    useNoConnectionComponentDB(logsNode, process, connectionUID);
+                    useNoConnectionComponentDB(logsNode, process, CONNECTION_UID);
                 }
                 logsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                         process.getElementParameter(EParameterName.TABLE_LOGS.getName()).getValue());
@@ -246,9 +248,9 @@ public class StatsAndLogsManager {
             }
             if (dbFlag) {
                 if (commitNode != null && isNotInformixDB) {
-                    connectionNode = addConnection(connectionNode, process, connectionUID, statsNode, nodeList, commitNode);
+                    connectionNode = addConnection(connectionNode, process, CONNECTION_UID, statsNode, nodeList, commitNode);
                 } else {
-                    useNoConnectionComponentDB(statsNode, process, connectionUID);
+                    useNoConnectionComponentDB(statsNode, process, CONNECTION_UID);
                 }
                 statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                         process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
@@ -286,9 +288,9 @@ public class StatsAndLogsManager {
             }
             if (dbFlag) {
                 if (commitNode != null && isNotInformixDB) {
-                    connectionNode = addConnection(connectionNode, process, connectionUID, meterNode, nodeList, commitNode);
+                    connectionNode = addConnection(connectionNode, process, CONNECTION_UID, meterNode, nodeList, commitNode);
                 } else {
-                    useNoConnectionComponentDB(meterNode, process, connectionUID);
+                    useNoConnectionComponentDB(meterNode, process, CONNECTION_UID);
                 }
                 meterNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                         process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());

@@ -45,16 +45,15 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -246,11 +245,15 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             if (jobletService != null) {
                 nodeList = jobletService.getConnNodesForInputTrigger(currentNode, param);
             } else {
-                IProcess process = ((Node) elem).getProcess();
-                if (process instanceof Process) {
-                    nodeList = ((Process) process).getNodesOfType(param.getFilter(), true);
-                } else {
-                    nodeList = (List<INode>) process.getNodesOfType(param.getFilter());
+                List<INode> list = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
+                nodeList = new ArrayList<INode>();
+                if (list != null) {
+                    for (INode datanode : list) {
+                        if (datanode.getUniqueName() != null
+                                && !datanode.getUniqueName().equals(StatsAndLogsManager.CONNECTION_UID)) {
+                            nodeList.add(datanode);
+                        }
+                    }
                 }
             }
             List<String> componentDisplayNames = new ArrayList<String>();
