@@ -14,8 +14,12 @@ package org.talend.repository.ui.dialog;
 
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -30,7 +34,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.general.Project;
+import org.talend.core.ui.ISVNProviderService;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.URIHelper;
 import org.talend.repository.ui.actions.ExportProjectSettings;
 import org.talend.repository.ui.actions.ImportProjectSettings;
 
@@ -55,6 +68,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
      */
     public ProjectSettingsPreferenceDialog(Shell parentShell, PreferenceManager manager) {
         super(parentShell, manager);
+        unloadProject();
     }
 
     @Override
@@ -70,6 +84,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         switch (buttonId) {
         case IDialogConstants.OK_ID: {
             okPressed();
+            commiteProjectSettings();
             return;
         }
         case IDialogConstants.CANCEL_ID: {
@@ -82,12 +97,35 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         }
         case IMPORT: {
             importPressed();
+            commiteProjectSettings();
             return;
         }
         case EXPORT: {
             exportPressed();
             return;
         }
+        }
+    }
+
+    private void commiteProjectSettings() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        String projectLabel = currentProject.getTechnicalLabel();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+
+        if (PluginChecker.isTIS()) {
+            if (PluginChecker.isSVNProviderPluginLoaded() && !currentProject.isLocal()) {
+                ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
+                        ISVNProviderService.class);
+                try {
+                    boolean isSvnProject = service.isSVNProject(currentProject);
+                    if (isSvnProject) {
+                        service.svnEclipseHandlerCommit(eclipseProject, currentProject);
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
         }
     }
 
@@ -108,11 +146,6 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
             showErrorMessage();
         }
 
-        // IPreferenceNode[] rootSubNodes = this.getPreferenceManager().getRootSubNodes();
-        // for (IPreferenceNode node : rootSubNodes) {
-        // refresh(node);
-        // }
-
         // close the projec settings and open it again to get new settings
         if (!error) {
             close();
@@ -120,18 +153,6 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
             dialog.open();
         }
     }
-
-    // private void refresh(IPreferenceNode rootSubNodes) {
-    // if (rootSubNodes != null) {
-    // IPreferencePage page = rootSubNodes.getPage();
-    // if (page instanceof ProjectSettingPage) {
-    // ((ProjectSettingPage) page).refresh();
-    // }
-    // for (IPreferenceNode child : rootSubNodes.getSubNodes()) {
-    // refresh(child);
-    // }
-    // }
-    // }
 
     private void exportPressed() {
         saveCurrentSettings();
@@ -206,6 +227,31 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     void clearSelectedNode() {
         setSelectedNodePreference(null);
+    }
+
+    private void unloadProject() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        String projectLabel = currentProject.getTechnicalLabel();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+
+        if (PluginChecker.isTIS()) {
+            if (PluginChecker.isSVNProviderPluginLoaded() && !currentProject.isLocal()) {
+                ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
+                        ISVNProviderService.class);
+
+                try {
+                    boolean isSvnProject = service.isSVNProject(currentProject);
+                    if (isSvnProject) {
+                        URI uri = URIHelper.convert(eclipseProject.getFullPath().append("talend.project"));
+                        ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider().reloadProject(currentProject);
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
+
     }
 
 }

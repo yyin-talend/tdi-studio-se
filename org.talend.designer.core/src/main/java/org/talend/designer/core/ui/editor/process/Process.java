@@ -223,6 +223,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         updateManager = new ProcessUpdateManager(this);
         createProcessParameters();
         init();
+        //
     }
 
     public void updateProperties() {
@@ -1015,7 +1016,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         init();
 
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-
         ProcessType processType = createProcessType(fileFact);
 
         ParametersType params = fileFact.createParametersType();
@@ -1023,7 +1023,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
                 processType);
-        saveRoutinesDependencies(fileFact, processType);
+        saveRoutinesDependencies(getProcessType(), processType);
 
         EList nList = processType.getNode();
         EList cList = processType.getConnection();
@@ -1156,19 +1156,24 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void saveRoutinesDependencies(TalendFileFactory fileFact, ProcessType process) {
-        process.getRoutinesDependencies().clear();
-        for (RoutineItemRecord record : routinesDependencies) {
-            ItemInforType itemInforType = fileFact.createItemInforType();
-            itemInforType.setSystem(record.isSystem());
-            if (record.isSystem()) {
-                itemInforType.setIdOrName(record.getLabel());
-            } else {
-                itemInforType.setIdOrName(record.getId());
-            }
-            process.getRoutinesDependencies().add(itemInforType);
-        }
+    private void saveRoutinesDependencies(ProcessType oldProcess, ProcessType newprocess) {
+        newprocess.getRoutinesDependencies().addAll(oldProcess.getRoutinesDependencies());
+        loadRoutinesDependencies(newprocess);
     }
+
+    // private void saveRoutinesDependencies(TalendFileFactory fileFact, ProcessType process) {
+    // process.getRoutinesDependencies().clear();
+    // for (RoutineItemRecord record : routinesDependencies) {
+    // ItemInforType itemInforType = fileFact.createItemInforType();
+    // itemInforType.setSystem(record.isSystem());
+    // if (record.isSystem()) {
+    // itemInforType.setIdOrName(record.getLabel());
+    // } else {
+    // itemInforType.setIdOrName(record.getId());
+    // }
+    // process.getRoutinesDependencies().add(itemInforType);
+    // }
+    // }
 
     /**
      * DOC qzhang Comment method "createNodeType".

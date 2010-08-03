@@ -972,4 +972,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public FolderItem getFolderItem(Project project, ERepositoryObjectType itemType, IPath path) {
         return getFolderHelper(project.getEmfProject()).getFolder(itemType.getFolderName(itemType) + "/" + path);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#reloadProject(org.talend.core.model.general.Project)
+     */
+    public void reloadProject(Project project) throws PersistenceException {
+        // TODO Auto-generated method stub
+
+    }
 }

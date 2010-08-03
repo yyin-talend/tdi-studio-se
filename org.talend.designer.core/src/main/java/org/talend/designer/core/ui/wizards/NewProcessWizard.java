@@ -112,6 +112,7 @@ public class NewProcessWizard extends Wizard {
             if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_USER_ROUTINES)) {
                 routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
             }
+
             processItem.setProcess(process);
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
 

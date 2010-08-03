@@ -383,4 +383,6 @@ public interface IRepositoryFactory {
     public void unloadResources(String uriString);
 
     public FolderItem getFolderItem(Project project, ERepositoryObjectType itemType, IPath path);
+
+    public void reloadProject(Project project) throws PersistenceException;
 }
