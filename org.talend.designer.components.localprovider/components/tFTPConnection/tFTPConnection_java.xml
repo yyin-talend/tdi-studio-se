@@ -171,6 +171,7 @@
      <IMPORTS>
        <IMPORT NAME="Java-FTP" MODULE="edtftpj.jar" REQUIRED="true" />
        <IMPORT NAME="Java-SFTP" MODULE="jsch-0.1.36.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-FTPS" MODULE="ftp4j-1.5.1.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
