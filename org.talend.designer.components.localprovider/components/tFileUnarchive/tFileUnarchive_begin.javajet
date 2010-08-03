@@ -16,6 +16,7 @@
 	boolean extractPath = ("true").equals(ElementParameterParser.getValue(node, "__EXTRACTPATH__"));
 	
 	boolean isArchiveValid = ("true").equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
+	boolean isPasswordNeeded = ("true").equals(ElementParameterParser.getValue(node, "__CHECKPASSWORD__"));
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 %>      
@@ -212,7 +213,9 @@
 		zip_<%=cid %>.close();
 	}else { 
 		//the others all use the ZIP to decompression
-		 if(!<%=password%>.equals("") ){
+		 if(<%=isPasswordNeeded%> ){
+			 if( !<%=password%>.equals("") ){
+		 
 			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
 			 target_<%=cid%> = 
 				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
@@ -220,6 +223,9 @@
 			 
 			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
 		     java.util.zip.ZipEntry entry_<%=cid%> ; 
+		     if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipEntryValid(input_<%=cid%>)){
+		    	 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+		     }
 		     while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
 		            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
 		    	    
@@ -227,7 +233,10 @@
 		            String filename_<%=cid %> =  entry_<%=cid %>.getName();
 		            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
 		     }
-			 
+			}
+			else {
+				throw new RuntimeException ("Please enter the password and try again.." );
+			}
         }
 		else {
 			if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(tmpFileURL_<%=cid%>))){
