@@ -219,6 +219,46 @@ public abstract class JobScriptsManager {
      * @param codeOptions TODO
      * @return
      */
+    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment,
+            int statisticPort, int tracePort, String... codeOptions) {
+
+        List<URL> list = new ArrayList<URL>();
+        if (!needLauncher) {
+            return list;
+        }
+        String processId = process.getProperty().getId();
+        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processId, contextName, process.getProperty().getVersion(),
+                statisticPort, tracePort, codeOptions);
+        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
+                statisticPort, tracePort, codeOptions);
+
+        String tmpFold = getTmpFolder();
+
+        if (environment.equals(ALL_ENVIRONMENTS)) {
+            createLauncherFile(process, list, unixCmd, UNIX_LAUNCHER, tmpFold);
+            createLauncherFile(process, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
+        } else if (environment.equals(UNIX_ENVIRONMENT)) {
+            createLauncherFile(process, list, unixCmd, UNIX_LAUNCHER, tmpFold);
+        } else if (environment.equals(WINDOWS_ENVIRONMENT)) {
+            createLauncherFile(process, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
+        }
+
+        return list;
+    }
+
+    /**
+     * DOC zli Comment method "getLauncher".
+     * 
+     * @param needLauncher
+     * @param setParameterValues used for context_param to export
+     * @param process
+     * @param contextName
+     * @param environment
+     * @param statisticPort
+     * @param tracePort
+     * @param codeOptions
+     * @return
+     */
     protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, ProcessItem process, String contextName,
             String environment, int statisticPort, int tracePort, String... codeOptions) {
 
@@ -232,7 +272,7 @@ public abstract class JobScriptsManager {
         String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
                 statisticPort, tracePort, codeOptions);
         String contextParameter = CTX_PARAMETER_ARG;
-        String contextParameterValues = "";
+        String contextParameterValues = "";//$NON-NLS-1$
         if (setParameterValues) {
             List<ContextParameterTypeImpl> jobContextValues = getJobContextValues(process);
 
@@ -242,11 +282,11 @@ public abstract class JobScriptsManager {
                 String value = contextParameterType.getValue();
                 // name = TalendTextUtils.removeQuotes(name);
                 // value = TalendTextUtils.removeQuotes(value);
-                if (value != null && !"".equals(value.trim())) {
-                    contextParameterValues += " " + contextParameter + " " + name + "=" + value;
+                if (value != null && !"".equals(value.trim())) {//$NON-NLS-1$
+                    contextParameterValues += " " + contextParameter + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                 }
             }
-            contextParameterValues = contextParameterValues + " ";
+            contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
             if (windowsCmd.contains(CMDFORWIN) && windowsCmd.indexOf(CMDFORWIN) > 2) {
                 windowsCmd = windowsCmd.substring(0, windowsCmd.indexOf(CMDFORWIN) - 1) + contextParameterValues + CMDFORWIN;
             }
