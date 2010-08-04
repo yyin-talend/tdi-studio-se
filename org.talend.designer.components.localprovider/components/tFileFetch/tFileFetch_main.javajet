@@ -32,6 +32,9 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
   String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
   String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
   boolean redirect = "true".equals(ElementParameterParser.getValue(node, "__REDIRECT__"));
+  boolean saveCookie = "true".equals(ElementParameterParser.getValue(node, "__SAVE_COOKIE__"));
+  boolean readCookie = "true".equals(ElementParameterParser.getValue(node, "__READ_COOKIE__"));
+  String cookieDir = ElementParameterParser.getValue(node,"__COOKIE_DIR__");
 
   boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
   String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
@@ -110,9 +113,40 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
       org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https", myhttps);
     }
   <%}%>
-  org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();  
+  org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
   client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
-  
+<%if(readCookie){%>
+	List<org.apache.commons.httpclient.Cookie> cookieList = null;
+	java.io.FileInputStream fis = null;
+	java.io.ObjectInputStream is = null;
+    try {
+	    cookieList = new java.util.ArrayList<org.apache.commons.httpclient.Cookie>();
+        fis = new java.io.FileInputStream(new java.io.File(<%=cookieDir%>));
+        is = new java.io.ObjectInputStream(fis);
+        Object obj = is.readObject();
+        while (obj != null) {
+            cookieList.add((org.apache.commons.httpclient.Cookie) obj);
+            try {
+                obj = is.readObject();
+            } catch (java.io.IOException e) {
+                obj = null;
+            }
+        }
+    } catch (java.io.FileNotFoundException e1) {
+        e1.printStackTrace();
+    } catch (java.io.IOException e) {
+        e.printStackTrace();
+    } catch (java.lang.ClassNotFoundException e) {
+        e.printStackTrace();
+    } finally {
+    	if(is != null)
+        	is.close();
+        if(fis != null)
+        	fis.close();
+    }
+    if(cookieList != null)
+    	client_<%=cid %>.getState().addCookies(cookieList.toArray(new org.apache.commons.httpclient.Cookie[0]));
+<%}%>
   <%if(useProxy){%> 
     client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
     <%if(useProxyNTLM){%>
@@ -136,84 +170,121 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
     <%}
   }%>
 
-  <%if(post){%>
-    org.apache.commons.httpclient.methods.PostMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);
-    <%
-    List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");	
-    List<String> varPartList = new ArrayList<String>();	//common string parameter part	
-    int i = 0;
-    for(Map<String, String> param : commonParams){
-      i++;
-      String name = param.get("COMMON_PARAMS_NAME");
-      String value = param.get("COMMON_PARAMS_VALUE");
-      varPartList.add("common_" + i + "_" + cid);
-      %>
-      org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
-      <%
-    }
+<%
+	if(post){
+%>
+		org.apache.commons.httpclient.methods.PostMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);
+<%
+	    List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");	
+	    List<String> varPartList = new ArrayList<String>();	//common string parameter part	
+	    int i = 0;
+	    for(Map<String, String> param : commonParams){
+			i++;
+			String name = param.get("COMMON_PARAMS_NAME");
+			String value = param.get("COMMON_PARAMS_VALUE");
+			varPartList.add("common_" + i + "_" + cid);
+%>
+			org.apache.commons.httpclient.methods.multipart.StringPart common_<%=i %>_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.StringPart(<%=name %>, <%=value %>);
+<%
+		}
     
-    if ("true".equals(ElementParameterParser.getValue(node,"__UPLOAD__"))){
-      List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
-      int j = 0;
-      for(Map<String, String> param : fileParams){
-        j++;
-        String name = param.get("FILE_PARAMS_NAME");
-        String value = param.get("FILE_PARAMS_VALUE");
-        varPartList.add("file_" + j + "_" + cid);
-        %>
-        org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j %>_<%=cid %>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));  
-        <%
-      }
-    }
-    %>
+	    if ("true".equals(ElementParameterParser.getValue(node,"__UPLOAD__"))){
+			List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
+			int j = 0;
+			for(Map<String, String> param : fileParams){
+				j++;
+				String name = param.get("FILE_PARAMS_NAME");
+				String value = param.get("FILE_PARAMS_VALUE");
+				varPartList.add("file_" + j + "_" + cid);
+%>
+        		org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j %>_<%=cid %>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));  
+<%
+			}
+		}
+%>
     
-    org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};    
-    method_<%=cid%>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, method_<%=cid%>.getParams()));          
-  <%} else{%>
-    org.apache.commons.httpclient.methods.GetMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
-  <%}%>
+    	org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};    
+    	method_<%=cid%>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, method_<%=cid%>.getParams()));          
+<%
+	}else{
+%>
+    	org.apache.commons.httpclient.methods.GetMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
+<%
+	}
+%>
    
 	boolean isContinue = true;
 	int status_<%=cid%>;
 	String finalURL_<%=cid%> = <%=uri%>;
-  try{
+  	try{
   
-<%if(redirect && post){%>
-	//Bug13155, add support of redirection
-	boolean redirect_<%=cid%> = true;
-  	while(redirect_<%=cid%>){
-    	status_<%=cid%> = client_<%=cid %>.executeMethod(method_<%=cid%>);
-  		if((status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_PERMANENTLY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_SEE_OTHER) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_TEMPORARY_REDIRECT)){
-  			if(method_<%=cid%>.getResponseHeader("location").getValue().substring(0, 4).equals("http")){
-  				method_<%=cid%>.releaseConnection();
-  				method_<%=cid%> = new org.apache.commons.httpclient.methods.PostMethod(method_<%=cid%>.getResponseHeader("location").getValue());
-  			}else{
-	  			method_<%=cid%>.setURI(new org.apache.commons.httpclient.URI("/" + method_<%=cid%>.getResponseHeader("location").getValue(), false));
-  			}
-  			System.out.println("Redirect to: " +method_<%=cid%>.getURI());
-  			finalURL_<%=cid%> = method_<%=cid%>.getURI().toString();
-  		}else if(status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_OK){
-  			redirect_<%=cid%> = false;
-  		}else{
-			throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
-  		}
-  	}
-<%}else{%>
-    status_<%=cid%>  = client_<%=cid %>.executeMethod(method_<%=cid%>);     
-    if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
-      throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
-    }
-<%}%>
-  }catch(Exception e){
-    <% if(("true").equals(dieOnError)){%>
-      throw(e);
-    <% }else{%>   
-      System.err.println("There is an exception on: " + <%=uri %>);
-      e.printStackTrace();
-      System.out.println("\r\n");
-      isContinue = false;
-    <%}%>
-  }
+<%
+	if(redirect){
+%>
+		//Bug13155, add support of redirection
+		boolean redirect_<%=cid%> = true;
+	  	while(redirect_<%=cid%>){
+	    	status_<%=cid%> = client_<%=cid %>.executeMethod(method_<%=cid%>);
+	  		if((status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_MOVED_PERMANENTLY) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_SEE_OTHER) || (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_TEMPORARY_REDIRECT)){
+	  			method_<%=cid%>.releaseConnection();
+	  			if(method_<%=cid%>.getResponseHeader("location").getValue().substring(0, 4).equals("http")){
+	  				method_<%=cid%> = new org.apache.commons.httpclient.methods.<%if(post){%>Post<%}else{%>Get<%}%>Method(method_<%=cid%>.getResponseHeader("location").getValue());
+	  			}else{
+	  				method_<%=cid%> = new org.apache.commons.httpclient.methods.<%if(post){%>Post<%}else{%>Get<%}%>Method("http://" + method_<%=cid%>.getURI().getHost() + method_<%=cid%>.getResponseHeader("location").getValue());
+		  			//method_<%=cid%>.setURI(new org.apache.commons.httpclient.URI("/" + method_<%=cid%>.getResponseHeader("location").getValue(), false));
+	  			}
+	  			System.out.println("Redirect to: " +method_<%=cid%>.getURI());
+	  			finalURL_<%=cid%> = method_<%=cid%>.getURI().toString();
+	  		}else if(status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_OK){
+	  			redirect_<%=cid%> = false;
+	  		}else{
+				throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
+	  		}
+	  	}
+<%
+	}else{
+%>
+    	status_<%=cid%>  = client_<%=cid %>.executeMethod(method_<%=cid%>);
+<%
+	}
+%>
+<%
+	if(saveCookie){
+%>
+		org.apache.commons.httpclient.Cookie[] cookies = client_<%=cid %>.getState().getCookies();
+	    java.io.FileOutputStream fos = new java.io.FileOutputStream(new java.io.File(<%=cookieDir%>));
+	    java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fos);
+	    for (org.apache.commons.httpclient.Cookie c : cookies) {
+	        os.writeObject(c);
+	    }
+	    os.close();
+	    fos.close();
+<%
+	}
+	if(!redirect){
+%>
+	    if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
+	      throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
+	    }
+<%
+	}
+%>
+	}catch(Exception e){
+<%
+		if(("true").equals(dieOnError)){
+%>
+			throw(e);
+<%
+		}else{
+%>   
+			System.err.println("There is an exception on: " + <%=uri %>);
+			e.printStackTrace();
+			System.out.println("\r\n");
+			isContinue = false;
+<%
+		}
+%>
+	}
   
   if (isContinue){   
     <%if(printResponse){%>

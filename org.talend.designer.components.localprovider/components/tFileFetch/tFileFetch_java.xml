@@ -162,6 +162,31 @@ COMPATIBILITY="ALL"
      </ITEMS>
    </PARAMETER>
 
+   <PARAMETER
+     NAME="READ_COOKIE"
+     FIELD="CHECK"
+     NUM_ROW="70"
+  >
+  <DEFAULT>false</DEFAULT> 
+  </PARAMETER>     
+
+   <PARAMETER
+     NAME="SAVE_COOKIE"
+     FIELD="CHECK"
+     NUM_ROW="70"
+  >
+  <DEFAULT>false</DEFAULT> 
+  </PARAMETER>     
+
+  <PARAMETER
+     NAME="COOKIE_DIR"
+     FIELD="DIRECTORY"
+     NUM_ROW="71"
+     REQUIRED="true"     
+     SHOW_IF="(SAVE_COOKIE == 'true') OR (READ_COOKIE == 'true')"
+  >
+    <DEFAULT>"C:/cookie"</DEFAULT>
+  </PARAMETER>
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>
@@ -308,7 +333,6 @@ COMPATIBILITY="ALL"
 		FIELD="CHECK" 
 		REQUIRED="true"
 		NUM_ROW="60"
-		SHOW_IF="POST == 'true'"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
