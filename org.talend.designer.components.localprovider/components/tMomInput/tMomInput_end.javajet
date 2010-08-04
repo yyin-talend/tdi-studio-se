@@ -65,7 +65,9 @@
 <%
 	} else {
 	%>
-	  msgu_<%=cid%>.close();
+	  if (msgu_<%=cid%>.isOpen()){
+	    msgu_<%=cid%>.close();
+	  }
 	<%
 	}
 %>

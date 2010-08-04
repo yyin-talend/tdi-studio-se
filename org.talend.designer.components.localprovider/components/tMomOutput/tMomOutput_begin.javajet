@@ -118,6 +118,7 @@ class="MomInput"
       org.talend.msmq.MsmqUtil msgu_<%=cid%> = new org.talend.msmq.MsmqUtil();
       msgu_<%=cid%>.setHost(<%=host%>);
       msgu_<%=cid%>.setQueue(<%=to%>); 
+      msgu_<%=cid%>.createIfNotExists(true);
       msgu_<%=cid%>.open();
 <%  }%>
 	

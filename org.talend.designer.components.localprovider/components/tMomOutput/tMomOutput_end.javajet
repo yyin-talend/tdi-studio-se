@@ -31,5 +31,7 @@ if(("JBoss").equals(serverType)){
 <%
 } else { // msmq
 %>
+  if (msgu_<%=cid%>.isOpen()){
     msgu_<%=cid%>.close();
+  }
 <%}%>
