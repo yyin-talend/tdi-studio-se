@@ -28,28 +28,42 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
@@ -68,6 +82,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
@@ -134,6 +149,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private IWorkspace workspace;
 
     protected Button applyToChildrenButton;
+
+    protected Button setParametersValueButton;
+
+    protected Button setParametersValueButton2;
 
     private RepositoryNode[] nodes;
 
@@ -592,6 +611,183 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         // genCodeButton.setSelection(true);
         // genCodeButton.setFont(font);
+
+        setParametersValueButton = new Button(optionsGroup, SWT.NONE);
+        setParametersValueButton.setText(Messages.getString("JobScriptsExportWizardPage.SetParameterValues"));
+        setParametersValueButton.setSelection(false);
+
+        setParametersValueButton2 = new Button(optionsGroup, SWT.CHECK);
+        setParametersValueButton2.setVisible(false);
+
+        setParametersValueButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                List contextValueList = manager.getJobContextValues((ProcessItem) process[0].getItem());
+                ParametersValuesDialog dialog = new ParametersValuesDialog(getShell(), contextValueList);
+                int open = dialog.open();
+                if (open == Dialog.OK) {
+                    setParametersValueButton2.setSelection(true);
+                } else {
+                    setParametersValueButton2.setSelection(false);
+                }
+            }
+        });
+    }
+
+    /**
+     * DOC zli JobScriptsExportWizardPage class global comment. Detailled comment
+     */
+    // for feature 11976
+    class ParametersValuesDialog extends Dialog {
+
+        private String contextParameterName = Messages.getString("ParametersValuesDialog_Name"); //$NON-NLS-1$
+
+        private String contextParameterValue = Messages.getString("ParametersValuesDialog_Value"); //$NON-NLS-1$
+
+        private TableViewer tableViewer;
+
+        private Table table;
+
+        private List contextValueList;
+
+        /**
+         * DOC zli ParametersValuesDialog constructor comment.
+         * 
+         * @param parentShell
+         */
+        protected ParametersValuesDialog(Shell parentShell) {
+            super(parentShell);
+            setShellStyle(getShellStyle() | SWT.RESIZE);
+        }
+
+        protected ParametersValuesDialog(Shell parentShell, List contextValueList) {
+            super(parentShell);
+            setShellStyle(getShellStyle() | SWT.RESIZE);
+            this.contextValueList = contextValueList;
+        }
+
+        @Override
+        protected Control createDialogArea(Composite parent) {
+
+            Composite composite = (Composite) super.createDialogArea(parent);
+            getShell().setText(Messages.getString("ParametersValuesDialog_Title")); //$NON-NLS-1$
+            setTitle(Messages.getString("ParametersValuesDialog_Title")); //$NON-NLS-1$
+            setMessage(Messages.getString("ParametersValuesDialog_Desc")); //$NON-NLS-1$
+
+            table = new Table(composite, SWT.FULL_SELECTION | SWT.BORDER);
+            table.setLayoutData(new GridData(GridData.FILL_BOTH));
+            table.setHeaderVisible(true);
+            table.setLinesVisible(true);
+
+            TableLayout layout = new TableLayout();
+            layout.addColumnData(new ColumnWeightData(30, 75, true));
+            layout.addColumnData(new ColumnWeightData(25, 75, true));
+            // layout.addColumnData(new ColumnWeightData(45, 75, true));
+            table.setLayout(layout);
+
+            TableColumn column = new TableColumn(table, SWT.LEFT);
+            column.setText(contextParameterName);
+            column = new TableColumn(table, SWT.LEFT);
+            column.setText(contextParameterValue);
+
+            tableViewer = new TableViewer(table);
+            tableViewer.setLabelProvider(new TableLabelProvider());
+            tableViewer.setContentProvider(new ContentProvider());
+            tableViewer.setInput(contextValueList);
+            tableViewer.setColumnProperties(new String[] { contextParameterName, contextParameterValue });
+
+            return composite;
+        }
+
+        @Override
+        protected Point getInitialSize() {
+            // TODO Auto-generated method stub
+            return super.getInitialSize();
+        }
+
+        @Override
+        protected void okPressed() {
+            // TODO Auto-generated method stub
+            super.okPressed();
+        }
+
+        @Override
+        protected void cancelPressed() {
+            // TODO Auto-generated method stub
+            super.cancelPressed();
+        }
+
+    }
+
+    /**
+     * DOC zli JobScriptsExportWizardPage class global comment. Detailled comment
+     */
+
+    class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        public String getColumnText(Object element, int columnIndex) {
+            if (element instanceof ContextParameterTypeImpl) {
+                ContextParameterTypeImpl contextParameter = (ContextParameterTypeImpl) element;
+                if (columnIndex == 0) {
+                    return contextParameter.getName();
+                }
+                if (columnIndex == 1) {
+                    return contextParameter.getValue();
+                }
+            }
+            return ""; //$NON-NLS-1$
+        }
+
+        public Image getColumnImage(Object element, int columnIndex) {
+            return null;
+        }
+
+    }
+
+    /**
+     * DOC zli JobScriptsExportWizardPage class global comment. Detailled comment
+     */
+    class ContentProvider implements IStructuredContentProvider {
+
+        public Object[] getElements(Object inputElement) {
+            if (inputElement instanceof List) {
+                return ((List) inputElement).toArray();
+            }
+            return new Object[0];
+        }
+
+        public void dispose() {
+        }
+
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+         */
+        public Object[] getChildren(Object parentElement) {
+            return getElements(parentElement);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+         */
+        public Object getParent(Object element) {
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+         */
+        public boolean hasChildren(Object element) {
+            return false;
+        }
     }
 
     /**
@@ -833,7 +1029,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 setTopFolder(resourcesToExport, this.originalRootFolderName);
             } else {
                 setTopFolder(resourcesToExport, this.getOriginalRootFolderName());// this.getOriginalRootFolderName()
-                                                                                  // getRootFolderName()
+                // getRootFolderName()
             }
         }
 
@@ -1113,6 +1309,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
+        exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
         return exportChoiceMap;
     }

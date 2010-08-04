@@ -48,6 +48,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -83,6 +84,12 @@ public abstract class JobScriptsManager {
     protected static final String JOB_ITEMS_FOLDER_NAME = "items"; //$NON-NLS-1$
 
     public static final String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
+
+    public static final String CTX_PARAMETER_ARG = "--context_param"; //$NON-NLS-1$
+
+    public static final String CMDFORWIN = "%*"; //$NON-NLS-1$
+
+    public static final String CMDFORUNIX = "$*"; //$NON-NLS-1$
 
     private String selectedJobVersion; //$NON-NLS-1$
 
@@ -145,6 +152,7 @@ public abstract class JobScriptsManager {
         applyToChildren,
         doNotCompileCode,
         needDependencies,
+        setParameterValues,
         esbQueueMessageName,
         esbServiceName,
         esbCategory,
@@ -211,8 +219,8 @@ public abstract class JobScriptsManager {
      * @param codeOptions TODO
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment,
-            int statisticPort, int tracePort, String... codeOptions) {
+    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, ProcessItem process, String contextName,
+            String environment, int statisticPort, int tracePort, String... codeOptions) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
@@ -223,6 +231,30 @@ public abstract class JobScriptsManager {
                 statisticPort, tracePort, codeOptions);
         String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
                 statisticPort, tracePort, codeOptions);
+        String contextParameter = CTX_PARAMETER_ARG;
+        String contextParameterValues = "";
+        if (setParameterValues) {
+            List<ContextParameterTypeImpl> jobContextValues = getJobContextValues(process);
+
+            for (int i = 0; i < jobContextValues.size(); i++) {
+                ContextParameterTypeImpl contextParameterType = jobContextValues.get(i);
+                String name = contextParameterType.getName();
+                String value = contextParameterType.getValue();
+                // name = TalendTextUtils.removeQuotes(name);
+                // value = TalendTextUtils.removeQuotes(value);
+                if (value != null && !"".equals(value.trim())) {
+                    contextParameterValues += " " + contextParameter + " " + name + "=" + value;
+                }
+            }
+            contextParameterValues = contextParameterValues + " ";
+            if (windowsCmd.contains(CMDFORWIN) && windowsCmd.indexOf(CMDFORWIN) > 2) {
+                windowsCmd = windowsCmd.substring(0, windowsCmd.indexOf(CMDFORWIN) - 1) + contextParameterValues + CMDFORWIN;
+            }
+            if (unixCmd.contains(CMDFORUNIX) && unixCmd.indexOf(CMDFORUNIX) > 2) {
+                unixCmd = unixCmd.substring(0, unixCmd.indexOf(CMDFORUNIX) - 1) + contextParameterValues + CMDFORUNIX;
+            }
+        }
+
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
@@ -340,6 +372,8 @@ public abstract class JobScriptsManager {
      * 
      */
     public abstract List<String> getJobContexts(ProcessItem processItem);
+
+    public abstract List<ContextParameterTypeImpl> getJobContextValues(ProcessItem processItem);
 
     /**
      * ftang Comment method "escapeFileNameSpace".
