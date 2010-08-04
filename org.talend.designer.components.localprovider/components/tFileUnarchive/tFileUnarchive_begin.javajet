@@ -215,24 +215,34 @@
 		//the others all use the ZIP to decompression
 		 if(<%=isPasswordNeeded%> ){
 			 if( !<%=password%>.equals("") ){
-		 
+				 if(<%=isArchiveValid%>){
+					 if(!org.talend.archive.IntegrityUtil.isEncryptedZipValid(new java.io.File(tmpFileURL_<%=cid%>), <%=password%>))
+						 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+				 }
 			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
 			 target_<%=cid%> = 
 				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
 						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
 			 
 			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
+		     
+		     //if(<%=isArchiveValid%>){
+		    	// if(!org.talend.archive.IntegrityUtil.isZipEntryValid(input_<%=cid%>)){
+		    		 //throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+		    	 //}
+			 	//else{
+			 			//input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
+			 	//}
+		     //}
+		     
 		     java.util.zip.ZipEntry entry_<%=cid%> ; 
-		     if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipEntryValid(input_<%=cid%>)){
-		    	 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
-		     }
-		     while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
-		            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
-		    	    
-		            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
-		            String filename_<%=cid %> =  entry_<%=cid %>.getName();
-		            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
-		     }
+			 while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
+			            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
+			    	    
+			            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+			            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+			            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
+			     }
 			}
 			else {
 				throw new RuntimeException ("Please enter the password and try again.." );
