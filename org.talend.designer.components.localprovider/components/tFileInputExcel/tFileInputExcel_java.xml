@@ -111,6 +111,17 @@
 			NUM_ROW="49" SHOW_IF="(ADVANCED_SEPARATOR == 'true')" REPOSITORY_VALUE="DECIMAL_SEPARATOR">
 			<DEFAULT>"."</DEFAULT>
 		</PARAMETER>
+		
+		<PARAMETER NAME="TRIMALL" FIELD="CHECK" NUM_ROW="50">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER NAME="TRIMSELECT" FIELD="TABLE" NUM_ROW="51"
+			NB_LINES="5" SHOW_IF="TRIMALL=='false'">
+			<ITEMS BASED_ON_SCHEMA="true">
+				<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
+			</ITEMS>
+		</PARAMETER>
 
 		<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="70"
 			REQUIRED="true" REPOSITORY_VALUE="ENCODING">
@@ -141,14 +152,12 @@
 			<IMPORT NAME="Java_Excel" MODULE="jxl.jar" REQUIRED="true" />
 			
 			<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
-		    <IMPORT NAME="geronimo-stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.jar" REQUIRED="true" />
-		    <IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
-		    <IMPORT NAME="poi" MODULE="poi-3.6-20091214.jar" REQUIRED="true" />
-		    <IMPORT NAME="poi-contrib" MODULE="poi-contrib-3.6-20091214.jar" REQUIRED="true" />
-		    <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.6-20091214.jar" REQUIRED="true" />
-		    <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.6-20091214.jar" REQUIRED="true" />
-		    <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.6-20091214.jar" REQUIRED="true" />
-		    <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
+			<IMPORT NAME="jsr173" MODULE="jsr173_1.0_api.jar" REQUIRED="true" />
+			<IMPORT NAME="log4j" MODULE="log4j-1.2.9.jar" REQUIRED="true" />
+			<IMPORT NAME="ooxml-schemas" MODULE="ooxml-schemas-1.0.jar" REQUIRED="true" />
+			<IMPORT NAME="poi" MODULE="poi-3.5-FINAL-20090928.jar" REQUIRED="true" />
+			<IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.5-FINAL-20090928.jar" REQUIRED="true" />
+			<IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

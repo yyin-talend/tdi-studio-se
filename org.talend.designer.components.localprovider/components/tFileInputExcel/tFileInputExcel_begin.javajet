@@ -46,6 +46,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean affect = ("true").equals(ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__"));
 		boolean stopOnEmptyRow = ("true").equals(ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__"));
 		
+		List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+		boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 		
 		if(!version07){//version judgement
 			boolean bReadRealValue = ("true").equals(ElementParameterParser.getValue(node, "__READ_REAL_VALUE__"));
@@ -277,7 +280,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 //
 //end%>
-			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>];
+			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
 <%		
 //start
 			} else if(javaType == JavaTypesManager.DATE) {
@@ -295,16 +298,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //start			
 			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
-		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
 	%>							
-			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>].getBytes(<%=encoding %>);
+			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
 	<%
 			} else {
 //
 //end%>
-			<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]);
+			<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 <%
 //start
 //
@@ -657,7 +660,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%		
 						if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>		
-				<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>];
+				<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
 <%		
 						} else if(javaType == JavaTypesManager.DATE) {						
 %>		
@@ -667,7 +670,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%=firstConnName %>.<%=column.getLabel() %> = row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>).getDateCellValue();
 						}
 						else{
-							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>], <%= patternValue %>);
+							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 						}
 					}catch(Exception e){
 						throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
@@ -677,15 +680,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%		
 						}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
-				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
+				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
 						} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
 %>							
-				<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>].getBytes(<%=encoding %>);
+				<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
 <%
 						} else {
 %>
-				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]);
+				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 <%
 						}
 %>
