@@ -12,7 +12,7 @@ public class MsmqUtil {
 
     private String queueName;
 
-    private String strmsg;
+    private String msgContent;
 
     boolean bTried = false;
 
@@ -30,25 +30,13 @@ public class MsmqUtil {
     public static void main(String[] args) throws java.lang.Exception {
         org.talend.msmq.MsmqUtil msgu = new org.talend.msmq.MsmqUtil();
         msgu.setHost("localhost");
-        msgu.setQueue("f2");
+        msgu.setQueue("f3333");
+        msgu.createIfNotExists(true);
         msgu.open();
         msgu.setMsg("aaaa");
-        msgu.sendMessage();
-        System.out.println(msgu.receive());
-    }
-
-    public String receive() {
-        try {
-            checkOpen();
-            // System.out.println("receive");
-            Message msg = Msmq.receive(2000); // timeout= 2000 ms
-            // System.out.println(" ==> message: " + msg.getMessage());
-            // System.out.println("     label:   " + msg.getLabel());
-            return msg.getMessage();
-        } catch (MessageQueueException ex1) {
-            System.out.println("Receive failure: " + ex1);
-        }
-        return null;
+        msgu.send();
+        if (msgu.isOpen())
+            System.out.println(msgu.receive());
     }
 
     public void peek() {
@@ -74,34 +62,6 @@ public class MsmqUtil {
         }
     }
 
-    private void send() {
-        try {
-            checkOpen();
-            // the transaction flag must agree with the transactional flavor of the queue.
-            int transactionFlag = 0; // 0 = NO TRANSACTION, 1= MTS, 2= XA, 3= SINGLE_MESSAGE
-            String mLabel = "inserted by " + this.getClass().getName() + ".java";
-            String correlationID = "L:none";
-            Message msg = new Message(strmsg, mLabel, correlationID, transactionFlag);
-            Msmq.send(msg);
-        } catch (MessageQueueException ex1) {
-            System.out.println("Send failure: " + ex1);
-        }
-    }
-
-    private void create() {
-        try {
-            if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr))) {
-                throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
-            }
-            String fullname = ".\\private$\\" + queueName;
-            String qLabel = "Created by " + this.getClass().getName() + ".java";
-            boolean transactional = false; // should the queue be transactional
-            Msmq = Queue.create(fullname, qLabel, transactional);
-        } catch (MessageQueueException ex1) {
-            System.out.println("Queue creation failure: " + ex1);
-        }
-    }
-
     private void delete() {
         try {
             String fullname = getQueueFullName(".", queueName);
@@ -122,11 +82,40 @@ public class MsmqUtil {
             // Msmq= new Queue(fullname, 0x02); // 0x02 == SEND only
         } catch (MessageQueueException ex1) {
             System.out.println("Queue open failure: " + ex1);
-            if (!bTried) {
-                bTried = true;
+
+            if (bTried) {
+                bTried = false;
                 create();
             }
         }
+    }
+
+    public void send() {
+        try {
+            checkOpen();
+            // the transaction flag must agree with the transactional flavor of the queue.
+            int transactionFlag = 0; // 0 = NO TRANSACTION, 1= MTS, 2= XA, 3= SINGLE_MESSAGE
+            String mLabel = "inserted by " + this.getClass().getName() + ".java";
+            String correlationID = "L:none";
+            Message msg = new Message(msgContent, mLabel, correlationID, transactionFlag);
+            Msmq.send(msg);
+        } catch (MessageQueueException ex1) {
+            System.out.println("Send failure: " + ex1);
+        }
+    }
+
+    public String receive() {
+        try {
+            checkOpen();
+            // System.out.println("receive");
+            Message msg = Msmq.receive(2000); // timeout= 2000 ms
+            // System.out.println(" ==> message: " + msg.getMessage());
+            // System.out.println("     label:   " + msg.getLabel());
+            return msg.getMessage();
+        } catch (MessageQueueException ex1) {
+            System.out.println("Receive failure: " + ex1);
+        }
+        return null;
     }
 
     private String getQueueFullName(String hostname, String queueShortName) {
@@ -141,12 +130,29 @@ public class MsmqUtil {
         return "DIRECT=" + a1 + ":" + h1 + "\\private$\\" + queueShortName;
     }
 
+    private void create() {
+        try {
+            if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || "127.0.0.1"
+                    .equals(host))) {
+                throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
+            }
+            String fullname = ".\\private$\\" + queueName;
+            String qLabel = "Created by " + this.getClass().getName() + ".java";
+            boolean transactional = false; // should the queue be transactional
+            Msmq = Queue.create(fullname, qLabel, transactional);
+        } catch (MessageQueueException ex1) {
+            System.out.println("Queue creation failure: " + ex1);
+        }
+    }
+
     private void checkOpen() throws MessageQueueException {
         if (Msmq == null)
             throw new MessageQueueException("Open a queue first!\n", -1);
     }
 
-    // -------------
+    public boolean isOpen() {
+        return Msmq != null;
+    }
 
     public void setHost(String host) {
         this.host = host;
@@ -157,20 +163,10 @@ public class MsmqUtil {
     }
 
     public void setMsg(String msg) {
-        this.strmsg = msg;
+        this.msgContent = msg;
     }
 
-    /* send message */
-    public void sendMessage() throws MessageQueueException {
-
-        if (queueName == null || "".equals(queueName)) {
-            throw new MessageQueueException("Queue name is empty!\n", -1);
-        }
-
-        if (Msmq == null) {
-            open();
-        }
-        send();
+    public void createIfNotExists(boolean bool) {
+        bTried = true;
     }
-
 }

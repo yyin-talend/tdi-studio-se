@@ -1,4 +1,7 @@
-
+--------------------------------------------------------------------------
+version 1.0
++ ip 127.0.0.1 is also considered as local
++ receive message does not create queue if specified queue not exists  
 --------------------------------------------------------------------------
 Version 0.9.0 (02/08/2010)
 + API created by ytao
