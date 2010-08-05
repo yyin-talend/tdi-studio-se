@@ -12,10 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.wizards;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -28,10 +28,10 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -95,6 +95,7 @@ public class NewProcessWizard extends Wizard {
     /**
      * @see org.eclipse.jface.wizard.Wizard#performFinish()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean performFinish() {
         try {
@@ -104,14 +105,9 @@ public class NewProcessWizard extends Wizard {
             ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
 
             // add depended routines.
-            EList routinesDependencies = process.getRoutinesDependencies();
-            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-            if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES)) {
-                routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));
-            }
-            if (preferenceStore.getBoolean(ITalendCorePrefConstants.ADD_USER_ROUTINES)) {
-                routinesDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
-            }
+            List<ItemInforType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+            process.getRoutinesDependencies().addAll(dependenciesInPreference);
+
 
             processItem.setProcess(process);
             repositoryFactory.create(processItem, mainPage.getDestinationPath());

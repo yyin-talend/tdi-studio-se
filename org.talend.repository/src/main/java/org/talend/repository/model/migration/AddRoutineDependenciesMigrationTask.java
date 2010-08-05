@@ -19,9 +19,11 @@ import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
@@ -35,6 +37,13 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
         List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
         toReturn.add(ERepositoryObjectType.PROCESS);
         return toReturn;
+    }
+
+    @Override
+    public ExecutionResult execute(Project project) {
+        ExecutionResult result = super.execute(project);
+        RelationshipItemBuilder.getInstance().saveRelations();
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +76,7 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
             }
             if (modified) {
                 CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(item, true);
-
+                RelationshipItemBuilder.getInstance().addOrUpdateItem(item, true);
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             }
 

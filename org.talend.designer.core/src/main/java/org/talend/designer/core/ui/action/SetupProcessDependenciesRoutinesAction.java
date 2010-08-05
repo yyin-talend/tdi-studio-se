@@ -24,6 +24,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
@@ -137,6 +138,7 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             createRoutinesDependencies(process, dialog.getUserRoutines());
             try {
                 CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(processItem);
+                RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }

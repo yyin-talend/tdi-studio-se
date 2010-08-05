@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.routine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -232,7 +233,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         userComposite.setLayout(new GridLayout());
         userComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        userViewer = new ListViewer(userComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        userViewer = new ListViewer(userComposite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         userViewer.setLabelProvider(new RoutineRecordLabelProvider());
         userViewer.setContentProvider(ArrayContentProvider.getInstance());
         userViewer.setInput(userRoutines);
@@ -246,7 +247,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         systemComposite.setLayout(new GridLayout());
         systemComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        systemViewer = new ListViewer(systemComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        systemViewer = new ListViewer(systemComposite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         systemViewer.setLabelProvider(new RoutineRecordLabelProvider());
         systemViewer.setContentProvider(ArrayContentProvider.getInstance());
         systemViewer.setInput(systemRoutines);
@@ -317,18 +318,25 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 ListViewer currentViewer = getCurrentViewer();
                 List<RoutineItemRecord> currentRecords = getCurrentRecords();
-                RoutineItemRecord selectedRecord = getCurrentSelectedRecord();
-                if (currentRecords != null && selectedRecord != null) {
-                    int index = currentRecords.indexOf(selectedRecord);
-                    currentRecords.remove(selectedRecord);
-                    if (index > currentRecords.size() - 1) {
-                        index = currentRecords.size() - 1;
-                    } else if (index < 0) {
-                        index = 0;
+                if (currentViewer != null && !((IStructuredSelection) currentViewer.getSelection()).isEmpty()) {
+                    Iterator iterator = ((IStructuredSelection) currentViewer.getSelection()).iterator();
+                    int index = 0;
+                    while (iterator.hasNext()) {
+                        Object selectedRecord = iterator.next();
+                        if (currentRecords != null && selectedRecord != null) {
+                            index = currentRecords.indexOf(selectedRecord);
+                            currentRecords.remove(selectedRecord);
+                            if (index > currentRecords.size() - 1) {
+                                index = currentRecords.size() - 1;
+                            } else if (index < 0) {
+                                index = 0;
+                            }
+                        }
                     }
                     currentViewer.setInput(currentRecords);
                     currentViewer.getList().select(index);
                     currentViewer.refresh();
+
                 }
 
                 updateButtons();
@@ -436,7 +444,8 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
             addBtn.setEnabled(true);
             if (!((IStructuredSelection) viewer.getSelection()).isEmpty()) {
                 delBtn.setEnabled(true);
-                if (viewer.getList().getItemCount() > 1) {
+                // more than one in list, and only one select
+                if (viewer.getList().getItemCount() > 1 && ((IStructuredSelection) viewer.getSelection()).size() == 1) {
                     upBtn.setEnabled(true);
                     downBtn.setEnabled(true);
                 }
