@@ -29,6 +29,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -37,6 +39,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.model.migration.TosMetadataMigrationFrom400to410;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.URIHelper;
 
 /**
@@ -47,6 +51,10 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
     private static Logger log = Logger.getLogger(MergeTosMetadataMigrationTask.class);
 
     TosMetadataMigrationFrom400to410 metadata400to410 = new TosMetadataMigrationFrom400to410();
+
+    IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+
+    IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
 
     static final HashMap XML_SAVE_OTIONS = new HashMap(2);
     static {
@@ -60,19 +68,27 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
     public ExecutionResult execute(Item item) {
         if (item instanceof ConnectionItem) {
             try {
-                URI itemResourceURI = getItemResourceURI(getItemURI(item));
-                Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
-                if (migratedResource != null) {
-                    OutputStream outputStream = migratedResource.getResourceSet().getURIConverter().createOutputStream(
-                            itemResourceURI, XML_SAVE_OTIONS);
-                    try {
-                        migratedResource.save(outputStream, XML_SAVE_OTIONS);
-                    } finally {
-                        outputStream.close();
+                URI itemURI = getItemURI(item);
+                if (itemURI != null) {
+                    URI itemResourceURI = getItemResourceURI(itemURI);
+                    Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
+                    if (migratedResource != null) {
+                        OutputStream outputStream = migratedResource.getResourceSet().getURIConverter().createOutputStream(
+                                itemResourceURI, XML_SAVE_OTIONS);
+                        try {
+                            migratedResource.save(outputStream, XML_SAVE_OTIONS);
+                            factory.reload(item.getProperty()); // only need to reload after this migrationtask
+                            // rather
+                            // than
+                            // in
+                            // AbstractItemMigrationTask.java,cause we only add
+                            // cwm after this migration task
+                        } finally {
+                            outputStream.close();
+                        }
                     }
-                    // ProxyRepositoryFactory.getInstance().save(item, true);
                 }
-                return ExecutionResult.SUCCESS_NO_ALERT;
+                return ExecutionResult.SUCCESS_WITH_ALERT;
             } catch (ATLCoreException e) {
                 log.error(e);
                 ExceptionHandler.process(e);
@@ -80,7 +96,11 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
             } catch (IOException e) {
                 log.error(e);
                 ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } catch (PersistenceException e) {
+                log.error(e);
+                ExceptionHandler.process(e);
+                return ExecutionResult.SUCCESS_NO_ALERT;
             }
         }
         return ExecutionResult.NOTHING_TO_DO;
@@ -103,7 +123,11 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 return URIHelper.convert(path);
             }
         }
-        return item.eResource().getURI();
+        if (item.eResource() != null) { // the migrationtask execute two times,after reload in first tiem,this one will
+            // be null
+            return item.eResource().getURI();
+        }
+        return null;
     }
 
     private URI getItemResourceURI(URI propertyResourceURI) {
