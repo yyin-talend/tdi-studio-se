@@ -5,6 +5,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
+    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
@@ -37,7 +38,7 @@
       FIELD="CHECK"
       SHOW="true"
       NUM_ROW="10"
-      SHOW_IF="(USEMAX == 'false') AND (SERVER == 'JBOSS' or SERVER == 'WEBSPHERE' or SERVER == 'ACTIVEMQ')"
+      SHOW_IF="(USEMAX == 'false')"
     >
     <DEFAULT IF="(SERVER == 'JBOSS')">true</DEFAULT>
     <DEFAULT IF="(SERVER == 'WEBSPHERE')">false</DEFAULT>
@@ -88,7 +89,6 @@
         <ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
         <ITEM NAME="JBOSS"   VALUE="JBoss" />
         <ITEM NAME="ACTIVEMQ" VALUE="ActiveMQ"/>
-        <ITEM NAME="MSMQ" VALUE="MSMQ"/>
       </ITEMS>
     </PARAMETER>
 
@@ -104,7 +104,6 @@
       NAME="SERVERPORT"
       FIELD="TEXT"
       NUM_ROW="25"
-      SHOW_IF="(SERVER != 'MSMQ')"
     >
 	<DEFAULT IF="(SERVER == 'JBOSS')">"1099"</DEFAULT>
 	<DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
@@ -122,7 +121,7 @@
       FIELD="TEXT"
       SHOW="true"
       NUM_ROW="35"
-      SHOW_IF="(SERVER != 'WEBSPHERE')"
+      SHOW_IF="(SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')"
     ><DEFAULT>""</DEFAULT>
     </PARAMETER>
     
@@ -151,7 +150,6 @@
       NAME="MESSAGE_BODY_TYPE"
       FIELD="CLOSED_LIST"
       NUM_ROW="40"
-      SHOW_IF="(SERVER != 'MSMQ')"
     >
       <ITEMS DEFAULT="TEXT">
         <ITEM NAME="TEXT"   VALUE="Text" />
@@ -183,10 +181,6 @@
       </TABLE>
 	 <TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
       </TABLE>
-      <TABLE IF="((SERVER == 'MSMQ')" READONLY="true">
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
-      </TABLE>
-      
     </PARAMETER>
    
   <PARAMETER
@@ -233,7 +227,7 @@
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
 
-		<PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="30"  SHOW_IF="(SERVER != 'WEBSPHERE') AND (SERVER != 'MSMQ') ">
+		<PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="30"  SHOW_IF="(SERVER != 'WEBSPHERE')">
 	      <ITEMS DEFAULT="AUTO_ACKNOWLEDGE">
 	        <ITEM NAME="AUTO_ACKNOWLEDGE"   VALUE="AUTO_ACKNOWLEDGE" />
 	        <ITEM NAME="CLIENT_ACKNOWLEDGE"   VALUE="CLIENT_ACKNOWLEDGE" />
@@ -259,7 +253,6 @@
        <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
        <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
        <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" />
-       <IMPORT NAME="msmq" MODULE="msmq.jar" REQUIRED="true" /> 
      </IMPORTS>
   </CODEGENERATION>
 

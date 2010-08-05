@@ -102,7 +102,7 @@ class="MomInput"
 %>
 						producer_<%=cid %>.send(message_<%=cid %>);
 <%
-				} else if ("WEBSPHERE".equals(serverType)){//server judgement   /***WebSphere MQ*****/
+				} else {//server judgement   /***WebSphere MQ*****/
 %>
 					com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
 <% 
@@ -158,13 +158,6 @@ class="MomInput"
 %>
 					remoteQ_<%=cid%>.put(message_<%=cid%>, opM_<%=cid%>);
 <%
-				} else { //msmq
-				%>
-				  if (msgu_<%=cid%>.isOpen()){
-				    msgu_<%=cid%>.setMsg(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
-				    msgu_<%=cid%>.send();
-				  }
-				<%
 				}
 			}
 		}

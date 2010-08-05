@@ -24,14 +24,10 @@ if(("JBoss").equals(serverType)){
         session_<%=cid %>.close();
         connection_<%=cid %>.close();
 
-<%}else if ("WebSphere".equals(serverType)){//server judgement   /***WebSphere MQ*****/
+<%}else{//server judgement   /***WebSphere MQ*****/
 %>
 	remoteQ_<%=cid%>.close();
     qMgr_<%=cid%>.disconnect();
 <%
-} else { // msmq
+}
 %>
-  if (msgu_<%=cid%>.isOpen()){
-    msgu_<%=cid%>.close();
-  }
-<%}%>
