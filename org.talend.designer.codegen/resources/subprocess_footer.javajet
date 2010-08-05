@@ -68,7 +68,7 @@
 			}//ParallelThread class
 
 			List<String[]> buffer = (List<String[]>) globalMap
-					.get("PARALLEL_FLOW_BUFFER");
+					.get("PARALLEL_FLOW_BUFFER_<%=(subTree.getName()).replaceAll("tAsyncIn", "tAsyncOut")%>");
 
 			if (pool.isFull()) {
 				ParallelThread pt = pool.getFreeThread();// wait for Free Thread
@@ -79,7 +79,7 @@
 				// Start a new thread
 				<%=subTree.getName() %>_ParallelThread pt = new <%=subTree.getName()%>_ParallelThread(
 						globalMap, (Object[]) globalMap
-								.get("PARALLEL_FLOW_LOCK"));
+								.get("PARALLEL_FLOW_LOCK_<%=(subTree.getName()).replaceAll("tAsyncIn", "tAsyncOut")%>"));
 				pt.putBuffer(buffer);
 				pool.execThread(pt);
 			}

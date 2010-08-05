@@ -964,7 +964,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	
 	try {
 		final ParallelThreadPool pool = (ParallelThreadPool) globalMap
-				.get("PARALLEL_FLOW_POOL");
+				.get("PARALLEL_FLOW_POOL_<%=(subTree.getName()).replaceAll("tAsyncIn", "tAsyncOut")%>");
 		class <%=subTree.getName() %>_ParallelThread extends ParallelThread {
 
 			public <%=subTree.getName() %>_ParallelThread(
