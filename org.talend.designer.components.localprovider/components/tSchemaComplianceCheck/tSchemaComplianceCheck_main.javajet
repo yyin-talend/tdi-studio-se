@@ -62,6 +62,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
   String checkAll = ElementParameterParser.getValue(node, "__CHECK_ALL__");    
   final boolean bIsTrim = "true".equals( ElementParameterParser.getValue(node, "__SUB_STRING__") );    
   final boolean useFasteDateChecker = "true".equals( ElementParameterParser.getValue(node, "__FAST_DATE_CHECK__") );
+  final boolean emptyIsNull = "true".equals(ElementParameterParser.getValue(node, "__EMPTY_IS_NULL__"));
 
   class SchemaChecker {
     public void  testDataType(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, String typeSelected, String cid) {
@@ -282,14 +283,23 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
     public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid){      
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
       if (!isPrimitive){
-      %>
-        // validate nullable
-        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
-          ifPassed_<%=cid%> = false;
-          errorCode_<%=cid%> += 4;
-          errorMessage_<%=cid%> += "|empty or null";                        
+      	if(emptyIsNull){
+%>
+	        // validate nullable
+	        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
+<%
+		}else{
+%>
+	        // validate nullable
+	        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
+<%
+		}
+%>
+		ifPassed_<%=cid%> = false;
+		errorCode_<%=cid%> += 4;
+		errorMessage_<%=cid%> += "|empty or null";                        
         }
-      <%
+<%
       }
     }
   }
