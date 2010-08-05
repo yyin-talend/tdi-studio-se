@@ -492,7 +492,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File file = path.toFile();
             if (file.exists() && file.isDirectory()) {
                 for (File curFile : file.listFiles(filter)) {
-                    javaFileUrls.add(FileLocator.toFileURL(curFile.toURI().toURL()));
+                    javaFileUrls.add(FileLocator.toFileURL(curFile.toURL()));
                 }
             }
 
@@ -698,7 +698,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File tempFile = files[i];
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
-                    list.add(tempFile.toURI().toURL());
+                    list.add(tempFile.toURL());
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -864,7 +864,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
-            URL url = jarFile.toURI().toURL();
+            URL url = jarFile.toURL();
             list.add(url);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -902,7 +902,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
-            URL url = jarFile.toURI().toURL();
+            URL url = jarFile.toURL();
             list.add(url);
         } catch (Exception e) {
             ExceptionHandler.process(e);

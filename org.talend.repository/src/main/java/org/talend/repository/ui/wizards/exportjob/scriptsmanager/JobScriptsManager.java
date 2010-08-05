@@ -642,7 +642,7 @@ public abstract class JobScriptsManager {
                 // project file
                 IPath projectFilePath = getCorrespondingProjectRootPath(item).append(FileConstants.LOCAL_PROJECT_FILENAME);
                 checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
-                        FileLocator.toFileURL(projectFilePath.toFile().toURI().toURL()));
+                        FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                 IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
                         itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
