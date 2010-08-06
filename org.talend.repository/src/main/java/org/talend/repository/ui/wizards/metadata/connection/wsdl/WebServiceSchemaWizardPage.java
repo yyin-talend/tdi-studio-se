@@ -63,6 +63,8 @@ public class WebServiceSchemaWizardPage extends WSDLSchemaWizardPage {
         currentComposite = null;
         WSDLSchemaConnection connection = ((WSDLSchemaConnection) connectionItem.getConnection());
         if (ConnectionHelper.getTables(connection).size() < 2) {
+            MetadataTable metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
+            metadataTable.setLabel("OutPut");
             MetadataTable inPutMetadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             inPutMetadataTable.setLabel("Input");
@@ -78,8 +80,6 @@ public class WebServiceSchemaWizardPage extends WSDLSchemaWizardPage {
                 ConnectionHelper.addPackage(gpkg, connection);
             }
             // connection.getTables().add(inPutMetadataTable);
-            MetadataTable metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
-            metadataTable.setLabel("OutPut");
         }
 
         switch (step) {
