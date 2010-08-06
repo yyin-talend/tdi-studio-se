@@ -109,16 +109,12 @@ Object[] resultMessageObj_<%=cid%> = null;
 %>
 						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
 							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
-						}else{
-							nullList_<%=cid %>.add("<%=column.getLabel() %>");
 						}
 <%				
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
 							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
-						}else{
-							nullList_<%=cid %>.add("<%=column.getLabel() %>");
 						}
 <%				
 					} else {//others
@@ -130,14 +126,15 @@ Object[] resultMessageObj_<%=cid%> = null;
 		    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
 		    			<%}%>
 							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
-						}else{
-							nullList_<%=cid %>.add("<%=column.getLabel() %>");
 						}
 <%				
 					}
 %>
-					         
-					          				          
+						<%if(!("Id".equals(column.getLabel()) && ("upsert".equals(action)))){%>
+					    else{
+							nullList_<%=cid %>.add("<%=column.getLabel() %>");
+						}
+						<%}%>
 							
  			
     			
