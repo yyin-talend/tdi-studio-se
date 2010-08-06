@@ -6,7 +6,7 @@ import ionic.Msmq.Queue;
 
 public class MsmqUtil {
 
-    private Queue Msmq = null;
+    private Queue msmqHandle = null;
 
     private String host;
 
@@ -17,6 +17,8 @@ public class MsmqUtil {
     boolean bTried = false;
 
     String ipAddr = "";
+
+    final String LOCALIP = "127.0.0.1";
 
     public MsmqUtil() {
         try {
@@ -29,21 +31,23 @@ public class MsmqUtil {
 
     public static void main(String[] args) throws java.lang.Exception {
         org.talend.msmq.MsmqUtil msgu = new org.talend.msmq.MsmqUtil();
-        msgu.setHost("localhost");
-        msgu.setQueue("f3333");
+        msgu.setHost("127.0.0.1");
+        msgu.setQueue("ytao4");
         msgu.createIfNotExists(true);
         msgu.open();
         msgu.setMsg("aaaa");
         msgu.send();
         if (msgu.isOpen())
             System.out.println(msgu.receive());
+        msgu.close();
     }
 
+    // message remain in queue
     public void peek() {
         try {
             checkOpen();
             System.out.println("peek");
-            Message msg = Msmq.peek(2000); // timeout= 2000 ms
+            Message msg = msmqHandle.peek(2000); // timeout= 2000 ms
             System.out.println(" ==> message: " + msg.getMessage());
             System.out.println("     label:   " + msg.getLabel());
 
@@ -52,16 +56,18 @@ public class MsmqUtil {
         }
     }
 
+    // close an open queue
     public void close() {
         try {
             checkOpen();
-            Msmq.close();
-            Msmq = null;
+            msmqHandle.close();
+            msmqHandle = null;
         } catch (MessageQueueException ex1) {
             System.out.println("close failure: " + ex1);
         }
     }
 
+    // delete the queue
     private void delete() {
         try {
             String fullname = getQueueFullName(".", queueName);
@@ -71,15 +77,16 @@ public class MsmqUtil {
         }
     }
 
+    // open the queue, if it not exists, and creating is required, try to create a queue with the name.
     public void open() {
         try {
-            if (Msmq != null) {
-                Msmq.close();
-                Msmq = null;
+            if (msmqHandle != null) {
+                msmqHandle.close();
+                msmqHandle = null;
             }
             String fullname = getQueueFullName(host, queueName);
-            Msmq = new Queue(fullname);
-            // Msmq= new Queue(fullname, 0x02); // 0x02 == SEND only
+            msmqHandle = new Queue(fullname);
+            // msmqHandle= new Queue(fullname, 0x02); // 0x02 == SEND only
         } catch (MessageQueueException ex1) {
             System.out.println("Queue open failure: " + ex1);
 
@@ -98,7 +105,7 @@ public class MsmqUtil {
             String mLabel = "inserted by " + this.getClass().getName() + ".java";
             String correlationID = "L:none";
             Message msg = new Message(msgContent, mLabel, correlationID, transactionFlag);
-            Msmq.send(msg);
+            msmqHandle.send(msg);
         } catch (MessageQueueException ex1) {
             System.out.println("Send failure: " + ex1);
         }
@@ -108,7 +115,7 @@ public class MsmqUtil {
         try {
             checkOpen();
             // System.out.println("receive");
-            Message msg = Msmq.receive(2000); // timeout= 2000 ms
+            Message msg = msmqHandle.receive(2000); // timeout= 2000 ms
             // System.out.println(" ==> message: " + msg.getMessage());
             // System.out.println("     label:   " + msg.getLabel());
             return msg.getMessage();
@@ -121,7 +128,7 @@ public class MsmqUtil {
     private String getQueueFullName(String hostname, String queueShortName) {
         String h1 = hostname;
         String a1 = "OS";
-        if ((h1 == null) || h1.equals(""))
+        if ((h1 == null) || h1.equals("") || LOCALIP.equals(h1))
             h1 = ".";
         char[] c = h1.toCharArray();
         if ((c[0] >= '1') && (c[0] <= '9'))
@@ -132,26 +139,26 @@ public class MsmqUtil {
 
     private void create() {
         try {
-            if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || "127.0.0.1"
+            if (!(host == null || "".equals(host) || "localhost".equalsIgnoreCase(host) || host.equals(ipAddr) || LOCALIP
                     .equals(host))) {
                 throw new MessageQueueException("can only create queue locally", -1); // can only create locally.
             }
             String fullname = ".\\private$\\" + queueName;
             String qLabel = "Created by " + this.getClass().getName() + ".java";
             boolean transactional = false; // should the queue be transactional
-            Msmq = Queue.create(fullname, qLabel, transactional);
+            msmqHandle = Queue.create(fullname, qLabel, transactional);
         } catch (MessageQueueException ex1) {
             System.out.println("Queue creation failure: " + ex1);
         }
     }
 
     private void checkOpen() throws MessageQueueException {
-        if (Msmq == null)
+        if (msmqHandle == null)
             throw new MessageQueueException("Open a queue first!\n", -1);
     }
 
     public boolean isOpen() {
-        return Msmq != null;
+        return msmqHandle != null;
     }
 
     public void setHost(String host) {
