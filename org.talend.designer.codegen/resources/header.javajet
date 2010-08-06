@@ -467,8 +467,21 @@ private class TalendException extends Exception {
                         <%
                     }
                 }
+                // when use parallelize will add virtual components(tAsyncIn and tAsyncOut) but in graphical these is visable=false
+                if ("true".equals(ElementParameterParser.getValue(node, "__PARALLELIZE__"))) {
+                	for (INode gNode :node.getProcess().getGraphicalNodes()) {
+                		if (gNode.getUniqueName().equals(node.getUniqueName())) {
+                			if (gNode.getIncomingConnections(EConnectionType.FLOW_MAIN).size()!= 0) {
+                				INode gSourceNode = gNode.getIncomingConnections(EConnectionType.FLOW_MAIN).get(0).getSource();
+                				node = gSourceNode;
+                			}
+                		}
+                	}
+                }
+                //end 
                 %>
                 <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
+
             }
             <%
 		}

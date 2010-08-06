@@ -44,8 +44,8 @@
 								this.errorCode = localErrorCode;
 							}
 						}					
-			            //pool.setErrorThread(this, new TalendException(e, currentComponent, globalMap));
-			            pool.setErrorThread(this,e);
+			            pool.setErrorThread(this, new TalendException(e, currentComponent, globalMap));
+			            //pool.setErrorThread(this,e);
 			            pool.stopAllThreads();
 					}
 					this.isRunning = false;
@@ -62,8 +62,6 @@
 			
 					pool.getTalendThreadResult().setErrorCode(this.errorCode);
 					pool.getTalendThreadResult().setStatus(this.status);	
-					
-					this.setFree(true);
 				}//Run method
 			}//ParallelThread class
 
@@ -85,6 +83,8 @@
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} catch (Exception te) {
+			throw new TalendException(te, currentComponent, globalMap);
 		}
 <%
 	}else{
