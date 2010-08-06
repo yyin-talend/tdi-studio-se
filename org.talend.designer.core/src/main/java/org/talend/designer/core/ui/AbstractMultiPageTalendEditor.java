@@ -98,6 +98,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
@@ -603,12 +604,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) {
-                    monitor.beginTask("Saving Please Waite....", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("AbstractMultiPageTalendEditor_pleaseWait"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     Display.getDefault().syncExec(new Runnable() {
 
                         public void run() {
                             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                            factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) {
+                            factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) { //$NON-NLS-1$
 
                                 @Override
                                 protected void run() throws LoginException, PersistenceException {
