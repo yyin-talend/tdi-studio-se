@@ -26,18 +26,27 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.talend.commons.ui.swt.formtools.LabelledFileField;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.generation.HTMLDocGenerator;
@@ -60,6 +69,12 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     private JobHTMLScriptsManager manager;
 
     private RepositoryNode[] nodes;
+
+    private Button button;
+
+    private LabelledFileField cssField;
+
+    private String cssFilePath;
 
     // dialog store id constants
     private static final String STORE_DESTINATION_NAMES_ID = "GenerateDocAsHTMLWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
@@ -145,6 +160,9 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
         createDestinationGroup(composite);
 
+        createCssDestinationGroup(composite);
+        addDocumentListener();
+
         restoreResourceSpecificationWidgetValues(); // ie.- local
         restoreWidgetValues(); // ie.- subclass hook
 
@@ -154,6 +172,85 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
         setControl(composite);
         giveFocusToDestination();
+    }
+
+    protected void createCssDestinationGroup(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new GridLayout());
+        boolean isCheck = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.USE_CSS_TEMPLATE);
+        button = new Button(composite, SWT.CHECK);
+        button.setText(Messages.getString("GenerateDocAsHTMLWizardPage.custom_css")); //$NON-NLS-1$
+        button.setSelection(isCheck);
+        new Label(composite, SWT.NONE)
+                .setText(Messages.getString("GenerateDocAsHTMLWizardPage.default_css_template")); //$NON-NLS-1$
+
+        Composite composite1 = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        composite1.setLayout(layout);
+        composite1.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        String value = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.CSS_FILE_PATH);
+        if (value != null && !value.equals("")) { //$NON-NLS-1$
+            cssFilePath = value;
+        }
+        String[] cssExtensions = { "*.css", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
+        cssField = new LabelledFileField(composite1, Messages.getString("GenerateDocAsHTMLWizardPage.css_file"), cssExtensions); //$NON-NLS-1$
+        cssField.setEditable(button.getSelection());
+        cssField.setText(value);
+    }
+
+    private void addDocumentListener() {
+        button.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                cssField.setEditable(button.getSelection());
+                if (!button.getSelection()) {
+                    cssField.setText(""); //$NON-NLS-1$
+                }
+                updatePageCompletion();
+            }
+
+        });
+        cssField.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                cssFilePath = cssField.getText();
+                updatePageCompletion();
+            }
+        });
+    }
+
+    @Override
+    protected boolean validateDestinationGroup() {
+        if (!button.getSelection()) {
+            return super.validateDestinationGroup();
+        } else {
+            return checkCssFieldValue() && super.validateDestinationGroup();
+        }
+    }
+
+    private boolean checkCssFieldValue() {
+        if (cssFilePath == null || cssFilePath.equals("")) { //$NON-NLS-1$
+            return true;
+        } else {
+            if (cssFilePath.contains(".")) { //$NON-NLS-1$
+                int lastIndexOf = cssFilePath.lastIndexOf("."); //$NON-NLS-1$
+                String extend = cssFilePath.substring(lastIndexOf + 1, cssFilePath.length());
+                if (!extend.equalsIgnoreCase("css")) { //$NON-NLS-1$
+                    setErrorMessage(Messages.getString("GenerateDocAsHTMLWizardPage.must_css_file")); //$NON-NLS-1$
+                    return false;
+                }
+            }
+            File cssFile = new File(cssFilePath);
+            if (!cssFile.exists()) {
+                setErrorMessage(Messages.getString("GenerateDocAsHTMLWizardPage.must_existing_file")); //$NON-NLS-1$
+                return false;
+            }
+
+        }
+        setErrorMessage(null);
+        return true;
+
     }
 
     /*
@@ -316,7 +413,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
     protected List<ExportFileResource> getExportResources() {
-        return manager.getExportResources(process);
+        return manager.getExportResourcesWithCss(process, cssFilePath);
     }
 
     /**
@@ -521,6 +618,13 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
             }
         }
         return ""; //$NON-NLS-1$
+    }
 
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible && button.getSelection()) {
+            checkCssFieldValue();
+        }
     }
 }
