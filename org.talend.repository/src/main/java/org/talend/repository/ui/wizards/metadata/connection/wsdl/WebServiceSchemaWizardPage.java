@@ -64,7 +64,7 @@ public class WebServiceSchemaWizardPage extends WSDLSchemaWizardPage {
         WSDLSchemaConnection connection = ((WSDLSchemaConnection) connectionItem.getConnection());
         if (ConnectionHelper.getTables(connection).size() < 2) {
             MetadataTable metadataTable = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0];
-            metadataTable.setLabel("OutPut");
+            metadataTable.setLabel("Output");
             MetadataTable inPutMetadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             inPutMetadataTable.setLabel("Input");
