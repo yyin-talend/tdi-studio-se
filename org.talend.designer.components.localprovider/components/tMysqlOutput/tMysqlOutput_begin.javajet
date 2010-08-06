@@ -380,7 +380,7 @@ if(columnList != null && columnList.size() > 0) {
 	            String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>"; 
 	            int rowCount<%=cid%> = 0;	 
 <%
-			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+			} else if ("mysql-connector-java-5.1.13-bin.jar".equals(dbVersion)) {
 %>
 				String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 <%	

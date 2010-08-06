@@ -312,7 +312,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                    rowCount<%=cid%> = 0;
 	                }    
 <% 
-				} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+				} else if ("mysql-connector-java-5.1.13-bin.jar".equals(dbVersion)) {
 	 				int counter = 1;
 	                for(Column column : colStruct) {
 	                    if(column.isInsertable()) {
@@ -1121,7 +1121,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         }	
         	//////////batch execute by batch size///////
-    	if (extendedInsert && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && ("INSERT").equals(dataAction)) {
+    	if (extendedInsert && "mysql-connector-java-5.1.13-bin.jar".equals(dbVersion) && ("INSERT").equals(dataAction)) {
     		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                

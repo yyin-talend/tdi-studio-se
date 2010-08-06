@@ -308,7 +308,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	        insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	    }
 <%	
-		} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+		} else if ("mysql-connector-java-5.1.13-bin.jar".equals(dbVersion)) {
   			//////////batch execute by batch size///////
     		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
     		%>
