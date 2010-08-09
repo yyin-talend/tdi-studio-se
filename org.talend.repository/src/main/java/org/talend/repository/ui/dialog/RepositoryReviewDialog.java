@@ -866,6 +866,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataMDMConnectionNode();
                 }
             }
+            if (repositoryType.equals(ERepositoryCategoryType.FTP.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFTPConnectionNode();
+                }
+            }
             if (repositoryType.equals(ERepositoryCategoryType.HL7.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)
@@ -1034,7 +1043,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
-
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
             container.add(contentProvider.getMetadataConNode());
 
         }
@@ -1074,7 +1083,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
-
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
                     refContainer.add(refProject.getMetadataConNode());
 
                 }
@@ -1119,7 +1128,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
-
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
                         refContainer.add(refProject.getMetadataConNode());
 
                     }

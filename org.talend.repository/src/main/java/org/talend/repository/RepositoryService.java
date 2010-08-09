@@ -76,6 +76,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.IFTPProviderService;
 import org.talend.core.ui.IHL7ProviderService;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.IMDMProviderService;
@@ -536,6 +537,14 @@ public class RepositoryService implements IRepositoryService {
                             .getService(IHeaderFooterProviderService.class);
                     if (service != null) {
                         relatedWizard = service.newHeaderFooterWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+                    }
+                }
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_FTP)) {
+                if (PluginChecker.isFTPPluginLoaded()) {
+                    IFTPProviderService service = (IFTPProviderService) GlobalServiceRegister.getDefault().getService(
+                            IFTPProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newFTPWizard(PlatformUI.getWorkbench(), creation, realNode, null);
                     }
                 }
             }

@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
@@ -247,6 +248,8 @@ public final class ConnectionContextHelper {
             //
         } else if (conn instanceof MDMConnection) {
             varList = OtherConnectionContextUtils.getMDMSchemaVariables(label, (MDMConnection) conn);
+        } else if (conn instanceof FTPConnection) {
+            varList = OtherConnectionContextUtils.getFTPSChemaVariables(label, (FTPConnection) conn);
         }
 
         return varList;

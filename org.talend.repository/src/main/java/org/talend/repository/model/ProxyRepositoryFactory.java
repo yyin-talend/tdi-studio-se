@@ -2112,4 +2112,24 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return repositoryFactoryFromProvider.getMetadataHeaderFooter(project, options);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataFTP(org.talend.core.model.general.Project,
+     * boolean[])
+     */
+    public RootContainer<String, IRepositoryViewObject> getMetadataFTP(Project project, boolean... options)
+            throws PersistenceException {
+        return repositoryFactoryFromProvider.getMetadataFTP(project, options);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataFTP()
+     */
+    public RootContainer<String, IRepositoryViewObject> getMetadataFTP() throws PersistenceException {
+        return getMetadataFTP(projectManager.getCurrentProject());
+    }
+
 }

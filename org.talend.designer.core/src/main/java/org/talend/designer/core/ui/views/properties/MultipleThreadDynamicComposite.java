@@ -51,6 +51,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
@@ -265,6 +266,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                                 if ((connection instanceof HL7Connection)
                                         && (repositoryValue.equals(ERepositoryCategoryType.HL7.getName()))) {
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof FTPConnection)
+                                        && (repositoryValue.equals(ERepositoryCategoryType.FTP.getName()))) {
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
                                 if ((connection instanceof MDMConnection)

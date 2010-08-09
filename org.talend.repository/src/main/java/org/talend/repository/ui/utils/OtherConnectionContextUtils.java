@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
@@ -87,6 +88,12 @@ public final class OtherConnectionContextUtils {
         UNIVERSE,
         DATACLUSTER,
         DATAMODEL,
+
+        // FTP
+        FTPHOST,
+        FTPPORT,
+        FTPUAERNAME,
+        FTPPASSWORD,
 
         // DATACERT CONNECTION
         URL,
@@ -389,6 +396,29 @@ public final class OtherConnectionContextUtils {
         return varList;
     }
 
+    static List<IContextParameter> getFTPSChemaVariables(String prefixName, FTPConnection conn) {
+        if (conn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.FTPHOST;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getHost());
+
+        paramName = prefixName + EParamName.FTPPORT;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getPort());
+
+        paramName = prefixName + EParamName.FTPUAERNAME;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getUsername());
+
+        paramName = prefixName + EParamName.FTPPASSWORD;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword());
+
+        return varList;
+    }
+
     static void setSalesforcePropertiesForContextMode(String prefixName, SalesforceSchemaConnection ssConn) {
         if (ssConn == null || prefixName == null) {
             return;
@@ -601,6 +631,24 @@ public final class OtherConnectionContextUtils {
         if (returnAttributes != null && returnAttributes instanceof BasicEList) {
             cloneConn.getReturnAttributes().addAll((EList) ((BasicEList) returnAttributes).clone());
         }
+        return cloneConn;
+    }
+
+    public static FTPConnection cloneOriginalValueFTPConnection(FTPConnection ftpConn, ContextType contextType) {
+        if (ftpConn == null) {
+            return null;
+        }
+        FTPConnection cloneConn = ConnectionFactory.eINSTANCE.createFTPConnection();
+        String host = ConnectionContextHelper.getOriginalValue(contextType, ftpConn.getHost());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, ftpConn.getPort());
+        String userName = ConnectionContextHelper.getOriginalValue(contextType, ftpConn.getUsername());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, ftpConn.getPassword());
+
+        cloneConn.setHost(host);
+        cloneConn.setPort(port);
+        cloneConn.setUsername(userName);
+        cloneConn.setPassword(password);
+
         return cloneConn;
     }
 

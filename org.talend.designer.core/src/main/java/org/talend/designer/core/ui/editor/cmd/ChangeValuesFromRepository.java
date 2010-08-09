@@ -192,7 +192,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             // force the autoSwitch to true if the schema is empty and if the
             // query is not set.
             Node node = (Node) elem;
-            boolean isSchemaEmpty = node.getMetadataList().get(0).getListColumns().size() == 0;
+            boolean isSchemaEmpty = false;
+            if (node.getMetadataList().size() > 0) {
+                isSchemaEmpty = node.getMetadataList().get(0).getListColumns().size() == 0;
+            } else {
+                isSchemaEmpty = true;
+            }
+
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField().equals(EParameterFieldType.MEMO_SQL)) {
                     if (curParam.getDefaultValues().size() > 0) {

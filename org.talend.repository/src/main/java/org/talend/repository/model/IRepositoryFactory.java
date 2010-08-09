@@ -271,6 +271,9 @@ public interface IRepositoryFactory {
     public RootContainer<String, IRepositoryViewObject> getMetadataHL7(Project project, boolean... options)
             throws PersistenceException;
 
+    public RootContainer<String, IRepositoryViewObject> getMetadataFTP(Project project, boolean... options)
+            throws PersistenceException;
+
     public RootContainer<String, IRepositoryViewObject> getMetadataMDM(Project project, boolean... options)
             throws PersistenceException;
 
