@@ -553,7 +553,7 @@
 		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver_MaxDB" MODULE="sapdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.5.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.13-bin.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
         <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12-8i.jar" REQUIRED="false" />
         <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED="false" />
         <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14-10g.jar" REQUIRED="false" />

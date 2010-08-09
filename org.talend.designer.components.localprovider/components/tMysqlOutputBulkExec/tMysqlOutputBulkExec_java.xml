@@ -46,7 +46,7 @@
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION">
 		<ITEMS DEFAULT="MYSQL_5">
-			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.13-bin.jar" />
+			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
 			<ITEM NAME="MYSQL_4" VALUE="mysql-connector-java-3.1.14-bin.jar" />
 		</ITEMS>
 	</PARAMETER>
