@@ -55,7 +55,6 @@ import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
@@ -64,18 +63,13 @@ import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
-import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
-import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
-import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
@@ -92,14 +86,11 @@ import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
-import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.model.properties.WSDLSchemaConnectionItem;
-import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
@@ -155,8 +146,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private AbstractTalendEditor editor;
 
     private boolean fromPalette; // only for palette dnd, feature 6457
-
-    private List<Node> dragedNodes = new ArrayList<Node>();
 
     /**
      * TalendEditorDropTargetListener constructor comment.
@@ -1118,125 +1107,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             componentName = name.getDefaultComponentName();
         }
 
-        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
         // tRunJob is special from our rules
         if (name == EDatabaseComponentName.RunJob || item instanceof JobletProcessItem) {
             store.component = ComponentsFactoryProvider.getInstance().get(componentName);
         } else {
+
             // for database, file, webservices, saleforce ...
-
-            String productNameWanted = name.getProductName();
-
-            // need improve
-            boolean outputXml = false;
-            if (item instanceof XmlFileConnectionItemImpl) {
-                XmlFileConnection connection = (XmlFileConnection) ((XmlFileConnectionItemImpl) item).getConnection();
-                if (!connection.isInputModel()) {
-                    outputXml = true;
-                    productNameWanted = "XMLOUTPUT";
-                }
-            }
-            boolean webserviceXml = false;
-            if (item instanceof WSDLSchemaConnectionItem) {
-                WSDLSchemaConnection connection = (WSDLSchemaConnection) ((WSDLSchemaConnectionItem) item).getConnection();
-                if (!connection.isIsInputModel()) {
-                    webserviceXml = true;
-                    productNameWanted = "WEBSERVICE";
-                }
-            }
-
-            boolean hl7Output = false;
-            if (item instanceof HL7ConnectionItem) {
-                EList list = ((HL7Connection) ((HL7ConnectionItem) item).getConnection()).getRoot();
-                if (list != null && list.size() > 0) {
-                    hl7Output = true;
-                }
-            }
-
-            // for mdm
-            boolean inputModel = false;
-            if (item instanceof MDMConnectionItem) {
-                MDMConnectionItem mdmItem = (MDMConnectionItem) item;
-                if (store.seletetedNode != null && store.seletetedNode.getObject() instanceof MetadataTableRepositoryObject) {
-                    MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) store.seletetedNode.getObject();
-                    if (mdmItem.getConnection() instanceof MDMConnection) {
-                        MDMConnection connection = (MDMConnection) mdmItem.getConnection();
-                        for (Object obj : connection.getSchemas()) {
-                            if (obj instanceof Concept && object.getLabel().equals(((Concept) obj).getLabel())) {
-                                inputModel = ((Concept) obj).isInputModel();
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            EmfComponent emfComponent = null;
-            List<IComponent> neededComponents = new ArrayList<IComponent>();
-            for (IComponent component : components) {
-                if (component instanceof EmfComponent) {
-                    emfComponent = (EmfComponent) component;
-                    String componentProductname = emfComponent.getRepositoryType();
-                    if (componentProductname != null && componentProductname.contains("SAP")) {
-                        componentProductname.toString();
-                    }
-                    boolean value = true;
-                    if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
-                        if (emfComponent.getName().toUpperCase().endsWith("MAP")) {
-                            value = false;
-                        }
-                    }
-                    boolean flag = filterComponent(component, name, type);
-                    if (hl7Output && !component.getName().equals("tHL7Output")) {
-                        value = false;
-                    }
-                    if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
-                        if (item instanceof MDMConnectionItem) {
-                            if (inputModel && emfComponent.getName().endsWith("Input")) {
-                                neededComponents.add(emfComponent);
-                            } else if (!inputModel && emfComponent.getName().endsWith("Output")) {
-                                neededComponents.add(emfComponent);
-                            }
-
-                        } else {
-                            neededComponents.add(emfComponent);
-                        }
-                    }
-                }
-            }
+            List<IComponent> neededComponents = TalendDndHelper.filterNeededComponents(item, store.seletetedNode, type);
 
             IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
             store.component = component;
         }
         store.componentName = name;
-    }
-
-    private boolean filterComponent(IComponent component, EDatabaseComponentName name, ERepositoryObjectType type) {
-        if (component != null && name != null && type != null) {
-            String originalFamilyName = component.getOriginalFamilyName();
-            if (originalFamilyName.startsWith("ELT")) {
-                String dbType = name.getDBType();
-                switch (name) {
-                case DBORACLEFORSID:
-                case DBORACLESN:
-                    dbType = EDatabaseTypeName.ORACLEFORSID.getProduct();
-                }
-                if (dbType != null && originalFamilyName.toUpperCase().endsWith(dbType.toUpperCase())) {
-                    final String suffix = "MAP";
-                    if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-                        if (component.getName().toUpperCase().endsWith(suffix)) {
-                            return true;
-                        }
-                    }
-                    if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
-                        if (!component.getName().toUpperCase().endsWith(suffix)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**
