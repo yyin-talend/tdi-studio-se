@@ -48,7 +48,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -94,6 +94,16 @@ public abstract class JobScriptsManager {
     private String selectedJobVersion; //$NON-NLS-1$
 
     protected IProgressMonitor progressMonitor; // achen added to fix bug 0006222
+
+    protected List<ContextParameterType> contextEditableResultValuesList;
+
+    protected List<ContextParameterType> getContextEditableResultValuesList() {
+        return this.contextEditableResultValuesList;
+    }
+
+    public void setContextEditableResultValuesList(List<ContextParameterType> contextEditableResultValuesList) {
+        this.contextEditableResultValuesList = contextEditableResultValuesList;
+    }
 
     public Map<ExportChoice, Object> getDefaultExportChoiseMap() {
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
@@ -274,15 +284,16 @@ public abstract class JobScriptsManager {
         String contextParameter = CTX_PARAMETER_ARG;
         String contextParameterValues = "";//$NON-NLS-1$
         if (setParameterValues) {
-            List<ContextParameterTypeImpl> jobContextValues = getJobContextValues(process);
-
+            List<ContextParameterType> jobContextValues = getContextEditableResultValuesList();
             for (int i = 0; i < jobContextValues.size(); i++) {
-                ContextParameterTypeImpl contextParameterType = jobContextValues.get(i);
+                ContextParameterType contextParameterType = jobContextValues.get(i);
                 String name = contextParameterType.getName();
                 String value = contextParameterType.getValue();
                 // name = TalendTextUtils.removeQuotes(name);
                 // value = TalendTextUtils.removeQuotes(value);
-                if (value != null && !"".equals(value.trim())) {//$NON-NLS-1$
+                if (value == null) {
+                    contextParameterValues += " " + contextParameter + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                } else if (value != null && !value.isEmpty()) {//$NON-NLS-1$
                     contextParameterValues += " " + contextParameter + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                 }
             }
@@ -412,8 +423,6 @@ public abstract class JobScriptsManager {
      * 
      */
     public abstract List<String> getJobContexts(ProcessItem processItem);
-
-    public abstract List<ContextParameterTypeImpl> getJobContextValues(ProcessItem processItem);
 
     /**
      * ftang Comment method "escapeFileNameSpace".

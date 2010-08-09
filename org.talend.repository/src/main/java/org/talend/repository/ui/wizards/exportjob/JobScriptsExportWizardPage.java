@@ -28,14 +28,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -43,6 +45,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -64,6 +67,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
@@ -82,7 +86,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
@@ -179,6 +186,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private String suDestinationFilePath;
 
     private String initDestinationFilePath;
+
+    private static final int DIALOG_WIDTH = 600;
+
+    private static final int DIALOG_HEIGHT = 480;
 
     private String getInitDestinationFilePath() {
         return this.initDestinationFilePath;
@@ -613,7 +624,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // genCodeButton.setFont(font);
 
         setParametersValueButton = new Button(optionsGroup, SWT.NONE);
-        setParametersValueButton.setText(Messages.getString("JobScriptsExportWizardPage.SetParameterValues"));
+        setParametersValueButton.setText(Messages.getString("JobScriptsExportWizardPage.OverrideParameterValues"));
         setParametersValueButton.setSelection(false);
 
         setParametersValueButton2 = new Button(optionsGroup, SWT.CHECK);
@@ -622,16 +633,53 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setParametersValueButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                List contextValueList = manager.getJobContextValues((ProcessItem) process[0].getItem());
+
+                List<ContextParameterType> contextValueList = getJobContextValues((ProcessItem) process[0].getItem(),
+                        contextCombo.getText());
                 ParametersValuesDialog dialog = new ParametersValuesDialog(getShell(), contextValueList);
                 int open = dialog.open();
                 if (open == Dialog.OK) {
+                    List<ContextParameterType> contextResultValuesList = dialog.getContextResultValuesList();
+                    manager.setContextEditableResultValuesList(contextResultValuesList);
                     setParametersValueButton2.setSelection(true);
                 } else {
                     setParametersValueButton2.setSelection(false);
                 }
             }
         });
+    }
+
+    /**
+     * DOC zli Comment method "getJobContextValues".
+     * 
+     * @param processItem
+     * @param contextName
+     * @return
+     */
+    public List<ContextParameterType> getJobContextValues(ProcessItem processItem, String contextName) {
+        if (contextName == null) {
+            return null;
+        }// else do next line
+        List<ContextParameterType> list = new ArrayList<ContextParameterType>();
+        EList contexts = ((ProcessTypeImpl) processItem.getProcess()).getContext();
+        for (int i = 0; i < contexts.size(); i++) {
+            Object object = contexts.get(i);
+            if (object instanceof ContextType) {
+                ContextType contextType = (ContextType) object;
+                if (contextName.equals(contextType.getName())) {
+                    EList contextParameter = contextType.getContextParameter();
+                    for (int j = 0; j < contextParameter.size(); j++) {
+                        Object object2 = contextParameter.get(j);
+                        if (object2 instanceof ContextParameterType) {
+                            ContextParameterType contextParameterType = (ContextParameterType) object2;
+                            list.add(contextParameterType);
+                        }
+                    }
+                    return list;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -648,7 +696,19 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         private Table table;
 
-        private List contextValueList;
+        private List<ContextParameterType> contextValueList;
+
+        private List<ContextParameterType> contextEditableValuesList;
+
+        private List<ContextParameterType> contextResultValuesList;
+
+        private Button setContextButton;
+
+        private Button addButton;
+
+        private Button removeButton;
+
+        private String addParameterName = "new";
 
         /**
          * DOC zli ParametersValuesDialog constructor comment.
@@ -657,13 +717,38 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
          */
         protected ParametersValuesDialog(Shell parentShell) {
             super(parentShell);
-            setShellStyle(getShellStyle() | SWT.RESIZE);
+            setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX | SWT.MIN);
         }
 
-        protected ParametersValuesDialog(Shell parentShell, List contextValueList) {
+        protected ParametersValuesDialog(Shell parentShell, List<ContextParameterType> contextValueList) {
             super(parentShell);
-            setShellStyle(getShellStyle() | SWT.RESIZE);
+            setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX | SWT.MIN);
             this.contextValueList = contextValueList;
+            contextEditableValuesList = initContextValues(contextValueList);
+        }
+
+        @Override
+        protected Point getInitialSize() {
+            Point p = super.getInitialSize();
+            p.x = 600;
+            p.y = 450;
+            return p;
+        }
+
+        protected List<ContextParameterType> initContextValues(List<ContextParameterType> valueList) {
+
+            List<ContextParameterType> list = new ArrayList<ContextParameterType>();
+
+            for (int i = 0; i < valueList.size(); i++) {
+                Object object = valueList.get(i);
+                ContextParameterType contextType = (ContextParameterType) object;
+                ContextParameterType createContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
+                createContextParameterType.setName(contextType.getName());
+                createContextParameterType.setType(contextType.getType());
+                createContextParameterType.setValue("");
+                list.add(createContextParameterType);
+            }
+            return list;
         }
 
         @Override
@@ -674,46 +759,162 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             setTitle(Messages.getString("ParametersValuesDialog_Title")); //$NON-NLS-1$
             setMessage(Messages.getString("ParametersValuesDialog_Desc")); //$NON-NLS-1$
 
-            table = new Table(composite, SWT.FULL_SELECTION | SWT.BORDER);
+            tableViewer = new TableViewer(composite, SWT.BORDER | SWT.FULL_SELECTION);
+            tableViewer.setContentProvider(new ContentProvider());
+            tableViewer.setLabelProvider(new TableLabelProvider());
+            tableViewer.setInput(contextEditableValuesList);
+            table = tableViewer.getTable();
+            TableLayout layout = new TableLayout();
+            table.setLayout(layout);
             table.setLayoutData(new GridData(GridData.FILL_BOTH));
             table.setHeaderVisible(true);
             table.setLinesVisible(true);
 
-            TableLayout layout = new TableLayout();
-            layout.addColumnData(new ColumnWeightData(30, 75, true));
-            layout.addColumnData(new ColumnWeightData(25, 75, true));
-            // layout.addColumnData(new ColumnWeightData(45, 75, true));
-            table.setLayout(layout);
-
-            TableColumn column = new TableColumn(table, SWT.LEFT);
+            TableColumn column = new TableColumn(table, SWT.NONE);
             column.setText(contextParameterName);
-            column = new TableColumn(table, SWT.LEFT);
-            column.setText(contextParameterValue);
+            column.setWidth(150);
 
-            tableViewer = new TableViewer(table);
-            tableViewer.setLabelProvider(new TableLabelProvider());
-            tableViewer.setContentProvider(new ContentProvider());
-            tableViewer.setInput(contextValueList);
+            column = new TableColumn(table, SWT.NONE);
+            column.setText(contextParameterValue);
+            column.setWidth(300);
+
             tableViewer.setColumnProperties(new String[] { contextParameterName, contextParameterValue });
+            // set modifier
+            tableViewer.setCellModifier(new ICellModifier() {
+
+                public void modify(Object element, String property, Object value) {
+                    TableItem tableItem = (TableItem) element;
+                    ContextParameterType node = (ContextParameterType) tableItem.getData();
+                    if (property.equals(contextParameterName)) {
+                        node.setName((String) value);
+                    }
+                    if (property.equals(contextParameterValue)) {
+                        node.setValue((String) value);
+                    }
+                    tableViewer.refresh(node);
+                }
+
+                public Object getValue(Object element, String property) {
+                    ContextParameterType node = (ContextParameterType) element;
+                    if (property.equals(contextParameterName)) { //$NON-NLS-1$
+                        return node.getName();
+                    }
+                    if (property.equals(contextParameterValue)) { //$NON-NLS-1$
+                        return node.getValue();
+                    }
+
+                    return null;
+                }
+
+                public boolean canModify(Object element, String property) {
+                    return true;
+                }
+            });
+            // set editor
+            int columnCount = table.getColumnCount();
+            CellEditor[] editors = new CellEditor[columnCount];
+            for (int i = 0; i < columnCount; i++) {
+                editors[i] = new TextCellEditor(table);
+            }
+            tableViewer.setCellEditors(editors);
+
+            final Composite buttonsComposite = new Composite(composite, SWT.NONE);
+
+            buttonsComposite.setLayout(new GridLayout(6, false));
+            GridData gData = new GridData(GridData.FILL_HORIZONTAL);
+            buttonsComposite.setLayoutData(gData);
+
+            setContextButton = new Button(buttonsComposite, SWT.NONE);
+            GridData gD = new GridData();
+            gD.horizontalSpan = 2;
+            setContextButton.setLayoutData(gD);
+            setContextButton.setText("Values from selected context");//$NON-NLS-N$
+            setContextButton.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    for (ContextParameterType contextType : contextEditableValuesList) {
+                        for (ContextParameterType context : contextValueList) {
+                            if (contextType.getName().equals(context.getName())) {
+                                contextType.setValue(context.getValue());
+                            }
+                        }
+                    }
+                    tableViewer.refresh(true);
+                }
+            });
+
+            addButton = new Button(buttonsComposite, SWT.PUSH);
+            addButton.setLayoutData(new GridData());
+            addButton.setText("Add");//$NON-NLS-N$      
+            addButton.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    ContextParameterType addContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
+                    Integer numParam = new Integer(1);
+                    boolean paramNameFound;
+                    String paramName = null;
+                    do { // look for a new name
+                        paramNameFound = true;
+                        paramName = addParameterName + numParam;
+                        for (int i = 0; i < contextEditableValuesList.size(); i++) {
+                            if (paramName.equals(contextEditableValuesList.get(i).getName())) {
+                                paramNameFound = false;
+                            }
+                        }
+                        if (!paramNameFound) {
+                            numParam++;
+                        }
+                    } while (!paramNameFound);
+                    addContextParameterType.setName(paramName);
+                    addContextParameterType.setType("id_String");//$NON-NLS-N$
+                    addContextParameterType.setValue("");//$NON-NLS-N$
+                    contextEditableValuesList.add(addContextParameterType);
+                    tableViewer.refresh(true);
+                }
+
+            });
+
+            removeButton = new Button(buttonsComposite, SWT.PUSH);
+            removeButton.setLayoutData(new GridData());
+            removeButton.setText("Remove");//$NON-NLS-N$
+            removeButton.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+
+                    TableItem[] items = tableViewer.getTable().getSelection();
+                    if (items != null && items.length == 1) {
+                        TableItem removeItem = items[0];
+                        Object data = removeItem.getData();
+                        if (data instanceof ContextParameterType) {
+                            ContextParameterType removeContextType = (ContextParameterType) data;
+                            contextEditableValuesList.remove(removeContextType);
+                        }
+                        tableViewer.refresh(true);
+                    }
+                }
+            });
 
             return composite;
         }
 
-        @Override
-        protected Point getInitialSize() {
-            // TODO Auto-generated method stub
-            return super.getInitialSize();
+        private List<ContextParameterType> getContextResultValuesList() {
+            return this.contextResultValuesList;
+        }
+
+        private void setContextResultValuesList(List<ContextParameterType> contextResultValuesList) {
+            this.contextResultValuesList = contextResultValuesList;
         }
 
         @Override
         protected void okPressed() {
-            // TODO Auto-generated method stub
             super.okPressed();
+            setContextResultValuesList(contextEditableValuesList);
         }
 
         @Override
         protected void cancelPressed() {
-            // TODO Auto-generated method stub
             super.cancelPressed();
         }
 
@@ -726,8 +927,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof ContextParameterTypeImpl) {
-                ContextParameterTypeImpl contextParameter = (ContextParameterTypeImpl) element;
+            if (element instanceof ContextParameterType) {
+                ContextParameterType contextParameter = (ContextParameterType) element;
                 if (columnIndex == 0) {
                     return contextParameter.getName();
                 }
@@ -909,7 +1110,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
 
-        manager = createJobScriptsManager();
+        // manager = createJobScriptsManager();
         if (manager instanceof PetalsJobJavaScriptsManager) {
             PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
         }

@@ -63,7 +63,6 @@ import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -994,36 +993,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
         return contextNameList;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getJobContextValues(org.talend.core
-     * .model.properties.ProcessItem)
-     */
-    @Override
-    public List getJobContextValues(ProcessItem processItem) {
-        List list = new ArrayList();
-        EList context = ((ProcessTypeImpl) processItem.getProcess()).getContext();
-        if (context != null && context.size() > 0) {
-            Object object = context.get(0);
-            if (object instanceof ContextType) {
-                ContextType contextType = (ContextType) object;
-                EList contextParameter = contextType.getContextParameter();
-                for (int i = 0; i < contextParameter.size(); i++) {
-                    Object object2 = contextParameter.get(i);
-                    if (object2 instanceof ContextParameterTypeImpl) {
-                        ContextParameterTypeImpl contextParameterType = (ContextParameterTypeImpl) object2;
-                        list.add(contextParameterType);
-                    }
-                }
-                return list;
-            }
-        }
-
-        return null;
     }
 
     public List<String> getJobContextsComboValue(ProcessItem processItem) {
