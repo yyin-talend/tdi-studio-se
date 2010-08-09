@@ -293,7 +293,7 @@ public abstract class JobScriptsManager {
                 // value = TalendTextUtils.removeQuotes(value);
                 if (value == null) {
                     contextParameterValues += " " + contextParameter + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
-                } else if (value != null && !value.isEmpty()) {//$NON-NLS-1$
+                } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
                     contextParameterValues += " " + contextParameter + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                 }
             }
