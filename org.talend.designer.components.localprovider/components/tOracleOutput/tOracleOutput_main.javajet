@@ -103,9 +103,24 @@ skeleton="../templates/db_output_bulk.skeleton"
 		if(conns!=null && conns.size() > 0) {
 			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
 		}
+		if(!useExistingConnection) {
+	    	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
 %>
-		batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
-		commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+	    	}
+    	}
+    	
+    	if (("true").equals(useBatchSize)) {
+		    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+				batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+		    }
+    	}
+%>
+
+		
 <%
 	}
 	
