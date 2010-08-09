@@ -29,8 +29,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.PluginChecker;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectSettingNode;
+import org.talend.repository.preference.CustomComponentSettingPage;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -68,7 +70,15 @@ public class ProjectSettingDialog {
             }
             String category = node.getCategory();
             if (category == null) {
-                manager.addToRoot(node);
+                if (node.getPage() instanceof CustomComponentSettingPage) {
+                    if (PluginChecker.isTIS() && PluginChecker.isSVNProviderPluginLoaded()) {
+                        manager.addToRoot(node);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    manager.addToRoot(node);
+                }
             } else {
                 IPreferenceNode parent = manager.find(category);
                 if (parent != null) {

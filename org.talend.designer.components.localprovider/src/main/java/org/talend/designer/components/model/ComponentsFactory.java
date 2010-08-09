@@ -79,6 +79,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static List<IComponent> componentList = null;
 
+    private static List<IComponent> customComponentList = null;
+
     private List<IComponent> userComponentList = null;
 
     private IProgressMonitor monitor;
@@ -209,6 +211,7 @@ public class ComponentsFactory implements IComponentsFactory {
         TimeMeasure.begin("ComponentsFactory.init"); //$NON-NLS-1$
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
+        customComponentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
 
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
@@ -315,6 +318,15 @@ public class ComponentsFactory implements IComponentsFactory {
                 this.userComponentList = new ArrayList<IComponent>();
             }
         }
+
+        boolean isCustom = false;
+        if (provider != null && provider.length == 1) {
+            if ("org.talend.designer.components.model.UserComponentsProvider".equals(provider[0].getId())
+                    || "org.talend.designer.components.ecosystem.EcosystemComponentsProvider".equals(provider[0].getId())) {
+                isCustom = true;
+            }
+        }
+
         File source = getComponentsLocation(pathSource);
         File[] childDirectories;
 
@@ -375,6 +387,9 @@ public class ComponentsFactory implements IComponentsFactory {
                     if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
                         // In headless mode, we assume the components won't change and we will use a cache
                         componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+                        if (isCustom) {
+                            customComponentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+                        }
                         continue;
                     }
 
@@ -397,6 +412,9 @@ public class ComponentsFactory implements IComponentsFactory {
                         loadIcons(currentFolder, currentComp);
                         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         componentList.add(currentComp);
+                        if (isCustom) {
+                            customComponentList.add(currentComp);
+                        }
                         if (pathSource != null) {
                             Path userComponent = new Path(pathSource);
                             Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
@@ -551,6 +569,13 @@ public class ComponentsFactory implements IComponentsFactory {
             init();
         }
         return componentList;
+    }
+
+    public List<IComponent> getCustomComponents() {
+        if (customComponentList == null) {
+            init();
+        }
+        return customComponentList;
     }
 
     /*

@@ -13,14 +13,28 @@
 package org.talend.designer.components.model;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.PluginChecker;
+import org.talend.core.i18n.Messages;
 import org.talend.core.model.components.AbstractComponentsProvider;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.ui.IComponentPreferenceConstant;
+import org.talend.repository.ProjectManager;
 
 /***/
 public class UserComponentsProvider extends AbstractComponentsProvider {
+
+    private static Logger logger = Logger.getLogger(UserComponentsProvider.class);
 
     /***/
     public UserComponentsProvider() {
@@ -51,5 +65,55 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
             return ""; //$NON-NLS-1$
         }
         return path.toString();
+    }
+
+    public void preComponentsLoad() throws IOException {
+        File installationFolder = getInstallationFolder();
+        if (installationFolder.exists()) {
+            FilesUtils.removeFolder(installationFolder, true);
+        }
+        FilesUtils.createFoldersIfNotExists(installationFolder.getAbsolutePath(), false);
+        FileFilter ff = new FileFilter() {
+
+            public boolean accept(File pathname) {
+                if (pathname.getName().equals(".svn")) {
+                    return false;
+                }
+                return true;
+            }
+
+        };
+
+        // synchroniz shared custom component
+        if (PluginChecker.isTIS()) {
+            Project currentProject = ProjectManager.getInstance().getCurrentProject();
+            String projectLabel = currentProject.getTechnicalLabel();
+            String sourcePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
+                    + File.separatorChar + projectLabel + File.separatorChar
+                    + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
+            File source = new File(sourcePath);
+            if (source.exists()) {
+                for (File file : source.listFiles(ff)) {
+                    FilesUtils.copyFolder(file, new File(installationFolder.getAbsolutePath() + File.separator + file.getName()),
+                            true, ff, null, true, false);
+                }
+            }
+        }
+
+        // if components in user component path include some shared components , replace it
+        File externalComponentsLocation = getExternalComponentsLocation();
+        if (externalComponentsLocation != null) {
+            if (externalComponentsLocation.exists()) {
+                try {
+                    FilesUtils.copyFolder(externalComponentsLocation, installationFolder, false, ff, null, true, false);
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+
+            } else {
+                logger.warn(Messages
+                        .getString("AbstractComponentsProvider.folderNotExist", externalComponentsLocation.toString())); //$NON-NLS-1$
+            }
+        }
     }
 }

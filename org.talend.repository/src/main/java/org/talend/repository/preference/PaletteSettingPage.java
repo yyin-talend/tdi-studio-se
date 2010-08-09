@@ -133,7 +133,10 @@ public class PaletteSettingPage extends ProjectSettingPage {
      */
     private void addTreeViewer(ThreeCompositesSashForm parent) {
 
-        hiddenViewer = new TreeViewer(parent.getLeftComposite());
+        Composite leftComposite = parent.getLeftComposite();
+        Label label = new Label(leftComposite, SWT.NONE);
+        label.setText("Hide");
+        hiddenViewer = new TreeViewer(leftComposite);
         hiddenViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hiddenViewer.setContentProvider(new TalendPaletteTreeProvider());
         hiddenViewer.setLabelProvider(new TalendPaletteLabelProvider());
@@ -147,7 +150,10 @@ public class PaletteSettingPage extends ProjectSettingPage {
             }
         });
         createButtons(parent.getMidComposite());
-        displayViewer = new TreeViewer(parent.getRightComposite());
+        Composite rightComposite = parent.getRightComposite();
+        label = new Label(rightComposite, SWT.NONE);
+        label.setText("Show");
+        displayViewer = new TreeViewer(rightComposite);
         displayViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         displayViewer.setContentProvider(new TalendPaletteTreeProvider());
         displayViewer.setLabelProvider(new TalendPaletteLabelProvider());

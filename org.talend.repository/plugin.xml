@@ -1346,6 +1346,11 @@
             class="org.talend.repository.preference.SecurityProjectSettingPage"
             id="org.talend.repository.securityPage"
             title="%projectsetting.Security">
+      </page>
+      <page
+            class="org.talend.repository.preference.CustomComponentSettingPage"
+            id="org.talend.repository.preference.CustomComponentSettingPage"
+            title="%customCompSetting">
       </page>        
    </extension>
 
