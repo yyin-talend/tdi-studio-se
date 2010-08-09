@@ -35,10 +35,16 @@ public class MsmqUtil {
         msgu.setQueue("ytao4");
         msgu.createIfNotExists(true);
         msgu.open();
-        msgu.setMsg("aaaa");
+        String str = "ÊÇµÄabc";
+        // str = CharacterSetToolkit.toUnicode(str, true);
+        // System.out.println(str);
+        msgu.setMsg(str);
         msgu.send();
-        if (msgu.isOpen())
-            System.out.println(msgu.receive());
+        if (msgu.isOpen()) {
+            str = msgu.receive();
+            // str = CharacterSetToolkit.fromUnicode(str);
+            System.out.println(str);
+        }
         msgu.close();
     }
 
@@ -50,7 +56,6 @@ public class MsmqUtil {
             Message msg = msmqHandle.peek(2000); // timeout= 2000 ms
             System.out.println(" ==> message: " + msg.getMessage());
             System.out.println("     label:   " + msg.getLabel());
-
         } catch (MessageQueueException ex1) {
             System.out.println("Peek failure: " + ex1);
         }
@@ -118,7 +123,7 @@ public class MsmqUtil {
             Message msg = msmqHandle.receive(2000); // timeout= 2000 ms
             // System.out.println(" ==> message: " + msg.getMessage());
             // System.out.println("     label:   " + msg.getLabel());
-            return msg.getMessage();
+            return CharacterSetToolkit.fromUnicode(msg.getMessage());
         } catch (MessageQueueException ex1) {
             System.out.println("Receive failure: " + ex1);
         }
@@ -170,7 +175,7 @@ public class MsmqUtil {
     }
 
     public void setMsg(String msg) {
-        this.msgContent = msg;
+        this.msgContent = CharacterSetToolkit.toUnicode(msg, true);
     }
 
     public void createIfNotExists(boolean bool) {

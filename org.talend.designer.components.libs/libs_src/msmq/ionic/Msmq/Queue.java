@@ -223,7 +223,8 @@ public class Queue {
             }
             if (extracted && file.exists())
                 file.delete();
-
+            
+            e.printStackTrace();
         }
     }
 }
