@@ -45,7 +45,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				
-					}else {
+					} else if(javaType == JavaTypesManager.DOUBLE) {
+%>
+								String.format("%1.<%=column.getPrecision() %>f",<%=conn.getName() %>.<%=column.getLabel() %>)
+<%				
+					} else {
 %>
 								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
 <%				
