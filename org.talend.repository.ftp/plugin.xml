@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.talend.core.service">
+      <Service
+            class="org.talend.repository.ftp.FTPProviderService"
+            serviceId="org.talend.core.ui.IFTPProviderService">
+      </Service>
+   </extension>
+   <extension
+         point="org.talend.core.repositoryContextualsActions">
+      <Action
+            class="org.talend.repository.ftp.actions.CreateFTPConnectionAction"
+            id="org.talend.repository.ftp.actions.CreateFTPConnectionAction"
+            isEditAction="true"
+            isReadAction="true"
+            level="10"
+            name="Metadata/Create FTP">
+      </Action>
+   </extension>
+
+</plugin>

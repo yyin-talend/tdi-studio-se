@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ftp
+Bundle-SymbolicName: org.talend.repository.ftp;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.talend.core,
+ org.eclipse.ui,
+ org.talend.repository,
+ org.talend.commons,
+ org.talend.commons.ui

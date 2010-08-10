@@ -1,0 +1,493 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.repository.ftp.ui.wizards.froms;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.talend.commons.ui.swt.formtools.LabelledCombo;
+import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
+import org.talend.repository.ui.swt.utils.AbstractForm;
+
+/**
+ * DOC hwang class global comment. Detailled comment
+ */
+public class FTPFrom extends AbstractForm {
+
+    private FTPPage page;
+
+    private LabelledText ftpUsernameText;
+
+    private LabelledText ftpPasswordText;
+
+    private LabelledText ftpPortText;
+
+    private LabelledText ftpHostText;
+
+    private LabelledText proxyUsernameText;
+
+    private LabelledText proxyPasswordText;
+
+    private LabelledText proxyPortText;
+
+    private LabelledText proxyHostText;
+
+    private LabelledText keyFileText;
+
+    private LabelledText keyPasswordText;
+
+    private LabelledCombo connModelCombo;
+
+    private LabelledCombo encodeCombo;
+
+    private LabelledCombo methodCombo;
+
+    private Button sftpSuppBut;
+
+    private Button ftpsSuppBut;
+
+    private Button useSocksBut;
+
+    private Composite sftpCom;
+
+    private Composite ftpsCom;
+
+    private Composite proxyCom;
+
+    /**
+     * DOC Administrator FTPFrom constructor comment.
+     * 
+     * @param parent
+     * @param style
+     */
+    public FTPFrom(Composite parent, ConnectionItem connectionItem, String[] existingNames, FTPPage page) {
+        super(parent, SWT.NONE, existingNames);
+        this.connectionItem = connectionItem;
+        this.page = page;
+        setConnectionItem(connectionItem); // must be first.
+        setupForm(false);
+        layoutForm();
+    }
+
+    private void layoutForm() {
+        GridLayout layout = (GridLayout) getLayout();
+        layout.marginHeight = 0;
+        setLayout(layout);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#adaptFormToReadOnly()
+     */
+    @Override
+    protected void adaptFormToReadOnly() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#addFields()
+     */
+    @Override
+    protected void addFields() {
+        Group ftpParameterGroup = new Group(this, SWT.NULL);
+        ftpParameterGroup.setText("Server"); //$NON-NLS-1$
+        GridLayout layoutGroup = new GridLayout();
+        layoutGroup.numColumns = 2;
+        ftpParameterGroup.setLayout(layoutGroup);
+
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        ftpParameterGroup.setLayoutData(gridData);
+
+        ftpUsernameText = new LabelledText(ftpParameterGroup, "Username", true); //$NON-NLS-1$
+
+        ftpPasswordText = new LabelledText(ftpParameterGroup, "Password", 1, SWT.BORDER | SWT.PASSWORD); //$NON-NLS-1$
+
+        ftpHostText = new LabelledText(ftpParameterGroup, "Host", true); //$NON-NLS-1$
+
+        ftpPortText = new LabelledText(ftpParameterGroup, "Port", true); //$NON-NLS-1$
+
+        List<String> codeList = new ArrayList<String>();
+        codeList.add("ISO-8859-15");
+        codeList.add("UTF-8");
+        codeList.add("CUSTOM");
+        encodeCombo = new LabelledCombo(ftpParameterGroup, "Encoding", "", codeList);
+
+        List<String> connList = new ArrayList<String>();
+        connList.add("Passive");
+        connList.add("Active");
+        connModelCombo = new LabelledCombo(ftpParameterGroup, "Connection Model", "", connList);
+        // Composite com = new Composite(mdmParameterGroup, SWT.NONE);
+
+        Group buildGroup = new Group(this, SWT.NULL);
+        buildGroup.setText("Parameter"); //$NON-NLS-1$
+        layoutGroup = new GridLayout();
+        layoutGroup.numColumns = 1;
+        buildGroup.setLayout(layoutGroup);
+
+        gridData = new GridData(GridData.FILL_BOTH);
+        buildGroup.setLayoutData(gridData);
+
+        sftpCom = new Composite(buildGroup, SWT.NONE);
+        layoutGroup = new GridLayout();
+        layoutGroup.numColumns = 2;
+        sftpCom.setLayout(layoutGroup);
+
+        gridData = new GridData(GridData.FILL_BOTH);
+        sftpCom.setLayoutData(gridData);
+
+        sftpSuppBut = new Button(sftpCom, SWT.CHECK);
+        sftpSuppBut.setText("SFTP Support");
+        ftpsSuppBut = new Button(sftpCom, SWT.CHECK);
+        ftpsSuppBut.setText("FTPs Support(support tFTPGet temporarily)");
+        List<String> list = new ArrayList<String>();
+        list.add("Public key");
+        list.add("Password");
+        methodCombo = new LabelledCombo(sftpCom, "Authentication method", "", list);
+        methodCombo.setVisible(false);
+
+        keyFileText = new LabelledText(sftpCom, "Keystore File", true); //$NON-NLS-1$
+        keyPasswordText = new LabelledText(sftpCom, "Keystore Password", true); //$NON-NLS-1$
+        keyFileText.setVisible(false);
+        keyPasswordText.setVisible(false);
+
+        proxyCom = new Composite(buildGroup, SWT.NONE);
+        proxyCom.setLayout(layoutGroup);
+        proxyCom.setLayoutData(gridData);
+
+        useSocksBut = new Button(proxyCom, SWT.CHECK);
+        useSocksBut.setText("Use Socks Proxy");
+        Composite c = new Composite(proxyCom, SWT.NONE);
+        proxyHostText = new LabelledText(proxyCom, "Proxy Host", true); //$NON-NLS-1$
+        proxyPortText = new LabelledText(proxyCom, "Proxy Prot", true); //$NON-NLS-1$
+        proxyUsernameText = new LabelledText(proxyCom, "Proxy User", true); //$NON-NLS-1$
+        proxyPasswordText = new LabelledText(proxyCom, "Proxy Password", true); //$NON-NLS-1$
+        proxyHostText.setVisible(false);
+        proxyPortText.setVisible(false);
+        proxyUsernameText.setVisible(false);
+        proxyPasswordText.setVisible(false);
+
+        // addCheckButton(mdmParameterGroup);
+        checkFieldsValue();
+        // if (!verified) {
+        // page.setPageComplete(false);
+        // }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#addFieldsListeners()
+     */
+    @Override
+    protected void addFieldsListeners() {
+        ftpUsernameText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setUsername(ftpUsernameText.getText());
+                checkFieldsValue();
+            }
+        });
+
+        ftpPasswordText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setPassword(ftpPasswordText.getText());
+                checkFieldsValue();
+            }
+        });
+        ftpPortText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setPort(ftpPortText.getText());
+                checkFieldsValue();
+            }
+        });
+        ftpHostText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setHost(ftpHostText.getText());
+                checkFieldsValue();
+            }
+        });
+        proxyUsernameText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setProxyuser(proxyUsernameText.getText());
+            }
+        });
+        proxyPasswordText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setProxypassword(proxyPasswordText.getText());
+            }
+        });
+        proxyPortText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setProxyport(proxyPortText.getText());
+            }
+        });
+        proxyHostText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setProxyhost(proxyHostText.getText());
+            }
+        });
+        keyFileText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setKeystoreFile(keyFileText.getText());
+            }
+        });
+        keyPasswordText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setKeystorePassword(keyPasswordText.getText());
+            }
+        });
+        connModelCombo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setMode(connModelCombo.getText());
+            }
+        });
+        encodeCombo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setEcoding(encodeCombo.getText());
+            }
+        });
+
+        methodCombo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setMethod(methodCombo.getText());
+            }
+        });
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#addUtilsButtonListeners()
+     */
+    @Override
+    protected void addUtilsButtonListeners() {
+        sftpSuppBut.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean show = sftpSuppBut.getSelection();
+                ftpsSuppBut.setVisible(!show);
+                methodCombo.setVisible(show);
+                connModelCombo.setVisible(!show);
+                getConnection().setSFTP(show);
+            }
+
+        });
+
+        ftpsSuppBut.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean show = ftpsSuppBut.getSelection();
+                sftpSuppBut.setVisible(!show);
+                keyFileText.setVisible(show);
+                keyPasswordText.setVisible(show);
+                connModelCombo.setVisible(!show);
+                getConnection().setFTPS(show);
+            }
+
+        });
+
+        useSocksBut.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean show = useSocksBut.getSelection();
+                proxyHostText.setVisible(show);
+                proxyPortText.setVisible(show);
+                proxyUsernameText.setVisible(show);
+                proxyPasswordText.setVisible(show);
+                getConnection().setUsesocks(show);
+            }
+
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#checkFieldsValue()
+     */
+    @Override
+    public boolean checkFieldsValue() {
+        if (ftpHostText.getCharCount() == 0) {
+            updateStatus(IStatus.ERROR, "Host can not be null!"); //$NON-NLS-1$
+            return false;
+        }
+
+        if (ftpPortText.getCharCount() == 0) {
+            updateStatus(IStatus.ERROR, "Port can not be null!"); //$NON-NLS-1$
+            return false;
+        }
+
+        if (ftpUsernameText.getCharCount() == 0) {
+            updateStatus(IStatus.ERROR, "Username can not be null!"); //$NON-NLS-1$
+            return false;
+        }
+
+        if (ftpPasswordText.getCharCount() == 0) {
+            updateStatus(IStatus.ERROR, "Password can not be null!"); //$NON-NLS-1$
+            return false;
+        }
+        updateStatus(IStatus.OK, null);
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#initialize()
+     */
+    @Override
+    protected void initialize() {
+        ftpUsernameText.setText(getConnection().getUsername());
+        ftpPasswordText.setText(getConnection().getPassword());
+        ftpPortText.setText(getConnection().getPort());
+        ftpHostText.setText(getConnection().getHost());
+        encodeCombo.setText(getConnection().getEcoding());
+        connModelCombo.setText(getConnection().getMode());
+        if (getConnection().isSFTP()) {
+            ftpsSuppBut.setVisible(false);
+            methodCombo.setVisible(true);
+            connModelCombo.setVisible(false);
+            sftpSuppBut.setSelection(getConnection().isSFTP());
+            methodCombo.setText(getConnection().getMethod());
+        }
+        if (getConnection().isFTPS()) {
+            keyFileText.setVisible(true);
+            sftpSuppBut.setVisible(false);
+            keyPasswordText.setVisible(true);
+            connModelCombo.setVisible(false);
+            ftpsSuppBut.setSelection(getConnection().isFTPS());
+            keyFileText.setText(getConnection().getKeystoreFile());
+            keyPasswordText.setText(getConnection().getKeystorePassword());
+        }
+        if (getConnection().isUsesocks()) {
+            useSocksBut.setSelection(getConnection().isUsesocks());
+            proxyHostText.setVisible(true);
+            proxyPortText.setVisible(true);
+            proxyUsernameText.setVisible(true);
+            proxyPasswordText.setVisible(true);
+            proxyHostText.setText(getConnection().getProxyhost());
+            proxyPortText.setText(getConnection().getProxyport());
+            proxyUsernameText.setText(getConnection().getProxyuser());
+            proxyPasswordText.setText(getConnection().getProxypassword());
+        }
+    }
+
+    public void removeHideValue() {
+        if (!connModelCombo.getCombo().isVisible()) {
+            getConnection().setMode("");
+        }
+        if (!sftpSuppBut.isVisible()) {
+            getConnection().setSFTP(false);
+        }
+        if (!ftpsSuppBut.isVisible()) {
+            getConnection().setFTPS(false);
+        }
+        if (!useSocksBut.isVisible()) {
+            getConnection().setUsesocks(false);
+        }
+        if (!methodCombo.getCombo().isVisible()) {
+            getConnection().setMethod("");
+        }
+        if (!keyPasswordText.getTextControl().isVisible()) {
+            getConnection().setKeystorePassword("");
+        }
+        if (!keyFileText.getTextControl().isVisible()) {
+            getConnection().setKeystoreFile("");
+        }
+        if (!proxyHostText.getTextControl().isVisible()) {
+            getConnection().setProxyhost("");
+        }
+        if (!proxyPortText.getTextControl().isVisible()) {
+            getConnection().setProxyport("");
+        }
+        if (!proxyPasswordText.getTextControl().isVisible()) {
+            getConnection().setProxypassword("");
+        }
+        if (!proxyUsernameText.getTextControl().isVisible()) {
+            getConnection().setProxyuser("");
+        }
+    }
+
+    protected FTPConnection getConnection() {
+        return (FTPConnection) connectionItem.getConnection();
+    }
+
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        checkFieldsValue();
+    }
+
+}
