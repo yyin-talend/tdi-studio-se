@@ -133,7 +133,7 @@ if(version_selection.equals("VTIGER_50")){
         				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
         				%>
         				if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-							valueMap_<%=cid%>.put("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+							valueMap_<%=cid%>.put("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) );
 						}
         				<%
         				} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]

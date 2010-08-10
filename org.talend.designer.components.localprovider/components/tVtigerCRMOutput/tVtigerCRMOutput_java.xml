@@ -365,7 +365,6 @@
 			
 			<TABLE IF="(MODULENAME_510=='Accounts') and (ACTION=='insert') and (VERSION_SELECTION=='VTIGER_51')">
 				<COLUMN KEY="false" NAME="accountname" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="account_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="accounttype" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="annual_revenue" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
@@ -430,7 +429,6 @@
 				<COLUMN KEY="false" NAME="campaignname" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="campaignstatus" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="campaigntype" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="campaign_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="closingdate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" READONLY="true" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="expectedresponse" TYPE="id_String" />
@@ -450,7 +448,6 @@
 				<COLUMN KEY="false" NAME="assistant" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="assistantphone" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="birthday" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="contact_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="department" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="donotcall" TYPE="id_Boolean" />
@@ -493,7 +490,6 @@
 				<COLUMN KEY="false" NAME="fileversion" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="folderid" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="notecontent" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="note_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="notes_title" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
@@ -533,7 +529,6 @@
 			<TABLE IF="(MODULENAME_510=='Faq') and (ACTION=='insert') and (VERSION_SELECTION=='VTIGER_51')">
 				<COLUMN KEY="false" NAME="faq_answer" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="faqcategories" TYPE="id_String" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="faq_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="product_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="question" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="faqstatus" TYPE="id_String" READONLY="true" NULLABLE="false" />
@@ -550,7 +545,6 @@
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="solution" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ticketstatus" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="ticket_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="ticket_title" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="update_log" TYPE="id_String" />
 			</TABLE>
@@ -574,7 +568,6 @@
 				<COLUMN KEY="false" NAME="exciseduty" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="invoicedate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="invoicestatus" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="invoice_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vtiger_purchaseorder" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="salesorder_id" TYPE="id_String" />
@@ -607,7 +600,6 @@
 				<COLUMN KEY="false" NAME="lastname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="leadsource" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="leadstatus" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="lead_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="mobile" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="noofemployees" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="phone" TYPE="id_String" />
@@ -634,7 +626,6 @@
 				<COLUMN KEY="false" NAME="nextstep" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="potentialname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="opportunity_type" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="potential_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="probability" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="related_to" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="sales_stage" TYPE="id_String" READONLY="true" />
@@ -645,7 +636,6 @@
 				<COLUMN KEY="false" NAME="bookname" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="currency_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="pricebook_no" TYPE="id_String" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Products') and (ACTION=='insert') and (VERSION_SELECTION=='VTIGER_51')">
 				<COLUMN KEY="false" NAME="commissionrate" TYPE="id_Double" />
@@ -660,7 +650,6 @@
 				<COLUMN KEY="false" NAME="productcode" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="productname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="productsheet" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="product_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="qtyindemand" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="qtyinstock" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="qty_per_unit" TYPE="id_Double" />
@@ -694,7 +683,6 @@
 				<COLUMN KEY="false" NAME="duedate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="exciseduty" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="postatus" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="purchaseorder_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="requisition_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
@@ -732,7 +720,6 @@
 				<COLUMN KEY="false" NAME="assigned_user_id1" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="potential_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="quotestage" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="quote_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="shipping" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_code" TYPE="id_String" />
@@ -778,7 +765,6 @@
 				<COLUMN KEY="false" NAME="quote_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="recurring_frequency" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
-				<COLUMN KEY="false" NAME="salesorder_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_code" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_country" TYPE="id_String" />
@@ -796,7 +782,6 @@
 				<COLUMN KEY="false" NAME="hdnGrandTotal" TYPE="id_Double" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='ServiceContracts') and (ACTION=='insert') and (VERSION_SELECTION=='VTIGER_51')">
-				<COLUMN KEY="false" NAME="contract_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="contract_status" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="contract_type" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="due_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
@@ -820,7 +805,6 @@
 				<COLUMN KEY="false" NAME="sales_start_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="servicecategory" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="servicename" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="service_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="service_usageunit" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="start_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="taxclass" TYPE="id_String" />
@@ -840,13 +824,12 @@
 				<COLUMN KEY="false" NAME="state" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="street" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vendorname" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="vendor_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
 			</TABLE>
 			
 			<TABLE IF="(MODULENAME_510=='Accounts') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="accountname" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="account_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="accounttype" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="annual_revenue" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
@@ -878,9 +861,9 @@
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="tickersymbol" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Calendar') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="activitytype" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="contact_id" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="parent_id" TYPE="id_String" NULLABLE="false" />
@@ -902,9 +885,9 @@
 				<COLUMN KEY="false" NAME="time_end" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="time_start" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="visibility" TYPE="id_String" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Campaigns') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="actualcost" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="actualresponsecount" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="actualroi" TYPE="id_Double" />
@@ -913,7 +896,6 @@
 				<COLUMN KEY="false" NAME="campaignname" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="campaignstatus" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="campaigntype" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="campaign_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="closingdate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" READONLY="true" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="expectedresponse" TYPE="id_String" />
@@ -927,14 +909,13 @@
 				<COLUMN KEY="false" NAME="sponsor" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="targetaudience" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="targetsize" TYPE="id_Integer" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Contacts') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="account_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="assistant" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="assistantphone" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="birthday" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="contact_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="department" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="donotcall" TYPE="id_Boolean" />
@@ -970,20 +951,19 @@
 				<COLUMN KEY="false" NAME="support_start_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="title" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="yahooid" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Documents') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="filelocationtype" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="filestatus" TYPE="id_Boolean" />
 				<COLUMN KEY="false" NAME="fileversion" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="folderid" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="notecontent" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="note_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="notes_title" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Emails') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="access_count" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="activitytype" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="parent_id" TYPE="id_String" NULLABLE="false" />
@@ -993,9 +973,9 @@
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="subject" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="time_start" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Events') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="activitytype" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="contact_id" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="parent_id" TYPE="id_String" NULLABLE="false" />
@@ -1016,18 +996,17 @@
 				<COLUMN KEY="false" NAME="time_end" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="time_start" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="visibility" TYPE="id_String" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Faq') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="faq_answer" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="faqcategories" TYPE="id_String" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="faq_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="product_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="question" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="faqstatus" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='HelpDesk') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="ticketcategories" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="days" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
@@ -1039,12 +1018,11 @@
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="solution" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ticketstatus" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="ticket_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="ticket_title" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="update_log" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Invoice') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="account_id" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="txtAdjustment" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
@@ -1064,7 +1042,6 @@
 				<COLUMN KEY="false" NAME="exciseduty" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="invoicedate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="invoicestatus" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="invoice_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vtiger_purchaseorder" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="salesorder_id" TYPE="id_String" />
@@ -1080,9 +1057,9 @@
 				<COLUMN KEY="false" NAME="hdnTaxType" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="terms_conditions" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="hdnGrandTotal" TYPE="id_Double" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Leads') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="annualrevenue" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="code" TYPE="id_String" />
@@ -1098,7 +1075,6 @@
 				<COLUMN KEY="false" NAME="lastname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="leadsource" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="leadstatus" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="lead_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="mobile" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="noofemployees" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="phone" TYPE="id_String" />
@@ -1109,16 +1085,16 @@
 				<COLUMN KEY="false" NAME="state" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="yahooid" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='PBXManager') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="callfrom" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="callto" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="status" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="timeofcall" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Potentials') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="amount" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="campaignid" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="closingdate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" READONLY="true" />
@@ -1127,22 +1103,20 @@
 				<COLUMN KEY="false" NAME="nextstep" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="potentialname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="opportunity_type" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="potential_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="probability" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="related_to" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="sales_stage" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="assigned_user_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='PriceBooks') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="active" TYPE="id_Boolean" />
 				<COLUMN KEY="false" NAME="bookname" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="currency_id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="pricebook_no" TYPE="id_String" NULLABLE="false" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Products') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="commissionrate" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="discontinued" TYPE="id_Boolean" NULLABLE="false" />
@@ -1155,7 +1129,6 @@
 				<COLUMN KEY="false" NAME="productcode" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="productname" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="productsheet" TYPE="id_String" />
-				<COLUMN KEY="false" NAME="product_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="qtyindemand" TYPE="id_Integer" />
 				<COLUMN KEY="false" NAME="qtyinstock" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="qty_per_unit" TYPE="id_Double" />
@@ -1170,9 +1143,9 @@
 				<COLUMN KEY="false" NAME="vendor_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vendor_part_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='PurchaseOrder') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="txtAdjustment" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="bill_code" TYPE="id_String" />
@@ -1190,7 +1163,6 @@
 				<COLUMN KEY="false" NAME="duedate" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="exciseduty" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="postatus" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="purchaseorder_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="requisition_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
@@ -1208,9 +1180,9 @@
 				<COLUMN KEY="false" NAME="hdnGrandTotal" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="tracking_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vendor_id" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Quotes') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="account_id" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="txtAdjustment" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
@@ -1229,7 +1201,6 @@
 				<COLUMN KEY="false" NAME="assigned_user_id1" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="potential_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="quotestage" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="quote_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="shipping" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_code" TYPE="id_String" />
@@ -1245,9 +1216,9 @@
 				<COLUMN KEY="false" NAME="terms_conditions" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="hdnGrandTotal" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="validtill" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='SalesOrder') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="account_id" TYPE="id_String" READONLY="true" />
 				<COLUMN KEY="false" NAME="txtAdjustment" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="bill_city" TYPE="id_String" />
@@ -1276,7 +1247,6 @@
 				<COLUMN KEY="false" NAME="quote_id" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="recurring_frequency" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="salescommission" TYPE="id_Double" />
-				<COLUMN KEY="false" NAME="salesorder_no" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_code" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="ship_country" TYPE="id_String" />
@@ -1292,10 +1262,9 @@
 				<COLUMN KEY="false" NAME="hdnTaxType" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="terms_conditions" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="hdnGrandTotal" TYPE="id_Double" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='ServiceContracts') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
-				<COLUMN KEY="false" NAME="contract_no" TYPE="id_String" />
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="contract_status" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="contract_type" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="due_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
@@ -1307,9 +1276,9 @@
 				<COLUMN KEY="false" NAME="total_units" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="tracking_unit" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="used_units" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Services') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="commissionrate" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="description" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="discontinued" TYPE="id_Boolean" NULLABLE="false" />
@@ -1320,15 +1289,14 @@
 				<COLUMN KEY="false" NAME="sales_start_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="servicecategory" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="servicename" TYPE="id_String" READONLY="true" NULLABLE="false" />
-				<COLUMN KEY="false" NAME="service_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="service_usageunit" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="start_date" TYPE="id_Date" PATTERN="&quot;yyyy-mm-dd&quot;" />
 				<COLUMN KEY="false" NAME="taxclass" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="unit_price" TYPE="id_Double" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<TABLE IF="(MODULENAME_510=='Vendors') and (ACTION=='update') and (VERSION_SELECTION=='VTIGER_51')">
+				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="category" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="city" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="country" TYPE="id_String" />
@@ -1341,9 +1309,7 @@
 				<COLUMN KEY="false" NAME="state" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="street" TYPE="id_String" />
 				<COLUMN KEY="false" NAME="vendorname" TYPE="id_String" READONLY="true" />
-				<COLUMN KEY="false" NAME="vendor_no" TYPE="id_String" NULLABLE="false" />
 				<COLUMN KEY="false" NAME="website" TYPE="id_String" />
-				<COLUMN KEY="true" NAME="id" TYPE="id_String" READONLY="true" NULLABLE="false" />
 			</TABLE>
 			<!--  version 510 end-->
 			
