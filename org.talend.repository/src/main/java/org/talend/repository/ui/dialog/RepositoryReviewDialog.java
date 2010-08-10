@@ -13,6 +13,7 @@
 package org.talend.repository.ui.dialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.Query;
@@ -99,6 +101,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     private boolean isHeaderButton;
 
+    private DatabaseTypeFilter dbSupportFilter;
+
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
     /**
@@ -125,6 +129,20 @@ public class RepositoryReviewDialog extends Dialog {
          * borrow the repositoryType to set the current process id here.
          */
         this.repositoryType = repositoryType;
+        typeProcessor = createTypeProcessor();
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType, String[] itemFilter) {
+        super(parentShell);
+        setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
+        this.type = type;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
+        this.repositoryType = repositoryType;
+        this.dbSupportFilter = new DatabaseTypeFilter(itemFilter);
         typeProcessor = createTypeProcessor();
     }
 
@@ -257,6 +275,9 @@ public class RepositoryReviewDialog extends Dialog {
 
         repositoryView.createPartControl(viewContainer);
         repositoryView.addFilter(textFilter);
+        if (dbSupportFilter != null) {
+            repositoryView.addFilter(dbSupportFilter);
+        }
         ProjectRepositoryNode.refProjectBool = false;
         repositoryView.refresh();
         ProjectRepositoryNode.refProjectBool = true;
@@ -1575,4 +1596,59 @@ class ViewerTextFilter extends ViewerFilter {
         String name = node.getObject().getProperty().getLabel();
         return name.matches(text);
     }
-};
+}
+
+/**
+ * wchen class global comment. Detailled comment
+ */
+class DatabaseTypeFilter extends ViewerFilter {
+
+    private String[] filterItems;
+
+    public DatabaseTypeFilter(String[] filterItems) {
+        this.filterItems = filterItems;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object,
+     * java.lang.Object)
+     */
+    @Override
+    public boolean select(Viewer viewer, Object parentElement, Object element) {
+        if (filterItems == null) {
+            return true;
+        }
+        List<String> asList = Arrays.asList(filterItems);
+        RepositoryNode node = (RepositoryNode) element;
+        if (node.getObject() != null) {
+            Item item = node.getObject().getProperty().getItem();
+            if (item instanceof DatabaseConnectionItem) {
+                DatabaseConnectionItem connItem = (DatabaseConnectionItem) item;
+                DatabaseConnection connection = (DatabaseConnection) connItem.getConnection();
+                if (connection != null) {
+                    String databaseType = connection.getDatabaseType();
+                    if (databaseType.equals(EDatabaseTypeName.ORACLEFORSID.getDisplayName())) {
+                        databaseType = EDatabaseTypeName.ORACLEFORSID.getXmlName();
+                    } else if (databaseType.equals(EDatabaseTypeName.ORACLESN.getDisplayName())) {
+                        databaseType = EDatabaseTypeName.ORACLESN.getXmlName();
+                    } else if (databaseType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
+                        databaseType = EDatabaseTypeName.ORACLE_OCI.getXmlName();
+                    } else if (databaseType.equals(EDatabaseTypeName.MSSQL.getDisplayName())) {
+                        databaseType = "SQL_SERVER"; // for component
+                    } else {
+                        databaseType = EDatabaseTypeName.getTypeFromDbType(databaseType).getProduct();
+                    }
+
+                    if (asList.contains(databaseType)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+}

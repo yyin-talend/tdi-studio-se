@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
@@ -57,6 +60,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -261,8 +265,25 @@ public class PropertyTypeController extends AbstractRepositoryController {
         IElementParameter param = elem.getElementParameter(paramName);
         Object data = button.getData(NAME);
         if (data != null && data.equals(REPOSITORY_CHOICE)) {
-            RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
-                    ERepositoryObjectType.METADATA, param.getRepositoryValue());
+            IElementParameter dbTypeParam = null;
+            if (elem instanceof org.talend.designer.core.ui.editor.process.Process) {
+                if (EParameterName.PROPERTY_TYPE.getName().equals(paramName)) {
+                    dbTypeParam = elem.getElementParameter(EParameterName.DB_TYPE.getName());
+                } else if (JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()).equals(paramName)) {
+                    dbTypeParam = elem.getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE
+                            .getName()));
+                }
+
+            }
+            RepositoryReviewDialog dialog = null;
+            if (dbTypeParam != null) {
+                String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
+                        .getRepositoryValue(), listRepositoryItems);
+            } else {
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
+                        .getRepositoryValue());
+            }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
 
@@ -513,8 +534,53 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 repositoryConnection = repositoryConnectionItem.getConnection();
             } else {
                 if (!repositoryConnectionItemMap.isEmpty()) {
-                    repositoryConnectionItem = repositoryConnectionItemMap.values().iterator().next();
-                    repositoryConnection = repositoryConnectionItem.getConnection();
+                    Iterator<ConnectionItem> iterator = repositoryConnectionItemMap.values().iterator();
+                    IElementParameter dbTypeParam = null;
+                    if (elem instanceof org.talend.designer.core.ui.editor.process.Process) {
+                        String[] split = paramName.split(":");
+                        String name = "";
+                        if (split.length == 2) {
+                            name = split[0];
+                        }
+                        if (EParameterName.PROPERTY_TYPE.getName().equals(name)) {
+                            dbTypeParam = elem.getElementParameter(EParameterName.DB_TYPE.getName());
+                        } else if (JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
+                                .equals(name)) {
+                            dbTypeParam = elem.getElementParameter(JobSettingsConstants
+                                    .getExtraParameterName(EParameterName.DB_TYPE.getName()));
+                        }
+                        if (dbTypeParam != null) {
+                            boolean asBefore = false;
+                            while (iterator.hasNext()) {
+                                ConnectionItem nextItem = iterator.next();
+                                if (nextItem instanceof DatabaseConnectionItem
+                                        && ((DatabaseConnectionItem) nextItem).getConnection() instanceof DatabaseConnection) {
+                                    List<String> asList = Arrays.asList(dbTypeParam.getListRepositoryItems());
+                                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) nextItem)
+                                            .getConnection();
+                                    if (isValidDbConnection(asList, connection)) {
+                                        repositoryConnectionItem = nextItem;
+                                        repositoryConnection = repositoryConnectionItem.getConnection();
+                                        break;
+                                    }
+                                } else {
+                                    asBefore = true;
+                                    break;
+                                }
+                            }
+                            if (asBefore) {
+                                repositoryConnectionItem = iterator.next();
+                                repositoryConnection = repositoryConnectionItem.getConnection();
+                            }
+                        } else {
+                            repositoryConnectionItem = iterator.next();
+                            repositoryConnection = repositoryConnectionItem.getConnection();
+                        }
+                    } else {
+                        repositoryConnectionItem = iterator.next();
+                        repositoryConnection = repositoryConnectionItem.getConnection();
+                    }
+
                 } else {
                     repositoryConnection = null;
                 }
@@ -571,6 +637,30 @@ public class PropertyTypeController extends AbstractRepositoryController {
         }
 
         return cc;
+
+    }
+
+    // for stats and log , return false if stats log and implicit don't support
+    private boolean isValidDbConnection(List supportedItems, DatabaseConnection connection) {
+        if (connection != null) {
+            String databaseType = connection.getDatabaseType();
+            if (databaseType.equals(EDatabaseTypeName.ORACLEFORSID.getDisplayName())) {
+                databaseType = EDatabaseTypeName.ORACLEFORSID.getXmlName();
+            } else if (databaseType.equals(EDatabaseTypeName.ORACLESN.getDisplayName())) {
+                databaseType = EDatabaseTypeName.ORACLESN.getXmlName();
+            } else if (databaseType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
+                databaseType = EDatabaseTypeName.ORACLE_OCI.getXmlName();
+            } else if (databaseType.equals(EDatabaseTypeName.MSSQL.getDisplayName())) {
+                databaseType = "SQL_SERVER"; // for component
+            } else {
+                databaseType = EDatabaseTypeName.getTypeFromDbType(databaseType).getProduct();
+            }
+
+            if (supportedItems.contains(databaseType)) {
+                return true;
+            }
+        }
+        return false;
 
     }
 
