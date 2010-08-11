@@ -40,30 +40,33 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
         EList elementParameter = processType.getParameters().getElementParameter();
-        boolean implicitVersionNeed = true;
-        boolean statsLogVersionNeed = true;
         String dbTypeImplicit = "";
         String dbTypeStatsLog = "";
+        String dbImplicitVersionRepository = "";
+        String dbStasLogVersionRepository = "";
         for (int i = 0; i < elementParameter.size(); i++) {
             final Object object = elementParameter.get(i);
             if (object instanceof ElementParameterTypeImpl) {
                 ElementParameterTypeImpl parameterType = (ElementParameterTypeImpl) object;
                 String name = parameterType.getName();
-                if ("PROPERTY_TYPE_IMPLICIT_CONTEXT:REPOSITORY_PROPERTY_TYPE".equals(name)) { //$NON-NLS-N$
-                    implicitVersionNeed = false;
-                }
-                if ("PROPERTY_TYPE:REPOSITORY_PROPERTY_TYPE".equals(name)) { //$NON-NLS-N$
-                    statsLogVersionNeed = false;
-                }
                 if ("DB_TYPE_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
                     dbTypeImplicit = parameterType.getValue();
                 }
                 if ("DB_TYPE".equals(name)) {//$NON-NLS-N$
                     dbTypeStatsLog = parameterType.getValue();
                 }
+                if ("DB_VERSION_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
+                    dbImplicitVersionRepository = parameterType.getValue();
+                }
+                if ("DB_VERSION".equals(name)) { //$NON-NLS-N$
+                    dbStasLogVersionRepository = parameterType.getValue();
+                }
             }
         }
-        if (implicitVersionNeed) {
+        boolean implicitSame = sameDB(dbTypeImplicit, dbImplicitVersionRepository);
+        boolean stasLogSame = sameDB(dbTypeStatsLog, dbStasLogVersionRepository);
+
+        if (!implicitSame) {
             if (dbTypeImplicit.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
                 setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
             } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
@@ -72,7 +75,7 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
                 setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ACCESS_2003"); //$NON-NLS-N$//$NON-NLS-N$
             }
         }
-        if (statsLogVersionNeed) {
+        if (!stasLogSame) {
             if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
                 setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
             } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
@@ -82,7 +85,7 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
             }
         }
 
-        if (implicitVersionNeed || statsLogVersionNeed) {
+        if (!implicitSame || !stasLogSame) {
             try {
                 FACTORY.save(item, true);
                 return ExecutionResult.SUCCESS_NO_ALERT;
@@ -93,6 +96,18 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
         }
         return ExecutionResult.NOTHING_TO_DO;
 
+    }
+
+    private boolean sameDB(String dbType, String dbVersion) {
+        boolean b = true;
+        if (dbType.toUpperCase().contains("MYSQL") && !dbVersion.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$ //$NON-NLS-N$
+            b = false;
+        } else if (dbType.toUpperCase().contains("ORACLE") && !dbVersion.toUpperCase().contains("OJDBC")) { //$NON-NLS-N$ //$NON-NLS-N$
+            b = false;
+        } else if (dbType.toUpperCase().contains("ACCESS") && !dbVersion.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$ //$NON-NLS-N$
+            b = false;
+        }
+        return b;
     }
 
     private void setParameterValue(EList elementParameter, String paramName, String paramValue) {
