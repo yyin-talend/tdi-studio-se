@@ -609,9 +609,8 @@
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.AddConnectionVersionForJobsettingMigrationTask"
-            description="%migrationtask.addConnectionVersionForJobsetting.description"
             id="org.talend.repository.migration.addConnectionVersionForJobsetting"
-            name="%migrationtask.addConnectionVersionForJobsetting.title">
+            name="Add Connection Version for Jobsetting">
       </projecttask>
       <projecttask
             beforeLogon="false"
