@@ -388,4 +388,9 @@ public interface IRepositoryFactory {
     public FolderItem getFolderItem(Project project, ERepositoryObjectType itemType, IPath path);
 
     public void reloadProject(Project project) throws PersistenceException;
+
+    public boolean enableSandboxProject() throws PersistenceException;
+
+    public boolean createSandboxProject(Project newProject, String projectSvnUrl, String projectSvnLogin, String projectSvnPass,
+            String userSvnLogin, String userSvnPass) throws PersistenceException;
 }

@@ -74,7 +74,7 @@ public class NewProjectWizardPage extends WizardPage {
 
     private Button languageJavaRadio;
 
-    private List<String> keywords = new ArrayList<String>();
+    private static List<String> keywords = new ArrayList<String>();
 
     /**
      * Constructs a new NewProjectWizardPage.
@@ -342,7 +342,7 @@ public class NewProjectWizardPage extends WizardPage {
      * 
      * initialize the java key words
      */
-    private void initKeyWords() {
+    private static void initKeyWords() {
         if (keywords == null) {
             keywords = new ArrayList<String>();
         }
@@ -363,7 +363,7 @@ public class NewProjectWizardPage extends WizardPage {
      * @param itemName
      * @return
      */
-    private boolean isKeywords(String itemName) {
+    public static boolean isKeywords(String itemName) {
 
         if (keywords == null || keywords.isEmpty()) {
             initKeyWords();
