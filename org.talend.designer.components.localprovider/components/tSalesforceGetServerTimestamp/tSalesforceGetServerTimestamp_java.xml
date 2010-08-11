@@ -56,7 +56,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"https://www.salesforce.com/services/Soap/u/16.0"</DEFAULT>
+      <DEFAULT>"https://www.salesforce.com/services/Soap/u/19.0"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

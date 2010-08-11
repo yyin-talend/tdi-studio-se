@@ -27,7 +27,7 @@
 	<PARAMETERS>
 
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
-			<DEFAULT>"https://www.salesforce.com/services/Soap/u/16.0"</DEFAULT>
+			<DEFAULT>"https://www.salesforce.com/services/Soap/u/19.0"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="10" REQUIRED="true" SHOW="false">
