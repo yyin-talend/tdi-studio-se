@@ -82,7 +82,7 @@ public class ContextRemoveParameterCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view2 = page.findView(ContextsView.ID);
         if (view2 instanceof ContextsView) {
-            ((ContextsView) view2).updateContextView(true, false);
+            ((ContextsView) view2).updateContextView(true, false, false);
         }
     }
 
