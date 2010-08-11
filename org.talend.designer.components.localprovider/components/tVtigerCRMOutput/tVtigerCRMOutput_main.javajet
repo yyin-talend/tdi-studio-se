@@ -145,7 +145,7 @@ if(version_selection.equals("VTIGER_50")){
         				} else {//others
         				%>
         				<%if(!isPrimitive) {%>
-		    			if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
+		    			if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { 
 		    			<%}else{%>
 		    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
 		    			<%}%>
