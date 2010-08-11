@@ -16,7 +16,46 @@
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-    String cid = node.getUniqueName();	
+    final String cid = node.getUniqueName();	
+		
+	class GenerateCode{
+		public int colLen = 0; // the length of the column in the input schema
+		public void generateDynamicSchemaCode(boolean isCsv){
+%>
+if(isFirstCheckDyn_<%=cid %>){// for the header line
+<%
+		if(isCsv){
+%>
+int colsLen_<%=cid %> = row<%=cid %>.length;
+<%
+		}else{
+%>
+int colsLen_<%=cid %> = fid_<%=cid %>.getColumnsCountOfCurrentRow();
+<%		}%>
+    for (int i = <%=colLen %>-1; i < colsLen_<%=cid %>; i++) {
+    
+    	routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
+    	dynamicMetadata_<%=cid%>.setName(<%if(isCsv){%>row<%=cid %>[i]<%}else{%>fid_<%=cid %>.get(i)<%}%>.replaceAll("[ .-]+", "_"));
+    	dynamicMetadata_<%=cid%>.setDbName(dynamicMetadata_<%=cid%>.getName());
+    	dynamicMetadata_<%=cid%>.setType("id_String");
+    	dynamicMetadata_<%=cid%>.setDbType("VARCHAR");
+    	dynamicMetadata_<%=cid%>.setLength(100);
+    	dynamicMetadata_<%=cid%>.setPrecision(0);
+    	dynamicMetadata_<%=cid%>.setNullable(true);
+    	dynamicMetadata_<%=cid%>.setKey(false);
+    	dynamicMetadata_<%=cid%>.setSourceType(routines.system.DynamicMetadata.sourceTypes.demilitedFile);
+    	dynamicMetadata_<%=cid%>.setColumnPosition(i);
+    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
+    }
+    isFirstCheckDyn_<%=cid %> = false;
+    continue;
+}
+<%
+		}
+	}
+	GenerateCode generateCode = new GenerateCode();
+%>
+<%
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
@@ -71,6 +110,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 		
 		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+		
+		boolean hasDynamic = metadata.isDynamicSchema();
+		if(hasDynamic){
+%>
+boolean isFirstCheckDyn_<%=cid %> = true;
+routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
+<%
+		}
 %>
 int nb_line_<%=cid%> = 0;
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
@@ -92,12 +139,12 @@ while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
 	if(entry_<%=cid %>.isDirectory()){ //directory
 		continue;
 	}
-	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 <%
 		}else{
 %>
 fid_<%=cid %> = 
-	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 <%
 		}
 %>
@@ -164,6 +211,10 @@ while (fid_<%=cid %>.nextRecord()) {
 						}
 					}
 				}
+				if(hasDynamic){// generate the dynamic schema code
+					generateCode.colLen = sizeListColumns;
+					generateCode.generateDynamicSchemaCode(false); //false: delimited mode
+				}
 				if(noStringTypeExist || hasStringDefault){%>String temp_<%=cid %> = ""; 
 				<%}
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -203,6 +254,20 @@ if(temp_<%=cid %>.length() > 0) {
 						}
 					}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					}else if(column.getTalendType().equals("id_Dynamic")){
+%>
+for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
+	dynamic_<%=cid%>.clearColumnValues();
+}
+int fieldCount = fid_<%=cid%>.getColumnsCountOfCurrentRow();
+for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
+	if ((<%=sizeListColumns%>-1+i) < fieldCount)
+		dynamic_<%=cid%>.addColumnValue(fid_<%=cid%>.get(<%=sizeListColumns%>-1+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
+	else
+		dynamic_<%=cid%>.addColumnValue("");
+}
+<%=firstConnName %>.<%=column.getLabel() %>=dynamic_<%=cid%>;
 <%
 					} else { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
@@ -361,6 +426,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 		
 		boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+		
+		boolean hasDynamic = metadata.isDynamicSchema();
+		if(hasDynamic){
+%>
+boolean isFirstCheckDyn_<%=cid %> = true;
+routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
+<%
+		}
 %>
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
@@ -555,7 +628,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int outputLine<%=cid %> = 0;
         
         if(limit<%=cid%> != 0){
-        	for(currentLine<%=cid %>=0;currentLine<%=cid %> < <%= header %>;currentLine<%=cid %>++){
+        	for(currentLine<%=cid %>=0;currentLine<%=cid %> < <%= header %><%=hasDynamic?"-1":""%>;currentLine<%=cid %>++){
         		csvReader<%=cid %>.readRecord();
         	}
         }
@@ -649,6 +722,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 				}
 			}
+			if(hasDynamic){// generate the dynamic schema code
+				generateCode.colLen = columnSize;
+				generateCode.generateDynamicSchemaCode(true); //true: CSV mode
+			}
 			if(hasStringDefault==true){
 %>
 				String temp_<%=cid %> = "";
@@ -702,7 +779,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	%>							
 							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
 	<%
-							} else {
+							}else if(column.getTalendType().equals("id_Dynamic")){
+	%>
+for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
+	dynamic_<%=cid%>.clearColumnValues();
+}
+int fieldCount = row<%=cid %>.length;
+for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
+	if ((<%=columnSize%>-1+i) < fieldCount)
+		dynamic_<%=cid%>.addColumnValue(row<%=cid %>[<%=columnSize%>-1+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
+	else
+		dynamic_<%=cid%>.addColumnValue("");
+}
+<%=firstConnName %>.<%=column.getLabel() %> = dynamic_<%=cid%>;
+	<%
+							}else {
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 	<%

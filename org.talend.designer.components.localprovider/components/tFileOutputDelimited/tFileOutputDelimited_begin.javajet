@@ -98,7 +98,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
             boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+            
+            boolean hasDynamic = metadata.isDynamicSchema();
+				if(hasDynamic){
             %>
+            boolean isFirstCheckDyn_<%=cid %>= true;
+            <%	}%>
     		int nb_line_<%=cid%> = 0;
             int splitEvery_<%=cid%> = <%=splitEvery %>;
             int splitedFileNo_<%=cid%> = 0;
@@ -159,7 +164,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 <%
     			}
     			
-    			if(isIncludeHeader){
+    			if(isIncludeHeader && !hasDynamic){
     		    %>
 				<%
 					if(codeGenArgument.getIsRunInMultiThread()){
@@ -241,7 +246,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    java.io.Writer out<%=cid %> = new <%=writerClass%>(writer_<%=cid %>);
 <%
 				}
-    			if(isIncludeHeader){
+    			if(isIncludeHeader && !hasDynamic){
     		        List<IMetadataColumn> columns = metadata.getListColumns();
     		        int sizeColumns = columns.size();
     		        for (int i = 0; i < sizeColumns; i++) {
@@ -275,7 +280,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
-        if (metadata!=null) {                        
+        if (metadata!=null) {                       
+        	List<IMetadataColumn> columns = metadata.getListColumns();
+	    	int sizeColumns = columns.size(); 
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     		String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
@@ -297,7 +304,19 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
             boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+            
+            boolean hasDynamic = metadata.isDynamicSchema();
+				if(hasDynamic){
             %>
+            boolean isFirstCheckDyn_<%=cid %>= true;
+            String[] headColu<%=cid%> = null;
+            <%
+            	}else{
+            %>
+            String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
+            <%
+            	}
+    	    %>   	    		
             class CSVBasicSet_<%=cid %>{          	
             	private char field_Delim;            	
             	private char row_Delim;            	
@@ -470,12 +489,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
         	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
 	    		<%
-	            List<IMetadataColumn> columns = metadata.getListColumns();
-	    	    int sizeColumns = columns.size();
-    	    %>   	    
-    	    String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
-    	    <% 		
-	    	    if(isIncludeHeader)
+	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
     	        %>		   
 			<%
@@ -572,14 +586,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 }
 %>
         	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
-<%
-	            List<IMetadataColumn> columns = metadata.getListColumns();
-	    	    int sizeColumns = columns.size();
-    	    %>   	    	
-    	    	String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
+        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());   	    	
     	    <% 		
-	    	    if(isIncludeHeader)
+	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
 	    	        for(int i = 0; i < sizeColumns; i++)
 	        		{
@@ -596,11 +605,14 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         			<%}
 	    	    }
 	    	}//*****************************csv mode under output stream end********************************************************
+	    	
+	    	if(isIncludeHeader && !hasDynamic){//when there is dynamic schema, it won't be enclosed with "\""
 %>
 				CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
 				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
 				CsvWriter<%=cid %>.setForceQualifier(true);
 <%
+			}
 	    }
     }
     %>
