@@ -113,6 +113,7 @@ if(version_selection.equals("VTIGER_50")){
 }else{
 	String action  = ElementParameterParser.getValue(node, "__ACTION__");
 	String moduleName  = ElementParameterParser.getValue(node, "__MODULENAME_510__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         IMetadataTable metadata = metadatas.get(0);
@@ -174,7 +175,17 @@ if(version_selection.equals("VTIGER_50")){
 					}
 					%>
 					if (vtMgr_<%=cid%>.hasError(result_<%=cid%>)) {
+					<%
+	                   if (("true").equals(dieOnError)) {
+	                %>
+	                	throw new RuntimeException(vtMgr_<%=cid%>.lastError().toString());
+	                <%
+	                 	} else {
+	                %>
                         System.err.println(vtMgr_<%=cid%>.lastError().toString());
+                    <%
+                    	}
+                    %>
                     } 
 					<%
         		}//4
