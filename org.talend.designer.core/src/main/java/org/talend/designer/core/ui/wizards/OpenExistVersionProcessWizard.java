@@ -72,7 +72,12 @@ public class OpenExistVersionProcessWizard extends Wizard {
         this.processObject = processObject;
         originaleObjectLabel = processObject.getProperty().getLabel();
         originalVersion = processObject.getProperty().getVersion();
-        lockObject();
+
+        ERepositoryStatus status = processObject.getRepositoryStatus();
+        if (status == ERepositoryStatus.LOCK_BY_OTHER || status.equals(ERepositoryStatus.LOCK_BY_USER)
+                && RepositoryManager.isOpenedItemInEditor(processObject)) {
+            alreadyEditedByUser = true;
+        }
     }
 
     @Override
@@ -94,20 +99,13 @@ public class OpenExistVersionProcessWizard extends Wizard {
     @Override
     public boolean performCancel() {
         restoreVersion();
-        unlockObject();
         return super.performCancel();
     }
 
-    private void lockObject() {
+    private void lockObject(IRepositoryViewObject object) {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
-            ERepositoryStatus status = repositoryFactory.getStatus(processObject);
-            if (status == ERepositoryStatus.LOCK_BY_OTHER || status.equals(ERepositoryStatus.LOCK_BY_USER)
-                    && RepositoryManager.isOpenedItemInEditor(processObject)) {
-                alreadyEditedByUser = true;
-            } else {
-                repositoryFactory.lock(processObject);
-            }
+            repositoryFactory.lock(object);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         } catch (BusinessException e) {
@@ -135,7 +133,11 @@ public class OpenExistVersionProcessWizard extends Wizard {
     @Override
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
-            refreshNewJob();
+            if (!alreadyEditedByUser) {
+                lockObject(processObject);
+                refreshNewJob();
+                unlockObject();
+            }
             // Property property = processObject.getRepositoryNode().getObject().getProperty();
             // Property updatedProperty = null;
             // try {
@@ -146,18 +148,22 @@ public class OpenExistVersionProcessWizard extends Wizard {
             // }
             // update the property of the node repository object
             // processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
-
             openAnotherVersion(processObject.getRepositoryNode(), false);
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            // Only latest version can be editted
-            openAnotherVersion(node, !node.getObject().getProperty().getVersion()
-                    .equals(processObject.getProperty().getVersion()));
-
-            if (!node.getObject().getProperty().getVersion().equals(processObject.getProperty().getVersion())) {
-                unlockObject();
+            boolean lastVersion = node.getObject().getVersion().equals(processObject.getVersion());
+            if (lastVersion) {
+                lockObject(node.getObject());
             }
+            ERepositoryStatus status = node.getObject().getRepositoryStatus();
+            boolean isLocked = false;
+            if (status == ERepositoryStatus.LOCK_BY_USER) {
+                isLocked = true;
+            }
+
+            // Only latest version can be editted
+            openAnotherVersion(node, !lastVersion || !isLocked);
         }
         return true;
     }

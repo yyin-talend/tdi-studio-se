@@ -298,6 +298,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 display = site.getShell().getDisplay();
                 repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
+                boolean locked = currentProcess.getProperty().getItem().getState().isLocked();
+                if (!locked) {
+                    setReadOnly(true);
+                }
+                revisionChanged = true;
             } catch (PersistenceException e) {
                 // e.printStackTrace();
                 ExceptionHandler.process(e);
@@ -611,47 +616,49 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                             factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) { //$NON-NLS-1$
 
-                                @Override
-                                protected void run() throws LoginException, PersistenceException {
-                                    try {
-                                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                                        @Override
+                                        protected void run() throws LoginException, PersistenceException {
+                                            try {
+                                                IProxyRepositoryFactory factory = CorePlugin.getDefault()
+                                                        .getProxyRepositoryFactory();
 
-                                        Set<String> curContextVars = getCurrentContextVariables(manager);
-                                        IProcess process2 = getProcess();
-                                        String jobId = process2.getProperty().getId();
-                                        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                                .getActivePage().getEditorReferences();
-                                        List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
-                                                .getOpenedProcess(reference);
+                                                Set<String> curContextVars = getCurrentContextVariables(manager);
+                                                IProcess process2 = getProcess();
+                                                String jobId = process2.getProperty().getId();
+                                                IEditorReference[] reference = PlatformUI.getWorkbench()
+                                                        .getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+                                                List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                        .getOpenedProcess(reference);
 
-                                        // gcui:if nameMap is empty it do nothing.
-                                        if (!nameMap.isEmpty()) {
-                                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory,
-                                                    nameMap, jobId, curContextVars);
-                                            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
-                                                    nameMap, jobId, curContextVars);
-                                        }
-                                        // add for bug 9564
-                                        List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
-                                        List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
-                                        for (IRepositoryViewObject repositoryObject : all) {
-                                            Item item = repositoryObject.getProperty().getItem();
-                                            if (item instanceof ProcessItem) {
-                                                ProcessItem processItem = (ProcessItem) item;
-                                                allProcess.add(processItem);
+                                                // gcui:if nameMap is empty it do nothing.
+                                                if (!nameMap.isEmpty()) {
+                                                    UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(
+                                                            factory, nameMap, jobId, curContextVars);
+                                                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(
+                                                            processes, nameMap, jobId, curContextVars);
+                                                }
+                                                // add for bug 9564
+                                                List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS,
+                                                        true);
+                                                List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
+                                                for (IRepositoryViewObject repositoryObject : all) {
+                                                    Item item = repositoryObject.getProperty().getItem();
+                                                    if (item instanceof ProcessItem) {
+                                                        ProcessItem processItem = (ProcessItem) item;
+                                                        allProcess.add(processItem);
+                                                    }
+                                                }
+                                                UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
+                                                        allProcess, process2);
+
+                                            } catch (PersistenceException e) {
+                                                // e.printStackTrace();
+                                                ExceptionHandler.process(e);
                                             }
+                                            nameMap.clear();
+                                            manager.setModified(false);
                                         }
-                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
-                                                allProcess, process2);
-
-                                    } catch (PersistenceException e) {
-                                        // e.printStackTrace();
-                                        ExceptionHandler.process(e);
-                                    }
-                                    nameMap.clear();
-                                    manager.setModified(false);
-                                }
-                            });
+                                    });
 
                         }
 
