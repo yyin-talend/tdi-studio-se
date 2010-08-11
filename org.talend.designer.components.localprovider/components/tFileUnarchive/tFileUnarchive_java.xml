@@ -60,10 +60,16 @@
     </PARAMETER>
        
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+		<PARAMETER NAME="PRINTOUT" FIELD="CHECK" REQUIRED="true"
+			NUM_ROW="2">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+  </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
-     
        <IMPORT NAME="Ant-Zip" MODULE="ant.jar" REQUIRED="true" />
        <IMPORT NAME="Check-Archive" MODULE="checkArchive.jar" REQUIRED="true" />
      </IMPORTS>

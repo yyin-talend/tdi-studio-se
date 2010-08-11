@@ -17,6 +17,7 @@
 	
 	boolean isArchiveValid = ("true").equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
 	boolean isPasswordNeeded = ("true").equals(ElementParameterParser.getValue(node, "__CHECKPASSWORD__"));
+	boolean needPrintout = ("true").equals(ElementParameterParser.getValue(node, "__PRINTOUT__"));
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	
 %>      
@@ -30,9 +31,7 @@
 			} 
 			
 		}
-		
-		class Util_<%=cid %>
-        {
+		class Util_<%=cid %>{
         	public java.util.List<UnzippedFile_<%=cid %>> unzippedFiles = new java.util.ArrayList<UnzippedFile_<%=cid %>>();
         	
             public void deleteDir(java.io.File dir) {
@@ -55,9 +54,7 @@
                         repairDir(parentFile);
                 }
             }
-
-            public void checkDir(java.io.File file)
-            {
+            public void checkDir(java.io.File file){
                 if (file.exists()) {
                     if (file.isDirectory())
                         deleteDir(file);
@@ -65,9 +62,7 @@
                     repairDir(file);
                 }
             }
-            
-            public void output(String path, String fileName, java.io.InputStream is) throws Exception
-            {
+            public void output(String path, String fileName, java.io.InputStream is) throws Exception{
                 <%
                 //deal with the path issue and get the outputstream
                 if (extractPath==true) {
@@ -98,8 +93,7 @@
                 fos.close();
                 unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
             }
-            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws Exception
-            {
+            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws Exception {
                 <%
                 //deal with the path issue and get the outputstream
                 if (extractPath == true) {
@@ -168,7 +162,6 @@
 	if (tmpFileURL_<%=cid %>.endsWith(".tar.gz") || tmpFileURL_<%=cid %>.endsWith(".tgz")){   
 		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isGZIPValid(tmpFileURL_<%=cid%>)){
 			throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
-
 		}
         org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));        
         org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
@@ -213,11 +206,16 @@
 		zip_<%=cid %>.close();
 	}else { 
 		//the others all use the ZIP to decompression
-		 if(<%=isPasswordNeeded%> ){
+		<%if(isPasswordNeeded ){ %>
+			System.out.println("Processing archive "+ tmpFileURL_<%=cid%> + ", please wait...");
+			System.out.println();
 			 if( !<%=password%>.equals("") ){
+				 java.io.File file_<%=cid %> = new java.io.File(tmpFileURL_<%=cid%>);
+				 long length = file_<%=cid %>.length();
 				 if(<%=isArchiveValid%>){
-					 if(!org.talend.archive.IntegrityUtil.isEncryptedZipValid(new java.io.File(tmpFileURL_<%=cid%>), <%=password%>))
+					 if(!org.talend.archive.IntegrityUtil.isEncryptedZipValid(file_<%=cid %>, <%=password%>)){
 						 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+					 }
 				 }
 			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
 			 target_<%=cid%> = 
@@ -225,48 +223,67 @@
 						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
 			 
 			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
-		     
-		     //if(<%=isArchiveValid%>){
-		    	// if(!org.talend.archive.IntegrityUtil.isZipEntryValid(input_<%=cid%>)){
-		    		 //throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
-		    	 //}
-			 	//else{
-			 			//input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
-			 	//}
-		     //}
-		     
 		     java.util.zip.ZipEntry entry_<%=cid%> ; 
+		   
 			 while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
-			            System.out.println("Entry: "+entry_<%=cid%>.getName()); 
-			    	    
+				 <% if(needPrintout) {%>
+				 		System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
+				 <%}%>
 			            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
 			            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+			           
 			            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
-			     }
+			 }
+			 System.out.println();
+			 System.out.println("Process finished"); 
 			}
 			else {
+				Thread.sleep(1000); // To make sure the System.out.println message come before
 				throw new RuntimeException ("Please enter the password and try again.." );
 			}
-        }
-		else {
+    <%  }
+		else {%>
+    	    System.out.println("Processing archive " + tmpFileURL_<%=cid%> + ", please wait...");
+    	    System.out.println();
+    	    
 			if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(tmpFileURL_<%=cid%>))){
+				Thread.sleep(1000);  // To make the process terminated after the System.out.println
 				throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
 			}
-	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
-	        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+			Thread.sleep(1000);
+			java.util.zip.ZipFile zipFile_<%=cid%> = new java.util.zip.ZipFile(tmpFileURL_<%=cid%>);
+
+			java.io.File file_<%=cid %> = new java.io.File(tmpFileURL_<%=cid%>);
+			java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
+			java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
+			
+	 		//org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+	 		java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
+	 		java.util.zip.ZipEntry entry_<%=cid%> ; 
+	        //   java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
 	        java.io.InputStream is_<%=cid %> = null;
-	        while (enuFiles_<%=cid %>.hasMoreElements()) {
-	            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	        	
+	        //  while (enuFiles_<%=cid %>.hasMoreElements()) {
+	        while ((entry_<%=cid%> = zipInputStream_<%=cid%>.getNextEntry()) != null) {  
+	            //org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	        	<% if(needPrintout) {%>
+	        	System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
+	        	<%}%>
 	            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
-	            if (!isDirectory_<%=cid%> ) {
+	           // if (!isDirectory_<%=cid%> ) {
 	                //get the input stream
-	                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
-				}
+	                //is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+				//}
 	            String filename_<%=cid %> =  entry_<%=cid %>.getName();
-	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);
-			}
-			zip_<%=cid %>.close();
-		}
+	            
+	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, zipInputStream_<%=cid%>);
+	            
+	        }
+	         System.out.println();
+			 System.out.println("Process finished"); 
+	      
+		//	zip_<%=cid %>.close();
+		<%} %>
 	}
 	
 
