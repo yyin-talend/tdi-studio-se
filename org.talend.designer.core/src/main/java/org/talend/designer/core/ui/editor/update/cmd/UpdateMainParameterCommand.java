@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
@@ -21,7 +20,6 @@ import org.talend.core.model.metadata.designerproperties.RepositoryToComponentPr
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
@@ -73,9 +71,6 @@ public class UpdateMainParameterCommand extends Command {
                 break;
             case JOB_PROPERTY_HEADERFOOTER:
                 category = EComponentCategory.HEADERFOOTER;
-                break;
-            case JOB_VERSION:
-                category = EComponentCategory.VERSIONS;
                 break;
             default:
             }
@@ -145,30 +140,6 @@ public class UpdateMainParameterCommand extends Command {
 
                                 }
 
-                            }
-                        }
-                    }
-                }
-            } else if (category == EComponentCategory.VERSIONS) {
-                if (result.getResultType() == EUpdateResult.UPDATE) {
-                    if (result.isChecked()) {
-                        List<?> nodeList = process.getGraphicalNodes();
-                        for (int i = 0; i < nodeList.size(); i++) {
-                            INode node = (INode) nodeList.get(i);
-                            if (node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS") != null) {
-                                String jobId = (String) node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS").getValue();
-                                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(jobId);
-                                if (jobId.equals(lastVersion.getId())) {
-                                    if (node.getElementParameter("PROCESS:PROCESS_TYPE_VERSION") != null) {
-                                        String jobVersion = (String) node.getElementParameter("PROCESS:PROCESS_TYPE_VERSION")
-                                                .getValue();
-                                        if (!jobVersion.equals("Latest") && !jobVersion.equals(lastVersion.getVersion())) {
-                                            node.getElementParameter("PROCESS:PROCESS_TYPE_VERSION").setValue(
-                                                    lastVersion.getVersion());
-                                            process.updateProperties();
-                                        }
-                                    }
-                                }
                             }
                         }
                     }

@@ -70,7 +70,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
-import org.talend.core.model.update.JobVersionManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -92,7 +91,6 @@ import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
@@ -440,51 +438,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
 
         return mainResults;
-    }
-
-    private List<UpdateResult> checkJobVersion(EUpdateItemType type, boolean onlySimpleShow) {
-        List<UpdateResult> jobSettingsResults = new ArrayList<UpdateResult>();
-        final Process process2 = getProcess();
-        UpdateCheckResult result = null;
-        JobVersionManager jobVersionManager = JobVersionManager.getInstance();
-        IRepositoryViewObject object = jobVersionManager.getNode();
-        List nodeList = process2.getGraphicalNodes();
-        for (int i = 0; i < nodeList.size(); i++) {
-            INode node = (INode) nodeList.get(i);
-            if (node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS") != null) {
-
-                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                String jobId = (String) node.getElementParameter("PROCESS:PROCESS_TYPE_PROCESS").getValue();
-                try {
-                    IRepositoryViewObject obj = factory.getLastVersion(jobId);
-                    if (onlySimpleShow) {
-                        obj = object;
-                    }
-                    if (jobId.equals(obj.getId())) {
-                        if (node.getElementParameter("PROCESS:PROCESS_TYPE_VERSION") != null) {
-                            String jobVersion = (String) node.getElementParameter("PROCESS:PROCESS_TYPE_VERSION").getValue();
-                            if ((!jobVersion.equals("Latest")) && (!jobVersion.equals(obj.getVersion()))) {
-                                result = new UpdateCheckResult(getProcess());
-                                List<Object> parameterList = new ArrayList<Object>();
-                                parameterList.add(EUpdateItemType.JOB_VERSION);
-                                parameterList.add(jobVersion);
-                                parameterList.add(obj.getVersion());
-                                result.setResult(EUpdateItemType.JOB_VERSION, EUpdateResult.UPDATE, parameterList, "Job: "
-                                        + obj.getLabel());
-                                if (result != null) {
-                                    result.setJob(getProcess());
-                                    setConfigrationForReadOnlyJob(result);
-                                    jobSettingsResults.add(result);
-                                }
-                            }
-                        }
-                    }
-                } catch (PersistenceException e) {
-                    // TODO Auto-generated catch block
-                }
-            }
-        }
-        return jobSettingsResults;
     }
 
     private List<UpdateResult> checkJobSettingsHeaderFooterParameters(EComponentCategory category, EUpdateItemType type,
@@ -1929,9 +1882,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case JOB_PROPERTY_STATS_LOGS:
         case JOB_PROPERTY_HEADERFOOTER:
             tmpResults = checkMainParameters(type, onlySimpleShow);
-            break;
-        case JOB_VERSION:
-            tmpResults = checkJobVersion(type, onlySimpleShow);
             break;
         case CONTEXT:
             tmpResults = checkContext(onlySimpleShow);
