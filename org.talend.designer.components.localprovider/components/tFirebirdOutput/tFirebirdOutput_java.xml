@@ -81,6 +81,18 @@
     >
       <DEFAULT>FireBird</DEFAULT>
     </PARAMETER>
+    
+     <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW="true"
+    >
+      <DEFAULT>"3050"</DEFAULT>
+    </PARAMETER>   
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"

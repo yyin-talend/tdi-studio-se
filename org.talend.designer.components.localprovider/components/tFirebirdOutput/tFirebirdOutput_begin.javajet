@@ -35,6 +35,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	
@@ -122,7 +124,8 @@ if(("true").equals(useExistingConn)) {
     <%
 } else {
     %>
-    String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
+    // String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
+    String url_<%=cid %> ="jdbc:firebirdsql:" + <%=dbhost%> + "/" +<%=dbport%> + ":" +  <%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     java.lang.Class.forName("<%=javaDbDriver %>");

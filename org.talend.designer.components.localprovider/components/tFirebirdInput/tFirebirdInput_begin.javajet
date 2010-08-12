@@ -24,7 +24,9 @@ imports="
 			String db = ElementParameterParser.getValue(node, "__DB__");
 			String dbjnilib = ElementParameterParser.getValue(node, "__JNI_LIB__");
 %>
-			String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=db%>;
+			//String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=db%>;
+
+			String url_<%=cid %> ="jdbc:firebirdsql:" + <%=dbhost%> + "/" +<%=dbport%> + ":" +  <%=db%>;
 <%
 		}
 		
