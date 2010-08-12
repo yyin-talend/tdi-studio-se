@@ -13,7 +13,9 @@
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -55,6 +57,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -200,6 +203,16 @@ public class WebServiceStep2Form extends AbstractWSDLSchemaStepForm {
      */
     protected void initialize() {
         // init the metadata Table
+        Set<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper.getTables(connection);
+        Iterator it = tables.iterator();
+        while (it.hasNext()) {
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadatatable = (org.talend.core.model.metadata.builder.connection.MetadataTable) it
+                    .next();
+            if (metadatatable.getLabel().equals("Output")) {
+                metadataTable = metadatatable;
+            }
+        }
+
         String label = MetadataTool.validateValue(metadataTable.getLabel());
         metadataNameText.setText(label);
         metadataCommentText.setText(metadataTable.getComment());
