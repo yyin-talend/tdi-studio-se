@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
@@ -1352,6 +1353,26 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             } else {
                                                 sameValues = false;
                                             }
+                                        }
+
+                                        if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
+                                            IElementParameter paramEncoding = param.getChildParameters().get(
+                                                    EParameterName.ENCODING_TYPE.getName());
+                                            if (paramEncoding != null) {
+                                                if (repositoryConnection instanceof FTPConnection) {
+                                                    if (((FTPConnection) repositoryConnection).getEcoding() != null) {
+                                                        paramEncoding.setValue(((FTPConnection) repositoryConnection)
+                                                                .getEcoding());
+                                                    } else {
+                                                        paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                                    }
+
+                                                } else {
+                                                    paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                                    // paramEncoding.setRepositoryValueUsed(true);
+                                                }
+                                            }
+
                                         }
                                     } else if (value instanceof Boolean && objectValue instanceof Boolean) {
                                         sameValues = ((Boolean) value).equals((Boolean) objectValue);

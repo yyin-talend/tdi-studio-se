@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
@@ -347,8 +348,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                                 IElementParameter paramEncoding = param.getChildParameters().get(
                                         EParameterName.ENCODING_TYPE.getName());
-                                paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
-                                // paramEncoding.setRepositoryValueUsed(true);
+                                if (connection instanceof FTPConnection) {
+                                    if (((FTPConnection) connection).getEcoding() != null) {
+                                        paramEncoding.setValue(((FTPConnection) connection).getEcoding());
+                                    } else {
+                                        paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                    }
+
+                                } else {
+                                    paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                    // paramEncoding.setRepositoryValueUsed(true);
+                                }
+
                             } else if (repositoryValue.equals("CSV_OPTION")) { //$NON-NLS-1$
                                 setOtherProperties();
                             }

@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
@@ -65,6 +66,8 @@ public class FTPFrom extends AbstractForm {
     private LabelledCombo encodeCombo;
 
     private LabelledCombo methodCombo;
+
+    private Text customText;
 
     private Button sftpSuppBut;
 
@@ -134,16 +137,33 @@ public class FTPFrom extends AbstractForm {
 
         ftpPortText = new LabelledText(ftpParameterGroup, "Port", true); //$NON-NLS-1$
 
+        Composite com = new Composite(ftpParameterGroup, SWT.NONE);
+        layoutGroup = new GridLayout();
+        layoutGroup.numColumns = 2;
+        com.setLayout(layoutGroup);
         List<String> codeList = new ArrayList<String>();
         codeList.add("ISO-8859-15");
         codeList.add("UTF-8");
         codeList.add("CUSTOM");
-        encodeCombo = new LabelledCombo(ftpParameterGroup, "Encoding", "", codeList);
+        encodeCombo = new LabelledCombo(com, "Encoding", "", codeList);
+        if (getConnection().getEcoding() == null || "".equals(getConnection().getEcoding())) {
+            encodeCombo.setText("ISO-8859-15");
+            getConnection().setEcoding(encodeCombo.getText());
+        }
+
+        customText = new Text(ftpParameterGroup, SWT.BORDER | SWT.SINGLE);
+        GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        gridData.horizontalSpan = 1;
+        customText.setLayoutData(gd);
 
         List<String> connList = new ArrayList<String>();
         connList.add("Passive");
         connList.add("Active");
         connModelCombo = new LabelledCombo(ftpParameterGroup, "Connection Model", "", connList);
+        if (getConnection().getMode() == null || "".equals(getConnection().getMode())) {
+            connModelCombo.setText("Passive");
+            getConnection().setMode(connModelCombo.getText());
+        }
         // Composite com = new Composite(mdmParameterGroup, SWT.NONE);
 
         Group buildGroup = new Group(this, SWT.NULL);
@@ -296,6 +316,22 @@ public class FTPFrom extends AbstractForm {
             @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setEcoding(encodeCombo.getText());
+                if (getConnection().getEcoding().equals("CUSTOM")) {
+                    customText.setVisible(true);
+                    customText.setText("ISO-8859-15");
+                    getConnection().setCustomEncode(customText.getText());
+                } else {
+                    getConnection().setCustomEncode(getConnection().getEcoding());
+                    customText.setVisible(false);
+                }
+            }
+        });
+
+        customText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                getConnection().setCustomEncode(customText.getText());
             }
         });
 
@@ -415,6 +451,16 @@ public class FTPFrom extends AbstractForm {
         ftpPortText.setText(getConnection().getPort());
         ftpHostText.setText(getConnection().getHost());
         encodeCombo.setText(getConnection().getEcoding());
+        if (encodeCombo.getText().equals("CUSTOM")) {
+            customText.setVisible(true);
+        } else {
+            customText.setVisible(false);
+        }
+        if (getConnection().getCustomEncode() == null) {
+            customText.setText("ISO-8859-15");
+        } else {
+            customText.setText(getConnection().getCustomEncode());
+        }
         connModelCombo.setText(getConnection().getMode());
         if (getConnection().isSFTP()) {
             ftpsSuppBut.setVisible(false);
@@ -478,6 +524,12 @@ public class FTPFrom extends AbstractForm {
         }
         if (!proxyUsernameText.getTextControl().isVisible()) {
             getConnection().setProxyuser("");
+        }
+        if (!customText.isVisible()) {
+            getConnection().setCustomEncode("ISO-8859-15");
+        }
+        if (getConnection().getCustomEncode() == null || "".equals(getConnection().getCustomEncode())) {
+            getConnection().setCustomEncode("ISO-8859-15");
         }
     }
 
