@@ -633,10 +633,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setParametersValueButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-
-                List<ContextParameterType> contextValueList = getJobContextValues((ProcessItem) process[0].getItem(),
-                        contextCombo.getText());
-                ParametersValuesDialog dialog = new ParametersValuesDialog(getShell(), contextValueList);
+                List<ContextParameterType> contextEditableResultValuesList = manager.getContextEditableResultValuesList();
+                List<ContextParameterType> contextValueList = new ArrayList<ContextParameterType>();
+                if (contextEditableResultValuesList == null) {
+                    contextValueList = getJobContextValues((ProcessItem) process[0].getItem(), contextCombo.getText());
+                }
+                ParametersValuesDialog dialog = new ParametersValuesDialog(getShell(), contextValueList,
+                        contextEditableResultValuesList);
                 int open = dialog.open();
                 if (open == Dialog.OK) {
                     List<ContextParameterType> contextResultValuesList = dialog.getContextResultValuesList();
@@ -720,11 +723,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX | SWT.MIN);
         }
 
-        protected ParametersValuesDialog(Shell parentShell, List<ContextParameterType> contextValueList) {
+        protected ParametersValuesDialog(Shell parentShell, List<ContextParameterType> contextValueList,
+                List<ContextParameterType> contextEditableResultValuesList) {
             super(parentShell);
             setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX | SWT.MIN);
             this.contextValueList = contextValueList;
-            contextEditableValuesList = initContextValues(contextValueList);
+            // if set before, will use the set values. if not, only display the default parameters names.
+            if (contextEditableResultValuesList == null) {
+                contextEditableValuesList = initContextValues(contextValueList);
+            } else {
+                contextEditableValuesList = reviewContextValues(contextEditableResultValuesList);
+            }
         }
 
         @Override
@@ -746,6 +755,22 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 createContextParameterType.setName(contextType.getName());
                 createContextParameterType.setType(contextType.getType());
                 createContextParameterType.setValue("");
+                list.add(createContextParameterType);
+            }
+            return list;
+        }
+
+        protected List<ContextParameterType> reviewContextValues(List<ContextParameterType> valueList) {
+
+            List<ContextParameterType> list = new ArrayList<ContextParameterType>();
+
+            for (int i = 0; i < valueList.size(); i++) {
+                Object object = valueList.get(i);
+                ContextParameterType contextType = (ContextParameterType) object;
+                ContextParameterType createContextParameterType = TalendFileFactory.eINSTANCE.createContextParameterType();
+                createContextParameterType.setName(contextType.getName());
+                createContextParameterType.setType(contextType.getType());
+                createContextParameterType.setValue(contextType.getValue());
                 list.add(createContextParameterType);
             }
             return list;
@@ -777,7 +802,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             column = new TableColumn(table, SWT.NONE);
             column.setText(contextParameterValue);
             column.setWidth(300);
-
+            tableViewer.refresh();
             tableViewer.setColumnProperties(new String[] { contextParameterName, contextParameterValue });
             // set modifier
             tableViewer.setCellModifier(new ICellModifier() {
