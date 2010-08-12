@@ -606,7 +606,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    	    }
 	    	}//*****************************csv mode under output stream end********************************************************
 	    	
-	    	if(isIncludeHeader && !hasDynamic){//when there is dynamic schema, it won't be enclosed with "\""
+	    	if(!(isIncludeHeader && hasDynamic)){//when there is dynamic schema, it won't be enclosed with "\""
 %>
 				CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
 				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
