@@ -219,7 +219,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             }
 
             public void treeExpanded(TreeExpansionEvent event) {
-                refreshCheckedTreeView();
+                // refreshCheckedTreeView();
             }
         });
 
