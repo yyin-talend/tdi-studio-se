@@ -786,7 +786,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     TableItem tableItem = (TableItem) element;
                     ContextParameterType node = (ContextParameterType) tableItem.getData();
                     if (property.equals(contextParameterName)) {
-                        node.setName((String) value);
+                        if (value == null || "".equals(value)) {
+                            MessageDialog
+                                    .openError(
+                                            new Shell(),
+                                            Messages.getString("ContextProcessSection.errorTitle"), Messages.getString("ContextProcessSection.ParameterNameIsNotValid")); //$NON-NLS-1$ //$NON-NLS-2$
+                        } else {
+                            node.setName((String) value);
+                        }
                     }
                     if (property.equals(contextParameterValue)) {
                         node.setValue((String) value);
