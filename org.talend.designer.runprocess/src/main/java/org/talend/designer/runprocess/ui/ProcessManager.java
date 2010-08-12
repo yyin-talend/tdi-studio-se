@@ -19,6 +19,8 @@ import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.model.process.IContext;
 import org.talend.designer.runprocess.RunProcessContext;
+import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.DefaultProcessViewHelper;
 import org.talend.designer.runprocess.ui.views.IProcessViewHelper;
 
@@ -41,11 +43,14 @@ public class ProcessManager {
 
     private Boolean saveJobBeforeRun = true;
 
-    private Boolean execTime = false;
+    private Boolean execTime = RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+            RunProcessPrefsConstants.ISEXECTIMERUN);
 
-    private Boolean stat = true;
+    private Boolean stat = RunProcessPlugin.getDefault().getPreferenceStore()
+            .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN);
 
-    private Boolean clearBeforeExec = true;
+    private Boolean clearBeforeExec = RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+            RunProcessPrefsConstants.ISCLEARBEFORERUN);
 
     private boolean trace = true;
 
