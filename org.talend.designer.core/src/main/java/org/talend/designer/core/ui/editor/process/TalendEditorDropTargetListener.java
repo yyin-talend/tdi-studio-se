@@ -1151,6 +1151,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         IComponent defaultComponent = getComponentByName(name.getDefaultComponentName(), true, neededComponents);
         if (defaultComponent != null) {
             dialog.setInitialSelections(new Object[] { defaultComponent });
+        } else {
+            dialog.setInitialSelections(new Object[] { neededComponents.get(0) });
         }
         if (dialog.open() == IDialogConstants.OK_ID) {
             return dialog.getResultComponent();
