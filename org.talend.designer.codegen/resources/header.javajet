@@ -10,6 +10,7 @@
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
+		org.talend.core.ui.branding.AbstractBrandingService
 		org.talend.core.GlobalServiceRegister
 		org.talend.designer.codegen.ITalendSynchronizer
 		java.util.List
@@ -35,18 +36,7 @@
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
 %>
-// ============================================================================
-//
-// <%=Messages.getString("generatedcode.copyright.title")%>
-//
-// <%=Messages.getString("generatedcode.copyright.body1", ((IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class)).getFullProductName()) %>
-// <%=Messages.getString("generatedcode.copyright.body2", version) %>
-// <%=Messages.getString("generatedcode.copyright.body3") %>
-// <%=Messages.getString("generatedcode.copyright.body4") %>
-// <%=Messages.getString("generatedcode.copyright.body5") %>
-//
-// ============================================================================
+<%=((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getJobLicenseHeader(version) %>
 <%
   String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
   String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;

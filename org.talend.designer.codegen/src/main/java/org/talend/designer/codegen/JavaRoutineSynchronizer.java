@@ -28,6 +28,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -38,6 +39,8 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.ui.branding.AbstractBrandingService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 
@@ -98,6 +101,12 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
+                // see 14713
+                if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
+                    String routineHeader = ((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(
+                            IBrandingService.class)).getRoutineLicenseHeader();
+                    routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                }// end
                 String label = routineItem.getProperty().getLabel();
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
@@ -306,7 +315,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
                     + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
             /*
              * File f = file.getLocation().toFile(); f.delete();

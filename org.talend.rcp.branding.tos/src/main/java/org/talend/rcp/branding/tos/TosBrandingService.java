@@ -20,16 +20,16 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
+import org.talend.core.ui.branding.AbstractBrandingService;
 import org.talend.core.ui.branding.DefaultBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingConfiguration;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.rcp.branding.tos.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
  * 
  */
-public class TosBrandingService implements IBrandingService {
+public class TosBrandingService extends AbstractBrandingService {
 
     protected IBrandingConfiguration brandingConfigure;
 

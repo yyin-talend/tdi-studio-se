@@ -26,6 +26,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -36,6 +37,8 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.ui.branding.AbstractBrandingService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
@@ -64,20 +67,31 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
 
+            // see 14713
+            String routineContents = new String(routineItem.getContent().getInnerContent());
+            if (routineContents.contains("%GENERATED_LICENSE%")) {
+                String routineHeader = ((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class)).getRoutineLicenseHeader();
+                routineContents = routineContents.replace("%GENERATED_LICENSE%", routineHeader);
+                if (routineContents.contains("//")) {
+                    routineContents = routineContents.replace("//", "#");
+                }
+            }// end
+
             if (!routineItem.isBuiltIn()) {
                 // Copy the routine in external "lib/perl" folder:
                 String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + IPath.SEPARATOR
                         + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR + project.getTechnicalLabel()
                         + IPath.SEPARATOR + routineItem.getProperty().getLabel() + service.getRoutineFilenameExt();
                 File target = new File(librariesPath);
-
-                byteArrayInputStream = new ByteArrayInputStream(routineItem.getContent().getInnerContent());
+                byteArrayInputStream = new ByteArrayInputStream(routineContents.getBytes());
                 FilesUtils.copyFile(byteArrayInputStream, target);
             }
 
             IResource tempfile = getRoutineFile(routineItem);
 
             if (copyToTemp) {
+                routineItem.getContent().setInnerContent(routineContents.getBytes());
                 routineItem.getContent().setInnerContentToFile(tempfile.getLocation().toFile());
             }
             tempfile.refreshLocal(1, null);

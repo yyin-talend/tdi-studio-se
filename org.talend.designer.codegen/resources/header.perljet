@@ -10,6 +10,7 @@
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
+		org.talend.core.ui.branding.AbstractBrandingService
 		org.talend.core.GlobalServiceRegister
 		java.util.List
 		java.util.Vector
@@ -74,14 +75,7 @@ use <%=routine%>;
 
 my $_licence = <<'END_OF_LICENCE';
 
- <%=Messages.getString("generatedcode.copyright.title")%>
-
- <%=Messages.getString("generatedcode.copyright.body1", ((IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class)).getFullProductName()) %>
- <%=Messages.getString("generatedcode.copyright.body2", version) %>
- <%=Messages.getString("generatedcode.copyright.body3") %>
- <%=Messages.getString("generatedcode.copyright.body4") %>
- <%=Messages.getString("generatedcode.copyright.body5") %>
+<%=((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getJobLicenseHeader(version).replace("//", "#") %>
 
 END_OF_LICENCE
 
