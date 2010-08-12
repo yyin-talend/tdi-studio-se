@@ -61,7 +61,7 @@ imports="
 %>
 					javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
 					whetherReject_<%=cid%> = false;
-					String dn_<%=cid%> = <%=conn.getName() %>.<%=dnColumnName%>.trim();
+					String dn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=dnColumnName%>).trim();
 <%
 					for(IMetadataColumn column:columnList){		
 						if (dnColumnName.equals(column.getLabel().trim())) {
@@ -70,14 +70,14 @@ imports="
 						if(!("DELETE").equals(insertMode) && !("UPDATA").equals(insertMode)){
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
-    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separatorText%>)>0){
+    	if(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>).trim().indexOf(<%=separatorText%>)>0){
     		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
-    		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(<%=separator%>)){
+    		for(String value_<%=cid%> : String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>).trim().split(<%=separator%>)){
     			attr_<%=cid%>.add(value_<%=cid%>);    		
     		}
     		entry_<%=cid%>.put(attr_<%=cid%>);
     	}else{
-    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>));
     	}
     }
 <%
