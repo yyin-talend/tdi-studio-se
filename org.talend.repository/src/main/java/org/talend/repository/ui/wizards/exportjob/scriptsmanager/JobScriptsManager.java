@@ -97,7 +97,7 @@ public abstract class JobScriptsManager {
 
     protected List<ContextParameterType> contextEditableResultValuesList;
 
-    protected List<ContextParameterType> getContextEditableResultValuesList() {
+    public List<ContextParameterType> getContextEditableResultValuesList() {
         return this.contextEditableResultValuesList;
     }
 
