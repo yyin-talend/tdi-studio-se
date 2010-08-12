@@ -375,6 +375,9 @@ public final class UpdateManagerUtils {
             case RELOAD:
                 command = executeJobletNodesUpdates(result);
                 break;
+            case JOB_VERSION:
+                command = new UpdateMainParameterCommand(result);
+                break;
             case JOBLET_CONTEXT:
                 command = new Command() { // have update in checking.
                 };

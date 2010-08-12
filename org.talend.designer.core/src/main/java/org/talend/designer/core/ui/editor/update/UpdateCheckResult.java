@@ -91,6 +91,13 @@ public class UpdateCheckResult extends UpdateResult {
         case JOB_PROPERTY_HEADERFOOTER:
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.HEADERFOOTER.getTitle());
             break;
+        case JOB_VERSION:
+            List<Object> VersionParam = (List<Object>) getParameter();
+            String VersionDisplay = getRenamedDisplay((String) VersionParam.get(1), (String) VersionParam.get(2));
+            if (VersionDisplay != null) {
+                displayName = VersionDisplay;
+            }
+            break;
         case CONTEXT_GROUP:
             if (getUpdateObject() != null && getUpdateObject() instanceof IContext) {
                 displayName = ((IContext) getUpdateObject()).getName();
@@ -226,6 +233,9 @@ public class UpdateCheckResult extends UpdateResult {
             } else {
                 category = JobSettingsView.getViewNameLable();
             }
+            break;
+        case JOB_VERSION:
+            category = UpdatesConstants.JOBVERSION;
             break;
         case CONTEXT:
         case JOBLET_CONTEXT:
