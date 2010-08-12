@@ -783,10 +783,18 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             tableViewer.setCellModifier(new ICellModifier() {
 
                 public void modify(Object element, String property, Object value) {
+                    List<String> nameList = new ArrayList<String>();
+                    for (int i = 0; i < contextEditableValuesList.size(); i++) {
+                        String name = contextEditableValuesList.get(i).getName();
+                        nameList.add(name);
+                    }
                     TableItem tableItem = (TableItem) element;
                     ContextParameterType node = (ContextParameterType) tableItem.getData();
+                    if (contextEditableValuesList.contains(node)) {
+                        nameList.remove(node.getName());
+                    }
                     if (property.equals(contextParameterName)) {
-                        if (value == null || "".equals(value)) {
+                        if (value == null || "".equals(value) || nameList.contains(value)) {
                             MessageDialog
                                     .openError(
                                             new Shell(),
