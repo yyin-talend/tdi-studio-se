@@ -86,7 +86,7 @@
       NUM_ROW="20"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-      SHOW="false"
+      SHOW="true"
     >
       <DEFAULT>"3050"</DEFAULT>
     </PARAMETER>    
