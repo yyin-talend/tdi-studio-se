@@ -600,7 +600,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                                 repositoryTable = item.getProperty().getId() + " - " + "Input";
                                                 repositorySchemaTypeParameter.setValue(repositoryTable);
                                             } else {
-                                                repositoryTable = item.getProperty().getId() + " - " + "OutPut";
+                                                repositoryTable = item.getProperty().getId() + " - " + "Output";
                                                 repositorySchemaTypeParameter.setValue(repositoryTable);
                                             }
                                             if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
