@@ -122,10 +122,16 @@ public class GuessSchemaProcess {
                 List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
                 String moduleNeedName = "";
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                for (int i = 0; i < drivers.size(); i++) {
-                    moduleNeedName = drivers.get(i).toString();
+                if (drivers.size() > 0) {
+                    // use the first driver as defalult.
+                    // added for bug 13592
+                    moduleNeedName = drivers.get(0).toString();
                     libNode1.setPropertyValue("LIBRARY", "\"" + moduleNeedName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
+                // for (int i = 0; i < drivers.size(); i++) {
+                // moduleNeedName = drivers.get(i).toString();
+                //                    libNode1.setPropertyValue("LIBRARY", "\"" + moduleNeedName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                // }
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }

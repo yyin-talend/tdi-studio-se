@@ -13,6 +13,7 @@
 package org.talend.designer.core.utils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,7 @@ public class JavaProcessUtil {
                 }
             }
         }
+        // return the jars needed for the job.
         return neededLibraries;
 
     }
@@ -209,8 +211,27 @@ public class JavaProcessUtil {
      */
     public static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam, boolean flag) {
 
+        Object value = curParam.getValue();
+        if (curParam.getName().equals("DRIVER_JAR")) {//$NON-NLS-N$
+            // added for bug 13592. new parameter DRIVER_JAR was used for jdbc connection
+            if (value != null && value instanceof List) {
+                List list = (List) value;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) instanceof HashMap) {
+                        HashMap map = (HashMap) list.get(i);// JAR_NAME
+                        Object object = map.get("JAR_NAME");//$NON-NLS-N$
+                        if (object != null && object instanceof String) {
+                            String driverName = (String) object;
+                            neededLibraries.add((driverName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                                    TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                        }
+                    }
+                }
+            }
+        }
+
         if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
-            String jdbcName = (String) curParam.getValue();
+            String jdbcName = (String) value;
             if (jdbcName != null) {
                 if (jdbcName.contains("11g")) { //$NON-NLS-1$
                     if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -229,7 +250,7 @@ public class JavaProcessUtil {
 
         String separator = ";"; //$NON-NLS-1$
         if (curParam.getName().equals("MQ_DERVIERS")) { //$NON-NLS-1$
-            String path = (String) curParam.getValue();
+            String path = (String) value;
 
             if (path == null || path.equals("")) { //$NON-NLS-1$
                 return;
@@ -240,7 +261,7 @@ public class JavaProcessUtil {
             }
         }
         if (curParam.getName().equals("HOTLIBS")) { //$NON-NLS-1$
-            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
 
             for (Map<String, Object> line : tableValues) {
                 if (line.containsKey("LIBPATH") && !StringUtil.isEmpty((String) line.get("LIBPATH"))) {
