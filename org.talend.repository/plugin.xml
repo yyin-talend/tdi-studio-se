@@ -1354,6 +1354,12 @@
             title="%projectsetting.Security">
       </page>
       <page
+            category="general"
+            class="org.talend.repository.preference.StatusManagerSettingPage"
+            id="org.talend.repository.preference.StatusManagementPage"
+            title="%projectSetting.StatusManager">
+      </page>
+      <page
             class="org.talend.repository.preference.CustomComponentSettingPage"
             id="org.talend.repository.preference.CustomComponentSettingPage"
             title="%customCompSetting">
