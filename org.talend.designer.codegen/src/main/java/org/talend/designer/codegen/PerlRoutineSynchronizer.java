@@ -69,12 +69,13 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
             // see 14713
             String routineContents = new String(routineItem.getContent().getInnerContent());
-            if (routineContents.contains("%GENERATED_LICENSE%")) {
+            String version = routineItem.getProperty().getVersion();
+            if (routineContents.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
                 String routineHeader = ((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(
-                        IBrandingService.class)).getRoutineLicenseHeader();
-                routineContents = routineContents.replace("%GENERATED_LICENSE%", routineHeader);
-                if (routineContents.contains("//")) {
-                    routineContents = routineContents.replace("//", "#");
+                        IBrandingService.class)).getRoutineLicenseHeader(version);
+                routineContents = routineContents.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                if (routineContents.contains("//")) { //$NON-NLS-1$
+                    routineContents = routineContents.replace("//", "#").replace("#www", "//www"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
             }// end
 
