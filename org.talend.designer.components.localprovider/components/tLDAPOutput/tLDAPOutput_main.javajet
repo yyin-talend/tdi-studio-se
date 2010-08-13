@@ -9,6 +9,8 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
 "
 %>
 
@@ -63,23 +65,35 @@ imports="
 					whetherReject_<%=cid%> = false;
 					String dn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=dnColumnName%>).trim();
 <%
-					for(IMetadataColumn column:columnList){		
+					for(IMetadataColumn column:columnList){
+						String columnType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						if (dnColumnName.equals(column.getLabel().trim())) {
 							continue;
 						}
 						if(!("DELETE").equals(insertMode) && !("UPDATA").equals(insertMode)){
 %>
-	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
-    	if(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>).trim().indexOf(<%=separatorText%>)>0){
-    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
-    		for(String value_<%=cid%> : String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>).trim().split(<%=separator%>)){
-    			attr_<%=cid%>.add(value_<%=cid%>);    		
-    		}
-    		entry_<%=cid%>.put(attr_<%=cid%>);
-    	}else{
-    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>));
-    	}
-    }
+							if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
+<%
+								if("java.util.Date".equals(columnType)){
+%>
+									String incomingColumn_<%=cid%> = new SimpleDateFormat(<%=column.getPattern()%>).format(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+								}else{
+%>
+									String incomingColumn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+								}
+%>
+						    	if(incomingColumn_<%=cid%>.trim().indexOf(<%=separatorText%>)>0){
+						    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
+						    		for(String value_<%=cid%> : incomingColumn_<%=cid%>.trim().split(<%=separator%>)){
+						    			attr_<%=cid%>.add(value_<%=cid%>);    		
+						    		}
+						    		entry_<%=cid%>.put(attr_<%=cid%>);
+						    	}else{
+						    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",incomingColumn_<%=cid%>);
+						    	}
+						    }
 <%
 						}
 					}
