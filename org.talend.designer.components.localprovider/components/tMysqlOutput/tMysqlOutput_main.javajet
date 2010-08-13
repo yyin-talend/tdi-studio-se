@@ -363,9 +363,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                            <%=rejectConnName %> = new <%=rejectConnName %>Struct();
 	                            <%
 	                            for(IMetadataColumn column : columnList) {
-	                                %>
+	                             %>
 	                                <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-	                                <%
+	                            <%
 	                            }
 	                            %>
 	                            <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
@@ -888,17 +888,20 @@ skeleton="../templates/db_output_bulk.skeleton"
                         <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                         <%
                         for(IMetadataColumn column : columnList) {
-                            %>
+                        %>
                             <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                            <%
+                            
+                        <%
                         }
                         %>
+                        rejectedCount_<%=cid%> =  rejectedCount_<%=cid%>+ 1;
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+                       
                         <%
                     } else {
                         %>
                         System.err.print(e.getMessage());
-                        <%
+                <%
                     }
                 }
                 %>
@@ -949,6 +952,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        rejectedCount_<%=cid%> =  rejectedCount_<%=cid%>+ 1;
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -1024,6 +1028,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                             <%
                         }
                         %>
+                        rejectedCount_<%=cid%> =  rejectedCount_<%=cid%>+ 1;
                         <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                         <%
                     } else {
@@ -1084,6 +1089,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                 <%
                             }
                             %>
+                            rejectedCount_<%=cid%> =  rejectedCount_<%=cid%>+ 1;
                             <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                             <%
                         } else {
