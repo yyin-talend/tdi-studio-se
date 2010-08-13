@@ -193,7 +193,8 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
         for (int j = 0; j < values.length; j++) {
             encodingData[j] = values[j].getName();
         }
-        encodingCombo = new LabelledCombo(compositeOutput, "Encording", "Encording", encodingData, 1, true, SWT.NONE);
+        encodingCombo = new LabelledCombo(compositeOutput, Messages.getString("XmlFileOutputStep1Form.Encording"), Messages
+                .getString("XmlFileOutputStep1Form.Encording"), encodingData, 1, true, SWT.NONE);
         encodingCombo.setText("");
         Composite limitation = new Composite(compositeOutput, SWT.NONE);
         limitation.setLayout(new GridLayout(2, false));
@@ -268,7 +269,8 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
         List<FOXTreeNode> nodeList = TreeUtil.getFoxTreeNodes(file);
         if (ConnectionHelper.getTables(getConnection()).isEmpty()) {
             MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
-            RecordFile record = (RecordFile) ConnectionHelper.getPackage(getConnection().getName(), getConnection(), RecordFile.class);
+            RecordFile record = (RecordFile) ConnectionHelper.getPackage(getConnection().getName(), getConnection(),
+                    RecordFile.class);
             if (record != null) { // hywang
                 PackageHelper.addMetadataTable(table, record);
             } else {

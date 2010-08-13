@@ -75,7 +75,7 @@ public class XmlFileSelectWizardPage extends XmlFileWizardPage {
 
         boolean inputModel = ((XmlFileConnection) connectionItem.getConnection()).isInputModel();
         inputModeButton = new Button(composite, SWT.RADIO);
-        inputModeButton.setText("Input XML");
+        inputModeButton.setText(Messages.getString("XmlFileSelectWizardPage.Input_XML"));//$NON-NLS-1$
         if (creation) {
             inputModeButton.setSelection(isInputModel);
         } else {
@@ -84,7 +84,7 @@ public class XmlFileSelectWizardPage extends XmlFileWizardPage {
         inputModeButton.setEnabled(creation);
 
         outputModeButton = new Button(composite, SWT.RADIO);
-        outputModeButton.setText("OutPut XML");
+        outputModeButton.setText(Messages.getString("XmlFileSelectWizardPage.OutPut_XML"));//$NON-NLS-1$
         if (creation) {
             outputModeButton.setSelection(!isInputModel);
         } else {
