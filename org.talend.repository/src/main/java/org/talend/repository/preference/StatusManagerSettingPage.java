@@ -689,12 +689,15 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             TableItem tableItem = null;
             if (!object.getRepositoryNode().getObjectType().equals(ERepositoryObjectType.JOB_DOC)) {
                 if (isDocumentStatus()) {
-                    if (object.getRepositoryNode().getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
+                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                    if (type.equals(ERepositoryObjectType.DOCUMENTATION) || type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
                 } else if (isTechinalStatus()) {
-                    if (!object.getRepositoryNode().getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
+                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                    if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
+                            && !type.equals(ERepositoryObjectType.JOBLETS)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
@@ -743,7 +746,9 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         GridData data = new GridData(GridData.FILL_HORIZONTAL);
                         statusItemCombo.setLayoutData(data);
                         statusItemCombo.setEditable(false);
-                        if (!object.getRepositoryNode().getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
+                        ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                        if (!type.equals(ERepositoryObjectType.DOCUMENTATION)
+                                && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
                             statusItemCombo.setItems(toArray(technicalStatusList));
                             statusItemCombo.select(0);
                             if (!object.getProperty().getOldStatusCode().equals("DEV")) {
