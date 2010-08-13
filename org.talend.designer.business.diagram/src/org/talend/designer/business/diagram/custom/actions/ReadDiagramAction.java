@@ -23,6 +23,7 @@ import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
@@ -61,21 +62,16 @@ public class ReadDiagramAction extends AContextualAction {
         RepositoryNode node = repositoryNode;
         if (node != null) {
             IRepositoryViewObject repositoryObject = node.getObject();
-            if (repositoryObject instanceof RepositoryViewObject) {
-                RepositoryViewObject abstractRepositoryObject = (RepositoryViewObject) repositoryObject;
-                Property property = abstractRepositoryObject.getProperty();
-                // Property updatedProperty = null;
-                // try {
-                //
-                // updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                // new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
-                // .getProperty();
-                //
-                // } catch (PersistenceException e) {
-                // ExceptionHandler.process(e);
-                // }
 
-                BusinessProcessItem businessProcessItem = (BusinessProcessItem) property.getItem();
+            Property updatedProperty = null;
+            if (repositoryObject instanceof RepositoryObject) {
+                RepositoryViewObject abstractRepositoryObject = new RepositoryViewObject(repositoryObject.getProperty());
+                updatedProperty = abstractRepositoryObject.getProperty();
+            } else if (repositoryObject instanceof RepositoryViewObject) {
+                updatedProperty = repositoryObject.getProperty();
+            }
+            if (updatedProperty != null) {
+                BusinessProcessItem businessProcessItem = (BusinessProcessItem) updatedProperty.getItem();
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getActivePage(),
                         new NullProgressMonitor());
                 IFile file = diagramResourceManager.createDiagramFile();
