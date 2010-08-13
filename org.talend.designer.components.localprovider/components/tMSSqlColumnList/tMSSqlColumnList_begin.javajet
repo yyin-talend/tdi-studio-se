@@ -48,9 +48,10 @@ imports="
 			"t.CHARACTER_MAXIMUM_LENGTH, t.CHARACTER_OCTET_LENGTH, t.NUMERIC_PRECISION, " + 
 			"t.NUMERIC_PRECISION_RADIX, t.NUMERIC_SCALE, t.DATETIME_PRECISION, c.COLUMN_NAME, " + 
 			"t.ORDINAL_POSITION FROM (SELECT * FROM information_schema.columns WHERE TABLE_CATALOG='" + db_<%=cid%> + 
-			"' AND TABLE_NAME='" + table_<%=cid%> +"') AS t LEFT OUTER JOIN (SELECT COLUMN_NAME FROM " + 
-			"information_schema.KEY_COLUMN_USAGE WHERE TABLE_CATALOG='" + db_<%=cid%> + 
-			"' AND TABLE_NAME='" + table_<%=cid%> + "') AS c ON t.COLUMN_NAME=c.COLUMN_NAME ORDER BY t.ORDINAL_POSITION";	
+			"' AND TABLE_NAME='" + table_<%=cid%> +"') AS t LEFT OUTER JOIN (SELECT isK.COLUMN_NAME,isK.CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE isK," +
+			"information_schema.TABLE_CONSTRAINTS isT WHERE isK.TABLE_CATALOG='" + db_<%=cid%> + 
+			"' AND isK.TABLE_NAME='" + table_<%=cid%>+ 
+			"' AND isT.CONSTRAINT_TYPE='PRIMARY KEY'AND isK.CONSTRAINT_NAME=isT.CONSTRAINT_NAME) AS c ON t.COLUMN_NAME=c.COLUMN_NAME ORDER BY t.ORDINAL_POSITION";	
 	}
 
 	int nb_column_<%=cid%> = 0;
