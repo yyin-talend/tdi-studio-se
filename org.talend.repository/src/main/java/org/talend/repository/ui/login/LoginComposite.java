@@ -964,8 +964,7 @@ public class LoginComposite extends Composite {
             } catch (BusinessException e) {
                 projects = new Project[0];
 
-                MessageDialog.openError(getShell(),
-                        "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                MessageDialog.openError(getShell(), "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getKey()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         projectViewer.setInput(projects);
