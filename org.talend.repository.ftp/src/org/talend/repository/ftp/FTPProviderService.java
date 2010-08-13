@@ -33,7 +33,6 @@ public class FTPProviderService implements IFTPProviderService {
      * 
      * @see org.talend.core.ui.IFTPProviderService#getRepositoryItem(org.talend.core.model.process.INode)
      */
-    @Override
     public FTPConnectionItem getRepositoryItem(INode node) {
         // TODO Auto-generated method stub
         return null;
@@ -44,7 +43,6 @@ public class FTPProviderService implements IFTPProviderService {
      * 
      * @see org.talend.core.ui.IFTPProviderService#isFTPNode(org.talend.core.model.process.INode)
      */
-    @Override
     public boolean isFTPNode(INode node) {
         // TODO Auto-generated method stub
         return false;
@@ -56,7 +54,6 @@ public class FTPProviderService implements IFTPProviderService {
      * @see org.talend.core.ui.IFTPProviderService#isRepositorySchemaLine(org.talend.core.model.process.INode,
      * java.util.Map)
      */
-    @Override
     public boolean isRepositorySchemaLine(INode node, Map<String, Object> lineValue) {
         // TODO Auto-generated method stub
         return false;
@@ -68,7 +65,6 @@ public class FTPProviderService implements IFTPProviderService {
      * @see org.talend.core.ui.IFTPProviderService#newFTPWizard(org.talend.core.ui.IWorkbench, boolean,
      * org.talend.repository.model.RepositoryNode, java.lang.String[])
      */
-    @Override
     public IWizard newFTPWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         if (node == null) {
             return null;
