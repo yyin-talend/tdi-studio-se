@@ -29,7 +29,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
     	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
-    	
+    	String locale = ElementParameterParser.getValue(node, "__DATE_LOCALE__");
     	boolean useFieldsEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
     	
     	for (IConnection conn : conns) {
@@ -63,12 +63,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					%>
 						"<startlob>" +
 					<%}%>    						
-    				<%
+<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
-%>					
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
-<%				
+    					if(("DEFAULT").equals(locale)){
+							locale = java.util.Locale.getDefault().toString();
+						}else if(("CUSTOM").equals(locale)){
+							locale = ElementParameterParser.getValue(node, "__CUSTOM_DATE_LOCALE__");
+							locale = locale.substring(1,locale.length()-1);
+						}else{
+							locale = locale;
+						}
+%>
+						FormatterUtils.format_Date_Locale(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>, "<%=locale%>")
+<%
 					}  else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) {  										
 							%>
 							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%> 

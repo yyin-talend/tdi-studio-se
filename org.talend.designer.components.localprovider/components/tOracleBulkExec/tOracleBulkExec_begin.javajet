@@ -513,16 +513,24 @@ if(("UPDATE").equals(data_action)) {
 		}
 <%
 	String nlsLanguage = ElementParameterParser.getValue(node, "__NLS_LANGUAGE__");
+	String nlsDateLanguage = ElementParameterParser.getValue(node, "__NLS_DATE_LANGUAGE__");
 	boolean setNLSTerritory = ("true").equals(ElementParameterParser.getValue(node, "__SET_NLS_TERRITORY__"));
 	String NLSTerritory = ElementParameterParser.getValue(node, "__NLS_TERRITORY__");
 	List<Map<String, String>> nlsoptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NLSOPTIONS__");
 	if(!("DEFAULT").equals(nlsLanguage)){
-%>envParam_<%=cid%>.add("NLS_LANGUAGE=<%=nlsLanguage%>");
+%>
+		envParam_<%=cid%>.add("NLS_LANGUAGE=<%=nlsLanguage%>");
+<%
+	}
+	if(!("DEFAULT").equals(nlsDateLanguage)){
+%>
+		envParam_<%=cid%>.add("NLS_DATE_LANGUAGE=<%=nlsDateLanguage%>");
 <%
 	}
 	if(setNLSTerritory){
 		if(!("DEFAULT").equals(NLSTerritory)){
-%>envParam_<%=cid%>.add("NLS_TERRITORY=<%=NLSTerritory%>");
+%>
+			envParam_<%=cid%>.add("NLS_TERRITORY=<%=NLSTerritory%>");
 <%
 		}
 	}else{

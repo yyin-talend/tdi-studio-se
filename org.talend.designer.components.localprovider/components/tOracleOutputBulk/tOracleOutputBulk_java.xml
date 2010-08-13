@@ -103,6 +103,175 @@
     <PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="6" REQUIRED="true" REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER
+      NAME="DATE_LOCALE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="10"
+    >
+      <ITEMS DEFAULT="DEFAULT">
+        <ITEM NAME="DEFAULT"  VALUE="DEFAULT" />
+        <ITEM NAME="CUSTOM" VALUE="CUSTOM" />
+        <ITEM NAME="ar" VALUE="ar" />
+        <ITEM NAME="ar_AE" VALUE="ar_AE" />
+        <ITEM NAME="ar_BH" VALUE="ar_BH" />
+        <ITEM NAME="ar_DZ" VALUE="ar_DZ" />
+        <ITEM NAME="ar_EG" VALUE="ar_EG" />
+        <ITEM NAME="ar_IQ" VALUE="ar_IQ" />
+        <ITEM NAME="ar_JO" VALUE="ar_JO" />
+        <ITEM NAME="ar_KW" VALUE="ar_KW" />
+        <ITEM NAME="ar_LB" VALUE="ar_LB" />
+        <ITEM NAME="ar_LY" VALUE="ar_LY" />
+        <ITEM NAME="ar_MA" VALUE="ar_MA" />
+        <ITEM NAME="ar_OM" VALUE="ar_OM" />
+        <ITEM NAME="ar_QA" VALUE="ar_QA" />
+        <ITEM NAME="ar_SA" VALUE="ar_SA" />
+        <ITEM NAME="ar_SD" VALUE="ar_SD" />
+        <ITEM NAME="ar_SY" VALUE="ar_SY" />
+        <ITEM NAME="ar_TN" VALUE="ar_TN" />
+        <ITEM NAME="ar_YE" VALUE="ar_YE" />
+        <ITEM NAME="be" VALUE="be" />
+        <ITEM NAME="be_BY" VALUE="be_BY" />
+        <ITEM NAME="bg" VALUE="bg" />
+        <ITEM NAME="bg_BG" VALUE="bg_BG" />
+        <ITEM NAME="ca" VALUE="ca" />
+        <ITEM NAME="ca_ES" VALUE="ca_ES" />
+        <ITEM NAME="cs" VALUE="cs" />
+        <ITEM NAME="cs_CZ" VALUE="cs_CZ" />
+        <ITEM NAME="da" VALUE="da" />
+        <ITEM NAME="da_DK" VALUE="da_DK" />
+        <ITEM NAME="de" VALUE="de" />
+        <ITEM NAME="de_AT" VALUE="de_AT" />
+        <ITEM NAME="de_CH" VALUE="de_CH" />
+        <ITEM NAME="de_DE" VALUE="de_DE" />
+        <ITEM NAME="de_LU" VALUE="de_LU" />
+        <ITEM NAME="el" VALUE="el" />
+        <ITEM NAME="el_CY" VALUE="el_CY" />
+        <ITEM NAME="el_GR" VALUE="el_GR" />
+        <ITEM NAME="en" VALUE="en" />
+        <ITEM NAME="en_AU" VALUE="en_AU" />
+        <ITEM NAME="en_CA" VALUE="en_CA" />
+        <ITEM NAME="en_GB" VALUE="en_GB" />
+        <ITEM NAME="en_IE" VALUE="en_IE" />
+        <ITEM NAME="en_IN" VALUE="en_IN" />
+        <ITEM NAME="en_MT" VALUE="en_MT" />
+        <ITEM NAME="en_NZ" VALUE="en_NZ" />
+        <ITEM NAME="en_PH" VALUE="en_PH" />
+        <ITEM NAME="en_SG" VALUE="en_SG" />
+        <ITEM NAME="en_US" VALUE="en_US" />
+        <ITEM NAME="en_ZA" VALUE="en_ZA" />
+        <ITEM NAME="es" VALUE="es" />
+        <ITEM NAME="es_AR" VALUE="es_AR" />
+        <ITEM NAME="es_BO" VALUE="es_BO" />
+        <ITEM NAME="es_CL" VALUE="es_CL" />
+        <ITEM NAME="es_CO" VALUE="es_CO" />
+        <ITEM NAME="es_CR" VALUE="es_CR" />
+        <ITEM NAME="es_DO" VALUE="es_DO" />
+        <ITEM NAME="es_EC" VALUE="es_EC" />
+        <ITEM NAME="es_ES" VALUE="es_ES" />
+        <ITEM NAME="es_GT" VALUE="es_GT" />
+        <ITEM NAME="es_HN" VALUE="es_HN" />
+        <ITEM NAME="es_MX" VALUE="es_MX" />
+        <ITEM NAME="es_NI" VALUE="es_NI" />
+        <ITEM NAME="es_PA" VALUE="es_PA" />
+        <ITEM NAME="es_PE" VALUE="es_PE" />
+        <ITEM NAME="es_PR" VALUE="es_PR" />
+        <ITEM NAME="es_PY" VALUE="es_PY" />
+        <ITEM NAME="es_SV" VALUE="es_SV" />
+        <ITEM NAME="es_US" VALUE="es_US" />
+        <ITEM NAME="es_UY" VALUE="es_UY" />
+        <ITEM NAME="es_VE" VALUE="es_VE" />
+        <ITEM NAME="et" VALUE="et" />
+        <ITEM NAME="et_EE" VALUE="et_EE" />
+        <ITEM NAME="fi" VALUE="fi" />
+        <ITEM NAME="fi_FI" VALUE="fi_FI" />
+        <ITEM NAME="fr" VALUE="fr" />
+        <ITEM NAME="fr_BE" VALUE="fr_BE" />
+        <ITEM NAME="fr_CA" VALUE="fr_CA" />
+        <ITEM NAME="fr_CH" VALUE="fr_CH" />
+        <ITEM NAME="fr_FR" VALUE="fr_FR" />
+        <ITEM NAME="fr_LU" VALUE="fr_LU" />
+        <ITEM NAME="ga" VALUE="ga" />
+        <ITEM NAME="ga_IE" VALUE="ga_IE" />
+        <ITEM NAME="hi_IN" VALUE="hi_IN" />
+        <ITEM NAME="hr" VALUE="hr" />
+        <ITEM NAME="hr_HR" VALUE="hr_HR" />
+        <ITEM NAME="hu" VALUE="hu" />
+        <ITEM NAME="hu_HU" VALUE="hu_HU" />
+        <ITEM NAME="in" VALUE="in" />
+        <ITEM NAME="in_ID" VALUE="in_ID" />
+        <ITEM NAME="is" VALUE="is" />
+        <ITEM NAME="is_IS" VALUE="is_IS" />
+        <ITEM NAME="it" VALUE="it" />
+        <ITEM NAME="it_CH" VALUE="it_CH" />
+        <ITEM NAME="it_IT" VALUE="it_IT" />
+        <ITEM NAME="iw" VALUE="iw" />
+        <ITEM NAME="iw_IL" VALUE="iw_IL" />
+        <ITEM NAME="ja" VALUE="ja" />
+        <ITEM NAME="ja_JP" VALUE="ja_JP" />
+        <ITEM NAME="ja_JP_JP" VALUE="ja_JP_JP" />
+        <ITEM NAME="ko" VALUE="ko" />
+        <ITEM NAME="ko_KR" VALUE="ko_KR" />
+        <ITEM NAME="lt" VALUE="lt" />
+        <ITEM NAME="lt_LT" VALUE="lt_LT" />
+        <ITEM NAME="lv" VALUE="lv" />
+        <ITEM NAME="lv_LV" VALUE="lv_LV" />
+        <ITEM NAME="mk" VALUE="mk" />
+        <ITEM NAME="mk_MK" VALUE="mk_MK" />
+        <ITEM NAME="ms" VALUE="ms" />
+        <ITEM NAME="ms_MY" VALUE="ms_MY" />
+        <ITEM NAME="mt" VALUE="mt" />
+        <ITEM NAME="mt_MT" VALUE="mt_MT" />
+        <ITEM NAME="nl" VALUE="nl" />
+        <ITEM NAME="nl_BE" VALUE="nl_BE" />
+        <ITEM NAME="nl_NL" VALUE="nl_NL" />
+        <ITEM NAME="no" VALUE="no" />
+        <ITEM NAME="no_NO" VALUE="no_NO" />
+        <ITEM NAME="no_NO_NY" VALUE="no_NO_NY" />
+        <ITEM NAME="pl" VALUE="pl" />
+        <ITEM NAME="pl_PL" VALUE="pl_PL" />
+        <ITEM NAME="pt" VALUE="pt" />
+        <ITEM NAME="pt_BR" VALUE="pt_BR" />
+        <ITEM NAME="pt_PT" VALUE="pt_PT" />
+        <ITEM NAME="ro" VALUE="ro" />
+        <ITEM NAME="ro_RO" VALUE="ro_RO" />
+        <ITEM NAME="ru" VALUE="ru" />
+        <ITEM NAME="ru_RU" VALUE="ru_RU" />
+        <ITEM NAME="sk" VALUE="sk" />
+        <ITEM NAME="sk_SK" VALUE="sk_SK" />
+        <ITEM NAME="sl" VALUE="sl" />
+        <ITEM NAME="sl_SI" VALUE="sl_SI" />
+        <ITEM NAME="sq" VALUE="sq" />
+        <ITEM NAME="sq_AL" VALUE="sq_AL" />
+        <ITEM NAME="sr" VALUE="sr" />
+        <ITEM NAME="sr_BA" VALUE="sr_BA" />
+        <ITEM NAME="sr_CS" VALUE="sr_CS" />
+        <ITEM NAME="sr_ME" VALUE="sr_ME" />
+        <ITEM NAME="sr_RS" VALUE="sr_RS" />
+        <ITEM NAME="sv" VALUE="sv" />
+        <ITEM NAME="sv_SE" VALUE="sv_SE" />
+        <ITEM NAME="th" VALUE="th" />
+        <ITEM NAME="th_TH" VALUE="th_TH" />
+        <ITEM NAME="th_TH_TH" VALUE="th_TH_TH" />
+        <ITEM NAME="tr" VALUE="tr" />
+        <ITEM NAME="tr_TR" VALUE="tr_TR" />
+        <ITEM NAME="uk" VALUE="uk" />
+        <ITEM NAME="uk_UA" VALUE="uk_UA" />
+        <ITEM NAME="vi" VALUE="vi" />
+        <ITEM NAME="vi_VN" VALUE="vi_VN" />
+        <ITEM NAME="zh" VALUE="zh" />
+        <ITEM NAME="zh_CN" VALUE="zh_CN" />
+        <ITEM NAME="zh_HK" VALUE="zh_HK" />
+        <ITEM NAME="zh_SG" VALUE="zh_SG" />
+        <ITEM NAME="zh_TW" VALUE="zh_TW" />
+      </ITEMS>
+    </PARAMETER>
+    
+	<PARAMETER NAME="CUSTOM_DATE_LOCALE" FIELD="TEXT" NUM_ROW="10"
+		SHOW_IF="(DATE_LOCALE == 'CUSTOM')">
+		<DEFAULT>"en"</DEFAULT>
+	</PARAMETER>
+	
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION/>
