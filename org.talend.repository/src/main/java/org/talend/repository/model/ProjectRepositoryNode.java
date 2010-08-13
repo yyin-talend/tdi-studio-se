@@ -344,6 +344,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         routineNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
         codeNode.getChildren().add(routineNode);
 
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+            IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault().getService(
+                    IHeaderFooterProviderService.class);
+            if (service.isVisible()) {
+                // Metadata Datacert connections
+                metadataHeaderFooterConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataHeaderFooterConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                metadataHeaderFooterConnectionNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                codeNode.getChildren().add(metadataHeaderFooterConnectionNode);
+            }
+        }
+
         // 4.2. Snippets
         // if (PluginChecker.isSnippetsPluginLoaded()) {
         // snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -375,19 +388,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataNode.getChildren().add(metadataConNode);
-
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
-            IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault().getService(
-                    IHeaderFooterProviderService.class);
-            if (service.isVisible()) {
-                // Metadata Datacert connections
-                metadataHeaderFooterConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                metadataHeaderFooterConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                metadataHeaderFooterConnectionNode.setProperties(EProperties.CONTENT_TYPE,
-                        ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                metadataNode.getChildren().add(metadataHeaderFooterConnectionNode);
-            }
-        }
 
         // 7.2. Metadata file delimited
         metadataFileNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
