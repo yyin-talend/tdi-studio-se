@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sforce16.soap.partner.QueryResult;
-import com.sforce16.soap.partner.sobject.SObject;
+import com.salesforce.soap.partner.QueryResult;
+import com.salesforce.soap.partner.sobject.SObject;
 
 public class TopQueryResult {
 

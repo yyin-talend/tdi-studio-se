@@ -1,196 +1,363 @@
 package org.talend.salesforce.util;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
-
-import com.sforce16.soap.partner.DescribeGlobalResult;
-import com.sforce16.soap.partner.DescribeSObjectResult;
-import com.sforce16.soap.partner.Field;
-import com.sforce16.soap.partner.FieldType;
-import com.sforce16.soap.partner.LoginResult;
-import com.sforce16.soap.partner.SessionHeader;
-import com.sforce16.soap.partner.SforceServiceLocator;
-import com.sforce16.soap.partner.SoapBindingStub;
-import com.sforce16.soap.partner.fault.InvalidIdFault;
-import com.sforce16.soap.partner.fault.LoginFault;
-import com.sforce16.soap.partner.fault.UnexpectedErrorFault;
+import com.salesforce.soap.partner.DescribeGlobalResult;
+import com.salesforce.soap.partner.DescribeGlobalSObjectResult;
+import com.salesforce.soap.partner.DescribeSObjectResult;
+import com.salesforce.soap.partner.Field;
+import com.salesforce.soap.partner.FieldType;
+import com.salesforce.soap.partner.LoginResult;
+import com.salesforce.soap.partner.SessionHeader;
+import com.salesforce.soap.partner.SforceServiceLocator;
+import com.salesforce.soap.partner.SoapBindingStub;
+import com.salesforce.soap.partner.fault.ExceptionCode;
+import com.salesforce.soap.partner.fault.InvalidSObjectFault;
+import com.salesforce.soap.partner.fault.LoginFault;
+import com.salesforce.soap.partner.fault.UnexpectedErrorFault;
 
 public class SObjectsToSchema {
 
-    /**
-     * Update modules and schemas in source XML file with Salesforce user's SObject.
-     * 
-     * For example: SObjectsToSchema.update("tSalesforce_java.xml", "tSalesforce_java_output.xml",url,username,password)
-     * can generate a new XML file that replace old modules with the latest modules.
-     * 
-     * Custom module are not included, it is still can be set manually.
-     * 
-     * dom4j-1.6.1.jar seems doesn't support write textual attribute value, my test result shows that setEscapeText()
-     * only useful to text except attribute value, so I just replace the flag to work around this.
-     * 
-     * @param sourceFile old XML file
-     * @param destinationFile genrated XML file
-     * @param url
-     * @param username
-     * @param password
-     */
-    public static void update(String sourceFile, String destinationFile, String url, String username, String password) {
+    private final static String INSERT = "insert";
+
+    private final static String UPDATE = "update";
+
+    private final static String UPSERT = "upsert";
+
+    private final static String KEY = "Id";
+
+    private SoapBindingStub binding;
+
+    boolean login(String userName, String password) throws ServiceException {
+
+        /**
+         * Next, the sample client application initializes the binding stub. This is our main interface to the API
+         * through which all calls are made. The getSoap method takes an optional parameter, (a java.net.URL) which is
+         * the endpoint. For the login call, the parameter always starts with http(s)://login.salesforce.com. After
+         * logging in, the sample client application changes the endpoint to the one specified in the returned
+         * loginResult object.
+         */
+
+        binding = (SoapBindingStub) new SforceServiceLocator().getSoap();
+
+        // Time out after a minute
+
+        binding.setTimeout(60000);
+        // Test operation
+
+        LoginResult loginResult;
         try {
-            // load template XML file
-            SAXReader saxReader = new SAXReader();
-            Document document = saxReader.read(new File(sourceFile));
-            // get module list node
-            List<Element> list = document.selectNodes("/COMPONENT/PARAMETERS/PARAMETER/ITEMS");
-            Element itemsElement = null;
-            for (Element e : list) {
-                if (e.getParent().attribute("NAME") != null) {
-                    if (e.getParent().attribute("NAME").getValue().equals("MODULENAME")) {
-                        itemsElement = e;
-                        itemsElement.clearContent();
-                    }
+            System.out.println("LOGGING IN NOW....");
+            loginResult = binding.login(userName, password);
+        } catch (LoginFault ex) {
+            // The LoginFault derives from AxisFault
+
+            ExceptionCode exCode = ex.getExceptionCode();
+            if (exCode == ExceptionCode.FUNCTIONALITY_NOT_ENABLED || exCode == ExceptionCode.INVALID_CLIENT
+                    || exCode == ExceptionCode.INVALID_LOGIN || exCode == ExceptionCode.LOGIN_DURING_RESTRICTED_DOMAIN
+                    || exCode == ExceptionCode.LOGIN_DURING_RESTRICTED_TIME || exCode == ExceptionCode.ORG_LOCKED
+                    || exCode == ExceptionCode.PASSWORD_LOCKOUT || exCode == ExceptionCode.SERVER_UNAVAILABLE
+                    || exCode == ExceptionCode.TRIAL_EXPIRED || exCode == ExceptionCode.UNSUPPORTED_CLIENT) {
+                System.out.println("Please be sure that you have a valid username " + "and password.");
+            } else {
+                // Write the fault code to the console
+
+                System.out.println(ex.getExceptionCode());
+                // Write the fault message to the console
+
+                System.out.println("An unexpected error has occurred." + ex.getMessage());
+            }
+            return false;
+        } catch (Exception ex) {
+            System.out.println("An unexpected error has occurred: " + ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+        // Check if the password has expired
+
+        if (loginResult.isPasswordExpired()) {
+            System.out.println("An error has occurred. Your password has expired.");
+            return false;
+        }
+        /**
+         * Once the client application has logged in successfully, it will use the results of the login call to reset
+         * the endpoint of the service to the virtual server instance that is servicing your organization. To do this,
+         * the client application sets the ENDPOINT_ADDRESS_PROPERTY of the binding object using the URL returned from
+         * the LoginResult.
+         */
+
+        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
+        /**
+         * The sample client application now has an instance of the SoapBindingStub that is pointing to the correct
+         * endpoint. Next, the sample client application sets a persistent SOAP header (to be included on all subsequent
+         * calls that are made with the SoapBindingStub) that contains the valid sessionId for our login credentials. To
+         * do this, the sample client application creates a new SessionHeader object and set its sessionId property to
+         * the sessionId property from the LoginResult object.
+         */
+
+        // Create a new session header object and add the session id
+
+        // from the login return object
+
+        SessionHeader sh = new SessionHeader();
+        sh.setSessionId(loginResult.getSessionId());
+        /**
+         * Next, the sample client application calls the setHeader method of the SoapBindingStub to add the header to
+         * all subsequent method calls. This header will persist until the SoapBindingStub is destroyed until the header
+         * is explicitly removed. The "SessionHeader" parameter is the name of the header to be added.
+         */
+
+        // set the session header for subsequent call authentication
+
+        binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
+        // return true to indicate that we are logged in, pointed
+
+        // at the right url and have our security token in place.
+
+        return true;
+    }
+
+    private void generateModuleName(String fileName) throws IOException {
+        File f = new File(fileName);
+        StringBuffer content = new StringBuffer();
+
+        DescribeGlobalResult describeGlobalResult = null;
+        describeGlobalResult = binding.describeGlobal();
+        DescribeGlobalSObjectResult[] sobjectResults = describeGlobalResult.getSobjects();
+        for (int i = 0; i < sobjectResults.length; i++) {
+            if (!sobjectResults[i].isCustom()) {
+                String moduleName = sobjectResults[i].getName();
+                // System.out.println(sobjectResults[i].getName());
+                content.append("<ITEM NAME=\"");
+                content.append(moduleName);
+                content.append("\" VALUE=\"");
+                content.append(moduleName);
+                content.append("\" />");
+                content.append("\r\n");
+            }
+        }
+
+        BufferedWriter output = new BufferedWriter(new FileWriter(f));
+        output.write(content.toString());
+        output.close();
+
+    }
+
+    void generateSchema(String inputFileName, String outputFileName) throws IOException {
+        File inputFile = new File(inputFileName);
+        File outputFile = new File(outputFileName);
+
+        StringBuffer inputContent = new StringBuffer();
+        // StringBuffer deleteContent = new StringBuffer();
+        StringBuffer insertContent = new StringBuffer();
+        StringBuffer updateContent = new StringBuffer();
+        StringBuffer upsertContent = new StringBuffer();
+
+        DescribeGlobalResult describeGlobalResult = null;
+        describeGlobalResult = binding.describeGlobal();
+        DescribeGlobalSObjectResult[] sobjectResults = describeGlobalResult.getSobjects();
+        for (int i = 0; i < sobjectResults.length; i++) {
+            String moduleName = sobjectResults[i].getName();
+
+            DescribeSObjectResult descSObjectRslt;
+            descSObjectRslt = binding.describeSObject(moduleName);
+            if (descSObjectRslt != null) {
+                // Report object level information
+                if (!descSObjectRslt.isCustom()) {
+                    // if (descSObjectRslt.isQueryable()) {
+                    inputContent.append(generateInputTable(moduleName, descSObjectRslt));//mark
+                    // }
+                    // if (descSObjectRslt.isCreateable()) {
+                    insertContent.append(generateOutputTable(moduleName, descSObjectRslt, INSERT));
+                    // }
+                    // if (descSObjectRslt.isUpdateable()) {
+                    updateContent.append(generateOutputTable(moduleName, descSObjectRslt, UPDATE));
+                    // }
+                    // if(descSObjectRslt.isUpdateable()&&descSObjectRslt.isCreateable()){
+                    upsertContent.append(generateOutputTable(moduleName, descSObjectRslt, UPSERT));
+                    // }
+                    // if (descSObjectRslt.isDeletable()) {
+                    //
+                    // }
                 }
             }
-            // get schema node
-            list = document.selectNodes("/COMPONENT/PARAMETERS/PARAMETER");
-            Element parameterElement = null;
-            for (Element e : list) {
-                if (e.attribute("NAME") != null) {
-                    if (e.attribute("NAME").getValue().equals("SCHEMA")) {
-                        parameterElement = e;
-                        parameterElement.clearContent();
-                    }
-                }
-            }
-            // SF login
-            SoapBindingStub binding = (SoapBindingStub) new SforceServiceLocator().getSoap(new URL(url));
-            binding.setTimeout(60000);
-            LoginResult loginResult = binding.login(username, password);
-            binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
-            SessionHeader sh = new SessionHeader();
-            sh.setSessionId(loginResult.getSessionId());
-            binding.setHeader(new SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh);
-            // get all SObjects
-            DescribeGlobalResult describeGlobalResult = binding.describeGlobal();
-            if (!(describeGlobalResult == null)) {
-                String[] types = describeGlobalResult.getTypes();
-                if (!(types == null)) {
-                    // loop SObject fields
-                    for (int i = 0; i < types.length; i++) {
-                        String module = types[i];
-                        System.out.println("module: " + module);
-                        // add module list, ignore custom module
-                        if (!module.contains("__c")) {
-                            Element itemElement = itemsElement.addElement("ITEM");
-                            itemElement.addAttribute("NAME", module);
-                            itemElement.addAttribute("VALUE", module);
-                            Element tableElement = parameterElement.addElement("TABLE");
-                            tableElement.addAttribute("IF", "MODULENAME=='" + module + "'");
-                            DescribeSObjectResult describeSObjectResult = binding.describeSObject(module);
-                            if (!(describeSObjectResult == null)) {
-                                Field[] fields = describeSObjectResult.getFields();
-                                if (!(fields == null)) {
-                                    for (int j = 0; j < fields.length; j++) {
-                                        Field field = fields[j];
-                                        boolean isKey = field.getName().equals("Id");
-                                        int length = field.getLength();
-                                        String fieldName = field.getName();
-                                        FieldType fieldType = field.getType();
-                                        System.out.println(isKey ? "true" : "false" + "|" + length + "|" + fieldName + "|"
-                                                + ConvertSFTypeToTOSType.getTOSValue(fieldType.getValue()));
-                                        // add schemam, ignore custom module
-                                        if (!fieldName.contains("__c")) {
-                                            Element columnElement = tableElement.addElement("COLUMN");
-                                            columnElement.addAttribute("KEY", isKey ? "true" : "false");
-                                            columnElement.addAttribute("LENGTH", String.valueOf(length));
-                                            columnElement.addAttribute("NAME", fieldName);
-                                            columnElement.addAttribute("TYPE", ConvertSFTypeToTOSType.getTOSValue(fieldType
-                                                    .getValue()));
-                                            if ("id_Date".equals(ConvertSFTypeToTOSType.getTOSValue(fieldType.getValue()))) {
-                                                // dom4j can't disable escape text in attribute value, so add a flag to
-                                                // be replaced later.
-                                                columnElement.addAttribute("PATTERN", "!!!PATTERN!!!");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+        }
+
+        BufferedWriter inOutput = new BufferedWriter(new FileWriter(inputFile));
+        inOutput.write(inputContent.toString());
+        inOutput.close();
+
+        String sepLint = "<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->";
+        BufferedWriter OuOutput = new BufferedWriter(new FileWriter(outputFile));
+        OuOutput.write(insertContent.toString() + "\r\n" + sepLint + "\r\n" + updateContent.toString() + "\r\n" + sepLint
+                + "\r\n" + upsertContent.toString());
+        OuOutput.close();
+
+    }
+
+    private String generateInputTable(String moduleName, DescribeSObjectResult descSObjectRslt) throws InvalidSObjectFault,
+            UnexpectedErrorFault, RemoteException {
+        StringBuffer content = new StringBuffer();
+        content.append("<TABLE IF=\"");
+        content.append("MODULENAME=='" + moduleName + "' ");
+        content.append("\">");
+        content.append("\r\n");
+
+        // DescribeSObjectResult descSObjectRslt;
+        // descSObjectRslt = binding.describeSObject(moduleName);
+
+        Field[] fields = descSObjectRslt.getFields();
+        if (fields != null) {
+            for (Field field : fields) {
+                if (!field.isCustom()) {
+                    String colName = field.getName();
+                    FieldType type = field.getType();
+                    String typeName = ConvertSFTypeToTOSType.getTOSValue(type.getValue());
+
+                    if (typeName.equals("id_Date")) {
+                        String pattern = ConvertSFTypeToTOSType.getPattern(type.getValue());
+                        if (pattern == null) {
+                            System.out.println(moduleName + ":" + colName + " is not have pattern!");
                         }
+                        content.append(generateInputColumn(colName.equals(KEY), colName, typeName, pattern, field.getLength()));
+                    } else {
+                        content.append(generateInputColumn(colName.equals(KEY), colName, typeName, field.getLength()));
                     }
-                    // add custom module
-                    Element itemElement = itemsElement.addElement("ITEM");
-                    itemElement.addAttribute("NAME", "CustomModule");
-                    itemElement.addAttribute("VALUE", "CustomModule");
+
                 }
             }
-            // write XML
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            format.setEncoding("UTF-8");
-            XMLWriter writer = new XMLWriter(new FileWriter(new File(destinationFile + ".temp")), format);
-            // writer.setEscapeText(false);
-            writer.write(document);
-            writer.close();
-            // replace !!!PATTERN!!!
-            String b = null;
-            BufferedReader br = new BufferedReader(new FileReader(destinationFile + ".temp"));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(destinationFile));
-            while ((b = br.readLine()) != null) {
-                if (b.contains("!!!PATTERN!!!")) {
-                    bw.write(b.replace("!!!PATTERN!!!", "&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"));
-                } else {
-                    bw.write(b);
+        }
+        content.append("</TABLE>");
+        content.append("\r\n");
+        return content.toString();
+    }
+
+    public String generateOutputTable(String moduleName, DescribeSObjectResult descSObjectRslt, String operation)
+            throws InvalidSObjectFault, UnexpectedErrorFault, RemoteException {
+        StringBuffer content = new StringBuffer();
+        content.append("<TABLE IF=\"");
+        content.append("(MODULENAME=='" + moduleName + "') ");
+
+        content.append("and (ACTION=='" + operation + "') ");
+
+        content.append("and (PROPERTY=='BUILT_IN')\">");
+        content.append("\r\n");
+
+        // DescribeSObjectResult descSObjectRslt;
+        // descSObjectRslt = binding.describeSObject(moduleName);
+
+        Field[] fields = descSObjectRslt.getFields();
+        if (fields != null) {
+            for (Field field : fields) {
+                if (!field.isCustom()) {
+                    String colName = field.getName();
+                    FieldType type = field.getType();
+                    String typeName = ConvertSFTypeToTOSType.getTOSValue(type.getValue());
+
+                    boolean readOnly = field.isNillable() == false && field.isAutoNumber() == false
+                            && field.isDefaultedOnCreate() == false;
+                    boolean nullable = field.isNillable();
+
+                    if (operation.equals(INSERT) && !field.isCreateable()) {
+                        continue;
+                    }
+                    if (operation.equals(UPDATE) && !field.isUpdateable()) {
+                        if (type.getValue().equals("id")) {
+                            content.append(generateOutputColumn(colName.equals(KEY), colName, typeName, field.getLength(), true,
+                                    false));
+                        }
+                        continue;
+                    }
+                    if (operation.equals(UPSERT) && !field.isCreateable() && !field.isUpdateable()) {
+                        if (type.getValue().equals("id")) {
+                            content.append(generateOutputColumn(colName.equals(KEY), colName, typeName, field.getLength(), true,
+                                    false));
+                        }
+                        continue;
+                    }
+                    if (typeName.equals("id_Date")) {
+                        String pattern = ConvertSFTypeToTOSType.getPattern(type.getValue());
+                        if (pattern == null) {
+                            System.out.println(moduleName + ":" + colName + " is not have pattern!");
+                        }
+                        content.append(generateOutputColumn(colName.equals(KEY), colName, typeName, pattern, field.getLength(),
+                                readOnly, nullable));
+                    } else {
+                        content.append(generateOutputColumn(colName.equals(KEY), colName, typeName, field.getLength(), readOnly,
+                                nullable));
+                    }
                 }
-                bw.newLine();
-                bw.flush();
             }
-            br.close();
-            bw.close();
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        }
+        content.append("</TABLE>");
+        content.append("\r\n");
+        return content.toString();
+    }
+
+    private String generateInputColumn(boolean isKey, String name, String type, int length) {
+        return generateColumn(isKey, name, type, null, length, false, true);
+    }
+
+    private String generateInputColumn(boolean isKey, String name, String type, String pattern, int length) {
+        return generateColumn(isKey, name, type, pattern, length, false, true);
+    }
+
+    private String generateOutputColumn(boolean isKey, String name, String type, int length, boolean readOnly, boolean nullable) {
+        return generateColumn(isKey, name, type, null, length, readOnly, nullable);
+    }
+
+    private String generateOutputColumn(boolean isKey, String name, String type, String pattern, int length, boolean readOnly,
+            boolean nullable) {
+        return generateColumn(isKey, name, type, pattern, length, readOnly, nullable);
+    }
+
+    private String generateColumn(boolean isKey, String name, String type, String pattern, int length, boolean readOnly,
+            boolean nullable) {
+        StringBuffer column = new StringBuffer();
+        column.append("\t");
+        column.append("<COLUMN KEY=\"" + isKey + "\" ");
+        column.append("LENGTH=\"" + length + "\" ");
+        column.append("NAME=\"" + name + "\" ");
+        column.append("TYPE=\"" + type + "\" ");
+
+        if (pattern != null) {
+            column.append("PATTERN=\"&quot;" + pattern + "&quot;\" ");
+        }
+        if (readOnly) {
+            column.append("READONLY=\"true\" ");
+        }
+        if (!nullable) {
+            column.append("NULLABLE=\"false\" ");
+        }
+        column.append("/>");
+        column.append("\r\n");
+        return column.toString();
+    }
+
+    public static void main(String[] args) {
+        SObjectsToSchema sforceCLient = new SObjectsToSchema();
+        boolean result = false;
+        try {
+            result = sforceCLient.login("bchen.bj@gmail.com", "qscesz#1115");
         } catch (ServiceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (UnexpectedErrorFault e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidIdFault e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (LoginFault e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DocumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            File tempFile = new File(destinationFile + ".temp");
-            if (tempFile.exists()) {
-                tempFile.delete();
+        }
+        if (result) {
+            try {
+                sforceCLient.generateModuleName("d://sforceModule.txt");
+                sforceCLient.generateSchema("d://sforceInputSchema.txt", "d://sforceOutputSchema.txt");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
-        System.out.println("============finish============");
+        //if it cant generate the schema in one time,(connect reset error), please pay attention about line:174,177,180,183 in generateSchema method
     }
 }

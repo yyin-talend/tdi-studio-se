@@ -20,53 +20,54 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
-import com.sforce16.soap.partner.DeleteResult;
-import com.sforce16.soap.partner.DescribeGlobalResult;
-import com.sforce16.soap.partner.DescribeLayout;
-import com.sforce16.soap.partner.DescribeLayoutItem;
-import com.sforce16.soap.partner.DescribeLayoutResult;
-import com.sforce16.soap.partner.DescribeLayoutRow;
-import com.sforce16.soap.partner.DescribeLayoutSection;
-import com.sforce16.soap.partner.DescribeSObjectResult;
-import com.sforce16.soap.partner.DescribeSoftphoneLayoutCallType;
-import com.sforce16.soap.partner.DescribeSoftphoneLayoutInfoField;
-import com.sforce16.soap.partner.DescribeSoftphoneLayoutItem;
-import com.sforce16.soap.partner.DescribeSoftphoneLayoutResult;
-import com.sforce16.soap.partner.DescribeSoftphoneLayoutSection;
-import com.sforce16.soap.partner.DescribeTab;
-import com.sforce16.soap.partner.DescribeTabSetResult;
-import com.sforce16.soap.partner.Field;
-import com.sforce16.soap.partner.FieldType;
-import com.sforce16.soap.partner.GetDeletedResult;
-import com.sforce16.soap.partner.GetUpdatedResult;
-import com.sforce16.soap.partner.GetUserInfoResult;
-import com.sforce16.soap.partner.LeadConvert;
-import com.sforce16.soap.partner.LeadConvertResult;
-import com.sforce16.soap.partner.LoginResult;
-import com.sforce16.soap.partner.MergeRequest;
-import com.sforce16.soap.partner.MergeResult;
-import com.sforce16.soap.partner.PicklistEntry;
-import com.sforce16.soap.partner.ProcessRequest;
-import com.sforce16.soap.partner.ProcessResult;
-import com.sforce16.soap.partner.ProcessSubmitRequest;
-import com.sforce16.soap.partner.ProcessWorkitemRequest;
-import com.sforce16.soap.partner.QueryOptions;
-import com.sforce16.soap.partner.QueryResult;
-import com.sforce16.soap.partner.ResetPasswordResult;
-import com.sforce16.soap.partner.SaveResult;
-import com.sforce16.soap.partner.SearchRecord;
-import com.sforce16.soap.partner.SearchResult;
-import com.sforce16.soap.partner.SessionHeader;
-import com.sforce16.soap.partner.SetPasswordResult;
-import com.sforce16.soap.partner.SforceServiceLocator;
-import com.sforce16.soap.partner.SoapBindingStub;
-import com.sforce16.soap.partner.UndeleteResult;
-import com.sforce16.soap.partner.UpsertResult;
-import com.sforce16.soap.partner.fault.ApiFault;
-import com.sforce16.soap.partner.fault.InvalidQueryLocatorFault;
-import com.sforce16.soap.partner.fault.LoginFault;
-import com.sforce16.soap.partner.fault.UnexpectedErrorFault;
-import com.sforce16.soap.partner.sobject.SObject;
+import com.salesforce.soap.partner.DeleteResult;
+import com.salesforce.soap.partner.DescribeGlobalResult;
+import com.salesforce.soap.partner.DescribeGlobalSObjectResult;
+import com.salesforce.soap.partner.DescribeLayout;
+import com.salesforce.soap.partner.DescribeLayoutItem;
+import com.salesforce.soap.partner.DescribeLayoutResult;
+import com.salesforce.soap.partner.DescribeLayoutRow;
+import com.salesforce.soap.partner.DescribeLayoutSection;
+import com.salesforce.soap.partner.DescribeSObjectResult;
+import com.salesforce.soap.partner.DescribeSoftphoneLayoutCallType;
+import com.salesforce.soap.partner.DescribeSoftphoneLayoutInfoField;
+import com.salesforce.soap.partner.DescribeSoftphoneLayoutItem;
+import com.salesforce.soap.partner.DescribeSoftphoneLayoutResult;
+import com.salesforce.soap.partner.DescribeSoftphoneLayoutSection;
+import com.salesforce.soap.partner.DescribeTab;
+import com.salesforce.soap.partner.DescribeTabSetResult;
+import com.salesforce.soap.partner.Field;
+import com.salesforce.soap.partner.FieldType;
+import com.salesforce.soap.partner.GetDeletedResult;
+import com.salesforce.soap.partner.GetUpdatedResult;
+import com.salesforce.soap.partner.GetUserInfoResult;
+import com.salesforce.soap.partner.LeadConvert;
+import com.salesforce.soap.partner.LeadConvertResult;
+import com.salesforce.soap.partner.LoginResult;
+import com.salesforce.soap.partner.MergeRequest;
+import com.salesforce.soap.partner.MergeResult;
+import com.salesforce.soap.partner.PicklistEntry;
+import com.salesforce.soap.partner.ProcessRequest;
+import com.salesforce.soap.partner.ProcessResult;
+import com.salesforce.soap.partner.ProcessSubmitRequest;
+import com.salesforce.soap.partner.ProcessWorkitemRequest;
+import com.salesforce.soap.partner.QueryOptions;
+import com.salesforce.soap.partner.QueryResult;
+import com.salesforce.soap.partner.ResetPasswordResult;
+import com.salesforce.soap.partner.SaveResult;
+import com.salesforce.soap.partner.SearchRecord;
+import com.salesforce.soap.partner.SearchResult;
+import com.salesforce.soap.partner.SessionHeader;
+import com.salesforce.soap.partner.SetPasswordResult;
+import com.salesforce.soap.partner.SforceServiceLocator;
+import com.salesforce.soap.partner.SoapBindingStub;
+import com.salesforce.soap.partner.UndeleteResult;
+import com.salesforce.soap.partner.UpsertResult;
+import com.salesforce.soap.partner.fault.ApiFault;
+import com.salesforce.soap.partner.fault.InvalidQueryLocatorFault;
+import com.salesforce.soap.partner.fault.LoginFault;
+import com.salesforce.soap.partner.fault.UnexpectedErrorFault;
+import com.salesforce.soap.partner.sobject.SObject;
 
 /**
  * <p>
@@ -365,10 +366,17 @@ public class PartnerSamples {
         try {
             DescribeGlobalResult describeGlobalResult = binding.describeGlobal();
             if (!(describeGlobalResult == null)) {
-                String[] types = describeGlobalResult.getTypes();
-                if (!(types == null)) {
-                    for (int i = 0; i < types.length; i++) {
-                        System.out.println(types[i]);
+                // String[] types = describeGlobalResult.getTypes();
+                // if (!(types == null)) {
+                // for (int i = 0; i < types.length; i++) {
+                // System.out.println(types[i]);
+                // }
+                // getUserInput("\nDescribe global was successful.\n\nHit the enter key to conutinue....");
+                // }
+                DescribeGlobalSObjectResult[] sobjects = describeGlobalResult.getSobjects();
+                if (!(sobjects == null)) {
+                    for (int i = 0; i < sobjects.length; i++) {
+                        System.out.println(sobjects[i].getName());
                     }
                     getUserInput("\nDescribe global was successful.\n\nHit the enter key to conutinue....");
                 }
@@ -625,7 +633,7 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        com.salesforce.soap.partner.Error err = sr[j].getErrors()[i];
                         System.out.println("Errors were found on item " + new Integer(j).toString());
                         System.out.println("Error code is: " + err.getStatusCode().toString());
                         System.out.println("Error message: " + err.getMessage());
@@ -969,7 +977,7 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        com.salesforce.soap.partner.Error err = sr[j].getErrors()[i];
                         System.out.println("Errors were found on item " + new Integer(j).toString());
                         System.out.println("Error code is: " + err.getStatusCode().toString());
                         System.out.println("Error message: " + err.getMessage());
@@ -1100,7 +1108,7 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        com.salesforce.soap.partner.Error err = sr[j].getErrors()[i];
                         System.out.println("Errors were found on item " + new Integer(j).toString());
                         System.out.println("Error code is: " + err.getStatusCode().toString());
                         System.out.println("Error message: " + err.getMessage());
@@ -1520,7 +1528,7 @@ public class PartnerSamples {
                     // array and write them to the screen
                     for (int i = 0; i < sr[j].getErrors().length; i++) {
                         // get the next error
-                        com.sforce16.soap.partner.Error err = sr[j].getErrors()[i];
+                        com.salesforce.soap.partner.Error err = sr[j].getErrors()[i];
                         System.out.println("Errors were found on item " + new Integer(j).toString());
                         System.out.println("Error code is: " + err.getStatusCode().toString());
                         System.out.println("Error message: " + err.getMessage());

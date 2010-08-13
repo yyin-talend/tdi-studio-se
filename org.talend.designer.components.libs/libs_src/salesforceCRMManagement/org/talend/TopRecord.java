@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.apache.axis.message.MessageElement;
 
-import com.sforce16.soap.partner.QueryResult;
-import com.sforce16.soap.partner.sobject.SObject;
+import com.salesforce.soap.partner.QueryResult;
+import com.salesforce.soap.partner.sobject.SObject;
 
 public class TopRecord {
 

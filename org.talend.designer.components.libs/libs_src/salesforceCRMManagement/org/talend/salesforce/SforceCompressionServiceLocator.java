@@ -5,7 +5,7 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
 
-import com.sforce16.soap.partner.SforceServiceLocator;
+import com.salesforce.soap.partner.SforceServiceLocator;
 
 public class SforceCompressionServiceLocator extends SforceServiceLocator {
 

@@ -1,4 +1,5 @@
 package org.talend.salesforce.util;
+
 public class ConvertSFTypeToTOSType {
 
     public static final String string_value = "string";
@@ -117,5 +118,17 @@ public class ConvertSFTypeToTOSType {
             return ID_STRING;
 
         return null;
+    }
+
+    public static String getPattern(String type) {
+        if (type.equals("date")) {
+            return "yyyy-MM-dd";
+        } else if (type.equals("datetime")) {
+            return "yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;";
+        } else if (type.equals("time")) {
+            return "HH:mm:ss&apos;.000Z&apos;";
+        } else {
+            return null;
+        }
     }
 }

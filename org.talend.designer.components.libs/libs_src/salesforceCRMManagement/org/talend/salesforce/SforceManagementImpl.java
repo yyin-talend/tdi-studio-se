@@ -27,21 +27,22 @@ import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.w3c.dom.Element;
 
-import com.sforce16.soap.partner.DeleteResult;
-import com.sforce16.soap.partner.DescribeGlobalResult;
-import com.sforce16.soap.partner.DescribeSObjectResult;
-import com.sforce16.soap.partner.Error;
-import com.sforce16.soap.partner.Field;
-import com.sforce16.soap.partner.LoginResult;
-import com.sforce16.soap.partner.QueryOptions;
-import com.sforce16.soap.partner.QueryResult;
-import com.sforce16.soap.partner.SaveResult;
-import com.sforce16.soap.partner.SessionHeader;
-import com.sforce16.soap.partner.SforceService;
-import com.sforce16.soap.partner.SforceServiceLocator;
-import com.sforce16.soap.partner.SoapBindingStub;
-import com.sforce16.soap.partner.UpsertResult;
-import com.sforce16.soap.partner.sobject.SObject;
+import com.salesforce.soap.partner.DeleteResult;
+import com.salesforce.soap.partner.DescribeGlobalResult;
+import com.salesforce.soap.partner.DescribeGlobalSObjectResult;
+import com.salesforce.soap.partner.DescribeSObjectResult;
+import com.salesforce.soap.partner.Error;
+import com.salesforce.soap.partner.Field;
+import com.salesforce.soap.partner.LoginResult;
+import com.salesforce.soap.partner.QueryOptions;
+import com.salesforce.soap.partner.QueryResult;
+import com.salesforce.soap.partner.SaveResult;
+import com.salesforce.soap.partner.SessionHeader;
+import com.salesforce.soap.partner.SforceService;
+import com.salesforce.soap.partner.SforceServiceLocator;
+import com.salesforce.soap.partner.SoapBindingStub;
+import com.salesforce.soap.partner.UpsertResult;
+import com.salesforce.soap.partner.sobject.SObject;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -686,12 +687,17 @@ public class SforceManagementImpl implements SforceManagement {
 
         DescribeGlobalResult describeGlobalResult = binding.describeGlobal();
 
-        String[] types = null;
+        // String[] types = null;
+        DescribeGlobalSObjectResult[] sobjects = null;
+        List<String> typeList = new ArrayList<String>();
         if (describeGlobalResult != null)
 
-            types = describeGlobalResult.getTypes();
-
-        return types;
+            sobjects = describeGlobalResult.getSobjects();
+        for (DescribeGlobalSObjectResult sobject : sobjects) {
+            typeList.add(sobject.getName());
+        }
+        // types = typeList.toArray(new String[typeList.size()]);
+        return typeList.toArray(new String[typeList.size()]);
     }
 
     /**

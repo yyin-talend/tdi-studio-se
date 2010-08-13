@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import com.sforce16.soap.partner.sobject.SObject;
+import com.salesforce.soap.partner.sobject.SObject;
 
 /**
  * General purpose deserializer for an arbitrary java bean.

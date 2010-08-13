@@ -15,11 +15,11 @@ package org.talend;
 import java.net.URL;
 import java.util.List;
 
-import com.sforce16.soap.partner.LoginResult;
-import com.sforce16.soap.partner.QueryResult;
-import com.sforce16.soap.partner.SessionHeader;
-import com.sforce16.soap.partner.SforceServiceLocator;
-import com.sforce16.soap.partner.SoapBindingStub;
+import com.salesforce.soap.partner.LoginResult;
+import com.salesforce.soap.partner.QueryResult;
+import com.salesforce.soap.partner.SessionHeader;
+import com.salesforce.soap.partner.SforceServiceLocator;
+import com.salesforce.soap.partner.SoapBindingStub;
 
 public class Test4Feature8540 {
 
