@@ -229,7 +229,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                 setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginMessage")); //$NON-NLS-1$
             } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText
                     .getText()))) {
-                setErrorMessage(Messages.getString("RegisterWizardPage.emailNotValid")); //$NON-NLS-1$
+                setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
             } else if (userPassText.getText().length() == 0) {
                 setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userPasswordEmptyMessage")); //$NON-NLS-1$
             } else {
