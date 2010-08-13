@@ -50,7 +50,7 @@ public class FTPPage extends WizardPage {
      * 
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
-    @Override
+
     public void createControl(Composite parent) {
         ftpForm = new FTPFrom(parent, connectionItem, existingNames, this);
         ftpForm.setReadOnly(!isRepositoryObjectEditable);
@@ -80,7 +80,7 @@ public class FTPPage extends WizardPage {
      * 
      * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
      */
-    @Override
+
     public IWizardPage getNextPage() {
         ftpForm.removeHideValue();
         return super.getNextPage();

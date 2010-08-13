@@ -167,7 +167,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
-    @Override
+
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         // TODO Auto-generated method stub
 
@@ -178,7 +178,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * 
      * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
-    @Override
+
     public void addPages() {
         setWindowTitle("");//$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.UNKNOWN));
@@ -201,7 +201,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * 
      * @see org.eclipse.jface.wizard.IWizard#canFinish()
      */
-    @Override
+
     public boolean canFinish() {
         if (ftpPage != null && ftpPage.isPageComplete()) {
             return true;
@@ -214,7 +214,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * 
      * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
      */
-    @Override
+
     public IWizardPage getNextPage(IWizardPage page) {
         // TODO Auto-generated method stub
         return super.getNextPage(page);
@@ -225,7 +225,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * 
      * @see org.eclipse.jface.wizard.IWizard#performCancel()
      */
-    @Override
+
     public boolean performCancel() {
         closeLockStrategy();
         return true;
@@ -236,7 +236,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * 
      * @see org.eclipse.jface.wizard.IWizard#performFinish()
      */
-    @Override
+
     public boolean performFinish() {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {

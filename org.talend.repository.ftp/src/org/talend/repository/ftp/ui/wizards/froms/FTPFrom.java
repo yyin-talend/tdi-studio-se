@@ -107,7 +107,7 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#adaptFormToReadOnly()
      */
-    @Override
+
     protected void adaptFormToReadOnly() {
         // TODO Auto-generated method stub
 
@@ -118,7 +118,7 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#addFields()
      */
-    @Override
+
     protected void addFields() {
         Group ftpParameterGroup = new Group(this, SWT.NULL);
         ftpParameterGroup.setText("Server"); //$NON-NLS-1$
@@ -227,11 +227,10 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#addFieldsListeners()
      */
-    @Override
+
     protected void addFieldsListeners() {
         ftpUsernameText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setUsername(ftpUsernameText.getText());
                 checkFieldsValue();
@@ -240,7 +239,6 @@ public class FTPFrom extends AbstractForm {
 
         ftpPasswordText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setPassword(ftpPasswordText.getText());
                 checkFieldsValue();
@@ -248,7 +246,6 @@ public class FTPFrom extends AbstractForm {
         });
         ftpPortText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setPort(ftpPortText.getText());
                 checkFieldsValue();
@@ -256,7 +253,6 @@ public class FTPFrom extends AbstractForm {
         });
         ftpHostText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setHost(ftpHostText.getText());
                 checkFieldsValue();
@@ -264,56 +260,48 @@ public class FTPFrom extends AbstractForm {
         });
         proxyUsernameText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setProxyuser(proxyUsernameText.getText());
             }
         });
         proxyPasswordText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setProxypassword(proxyPasswordText.getText());
             }
         });
         proxyPortText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setProxyport(proxyPortText.getText());
             }
         });
         proxyHostText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setProxyhost(proxyHostText.getText());
             }
         });
         keyFileText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setKeystoreFile(keyFileText.getText());
             }
         });
         keyPasswordText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setKeystorePassword(keyPasswordText.getText());
             }
         });
         connModelCombo.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setMode(connModelCombo.getText());
             }
         });
         encodeCombo.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setEcoding(encodeCombo.getText());
                 if (getConnection().getEcoding().equals("CUSTOM")) {
@@ -329,7 +317,6 @@ public class FTPFrom extends AbstractForm {
 
         customText.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setCustomEncode(customText.getText());
             }
@@ -337,7 +324,6 @@ public class FTPFrom extends AbstractForm {
 
         methodCombo.addModifyListener(new ModifyListener() {
 
-            @Override
             public void modifyText(ModifyEvent e) {
                 getConnection().setMethod(methodCombo.getText());
             }
@@ -350,7 +336,7 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#addUtilsButtonListeners()
      */
-    @Override
+
     protected void addUtilsButtonListeners() {
         sftpSuppBut.addSelectionListener(new SelectionAdapter() {
 
@@ -359,7 +345,7 @@ public class FTPFrom extends AbstractForm {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            @Override
+
             public void widgetSelected(SelectionEvent e) {
                 boolean show = sftpSuppBut.getSelection();
                 ftpsSuppBut.setVisible(!show);
@@ -377,7 +363,7 @@ public class FTPFrom extends AbstractForm {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            @Override
+
             public void widgetSelected(SelectionEvent e) {
                 boolean show = ftpsSuppBut.getSelection();
                 sftpSuppBut.setVisible(!show);
@@ -396,7 +382,7 @@ public class FTPFrom extends AbstractForm {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            @Override
+
             public void widgetSelected(SelectionEvent e) {
                 boolean show = useSocksBut.getSelection();
                 proxyHostText.setVisible(show);
@@ -414,7 +400,7 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#checkFieldsValue()
      */
-    @Override
+
     public boolean checkFieldsValue() {
         if (ftpHostText.getCharCount() == 0) {
             updateStatus(IStatus.ERROR, "Host can not be null!"); //$NON-NLS-1$
@@ -444,7 +430,7 @@ public class FTPFrom extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#initialize()
      */
-    @Override
+
     protected void initialize() {
         ftpUsernameText.setText(getConnection().getUsername());
         ftpPasswordText.setText(getConnection().getPassword());
