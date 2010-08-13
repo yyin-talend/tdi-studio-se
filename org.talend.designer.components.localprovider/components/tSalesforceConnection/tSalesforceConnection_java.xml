@@ -30,10 +30,6 @@
 			<DEFAULT>"https://www.salesforce.com/services/Soap/u/19.0"</DEFAULT>
 		</PARAMETER>
 		
-		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="10" REQUIRED="true" SHOW="false">
-			<DEFAULT>"17.0"</DEFAULT>
-		</PARAMETER>
-
 		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20" REQUIRED="true">
 			<DEFAULT>"youremail@yourcompany.com"</DEFAULT>
 		</PARAMETER>
@@ -55,6 +51,10 @@
 	       REQUIRED="true"
 		   NUM_ROW="35">
 		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="35" REQUIRED="true" SHOW_IF="BULK_CONNECTION=='true'">
+			<DEFAULT>"19.0"</DEFAULT>
 		</PARAMETER>
 	
 		<PARAMETER 
