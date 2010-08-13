@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +31,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -87,25 +88,23 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
     public void run() {
 
         // Refresh Navigator view before export operation, see bug 4595
-        try {
-            IRunnableWithProgress runnable = new IRunnableWithProgress() {
+        Job job = new Job(Messages.getString("ExportCommandAction.refreshWorkspace")) { //$NON-NLS-1$
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(ExportProjectsAsAction.this.getToolTipText(), IProgressMonitor.UNKNOWN);
-                    try {
-                        ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
-                    }
-                    monitor.done();
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask(ExportProjectsAsAction.this.getToolTipText(), IProgressMonitor.UNKNOWN);
+                try {
+                    ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+                } catch (CoreException e) {
+                    e.printStackTrace();
                 }
-            };
-            new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, runnable);
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-        } catch (InterruptedException e) {
-            ExceptionHandler.process(e);
-        }
+                monitor.done();
+                return Status.OK_STATUS;
+            }
+        };
+        job.setUser(true);
+        job.setPriority(Job.BUILD);
+        job.schedule();
         initializeExternalLibraries();
         Shell activeShell = Display.getCurrent().getActiveShell();
         TalendZipFileExportWizard docWizard = new TalendZipFileExportWizard();
