@@ -25,6 +25,16 @@ class="MomInput"
 	String wsMQFormat = ElementParameterParser.getValue(node, "__WS_MQ_FORMAT__");
 	
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
+	
+	boolean setJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__SET_JMS_HEADER__"));
+	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
+	
+	boolean setJmsProp =  ("true").equals(ElementParameterParser.getValue(node, "__SET_JMS_PROPERTIES__"));
+	List<Map<String,String>> jmsProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_PROPERTIES__");
+
+	boolean setMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__SET_MQMD_FIELDS__"));
+	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
+		
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -93,13 +103,34 @@ class="MomInput"
 					                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					            }
 %>
-							message_<%=cid%>.set<%=typeToGenerate%>("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel() %>);
+							message_<%=cid%>.set<%=typeToGenerate%>("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel() %>);	
+							
 <%
 						}
 					} 
+					/*---------------------------------------------3.set message headers------------------------------------------------------*/
 					
-					/*---------------------------------------------3.send message to server------------------------------------------------------*/
+					if (setJmsHeader) {
+						for(Map<String,String> header:jmsHeaders) {
 %>
+							message_<%=cid%>.set<%=header.get("JMS_HEADER_NAME")%>(<%=header.get("JMS_HEADER_VALUE")%>);
+<%				
+						}
+					}
+					
+					/*---------------------------------------------4.set message headers------------------------------------------------------*/
+					
+					if (setJmsProp) {
+						for(Map<String,String> prop:jmsProps) {
+%>
+							message_<%=cid%>.set<%=prop.get("JMS_PROPERTIES_TYPE")%>Property(<%=prop.get("JMS_PROPERTIES_NAME")%>, <%=prop.get("JMS_PROPERTIES_VALUE")%>);
+<%				
+						}
+					}
+					
+					/*---------------------------------------------5.send message to server------------------------------------------------------*/
+%>
+
 						producer_<%=cid %>.send(message_<%=cid %>);
 <%
 				} else {//server judgement   /***WebSphere MQ*****/
@@ -131,6 +162,17 @@ class="MomInput"
 						message_<%=cid%>.messageId = msgID_<%=cid%>.getBytes("ISO-8859-15");
 <%
 					}
+										
+					/*---------------------------------------------set MQMD Fields------------------------------------------------------*/
+					
+					if (setMQMDField) {
+						for(Map<String,String> field:mqmdFields) {
+%>
+							message_<%=cid%>.<%=field.get("MQMD_FIELD_NAME")%> = <%=field.get("MQMD_FIELD_VALUE")%>;
+<%				
+						}
+					}
+					
 					if ("Text".equals(msgBobyType)) {
 %>
 						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);

@@ -11,23 +11,37 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
-if(("JBoss").equals(serverType)){
+boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
+if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	if (transacted) {
 %>
-	session_<%=cid%>.close();
-    connection_<%=cid%>.close();
+		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+		globalMap.put("session_<%=cid %>",session_<%=cid %>);
+		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 <%
-}else if(("ActiveMQ").equals(serverType)){%>
-
- System.out.println("Closing connection");
-        producer_<%=cid %>.close();
-        session_<%=cid %>.close();
-        connection_<%=cid %>.close();
-
-<%}else{//server judgement   /***WebSphere MQ*****/
+	} else {
 %>
+	System.out.println("Closing connection");
+	producer_<%=cid %>.close();
+    session_<%=cid %>.close();
+    connection_<%=cid %>.close();
+
+<%
+	}
+}else{//server judgement   /***WebSphere MQ*****/
+	if (transacted) {
+%>
+		globalMap.put("remoteQ_<%=cid%>",remoteQ_<%=cid%>);
+		globalMap.put("qMgr_<%=cid%>",qMgr_<%=cid%>);
+<%
+	} else {
+%>
+	System.out.println("Closing connection");
 	remoteQ_<%=cid%>.close();
     qMgr_<%=cid%>.disconnect();
+
 <%
+	}
 }
 %>

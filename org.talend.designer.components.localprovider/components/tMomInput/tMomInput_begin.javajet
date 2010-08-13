@@ -10,6 +10,7 @@ imports="
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
     java.util.List
+    java.util.Map
 " 
 class="MomInput"
 %>
@@ -33,6 +34,15 @@ class="MomInput"
 	
 	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
 	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
+	
+	boolean getJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__GET_JMS_HEADER__"));
+	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
+	
+	boolean getJmsProp =  ("true").equals(ElementParameterParser.getValue(node, "__GET_JMS_PROPERTIES__"));
+	List<Map<String,String>> jmsProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_PROPERTIES__");
+	
+	boolean getMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__GET_MQMD_FIELDS__"));
+	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
 	
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
@@ -214,6 +224,25 @@ class="MomInput"
 <%
 					}
 				}
+				/*---------------------------------------------get message headers------------------------------------------------------*/
+				if (getJmsHeader) {
+					for(Map<String,String> header:jmsHeaders) {
+%>
+						<%=firstConnName%>.<%=header.get("REFERENCE_COLUMN")%> = message_<%=cid%>.get<%=header.get("JMS_HEADER_NAME")%>();
+<%				
+					}
+				}	
+								
+				/*---------------------------------------------4.set message headers------------------------------------------------------*/
+				if (getJmsProp) {
+					for(Map<String,String> prop:jmsProps) {
+%>
+							<%=firstConnName%>.<%=prop.get("REFERENCE_COLUMN")%> = message_<%=cid%>.get<%=prop.get("JMS_PROPERTIES_TYPE")%>Property(<%=prop.get("JMS_PROPERTIES_NAME")%>);
+<%				
+					}
+				}					
+
+
 				if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
 %>		
 					<%=firstConnName%>.messageid=<%=msgId%>;
@@ -370,6 +399,17 @@ class="MomInput"
 <%
 					}
 				}
+					
+				/*---------------------------------------------get MQMD Fields------------------------------------------------------*/
+					
+				if (getMQMDField) {
+					for(Map<String,String> field:mqmdFields) {
+%>
+							<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = inMessage<%=cid%>.<%=field.get("MQMD_FIELD_NAME")%>;
+<%				
+					}
+				}
+				
 			if(("true").equals(useMsgId)&& !"Map".equals(msgBobyType)){
 %>
 				<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
