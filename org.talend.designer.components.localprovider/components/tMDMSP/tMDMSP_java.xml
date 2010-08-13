@@ -6,6 +6,7 @@
     STARTABLE="true"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
+    IS_MULTIPLYING_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
@@ -36,6 +37,10 @@
 	      REQUIRED="true"
 	      NUM_ROW="10"
 	    >
+		<TABLE READONLY="true">
+			<COLUMN NAME="xmlField" TYPE="id_String" LENGTH="255"
+				READONLY="false" CUSTOM="true" />
+		</TABLE>
 	    </PARAMETER>
 	
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
@@ -76,14 +81,7 @@
 	      NB_LINES="3"
 	    >
 	      <ITEMS>
-	        <ITEM NAME="COLUMN" FIELD="COLUMN_LIST"/>
-	        
-	        <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
-	          <ITEMS DEFAULT="IN">
-	            <ITEM NAME="IN" VALUE="IN"/>
-	            <ITEM NAME="OUT" VALUE="OUT"/>
-	          </ITEMS>
-	        </ITEM>
+	        <ITEM NAME="COLUMN" FIELD="PREV_COLUMN_LIST"/>
 	      </ITEMS>
 	    </PARAMETER>		
 		

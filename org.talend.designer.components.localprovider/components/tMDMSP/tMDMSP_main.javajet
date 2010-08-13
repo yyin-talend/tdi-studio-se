@@ -22,25 +22,19 @@ imports="
 
 List<? extends IConnection> inConnections = node.getIncomingConnections();
 IConnection inConnection = null;
+IMetadataTable metadata = null;
 if (inConnections != null) {
 	for (int i = 0; i < inConnections.size(); i++) {
 		IConnection connection = inConnections.get(i);
     	if (connection.getLineStyle().hasConnectionCategory(
     			IConnectionCategory.DATA)) {
-		    inConnection = connection;
+    		inConnection = connection;
+		    metadata=connection.getMetadataTable();
 		    break;
     	}
 	}
 }
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-
-if ((metadatas != null) && (metadatas.size() > 0)) {
-	IMetadataTable metadata = metadatas.get(0);
-	
-	if (metadata != null) {
-	
-		List<IMetadataColumn> columnList = metadata.getListColumns();
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
 		// if output columns are defined
@@ -49,40 +43,35 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 			String outputCol = null;
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
-				if(spArgs.size()>0){
+				if(inConnection!=null){
+					if(spArgs.size()>0){
 %>
 wsExeProc_<%=cid %>.setParameters(new String[]{
 <%
-				}
-				for(int i=0;i<spArgs.size();i++){
-					Map<String, String> map = spArgs.get(i);
-					String clmName = map.get("COLUMN");
-					String clmType = map.get("TYPE");
-					for(IMetadataColumn column:columnList){
-						if(column.getLabel().equals(clmName)){
-							if(("IN").equals(clmType) && inConnection!=null){
+    				}
+    				for(int i=0;i<spArgs.size();i++){
+    					Map<String, String> map = spArgs.get(i);
+    					String clmName = map.get("COLUMN");
+    					for(IMetadataColumn column:metadata.getListColumns()){
+    						if(column.getLabel().equals(clmName)){
 %>
 <%=i==0?"":","%><%=inConnection.getName()%>.<%=column.getLabel() %>
 <%
-							}else if(("OUT").equals(clmType)){
-								outputCol = column.getLabel();
-							}
-							break;
-						}
-					}
-				}
-				if(spArgs.size()>0){
+    						}
+    					}
+    				}
+    				if(spArgs.size()>0){
 %>
 });
 <%
+					}
 				}
 %>
-<%=outgoingConn.getName()%>.<%=outputCol %> = xtentisWS_<%=cid %>.executeStoredProcedure(wsExeProc_<%=cid %>); 
+for(String xmlField_<%=cid %> : xtentisWS_<%=cid %>.executeStoredProcedure(wsExeProc_<%=cid %>)){
+	<%=outgoingConn.getName()%>.xmlField = xmlField_<%=cid %>;
 <%
 			}
 		}
-	}
-}
 %>
           
             
