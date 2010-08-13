@@ -2562,6 +2562,31 @@ public class Node extends Element implements INode {
 
         // test empty schema in built in connections (several outputs with
         // different schema)
+        if (mainConnector != null && !noSchema && canEditSchema) {
+            if (getMetadataList() != null) {
+                for (IMetadataTable meta : getMetadataList()) {
+                    // count how many Dynamic Type there is, normally there should be only one.
+                    int nbDynamic = 0;
+                    int indexOfDynamicField = 0;
+                    for (IMetadataColumn col : meta.getListColumns()) {
+                        if (col.getTalendType().equals("id_Dynamic")) {
+                            nbDynamic++;
+                            indexOfDynamicField = meta.getListColumns().indexOf(col);
+                        }
+                    }
+                    if (nbDynamic > 1) {
+                        String errorMessage = "There should be only one Dynamic type in one schema";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                    if (nbDynamic > 0 && (indexOfDynamicField + 1) != meta.getListColumns().size()) {
+                        String errorMessage = "Dynamic type should always be the last one in a schema";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                }
+            }
+        }
+
+        // test in case several Dynamic type has been set or if Dynamic is not the last type in schema
         if (mainConnector != null && !noSchema && (!canEditSchema || isExternalNode())) {
             if (mainConnector.isMultiSchema()) {
                 if (getMetadataList() != null) {
