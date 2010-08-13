@@ -51,7 +51,7 @@
 		<PARAMETER
 	      NAME="USE_EXISTING_CONNECTION"
 	      FIELD="CHECK"
-	      NUM_ROW="5"
+	      NUM_ROW="6"
 	    >
 	      <DEFAULT>false</DEFAULT>
 	    </PARAMETER>    
@@ -60,7 +60,7 @@
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
 	      FILTER="tSalesforceConnection"
-	      NUM_ROW="5"
+	      NUM_ROW="6"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	    />
 	    
