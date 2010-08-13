@@ -97,7 +97,7 @@ public enum EDatabaseComponentName {
     // );
     ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tTeradataInput", "tTeradataOutput"), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
+    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tTeradataInput", "tTeradataOutput", true), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
     // );
     TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
     // )
