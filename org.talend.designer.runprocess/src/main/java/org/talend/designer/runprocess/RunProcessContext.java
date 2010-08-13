@@ -85,6 +85,8 @@ public class RunProcessContext {
 
     public static final String PREVIOUS_ROW = "RunProcessContext.PreviousRow";
 
+    public static final String BREAKPOINT_BAR = "RunProcessContext.breakPoint";
+
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
 
     public static final String NEXTBREAKPOINT = "RunProcessContext.NextBreakpoint";
@@ -146,6 +148,8 @@ public class RunProcessContext {
     private boolean clearBeforeExec = true;
 
     private boolean isTracPause = false;
+
+    private boolean isBasicRun = false;
 
     private boolean startingMessageWritten;
 
@@ -231,6 +235,9 @@ public class RunProcessContext {
      * @param monitorPerf the monitorPerf to set
      */
     public void setMonitorPerf(boolean monitorPerf) {
+        if (!monitorPerf) {
+            System.out.println();
+        }
         if (this.monitorPerf != monitorPerf) {
             this.monitorPerf = monitorPerf;
             firePropertyChange(PROP_MONITOR, Boolean.valueOf(!monitorPerf), Boolean.valueOf(monitorPerf));
@@ -1064,7 +1071,7 @@ public class RunProcessContext {
                 try {
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
-
+                    setBasicRun(false);
                     boolean lastIsPrivious = false;
                     boolean lastRow = false;
                     final List<Map<String, String>> connectionData = new ArrayList<Map<String, String>>();
@@ -1083,14 +1090,25 @@ public class RunProcessContext {
                                 // testing only
                                 pred.println("NEXT_BREAKPOINT");
                             }
+
                             continue;
                         } else if ("UI_STATUS".equals(data)) {
                             // wait for UI here, for next click, then send STATUS_OK
+                            if (isBasicRun()) {
+                                pred.println("STATUS_OK");
+                            }
+
                             if (!checkBreakpoint()) {
                                 firePropertyChange(NEXTBREAKPOINT, true, false);
                             } else {
                                 firePropertyChange(NEXTBREAKPOINT, false, true);
                             }
+
+                            boolean enablePreviousRow = false;
+                            if (dataSize - readSize != 0 && dataSize != connectionSize.size()) {
+                                enablePreviousRow = true;
+                            }
+                            firePropertyChange(PREVIOUS_ROW, false, enablePreviousRow);
                             if (isNextPoint()) {
 
                                 firePropertyChange(PREVIOUS_ROW, false, true);
@@ -1159,6 +1177,7 @@ public class RunProcessContext {
                                                 }
                                             }
                                             final IConnection connection = findConnection(connectionId);
+
                                             if (connection != null) {
                                                 Display.getDefault().syncExec(new Runnable() {
 
@@ -1185,8 +1204,10 @@ public class RunProcessContext {
                                 lastIsRow = false;
                                 pred.println("STATUS_WAITING");
                             }
+                            // firePropertyChange(BREAKPOINT_BAR, false, false);
                             continue;
                         } else {
+                            firePropertyChange(BREAKPOINT_BAR, true, false);
                             TraceData traceData = new TraceData(data);
                             final String idPart = traceData.getElementId();
                             String id = null;
@@ -1205,6 +1226,14 @@ public class RunProcessContext {
                             final IConnection connection = findConnection(id);
 
                             if (connection != null) {
+                                int sepIndex1 = data.indexOf("|");
+                                int sepIndex2 = sepIndex1 != -1 ? data.indexOf("|", sepIndex1 + 1) : -1;
+                                if (sepIndex2 != -1) {
+                                    String lineCountStr = data.substring(sepIndex1 + 1, sepIndex2);
+                                    if (lineCountStr.equals("1")) {
+                                        setBasicRun(false);
+                                    }
+                                }
                                 Map<String, String> traceMap = connAndTraces.get(connection);
                                 if (traceMap == null) {
                                     traceMap = new HashMap<String, String>();
@@ -1239,6 +1268,7 @@ public class RunProcessContext {
                     // Do nothing : process is ended
                 } finally {
                     try {
+                        setBasicRun(false);
                         processSocket.close();
                     } catch (IOException ioe) {
                         // Do nothing
@@ -1472,6 +1502,14 @@ public class RunProcessContext {
 
     public void setSelectAllTrace(boolean selectAllTrace) {
         this.selectAllTrace = selectAllTrace;
+    }
+
+    public boolean isBasicRun() {
+        return this.isBasicRun;
+    }
+
+    public void setBasicRun(boolean isBasicRun) {
+        this.isBasicRun = isBasicRun;
     }
 
 }

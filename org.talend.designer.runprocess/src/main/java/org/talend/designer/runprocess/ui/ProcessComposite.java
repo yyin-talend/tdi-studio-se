@@ -993,6 +993,25 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
         // contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
+
+        // remove trace if basic run tab active
+        if (processContext != null) {
+            processContext.setMonitorTrace(false);
+            org.talend.core.model.process.IProcess process = processContext.getProcess();
+            List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+            for (INode node : nodeList) {
+                for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+                    ConnectionTrace traceNode = connection.getConnectionTrace();
+                    if (traceNode == null) {
+                        continue;
+                    }
+                    traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), false);
+                    if (connection != null && connection.checkTraceShowEnable()) {
+                        connection.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), false);
+                    }
+                }
+            }
+        }
     }
 
     protected void setRunnable(boolean runnable) {

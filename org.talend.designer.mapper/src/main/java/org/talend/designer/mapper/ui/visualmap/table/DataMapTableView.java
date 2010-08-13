@@ -313,7 +313,9 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
     protected int changedOptions = 0;
 
-    protected static final Color MAP_SETTING_COLOR = new Color(Display.getDefault(), 238, 238, 0);
+    private Color color = null;
+
+    protected Color previewColor = null;
 
     /**
      * 
@@ -345,6 +347,9 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             }
         }
 
+        color = new Color(Display.getDefault(), 238, 238, 0);
+
+        previewColor = new Color(Display.getDefault(), 235, 0, 219);
     }
 
     private void createComponents() {
@@ -496,8 +501,6 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
     protected abstract void createMapSettingTable();
 
     protected void initMapSettingColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
-
-        final Color color = new Color(Display.getDefault(), 238, 238, 0);
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Property");
@@ -979,6 +982,14 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
             public void widgetDisposed(DisposeEvent e) {
                 removeListenerForTrace();
+                if (color != null) {
+                    color.dispose();
+                    color = null;
+                }
+                if (previewColor != null) {
+                    previewColor.dispose();
+                    previewColor = null;
+                }
             }
         });
 
@@ -2015,6 +2026,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
             return expressionColorProvider.getBackgroundColor(entry.getProblems() == null ? true : false);
+        } else if (column.getId().equals(PREVIEW_COLUMN)) {
+            return ColorProviderMapper.getColor(ColorInfo.COLOR_TMAP_PREVIEW);
         }
         return null;
     }

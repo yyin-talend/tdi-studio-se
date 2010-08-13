@@ -239,42 +239,6 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         IOConnection connection = ((OutputTable) getDataMapTable()).getConnection();
-        if (PluginChecker.isTIS() && mapperManager.isTracesActive() && connection != null) {
-            TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-            column.setTitle("Preview");
-            column.setId(DataMapTableView.PREVIEW_COLUMN);
-            column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
-            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
-
-                public String get(OutputColumnTableEntry bean) {
-                    IMetadataColumn metadataColumn = bean.getMetadataColumn();
-                    if (metadataColumn != null) {
-                        String label = metadataColumn.getLabel();
-                        String preview = bean.getPreviewValue();
-                        if (preview != null) {
-                            String[] split = preview.split("\\|");
-                            for (int i = 0; i < split.length; i++) {
-                                if (split[i] != null) {
-                                    String[] columnValue = split[i].split("=");
-                                    if (columnValue.length == 2 && columnValue[0] != null && columnValue[0].trim().equals(label)) {
-                                        return columnValue[1];
-                                    }
-                                }
-
-                            }
-                        }
-
-                    }
-                    return "";
-                }
-
-                public void set(OutputColumnTableEntry bean, String value) {
-                    // do nothing
-                }
-
-            });
-        }
-
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -312,6 +276,43 @@ public class OutputDataMapTableView extends DataMapTableView {
 
         });
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+
+        if (PluginChecker.isTIS() && mapperManager.isTracesActive() && connection != null) {
+            column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+            column.setTitle("Preview");
+            column.setId(DataMapTableView.PREVIEW_COLUMN);
+            column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
+
+                public String get(OutputColumnTableEntry bean) {
+                    IMetadataColumn metadataColumn = bean.getMetadataColumn();
+                    if (metadataColumn != null) {
+                        String label = metadataColumn.getLabel();
+                        String preview = bean.getPreviewValue();
+                        if (preview != null) {
+                            String[] split = preview.split("\\|");
+                            for (int i = 0; i < split.length; i++) {
+                                if (split[i] != null) {
+                                    String[] columnValue = split[i].split("=");
+                                    if (columnValue.length == 2 && columnValue[0] != null && columnValue[0].trim().equals(label)) {
+                                        return columnValue[1];
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                    return "";
+                }
+
+                public void set(OutputColumnTableEntry bean, String value) {
+                    // do nothing
+                }
+
+            });
+
+        }
 
         configureCellModifier(tableViewerCreatorForColumns);
     }

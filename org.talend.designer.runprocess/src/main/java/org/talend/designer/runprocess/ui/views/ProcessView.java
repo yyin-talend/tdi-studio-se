@@ -303,6 +303,18 @@ public class ProcessView extends ViewPart {
 
         addListenerOnChildren(parent, fl);
         rubjobManager.setProcessShell(getSite().getShell());
+
+        contextManagerListener = new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
+                    // rubjobManager.setBooleanTrace(false);
+                    runningProcessChanged();
+                }
+            }
+        };
+        RunProcessPlugin.getDefault().getRunProcessContextManager().addPropertyChangeListener(contextManagerListener);
+        runAction = new RunAction();
     }
 
     /**
@@ -348,21 +360,17 @@ public class ProcessView extends ViewPart {
         if (category == EComponentCategory.BASICRUN) {
             processComposite = new ProcessComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = processComposite;
-            createBasicComposite(parent, element, category);
         } else if (category == EComponentCategory.DEBUGRUN) {
             debugTisProcessComposite = this.debugViewHelper.getDebugComposite(parent);
             dc = debugTisProcessComposite;
-            createBasicComposite(parent, element, category);
-            // dc = new DebugTisProcessComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
         } else if (category == EComponentCategory.ADVANCESETTING) {
             advanceComposite = new AdvanceSettingComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = advanceComposite;
-            createBasicComposite(parent, element, category);
         } else if (category == EComponentCategory.TARGET) {
             targetComposite = new TargetExecComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
             dc = targetComposite;
-            createBasicComposite(parent, element, category);
         }
+        refresh();
         if (dc != null) {
             dc.refresh();
         }
@@ -370,56 +378,6 @@ public class ProcessView extends ViewPart {
 
     public IDebugViewHelper getDebugViewHelper() {
         return this.debugViewHelper;
-    }
-
-    public Composite createBasicComposite(Composite parent, Element element, EComponentCategory category) {
-        // final Composite container = new Composite(parent, SWT.NONE);
-        // // GridLayout layout = new GridLayout();
-        // // layout.marginHeight = 0;
-        // // layout.marginWidth = 0;
-        // // layout.verticalSpacing = 2;
-        // // container.setLayout(layout);
-        //
-        // processNameLab = new Label(container, SWT.NULL);
-        // GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        // data.verticalIndent = 2;
-        // // data.horizontalAlignment = SWT.CENTER;
-        // processNameLab.setLayoutData(data);
-        // processNameLab.setAlignment(SWT.CENTER);
-        // FontData[] fds = processNameLab.getFont().getFontData();
-        //
-        // for (FontData fd : fds) {
-        // fd.setHeight(fd.getHeight() + 2);
-        // fd.setStyle(fd.getStyle() | SWT.BOLD);
-        // }
-        //
-        // Font titleFont = new Font(processNameLab.getDisplay(), fds);
-        // processNameLab.setFont(titleFont);
-        // processNameLab.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
-
-        // processComposite = this.processViewHelper.getProcessComposite(parent);
-        // processComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        // fillActionBars();
-
-        contextManagerListener = new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
-                    // rubjobManager.setBooleanTrace(false);
-                    runningProcessChanged();
-                }
-            }
-        };
-        RunProcessPlugin.getDefault().getRunProcessContextManager().addPropertyChangeListener(contextManagerListener);
-
-        runningProcessChanged();
-
-        runAction = new RunAction();
-        // IHandler handler2 = new ActionHandler(runAction);
-        // handlerService.activateHandler(runAction.getActionDefinitionId(), handler2);
-
-        return parent;
     }
 
     public ProcessComposite getProcessComposite() {
@@ -722,7 +680,8 @@ public class ProcessView extends ViewPart {
         for (TalendPropertyTabDescriptor talendPropertyTabDescriptor : allTabs) {
             if (talendPropertyTabDescriptor.getCategory().equals(category)) {
                 dc = new ProcessComposite(tabFactory.getTabComposite(), SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS);
-                createBasicComposite(tabFactory.getTabComposite(), element, null);
+                // createBasicComposite(tabFactory.getTabComposite(), element, null);
+                refresh();
                 selection.add(talendPropertyTabDescriptor);
             }
         }

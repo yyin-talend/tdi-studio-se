@@ -248,10 +248,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         toolBar = new ToolBar(execHeader, SWT.FLAT | SWT.RIGHT);
 
         itemDropDown = new ToolItem(toolBar, SWT.ARROW);
-        itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-        itemDropDown.setData(ProcessView.DEBUG_ID);
-        itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));//$NON-NLS-1$
-        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        itemDropDown.setText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+        itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
+        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
 
         menu = new Menu(execHeader);
         itemDropDown.addSelectionListener(new SelectionAdapter() {
@@ -303,7 +303,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             debugMenuItem = new MenuItem(menu, SWT.PUSH);
             debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
             debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
-            debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+            debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
             debugMenuItem.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent event) {
@@ -311,7 +311,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                             && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
                         itemDropDown.setText(debugMenuItem.getText());
                         itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
-                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));//$NON-NLS-1$
                         toolBar.getParent().layout();
                         manager.setBooleanTrace(true);
@@ -639,6 +639,11 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             disableAll = processContext.getProcess().disableRunJobView();
 
         }
+        if (processContext != null) {
+            processContext.setMonitorTrace(true);
+            addTrace(ProcessView.TRACEDEBUG_ID);
+        }
+
         setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
         killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
         // previousRow.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
@@ -913,24 +918,18 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     } else {
                         itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
                         itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
-                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+                        itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
                     }
                     toolBar.setEnabled(b);
                 } else {
-                    // qli modified to fix the bug 7354.
-                    toolBar.setEnabled(runnable);
 
-                    // if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
-                    //                debugMenuItem.setText(" " + Messages.getString("ProcessComposite.traceDebug")); //$NON-NLS-1$//$NON-NLS-2$
-                    // debugMenuItem.setData(ProcessView.TRACEDEBUG_ID);
-                    // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                    // } else {
-                    itemDropDown.setText(" " + Messages.getString("ProcessDebugDialog.javaDebug"));
-                    itemDropDown.setData(ProcessView.DEBUG_ID);
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessDebugDialog.javaDebug"));
-                    // }
+                    toolBar.setEnabled(runnable);
+                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
+                    itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
+                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
+                    toolBar.getParent().layout();
                 }
             }
         }

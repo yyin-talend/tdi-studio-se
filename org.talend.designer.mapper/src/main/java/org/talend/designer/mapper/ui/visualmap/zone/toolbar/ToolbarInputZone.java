@@ -17,19 +17,30 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INode;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.runprocess.IDebugProcessService;
 import org.talend.designer.runprocess.RunProcessContext;
@@ -160,7 +171,32 @@ public class ToolbarInputZone extends ToolbarZone {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
+
                     if (!activeContext.isRunning()) {
+                        for (DataMapTableView dataMapTableView : getMapperManager().getUiManager().getOutputsTablesView()) {
+                            dataMapTableView.notifyFocusLost();
+                        }
+                        if (getMapperManager().isDataChanged()) {
+                            boolean closeWindow = MessageDialog.openConfirm(getComposite().getShell(),
+                                    "tMap configuration modified", //$NON-NLS-1$
+                                    "Do you want to apply the modification of the tMap now ?"); //$NON-NLS-1$
+                            // save change and regenerate code
+                            if (closeWindow) {
+                                IExternalNode externalNode = getMapperManager().getAbstractMapComponent().getExternalNode();
+                                IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                        .getActiveEditor();
+                                if (externalNode != null && (part instanceof AbstractMultiPageTalendEditor)) {
+                                    INode node = externalNode.getOriginalNode();
+                                    if (node != null && node instanceof Node) {
+                                        Command cmd = new ExternalNodeChangeCommand((Node) node, externalNode);
+                                        CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
+                                        cmdStack.execute(cmd);
+                                    }
+                                }
+
+                            }
+                        }
+
                         activeContext.setLastIsRow(true);
                         IDebugProcessService service = (IDebugProcessService) GlobalServiceRegister.getDefault().getService(
                                 IDebugProcessService.class);
@@ -224,6 +260,20 @@ public class ToolbarInputZone extends ToolbarZone {
                                 if (!killBtn.isDisposed() && enabled != killBtn.isEnabled()) {
                                     killBtn.setEnabled(enabled);
                                 }
+                                nextRow.setEnabled(true);
+                            } else if (RunProcessContext.NEXTBREAKPOINT.equals(propName)) {
+                                boolean running = ((Boolean) evt.getNewValue()).booleanValue();
+                                nextBreakpoint.setEnabled(running);
+                                nextRow.setEnabled(true);
+
+                            } else if (RunProcessContext.BREAKPOINT_BAR.equals(propName)) {
+                                boolean enable = ((Boolean) evt.getNewValue()).booleanValue();
+                                if (!enable) {
+                                    previousRow.setEnabled(false);
+                                    nextRow.setEnabled(false);
+                                    nextBreakpoint.setEnabled(false);
+                                }
+
                             }
                         }
                     });
