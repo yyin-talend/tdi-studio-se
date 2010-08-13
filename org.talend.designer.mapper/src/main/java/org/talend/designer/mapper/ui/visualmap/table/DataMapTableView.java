@@ -2870,6 +2870,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
     public abstract void notifyFocusLost();
 
     public void propertyChange(PropertyChangeEvent evt) {
+        notifyFocusLost();
         String request = evt.getPropertyName();
         if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
             if (!tableViewerCreatorForColumns.getTable().isDisposed()) {
