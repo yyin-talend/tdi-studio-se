@@ -44,7 +44,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -53,12 +52,10 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.properties.TDQItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.tis.ITDQImportExportService;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
@@ -93,20 +90,12 @@ public class ExportItemUtil {
 
     private Project project;
 
-    private ITDQImportExportService service = null;
-
     private Map<String, User> login2user = new HashMap<String, User>();
 
     private ProjectManager pManager = ProjectManager.getInstance();
 
     public ExportItemUtil() {
         project = pManager.getCurrentProject().getEmfProject();
-
-        try {
-            service = (ITDQImportExportService) GlobalServiceRegister.getDefault().getService(ITDQImportExportService.class);
-        } catch (RuntimeException e) {
-            // nothing to do
-        }
     }
 
     public ExportItemUtil(Project project) {
@@ -327,9 +316,7 @@ public class ExportItemUtil {
                 progressMonitor.worked(1);
             }
 
-            if (!isTDQ()) {
-                dereferenceNotContainedObjects(resourceSet);
-            }
+            dereferenceNotContainedObjects(resourceSet);
             saveResources(resourceSet);
             progressMonitor.worked(1);
 
@@ -384,11 +371,6 @@ public class ExportItemUtil {
         if (projectFolderStructure) {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
-            if (itemType == ERepositoryObjectType.TDQ_ELEMENT) {
-                if (isTDQ()) {
-                    typeFolderPath = service.getItemTypePath((TDQItem) item);
-                }
-            }
             if (item.getProperty().getItem().getState().getPath() == null) {
                 item.getProperty().getItem().getState().setPath(""); //$NON-NLS-1$
             }
@@ -397,17 +379,13 @@ public class ExportItemUtil {
         }
         String itemFileName = ResourceFilenameHelper.getExpectedFileName(item.getProperty().getLabel(), item.getProperty()
                 .getVersion());
-        if (item instanceof TDQItem && isTDQ()) {
-            itemFileName = service.getFileNameWithVersion((TDQItem) item);
-        }
+
         fileNamePath = fileNamePath.append(itemFileName);
         propertyPath = fileNamePath.addFileExtension(FileConstants.PROPERTIES_EXTENSION);
         propertyFile = new File(destinationFile, propertyPath.toOSString());
 
         itemPath = fileNamePath.addFileExtension(FileConstants.ITEM_EXTENSION);
-        if (item instanceof TDQItem && isTDQ()) {
-            itemPath = service.getTDQItemPath(fileNamePath, (TDQItem) item);
-        }
+
         itemFile = new File(destinationFile, itemPath.toOSString());
 
     }
@@ -446,20 +424,9 @@ public class ExportItemUtil {
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItemState());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItem());
 
-        if (item instanceof TDQItem && isTDQ()) {
-            // for TaggedValue
-            service.moveObjectsToPropertyResource(propertyResource, copiedObjects);
-
-        }
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
         itemResource = createResource(itemFile, isFileItem, resourceSet);
         moveObjectsToResource(itemResource, copiedObjects, null);
-
-        if (item instanceof TDQItem && isTDQ()) {
-            // for Item
-            service.moveObjectsToItemResource(itemResource, (TDQItem) item);
-
-        }
     }
 
     private void fixItem(Item item) {
@@ -517,17 +484,6 @@ public class ExportItemUtil {
         }
 
         MetadataManager.addPackges(item, objects); // hywang 13221
-
-        if (item instanceof TDQItem && isTDQ()) {
-            final Collection<EObject> tdqObjects = service.needCopyObjects((TDQItem) item);
-            if (tdqObjects != null) {
-                objects.clear();
-                objects.addAll(tdqObjects);
-            }
-
-            // here return the EObjects directly, because need use the original EObject in TOP.
-            return objects;
-        }
 
         return EcoreUtil.copyAll(objects);
     }
@@ -605,14 +561,5 @@ public class ExportItemUtil {
 
     public IFileExporterFullPath getExporter() {
         return exporter;
-    }
-
-    /**
-     * DOC bZhou Comment method "isTDQ".
-     * 
-     * @return
-     */
-    private boolean isTDQ() {
-        return service != null;
     }
 }
