@@ -76,7 +76,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 int batchCount_<%=cid%> = sforceBulk_<%=cid%>.getBatchCount();
 for(int i = 0; i < batchCount_<%=cid%>; i++){
 	java.util.List<java.util.Map<String,String>> resultListMessage_<%=cid%> = sforceBulk_<%=cid%>.getBatchLog(i);
+	int j=0;
 	for(java.util.Map<String,String> resultMessage_<%=cid%> : resultListMessage_<%=cid%>){
+		j++;
 <%
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 if(outgoingConns!=null){
@@ -112,6 +114,9 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>			
+						if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
+				        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
+				        }
 					    <%		
 				        if(javaType == JavaTypesManager.STRING ){
 						%>
@@ -153,6 +158,9 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>			
+						if("#N/A".equals(String.valueOf(resultMessage_<%=cid%>.get("<%=column.getLabel() %>")))){
+				        		resultMessage_<%=cid%>.put("<%=column.getLabel() %>",null);
+				        }
 					    <%		
 				        if(javaType == JavaTypesManager.STRING ){
 						%>
@@ -175,6 +183,10 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 <%					 
 					}
 				}
+			}else{
+%>
+				System.err.print("Row "+j*(i+1)+":"+resultMessage_<%=cid%>.get("Error"));
+<%
 			}
 	}//2
 }//1

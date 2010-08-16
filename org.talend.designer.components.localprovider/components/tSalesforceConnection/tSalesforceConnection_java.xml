@@ -136,10 +136,11 @@
 				REQUIRED="true" />
 			<IMPORT NAME="HTTP-codec" MODULE="commons-codec-1.3.jar"
 				REQUIRED="true" />
+				
 			<IMPORT NAME="salesforceBulkAPI"
 				MODULE="salesforceBulkAPI.jar" REQUIRED="true" />
-			<IMPORT NAME="partner" MODULE="partner17.jar" REQUIRED="true" />
-			<IMPORT NAME="wsc" MODULE="wsc_java15.jar"
+			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="true" />
+			<IMPORT NAME="wsc" MODULE="wsc-19.jar"
 				REQUIRED="true" />
 				
 		</IMPORTS>

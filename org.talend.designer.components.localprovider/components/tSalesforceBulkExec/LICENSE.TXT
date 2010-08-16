@@ -1,4 +1,4 @@
-license for wsc_java15.jar,partner17.jar
+license for wsc-19.jar,partnerBulk.jar
 Copyright (c) 2010, salesforce.com
 All rights reserved.
 
