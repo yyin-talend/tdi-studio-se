@@ -14,6 +14,7 @@ package org.talend.designer.core.model.components;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,8 +29,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
@@ -173,6 +174,12 @@ public class EmfComponent implements IComponent {
 
     private Boolean useImport = null;
 
+    // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
+    private static WeakReference<ComponentResourceFactoryImpl> compResFactoryWeakRef;
+
+    // weak ref used so that memory is not used by a static HashMap instance
+    private static WeakReference<Map> optionMapWeakRef;
+
     public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
         this.pathSource = pathSource;
@@ -200,23 +207,14 @@ public class EmfComponent implements IComponent {
     private void load() throws BusinessException {
         if (isLoaded == null) {
             try {
-                ResourceSet resourceSet = new ResourceSetImpl();
-                resourceSet.getLoadOptions().put("OPTION_DEFER_IDREF_RESOLUTION", Boolean.TRUE);
-                resourceSet.getLoadOptions().put("OPTION_USE_PARSER_POOL", Boolean.TRUE);
-
-                ComponentResourceFactoryImpl compFact;
-                compFact = new ComponentResourceFactoryImpl();
                 URI createURI = URI.createURI(file.toURI().toString());
-                compFact.createResource(createURI);
-                resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-                        Resource.Factory.Registry.DEFAULT_EXTENSION, compFact);
-
-                Resource res = resourceSet.getResource(createURI, true);
+                Resource res = getComponentResourceFactoryImpl().createResource(createURI);
+                res.load(getLoadingOptionMap());
 
                 DocumentRoot xmlDoc;
                 xmlDoc = (DocumentRoot) res.getContents().get(0);
 
-                compType = (COMPONENTType) xmlDoc.eContents().get(0);
+                compType = xmlDoc.getCOMPONENT();
 
                 loadMultipleComponentManagerFromTemplates();
 
@@ -956,7 +954,7 @@ public class EmfComponent implements IComponent {
                 }
             }
             // if(xmlParam.isUSETNSFILE){
-            //                
+            //
             // }
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
@@ -1393,7 +1391,7 @@ public class EmfComponent implements IComponent {
             // if (this.isSchemaAutoPropagated() && (nbFlowMaxInput != 0)) {
             // IMetadataTable defaultTable = new MetadataTable();
             // defaultTable.setReadOnly(true);
-            //                
+            //
             // // store the default table in default value
             // IElementParameterDefaultValue defaultValue = new
             // ElementParameterDefaultValue();
@@ -2571,4 +2569,40 @@ public class EmfComponent implements IComponent {
     public boolean canParallelize() {
         return compType.getHEADER().isPARALLELIZE();
     }
+
+    /**
+     * return the common ComponentResourceFactoryImpl to retreive component resource from URI
+     * 
+     * @return factoryImpl
+     */
+    // here we are using weak references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
+    private static ComponentResourceFactoryImpl getComponentResourceFactoryImpl() {
+        ComponentResourceFactoryImpl factoryImpl = compResFactoryWeakRef == null ? null : compResFactoryWeakRef.get();
+        if (factoryImpl == null) {// if weak ref has not been created or if referenced factory has been GCed then create
+            // a new one
+            factoryImpl = new ComponentResourceFactoryImpl();
+            compResFactoryWeakRef = new WeakReference<ComponentResourceFactoryImpl>(factoryImpl);
+        }
+        return factoryImpl;
+    }
+
+    /**
+     * return the common ComponentResourceFactoryImpl to retreive component resource from URI
+     * 
+     * @return factoryImpl
+     */
+    // here we are using weak references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
+    private static Map getLoadingOptionMap() {
+        Map optionMap = optionMapWeakRef == null ? null : optionMapWeakRef.get();
+        if (optionMap == null) {// if weak ref has not been created or if referenced factory has been GCed then create
+            // a new one
+            optionMap = new HashMap();
+            optionMap.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
+            optionMap.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl());
+            optionMap.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap());
+            optionMapWeakRef = new WeakReference<Map>(optionMap);
+        }
+        return optionMap;
+    }
+
 }
