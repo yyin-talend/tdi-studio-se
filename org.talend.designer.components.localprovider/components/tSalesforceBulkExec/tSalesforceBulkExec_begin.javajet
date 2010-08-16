@@ -74,11 +74,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     if (metadata!=null) {//2
 %>
 int batchCount_<%=cid%> = sforceBulk_<%=cid%>.getBatchCount();
+int j_<%=cid%>=0;
 for(int i = 0; i < batchCount_<%=cid%>; i++){
 	java.util.List<java.util.Map<String,String>> resultListMessage_<%=cid%> = sforceBulk_<%=cid%>.getBatchLog(i);
-	int j=0;
 	for(java.util.Map<String,String> resultMessage_<%=cid%> : resultListMessage_<%=cid%>){
-		j++;
+		j_<%=cid%>++;
 <%
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 if(outgoingConns!=null){
@@ -185,7 +185,7 @@ List<? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
 				}
 			}else{
 %>
-				System.err.print("Row "+j*(i+1)+":"+resultMessage_<%=cid%>.get("Error"));
+				System.err.print("Row "+j_<%=cid%>+":"+resultMessage_<%=cid%>.get("Error"));
 <%
 			}
 	}//2
