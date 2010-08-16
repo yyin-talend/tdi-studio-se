@@ -404,7 +404,7 @@ public class ConnectionManager {
         boolean canRename = true;
         if (connType.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             if (!(source.getProcess().checkValidConnectionName(connectionName)) || KeywordsValidator.isKeyword(connectionName)
-                    || "ErrorReject".equals(connectionName)) {
+                    || "ErrorReject".equals(connectionName) || "context".equals(connectionName)) {//$NON-NLS-N$ //$NON-NLS-N$
                 canRename = false;
             }
         } else if (connType.equals(EConnectionType.TABLE)) {
