@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -259,10 +261,47 @@ public class GuessSchemaProcess {
             previousFile.delete();
         }
         java.lang.Process executeprocess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
-        ProcessStreamTrashReaderUtil.readAndForget(executeprocess);
+        StringBuffer buffer = new StringBuffer();
+        ProcessStreamTrashReaderUtil.readAndForget(executeprocess, buffer);
+        final String errorMessage = buffer.toString();
+        boolean errorReturn = false;
+        if (!"".equals(buffer.toString())) {
+            try {
+                errorReturn = true;
+                throw new PersistenceException(errorMessage) {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see java.lang.Throwable#initCause(java.lang.Throwable)
+                     */
+                    @Override
+                    public synchronized Throwable initCause(Throwable cause) {
+                        // TODO Auto-generated method stub
+                        return super.initCause(cause);
+                    }
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see java.lang.Throwable#getMessage()
+                     */
+                    @Override
+                    public String getMessage() {
+                        return errorMessage;
+                    }
+
+                };
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
 
         try {
             CsvArray array = new CsvArray();
+            if (errorReturn) {
+                return array;
+            }
             array = array.createFrom(previousFile, currentProcessEncoding);
             return array;
         } catch (IOException ioe) {
