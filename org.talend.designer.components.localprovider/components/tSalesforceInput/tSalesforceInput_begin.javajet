@@ -76,7 +76,10 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%}else{%>
 			sfMgr_<%=cid%>.setTimeout(new Integer(<%=timeout%>));
 			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
-			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+			if(!result_<%=cid%>){
+				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+			}
 			<%}%>
 			
 			

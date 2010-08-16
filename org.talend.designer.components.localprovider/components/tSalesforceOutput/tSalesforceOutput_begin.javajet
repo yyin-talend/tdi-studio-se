@@ -36,5 +36,8 @@ imports="
 		<%}else{%>
 		sforceManagement_<%=cid %>.setTimeout(<%=timeout%>);
         sforceManagement_<%=cid%>.setNeedCompression(<%=needCompression%>);
-        sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+        boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+        if(!result_<%=cid%>){
+			throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+		}
         <%}%>
