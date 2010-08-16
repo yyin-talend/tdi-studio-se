@@ -43,6 +43,8 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
   String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
   boolean useProxyNTLM = ("true").equals(ElementParameterParser.getValue(node,"__PROXY_NTLM__"));
   String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
+  
+  boolean addHeader = "true".equals(ElementParameterParser.getValue(node,"__ADD_HEADER__"));
   if ("https".equals(protocol)){
 %>
     class MyProtocolSocketFactory implements org.apache.commons.httpclient.protocol.ProtocolSocketFactory {
@@ -211,8 +213,15 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
     	org.apache.commons.httpclient.methods.GetMethod method_<%=cid%> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
 <%
 	}
+	if(addHeader){
+		List<Map<String, String>> headers = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
+		for(Map<String, String> header : headers){
 %>
-   
+			method_<%=cid%>.addRequestHeader(<%=header.get("HEADER_NAME")%>,<%=header.get("HEADER_VALUE")%>);
+<%
+		}
+	}
+%>
 	boolean isContinue = true;
 	int status_<%=cid%>;
 	String finalURL_<%=cid%> = <%=uri%>;

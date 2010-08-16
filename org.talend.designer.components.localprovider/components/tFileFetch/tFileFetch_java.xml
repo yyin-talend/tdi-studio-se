@@ -109,7 +109,28 @@ COMPATIBILITY="ALL"
      SHOW_IF=" USE_CACHE == 'false'"
   >
     <DEFAULT>""</DEFAULT>
-  </PARAMETER> 
+  </PARAMETER>
+
+  <PARAMETER
+  	NAME="ADD_HEADER"
+  	FIELD="CHECK"
+  	NUM_ROW="45"
+  	SHOW_IF="(PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')"
+  >
+  <DEFAULT>false</DEFAULT>
+  </PARAMETER>
+
+  <PARAMETER 
+     NAME="HEADERS" 
+     FIELD="TABLE" NUM_ROW="46" 
+     NB_LINES="5"
+     SHOW_IF="((PROTO == 'HTTP_PROTO') or (PROTO == 'HTTPS_PROTO')) AND (ADD_HEADER == 'true')"
+  >
+     <ITEMS>
+       <ITEM NAME="HEADER_NAME" />
+       <ITEM NAME="HEADER_VALUE"/>
+     </ITEMS>
+   </PARAMETER>
   
    <PARAMETER
      NAME="SMB_DOMAIN"
