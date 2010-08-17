@@ -112,6 +112,8 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
 
     private String originalStatus;
 
+    private String oldAbstractQueryPath = "";
+
     protected static final String DEFAULT_LABEL = "Column";
 
     /**
@@ -280,7 +282,13 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         xmlFileSelectPage = new XmlFileSelectWizardPage(creation, connectionItem, isRepositoryObjectEditable(), existingNames);
 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_WIZ));
-
+        if (connection != null) {
+            List schemas = connection.getSchema();
+            if (!schemas.isEmpty()) {
+                XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
+                oldAbstractQueryPath = currentSchema.getAbsoluteXPathQuery();
+            }
+        }
         if (creation) {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleCreate")); //$NON-NLS-1$
 
@@ -373,8 +381,10 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                         if (!schemas.isEmpty() && !tables.isEmpty()) {
                             XmlXPathLoopDescriptor currentSchema = (XmlXPathLoopDescriptor) schemas.get(0);
                             MetadataTable currentTable = (MetadataTable) tables.toArray(new MetadataTable[0])[0];
-                            if (currentSchema.getSchemaTargets().size() != currentTable.getColumns().size()) {
-                                resetMetadata(currentSchema.getSchemaTargets());
+                            if (!currentSchema.getAbsoluteXPathQuery().equals(oldAbstractQueryPath)) {
+                                resetMetadata(currentSchema.getSchemaTargets(), true);
+                            } else {
+                                resetMetadata(currentSchema.getSchemaTargets(), false);
                             }
                         }
                     }
@@ -399,7 +409,6 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
                 } else {
                     // update
                     RepositoryUpdateManager.updateFileConnection(connectionItem);
-
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }
@@ -415,6 +424,19 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * DOC gldu Comment method "copyMetadata".
+     * 
+     * @param schemaTargets
+     */
+    private void copyMetadata(EList<SchemaTarget> schemaTargets) {
+        // TODO Auto-generated method stub
+        System.out.println(schemaTargets.size());
+        for (int i = 0; i < schemaTargets.size(); i++) {
+
         }
     }
 
@@ -443,7 +465,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         return this.connectionItem;
     }
 
-    private void resetMetadata(List<SchemaTarget> schemaTarget) {
+    private void resetMetadata(List<SchemaTarget> schemaTarget, boolean flag) {
         XmlFileConnection connection2 = OtherConnectionContextUtils.getOriginalValueConnection(connection, this.connectionItem,
                 connection.isContextMode(), true);
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(connection2);
@@ -617,6 +639,16 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
             }
         }
         EList columns = ConnectionHelper.getTables(connection).toArray(new MetadataTable[0])[0].getColumns();
+        if (!flag) {
+            for (int i = 0; i < newColumns.size(); i++) {
+                for (int j = 0; j < columns.size(); j++) {
+                    if (newColumns.get(i).getLabel().equals(((MetadataColumn) columns.get(j)).getLabel())) {
+                        newColumns.remove(i);
+                        newColumns.add(i, (MetadataColumn) columns.get(j));
+                    }
+                }
+            }
+        }
         columns.clear();
         columns.addAll(newColumns);
     }

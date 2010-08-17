@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -31,6 +30,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -240,9 +240,13 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
-                                .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
-                            runShadowProcess();
+                        MessageBox box = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.YES | SWT.NO | SWT.CANCEL);
+                        box.setMessage(Messages.getString("FileStep3.guessConfirmationMessage"));
+                        int open7 = box.open();
+                        if (open7 == SWT.YES) {
+                            runShadowProcess(true);
+                        } else if (open7 == SWT.NO) {
+                            runShadowProcess(false);
                         }
                     } else {
                         guessButton.setEnabled(false);
@@ -252,7 +256,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        runShadowProcess();
+                        runShadowProcess(true);
                     } else {
                         guessButton.setEnabled(false);
                     }
@@ -291,7 +295,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
     /**
      * run a ShadowProcess to determined the Metadata.
      */
-    protected void runShadowProcess() {
+    protected void runShadowProcess(Boolean flag) {
 
         // if no file, the process don't be executed
         // getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") &&
@@ -304,7 +308,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         if (connection2.getXmlFilePath().endsWith(".xsd")) { //$NON-NLS-1$
             // no preview for XSD file
 
-            refreshMetaDataTable(null, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets());
+            refreshMetaDataTable(null, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets(), flag);
             checkFieldsValue();
             return;
         }
@@ -317,7 +321,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets());
+                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) connection2.getSchema().get(0)).getSchemaTargets(), flag);
             }
 
         } catch (CoreException e) {
@@ -382,9 +386,10 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @param csvArray
      */
-    public void refreshMetaDataTable(final CsvArray csvArray, List<SchemaTarget> schemaTarget) {
+    public void refreshMetaDataTable(final CsvArray csvArray, List<SchemaTarget> schemaTarget, Boolean flag) {
         informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
-
+        List mcolumns = new ArrayList();
+        mcolumns.addAll(tableEditorView.getMetadataEditor().getMetadataColumnList());
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
@@ -564,6 +569,17 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 columns.add(i, metadataColumn);
             }
         }
+
+        if (!flag) {
+            for (int i = 0; i < columns.size(); i++) {
+                for (int j = 0; j < mcolumns.size(); j++) {
+                    if (columns.get(i).getLabel().equals(((MetadataColumn) mcolumns.get(j)).getLabel())) {
+                        columns.remove(i);
+                        columns.add(i, (MetadataColumn) mcolumns.get(j));
+                    }
+                }
+            }
+        }
         tableEditorView.getMetadataEditor().addAll(columns);
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
@@ -614,7 +630,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             // getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") &&
             if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") //$NON-NLS-1$
                     && tableEditorView.getMetadataEditor().getBeanCount() <= 0) {
-                runShadowProcess();
+                runShadowProcess(true);
             }
 
             if (isReadOnly() != readOnly) {
