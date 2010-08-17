@@ -170,8 +170,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         // Item item = property.getItem();
         ERepositoryObjectType itemType = object.getType();
         Image img = null;
-        if (itemType == ERepositoryObjectType.JOBLET && object instanceof RepositoryViewObject
-                && ((RepositoryViewObject) object).getCustomImage() != null) {
+        if (object instanceof RepositoryViewObject && ((RepositoryViewObject) object).getCustomImage() != null) {
             img = ((RepositoryViewObject) object).getCustomImage();
         } else {
             img = CoreImageProvider.getImage(itemType);
