@@ -73,6 +73,7 @@ import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
@@ -413,11 +414,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         JobEditorInput jobInput = (JobEditorInput) editorInput;
                         IProcess2 process = jobInput.getLoadedProcess();
                         IContextManager contextManager = process.getContextManager();
-                        Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem, contextSet,
-                                contextManager, false);
-                        if (addedContext != null && addedContext.size() > 0) {
-                            ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                        List<IContext> listContext = contextManager.getListContext();
+                        // context group will reflect absolutely if no context variable in contextViewer
+                        if (!ConnectionContextHelper.containsVariable(contextManager)) {
+                            ConnectionContextHelper.checkAndAddContextsVarDND(contextItem, contextManager);
                             created = true;
+                        } else {
+                            Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,
+                                    contextSet, contextManager, false);
+                            if (addedContext != null && addedContext.size() > 0) {
+                                ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                                created = true;
+                            }
                         }
                     }
                 }

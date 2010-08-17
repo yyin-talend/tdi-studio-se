@@ -12,14 +12,17 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -35,6 +38,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.context.JobContext;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
@@ -77,6 +81,8 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
@@ -731,6 +737,74 @@ public final class ConnectionContextHelper {
      */
     public static ContextType getContextTypeForContextMode(Connection connection) {
         return getContextTypeForContextMode(connection, false);
+    }
+
+    /**
+     * 
+     * wzhang Comment method "containsVariable".
+     * 
+     * @param contextManager
+     * @return
+     */
+    public static boolean containsVariable(IContextManager contextManager) {
+        List<IContext> listContext = contextManager.getListContext();
+        for (IContext context : listContext) {
+            List<IContextParameter> paraList = context.getContextParameterList();
+            if (!paraList.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "checkAndAddContextsVarDND".
+     * 
+     * @param item
+     * @param contextManager
+     */
+    public static void checkAndAddContextsVarDND(ContextItem item, IContextManager contextManager) {
+        EList context = item.getContext();
+        Map<String, List<ContextParameterTypeImpl>> map = new HashMap<String, List<ContextParameterTypeImpl>>();
+        Iterator iterator = context.iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof ContextTypeImpl) {
+                ContextTypeImpl contextTypeImpl = (ContextTypeImpl) obj;
+                String name = contextTypeImpl.getName();
+                EList contextParameters = contextTypeImpl.getContextParameter();
+                Iterator contextParas = contextParameters.iterator();
+                List<ContextParameterTypeImpl> list = new ArrayList<ContextParameterTypeImpl>();
+                while (contextParas.hasNext()) {
+                    ContextParameterTypeImpl contextParameterType = (ContextParameterTypeImpl) contextParas.next();
+                    list.add(contextParameterType);
+                }
+                map.put(name, list);
+            }
+        }
+        if (map.isEmpty()) {
+            return;
+        }
+        contextManager.getListContext().clear();
+        String defaultContextName = item.getDefaultContext();
+
+        for (String key : map.keySet()) {
+            List<ContextParameterTypeImpl> list = map.get(key);
+            JobContext jobContext = new JobContext(key);
+            for (ContextParameterTypeImpl contextImpl : list) {
+                JobContextParameter contextParam = new JobContextParameter();
+                ContextUtils.updateParameter(contextImpl, contextParam);
+                contextParam.setSource(item.getProperty().getId());
+                contextParam.setContext(jobContext);
+                jobContext.getContextParameterList().add(contextParam);
+            }
+            contextManager.getListContext().add(jobContext);
+            if (key.equals(defaultContextName)) {
+                contextManager.setDefaultContext(jobContext);
+            }
+        }
+
     }
 
     /*
