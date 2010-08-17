@@ -606,12 +606,13 @@ public class MapperManager extends AbstractMapperManager {
 
         IProcess process = getAbstractMapComponent().getProcess();
         String tableName = baseName;
-        if (!process.checkValidConnectionName(baseName)) {
-            final String uniqueName = process.generateUniqueConnectionName("row");
-            tableName = uniqueName + "_" + baseName;
-        }
-        if (process instanceof IProcess2) {
-            ((IProcess2) process).addUniqueConnectionName(tableName, false);
+        if (!process.checkValidConnectionName(baseName) && process instanceof IProcess2) {
+            final String uniqueName = ((IProcess2) process).generateUniqueConnectionName("row", baseName);
+            tableName = uniqueName;
+            ((IProcess2) process).addUniqueConnectionName(uniqueName);
+        } else if (process instanceof IProcess2) {
+            tableName = baseName;
+            ((IProcess2) process).addUniqueConnectionName(baseName);
         }
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName(tableName);

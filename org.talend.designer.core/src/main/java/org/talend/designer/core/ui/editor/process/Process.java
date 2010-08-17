@@ -2101,14 +2101,29 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return uniqueName;
     }
 
-    public void addUniqueConnectionName(String uniqueConnectionName) {
-        addUniqueConnectionName(uniqueConnectionName, true);
+    public String generateUniqueConnectionName(String baseName, String tableName) {
+        if (baseName == null || tableName == null) {
+            throw new IllegalArgumentException("baseName or tableName can't be null"); //$NON-NLS-1$
+        }
+        String uniqueName = baseName + 1;
+
+        int counter = 1;
+        boolean exists = true;
+        String fullName = "";
+        while (exists) {
+            fullName = uniqueName + "_" + tableName;
+            exists = !checkValidConnectionName(fullName);
+            if (!exists) {
+                break;
+            }
+            uniqueName = baseName + counter++;
+        }
+        return fullName;
     }
 
-    // for tmap to add a "Error Reject"
-    public void addUniqueConnectionName(String uniqueConnectionName, boolean needValidate) {
+    public void addUniqueConnectionName(String uniqueConnectionName) {
         if (uniqueConnectionName != null) {
-            if (!needValidate || checkValidConnectionName(uniqueConnectionName)) {
+            if (checkValidConnectionName(uniqueConnectionName)) {
                 uniqueConnectionNameList.add(uniqueConnectionName);
             } else {
                 throw new IllegalArgumentException("The name of the connection is not valid: " + uniqueConnectionName); //$NON-NLS-1$
