@@ -27,6 +27,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -302,18 +303,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         monitorWrap.beginTask(Messages.getString("XmlToXPathLinker.beginTask.fieldLinksCreation"), totalWork); //$NON-NLS-1$
 
         TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
-
         for (int i = startTableItem, indexShemaTarget = 0; i < startTableItem + tableItemLength; i++, indexShemaTarget++) {
 
             if (monitorWrap.isCanceled()) {
+                for (int j = startTableItem + tableItemLength - 2; j >= 0; j--) {
+                    // fieldsTableEditorView.getTable().remove(j);
+                    fieldsTableEditorView.getTable().redraw();
+                    XmlExtractorFieldModel schemaModel = this.fieldsTableEditorView.getModel();
+                    schemaModel.remove(j);
+                }
                 return;
             }
 
             TableItem tableItem = fieldsTableItems[i];
             SchemaTarget schemaTarget = schemaTargetList.get(indexShemaTarget);
             String relativeXpathQuery = schemaTarget.getRelativeXPathQuery();
-            createFieldLinks(relativeXpathQuery, tableItem, monitorWrap);
-
+            createFieldLinks(relativeXpathQuery, tableItem, monitorWrap, schemaTarget);
             monitorWrap.worked(1);
         }
         getLinksManager().sortLinks(getDrawingLinksComparator());
@@ -573,7 +578,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         if (isLoopTable(table)) {
             createLinks();
         } else {
-            createFieldLinks(newValue, tableItem, null);
+            createFieldLinks(newValue, tableItem, null, null);
         }
         getBackgroundRefresher().refreshBackground();
 
@@ -658,7 +663,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param progressMonitor
      * @throws XPathExpressionException
      */
-    private void createFieldLinks(final String relativeXpathPrm, final TableItem tableItemTarget, IProgressMonitor progressMonitor) {
+    private void createFieldLinks(final String relativeXpathPrm, final TableItem tableItemTarget,
+            IProgressMonitor progressMonitor, SchemaTarget schemaTarget) {
 
         if (relativeXpathPrm == null || relativeXpathPrm.trim().length() == 0) {
             return;
@@ -698,8 +704,25 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                         if (relativeXpath == null) {
                             relativeXpath = ""; //$NON-NLS-1$
                         }
+                        final String resault = relativeXpath;
                         nodeList = this.nodeRetriever.retrieveNodeListFromNode(relativeXpath, loopNode);
-                        if (nodeList.size() == 0) {
+                        if (nodeList == null) {
+
+                            Display.getDefault().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    // TODO Auto-generated method stub
+                                    MessageDialog.openError(null, "ERROR", "Can't find " + resault + " loop expression! ");
+                                }
+
+                            });
+                            progressMonitor.setCanceled(true);
+                            XmlExtractorFieldModel schemaModel = this.fieldsTableEditorView.getModel();
+                            schemaModel.remove(schemaTarget);
+                            fieldsTableEditorView.getTable().redraw();
+                            // throw new OperationCanceledException();
+
+                        } else if (nodeList.size() == 0) {
                             String currentLoopXPath = getCurrentLoopXPath();
                             String expression = currentLoopXPath + "/" + relativeXpath;
                             nodeList = this.nodeRetriever.retrieveNodeList(expression);
