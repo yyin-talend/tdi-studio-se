@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
@@ -74,7 +75,16 @@ public class CopyObjectAction {
         // if (objectToCopy != null && factory.getStatus(objectToCopy) == ERepositoryStatus.READ_ONLY) {
         // return false;
         // }
-        // objectToCopy = factory.getLastVersion(objectToCopy.getId());
+
+        // if copied item has been deleted
+        try {
+            if (factory.getLastVersion(objectToCopy.getId()) == null) {
+                return false;
+            }
+        } catch (PersistenceException e) {
+            return false;
+        }
+
         if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
             return false;
         }

@@ -135,13 +135,15 @@ public class PasteAction extends AContextualAction {
         } else if (isReferencedProject(target)) {
             visible = false;
             enabled = false;
-        } else if (selectionInClipboard != null) {
+        }
+        boolean canPast = false;
+        if (selectionInClipboard != null && !((StructuredSelection) selectionInClipboard).isEmpty()) {
             for (Object obj : ((StructuredSelection) selectionInClipboard).toArray()) {
                 if (enabled) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;
                     if (!CopyObjectAction.getInstance().validateAction(sourceNode, target)) {
                         visible = true;
-                        enabled = false;
+                        enabled = canPast || false;
                     } else {
                         if (sourceNode.getObjectType().getKey().equals("repository.routines")) { //$NON-NLS-1$
                             visible = true;
@@ -149,11 +151,13 @@ public class PasteAction extends AContextualAction {
                         } else {
                             visible = true;
                             enabled = true;
+                            canPast = true;
                         }
                     }
 
                 }
             }
+
         } else {
             enabled = false;
             visible = false;
