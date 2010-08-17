@@ -5,6 +5,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.config.SubTreeArgument
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
 		java.util.List
 	"
 	class="SubTreeBegin" 
@@ -21,6 +22,14 @@
 // Start of branch "<%= connection.getName()%>"
 if(<%= connection.getName()%> != null) { 
 <%
+    for (Object conn :NodeUtil.getAllInLineJobConnections(connection.getTarget())) {
+    	IConnection connec = (IConnection) conn;
+    	if ("REJECT".equals(connec.getConnectorName())) {
+%>
+		<%= connec.getName()%> = null;
+<%
+    	}
+    }
 	if (connection.getSource().isUseLoopOnConditionalOutput(connection.getName())) {
 %>
 	 // start of joined table loop
