@@ -9,7 +9,7 @@ imports="
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
 		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType		
+		org.talend.core.model.metadata.types.JavaType
 		java.util.List
 		java.util.Map
 " 
@@ -19,6 +19,13 @@ imports="
 
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	
+	
+		public void beforeComponentProcess(INode node){
+	    	cid = node.getUniqueName();
+%>
+			org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%> = org.talend.designer.components.util.mssql.MSSqlUtilFactory.getMSSqlGenerateTimestampUtil();
+<%
+	    }
 		public void afterUseExistConnection(INode node) {
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String conn = "conn_" + connection;
@@ -51,6 +58,23 @@ imports="
 		}
 		//-----------according schema type to generate ResultSet
 	    
+	    /**
+	     * DOC jliu Comment method "getDate". <br>
+	     * DB Type ---------> jtds driver return type<br>
+	     * DATE -------------> nvarchar<br>
+	     * DATETIME ---------> datetime<br>
+	     * DATETIME2 --------> nvarchar<br>
+	     * DTIME ------------> nvarchar<br>
+	     * SMALLDATETIME ----> smalldatetime<br>
+	     * DATETIMEOFFSET ---> nvarchar<br>
+	     * TIMESTAMP --------> timestamp<br>
+	     */
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+%>
+			<%=firstConnName%>.<%=column.getLabel()%> = mssqlGTU_<%=cid%>.getDate(rsmd_<%=cid %>, rs_<%=cid %>, <%=currentColNo%>);
+			
+<%
+	    }
 	    //---------end according schema type to generate ResultSet
 	}//end class
 	
