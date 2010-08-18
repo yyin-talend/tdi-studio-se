@@ -280,10 +280,10 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       }
     }
 
-    public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String sTestColType, String cid){
+    public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid){      
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
       if (!isPrimitive){
-      	if(emptyIsNull && "String".equals(sTestColType)){
+      	if(emptyIsNull){
 %>
 	        // validate nullable
 	        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
@@ -351,7 +351,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
 
     // NULL checking
     if (!bNullable){
-      checker.testNull(sInConnName, inColumn, sTestColType, cid);
+      checker.testNull(sInConnName, inColumn, cid);
     }
       
     // type checking
