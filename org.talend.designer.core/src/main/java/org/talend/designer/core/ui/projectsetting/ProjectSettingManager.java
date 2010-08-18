@@ -29,6 +29,7 @@ import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ImplicitContextSettings;
@@ -97,13 +98,13 @@ public class ProjectSettingManager extends Utils {
         implicit.setParameters(talendF.createParametersType());
 
         ParametersType pType = implicit.getParameters();
-        Element elem = pro.getInitialContextLoad();
+        IElement elem = pro.getInitialContextLoad();
         if (elem == null) {
             elem = new ImplicitContextLoadElement();
             ProjectSettingManager.createImplicitContextLoadParameters((ImplicitContextLoadElement) elem);
             pro.setInitialContextLoad(elem);
         }
-        ElementParameter2ParameterType.saveElementParameters(elem, pType);
+        ElementParameter2ParameterType.saveElementParameters((Element) elem, pType);
     }
 
     /**
@@ -118,7 +119,7 @@ public class ProjectSettingManager extends Utils {
         if (implicit == null) {
             loadImplicitContextLoadPreferenceToProject(pro);
         }
-        Element elem = pro.getInitialContextLoad();
+        Element elem = (Element) pro.getInitialContextLoad();
         if (elem == null) {
             elem = new ImplicitContextLoadElement();
             ProjectSettingManager.createImplicitContextLoadParameters((ImplicitContextLoadElement) elem);
@@ -146,7 +147,7 @@ public class ProjectSettingManager extends Utils {
             }
 
         }
-        Element elem = pro.getStatsAndLog();
+        Element elem = (Element) pro.getStatsAndLog();
         if (elem == null) {
             elem = new StatsAndLogsElement();
             StatsAndLogsHelper.createStatsAndLogsParameters((StatsAndLogsElement) elem);

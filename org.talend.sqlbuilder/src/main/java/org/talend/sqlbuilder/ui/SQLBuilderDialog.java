@@ -51,8 +51,9 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryElementDelta;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -645,7 +646,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * java.util.List, org.talend.sqlbuilder.util.ConnectionParameters, boolean, java.util.List)
      */
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
-            boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
+            boolean isDefaultEditor, List<IRepositoryNode> nodeSel) {
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
 

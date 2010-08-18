@@ -207,4 +207,13 @@ public class ShadowConnection implements IConnection {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#getElementName()
+     */
+    public String getElementName() {
+        return getUniqueName();
+    }
+
 }

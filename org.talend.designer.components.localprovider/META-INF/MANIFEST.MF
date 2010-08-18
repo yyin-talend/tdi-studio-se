@@ -8,12 +8,14 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.commons,
+ org.talend.core.runtime,
  org.talend.libraries,
  org.talend.designer.core,
  org.talend.core,
  org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,
- org.talend.librariesmanager
+ org.talend.librariesmanager,
+ org.talend.model
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: ca.uhn.hl7v2,

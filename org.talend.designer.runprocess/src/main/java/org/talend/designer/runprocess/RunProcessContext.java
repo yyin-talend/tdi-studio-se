@@ -468,7 +468,7 @@ public class RunProcessContext {
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
                             processor.setContext(context);
-                            processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
+                            ((IEclipseProcessor) processor).setTargetExecutionConfig(getSelectedTargetExecutionConfig());
 
                             ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
                                     getTracesPort() != IProcessor.NO_TRACES && hasConnectionTrace(), true, progressMonitor);

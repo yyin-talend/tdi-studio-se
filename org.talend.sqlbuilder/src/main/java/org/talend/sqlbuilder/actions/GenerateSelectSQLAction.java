@@ -24,8 +24,9 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -50,7 +51,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
-    private List<RepositoryNode> selectedNodes;
+    private List<IRepositoryNode> selectedNodes;
 
     private ISelectionProvider provider;
 
@@ -64,7 +65,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         this.provider = provider;
         this.dialog = dialog;
         this.isDefaultEditor = isDefaultEditor;
-        selectedNodes = new ArrayList<RepositoryNode>();
+        selectedNodes = new ArrayList<IRepositoryNode>();
         init();
     }
 
@@ -85,7 +86,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             }
             RepositoryNode rootNode = SQLBuilderRepositoryNodeManager.getRoot(repositoryNode);
             if (!selectedNodes.isEmpty() && selectedNodes.get(0) != null
-                    && !rootNode.equals(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)))) {
+                    && !rootNode.equals(SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) selectedNodes.get(0)))) {
                 setEnabled(false);
                 return;
             }
@@ -96,7 +97,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             return;
         }
         this.setEnabled(true);
-        for (RepositoryNode node : selectedNodes) {
+        for (IRepositoryNode node : selectedNodes) {
             Object type = node.getProperties(EProperties.CONTENT_TYPE);
 
             if (type != RepositoryNodeType.COLUMN && type != RepositoryNodeType.TABLE && type != RepositoryNodeType.DATABASE) {
@@ -132,8 +133,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             connParam.setNeedTakePrompt(false);
             connParam.setShowDesignerPage(true);
             connParam.setEditorTitle(TextUtil.getNewQueryLabel()); //$NON-NLS-1$
-            dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
-                    isDefaultEditor, selectedNodes);
+            dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) selectedNodes.get(0)), repositoryNames,
+                    connParam, isDefaultEditor, selectedNodes);
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("GenerateSelectSQLAction.logMessageGenerateSql"), e); //$NON-NLS-1$
         }
@@ -152,8 +153,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         for (int i = 0; i < selectedNodes.size(); i++) {
 
-            RepositoryNode node = selectedNodes.get(i);
-            if (node.getParent() != selectedNodes.get(0).getParent()) {
+            RepositoryNode node = (RepositoryNode) selectedNodes.get(i);
+            if (node.getParent() != ((RepositoryNode) selectedNodes.get(0)).getParent()) {
                 continue;
             }
 
@@ -241,8 +242,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         return query.toString();
     }
 
-    private String getTablePrefix(RepositoryNode node) {
-        RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot(node);
+    private String getTablePrefix(IRepositoryNode node) {
+        RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) node);
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
                 .getConnection();
         if (connection.getUiSchema() != null && !connection.getUiSchema().trim().equals("")) { //$NON-NLS-1$
@@ -258,8 +259,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
      * @param node the selected node
      * @return PrePostfix
      */
-    private String getPrePostfix(RepositoryNode node) {
-        RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot(node);
+    private String getPrePostfix(IRepositoryNode node) {
+        RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) node);
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
                 .getConnection();
         if (TextUtil.isDoubleQuotesNeededDbType(connection.getDatabaseType())) { //$NON-NLS-1$

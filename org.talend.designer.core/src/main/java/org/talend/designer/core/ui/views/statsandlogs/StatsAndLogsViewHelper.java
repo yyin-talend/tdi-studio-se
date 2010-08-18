@@ -36,8 +36,9 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -63,8 +64,8 @@ public class StatsAndLogsViewHelper {
 
         if ((repositoryNode.getType() == ENodeType.SYSTEM_FOLDER || repositoryNode.getType() == ENodeType.SIMPLE_FOLDER)
                 && contentProvider.getChildren(repositoryNode).length > 0) {
-            for (RepositoryNode node : repositoryNode.getChildren()) {
-                connectionItem = findConnectionItem(contentProvider, node, connectionLabel);
+            for (IRepositoryNode node : repositoryNode.getChildren()) {
+                connectionItem = findConnectionItem(contentProvider, (RepositoryNode) node, connectionLabel);
                 if (connectionItem != null) {
                     return connectionItem;
                 }

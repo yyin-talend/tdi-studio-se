@@ -149,9 +149,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private void hideHiddenNodes() {
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-        List<RepositoryNode> hiddens = service.getBrandingConfiguration().getHiddenRepositoryCategory(this);
+        List<IRepositoryNode> hiddens = service.getBrandingConfiguration().getHiddenRepositoryCategory(this);
         // this.getChildren().removeAll(hiddens);
-        for (RepositoryNode node : hiddens) {
+        for (IRepositoryNode node : hiddens) {
             removeNode(this, node);
             switch (node.getContentType()) {
             case BUSINESS_PROCESS:
@@ -256,13 +256,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
     }
 
-    private void removeNode(RepositoryNode container, RepositoryNode node) {
-        List<RepositoryNode> nodes = container.getChildren();
+    private void removeNode(IRepositoryNode container, IRepositoryNode node) {
+        List<IRepositoryNode> nodes = container.getChildren();
 
         if (nodes.contains(node)) {
             nodes.remove(node);
         } else {
-            for (RepositoryNode n : nodes) {
+            for (IRepositoryNode n : nodes) {
                 removeNode(n, node);
             }
         }
@@ -284,7 +284,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public void initialize() {
         nodeAndProject = new HashMap<Object, List<Project>>();
 
-        List<RepositoryNode> nodes = null;
+        List<IRepositoryNode> nodes = null;
         String urlBranch = null;
         if (ProjectManager.getInstance().getCurrentBranchURL(project) != null) {
             urlBranch = showSVNRoot();
@@ -292,7 +292,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if ("".equals(urlBranch) || urlBranch == null) {
             nodes = getChildren();
         } else {
-            List<RepositoryNode> root = getChildren();
+            List<IRepositoryNode> root = getChildren();
 
             svnRootNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             svnRootNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SVN_ROOT + "(" + urlBranch + ")");
@@ -772,15 +772,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode getDocumentationNode(ERepositoryObjectType type) {
         if (getMergeRefProject()) {
             RepositoryNode docNode = getRootRepositoryNode(ERepositoryObjectType.DOCUMENTATION);
-            for (RepositoryNode child : docNode.getChildren()) {
+            for (IRepositoryNode child : docNode.getChildren()) {
 
                 if (type == child.getContentType()) {
-                    return child;
+                    return (RepositoryNode) child;
                 }
 
-                for (RepositoryNode c : child.getChildren()) {
+                for (IRepositoryNode c : child.getChildren()) {
                     if (type == c.getContentType()) {
-                        return c;
+                        return (RepositoryNode) c;
                     }
                 }
             }
@@ -867,17 +867,17 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private RepositoryNode getSQLPatternNode(String parentLabel, String label) {
         if (getMergeRefProject()) {
-            List<RepositoryNode> sqlChildren = getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS).getChildren();
+            List<IRepositoryNode> sqlChildren = getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS).getChildren();
             // List<RepositoryNode> sqlChildren = parent.getChildren();
 
-            for (RepositoryNode sqlChild : sqlChildren) {
+            for (IRepositoryNode sqlChild : sqlChildren) {
                 if (label.equalsIgnoreCase(sqlChild.toString())) {
-                    return sqlChild;
+                    return (RepositoryNode) sqlChild;
                 }
-                for (RepositoryNode userDefined : sqlChild.getChildren()) {
-                    if (label.equalsIgnoreCase(userDefined.getProperties(EProperties.LABEL).toString())) {
+                for (IRepositoryNode userDefined : sqlChild.getChildren()) {
+                    if (label.equalsIgnoreCase(((RepositoryNode) userDefined).getProperties(EProperties.LABEL).toString())) {
                         if (sqlChild.toString().equalsIgnoreCase(parentLabel))
-                            return userDefined;
+                            return (RepositoryNode) userDefined;
                     }
 
                 }
@@ -916,7 +916,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 if (getMergeRefProject()) {
                     List list = parent.getChildren();
                     boolean existSystemFolder = false;
-                    for (RepositoryNode node : parent.getChildren()) {
+                    for (IRepositoryNode node : parent.getChildren()) {
                         if (RepositoryConstants.SYSTEM_DIRECTORY.equalsIgnoreCase(node.getLabel())) { //$NON-NLS-1$
                             existSystemFolder = true;
                             break;
@@ -1027,7 +1027,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // recBinNode.getChildren().add(node);
             // node.setParent(recBinNode);
         } else {
-            for (RepositoryNode repositoryNode : parent.getChildren()) {
+            for (IRepositoryNode repositoryNode : parent.getChildren()) {
                 if (repositoryNode.getObject() != null) {
                     if (repositoryNode.getObject().getId().equals(repositoryObject.getId())) {
                         Problem problem = new Problem();

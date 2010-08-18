@@ -23,12 +23,13 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -136,10 +137,10 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
     }
 
     public RepositoryNode getProcessNode() {
-        List<RepositoryNode> chindren = getRepositoryView().getRoot().getChildren();
-        for (RepositoryNode repositoryNode : chindren) {
+        List<IRepositoryNode> children = getRepositoryView().getRoot().getChildren();
+        for (IRepositoryNode repositoryNode : children) {
             if (repositoryNode.getContentType() == ERepositoryObjectType.BUSINESS_PROCESS) {
-                return repositoryNode;
+                return (RepositoryNode) repositoryNode;
             }
 
         }

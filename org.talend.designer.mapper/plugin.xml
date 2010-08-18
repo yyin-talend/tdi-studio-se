@@ -7,7 +7,7 @@
       <ExternalComponent class="org.talend.designer.mapper.MapperComponent"/>
    </extension>
    <extension
-         point="org.talend.core.service">
+         point="org.talend.core.runtime.service">
       <Service
             class="org.talend.designer.mapper.DesignerMapperService"
             serviceId="IDesignerMapperService">

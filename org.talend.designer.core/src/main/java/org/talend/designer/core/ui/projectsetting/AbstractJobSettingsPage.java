@@ -67,10 +67,11 @@ import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.DetectContextVarsUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -336,8 +337,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                 objects.add(node);
             }
         } else {
-            for (RepositoryNode child : node.getChildren()) {
-                processItems(objects, child);
+            for (IRepositoryNode child : node.getChildren()) {
+                processItems(objects, (RepositoryNode) child);
             }
         }
     }
@@ -371,7 +372,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
     protected void save() {
         List<String> checkedObjects = new ArrayList<String>();
         IRepositoryView repositoryView = RepositoryManager.getRepositoryView();
-        RepositoryNode root = ((RepositoryContentProvider) repositoryView.getViewer().getContentProvider()).getRoot();
+        IRepositoryNode root = ((RepositoryContentProvider) repositoryView.getViewer().getContentProvider()).getRoot();
         RepositoryNode processNode = ((ProjectRepositoryNode) root).getRootRepositoryNode(ERepositoryObjectType.PROCESS);
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
         processItems(objects, processNode);

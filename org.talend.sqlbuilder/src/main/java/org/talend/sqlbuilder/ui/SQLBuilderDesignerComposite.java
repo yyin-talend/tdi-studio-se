@@ -21,6 +21,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -54,7 +55,8 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
      * @param style
      */
     public SQLBuilderDesignerComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor,
-            ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d, List<RepositoryNode> nodes, boolean readOnly) {
+            ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d, List<IRepositoryNode> nodes,
+            boolean readOnly) {
         super(parent, SWT.NONE, d, connParam);
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
@@ -70,7 +72,7 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
      * 
      * @param composite
      */
-    private void initialContent(SQLBuilderDesignerComposite composite, List<RepositoryNode> nodes) {
+    private void initialContent(SQLBuilderDesignerComposite composite, List<IRepositoryNode> nodes) {
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         layout.marginLeft = 0;
@@ -90,7 +92,7 @@ public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
      * 
      * @param composite
      */
-    private void createDesignerArea(SQLBuilderDesignerComposite composite, List<RepositoryNode> nodes) {
+    private void createDesignerArea(SQLBuilderDesignerComposite composite, List<IRepositoryNode> nodes) {
         // create divider line
         Composite div1 = new Composite(composite, SWT.NONE);
         GridData lgid = new GridData();

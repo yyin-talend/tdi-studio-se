@@ -69,10 +69,11 @@ import org.talend.designer.core.utils.DetectContextVarsUtils;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -379,8 +380,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 objects.add(node);
             }
         } else {
-            for (RepositoryNode child : node.getChildren()) {
-                processItems(objects, child);
+            for (IRepositoryNode child : node.getChildren()) {
+                processItems(objects, (RepositoryNode) child);
             }
         }
     }
@@ -469,13 +470,13 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
             String propertyName = "";
             String propertyTypeName = "";
             if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                elem = pro.getInitialContextLoad();
+                elem = (Element) pro.getInitialContextLoad();
                 propertyName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
                         + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
                 propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ':'
                         + EParameterName.PROPERTY_TYPE.getName();
             } else if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-                elem = pro.getStatsAndLog();
+                elem = (Element) pro.getStatsAndLog();
                 propertyName = EParameterName.PROPERTY_TYPE.getName() + ':' + EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
                 propertyTypeName = EParameterName.PROPERTY_TYPE.getName() + ':' + EParameterName.PROPERTY_TYPE.getName();
             }
@@ -564,14 +565,14 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 // if add some object to use project setting ,check context model
                 if (!addedObjects.isEmpty()) {
                     if (pro != null) {
-                        Element implicitContextLoad = pro.getInitialContextLoad();
+                        Element implicitContextLoad = (Element) pro.getInitialContextLoad();
                         implicitContextVars = DetectContextVarsUtils.detectByPropertyType(implicitContextLoad, true);
 
                     }
                 }
                 if (!statAddedObjects.isEmpty()) {
                     if (pro != null) {
-                        Element statsAndLog = pro.getStatsAndLog();
+                        Element statsAndLog = (Element) pro.getStatsAndLog();
                         statsLogContextVars = DetectContextVarsUtils.detectByPropertyType(statsAndLog, true);
                     }
                 }

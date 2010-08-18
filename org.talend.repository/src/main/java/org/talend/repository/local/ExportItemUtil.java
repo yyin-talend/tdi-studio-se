@@ -64,6 +64,7 @@ import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.utils.ResourceFilenameHelper;
 
 /***/
 public class ExportItemUtil {

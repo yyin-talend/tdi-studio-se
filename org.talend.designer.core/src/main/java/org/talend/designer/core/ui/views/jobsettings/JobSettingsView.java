@@ -62,7 +62,7 @@ import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposi
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * DOC ggu class global comment. Detailled comment

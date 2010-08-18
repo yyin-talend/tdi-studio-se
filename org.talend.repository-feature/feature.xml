@@ -653,7 +653,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.xml.serializer"
          download-size="0"
@@ -726,6 +726,13 @@
 
    <plugin
          id="org.eclipse.core.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.core.repository"
          download-size="0"
          install-size="0"
          version="0.0.0"

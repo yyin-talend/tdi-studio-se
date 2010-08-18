@@ -30,8 +30,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -199,32 +199,33 @@ public class RepositoryNodeUtilities {
         return getRepositoryNode(view.getRoot(), curNode, view, expanded);
     }
 
-    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryViewObject curNode, IRepositoryView view,
-            boolean expanded) {
+    private static RepositoryNode getRepositoryNode(IRepositoryNode rootNode, IRepositoryViewObject curNode,
+            IRepositoryView view, boolean expanded) {
         if (rootNode == null || curNode == null || view == null) {
             return null;
         }
         if (expanded) {
             // expande the unvisible node
-            expandNode(rootNode, curNode, view);
+            expandNode((RepositoryNode) rootNode, curNode, view);
         }
 
-        final List<RepositoryNode> children = rootNode.getChildren();
+        final List<IRepositoryNode> children = rootNode.getChildren();
 
         if (children != null) {
             // in the first, search the current folder
-            List<RepositoryNode> folderChild = new ArrayList<RepositoryNode>();
+            List<IRepositoryNode> folderChild = new ArrayList<IRepositoryNode>();
 
-            for (RepositoryNode childNode : children) {
-                if (isRepositoryFolder(childNode) || childNode.getType() == ENodeType.REFERENCED_PROJECT) {
-                    folderChild.add(childNode);
-                } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
-                    return childNode;
+            for (IRepositoryNode childNode : children) {
+                RepositoryNode node = (RepositoryNode) childNode;
+                if (isRepositoryFolder(node) || node.getType() == ENodeType.REFERENCED_PROJECT) {
+                    folderChild.add(node);
+                } else if (node.getId().equals(curNode.getId()) && node.getObjectType() == curNode.getType()) {
+                    return node;
                 }
 
             }
-            for (RepositoryNode folderNode : folderChild) {
-                final RepositoryNode repositoryNode = getRepositoryNode(folderNode, curNode, view, expanded);
+            for (IRepositoryNode folderNode : folderChild) {
+                final RepositoryNode repositoryNode = getRepositoryNode((RepositoryNode) folderNode, curNode, view, expanded);
                 if (repositoryNode != null) {
                     return repositoryNode;
                 }
@@ -238,33 +239,33 @@ public class RepositoryNodeUtilities {
         getRepositoryCheckedNode(view.getRoot(), curNode.getObject(), view, true, nodes);
     }
 
-    private static RepositoryNode getRepositoryCheckedNode(RepositoryNode rootNode, IRepositoryViewObject curNode,
+    private static RepositoryNode getRepositoryCheckedNode(IRepositoryNode rootNode, IRepositoryViewObject curNode,
             IRepositoryView view, boolean expanded, Set<RepositoryNode> nodes) {
         if (rootNode == null || curNode == null || view == null) {
             return null;
         }
         if (expanded) {
             // expande the unvisible node
-            expandNode(rootNode, curNode, view);
+            expandNode((RepositoryNode) rootNode, curNode, view);
         }
-        final List<RepositoryNode> children = rootNode.getChildren();
+        final List<IRepositoryNode> children = rootNode.getChildren();
 
         if (children != null) {
             // in the first, search the current folder
-            List<RepositoryNode> folderChild = new ArrayList<RepositoryNode>();
+            List<IRepositoryNode> folderChild = new ArrayList<IRepositoryNode>();
 
-            for (RepositoryNode childNode : children) {
+            for (IRepositoryNode childNode : children) {
                 if (isRepositoryFolder(childNode) || childNode.getType() == ENodeType.REFERENCED_PROJECT) {
                     if (hasCheckedChild(childNode, nodes)) {
                         folderChild.add(childNode);
                     }
 
                 } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
-                    return childNode;
+                    return (RepositoryNode) childNode;
                 }
 
             }
-            for (RepositoryNode folderNode : folderChild) {
+            for (IRepositoryNode folderNode : folderChild) {
                 final RepositoryNode repositoryNode = getRepositoryCheckedNode(folderNode, curNode, view, expanded, nodes);
                 if (repositoryNode != null) {
                     return repositoryNode;
@@ -275,10 +276,10 @@ public class RepositoryNodeUtilities {
         return null;
     }
 
-    private static boolean hasCheckedChild(RepositoryNode fatherNode, Set<RepositoryNode> nodes) {
+    private static boolean hasCheckedChild(IRepositoryNode fatherNode, Set<RepositoryNode> nodes) {
         if (!fatherNode.getChildren().isEmpty()) {
-            for (RepositoryNode node : fatherNode.getChildren()) {
-                for (RepositoryNode pnode : nodes) {
+            for (IRepositoryNode node : fatherNode.getChildren()) {
+                for (IRepositoryNode pnode : nodes) {
                     if (node.equals(pnode)) {
                         return true;
                     }
@@ -289,7 +290,7 @@ public class RepositoryNodeUtilities {
                 }
             }
         } else {
-            for (RepositoryNode node : nodes) {
+            for (IRepositoryNode node : nodes) {
                 if (node.equals(fatherNode)) {
                     return true;
                 }
@@ -394,7 +395,7 @@ public class RepositoryNodeUtilities {
 
     }
 
-    private static boolean isRepositoryFolder(RepositoryNode node) {
+    private static boolean isRepositoryFolder(IRepositoryNode node) {
         if (node == null) {
             return false;
         }
@@ -435,9 +436,9 @@ public class RepositoryNodeUtilities {
         String metadataName = values[2];
         String repositoryId = name.substring(0, name.lastIndexOf(" - ")); //$NON-NLS-1$
         RepositoryNode functionNode = getSAPFunctionFromConnection(repositoryId);
-        for (RepositoryNode node : functionNode.getChildren()) {
+        for (IRepositoryNode node : functionNode.getChildren()) {
             if (metadataName.equals(node.getProperties(EProperties.LABEL))) {
-                return node;
+                return (RepositoryNode) node;
             }
         }
         return null;
@@ -466,11 +467,11 @@ public class RepositoryNodeUtilities {
             final RepositoryNode realNode = getRepositoryNode(repositoryID);
             if (realNode.getObject() != null) {
                 if (ERepositoryObjectType.METADATA_SAPCONNECTIONS.equals(realNode.getObject().getType())) {
-                    for (RepositoryNode node : realNode.getChildren()) {
+                    for (IRepositoryNode node : realNode.getChildren()) {
                         if (Messages.getString("RepositoryContentProvider.repositoryLabel.sapFunction").equals(node.getLabel())) { //$NON-NLS-1$
-                            for (RepositoryNode function : node.getChildren()) {
+                            for (IRepositoryNode function : node.getChildren()) {
                                 if (functionName.equals(function.getProperties(EProperties.LABEL))) {
-                                    return function;
+                                    return (RepositoryNode) function;
                                 }
                             }
                         }
@@ -488,31 +489,31 @@ public class RepositoryNodeUtilities {
             ERepositoryObjectType repType) {
         ERepositoryObjectType type = connection.getObject().getType();
         if (repType == ERepositoryObjectType.METADATA_CON_QUERY) {
-            for (RepositoryNode node : connection.getChildren()) {
+            for (IRepositoryNode node : connection.getChildren()) {
                 if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(node.getLabel())) { //$NON-NLS-1$
-                    for (RepositoryNode query : node.getChildren()) {
+                    for (IRepositoryNode query : node.getChildren()) {
                         if (tableName.equals(query.getProperties(EProperties.LABEL))) {
-                            return query;
+                            return (RepositoryNode) query;
                         }
                     }
                 }
             }
         } else {
             if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-                for (RepositoryNode child : connection.getChildren()) {
+                for (IRepositoryNode child : connection.getChildren()) {
                     if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(child.getLabel())) { //$NON-NLS-1$
                         continue;
                     }
-                    for (RepositoryNode node : child.getChildren()) {
+                    for (IRepositoryNode node : child.getChildren()) {
                         if (tableName.equals(node.getProperties(EProperties.LABEL))) {
-                            return node;
+                            return (RepositoryNode) node;
                         }
                     }
                 }
             } else {
-                for (RepositoryNode child : connection.getChildren()) {
+                for (IRepositoryNode child : connection.getChildren()) {
                     if (tableName.equals(child.getProperties(EProperties.LABEL))) {
-                        return child;
+                        return (RepositoryNode) child;
                     }
                 }
 
@@ -528,8 +529,8 @@ public class RepositoryNodeUtilities {
      * 
      */
     public static RepositoryNode getParentRepositoryNodeFromSelection(IRepositoryViewObject object) {
-        if (object.getRepositoryNode() != null && object.getRepositoryNode().getParent() != null) {
-            return object.getRepositoryNode().getParent();
+        if (object.getRepositoryNode() != null && ((RepositoryNode) object.getRepositoryNode()).getParent() != null) {
+            return ((RepositoryNode) object.getRepositoryNode()).getParent();
         }
 
         // "old" code bellow should never be called, unless the repository object is a new created and not from the

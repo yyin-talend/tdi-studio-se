@@ -140,6 +140,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
@@ -2920,7 +2921,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see
      * org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
-    public void setRepositoryNode(RepositoryNode node) {
+    public void setRepositoryNode(IRepositoryNode node) {
         // TODO Auto-generated method stub
 
     }

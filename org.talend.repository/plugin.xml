@@ -13,6 +13,10 @@
             id="org.talend.repository.views.repository"
             name="%RepositoryView.title"/>
    </extension>
+   <extension
+         point="org.talend.core.global_actions">
+      <GlobalAction class="org.talend.repository.ui.actions.importexport.ReloadSystemRoutinesAction"/>
+   </extension>
 
    <extension
          id="rep.actions"
@@ -279,6 +283,16 @@
              level="20"
              name="View Impact">
        </Action>
+      <Action
+            class="org.talend.repository.ui.actions.importexport.ImportItemAction"
+            id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
+            isEditAction="false"
+            isReadAction="false"/>
+      <Action
+            class="org.talend.repository.ui.actions.importexport.ExportItemAction"
+            id="org.talend.repository.localprovider.ui.actions.ExportItemAction"
+            isEditAction="false"
+            isReadAction="false"/>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -385,7 +399,7 @@
             parentId="org.eclipse.ui.contexts.window"/>
    </extension>
    <extension
-         point="org.talend.core.service">
+         point="org.talend.core.runtime.service">
       <Service
       		serviceId="IRepositoryService" 
       		class="org.talend.repository.RepositoryService"/>
@@ -460,9 +474,40 @@
                toolbarPath="Default"
                tooltip="%deleteProjectsAction.toolTip"/-->
       </actionSet>
+      <actionSet
+            id="org.talend.repository.localprovider.actionSet"
+            label="Local Action set"
+            visible="false">
+         <action
+               class="org.talend.repository.ui.actions.importexport.ImportItemAction"
+               icon="platform:/plugin/org.talend.commons.ui/icons/import.gif"
+               id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
+               label="%ImportItemAction.title"
+               style="push"
+               toolbarPath="Default"
+               tooltip="%ImportItemAction.tooltip"/>
+         <action
+               class="org.talend.repository.ui.actions.importexport.ExportItemAction"
+               icon="platform:/plugin/org.talend.commons.ui/icons/export.gif"
+               id="org.talend.repository.localprovider.ui.actions.ExportItemAction"
+               label="%ExportItemAction.title"
+               style="push"
+               toolbarPath="Default"
+               tooltip="%ExportItemAction.tooltip"/>
+      </actionSet>
    </extension>
    <extension
          point="org.talend.core.migrationTask">
+      <projecttask
+            beforeLogon="true"
+            class="org.talend.repository.model.migration.RemoveRoutineFolderTask"
+            id="org.talend.repository.localprovider.RemoveRoutineFolderTask"
+            name="Remove routine folder"/>
+      <projecttask
+            beforeLogon="true"
+            class="org.talend.repository.model.migration.ChangeXmiSerialization"
+            id="org.talend.repository.localprovider.model.migration.ChangeXmiSerialization"
+            name="Change xmi serialization"/>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametRunProcessMigrationTask"

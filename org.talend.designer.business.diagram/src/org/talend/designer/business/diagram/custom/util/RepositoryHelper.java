@@ -30,7 +30,7 @@ import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

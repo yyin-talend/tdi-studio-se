@@ -6,8 +6,9 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Activator: org.talend.designer.core.DesignerPlugin
-Require-Bundle: org.eclipse.core.runtime.compatibility,
- org.eclipse.ui.ide;visibility:=reexport,
+Require-Bundle: org.talend.model,
+ org.eclipse.core.runtime.compatibility,
+ org.eclipse.ui.ide,
  org.epic.perleditor,
  org.talend.core,
  org.talend.sqlbuilder,
@@ -26,7 +27,8 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide,
  org.eclipse.ui.intro,
  org.eclipse.help,
- org.eclipse.jdt.core.manipulation
+ org.eclipse.jdt.core.manipulation,
+ org.talend.core.runtime
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

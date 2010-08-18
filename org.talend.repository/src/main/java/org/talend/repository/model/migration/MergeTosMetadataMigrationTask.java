@@ -41,7 +41,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.URIHelper;
+import org.talend.repository.utils.URIHelper;
 
 /**
  * DOC hywang class global comment. Detailled comment

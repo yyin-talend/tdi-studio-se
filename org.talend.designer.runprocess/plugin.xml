@@ -85,7 +85,7 @@
    </extension>
 
 	<extension
-         point="org.talend.core.service">
+         point="org.talend.core.runtime.service">
       <Service
       		serviceId="IRunProcessService" 
       		class="org.talend.designer.runprocess.RunProcessService"/>

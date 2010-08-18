@@ -50,7 +50,7 @@ import org.talend.designer.runprocess.i18n.Messages;
  * 
  * 
  */
-public abstract class Processor implements IProcessor {
+public abstract class Processor implements IProcessor, IEclipseProcessor {
 
     private static Logger log = Logger.getLogger(Processor.class);
 

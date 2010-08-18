@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
@@ -38,7 +39,7 @@ import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
  */
 public class ErDiagramDialog extends Dialog {
 
-    private List<RepositoryNode> nodes;
+    private List<IRepositoryNode> nodes;
 
     /**
      * The progress indicator control.
@@ -217,11 +218,11 @@ public class ErDiagramDialog extends Dialog {
         return erComposite.getSqlText();
     }
 
-    public List<RepositoryNode> getNodes() {
+    public List<IRepositoryNode> getNodes() {
         return this.nodes;
     }
 
-    public void setNodes(List<RepositoryNode> nodes) {
+    public void setNodes(List<IRepositoryNode> nodes) {
         this.nodes = nodes;
     }
 

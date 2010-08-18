@@ -77,10 +77,11 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ItemVersionObject;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
@@ -221,12 +222,12 @@ public class VersionManagementPage extends ProjectSettingPage {
             final IProjectRepositoryNode rootNode = (IProjectRepositoryNode) root;
             final TreeViewer viewer = view.getViewer();
             // metadata
-            RepositoryNode metadataConNode = rootNode.getMetadataNode();
+            IRepositoryNode metadataConNode = rootNode.getMetadataNode();
             if (metadataConNode != null) {
                 viewer.expandToLevel(metadataConNode, 1);
             }
             // code
-            RepositoryNode codeNode = rootNode.getCodeNode();
+            IRepositoryNode codeNode = rootNode.getCodeNode();
             if (codeNode != null) {
                 viewer.expandToLevel(codeNode, 1);
             }
@@ -312,8 +313,8 @@ public class VersionManagementPage extends ProjectSettingPage {
                 }
             }
         } else {
-            for (RepositoryNode child : node.getChildren()) {
-                processItems(objects, child);
+            for (IRepositoryNode child : node.getChildren()) {
+                processItems(objects, (RepositoryNode) child);
             }
         }
     }

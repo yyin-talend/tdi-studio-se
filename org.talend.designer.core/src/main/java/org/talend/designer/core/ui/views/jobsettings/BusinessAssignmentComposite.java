@@ -79,12 +79,13 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
 import org.talend.designer.core.utils.KeyHelper;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -252,7 +253,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
-                    RepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
+                    IRepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
                     TalendItem item = businessAssignment.getTalendItem();
                     //
                     if (item instanceof Routine && rootRepositoryNode instanceof ProjectRepositoryNode) {
@@ -263,7 +264,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                 }
             }
 
-            private void selectChild(TalendItem item, RepositoryNode rootRepositoryNode) {
+            private void selectChild(TalendItem item, IRepositoryNode rootRepositoryNode) {
 
                 try {
                     RepositoryNode curNode = null;
@@ -307,7 +308,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
                     } else {
 
-                        for (RepositoryNode rNode : rootRepositoryNode.getChildren()) {
+                        for (IRepositoryNode node : rootRepositoryNode.getChildren()) {
+                            RepositoryNode rNode = (RepositoryNode) node;
                             if (item instanceof SQLPattern
                                     && rNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SQLPATTERNS) {
                                 if (rNode.getType() == ENodeType.REPOSITORY_ELEMENT) {

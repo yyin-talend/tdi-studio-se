@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.SaveAsSQLAction;
@@ -60,12 +61,12 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         return this.sqlDesigner;
     }
 
-    private List<RepositoryNode> nodes;
+    private List<IRepositoryNode> nodes;
 
     /**
      * qzhang MultiPageSqlBuilderEditor constructor comment.
      */
-    public MultiPageSqlBuilderEditor(List<RepositoryNode> nodes, CTabItem tabItem, boolean isDefaultEditor,
+    public MultiPageSqlBuilderEditor(List<IRepositoryNode> nodes, CTabItem tabItem, boolean isDefaultEditor,
             ConnectionParameters connParam, RepositoryNode rootNode, ISQLBuilderDialog dialog) {
         super();
         this.nodes = nodes;

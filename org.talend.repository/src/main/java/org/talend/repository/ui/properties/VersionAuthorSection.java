@@ -27,7 +27,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.User;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

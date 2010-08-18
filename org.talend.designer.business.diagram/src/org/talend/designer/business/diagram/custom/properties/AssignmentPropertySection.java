@@ -67,11 +67,12 @@ import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -194,17 +195,17 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
                     String id = businessAssignment.getTalendItem().getId();
-                    RepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
+                    IRepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
                     selectChild(id, rootRepositoryNode);
                 }
             }
 
-            private void selectChild(String id, RepositoryNode rootRepositoryNode) {
-                for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
+            private void selectChild(String id, IRepositoryNode rootRepositoryNode) {
+                for (IRepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
                     if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
                         getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
                     } else {
-                        selectChild(id, repositoryNode);
+                        selectChild(id, (RepositoryNode) repositoryNode);
                     }
                 }
             }

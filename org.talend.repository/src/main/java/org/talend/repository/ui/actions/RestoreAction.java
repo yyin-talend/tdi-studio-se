@@ -40,10 +40,11 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
 
 /**
@@ -120,8 +121,8 @@ public class RestoreAction extends AContextualAction {
                 nodeType = parent.getObjectType();
             }
             if (node.hasChildren()) {
-                for (RepositoryNode childNode : node.getChildren()) {
-                    restoreNode(childNode);
+                for (IRepositoryNode childNode : node.getChildren()) {
+                    restoreNode((RepositoryNode) childNode);
                 }
             }
         } catch (Exception e) {

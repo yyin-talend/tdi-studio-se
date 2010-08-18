@@ -148,7 +148,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             // }
             // update the property of the node repository object
             // processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
-            openAnotherVersion(processObject.getRepositoryNode(), false);
+            openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), false);
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();

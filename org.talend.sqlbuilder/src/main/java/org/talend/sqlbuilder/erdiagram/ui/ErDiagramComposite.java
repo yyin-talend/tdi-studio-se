@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Column;
@@ -62,7 +63,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class ErDiagramComposite extends SashForm {
 
-    private List<RepositoryNode> nodes;
+    private List<IRepositoryNode> nodes;
 
     private ErdiagramDiagramEditor editor;
 
@@ -80,7 +81,7 @@ public class ErDiagramComposite extends SashForm {
      */
     public ErDiagramComposite(Composite parent, int style) {
         super(parent, style);
-        nodes = new ArrayList<RepositoryNode>();
+        nodes = new ArrayList<IRepositoryNode>();
     }
 
     /**
@@ -365,11 +366,11 @@ public class ErDiagramComposite extends SashForm {
         return sql;
     }
 
-    public List<RepositoryNode> getNodes() {
+    public List<IRepositoryNode> getNodes() {
         return this.nodes;
     }
 
-    public void setNodes(List<RepositoryNode> nodes, boolean isShowDesignerPage) {
+    public void setNodes(List<IRepositoryNode> nodes, boolean isShowDesignerPage) {
         this.nodes = nodes;
         addErDiagramEditor(isShowDesignerPage);
     }
@@ -378,14 +379,14 @@ public class ErDiagramComposite extends SashForm {
 
     public void setRootNode(RepositoryNode root) {
         if (root == null && !getNodes().isEmpty()) {
-            this.rootNode = SQLBuilderRepositoryNodeManager.getRoot(getNodes().get(0));
+            this.rootNode = SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) getNodes().get(0));
 
         } else {
             this.rootNode = root;
         }
     }
 
-    public void updateNodes(List<RepositoryNode> nodes, String sqlText) {
+    public void updateNodes(List<IRepositoryNode> nodes, String sqlText) {
         this.nodes = nodes;
         this.sqlText.setText(sqlText);
         editor.getViewer().setContents(createErDiagram(true));

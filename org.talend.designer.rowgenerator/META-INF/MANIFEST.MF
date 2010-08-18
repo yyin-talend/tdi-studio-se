@@ -15,4 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.designer.core,
  org.talend.commons.ui,
  org.talend.designer.codegen,
- org.talend.libraries.dom4j-jaxen
+ org.talend.libraries.dom4j-jaxen,
+ org.talend.core.runtime,
+ org.talend.model

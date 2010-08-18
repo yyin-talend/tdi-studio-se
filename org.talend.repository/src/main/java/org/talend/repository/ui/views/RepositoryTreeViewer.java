@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
 /***/
@@ -94,15 +95,15 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
     }
 
     private void emptyExpandedChildren(RepositoryNode repositoryNode) {
-        for (RepositoryNode children : repositoryNode.getChildren()) {
+        for (IRepositoryNode children : repositoryNode.getChildren()) {
             if (idIsValid(children)) {
                 expanded.remove(children.getId());
             }
-            emptyExpandedChildren(children);
+            emptyExpandedChildren((RepositoryNode) children);
         }
     }
 
-    private boolean idIsValid(RepositoryNode repositoryNode) {
+    private boolean idIsValid(IRepositoryNode repositoryNode) {
         String id = repositoryNode.getId();
         return id != null && !RepositoryNode.NO_ID.equals(id);
     }

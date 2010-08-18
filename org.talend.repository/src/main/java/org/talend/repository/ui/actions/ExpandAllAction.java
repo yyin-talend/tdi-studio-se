@@ -21,8 +21,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -74,8 +75,8 @@ public class ExpandAllAction extends AContextualAction {
     private void expand(IRepositoryView view, RepositoryNode obj, boolean state) {
         view.expand(obj, state);
         if (obj.hasChildren()) {
-            for (RepositoryNode currentChild : obj.getChildren()) {
-                expand(view, currentChild, state);
+            for (IRepositoryNode currentChild : obj.getChildren()) {
+                expand(view, (RepositoryNode) currentChild, state);
             }
         }
     }

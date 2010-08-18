@@ -9,5 +9,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.talend.core,
  org.talend.repository,
  org.talend.designer.runprocess,
- org.talend.commons.ui
+ org.talend.commons.ui,
+ org.eclipse.core.runtime,
+ org.talend.model
 Eclipse-LazyStart: true

@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -162,7 +163,7 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
                 query = textDialog.getSql();
             }
         } else {
-            List<RepositoryNode> selectedNodes = null;
+            List<IRepositoryNode> selectedNodes = null;
             try {
                 selectedNodes = EMFRepositoryNodeManager.getInstance().parseSqlStatement(currentSql, currentNode);
             } catch (Exception e) {

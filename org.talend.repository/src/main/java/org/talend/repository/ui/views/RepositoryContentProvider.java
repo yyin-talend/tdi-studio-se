@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -58,7 +59,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     public Object[] getElements(Object parent) {
         if (parent.equals(view.getViewSite())) {
-            RepositoryNode systemFolders = view.getRoot();
+            IRepositoryNode systemFolders = view.getRoot();
             if (systemFolders.getChildren().isEmpty()) {
                 initialize();
             }
@@ -247,7 +248,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return null;
         }
 
-        List<RepositoryNode> nodes = getMetadataNode().getChildren();
+        List<IRepositoryNode> nodes = getMetadataNode().getChildren();
         if (nodes == null || nodes.isEmpty()) {
             return null;
         }

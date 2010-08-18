@@ -63,12 +63,13 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
@@ -448,8 +449,8 @@ class FakeRepositoryView extends RepositoryView {
         if (root.getProperties(EProperties.LABEL).equals(label)) {
             getViewer().setSelection(new StructuredSelection(root), true);
         } else if (root.hasChildren()) {
-            for (RepositoryNode child : root.getChildren()) {
-                selectNode(child, label);
+            for (IRepositoryNode child : root.getChildren()) {
+                selectNode((RepositoryNode) child, label);
             }
         }
     }
@@ -586,7 +587,7 @@ class JobTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<RepositoryNode> refProjects = null;
+        List<IRepositoryNode> refProjects = null;
         if (contentProvider.getReferenceProjectNode() != null) {
             refProjects = contentProvider.getReferenceProjectNode().getChildren();
         } else {
@@ -598,10 +599,10 @@ class JobTypeProcessor implements ITypeProcessor {
         return mainJobs;
     }
 
-    private void getReferencedInputRoot(RepositoryNode mainJob, List<RepositoryNode> refProjects) {
+    private void getReferencedInputRoot(RepositoryNode mainJob, List<IRepositoryNode> refProjects) {
         if (!refProjects.isEmpty()) {
             List<RepositoryNode> list = new ArrayList<RepositoryNode>();
-            for (RepositoryNode repositoryNode : refProjects) {
+            for (IRepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
                 newProject.getChildren().add(refProject.getProcessNode());
@@ -707,9 +708,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 contentRepositoryNode.setInitialized(true);
 
             }
-            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
                     RepositoryNode refMetadataNode = getMetadataNode(refProject);
@@ -736,9 +737,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
             contentRepositoryNode.setInitialized(true);
 
         }
-        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        List<IRepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
         if (refProjects != null && !refProjects.isEmpty()) {
-            for (RepositoryNode repositoryNode : refProjects) {
+            for (IRepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
 
@@ -1078,9 +1079,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
     private void addSubReferencedProjectNodes(ProjectRepositoryNode subRefProject) {
         if (subRefProject.getReferenceProjectNode() == null)
             return;
-        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        List<IRepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
         if (refProjects != null && !refProjects.isEmpty()) {
-            for (RepositoryNode repositoryNode : refProjects) {
+            for (IRepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
@@ -1123,9 +1124,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
         // referenced project.
         nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
-            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
@@ -1265,12 +1266,12 @@ class SAPFunctionProcessor implements ITypeProcessor {
         RepositoryNode metadataConNode = contentProvider.getMetadataSAPConnectionNode();
         // referenced project.
         if (contentProvider.getReferenceProjectNode() != null) {
-            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
 
                 List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
 
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
@@ -1341,12 +1342,12 @@ class HeaderFooterTypeProcessor implements ITypeProcessor {
                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
         // referenced project.
         if (headerFooterProvider.getReferenceProjectNode() != null) {
-            List<RepositoryNode> refProjects = headerFooterProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = headerFooterProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
 
                 List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
 
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
@@ -1417,12 +1418,12 @@ class ContextTypeProcessor implements ITypeProcessor {
         RepositoryNode contextNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.CONTEXT);
         // referenced project.
         if (contentProvider.getReferenceProjectNode() != null) {
-            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
 
-                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+                List<IRepositoryNode> nodesList = new ArrayList<IRepositoryNode>();
 
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
 
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
@@ -1496,9 +1497,9 @@ class QueryTypeProcessor implements ITypeProcessor {
         // referenced project.
         nodesList.removeAll(null);
         if (contentProvider.getReferenceProjectNode() != null) {
-            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
-                for (RepositoryNode repositoryNode : refProjects) {
+                for (IRepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
                     newProject.getChildren().add(refProject.getMetadataConNode());
@@ -1514,9 +1515,9 @@ class QueryTypeProcessor implements ITypeProcessor {
     private void addSubRefProjectNodes(ProjectRepositoryNode subRefProject) {
         if (subRefProject.getReferenceProjectNode() == null)
             return;
-        List<RepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
+        List<IRepositoryNode> refProjects = subRefProject.getReferenceProjectNode().getChildren();
         if (refProjects != null && !refProjects.isEmpty()) {
-            for (RepositoryNode repositoryNode : refProjects) {
+            for (IRepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
                 newProject.getChildren().add(refProject.getMetadataConNode());
@@ -1580,11 +1581,11 @@ class ViewerTextFilter extends ViewerFilter {
         ERepositoryObjectType type = node.getContentType();
         ENodeType nodeType = node.getType();
         if (nodeType != ENodeType.REPOSITORY_ELEMENT) {
-            List<RepositoryNode> children = node.getChildren();
+            List<IRepositoryNode> children = node.getChildren();
             if (children.isEmpty()) {
                 return false;
             }
-            for (RepositoryNode child : children) {
+            for (IRepositoryNode child : children) {
                 if (select(viewer, null, child)) {
                     return true;
                 }

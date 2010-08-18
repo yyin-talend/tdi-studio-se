@@ -32,8 +32,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.snippets.SnippetManager;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>

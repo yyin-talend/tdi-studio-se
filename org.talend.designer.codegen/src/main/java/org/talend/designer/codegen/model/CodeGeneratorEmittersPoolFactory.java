@@ -317,6 +317,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(), component
                     .getVersion(), codeLanguage.getName(), codePart.getName());
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
+            jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
 
@@ -465,9 +466,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                         Display.getDefault().syncExec(new Runnable() {
 
                             public void run() {
-                                MessageDialog
-                                        .openError(Display.getDefault().getActiveShell(), Messages.getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
-                                                Messages.getString("CodeGeneratorEmittersPoolFactory.dialogContent")); //$NON-NLS-1$
+                                MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
+                                        .getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
+                                        Messages.getString("CodeGeneratorEmittersPoolFactory.dialogContent")); //$NON-NLS-1$
 
                             }
                         });

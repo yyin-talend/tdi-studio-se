@@ -45,13 +45,14 @@ import org.talend.designer.core.ui.wizards.NewProcessWizard;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -90,10 +91,10 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
         return (IRepositoryView) findView;
     }
 
-    public RepositoryNode getProcessNode() {
-        List<RepositoryNode> chindren = getRepositoryView().getRoot().getChildren();
-        for (RepositoryNode repositoryNode : chindren) {
-            if (repositoryNode.getContentType() == ERepositoryObjectType.PROCESS) {
+    public IRepositoryNode getProcessNode() {
+        List<IRepositoryNode> chindren = getRepositoryView().getRoot().getChildren();
+        for (IRepositoryNode repositoryNode : chindren) {
+            if (((RepositoryNode) repositoryNode).getContentType() == ERepositoryObjectType.PROCESS) {
                 return repositoryNode;
             }
 
@@ -109,7 +110,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
      */
     @Override
     protected void doRun() {
-        RepositoryNode node = null;
+        IRepositoryNode node = null;
         NewProcessWizard processWizard = null;
         if (isToolbar()) {
             processWizard = new NewProcessWizard(null);
@@ -119,11 +120,11 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 return;
             }
             Object obj = ((IStructuredSelection) selection).getFirstElement();
-            node = (RepositoryNode) obj;
+            node = (IRepositoryNode) obj;
             ItemCacheManager.clearCache();
 
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-            IPath path = service.getRepositoryPath(node);
+            IPath path = service.getRepositoryPath((RepositoryNode) node);
             if (RepositoryConstants.isSystemFolder(path.toString())) {
                 // Not allowed to create in system folder.
                 return;
@@ -144,8 +145,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false, true, false);
 
                 fileEditorInput.setView(getViewPart());
-                RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(fileEditorInput.getItem().getProperty()
-                        .getId(), false);
+                IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(fileEditorInput.getItem()
+                        .getProperty().getId(), false);
                 fileEditorInput.setRepositoryNode(repositoryNode);
 
                 IWorkbenchPage page = getActivePage();
@@ -217,7 +218,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
 
             Object type = params.get("type");
             if (ERepositoryObjectType.PROCESS.name().equals(type)) {
-                RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
+                IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
                 if (processNode != null) {
                     setWorkbenchPart(view);
                     view.getViewer().expandToLevel(processNode, 1);

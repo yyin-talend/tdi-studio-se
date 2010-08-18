@@ -344,7 +344,9 @@ public class ComponentsFactory implements IComponentsFactory {
             return;
         }
 
+        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
         childDirectories = source.listFiles(fileFilter);
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
 
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
@@ -367,7 +369,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
             for (File currentFolder : childDirectories) {
                 // get the skeleton files first, then XML config files later.
+                TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
                 File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
+                TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
                 if (skeletonFiles != null) {
                     for (File file : skeletonFiles) {
                         skeletonList.add(file.getAbsolutePath()); // path
@@ -446,6 +450,8 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         // TimeMeasure.display=true;
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
         TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
         TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
         TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$

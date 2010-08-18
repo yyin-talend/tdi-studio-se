@@ -4,16 +4,19 @@ Bundle-Name: Componentdesigner Plug-in
 Bundle-SymbolicName: org.talend.componentdesigner; singleton:=true
 Bundle-Version: 2.3.0.qualifier
 Bundle-Activator: org.talend.componentdesigner.ComponentDesigenerPlugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.talend.model,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.core.resources,
  org.eclipse.ui.navigator,
  org.eclipse.datatools.enablement.oda.xml,
+ org.talend.core.runtime,
  org.talend.core,
  org.apache.log4j,
  org.talend.libraries.dom4j-jaxen,
- org.eclipse.jet.editor
+ org.eclipse.jet.editor,
+ org.talend.designer.components.localprovider
 Eclipse-LazyStart: true
 Export-Package: org.talend.componentdesigner,
  org.talend.componentdesigner.i18n,

@@ -86,6 +86,7 @@ import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -159,8 +160,8 @@ public class RepositoryService implements IRepositoryService {
         return ProxyRepositoryFactory.getInstance();
     }
 
-    public IPath getRepositoryPath(RepositoryNode node) {
-        return RepositoryNodeUtilities.getPath(node);
+    public IPath getRepositoryPath(IRepositoryNode node) {
+        return RepositoryNodeUtilities.getPath((RepositoryNode) node);
     }
 
     ChangeProcessor changeProcessor = new ChangeProcessor();
@@ -202,7 +203,7 @@ public class RepositoryService implements IRepositoryService {
      * @see
      * org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
      */
-    public void repositoryChanged(RepositoryElementDelta delta) {
+    public void repositoryChanged(IRepositoryElementDelta delta) {
         changeProcessor.repositoryChanged(delta);
     }
 
@@ -467,9 +468,11 @@ public class RepositoryService implements IRepositoryService {
         openMetadataConnection(false, realNode, null);
     }
 
-    public ConnectionItem openMetadataConnection(boolean creation, RepositoryNode realNode, INode node) {
+    public ConnectionItem openMetadataConnection(boolean creation, IRepositoryNode repoNode, INode node) {
 
-        if (realNode != null) {
+        RepositoryNode realNode;
+        if (repoNode instanceof RepositoryNode) {
+            realNode = (RepositoryNode) repoNode;
             IWizard relatedWizard = null;
             ERepositoryObjectType objectType = null;
             if (creation) {

@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.talend.core.service">
+         point="org.talend.core.runtime.service">
       <Service
             class="org.talend.designer.components.model.ComponentsService"
             serviceId="IComponentsService"/>

@@ -35,6 +35,7 @@ import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.IEclipseProcessor;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -119,7 +120,7 @@ public class ProcessDebugDialog extends Dialog {
                     try {
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(process, context, false, false, true, monitor);
-                        ILaunchConfiguration config = processor.debug();
+                        ILaunchConfiguration config = ((IEclipseProcessor) processor).debug();
                         if (config != null) {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
                             // DebugInNewWindowListener());

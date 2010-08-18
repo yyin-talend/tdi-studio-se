@@ -38,10 +38,11 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 
 /**
  * Action used to empty the recycle bin.<br/>
@@ -82,9 +83,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
         }
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        for (RepositoryNode child : node.getChildren()) {
+        for (IRepositoryNode child : node.getChildren()) {
             try {
-                deleteElements(factory, child);
+                deleteElements(factory, (RepositoryNode) child);
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e);
             }
@@ -161,8 +162,8 @@ public class EmptyRecycleBinAction extends AContextualAction {
             if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
                     && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC) {
                 if (currentNode.getType() == ENodeType.SIMPLE_FOLDER) {
-                    for (RepositoryNode curNode : currentNode.getChildren()) {
-                        deleteElements(factory, curNode);
+                    for (IRepositoryNode curNode : currentNode.getChildren()) {
+                        deleteElements(factory, (RepositoryNode) curNode);
                     }
                     factory.deleteFolder(currentNode.getContentType(), new Path(currentNode.getObject().getProperty().getItem()
                             .getState().getPath()

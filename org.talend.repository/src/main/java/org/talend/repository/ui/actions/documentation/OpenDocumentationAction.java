@@ -32,7 +32,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.documentation.LinkDocumentationHelper;
 import org.talend.repository.ui.wizards.documentation.LinkUtils;

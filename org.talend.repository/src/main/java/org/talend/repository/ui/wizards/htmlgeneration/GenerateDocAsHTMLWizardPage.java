@@ -53,8 +53,8 @@ import org.talend.repository.documentation.generation.HTMLDocGenerator;
 import org.talend.repository.documentation.generation.JobHTMLScriptsManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>

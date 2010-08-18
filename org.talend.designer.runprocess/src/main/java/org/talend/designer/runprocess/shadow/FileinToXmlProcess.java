@@ -654,4 +654,13 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
         return null;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#getElementName()
+     */
+    public String getElementName() {
+        return getLabel();
+    }
 }

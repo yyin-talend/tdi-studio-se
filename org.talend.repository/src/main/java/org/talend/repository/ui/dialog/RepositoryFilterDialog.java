@@ -54,11 +54,12 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
@@ -406,7 +407,7 @@ public class RepositoryFilterDialog extends Dialog {
             } else if (split.length == 3) {
                 // child in sql pattern
                 if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
-                    for (RepositoryNode node : root.getSQLPatternNode().getChildren()) {
+                    for (IRepositoryNode node : root.getSQLPatternNode().getChildren()) {
                         if (split[2] != null && split[2].equals(node.getProperties(EProperties.LABEL))) {
                             checkboxTreeViewer.setChecked(node, false);
                         }
@@ -426,7 +427,7 @@ public class RepositoryFilterDialog extends Dialog {
         } else {
             RepositoryNode referenceProjectNode = mainRoot.getReferenceProjectNode();
             if (referenceProjectNode != null) {
-                for (RepositoryNode node : referenceProjectNode.getChildren()) {
+                for (IRepositoryNode node : referenceProjectNode.getChildren()) {
                     ProjectRepositoryNode rootNode = getRootNode((ProjectRepositoryNode) node, projectName);
                     if (rootNode == null) {
                         continue;

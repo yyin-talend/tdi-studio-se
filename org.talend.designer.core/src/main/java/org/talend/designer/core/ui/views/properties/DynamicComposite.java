@@ -84,6 +84,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.AbstractElement
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -511,12 +512,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                     if (contentProvider instanceof RepositoryContentProvider) {
                         RepositoryContentProvider provider = (RepositoryContentProvider) contentProvider;
                         RepositoryNode metadataConNode = provider.getMetadataNode();
-                        for (RepositoryNode connectionItem : metadataConNode.getChildren()) {
+                        for (IRepositoryNode connectionItem : metadataConNode.getChildren()) {
                             if (viewer.isExpandable(connectionItem)) {
                                 provider.getChildren(connectionItem);
                             }
-                            for (RepositoryNode node : connectionItem.getChildren()) {
-                                addConnectionItem(viewer, provider, list, node);
+                            for (IRepositoryNode node : connectionItem.getChildren()) {
+                                addConnectionItem(viewer, provider, list, (RepositoryNode) node);
                             }
                         }
                     }
@@ -543,16 +544,16 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             if (item instanceof ConnectionItem) {
                 list.add((ConnectionItem) item);
             } else if (item instanceof FolderItem) {
-                for (RepositoryNode node : repositoryNode3.getChildren()) {
-                    addConnectionItem(viewer, provider, list, node);
+                for (IRepositoryNode node : repositoryNode3.getChildren()) {
+                    addConnectionItem(viewer, provider, list, (RepositoryNode) node);
                 }
             }
         } else {
             if (viewer.isExpandable(repositoryNode3)) {
                 provider.getChildren(repositoryNode3);
             }
-            for (RepositoryNode node : repositoryNode3.getChildren()) {
-                addConnectionItem(viewer, provider, list, node);
+            for (IRepositoryNode node : repositoryNode3.getChildren()) {
+                addConnectionItem(viewer, provider, list, (RepositoryNode) node);
             }
         }
     }

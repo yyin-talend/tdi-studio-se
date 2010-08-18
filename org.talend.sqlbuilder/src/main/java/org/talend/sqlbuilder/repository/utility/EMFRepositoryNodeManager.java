@@ -39,6 +39,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -120,14 +121,14 @@ public final class EMFRepositoryNodeManager {
     private RepositoryNode root;
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public List<MetadataTable> getTables(List<RepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
+    public List<MetadataTable> getTables(List<IRepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
-        for (RepositoryNode node : nodes) {
-            RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(node);
+        for (IRepositoryNode node : nodes) {
+            RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType((RepositoryNode) node);
             if (type == RepositoryNodeType.DATABASE) {
-                root = node;
-                DatabaseConnection connection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(node)
-                        .getConnection();
+                root = (RepositoryNode) node;
+                DatabaseConnection connection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
+                        (RepositoryNode) node).getConnection();
                 for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(connection)) {
                     if (!tables.contains(table)) {
                         tables.add(table);
@@ -142,7 +143,7 @@ public final class EMFRepositoryNodeManager {
                     tables.add(table);
                     selectedColumns.addAll(table.getColumns());
                 }
-                root = SQLBuilderRepositoryNodeManager.getRoot(node);
+                root = SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) node);
 
             } else if (type == RepositoryNodeType.COLUMN) {
 
@@ -155,7 +156,7 @@ public final class EMFRepositoryNodeManager {
                 if (!tables.contains(table)) {
                     tables.add(table);
                 }
-                root = SQLBuilderRepositoryNodeManager.getRoot(node);
+                root = SQLBuilderRepositoryNodeManager.getRoot((RepositoryNode) node);
             }
             setRoot(null);
         }
@@ -315,7 +316,7 @@ public final class EMFRepositoryNodeManager {
             // MessageDialog.openInformation(new Shell(),
             // Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info);
 
-            List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
+            List<IRepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
             if (nodeSel == null || nodeSel.isEmpty()) {
                 editor.setSqlText(toSql);
             } else {
@@ -326,7 +327,7 @@ public final class EMFRepositoryNodeManager {
     }
 
     @SuppressWarnings("unchecked")
-    public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
+    public List<IRepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
         // inital the quote depence on the dbtype
         IRepositoryViewObject rObject = currRoot.getObject();
         DatabaseConnectionItem item = (DatabaseConnectionItem) rObject.getProperty().getItem();
@@ -343,8 +344,8 @@ public final class EMFRepositoryNodeManager {
         List<String> columnsNames = new ArrayList<String>();
 
         String[] cols = parseSqlToNameList(sql, tableNames, columnsNames);
-        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-        for (RepositoryNode tableNode : currRoot.getChildren()) {
+        List<IRepositoryNode> nodes = new ArrayList<IRepositoryNode>();
+        for (IRepositoryNode tableNode : currRoot.getChildren()) {
             for (int i = 0; i < tableNames.size(); i++) {
                 String tableLabel = ""; //$NON-NLS-1$
                 if (tableNode.getObject() instanceof MetadataTableRepositoryObject) {
@@ -371,7 +372,7 @@ public final class EMFRepositoryNodeManager {
                     }
                 }
                 if (isNeed) {
-                    for (RepositoryNode colNode : tableNode.getChildren()) {
+                    for (IRepositoryNode colNode : tableNode.getChildren()) {
                         String collabel = ""; //$NON-NLS-1$
                         if (colNode.getObject() instanceof MetadataColumnRepositoryObject) {
                             MetadataColumnRepositoryObject object2 = (MetadataColumnRepositoryObject) colNode.getObject();

@@ -23,9 +23,10 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -78,7 +79,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
 
     private List<String> doCollectChildNames(final RepositoryNode node) {
         List<String> names = new ArrayList<String>();
-        for (RepositoryNode sibling : node.getChildren()) {
+        for (IRepositoryNode sibling : node.getChildren()) {
             names.add((String) sibling.getProperties(EProperties.LABEL));
         }
         return names;

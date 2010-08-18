@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -41,7 +42,7 @@ public interface ISQLBuilderDialog {
             boolean isDefaultEditor);
 
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
-            boolean isDefaultEditor, List<RepositoryNode> nodeSel);
+            boolean isDefaultEditor, List<IRepositoryNode> nodeSel);
 
     public ConnectionParameters getConnParameters();
 

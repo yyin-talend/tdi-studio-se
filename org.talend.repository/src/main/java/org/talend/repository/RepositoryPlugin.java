@@ -16,6 +16,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IRepositoryService;
@@ -34,12 +35,8 @@ public class RepositoryPlugin extends AbstractUIPlugin {
     // The shared instance
     private static RepositoryPlugin plugin;
 
-    /** Context. */
-    private Context userContext;
-
     public RepositoryPlugin() {
         plugin = this;
-        userContext = new Context();
     }
 
     /*
@@ -71,7 +68,7 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      * @return the context
      */
     public Context getContext() {
-        return this.userContext;
+        return CoreRuntimePlugin.getInstance().getContext();
     }
 
     public IDesignerCoreService getDesignerCoreService() {

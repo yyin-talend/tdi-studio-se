@@ -35,6 +35,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.shadow.ShadowConnection;
 import org.talend.designer.runprocess.shadow.ShadowNode;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -647,6 +648,27 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
     public boolean isDeleted() {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.core.model.repository.IRepositoryViewObject#setRepositoryNode(org.talend.repository.model.IRepositoryNode
+     * )
+     */
+    public void setRepositoryNode(IRepositoryNode node) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#getElementName()
+     */
+    public String getElementName() {
+        return getLabel();
     }
 
 }

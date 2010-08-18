@@ -70,10 +70,11 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -491,8 +492,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
         if (label.equals(name)) {
             toReturn = root;
         } else {
-            for (RepositoryNode node : root.getChildren()) {
-                toReturn = findRepositoryNode(label, node);
+            for (IRepositoryNode node : root.getChildren()) {
+                toReturn = findRepositoryNode(label, (RepositoryNode) node);
                 if (toReturn != null) {
                     break;
                 }

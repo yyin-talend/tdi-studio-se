@@ -83,12 +83,13 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryPreferenceStore;
-import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.StatusConfirmSettingDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
@@ -235,12 +236,12 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             final IProjectRepositoryNode rootNode = (IProjectRepositoryNode) root;
             final TreeViewer viewer = view.getViewer();
             // metadata
-            RepositoryNode metadataConNode = rootNode.getMetadataNode();
+            IRepositoryNode metadataConNode = rootNode.getMetadataNode();
             if (metadataConNode != null) {
                 viewer.expandToLevel(metadataConNode, 1);
             }
             // code
-            RepositoryNode codeNode = rootNode.getCodeNode();
+            IRepositoryNode codeNode = rootNode.getCodeNode();
             if (codeNode != null) {
                 viewer.expandToLevel(codeNode, 1);
             }
@@ -312,7 +313,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         return true;
     }
 
-    private void processItems(List<RepositoryObject> objects, RepositoryNode node) {
+    private void processItems(List<RepositoryObject> objects, IRepositoryNode node) {
         if (node == null) {
             return;
         }
@@ -320,7 +321,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             if (node.getObject() != null) {
                 Property property = node.getObject().getProperty();
                 Item item = property.getItem();
-                if (item != null && filterRepositoryNode(node)) { // must be item
+                if (item != null && filterRepositoryNode((RepositoryNode) node)) { // must be item
                     RepositoryObject object = new RepositoryObject(node.getObject().getProperty());
                     object.setRepositoryNode(node);
                     // ItemVersionObject object = new ItemVersionObject(node, property.getVersion());
@@ -328,8 +329,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 }
             }
         } else {
-            for (RepositoryNode child : node.getChildren()) {
-                processItems(objects, child);
+            for (IRepositoryNode child : node.getChildren()) {
+                processItems(objects, (RepositoryNode) child);
             }
         }
     }
@@ -638,7 +639,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         for (TableItem item : itemTable.getItems()) {
             Object data = item.getData();
             if (data instanceof RepositoryObject) {
-                nodes.add(((RepositoryObject) data).getRepositoryNode());
+                nodes.add((RepositoryNode) ((RepositoryObject) data).getRepositoryNode());
             }
         }
         treeViewer.setCheckedElements(nodes.toArray());

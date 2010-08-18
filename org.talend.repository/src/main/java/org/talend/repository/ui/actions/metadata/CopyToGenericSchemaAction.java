@@ -27,7 +27,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -95,8 +95,8 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         default:
             return;
         }
-        
-        RepositoryNode genericNode = CorePlugin.getDefault().getRepositoryService().getRootRepositoryNode(
+
+        RepositoryNode genericNode = (RepositoryNode) CorePlugin.getDefault().getRepositoryService().getRootRepositoryNode(
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         if (genericNode == null) {
             return;

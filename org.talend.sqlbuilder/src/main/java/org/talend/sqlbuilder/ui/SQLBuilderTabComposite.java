@@ -27,8 +27,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -214,7 +215,7 @@ public class SQLBuilderTabComposite extends Composite {
         tabFolder.redraw();
     }
 
-    private List<RepositoryNode> nodesSel = new ArrayList<RepositoryNode>();
+    private List<IRepositoryNode> nodesSel = new ArrayList<IRepositoryNode>();
 
     /**
      * 
@@ -251,11 +252,11 @@ public class SQLBuilderTabComposite extends Composite {
         return this.tabFolder;
     }
 
-    public List<RepositoryNode> getNodesSel() {
+    public List<IRepositoryNode> getNodesSel() {
         return this.nodesSel;
     }
 
-    public void setNodesSel(List<RepositoryNode> nodesSel) {
+    public void setNodesSel(List<IRepositoryNode> nodesSel) {
         this.nodesSel = nodesSel;
     }
 

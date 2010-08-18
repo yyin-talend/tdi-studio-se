@@ -23,6 +23,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -97,7 +98,7 @@ public abstract class AbstractProcessVersionAction extends AContextualAction {
         return this.processItem;
     }
 
-    public RepositoryNode getRepositoryNode() {
+    public IRepositoryNode getRepositoryNode() {
         return this.repositoryNode;
     }
 

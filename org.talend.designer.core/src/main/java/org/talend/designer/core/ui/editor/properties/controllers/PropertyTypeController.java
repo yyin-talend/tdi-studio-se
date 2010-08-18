@@ -370,69 +370,85 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     RepositoryNode realNode = null;
                     String repositoryValue = param.getRepositoryValue();
                     if (repositoryValue != null && repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
                     } else
 
                     // file delimited
                     if (ERepositoryCategoryType.DELIMITED.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
                     }
                     // file positional
                     if (ERepositoryCategoryType.POSITIONAL.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
                     }
                     // file regexp
                     if (ERepositoryCategoryType.REGEX.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
                     }
                     // file xml
                     if (ERepositoryCategoryType.XML.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
                     }
                     // file ldif
                     if (ERepositoryCategoryType.LDIF.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
                     }
                     // excel
                     if (ERepositoryCategoryType.EXCEL.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
                     }
                     // generic schema
                     if (ERepositoryCategoryType.GENERIC.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
                     }
                     // ldap
                     if (ERepositoryCategoryType.LDAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
                     }
                     // wsdl
                     if (ERepositoryCategoryType.WSDL.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
                     }
                     // salesforce
                     if (ERepositoryCategoryType.SALESFORCE.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
                     }
                     // ebcdic
                     if (ERepositoryCategoryType.EBCDIC.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
                     }
 
                     // mdm
                     if (ERepositoryCategoryType.MDM.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
                     }
                     // sap
                     if (ERepositoryCategoryType.SAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
                     }
                     // sapIDoc
                     if (ERepositoryCategoryType.SAPIDOC.getName().equals(repositoryValue)) {
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SAP_IDOC);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAP_IDOC);
                     }
 
                     if (ERepositoryCategoryType.HEADERFOOTER.getName().equals(repositoryValue)) { //$NON-NLS-1$
-                        realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
                     }
 
                     if (realNode != null) {

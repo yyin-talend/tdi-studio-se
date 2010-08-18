@@ -121,12 +121,13 @@ import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
@@ -523,8 +524,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     if (visible) {
                         return true;
                     }
-                    for (RepositoryNode childNode : node.getChildren()) {
-                        visible = visible || filterByUserStatusName(childNode);
+                    for (IRepositoryNode childNode : node.getChildren()) {
+                        visible = visible || filterByUserStatusName((RepositoryNode) childNode);
                         if (visible) {
                             return true;
                         }
@@ -642,9 +643,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             private boolean hasVisibleChildren(RepositoryNode node) {
                 boolean hasVisibleChildren = false;
-                List<RepositoryNode> children = node.getChildren();
-                for (RepositoryNode childNode : children) {
-                    hasVisibleChildren = hasVisibleChildren || filterByUserStatusName(childNode) || hasVisibleChildren(childNode);
+                List<IRepositoryNode> children = node.getChildren();
+                for (IRepositoryNode childNode : children) {
+                    hasVisibleChildren = hasVisibleChildren || filterByUserStatusName((RepositoryNode) childNode)
+                            || hasVisibleChildren((RepositoryNode) childNode);
                     if (hasVisibleChildren) {
                         return hasVisibleChildren;
                     }
@@ -1147,8 +1149,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (type == node.getProperties(EProperties.CONTENT_TYPE)) {
                 return node;
             }
-            for (RepositoryNode repositoryNode : node.getChildren()) {
-                RepositoryNode result = findContainer(repositoryNode, type);
+            for (IRepositoryNode repositoryNode : node.getChildren()) {
+                RepositoryNode result = findContainer((RepositoryNode) repositoryNode, type);
                 if (result != null) {
                     return result;
                 }
@@ -1162,8 +1164,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT && node.getProperties(EProperties.CONTENT_TYPE) == type) {
             result.add(node.getObject());
         } else {
-            for (RepositoryNode child : node.getChildren()) {
-                addElement(result, type, child);
+            for (IRepositoryNode child : node.getChildren()) {
+                addElement(result, type, (RepositoryNode) child);
             }
         }
 

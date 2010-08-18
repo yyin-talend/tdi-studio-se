@@ -68,14 +68,15 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.JobletReferenceBean;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
 import org.talend.repository.ui.dialog.JobletReferenceDialog;
 
@@ -205,10 +206,10 @@ public class DeleteAction extends AContextualAction {
                         monitor.beginTask("Delete Running", 100); //$NON-NLS-1$
                         IPath path = RepositoryNodeUtilities.getPath(node);
                         ERepositoryObjectType objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                        List<RepositoryNode> repositoryList = node.getChildren();
+                        List<IRepositoryNode> repositoryList = node.getChildren();
                         monitor.worked(10);
                         int taskTotal = repositoryList.size();
-                        for (RepositoryNode repositoryNode : repositoryList) {
+                        for (IRepositoryNode repositoryNode : repositoryList) {
                             deleteRepositoryNode(repositoryNode, factory);
                             monitor.worked(1 * 100 / taskTotal);
                         }
@@ -304,13 +305,13 @@ public class DeleteAction extends AContextualAction {
 
     }
 
-    private void deleteRepositoryNode(RepositoryNode repositoryNode, IProxyRepositoryFactory factory)
+    private void deleteRepositoryNode(IRepositoryNode repositoryNode, IProxyRepositoryFactory factory)
             throws PersistenceException, BusinessException {
         if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER) {
-            IPath path = RepositoryNodeUtilities.getPath(repositoryNode);
+            IPath path = RepositoryNodeUtilities.getPath((RepositoryNode) repositoryNode);
             ERepositoryObjectType objectType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
-            List<RepositoryNode> repositoryList = repositoryNode.getChildren();
-            for (RepositoryNode repositoryNode2 : repositoryList) {
+            List<IRepositoryNode> repositoryList = repositoryNode.getChildren();
+            for (IRepositoryNode repositoryNode2 : repositoryList) {
                 deleteRepositoryNode(repositoryNode2, factory);
             }
 
@@ -648,8 +649,8 @@ public class DeleteAction extends AContextualAction {
 
                     deleteActionCache.closeOpenedEditor(objToDelete);
                     if (currentJobNode.getType() == ENodeType.SIMPLE_FOLDER) {
-                        for (RepositoryNode curNode : currentJobNode.getChildren()) {
-                            deleteElements(factory, deleteActionCache, curNode, confirm);
+                        for (IRepositoryNode curNode : currentJobNode.getChildren()) {
+                            deleteElements(factory, deleteActionCache, (RepositoryNode) curNode, confirm);
                         }
                         factory.deleteFolder(currentJobNode.getContentType(), new Path(currentJobNode.getObject().getProperty()
                                 .getItem().getState().getPath()

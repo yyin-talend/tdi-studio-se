@@ -47,7 +47,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ResourceModelUtils;
-import org.talend.repository.model.URIHelper;
+import org.talend.repository.utils.URIHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment

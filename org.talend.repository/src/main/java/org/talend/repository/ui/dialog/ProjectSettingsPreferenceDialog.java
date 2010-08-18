@@ -43,9 +43,9 @@ import org.talend.core.ui.ISVNProviderService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.URIHelper;
 import org.talend.repository.ui.actions.ExportProjectSettings;
 import org.talend.repository.ui.actions.ImportProjectSettings;
+import org.talend.repository.utils.URIHelper;
 
 /**
  * wchen class global comment. Detailled comment

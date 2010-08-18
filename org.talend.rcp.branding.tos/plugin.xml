@@ -71,7 +71,7 @@
       </application>
    </extension>
          <extension
-            point="org.talend.core.service">
+            point="org.talend.core.runtime.service">
          <Service
                class="org.talend.rcp.branding.tos.TosBrandingService"
                serviceId="org.talend.core.ui.branding.IBrandingService"/>

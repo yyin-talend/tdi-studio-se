@@ -52,9 +52,10 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryChangedEvent;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.DeleteQueryAction;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
@@ -352,10 +353,10 @@ public class DBStructureComposite extends Composite {
         }
 
         private void getRepositoryNodeNames(RepositoryNode folderNode) {
-            List<RepositoryNode> nodes = folderNode.getChildren();
-            for (RepositoryNode node : nodes) {
+            List<IRepositoryNode> nodes = folderNode.getChildren();
+            for (IRepositoryNode node : nodes) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                    getRepositoryNodeNames(node);
+                    getRepositoryNodeNames((RepositoryNode) node);
                 } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                     names.add(node.getObject().getLabel());
                 }
@@ -537,12 +538,12 @@ public class DBStructureComposite extends Composite {
                 doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
             }
         } else {
-            List<RepositoryNode> repositoryNodes = root.getChildren();
-            for (RepositoryNode node : repositoryNodes) {
+            List<IRepositoryNode> repositoryNodes = root.getChildren();
+            for (IRepositoryNode node : repositoryNodes) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                    refreshChildren(node);
+                    refreshChildren((RepositoryNode) node);
                 } else {
-                    doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+                    doRefresh(repositoryNodeManager.getRepositoryNodeFromDB((RepositoryNode) node));
                 }
             }
         }

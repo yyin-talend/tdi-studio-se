@@ -3,7 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hl7
 Bundle-SymbolicName: org.talend.designer.hl7;singleton:=true
 Bundle-Version: 2.2.0.qualifier
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.talend.model,
+ org.eclipse.core.runtime,
+ org.talend.core.runtime,
  org.talend.core,
  org.talend.commons.ui,
  org.talend.repository,

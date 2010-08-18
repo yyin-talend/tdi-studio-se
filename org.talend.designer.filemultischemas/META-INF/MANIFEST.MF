@@ -8,6 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.commons.ui,
  org.talend.designer.core,
  org.talend.repository,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.core.runtime,
+ org.talend.model
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
