@@ -378,9 +378,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             // hywang add for excel 2007
                             if (repositoryValue.equals(EParameterName.FILE_PATH.getName())) {
                                 String s = TalendTextUtils.removeQuotes(objectValue.toString());
-                                String versionCheckFor2007 = "false"; //$NON-NLS-N$
+                                boolean versionCheckFor2007 = false; //$NON-NLS-N$
                                 if (s.endsWith(".xlsx")) { //$NON-NLS-N$
-                                    versionCheckFor2007 = "true"; //$NON-NLS-N$
+                                    versionCheckFor2007 = true; //$NON-NLS-N$
                                 }
                                 if (elem.getElementParameter("VERSION_2007") != null) { //$NON-NLS-N$
                                     elem.setPropertyValue("VERSION_2007", versionCheckFor2007); //$NON-NLS-N$
