@@ -692,7 +692,7 @@ public class MapperManager extends AbstractMapperManager {
             uiManager.removeOutputTableView(toRemove);
             uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
             IProcess process = getAbstractMapComponent().getProcess();
-            process.removeUniqueConnectionName(ERROR_REJECT);
+            process.removeUniqueConnectionName(toRemove.getDataMapTable().getName());
         }
     }
 
