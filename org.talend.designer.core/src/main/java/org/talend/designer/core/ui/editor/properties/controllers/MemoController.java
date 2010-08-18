@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -101,7 +101,7 @@ public class MemoController extends AbstractElementPropertySectionController {
         } else {
             text.setEditable(!param.isReadOnly());
         }
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
         String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
         FontData fontData = new FontData(fontType);
         Font font = new Font(null, fontData);

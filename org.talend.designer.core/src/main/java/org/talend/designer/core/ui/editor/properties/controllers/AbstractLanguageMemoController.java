@@ -55,7 +55,6 @@ import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -122,7 +121,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     display.syncExec(new Runnable() {
 
                         public void run() {
-                            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                            IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
                             String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                             FontData fontData = new FontData(fontType);
                             Font font = new Font(parent.getDisplay(), fontData);
@@ -441,7 +440,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                         display.syncExec(new Runnable() {
 
                             public void run() {
-                                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                                IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
                                 String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                                 FontData fontData = new FontData(fontType);
                                 Font font = new Font(parent.getDisplay(), fontData);

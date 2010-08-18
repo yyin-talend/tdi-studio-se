@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.utils.DesignerColorUtils;
@@ -140,7 +141,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 display.syncExec(new Runnable() {
 
                     public void run() {
-                        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                        IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
                         Font font = new Font(null, "courier", 10, SWT.NONE); //$NON-NLS-1$
                         PreferenceConverter.setValue(store, TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData());
                     }
