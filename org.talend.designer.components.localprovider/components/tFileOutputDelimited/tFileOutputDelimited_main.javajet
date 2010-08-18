@@ -209,7 +209,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                <%
     		                if(isIncludeHeader){
     		                    %>
-//    		                    if(file<%=cid%>.length()==0){  
+    		                    if(file<%=cid%>.length()==0){  
     		                        <%		
     		                        //List<IMetadataColumn> columns = metadata.getListColumns();
     		                        //int sizeColumns = columns.size();
@@ -232,7 +232,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                        }
     		                        %>
     		                        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
-//    		                    }	
+    		                    }	
     		                    <%
     		                }
     		                %>
@@ -471,13 +471,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        if(isIncludeHeader && isAppend){
             			            %>
                                     file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
-//                        		    if(file_<%=cid%>.length() == 0) {
+                        		    if(file_<%=cid%>.length() == 0) {
                         		        CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
                         		        <%if(isInRowMode){%>
                         		        out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 						strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
                 						<%}%>
-//                       		    }	  
+                       		    	}	  
                         		    <%
             			        }
                         		%>
