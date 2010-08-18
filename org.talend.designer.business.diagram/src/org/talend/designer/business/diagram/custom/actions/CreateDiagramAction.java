@@ -82,6 +82,10 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
                 if (nodeType == ERepositoryObjectType.BUSINESS_PROCESS) {
                     enabled = true;
                 }
+                if (repositoryNode.getObject() != null
+                        && repositoryNode.getObject().getProperty().getItem().getState().isDeleted()) {
+                    enabled = false;
+                }
             }
         }
 
