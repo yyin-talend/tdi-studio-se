@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.talend.core.service">
+         point="org.talend.core.runtime.service">
       <Service
             class="org.talend.repository.ftp.FTPProviderService"
             serviceId="org.talend.core.ui.IFTPProviderService">
