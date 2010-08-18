@@ -34,12 +34,15 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -482,5 +485,14 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     protected void createActions() {
         super.createActions();
         getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
+    }
+
+    @Override
+    protected void initializeViewerColors(ISourceViewer viewer) {
+        super.initializeViewerColors(viewer);
+        if (!isEditable()) {
+            StyledText styledText = viewer.getTextWidget();
+            styledText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+        }
     }
 }
