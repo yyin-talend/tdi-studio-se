@@ -41,8 +41,8 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -64,6 +64,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
@@ -89,6 +90,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private RepositoryEditorInput rEditorInput;
 
     private Boolean isEditable = true;
+
+    private Color bgColorForReadOnlyItem;
+
+    private Color bgColorForEditabeItem;
 
     /**
      * DOC smallet Comment method "getRepositoryFactory".
@@ -227,6 +232,14 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                     }
                 }
             }
+        }
+
+        // dispose custom color
+        if (bgColorForReadOnlyItem != null) {
+            bgColorForReadOnlyItem.dispose();
+        }
+        if (bgColorForEditabeItem != null) {
+            bgColorForEditabeItem.dispose();
         }
     }
 
@@ -490,9 +503,17 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     @Override
     protected void initializeViewerColors(ISourceViewer viewer) {
         super.initializeViewerColors(viewer);
+
+        StyledText styledText = viewer.getTextWidget();
+
         if (!isEditable()) {
-            StyledText styledText = viewer.getTextWidget();
-            styledText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+            bgColorForReadOnlyItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceReadonlyRGB(
+                    DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_READONLY_COLOR));
+            styledText.setBackground(bgColorForReadOnlyItem);
+        } else {
+            bgColorForEditabeItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceDesignerEditorRGB(
+                    DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_EDITOR_COLOR));
+            styledText.setBackground(bgColorForEditabeItem);
         }
     }
 }
