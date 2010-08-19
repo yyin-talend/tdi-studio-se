@@ -38,6 +38,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.impl.MetadataTableImpl;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -468,7 +469,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     private RepositoryNode createMetatable(RepositoryNode node, IRepositoryViewObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table, boolean isBuildIn) {
         MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(repObj, table);
-        modelObj.setRepositoryName(table.getLabel());
+        if (table instanceof MetadataTableImpl) {
+            modelObj.setRepositoryName(((MetadataTableImpl) table).getOriginalLabel());
+        } else {
+            modelObj.setRepositoryName(table.getLabel());
+        }
+
         // statusCode use for source table name
         modelObj.setSourceName(table.getSourceName());
         // purpose use for Image text.

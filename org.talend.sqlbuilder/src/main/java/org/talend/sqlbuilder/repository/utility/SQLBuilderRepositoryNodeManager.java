@@ -51,6 +51,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -68,6 +69,8 @@ import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.TextUtil;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * dev class global comment. Detailled comment <br/>
@@ -511,8 +514,16 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void restoreConnection(DatabaseConnection connection, List<MetadataTable> tablesFromEMF) {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
-        ConnectionHelper.getTables(connection).clear();
-        ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
+        // ConnectionHelper.getTables(connection).clear();
+        // ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
+
+        Catalog c = (Catalog) ConnectionHelper.getPackage(connection.getSID(), connection, Catalog.class);
+        Schema s = (Schema) ConnectionHelper.getPackage(connection.getSID(), connection, Schema.class);
+        if (c != null) {
+            PackageHelper.addMetadataTable(tablesFromEMF, c);
+        } else if (s != null) {
+            PackageHelper.addMetadataTable(tablesFromEMF, s);
+        }
     }
 
     /**
