@@ -90,6 +90,7 @@ import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -1862,8 +1863,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 try {
                     IRepositoryViewObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
                             .getLastVersion((String) repositoryParam.getValue());
-                    if (o != null) {
-                        RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o);
+                    // for bug 14535
+                    if (o != null && elem instanceof INode) {
+                        INode node = (INode) elem;
+                        RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o, node);
+                        RepositoryManager.getRepositoryView().refresh();
                     }
                 } catch (Exception e) {
                     ExceptionHandler.process(e);

@@ -463,9 +463,9 @@ public class RepositoryService implements IRepositoryService {
         rcpMode = true;
     }
 
-    public void openMetadataConnection(IRepositoryViewObject o) {
+    public void openMetadataConnection(IRepositoryViewObject o, INode node) {
         final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(o);
-        openMetadataConnection(false, realNode, null);
+        openMetadataConnection(false, realNode, node);
     }
 
     public ConnectionItem openMetadataConnection(boolean creation, IRepositoryNode repoNode, INode node) {
@@ -554,7 +554,7 @@ public class RepositoryService implements IRepositoryService {
             boolean changed = false;
             if (relatedWizard != null) {
                 ConnectionItem connItem = null;
-                if (creation && node != null && relatedWizard instanceof RepositoryWizard) {
+                if (node != null && relatedWizard instanceof RepositoryWizard) {// creation && node != null
                     connItem = ((RepositoryWizard) relatedWizard).getConnectionItem();
                     if (connItem != null) {
                         changed = ComponentToRepositoryProperty.setValue(connItem.getConnection(), node);
@@ -563,7 +563,6 @@ public class RepositoryService implements IRepositoryService {
                 if (connItem != null && changed) {
                     // Open the Wizard
                     WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
-
                     wizardDialog.setPageSize(600, 500);
                     wizardDialog.create();
                     if (wizardDialog.open() == wizardDialog.OK) {
