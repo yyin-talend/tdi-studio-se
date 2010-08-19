@@ -27,14 +27,12 @@
 	}else{
 		sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 	}
-	if(sftp){
-		if(!("true").equals(useExistingConn)){
+	if(sftp && !("true").equals(useExistingConn)){
 %>
 
     		session_<%=cid%>.disconnect(); 
     
 <%
-		}
 	}else{
 		if(!("true").equals(useExistingConn)){
  			if(("true").equals(ignoreFailureAtQuit)){
