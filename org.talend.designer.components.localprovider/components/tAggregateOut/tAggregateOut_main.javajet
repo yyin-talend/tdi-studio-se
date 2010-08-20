@@ -418,7 +418,6 @@ if(inputConn != null) { // T_OutMain_AggR_501
 					<%
 					}
 					%>
-					if(<%=inputConn.getName() %>.<%=inputColumnName %> != null)
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue();
 					<%
 				
@@ -434,7 +433,6 @@ if(inputConn != null) { // T_OutMain_AggR_501
 					<%
 					}else{
 					%>
-					if(<%=inputConn.getName() %>.<%=inputColumnName %> != null)
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
 <%
 					}
