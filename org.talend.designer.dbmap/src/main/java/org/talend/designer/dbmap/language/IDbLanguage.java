@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.dbmap.language;
 
+import java.util.List;
+
 import org.talend.core.language.ICodeProblemsChecker;
 
 /**
@@ -71,4 +73,5 @@ public interface IDbLanguage {
 
     public abstract IDbOperatorManager getOperatorsManager();
 
+    public List<IJoinType> unuseWithExplicitJoin();
 }

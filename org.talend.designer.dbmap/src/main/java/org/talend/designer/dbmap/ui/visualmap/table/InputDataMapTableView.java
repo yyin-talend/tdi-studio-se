@@ -94,10 +94,19 @@ public class InputDataMapTableView extends DataMapTableView {
                 if (dropDownItem != null && !dropDownItem.isDisposed()) {
                     enable = dropDownItem.isEnabled();
                 }
-                if (enable && value && getInputTable().getJoinType().getLabel().equals("(IMPLICIT JOIN)")) {
+                if (enable && value
+                        && mapperManager.getCurrentLanguage().unuseWithExplicitJoin().contains(getInputTable().getJoinType())) {
                     if (menu != null) {
                         MenuItem[] menuItems = menu.getItems();
-                        menuItems[0].setImage(null);
+
+                        for (MenuItem mi : menuItems) {
+                            if (mi.getImage() == null) {
+                                continue;
+                            }
+                            if (mi.getText().equals(getInputTable().getJoinType().getLabel())) {
+                                mi.setImage(null);
+                            }
+                        }
                         menuItems[1].setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
                     }
                     getInputTable().setJoinType(JOIN.INNER_JOIN);
@@ -335,7 +344,7 @@ public class InputDataMapTableView extends DataMapTableView {
                                 }
                                 menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
                                 IJoinType joinType = (IJoinType) menuItem.getData();
-                                if (joinType.equals(JOIN.NO_JOIN)) {
+                                if (mapperManager.getCurrentLanguage().unuseWithExplicitJoin().contains(joinType)) {
                                     if (getInputTable().getColumnEntries() != null
                                             && !getInputTable().getColumnEntries().isEmpty()) {
                                         Iterator iterator = getInputTable().getColumnEntries().iterator();

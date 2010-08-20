@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.dbmap.language;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.language.ICodeProblemsChecker;
 
@@ -75,7 +78,8 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.language.IDbLanguage#getLocation(org.talend.designer.dbmap.model.tableentry.TableEntryLocation)
+     * @seeorg.talend.designer.dbmap.language.IDbLanguage#getLocation(org.talend.designer.dbmap.model.tableentry.
+     * TableEntryLocation)
      */
     public String getLocation(String tableName, String columnName) {
         return StringHelper.replacePrms(getTemplateTableColumnVariable(), new Object[] { tableName, columnName });
@@ -115,6 +119,12 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
      */
     public IJoinType getJoin(String joinType) {
         return JOIN.getJoin(joinType);
+    }
+
+    public List<IJoinType> unuseWithExplicitJoin() {
+        List<IJoinType> joins = new ArrayList<IJoinType>();
+        joins.add(JOIN.NO_JOIN);
+        return joins;
     }
 
 }
