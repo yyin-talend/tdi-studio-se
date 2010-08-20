@@ -300,7 +300,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     private AdapterImpl dirtyListener = new AdapterImpl() {
 
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER
+                    && notification.getEventType() != Notification.RESOLVE) {
                 propertyIsDirty = true;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }

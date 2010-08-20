@@ -23,8 +23,6 @@ import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryObject;
-import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.model.RepositoryNode;
@@ -63,13 +61,7 @@ public class ReadDiagramAction extends AContextualAction {
         if (node != null) {
             IRepositoryViewObject repositoryObject = node.getObject();
 
-            Property updatedProperty = null;
-            if (repositoryObject instanceof RepositoryObject) {
-                RepositoryViewObject abstractRepositoryObject = new RepositoryViewObject(repositoryObject.getProperty());
-                updatedProperty = abstractRepositoryObject.getProperty();
-            } else if (repositoryObject instanceof RepositoryViewObject) {
-                updatedProperty = repositoryObject.getProperty();
-            }
+            Property updatedProperty = repositoryObject.getProperty();
             if (updatedProperty != null) {
                 BusinessProcessItem businessProcessItem = (BusinessProcessItem) updatedProperty.getItem();
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getActivePage(),

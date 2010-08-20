@@ -34,6 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
@@ -68,7 +69,9 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
         IPath path = RepositoryNodeUtilities.getPath(node);
         String originalName = node.getObject().getLabel();
 
-        OpenExistVersionProcessWizard wizard = new OpenExistVersionProcessWizard(node.getObject());
+        RepositoryObject repositoryObj = new RepositoryObject(node.getObject().getProperty());
+        repositoryObj.setRepositoryNode(node.getObject().getRepositoryNode());
+        OpenExistVersionProcessWizard wizard = new OpenExistVersionProcessWizard(repositoryObj);
         PropertyManagerWizardDialog dialog = new PropertyManagerWizardDialog(Display.getCurrent().getActiveShell(), wizard);
         dialog.setPageSize(300, 250);
         dialog.setTitle(Messages.getString("OpenExistVersionProcess.open.dialog")); //$NON-NLS-1$

@@ -134,27 +134,34 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
             if (!alreadyEditedByUser) {
-                lockObject(processObject);
                 refreshNewJob();
-                unlockObject();
+                try {
+                    ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
             }
-            // Property property = processObject.getRepositoryNode().getObject().getProperty();
-            // Property updatedProperty = null;
-            // try {
-            // updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
-            // new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
-            // } catch (PersistenceException e) {
-            // ExceptionHandler.process(e);
-            // }
-            // update the property of the node repository object
-            // processObject.getRepositoryNode().getObject().setProperty(updatedProperty);
-            openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), false);
+
+            try {
+                ProxyRepositoryFactory.getInstance().lock(processObject);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+            boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
+            openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
+            try {
+                ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             boolean lastVersion = node.getObject().getVersion().equals(processObject.getVersion());
+            processObject.getProperty().setVersion(originalVersion);
             if (lastVersion) {
-                lockObject(node.getObject());
+                lockObject(processObject);
             }
             ERepositoryStatus status = node.getObject().getRepositoryStatus();
             boolean isLocked = false;
@@ -200,7 +207,8 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                 } else if (item instanceof BusinessProcessItem) {
                     BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
-                    IFile file = CorePlugin.getDefault().getDiagramModelService().getDiagramFile(page);
+                    IFile file = CorePlugin.getDefault().getDiagramModelService().getDiagramFileAndUpdateResource(page,
+                            businessProcessItem);
                     fileEditorInput = new RepositoryEditorInput(file, businessProcessItem);
                 } else if (item instanceof RoutineItem) {
                     RoutineItem routineItem = (RoutineItem) item;

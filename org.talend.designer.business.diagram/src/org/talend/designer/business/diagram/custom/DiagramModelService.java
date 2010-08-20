@@ -195,9 +195,12 @@ public class DiagramModelService implements IDiagramModelService {
         page.openEditor(input, BusinessDiagramEditor.ID, false);
     }
 
-    public IFile getDiagramFile(IWorkbenchPage page) {
+    public IFile getDiagramFileAndUpdateResource(IWorkbenchPage page, BusinessProcessItem businessProcessItem) {
         DiagramResourceManager diagramResourceManager = new DiagramResourceManager(page, new NullProgressMonitor());
-        return diagramResourceManager.createDiagramFile();
+        IFile file = diagramResourceManager.createDiagramFile();
+        diagramResourceManager.updateResource(businessProcessItem, file);
+
+        return file;
     }
 
     public void addDeleteAssignmentAction(IMenuManager mgr, ISelection selection) {
@@ -209,17 +212,4 @@ public class DiagramModelService implements IDiagramModelService {
         mgr.add(action);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.business.diagram.custom.IDiagramModelService#updateProcessFromResource(org.talend.core.model
-     * .properties.BusinessProcessItem)
-     */
-    public void updateProcessFromResource(BusinessProcessItem processItem) {
-        DiagramResourceManager diagramResourceManager = new DiagramResourceManager(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage(), new NullProgressMonitor());
-        IFile file = diagramResourceManager.createDiagramFile();
-        diagramResourceManager.updateFromResource(processItem, file);
-    }
 }
