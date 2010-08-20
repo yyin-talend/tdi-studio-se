@@ -53,24 +53,17 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizardPage;
  */
 public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
-    /*
-     * project settings
-     */
-
-    private Group projectGroup, projectSvnGroup;
+    private Group projectGroup;
 
     private LabelledCombo languageCombo;
 
-    private LabelledText projectLabelText, projectDescText, projectSvnUrlText, projectSvnLoginText, projectSvnPassText;
+    private LabelledText projectLabelText;
 
-    /*
-     * user settings
-     */
+    private Group userGroup;
 
-    private Group userGroup, userSvnGroup;
+    private LabelledText userLoginText, userPassText, userFirstNameText, userLastNameText;
 
-    private LabelledText userLoginText, userPassText, userFirstNameText, userLastNameText, userDefaultSvnUserText,
-            userDefaultSvnPassText;
+    private Project[] projects = null;
 
     public CreateSandboxProjectDialog(Shell parentShell) {
         super(parentShell);
@@ -79,6 +72,18 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
         if (imgDesc != null) {
             setTitleImage(ImageProvider.getImage(imgDesc));
+        }
+
+        initProjectList();
+    }
+
+    private void initProjectList() {
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+
+        try {
+            projects = repositoryFactory.readProject();
+        } catch (Exception e) {
+            //
         }
     }
 
@@ -105,6 +110,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         checkFields();
+        if (userLoginText != null) {
+            userLoginText.getTextControl().forceFocus(); // focus this first
+        }
         return contents;
     }
 
@@ -114,6 +122,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         projectGroup = new Group(composite, SWT.NONE);
+        projectGroup.setText(Messages.getString("CreateSandboxProjectDialog.Settings")); //$NON-NLS-1$
         projectGroup.setLayout(new GridLayout(2, false));
         projectGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -122,41 +131,18 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         layoutData.widthHint = 180;
         layoutData.minimumWidth = 180;
         projectLabelText.setLayoutData(layoutData);
-
-        projectDescText = new LabelledText(projectGroup,
-                Messages.getString("CreateSandboxProjectDialog.ProjectDesc"), 1, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL); //$NON-NLS-1$
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.heightHint = 30;
-        layoutData.minimumHeight = 30;
-        projectDescText.setLayoutData(layoutData);
+        projectLabelText.getTextControl().setEditable(false);
 
         languageCombo = new LabelledCombo(projectGroup, Messages.getString("NewProjectWizardPage.language"), null, new String[] { //$NON-NLS-1$
                 ECodeLanguage.JAVA.getName(), ECodeLanguage.PERL.getName() });
         layoutData = new GridData();
-        layoutData.widthHint = 80;
-        layoutData.minimumWidth = 80;
+        layoutData.widthHint = 100;
+        layoutData.minimumWidth = 100;
         languageCombo.getCombo().setLayoutData(layoutData);
         languageCombo.select(0); // default for java
 
-        projectSvnGroup = new Group(projectGroup, SWT.NONE);
-        projectSvnGroup.setText(Messages.getString("CreateSandboxProjectDialog.ProjectSvnAdvance")); //$NON-NLS-1$
-        projectSvnGroup.setLayout(new GridLayout(4, false));
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.horizontalSpan = 2;
-        projectSvnGroup.setLayoutData(layoutData);
-
-        projectSvnUrlText = new LabelledText(projectSvnGroup, Messages.getString("CreateSandboxProjectDialog.svnUrl"), 3); //$NON-NLS-1$
-        projectSvnLoginText = new LabelledText(projectSvnGroup, Messages.getString("CreateSandboxProjectDialog.Login")); //$NON-NLS-1$
-        projectSvnPassText = new LabelledText(projectSvnGroup, Messages.getString("CreateSandboxProjectDialog.Password")); //$NON-NLS-1$
-        projectSvnPassText.getTextControl().setEchoChar('*');
         // user
-        Composite userComp = new Composite(projectGroup, SWT.NONE);
-        GridData userLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-        userLayoutData.horizontalSpan = 2;
-        userComp.setLayoutData(userLayoutData);
-        userComp.setLayout(new GridLayout());
-
-        createUserInfors(userComp);
+        createUserInfors(projectGroup);
 
     }
 
@@ -169,16 +155,14 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             }
         };
         projectLabelText.addModifyListener(listener);
-        projectDescText.addModifyListener(listener);
-        projectSvnUrlText.addModifyListener(listener);
-        projectSvnLoginText.addModifyListener(listener);
     }
 
     private void createUserInfors(Composite parent) {
         userGroup = new Group(parent, SWT.NULL);
-        userGroup.setText(Messages.getString("CreateSandboxProjectDialog.createUserLabel")); //$NON-NLS-1$
         userGroup.setLayout(new GridLayout(4, false));
-        userGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData userLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        userLayoutData.horizontalSpan = 2;
+        userGroup.setLayoutData(userLayoutData);
 
         userLoginText = new LabelledText(userGroup, Messages.getString("CreateSandboxProjectDialog.Login")); //$NON-NLS-1$
         userPassText = new LabelledText(userGroup, Messages.getString("CreateSandboxProjectDialog.Password")); //$NON-NLS-1$
@@ -187,22 +171,16 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         userFirstNameText = new LabelledText(userGroup, Messages.getString("CreateSandboxProjectDialog.userFirstname")); //$NON-NLS-1$
         userLastNameText = new LabelledText(userGroup, Messages.getString("CreateSandboxProjectDialog.userLastname")); //$NON-NLS-1$
 
-        userSvnGroup = new Group(userGroup, SWT.NONE);
-        userSvnGroup.setText(Messages.getString("CreateSandboxProjectDialog.userSvnSettingLabel")); //$NON-NLS-1$
-        userSvnGroup.setLayout(new GridLayout(4, false));
-        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.horizontalSpan = 4;
-        userSvnGroup.setLayoutData(layoutData);
-
-        userDefaultSvnUserText = new LabelledText(userSvnGroup, Messages.getString("CreateSandboxProjectDialog.Login")); //$NON-NLS-1$
-        userDefaultSvnPassText = new LabelledText(userSvnGroup, Messages.getString("CreateSandboxProjectDialog.Password")); //$NON-NLS-1$
-        userDefaultSvnPassText.getTextControl().setEchoChar('*');
     }
 
     private void addUserListeners() {
         ModifyListener listener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
+                if (e.widget == userLoginText.getTextControl()) {
+                    String generateProjectName = generateProjectName();
+                    projectLabelText.setText(generateProjectName);
+                }
                 checkFields();
             }
         };
@@ -214,27 +192,21 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
         // check field
         String projectLabel = projectLabelText.getText();
-        if (projectLabel.length() == 0) {
-            setErrorMessage(Messages.getString("NewProjectWizardPage.nameEmpty")); //$NON-NLS-1$
+        if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText.getText()))) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
+        } else if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, projectLabel)
+                || NewProjectWizardPage.isKeywords(projectLabel.toLowerCase())
+                || ECodeLanguage.JAVA.getName().equalsIgnoreCase(projectLabel)) {
+            setErrorMessage(Messages.getString("NewProjectWizardPage.illegalCharacter")); //$NON-NLS-1$
+            checkProjectLabel(true);
+        } else if (isProjectNameAlreadyUsed(projectLabel)) {
+            setErrorMessage(Messages.getString("NewProjectWizardPage.projectNameAlredyExists")); //$NON-NLS-1$
+            checkProjectLabel(true);
+        } else if (userPassText.getText().length() == 0) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userPasswordEmptyMessage")); //$NON-NLS-1$
         } else {
-            if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, projectLabel)
-                    || NewProjectWizardPage.isKeywords(projectLabel.toLowerCase())
-                    || ECodeLanguage.JAVA.getName().equalsIgnoreCase(projectLabel)) {
-                setErrorMessage(Messages.getString("NewProjectWizardPage.illegalCharacter")); //$NON-NLS-1$
-            } else if (isProjectNameAlreadyUsed(projectLabel)) {
-                setErrorMessage(Messages.getString("NewProjectWizardPage.projectNameAlredyExists")); //$NON-NLS-1$
-            } else if (projectSvnUrlText.getText().length() == 0) {
-                setErrorMessage(Messages.getString("CreateSandboxProjectDialog.URLMessage")); //$NON-NLS-1$
-            } else if (projectSvnLoginText.getText().length() == 0) {
-                setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginMessage")); //$NON-NLS-1$
-            } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText
-                    .getText()))) {
-                setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
-            } else if (userPassText.getText().length() == 0) {
-                setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userPasswordEmptyMessage")); //$NON-NLS-1$
-            } else {
-                setErrorMessage(null);
-            }
+            setErrorMessage(null);
+            checkProjectLabel(false);
         }
     }
 
@@ -247,12 +219,36 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     }
 
+    private String generateProjectName() {
+        String text = userLoginText.getText();
+
+        if (Pattern.matches(RepositoryConstants.MAIL_PATTERN, text)) {
+            int at = text.indexOf('@');
+            if (at > -1) {
+                String mailName = text.substring(0, at);
+                if (mailName.length() > 0) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("Sandbox_"); //$NON-NLS-1$
+                    sb.append(mailName);
+                    sb.append("_project"); //$NON-NLS-1$
+                    return sb.toString();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void checkProjectLabel(boolean editable) {
+        if (editable) {
+            projectLabelText.getTextControl().setEditable(true);
+        } else {
+            projectLabelText.getTextControl().setEditable(false);
+        }
+    }
+
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
-        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-        Project[] projects = null;
-        try {
-            projects = repositoryFactory.readProject();
-        } catch (Exception e) {
+
+        if (projects == null) { // need check later.
             return true;
         }
         for (Project project : projects) {
@@ -268,9 +264,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         //
         Project newProject = new Project();
         newProject.setLabel(projectLabelText.getText());
-        // newProject.setTechnicalLabel( Project.createTechnicalName(newProject.getLabel()));
-        newProject.setDescription(projectDescText.getText());
+        newProject.setTechnicalLabel(Project.createTechnicalName(newProject.getLabel()));
         newProject.setLanguage(ECodeLanguage.getCodeLanguage(languageCombo.getText()));
+        newProject.setDescription(newProject.getLabel());
 
         User newUser = PropertiesFactory.eINSTANCE.createUser();
         newUser.setLogin(userLoginText.getText());
@@ -286,15 +282,14 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
         boolean ok = false;
         try {
-            ok = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createSandboxProject(newProject,
-                    projectSvnUrlText.getText(), projectSvnLoginText.getText(), projectSvnPassText.getText(),
-                    userDefaultSvnUserText.getText(), userDefaultSvnPassText.getText());
+            ok = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createSandboxProject(newProject);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             MessageDialog
                     .openError(
                             getShell(),
-                            Messages.getString("CreateSandboxProjectDialog.Failure"), Messages.getString("CreateSandboxProjectDialog.failureMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+                            Messages.getString("CreateSandboxProjectDialog.Failure"), Messages.getString("CreateSandboxProjectDialog.failureMessage") //$NON-NLS-1$ //$NON-NLS-2$
+                                    + "\n\n" + e.getMessage()); //$NON-NLS-1$
         }
         if (ok) { // if not created, will don't close the dialog
             MessageDialog

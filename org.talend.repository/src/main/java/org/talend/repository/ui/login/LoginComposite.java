@@ -326,8 +326,9 @@ public class LoginComposite extends Composite {
         manageConnectionsButton.setLayoutData(new GridData(SWT.BORDER | SWT.RIGHT));
 
         createSandboxProjectButton = toolkit.createButton(groupConnection, null, SWT.PUSH);
+        createSandboxProjectButton.setText(Messages.getString("LoginComposite.createSandboxProjectToolTipHint")); //$NON-NLS-1$
         createSandboxProjectButton.setToolTipText(Messages.getString("LoginComposite.createSandboxProjectToolTipHint")); //$NON-NLS-1$
-        createSandboxProjectButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
+        // createSandboxProjectButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         createSandboxProjectButton.setLayoutData(new GridData(SWT.BORDER | SWT.RIGHT));
 
         // Username:
