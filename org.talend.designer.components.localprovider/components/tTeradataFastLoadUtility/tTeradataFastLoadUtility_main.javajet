@@ -38,6 +38,8 @@ String errorFiles= ElementParameterParser.getValue(node, "__ERRORFILES__");
 String defineCharset = ElementParameterParser.getValue(node, "__DEFINE_CHARSET__");
 String charset = ElementParameterParser.getValue(node, "__CHARSET__");
 
+String errLimit = ElementParameterParser.getValue(node, "__ERRLIMIT__");
+
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
@@ -84,6 +86,7 @@ if(columnList!=null){
 %>
 fw_<%=cid %>.write("FILE="+<%=loadFile%>+";\r\n");
 fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" "+<%=errorFiles%>+" CHECKPOINT <%=checkPoint%>;\r\n");
+fw_<%=cid %>.write("ERRLIMIT <%=errLimit%>;\r\n");
 <%//SQL statements-------------------------------------------------------%>
 <%
 StringBuilder insertColSQL = new StringBuilder();
