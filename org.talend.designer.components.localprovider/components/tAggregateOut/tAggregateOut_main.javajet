@@ -432,12 +432,14 @@ if(inputConn != null) { // T_OutMain_AggR_501
 					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%=primitiveTypeToGenerate%>)(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.<%=primitiveTypeToGenerate%>Value() + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
 					<%
 					}else{
+						if(!isBasePrimitive  ){
 					%>
+					if(<%=inputConn.getName() %>.<%=inputColumnName %> != null)
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
 <%
 					}
+				  }
 				}
-			
 			} else if(function.equals(FIRST)){
 					
 				%>
