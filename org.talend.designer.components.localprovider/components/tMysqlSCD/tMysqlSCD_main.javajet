@@ -30,7 +30,10 @@ List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 if(rejectConns != null && rejectConns.size() > 0) {
     IConnection rejectConn = rejectConns.get(0);
     rejectConnName = rejectConn.getName();
-}
+    %>
+    	<%=rejectConnName%> = null; // reinitialize the reject connection for branch system (option HAS_CONDITIONAL_OUTPUTS)
+    <%
+	}
 List<IMetadataColumn> rejectColumnList = null;
 IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
 if(metadataTable != null) {
@@ -437,6 +440,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         } else {
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
                 %>
+                
                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                 <%
                 for(IMetadataColumn inColumn : inputSchema) {
@@ -444,6 +448,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 	 	if (inColumn.getLabel().equals(outColumn.getLabel())) {
                 %>
                     <%=rejectConnName%>.<%=inColumn.getLabel()%> = <%=inConnectionName%>.<%=inColumn.getLabel()%>;
+                    
                 <%
                 		}
                 	}
