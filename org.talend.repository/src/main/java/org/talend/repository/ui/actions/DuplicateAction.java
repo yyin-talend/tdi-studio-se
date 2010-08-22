@@ -344,9 +344,6 @@ public class DuplicateAction extends AContextualAction {
             case SVG_BUSINESS_PROCESS:
                 item = PropertiesFactory.eINSTANCE.createSVGBusinessProcessItem();
                 break;
-            case TDQ_ELEMENT:
-                item = PropertiesFactory.eINSTANCE.createTDQItem();
-                break;
             default:
             }
         }
