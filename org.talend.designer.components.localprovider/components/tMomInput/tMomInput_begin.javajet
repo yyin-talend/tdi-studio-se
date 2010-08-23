@@ -386,7 +386,7 @@ class="MomInput"
  			String firstConnName = conn.getName();
 		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 %>
-					<%=firstConnName%>.from=<%=from%>;	
+					<%=firstConnName%>.from=<%=queue%>;	
 					<%=firstConnName%>.message=msg_<%=cid%>;	
 <%
 				} else {
