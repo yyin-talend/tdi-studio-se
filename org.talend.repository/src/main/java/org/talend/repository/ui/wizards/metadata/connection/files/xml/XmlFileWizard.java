@@ -12,11 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
@@ -36,6 +38,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -67,6 +70,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -369,6 +373,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
         if (finalPage == null) {
             finalPage = propertiesWizardPage;
         }
+        deleteTemFile();
         if (connection.isInputModel()) {
 
             if (finalPage instanceof XmlFileWizardPage) {
@@ -449,6 +454,7 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
             connectionItem.getProperty().setPurpose(this.originalPurpose);
             connectionItem.getProperty().setStatusCode(this.originalStatus);
         }
+        deleteTemFile();
         return super.performCancel();
     }
 
@@ -691,6 +697,30 @@ public class XmlFileWizard extends CheckLastVersionRepositoryWizard implements I
 
     public void setCurrentPage(IWizardPage currentPage) {
         this.currentPage = currentPage;
+    }
+
+    private void deleteTemFile() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject fsProject = null;
+        try {
+            fsProject = ResourceModelUtils.getProject(project);
+        } catch (PersistenceException e2) {
+            ExceptionHandler.process(e2);
+        }
+        if (fsProject == null) {
+            return;
+        }
+        String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
+        String xmlName = "tempXMLFile.xml";
+        String xsdName = "tempXSDFile.xsd";
+        File xmlfile = new File(temPath + File.separator + xmlName);
+        if (xmlfile.exists()) {
+            xmlfile.delete();
+        }
+        File xsdFile = new File(temPath + File.separator + xsdName);
+        if (xsdFile.exists()) {
+            xsdFile.delete();
+        }
     }
 
 }

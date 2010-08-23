@@ -17,6 +17,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
@@ -52,6 +54,8 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -63,6 +67,7 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -74,7 +79,9 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreviewHandlerListener;
 import org.talend.repository.preview.ProcessDescription;
@@ -140,6 +147,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     private static Boolean firstTimeWizardOpened = null;
 
     private String xmlFilePath;
+
+    private String tempXmlXsdPath;
 
     private Group schemaTargetGroup;
 
@@ -745,7 +754,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             String pathStr = ""; //$NON-NLS-1$
 
             try {
-                pathStr = getConnection().getXmlFilePath();
+                if (tempXmlXsdPath != null && getConnection().getFileContent() != null
+                        && getConnection().getFileContent().length > 0) {
+                    pathStr = tempXmlXsdPath;
+                } else {
+                    pathStr = getConnection().getXmlFilePath();
+                }
                 if (isContextMode()) {
                     ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(
                             connectionItem.getConnection(), true);
@@ -753,6 +767,20 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 }
 
                 File file = new File(pathStr);
+                if (!file.exists()) {
+                    file.createNewFile();
+                    FileOutputStream outStream;
+                    try {
+                        outStream = new FileOutputStream(file);
+                        outStream.write(getConnection().getFileContent());
+                        outStream.close();
+                    } catch (FileNotFoundException e1) {
+                        ExceptionHandler.process(e1);
+                    } catch (IOException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                 String str;
@@ -815,7 +843,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                         true);
                 pathStr = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
             }
-            this.treePopulator.populateTree(pathStr, treeNode);
+            if (getConnection().getFileContent() != null && getConnection().getFileContent().length > 0) {
+                initFileContent();
+            } else {
+                this.treePopulator.populateTree(pathStr, treeNode);
+            }
 
             ScrollBar verticalBar = availableXmlTree.getVerticalBar();
             if (verticalBar != null) {
@@ -899,6 +931,52 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      */
     public void refresh() {
         refreshPreview();
+    }
+
+    private void initFileContent() {
+        byte[] bytes = getConnection().getFileContent();
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject fsProject = null;
+        try {
+            fsProject = ResourceModelUtils.getProject(project);
+        } catch (PersistenceException e2) {
+            ExceptionHandler.process(e2);
+        }
+        if (fsProject == null) {
+            return;
+        }
+        String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
+        String fileName = "";
+        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xml")) {
+            fileName = "tempXMLFile.xml";
+        } else if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+            fileName = "tempXSDFile.xsd";
+        }
+        File temfile = new File(temPath + File.separator + fileName);
+        if (!temfile.exists()) {
+            try {
+                temfile.createNewFile();
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        FileOutputStream outStream;
+        try {
+            outStream = new FileOutputStream(temfile);
+            outStream.write(bytes);
+            outStream.close();
+        } catch (FileNotFoundException e1) {
+            ExceptionHandler.process(e1);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+        tempXmlXsdPath = temfile.getPath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            tempXmlXsdPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, tempXmlXsdPath));
+        }
+        this.treePopulator.populateTree(tempXmlXsdPath, treeNode);
     }
 
 }

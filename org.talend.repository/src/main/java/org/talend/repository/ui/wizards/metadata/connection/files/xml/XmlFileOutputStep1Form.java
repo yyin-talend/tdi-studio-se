@@ -17,8 +17,11 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,7 @@ import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.emf.common.util.EList;
@@ -51,11 +55,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -66,7 +72,9 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
@@ -116,6 +124,10 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
 
     private Map<String, Integer> orderMap = new HashMap<String, Integer>();
 
+    private String tempXmlXsdPath;
+
+    private boolean isModifing = true;
+
     public XmlFileOutputStep1Form(boolean creation, Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, connectionItem, existingNames);
         this.creation = creation;
@@ -126,16 +138,21 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
     protected void initialize() {
         getConnection().setInputModel(false);
         this.treePopulator = new TreePopulator(availableXmlTree);
-        if (getConnection().getXmlFilePath() != null) {
-            xmlXsdFilePath.setText(getConnection().getXmlFilePath().replace("\\\\", "\\"));
-            checkFieldsValue();
-            String xmlXsdPath = xmlXsdFilePath.getText();
-            if (isContextMode()) {
-                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
-                xmlXsdPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, xmlXsdFilePath
-                        .getText()));
+        if (getConnection().getFileContent() != null && getConnection().getFileContent().length > 0) {
+            initFileContent();
+        } else {
+            if (getConnection().getXmlFilePath() != null) {
+                xmlXsdFilePath.setText(getConnection().getXmlFilePath().replace("\\\\", "\\"));
+                checkFieldsValue();
+                String xmlXsdPath = xmlXsdFilePath.getText();
+                if (isContextMode()) {
+                    ContextType contextType = ConnectionContextHelper
+                            .getContextTypeForContextMode(connectionItem.getConnection());
+                    xmlXsdPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
+                            xmlXsdFilePath.getText()));
+                }
+                valid = this.treePopulator.populateTree(xmlXsdPath, treeNode);
             }
-            valid = this.treePopulator.populateTree(xmlXsdPath, treeNode);
         }
 
         if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
@@ -388,75 +405,11 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
                     text = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, text));
                 }
                 // getConnection().setXmlFilePath(PathUtils.getPortablePath(xmlXsdFilePath.getText()));
-                updateConnection(text);
-                // StringBuilder fileContent = new StringBuilder();
-                // BufferedReader in = null;
-                // File file = new File(text);
-                // String str;
-                // try {
-                // Charset guessCharset = CharsetToolkit.guessEncoding(file, 4096);
-                // in = new BufferedReader(new InputStreamReader(new FileInputStream(file),
-                // guessCharset.displayName()));
-                //
-                // while ((str = in.readLine()) != null) {
-                // fileContent.append(str + "\n");
-                // // for encoding
-                // if (str.contains("encoding")) {
-                // String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$";
-                // Perl5Compiler compiler = new Perl5Compiler();
-                // Perl5Matcher matcher = new Perl5Matcher();
-                // Pattern pattern = null;
-                // try {
-                // pattern = compiler.compile(regex);
-                // if (matcher.contains(str, pattern)) {
-                // MatchResult matchResult = matcher.getMatch();
-                // if (matchResult != null) {
-                // encoding = matchResult.group(1);
-                // }
-                // }
-                // } catch (MalformedPatternException malE) {
-                // ExceptionHandler.process(malE);
-                // }
-                // }
-                // }
-                //
-                // fileContentText.setText(new String(fileContent));
-                //
-                // } catch (Exception e) {
-                // String msgError = Messages.getString("FileStep1.filepath") + " \""
-                // + xmlXsdFilePath.getText().replace("\\\\", "\\") + "\"\n";
-                // if (e instanceof FileNotFoundException) {
-                // msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
-                // } else if (e instanceof EOFException) {
-                //                        msgError = msgError + Messages.getString("FileStep1.eofException"); //$NON-NLS-1$
-                // } else if (e instanceof IOException) {
-                //                        msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
-                // } else {
-                //                        msgError = msgError + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$
-                // }
-                // fileContentText.setText(msgError);
-                // if (!isReadOnly()) {
-                // updateStatus(IStatus.ERROR, msgError);
-                // }
-                // } finally {
-                // try {
-                // if (in != null) {
-                // in.close();
-                // }
-                // } catch (Exception exception) {
-                // ExceptionHandler.process(exception);
-                // }
-                // }
-                // if (getConnection().getEncoding() == null || "".equals(getConnection().getEncoding())) {
-                // getConnection().setEncoding(encoding);
-                // if (encoding != null && !"".equals(encoding)) {
-                // encodingCombo.setText(encoding);
-                // } else {
-                // encodingCombo.setText("UTF-8");
-                // }
-                // }
-                // valid = treePopulator.populateTree(text, treeNode);
-                // checkFieldsValue();
+                File file = new File(text);
+                if (file.exists()) {
+                    updateConnection(text);
+                }
+
             }
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -478,7 +431,36 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
 
                 StringBuilder fileContent = new StringBuilder();
                 BufferedReader in = null;
-                File file = new File(text);
+                File file = null;
+                if (tempXmlXsdPath != null && getConnection().getFileContent() != null
+                        && getConnection().getFileContent().length > 0 && !isModifing) {
+                    file = new File(tempXmlXsdPath);
+                    if (!file.exists()) {
+                        try {
+                            file.createNewFile();
+                        } catch (IOException e2) {
+                            ExceptionHandler.process(e2);
+                        }
+                        FileOutputStream outStream;
+                        try {
+                            outStream = new FileOutputStream(file);
+                            outStream.write(getConnection().getFileContent());
+                            outStream.close();
+                        } catch (FileNotFoundException e1) {
+                            ExceptionHandler.process(e1);
+                        } catch (IOException e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+
+                } else {
+                    file = new File(text);
+                }
+
+                // if (getConnection().getFileContent() == null || getConnection().getFileContent().length <= 0 &&
+                // !isModifing) {
+                setFileContent(file);
+                // }
                 String str;
                 try {
                     Charset guessCharset = CharsetToolkit.guessEncoding(file, 4096);
@@ -541,8 +523,14 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
                         encodingCombo.setText("UTF-8");
                     }
                 }
-                valid = treePopulator.populateTree(text, treeNode);
+                if (tempXmlXsdPath != null && getConnection().getFileContent() != null
+                        && getConnection().getFileContent().length > 0 && !isModifing) {
+                    valid = treePopulator.populateTree(tempXmlXsdPath, treeNode);
+                } else {
+                    valid = treePopulator.populateTree(text, treeNode);
+                }
                 checkFieldsValue();
+                isModifing = true;
             }
         });
 
@@ -674,6 +662,7 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
         if (visible) {
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
                 encodingCombo.setText(getConnection().getEncoding());
+                isModifing = false;
                 xmlXsdFilePath.setText(getConnection().getXmlFilePath());
                 outputFilePath.setText(getConnection().getOutputFilePath());
             }
@@ -705,6 +694,67 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
 
     @Override
     protected void adaptFormToReadOnly() {
+
+    }
+
+    private void setFileContent(File initFile) {
+        InputStream stream = null;
+        try {
+            stream = initFile.toURL().openStream();
+            byte[] innerContent = new byte[stream.available()];
+            stream.read(innerContent);
+            stream.close();
+            getConnection().setFileContent(innerContent);
+        } catch (MalformedURLException e) {
+            ExceptionHandler.process(e);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    private void initFileContent() {
+        byte[] bytes = getConnection().getFileContent();
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject fsProject = null;
+        try {
+            fsProject = ResourceModelUtils.getProject(project);
+        } catch (PersistenceException e2) {
+            ExceptionHandler.process(e2);
+        }
+        if (fsProject == null) {
+            return;
+        }
+        String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
+        String fileName = "";
+        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xml")) {
+            fileName = "tempXMLFile.xml";
+        } else if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+            fileName = "tempXSDFile.xsd";
+        }
+        File temfile = new File(temPath + File.separator + fileName);
+        if (!temfile.exists()) {
+            try {
+                temfile.createNewFile();
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        FileOutputStream outStream;
+        try {
+            outStream = new FileOutputStream(temfile);
+            outStream.write(bytes);
+            outStream.close();
+        } catch (FileNotFoundException e1) {
+            ExceptionHandler.process(e1);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+        tempXmlXsdPath = temfile.getPath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            tempXmlXsdPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, tempXmlXsdPath));
+        }
+        valid = this.treePopulator.populateTree(tempXmlXsdPath, treeNode);
 
     }
 }
