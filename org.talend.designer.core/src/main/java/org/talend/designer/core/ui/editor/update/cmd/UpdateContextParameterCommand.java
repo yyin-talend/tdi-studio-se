@@ -152,12 +152,32 @@ public class UpdateContextParameterCommand extends Command {
                         newContext.setContextParameterList(newParamList);
                         JobContextParameter param = null;
 
-                        for (int i = 0; i < context.getContextParameterList().size(); i++) {
-                            param = (JobContextParameter) context.getContextParameterList().get(i).clone();
+                        // add other context params to the new group
+                        for (IContextParameter contextParam : process.getContextManager().getDefaultContext()
+                                .getContextParameterList()) {
+                            boolean exist = false;
+                            for (IContextParameter existParam : context.getContextParameterList()) {
+                                if (contextParam.getName().equals(existParam.getName())) {
+                                    exist = true;
+                                }
+                            }
+                            if (exist) {
+                                continue;
+                            }
+                            param = (JobContextParameter) contextParam.clone();
                             param.setContext(newContext);
-                            param.setSource(item.getProperty().getLabel());
                             newParamList.add(param);
                         }
+
+                        // current context params for the new group
+                        for (int i = 0; i < context.getContextParameterList().size(); i++) {
+                            IContextParameter oldParam = context.getContextParameterList().get(i);
+                            param = (JobContextParameter) oldParam.clone();
+                            param.setSource(item.getProperty().getId());
+                            param.setContext(newContext);
+                            newParamList.add(param);
+                        }
+
                         listContext.add(newContext);
                     }
                 }
