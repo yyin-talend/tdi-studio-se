@@ -10,6 +10,11 @@ imports="
 	javax.xml.transform.stream.StreamSource
 	javax.xml.validation.*
 	org.xml.sax.SAXException
+	org.talend.core.model.metadata.IMetadataTable 
+	org.talend.core.model.metadata.IMetadataColumn
+	java.util.List
+    java.util.Map
+    java.util.HashMap
 "
 %>
 
@@ -23,41 +28,31 @@ Boolean print = new Boolean(ElementParameterParser.getValue(node, "__PRINT__"));
 String validMessage = ElementParameterParser.getValue(node, "__VALID_MESSAGE__");
 String invalidMessage = ElementParameterParser.getValue(node, "__INVALID_MESSAGE__");
 String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
+String mode = ElementParameterParser.getValue(node, "__MODE__");
 %>
 
 javax.xml.validation.SchemaFactory factory<%=cid %> =javax.xml.validation.SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 java.io.File schemaLocation<%=cid %> = new java.io.File(<%=xsdfile %>);
 String message_<%=cid %> =null;
-String ErrorMessage_<%=cid%>=null;
+String errorMessage_<%=cid%>=null;
 int validate_<%=cid %> = 0;
 
 
-	class TalendErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler
-	{
-	  String errorMessage=null;
+	class TalendErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler{
+	  	String errorMessage=null;
 
-		public void warning(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
-		{
-			if (errorMessage== null)
-			{
+		public void warning(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException{
+			if (errorMessage== null){
 				errorMessage = "There is a Warning on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
-			}
-			else
-			{
-
+			}else{
 				errorMessage = errorMessage + "\n" + "There is a Warning on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
 			}
 		}
 
-		public void error(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
-		{
-			if (errorMessage== null)
-			{
+		public void error(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException{
+			if (errorMessage== null){
 				errorMessage = "There is an Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
-			}
-			else
-			{
-
+			}else{
 				errorMessage = errorMessage + "\n" + "There is an Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
 			}
 				//throw ex;
@@ -67,25 +62,17 @@ int validate_<%=cid %> = 0;
 			if (errorMessage == null) {
 				errorMessage = "There is an Error on line " + " : " + ioEx.getMessage();
 			} else {
-
 				errorMessage = errorMessage + "\n" + "There is an Error on line " + " : " + ioEx.getMessage();
 			}
 		}
 		
-		public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
-		{
-
-			if (errorMessage == null)
-			{
+		public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException{
+			if (errorMessage == null){
 				errorMessage = "There is a Fatal Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
-			}
-			else
-			{
-
+			}else{
 				errorMessage =errorMessage + "\n" + "There is a Fatal Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
 			}
 			throw ex;
-
 		}
 		
 		private String returnMessage(){
@@ -94,41 +81,130 @@ int validate_<%=cid %> = 0;
 
 	}
 TalendErrorHandler_<%=cid %> errorHandler_<%=cid %>=new TalendErrorHandler_<%=cid %>();
-
 java.io.InputStream xmlfile<%=cid %> = null;
-
+	
+<%
+if("FLOW_MODE".equals(mode)){
+	List<Map<String, String>> manualtable = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MANUALTABLE__");
+	Map<String,String> allocateMap = new HashMap<String,String>();
+	for (Map<String, String> manualColumn : manualtable){
+		allocateMap.put(manualColumn.get("INPUT_COLUMN"),manualColumn.get("XSD_FILE"));
+	}
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+	    IMetadataTable metadata = metadatas.get(0);
+	    if (metadata!=null) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+	    	String inConnName = "", outConnName = "", rejectConnName = null;
+	    	List<? extends IConnection> inConns = node.getIncomingConnections();
+	    	List<? extends IConnection> outConns = node.getOutgoingConnections();
+	    	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+			if (rejectConns != null && rejectConns.size() > 0) {
+				for (IConnection rejectConn : rejectConns) {
+					if (rejectConn.isActivate()){
+						rejectConnName = rejectConn.getName();
+					}
+				}
+			}
+	    	if(inConns != null && inConns.size() > 0){
+		    	inConnName = inConns.get(0).getName();
+		    }
+	    	if(outConns != null && outConns.size() > 0){
+		    	outConnName = outConns.get(0).getName();
+		    }
+%>
+				<%=outConnName%> = new <%=outConnName%>Struct();
+<%
+				if(rejectConnName != null){
+%>
+					<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<%
+				}
+				for(IMetadataColumn column : columns){
+					String outLabel = column.getLabel();
+		    		if(allocateMap.containsKey(outLabel)){
+%>
+						try {
+							schemaLocation<%=cid %> = new java.io.File(<%=allocateMap.get(outLabel)%>);
+							xmlfile<%=cid %> = new ByteArrayInputStream(((String)<%=inConnName%>.<%=outLabel%>).getBytes());
+							javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
+							javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
+							javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
+							validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
+						    validator<%=cid %>.validate(source<%=cid %>);
+						} catch (org.xml.sax.SAXParseException ex<%=cid %>) {
+							errorHandler_<%=cid %>.error(ex<%=cid %>);
+						} catch (java.io.IOException ioEx<%=cid %>){
+							errorHandler_<%=cid %>.error(ioEx<%=cid %>);
+						}finally{
+							if(xmlfile<%=cid %> != null){
+								xmlfile<%=cid %>.close();
+							}
+						}
+						errorMessage_<%=cid %> = errorHandler_<%=cid %>.returnMessage();
+						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
+							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+							<%=rejectConnName%> = null;
+						} else {
+<%
+							if(rejectConnName != null){
+%>
+								<%=rejectConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+								<%=rejectConnName%>.errorMessage = "<%=column.getLabel()%>: "+errorMessage_<%=cid%>;
+								<%=outConnName%> = null;
+<%
+							}
+%>
+						}
+<%
+		    		}else{
+%>
+						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
+							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+						}
+<%
+	    		}
+	    	}
+	    }
+	}
+}else{
+%>
+Object oXmlFile<%=cid %> = null;
 try {
 	javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
 	javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
-	xmlfile<%=cid %> = new java.io.FileInputStream(<%=xmlfile %>);
-	javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
-	 
+	javax.xml.transform.Source source<%=cid %> = null;
+	oXmlFile<%=cid %> = <%=xmlfile %>;
+	if(oXmlFile<%=cid %> instanceof String){
+		xmlfile<%=cid %> = new java.io.FileInputStream((String)oXmlFile<%=cid %>);
+		source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid%>);
+	} else if(oXmlFile<%=cid %> instanceof java.io.InputStream){
+		source<%=cid %> = new javax.xml.transform.stream.StreamSource((java.io.InputStream)oXmlFile<%=cid %>);
+	}
 	validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
-    	  
-
     validator<%=cid %>.validate(source<%=cid %>);
-  	
-	  	
 } catch (org.xml.sax.SAXParseException ex<%=cid %>) {
 	errorHandler_<%=cid %>.error(ex<%=cid %>);
 } catch (java.io.IOException ioEx<%=cid %>){
 	errorHandler_<%=cid %>.error(ioEx<%=cid %>);
 }finally{
-	xmlfile<%=cid %>.close();
+	if(xmlfile<%=cid %> != null){
+		xmlfile<%=cid %>.close();
+	}
 }
-ErrorMessage_<%=cid %>=errorHandler_<%=cid %>.returnMessage();
-if (ErrorMessage_<%=cid%>!=null&& ErrorMessage_<%=cid%>.length()>0) {
+errorMessage_<%=cid %>=errorHandler_<%=cid %>.returnMessage();
+if (errorMessage_<%=cid%>!=null&& errorMessage_<%=cid%>.length()>0) {
 	message_<%=cid %> = <%=invalidMessage %>;
 } else {
 	message_<%=cid %> = <%=validMessage %>;
 	validate_<%=cid %> = 1;
-	ErrorMessage_<%=cid%>=null;
+	errorMessage_<%=cid%>=null;
 }
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate_<%=cid %>);
 globalMap.put("<%=cid %>_VALID", (validate_<%=cid %> == 1)?true:false);
 globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message_<%=cid %>);
-globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + ErrorMessage_<%=cid%>);
+globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + errorMessage_<%=cid%>);
 
 <%
 if (print) {
@@ -136,7 +212,7 @@ if (print) {
     System.out.println(message_<%=cid %>);
     if(validate_<%=cid %>==0)
     {
-    System.err.println(ErrorMessage_<%=cid%>);
+    System.err.println(errorMessage_<%=cid%>);
     }
 <%
 }
@@ -145,7 +221,7 @@ for (IConnection conn : node.getOutgoingConnections()) {
 	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 		<%=conn.getName() %>.xsdfile = <%=xsdfile %>;
-		<%=conn.getName() %>.xmlfile = <%=xmlfile %>;	
+		<%=conn.getName() %>.xmlfile = <%=xmlfile %>.toString();	
     	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
     	<%=conn.getName() %>.job = jobName;
 		<%=conn.getName() %>.component = currentComponent;
@@ -155,3 +231,8 @@ for (IConnection conn : node.getOutgoingConnections()) {
 	}
 }
 %>
+<%
+}
+%>
+
+

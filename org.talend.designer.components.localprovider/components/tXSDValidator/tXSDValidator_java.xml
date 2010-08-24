@@ -9,6 +9,8 @@
     RELEASE_DATE="20050320A"
     STARTABLE="true"
     SCHEMA_AUTO_PROPAGATE="false"
+    DATA_AUTO_PROPAGATE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
@@ -23,6 +25,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" SHOW_IF="MODE=='FLOW_MODE'"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -30,15 +33,25 @@
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
-
-  <PARAMETERS>
+  
+  
+<PARAMETERS>
+	<PARAMETER 
+		NAME="MODE" 
+		FIELD="CLOSED_LIST" 
+		NUM_ROW="1">
+		<ITEMS DEFAULT="FILE_MODE">
+			<ITEM NAME="FILE_MODE" VALUE="FILE_MODE" />
+			<ITEM NAME="FLOW_MODE" VALUE="FLOW_MODE" />
+		</ITEMS>
+	</PARAMETER>
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
-      <TABLE READONLY="true">
+      <TABLE IF="(MODE=='FILE_MODE')" READONLY='true'>
         <COLUMN NAME="xsdfile" TYPE="id_String" LENGTH="255" />
         <COLUMN NAME="xmlfile" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
@@ -47,13 +60,30 @@
         <COLUMN NAME="validate" TYPE="id_Integer" LENGTH="1"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
+      <TABLE IF="(MODE=='FLOW_MODE')">
+      </TABLE>
     </PARAMETER>
+    <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="2" CONTEXT="REJECT" SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+      </TABLE>
+    </PARAMETER>
+<!-- validate with flow -->
+    
+    <PARAMETER NAME="MANUALTABLE" FIELD="TABLE" NUM_ROW="5" NB_LINES="5" SHOW_IF="MODE == 'FLOW_MODE'">
+      <ITEMS>
+      	<ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="XSD_FILE" FIELD="TEXT" />
+      </ITEMS>
+    </PARAMETER>
+<!-- validate with file -->
 
     <PARAMETER
        NAME="XSDFILE"
        FIELD="FILE"
        REQUIRED="true"
        NUM_ROW="10"
+       SHOW_IF="MODE == 'FILE_MODE'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/need_test.xsd"</DEFAULT>
     </PARAMETER>
@@ -63,6 +93,7 @@
        FIELD="FILE"
        REQUIRED="true"
        NUM_ROW="20"
+       SHOW_IF="MODE == 'FILE_MODE'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/reference.xml"</DEFAULT>
     </PARAMETER>
@@ -72,6 +103,7 @@
        FIELD="TEXT"
        REQUIRED="true"
        NUM_ROW="30"
+       SHOW_IF="MODE == 'FILE_MODE'"
     >
       <DEFAULT>"[job " + jobName + "] File is Valid"</DEFAULT>
     </PARAMETER>
@@ -81,6 +113,7 @@
        FIELD="TEXT"
        REQUIRED="true"
        NUM_ROW="40"
+       SHOW_IF="MODE == 'FILE_MODE'"
     >
       <DEFAULT>"[job " + jobName + "] File is Invalid"</DEFAULT>
     </PARAMETER>
@@ -90,6 +123,7 @@
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="50"
+      SHOW_IF="MODE == 'FILE_MODE'"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
