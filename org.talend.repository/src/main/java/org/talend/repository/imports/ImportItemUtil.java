@@ -100,12 +100,12 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.PropertiesProjectResourceImpl;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.utils.FileCopyUtils;
 import org.talend.repository.utils.RoutineUtils;
 import org.talend.repository.utils.XmiResourceManager;
@@ -598,12 +598,12 @@ public class ImportItemUtil {
                         }
                     }
                     if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
-                                "STATANDLOG_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService()
+                                .reloadParamFromProjectSettings(paType, "STATANDLOG_USE_PROJECT_SETTINGS");
                     }
                     if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
-                                "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService()
+                                .reloadParamFromProjectSettings(paType, "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
                     }
 
                 }
@@ -624,8 +624,8 @@ public class ImportItemUtil {
                         // IPath itemPath = itemRecord.getPath().removeFileExtension().addFileExtension(
                         // FileConstants.ITEM_EXTENSION);
 
-                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension().addFileExtension(
-                                FileConstants.ITEM_EXTENSION));
+                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension()
+                                .addFileExtension(FileConstants.ITEM_EXTENSION));
                         try {
                             URI relativePlateformDestUri = EcoreUtil.getURI(((ConnectionItem) tmpItem).getConnection());
                             URL fileURL = FileLocator.toFileURL(new java.net.URL(
@@ -922,39 +922,16 @@ public class ImportItemUtil {
     }
 
     private IPath getValidProjectFilePath(ResourcesManager collector, IPath path, URI uri) {
-        IPath projectFilePath = getSiblingProjectFilePath(path);
-        if (!collector.getPaths().contains(projectFilePath)) {
-            projectFilePath = getAuthorProjectFilePath(uri, path);
-            if (!collector.getPaths().contains(projectFilePath)) {
-                return null;
-            }
-        }
-        return projectFilePath;
-    }
-
-    private IPath getAuthorProjectFilePath(URI uri, IPath path) {
         IPath projectFilePath = path.removeLastSegments(1);
 
-        if (uri != null) {
-            for (int i = 0; i < uri.segments().length; i++) {
-                String segment = uri.segments()[i];
-                if (segment.equals(SEGMENT_PARENT)) {
-                    projectFilePath = projectFilePath.removeLastSegments(1);
-                } else {
-                    projectFilePath = projectFilePath.append(FileConstants.LOCAL_PROJECT_FILENAME);
-                }
-            }
+        while (projectFilePath.lastSegment() != null
+                && !collector.getPaths().contains(projectFilePath.append(FileConstants.LOCAL_PROJECT_FILENAME))) {
+            projectFilePath = projectFilePath.removeLastSegments(1);
         }
-
-        return projectFilePath;
-    }
-
-    // usefull when you export a job with source in an archive
-    private IPath getSiblingProjectFilePath(IPath path) {
-        IPath projectFilePath = path.removeLastSegments(1);
-        projectFilePath = projectFilePath.append(FileConstants.LOCAL_PROJECT_FILENAME);
-
-        return projectFilePath;
+        if (collector.getPaths().contains(projectFilePath.append(FileConstants.LOCAL_PROJECT_FILENAME))) {
+            return projectFilePath.append(FileConstants.LOCAL_PROJECT_FILENAME);
+        }
+        return null;
     }
 
     private ItemRecord computeItemRecord(ResourcesManager collector, IPath path) {
@@ -969,8 +946,8 @@ public class ImportItemUtil {
             stream = manager.getStream(itemRecord.getPath());
             Resource resource = createResource(itemRecord.getResourceSet(), itemRecord.getPath(), false);
             resource.load(stream, null);
-            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
-                    .getProperty()));
+            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
+                    PropertiesPackage.eINSTANCE.getProperty()));
         } catch (IOException e) {
             // ignore
         } finally {
@@ -1051,8 +1028,8 @@ public class ImportItemUtil {
         } else
         // connectionItem
         if (item instanceof ConnectionItem) {
-            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents, ConnectionPackage.eINSTANCE
-                    .getConnection()));
+            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents,
+                    ConnectionPackage.eINSTANCE.getConnection()));
         } else
         // context
         if (item instanceof ContextItem) {
@@ -1079,15 +1056,15 @@ public class ImportItemUtil {
         } else
         // link doc
         if (item instanceof LinkDocumentationItem) {
-            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents, PropertiesPackage.eINSTANCE
-                    .getLinkType()));
+            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents,
+                    PropertiesPackage.eINSTANCE.getLinkType()));
         } else
         // business
         if (item instanceof BusinessProcessItem) {
             BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
 
-            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents, BusinessPackage.eINSTANCE
-                    .getBusinessProcess()));
+            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents,
+                    BusinessPackage.eINSTANCE.getBusinessProcess()));
 
             businessProcessItem.setNotationHolder((NotationHolder) EcoreUtil.getObjectByType(contents,
                     PropertiesPackage.eINSTANCE.getNotationHolder()));
@@ -1103,8 +1080,8 @@ public class ImportItemUtil {
                 stream = manager.getStream(path);
                 Resource resource = createResource(itemRecord.getResourceSet(), path, false);
                 resource.load(stream, null);
-                projects.put(path, (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
-                        .getProject()));
+                projects.put(path,
+                        (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE.getProject()));
             }
             return projects.get(path);
         } catch (IOException e) {
