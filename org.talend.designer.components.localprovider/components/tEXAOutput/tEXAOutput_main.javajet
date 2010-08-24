@@ -39,6 +39,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
     boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
     
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = getColumnList(node);
@@ -80,6 +81,24 @@ skeleton="../templates/db_output_bulk.skeleton"
     	}
     }
 
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+	
+	if (isParallelize) { // bug0014422
+		String tAsyncIn_cid = "";
+		if(conns!=null && conns.size() > 0) {
+			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
+		}
+		if(!"true".equals(useExistingConn)) {
+			if(("true").equals(useCommitControl)) {// if use commit control
+	    		if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
+%>
+				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+	    		}
+	    	}
+    	}
+	} // end bug0014422
+	
     if(incomingConnName != null && columnList != null) {
         %>
         whetherReject_<%=cid%> = false;
@@ -596,7 +615,7 @@ pstmt_<%=cid %>.addBatch();
             }
             <%
         }	
-        String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
+        
         if(!useExistingConn.equals("true")) {
             if(useCommitControl.equals("true")) {
                 if(!commitEvery.equals("") && !commitEvery.equals("0")) {

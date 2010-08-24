@@ -89,6 +89,22 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	}
 
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+	
+	if (isParallelize) { // bug0014422
+		String tAsyncIn_cid = "";
+		if(conns!=null && conns.size() > 0) {
+			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
+		}
+		if(!"true".equals(useExistingConn)) {
+	    	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
+%>
+				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+	    	}
+    	}
+	} // end bug0014422
+
     if(incomingConnName != null && columnList != null) {
         %>
         whetherReject_<%=cid%> = false;

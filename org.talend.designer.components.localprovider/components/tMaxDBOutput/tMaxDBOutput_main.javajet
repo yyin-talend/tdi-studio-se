@@ -34,6 +34,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");            
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+    
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 	//feature:2880
     getManager(dbmsId, cid, node);
@@ -83,6 +85,22 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 		query_<%=cid%> = new StringBuffer("");
 <%
+	}
+
+	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+	if (isParallelize) { // bug0014422
+		String tAsyncIn_cid = "";
+		if(conns!=null && conns.size() > 0) {
+			tAsyncIn_cid = conns.get(0).getSource().getUniqueName();
+		}
+		if(!useExistingConnection) {
+			if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
+%>
+					commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+	    	}
+    	}
+    
 	}
 
     if(incomingConnName != null && columnList != null) {
