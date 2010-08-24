@@ -72,65 +72,37 @@ public class CLASS {
         }
     }
 
-    public XMLNode getInsertNode(XMLNode root, List<XMLNode> mainNode) {
-        XMLNode tmpRoot = root;
-        XMLNode tmpNode = null;
-        if (mainNode != null && mainNode.size() > 0) {
-            tmpNode = getBranchNode(root, mainNode.get(0).sourceName);
-            if (tmpNode != null) {
-                return tmpNode;
-            } else {
-                return getBranchNode2(tmpRoot, mainNode.get(mainNode.size() - 1));
-            }
-        }
+    public XMLNode getInsertNode(XMLNode root, List<XMLNode> mainNode, List<String> listPreConns) {
+        XMLNode returnNode = null;
 
-        return null;
-    }
-
-    private XMLNode getBranchNode2(XMLNode node, XMLNode lastNode) {
-
-        XMLNode tmpNode = null;
-
-        if (node == null || lastNode == null) {
-            return null;
-        }
-
-        if (node.path.equals(lastNode.path)) {
-            return node;
-        }
-        if (node.branches != null && node.branches.size() > 0) {
-            for (XMLNode tmp : node.branches) {
-                tmpNode = getBranchNode2(tmp, lastNode);
-                if (tmpNode != null) {
-                    return tmpNode;
-                }
-            }
-        }
-        return null;
-
-    }
-
-    private XMLNode getBranchNode(XMLNode node, String sourceName) {
-
-        if (node == null)
-            return null;
-
-        if (node.sourceName.equals(sourceName)) {
-            return node;
-        }
-
-        if (node.branches != null && node.branches.size() > 0) {
-            for (XMLNode tmpNode : node.branches) {
-                XMLNode tmp = getBranchNode(tmpNode, sourceName);
-                if (tmp != null) {
-                    return tmp;
+        String[] existConns = root.sourceName.split("=");
+        List<String> listExistConns = java.util.Arrays.asList(existConns);
+        boolean isContains = false;
+        if (listExistConns.contains(mainNode.get(0).sourceName)) {
+            for (int i = 0; i < listPreConns.size(); i++) {
+                if (listExistConns.contains(listPreConns.get(i))) {
+                    isContains = true;
+                    break;
                 }
             }
         }
 
-        return null;
+        if (isContains) {
+            for (XMLNode node : root.elements) {
+                returnNode = getInsertNode(node, mainNode, listPreConns);
+                if (returnNode != null) {
+                    break;
+                }
+            }
+        }
+
+        if (isContains && returnNode == null) {
+            returnNode = root;
+        }
+
+        return returnNode;
     }
-   
+
     // return [0] is root(XMLNode), [1] is groups(List<XMLNode>), [2] loop(XMLNode)
     public XMLNode getRootTree(List<Map<String, String>> rootTable) {
 
@@ -138,28 +110,68 @@ public class CLASS {
         XMLNode tmpParent = null;
 
         List<Map<String, String>> tmpTable = new ArrayList<Map<String, String>>();
-        boolean hasAttri = false;
+
+        Map<String, String> currMainMap = null; // used to save the current Main Map in tmpTable
+        Map<String, String> currMainRootMap = null; // used to save the current main map in rootTable
+        String sourceName;
         for (int i = 0; i < rootTable.size(); i++) {
-            if (tmpTable.size() == 0) {
-                tmpTable.add(rootTable.get(i));
+            if (rootTable.get(i).get("COLUMN").indexOf(":") >= 0) {
+                sourceName = rootTable.get(i).get("COLUMN").substring(0, rootTable.get(i).get("COLUMN").indexOf(":"));
             } else {
-                if (rootTable.get(i).get("ATTRIBUTE").equals("main") == true) {
-                    int j;
-                    for (j = 0; j < tmpTable.size(); j++) {
+                sourceName = rootTable.get(i).get("COLUMN");
+            }
+            if (rootTable.get(i).get("ATTRIBUTE").equals("main") == true
+                    || rootTable.get(i).get("ATTRIBUTE").equals("branch") == true) {
+                currMainRootMap = rootTable.get(i);
+            }
+            if (i == 0) {
+                Map<String, String> tmpMap = new HashMap<String, String>();
+                tmpMap.put("PATH", rootTable.get(i).get("PATH"));
+                tmpMap.put("COLUMN", rootTable.get(i).get("COLUMN"));
+                tmpMap.put("VALUE", rootTable.get(i).get("VALUE"));
+                tmpMap.put("ATTRIBUTE", rootTable.get(i).get("ATTRIBUTE"));
+                tmpMap.put("ORDER", rootTable.get(i).get("ORDER"));
+                tmpMap.put("SOURCE", sourceName);
+                tmpTable.add(tmpMap);
+            } else {
+                int j = 0;
+                for (j = 0; j < tmpTable.size(); j++) {
+                    if (tmpTable.get(j).get("ATTRIBUTE").equals("main") == true
+                            || tmpTable.get(j).get("ATTRIBUTE").equals("branch") == true) {
+                        currMainMap = tmpTable.get(j); // save the current main node
+                    }
+                    if (currMainMap.get("PATH").equals(currMainRootMap.get("PATH"))) {
                         if (tmpTable.get(j).get("PATH").equals(rootTable.get(i).get("PATH"))) {
-                            hasAttri = true;
-                            break;
+                            // use the character = to separate the source connection
+                            tmpTable.get(j).put("SOURCE", tmpTable.get(j).get("SOURCE") + "=" + sourceName);
+                        } else {
+                            // add the attributes or namespaces of the node
+                            Map<String, String> tmpMap = new HashMap<String, String>();
+                            tmpMap.put("PATH", rootTable.get(i).get("PATH"));
+                            tmpMap.put("COLUMN", rootTable.get(i).get("COLUMN"));
+                            tmpMap.put("VALUE", rootTable.get(i).get("VALUE"));
+                            tmpMap.put("ATTRIBUTE", rootTable.get(i).get("ATTRIBUTE"));
+                            tmpMap.put("ORDER", rootTable.get(i).get("ORDER"));
+                            tmpMap.put("SOURCE", sourceName);
+                            tmpTable.add(tmpMap);
                         }
-                    }
-                    if (j >= tmpTable.size()) {
-                        hasAttri = false;
-                        tmpTable.add(rootTable.get(i));
-                    }
-                } else {
-                    if (!hasAttri) {
-                        tmpTable.add(rootTable.get(i));
+                        break;
+                    } else {
+                        // nothing to do
                     }
                 }
+
+                if (j >= tmpTable.size()) {// doesn't find the node in the tmpTable, then it is a new node
+                    Map<String, String> tmpMap = new HashMap<String, String>();
+                    tmpMap.put("PATH", rootTable.get(i).get("PATH"));
+                    tmpMap.put("COLUMN", rootTable.get(i).get("COLUMN"));
+                    tmpMap.put("VALUE", rootTable.get(i).get("VALUE"));
+                    tmpMap.put("ATTRIBUTE", rootTable.get(i).get("ATTRIBUTE"));
+                    tmpMap.put("ORDER", rootTable.get(i).get("ORDER"));
+                    tmpMap.put("SOURCE", sourceName);
+                    tmpTable.add(tmpMap);
+                }
+
             }
         }
 
@@ -168,67 +180,38 @@ public class CLASS {
                 XMLNode tmpNew = null;
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
                     tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew.sourceName = tmpMap.get("SOURCE");
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
                     tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew.sourceName = tmpMap.get("SOURCE");
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
                         tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                        tmpNew.sourceName = tmpMap.get("SOURCE");
                         tmpNew.special |= 1;
                         root = tmpNew;
                     } else {
                         String tmpParentPath = tmpMap.get("PATH").substring(0, tmpMap.get("PATH").lastIndexOf("/"));
 
-                        String tmpClm = tmpMap.get("COLUMN");
-                        if (tmpClm.indexOf(":") >= 0) {
-                            tmpClm = tmpClm.substring(0, tmpClm.indexOf(":"));
+                        while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
+                            tmpParent = tmpParent.parent;
                         }
-                        if (!tmpParent.sourceName.equals(tmpClm)) {
-                            tmpParent = getParent(root, tmpParentPath);
-                        } else {
-                            while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
-                                tmpParent = tmpParent.parent;
-                            }
-                        }
+
                         tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
-                        if (tmpMap.get("ATTRIBUTE").equals("branch")) {
-                            tmpParent.elements.add(tmpNew);
-                        }
+                        tmpNew.sourceName = tmpMap.get("SOURCE");
+
+                        tmpParent.elements.add(tmpNew);
                     }
                     if (tmpMap.get("ATTRIBUTE").equals("main")) {
                         tmpNew.special |= 4;
-                        if ((tmpNew.parent != null && tmpNew.parent.parent == null)
-                                || (tmpParent != null && !tmpParent.sourceName.equals(tmpNew.sourceName))) {
-                            tmpParent.branches.add(tmpNew);
-                        }
                     }
                     tmpParent = tmpNew;
                 }
-    //            setIMetadataColumn(tmpNew, colList);
             }
             return root;
         }
-        return null;
-    }
-
-    private XMLNode getParent(XMLNode parent, String strParent) {
-
-        XMLNode tmp = null;
-
-        if (parent != null) {
-            if (strParent.equals(parent.path)) {
-                return parent;
-            }
-            // find the father node in the child main node
-            for (XMLNode node : parent.branches) {
-                tmp = getParent(node, strParent);
-                if (tmp != null) {
-                    return tmp;
-                }
-            }
-        }
-
         return null;
     }
     

@@ -331,7 +331,6 @@ String cid_original = cid;
 cid = cid_original.replace("tFileOutputXMLMultiSchema","tOXMLMS");
 
 String incomingName = (String)codeGenArgument.getIncomingName();
-
 List<IMetadataTable> metadatas = NodeUtil.getIncomingMetadataTable(node, IConnectionCategory.FLOW);
 
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -450,9 +449,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 <%
 		}else{
+			List<String> listConnNames = new ArrayList<String>();
+			// get the input connections before the current connection
+			for(IConnection conn:incomingConns){
+				// the last one is the current connection
+				if(conn.getName().equals(sourceName)){
+					break;
+				}
+				listConnNames.add(conn.getName());
+			}
+			
 			XMLNode rootNode = getRootTree(rootTable);
-			XMLNode branchNode = getInsertNode(rootNode, mainList);
-			if(branchNode.sourceName.equals(sourceName)==false){
+			XMLNode branchNode = getInsertNode(rootNode, mainList, listConnNames);
+			if(branchNode.path.equals(mainList.get(mainList.size()-1).path)==true){// the last main node
 %>
 	// build root xml tree 
 	if (needRoot_<%=sourceName%>_<%=cid%>) {
@@ -469,7 +478,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				XMLNode tempNode=null;
 				for(XMLNode tmpNode: mainList){
 					if(tmpNode.path.equals(branchNode.path)){
-						tempNode = tmpNode;
+						tempNode = mainList.get(mainList.indexOf(tmpNode)+1);
 						break;
 					}
 				}
@@ -478,7 +487,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if (needRoot_<%=sourceName %>_<%=cid %>) {
 		needRoot_<%=sourceName %>_<%=cid %> = false;
 		root_<%=sourceName %>_<%=cid %> = 
-			(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.parent.path %>");
+			(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
 	<%generateToolByDom4j.generateCode(tempNode,"root", "root_"+sourceName); %>
 		root_<%=sourceName%>_<%=cid%> = subTreeRootParent_<%=cid%>;
 	}else{
