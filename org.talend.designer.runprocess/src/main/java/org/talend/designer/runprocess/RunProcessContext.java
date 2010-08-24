@@ -173,8 +173,8 @@ public class RunProcessContext {
         setMonitorTrace(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
         setWatchAllowed(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN));
         setSaveBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSAVEBEFORERUN));
-        setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -502,8 +502,7 @@ public class RunProcessContext {
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
-                                                    String welcomeMsg = mf
-                                                            .format(new Object[] { process.getLabel(), new Date() });
+                                                    String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
                                                     processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT,
                                                             welcomeMsg + "\r\n")); //$NON-NLS-1$
                                                     processMonitorThread = new Thread(psMonitor);
@@ -902,28 +901,28 @@ public class RunProcessContext {
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
                         String line = reader.readLine();
-                        if (line != null) {
-                            if (line.startsWith("0")) {
-                                // 0 = job information
-                                // 1 = connection information
-                                continue;
-                            }
-                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                            if (line != null) {
+                                if (line.startsWith("0")) {
+                                    // 0 = job information
+                                    // 1 = connection information
+                                    continue;
+                                }
                                 String[] infos = line.split("\\|");
                                 if (infos.length < 5 || !infos[1].equals(infos[2]) || !infos[1].equals(infos[3])) {
                                     // we only take actually informations for the main jobs, other informations won't be
                                     // used.
                                     continue;
                                 }
-                            }
 
-                            // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
-                            if (line.trim().length() > 22) {
-                                String temp = line.substring(line.indexOf("|") + 1); // remove the 0|
-                                temp = temp.substring(temp.indexOf("|") + 1); // remove the first GnqOsQ|
-                                temp = temp.substring(temp.indexOf("|") + 1); // remove the second GnqOsQ|
-                                temp = temp.substring(temp.indexOf("|") + 1); // remove the third GnqOsQ|
-                                line = temp;
+                                // "0|GnqOsQ|GnqOsQ|GnqOsQ|iterate1|exec1" -->"iterate1|exec1"
+                                if (line.trim().length() > 22) {
+                                    String temp = line.substring(line.indexOf("|") + 1); // remove the 0|
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the first GnqOsQ|
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the second GnqOsQ|
+                                    temp = temp.substring(temp.indexOf("|") + 1); // remove the third GnqOsQ|
+                                    line = temp;
+                                }
                             }
                         }
                         final String data = line;

@@ -39,6 +39,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -830,8 +831,8 @@ public class Node extends Element implements INode {
                 String newLabel = label;
                 String newShowHintText = showHintText;
                 String newConnectionName = connectionName;
-                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
-                        .getElementParameters());
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(),
+                        connNode.getElementParameters());
                 newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
                 newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
                 newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
@@ -878,8 +879,8 @@ public class Node extends Element implements INode {
 
             if (connNode != null) {
 
-                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
-                        .getElementParameters());
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(),
+                        connNode.getElementParameters());
                 newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
                 newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
                 newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
@@ -1158,8 +1159,8 @@ public class Node extends Element implements INode {
             /*
              * param.getChildParameters() .get(EParameterName.SCHEMA_TYPE.getName()).setValue( EmfComponent.REPOSITORY);
              */
-            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
-                    repositorySchemaParamTarget.getValue());
+            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                    .setValue(repositorySchemaParamTarget.getValue());
             this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
         }
     }
@@ -1973,8 +1974,8 @@ public class Node extends Element implements INode {
             toUpdate = true;
         } else {
 
-            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer == null ? this : nodeContainer
-                    .getNode());
+            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR,
+                    nodeContainer == null ? this : nodeContainer.getNode());
             List<String> newWarningList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer == null ? this
                     : nodeContainer.getNode());
 
@@ -2520,21 +2521,23 @@ public class Node extends Element implements INode {
             IMetadataTable table = getMetadataFromConnector(mainConnector.getName());
 
             if (canEditSchema && table != null) {
-                for (int i = 0; i < table.getListColumns().size(); i++) {
-                    IMetadataColumn column = table.getListColumns().get(i);
-                    if (column.isCustom()) {
-                        continue;
-                    }
-                    String value = column.getPattern();
-                    String typevalue = column.getTalendType();
-                    if (JavaTypesManager.DATE.getId().equals(typevalue) || PerlTypesManager.DATE.equals(typevalue)) {
-                        if (value == null || "".equals(value)) { //$NON-NLS-1$
-                            String errorMessage = Messages.getString("Node.PatterErrorMessage"); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
-                            noSchema = true;
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    for (int i = 0; i < table.getListColumns().size(); i++) {
+                        IMetadataColumn column = table.getListColumns().get(i);
+                        if (column.isCustom()) {
+                            continue;
                         }
-                    }
+                        String value = column.getPattern();
+                        String typevalue = column.getTalendType();
+                        if (JavaTypesManager.DATE.getId().equals(typevalue) || PerlTypesManager.DATE.equals(typevalue)) {
+                            if (value == null || "".equals(value)) { //$NON-NLS-1$
+                                String errorMessage = Messages.getString("Node.PatterErrorMessage"); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                                noSchema = true;
+                            }
+                        }
 
+                    }
                 }
 
                 if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
@@ -3217,8 +3220,8 @@ public class Node extends Element implements INode {
     // hywang add this method for feature 8221
     private boolean isCheckMultiSchemaForMSField() {
         boolean needMultiSchema = false;
-        if (this.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString().equals(
-                "tFileInputMSFieldDelimited") && this.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (this.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString()
+                .equals("tFileInputMSFieldDelimited") && this.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-1$ //$NON-NLS-2$
             if (Boolean.parseBoolean(this.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())) { //$NON-NLS-1$
                 needMultiSchema = true;
             }
