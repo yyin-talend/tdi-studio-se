@@ -44,8 +44,7 @@ public abstract class AbstractSqlpatternAction extends AContextualAction {
      * @throws SystemException
      * @throws PartInitException
      */
-    public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) throws SystemException,
-            PartInitException {
+    public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) throws SystemException, PartInitException {
         if (item == null) {
             return null;
         }

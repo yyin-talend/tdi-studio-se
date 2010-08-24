@@ -12,17 +12,6 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /***/
 public abstract class AbstractSQLPatternSynchronizer implements ISQLPatternSynchronizer {

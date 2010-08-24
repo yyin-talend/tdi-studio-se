@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.action;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog;

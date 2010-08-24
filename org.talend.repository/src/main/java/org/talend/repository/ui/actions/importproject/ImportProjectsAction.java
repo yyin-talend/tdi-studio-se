@@ -40,8 +40,7 @@ public final class ImportProjectsAction extends Action implements IWorkbenchWind
     private static final String ACTION_TITLE = Messages.getString("ImportProjectsAction.actionTitle"); //$NON-NLS-1$
 
     private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectsAction.actionTooltip", //$NON-NLS-1$
-            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class))
-                    .getShortProductName()); //$NON-NLS-1$
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID"; //$NON-NLS-1$
 

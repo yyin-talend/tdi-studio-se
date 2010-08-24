@@ -40,7 +40,6 @@ import org.talend.designer.rowgenerator.data.JavaFunctionParser;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.ui.CategoryComposite;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
-import org.talend.expressionbuilder.ui.ExpressionComposite;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

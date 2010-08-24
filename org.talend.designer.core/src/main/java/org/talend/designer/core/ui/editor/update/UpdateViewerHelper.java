@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 

@@ -12,10 +12,9 @@
 // ============================================================================
 package org.talend.expressionbuilder.test;
 
-import org.talend.expressionbuilder.test.ExpressionArguments;
-import org.talend.expressionbuilder.test.shadow.Variable;
-
 import java.util.List;
+
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

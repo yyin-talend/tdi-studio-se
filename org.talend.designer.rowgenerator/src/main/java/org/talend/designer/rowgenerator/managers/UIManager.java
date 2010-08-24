@@ -27,10 +27,10 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.MetadataToolbarEditorViewExt;
-import org.talend.designer.rowgenerator.i18n.Messages;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

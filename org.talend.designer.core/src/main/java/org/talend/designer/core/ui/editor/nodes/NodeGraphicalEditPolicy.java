@@ -18,7 +18,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;

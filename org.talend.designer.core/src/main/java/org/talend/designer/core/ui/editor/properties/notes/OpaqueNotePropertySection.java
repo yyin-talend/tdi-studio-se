@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.notes;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;

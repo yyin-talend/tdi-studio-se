@@ -480,7 +480,7 @@
             visible="false">
          <action
                class="org.talend.repository.ui.actions.importexport.ImportItemAction"
-               icon="platform:/plugin/org.talend.commons.ui/icons/import.gif"
+               icon="platform:/plugin/org.talend.common.ui.runtime/icons/import.gif"
                id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
                label="%ImportItemAction.title"
                style="push"
@@ -488,7 +488,7 @@
                tooltip="%ImportItemAction.tooltip"/>
          <action
                class="org.talend.repository.ui.actions.importexport.ExportItemAction"
-               icon="platform:/plugin/org.talend.commons.ui/icons/export.gif"
+               icon="platform:/plugin/org.talend.common.ui.runtime/icons/export.gif"
                id="org.talend.repository.localprovider.ui.actions.ExportItemAction"
                label="%ExportItemAction.title"
                style="push"

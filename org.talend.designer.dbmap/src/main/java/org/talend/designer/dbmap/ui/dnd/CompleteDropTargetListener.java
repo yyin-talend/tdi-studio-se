@@ -33,8 +33,6 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
-import org.talend.designer.dbmap.model.table.InputTable;
-import org.talend.designer.dbmap.model.table.VarsTable;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;

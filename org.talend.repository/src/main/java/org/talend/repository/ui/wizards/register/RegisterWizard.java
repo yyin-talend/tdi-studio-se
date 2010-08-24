@@ -20,8 +20,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
- * Wizard for the creation of a new project. <br/> $Id: RegisterWizard.java 1 2006-09-29 17:06:40 +0000 (ven., 29 sept.
- * 2006) nrousseau $
+ * Wizard for the creation of a new project. <br/>
+ * $Id$
  */
 public class RegisterWizard extends Wizard {
 

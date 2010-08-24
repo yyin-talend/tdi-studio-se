@@ -237,8 +237,9 @@ public class ImportProjectsUtilities {
     /**
      * Collect the list of .project files that are under directory into files.
      * 
-     * <br/> Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
-     * Modifications are:
+     * <br/>
+     * Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage. Modifications
+     * are:
      * <ol>
      * <li>no recusrive search</li>
      * <li>add searchFileName as parameter</li>
@@ -276,8 +277,9 @@ public class ImportProjectsUtilities {
     /**
      * Collect the list of .project files that are under directory into files.
      * 
-     * <br/> Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
-     * Modifications are:
+     * <br/>
+     * Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage. Modifications
+     * are:
      * <ol>
      * <li>no recusrive search</li>
      * <li>add searchFileName as parameter</li>

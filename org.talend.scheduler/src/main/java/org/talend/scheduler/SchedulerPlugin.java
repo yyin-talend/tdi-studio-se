@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.scheduler;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -21,7 +19,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.scheduler.i18n.Messages;
 
 /**
  * The activator class controls the plug-in life cycle.

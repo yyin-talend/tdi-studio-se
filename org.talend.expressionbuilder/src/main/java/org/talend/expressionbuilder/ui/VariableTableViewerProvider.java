@@ -14,7 +14,6 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;

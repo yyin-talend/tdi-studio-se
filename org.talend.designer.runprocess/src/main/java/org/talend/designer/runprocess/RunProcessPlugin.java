@@ -20,7 +20,6 @@ import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.runprocess.ui.views.IProcessViewHelper;
 import org.talend.repository.model.IRepositoryService;
 
 /**

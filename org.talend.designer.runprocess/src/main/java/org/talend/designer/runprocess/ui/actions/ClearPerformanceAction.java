@@ -12,11 +12,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui.actions;
 
-import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 

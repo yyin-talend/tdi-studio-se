@@ -30,21 +30,21 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 
 /**
- * DOC xtan when feature:2214, there rewrite the tFilterRow in java, and add a migrationTask. 
+ * DOC xtan when feature:2214, there rewrite the tFilterRow in java, and add a migrationTask.
  */
 public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
+     * @seeorg.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.
+     * ProcessItem)
      */
     @Override
     public ExecutionResult execute(Item item) {
-		ProcessType processType = getProcessType(item);
+        ProcessType processType = getProcessType(item);
 
-        if (getProject().getLanguage() == ECodeLanguage.PERL
-				|| processType == null) {
+        if (getProject().getLanguage() == ECodeLanguage.PERL || processType == null) {
 
             return ExecutionResult.NOTHING_TO_DO;
 
@@ -65,7 +65,7 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
             String[][] replaceOperator = new String[][] { { "EQ", "==" }, { "NE", "!=" }, { "GT", ">" }, { "LT", "<" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
                     { "GE", ">=" }, { "LE", "<=" }, { "MATCH", "==" }, { "NMATCH", "!=" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 
-            boolean isModified = false;     
+            boolean isModified = false;
 
             NodeType tFilterRow = null;
             for (Object oNodeType : processType.getNode()) {
@@ -146,9 +146,9 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
 
             return ExecutionResult.SUCCESS_NO_ALERT;
         }
-    
+
     }
-    
+
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

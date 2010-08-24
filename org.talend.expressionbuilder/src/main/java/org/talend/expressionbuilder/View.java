@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

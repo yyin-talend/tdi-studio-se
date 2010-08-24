@@ -14,7 +14,6 @@ package org.talend.designer.core.model.components;
 
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
-import org.talend.core.model.process.EConnectionType;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

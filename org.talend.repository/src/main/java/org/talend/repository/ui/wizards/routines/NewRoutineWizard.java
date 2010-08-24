@@ -67,8 +67,8 @@ public class NewRoutineWizard extends Wizard {
         this.path = path;
 
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext()
-                .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode(""); //$NON-NLS-1$
 

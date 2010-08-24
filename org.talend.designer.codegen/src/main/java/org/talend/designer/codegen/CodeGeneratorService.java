@@ -99,7 +99,9 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return CodeGeneratorEmittersPoolFactory.initialize();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
      */
     public void refreshTemplates() {

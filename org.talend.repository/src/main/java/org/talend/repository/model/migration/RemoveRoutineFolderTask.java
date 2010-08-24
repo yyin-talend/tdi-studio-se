@@ -14,6 +14,7 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.ExceptionHandler;
