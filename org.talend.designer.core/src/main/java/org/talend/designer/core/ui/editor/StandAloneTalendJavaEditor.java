@@ -56,6 +56,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
@@ -465,16 +466,27 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         }
     }
 
+    // reference:Process.isLastVersion(Item item)
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
                 List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                         item.getProperty().getId());
-                if (allVersion != null && !allVersion.isEmpty()) {
-                    if (allVersion.get(allVersion.size() - 1).getVersion().equals(item.getProperty().getVersion())) {
-                        return true;
+
+                if (allVersion == null || allVersion.isEmpty()) {
+                    return false;
+                }
+                String lastVersion = VersionUtils.DEFAULT_VERSION;
+
+                for (IRepositoryViewObject object : allVersion) {
+                    if (VersionUtils.compareTo(object.getVersion(), lastVersion) > 0) {
+                        lastVersion = object.getVersion();
                     }
                 }
+                if (VersionUtils.compareTo(item.getProperty().getVersion(), lastVersion) == 0) {
+                    return true;
+                }
+
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
