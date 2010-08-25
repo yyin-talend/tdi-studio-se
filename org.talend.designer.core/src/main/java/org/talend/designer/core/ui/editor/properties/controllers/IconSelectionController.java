@@ -46,7 +46,10 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -340,6 +343,12 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
             if (changeCmd != null) {
                 changeCmd.execute();
             }
+            // see bug 15062
+            final Item item = process.getProperty().getItem();
+            if (item instanceof JobletProcessItem) {
+                String label = item.getProperty().getLabel();
+                CoreImageProvider.removeComponentImage(label);
+            }// end
         }
 
         @Override
