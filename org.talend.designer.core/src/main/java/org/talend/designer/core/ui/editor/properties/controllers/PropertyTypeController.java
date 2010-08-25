@@ -65,6 +65,8 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
+import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
+import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -266,7 +268,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
         Object data = button.getData(NAME);
         if (data != null && data.equals(REPOSITORY_CHOICE)) {
             IElementParameter dbTypeParam = null;
-            if (elem instanceof org.talend.designer.core.ui.editor.process.Process) {
+            if (elem instanceof org.talend.designer.core.ui.editor.process.Process || elem instanceof StatsAndLogsElement
+                    || elem instanceof ImplicitContextLoadElement) {
                 if (EParameterName.PROPERTY_TYPE.getName().equals(paramName)) {
                     dbTypeParam = elem.getElementParameter(EParameterName.DB_TYPE.getName());
                 } else if (JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()).equals(paramName)) {

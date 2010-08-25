@@ -1637,7 +1637,7 @@ class DatabaseTypeFilter extends ViewerFilter {
                     } else if (databaseType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
                         databaseType = EDatabaseTypeName.ORACLE_OCI.getXmlName();
                     } else if (databaseType.equals(EDatabaseTypeName.MSSQL.getDisplayName())) {
-                        databaseType = "SQL_SERVER"; // for component
+                        databaseType = EDatabaseTypeName.MSSQL.getXmlName(); // for component
                     } else {
                         databaseType = EDatabaseTypeName.getTypeFromDbType(databaseType).getProduct();
                     }
