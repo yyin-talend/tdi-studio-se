@@ -108,14 +108,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 				commitEvery_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
 	    	}
-    	}
-    	
-    	if (("true").equals(useBatchSize)) {
-		    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+	    	if (("true").equals(useBatchSize)) {
+			    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
 %>
-				batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+					batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
 <%
-		    }
+			    }
+	    	}
     	}
 %>
 

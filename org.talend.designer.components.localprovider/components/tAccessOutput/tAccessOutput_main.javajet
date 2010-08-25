@@ -44,7 +44,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
 
-    String commitEvery = "";//ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	//feature:2880
     getManager(dbmsId, cid, node);
