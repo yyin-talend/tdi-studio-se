@@ -107,6 +107,11 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static final String FAMILY_SPEARATOR = "--FAMILY--"; //$NON-NLS-1$
 
+    // this list of component is always needed, they must always be loaded at least, since they can be used for code
+    // generation indirectly.
+    private static final String[] COMPONENTS_ALWAYS_NEEDED = { "tPrejob", "tPostjob", //$NON-NLS-1$ //$NON-NLS-2$ 
+            "tJava", "tLibraryLoad" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$
             ExceptionHandler.process(new IllegalStateException(Messages.getString("ComponentsFactory.parentNotRecompiled")), //$NON-NLS-1$
@@ -124,8 +129,7 @@ public class ComponentsFactory implements IComponentsFactory {
     private boolean isComponentVisible(String componentName) {
         Boolean visible = Boolean.TRUE;
 
-        String[] componentsAlwaysNeeded = { "tPreJob", "tPostJob" }; //$NON-NLS-1$ //$NON-NLS-2$
-        if (ArrayUtils.contains(componentsAlwaysNeeded, componentName)) {
+        if (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, componentName)) {
             return true;
         }
 
@@ -398,12 +402,29 @@ public class ComponentsFactory implements IComponentsFactory {
                     }
 
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
+                    // if the component is not needed in the current branding,
+                    // and that this one IS NOT a specific component for code generation
+                    // just don't load it
+                    if (availableComponents != null
+                            && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                            && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                    || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+                        continue;
+                    }
+
                     if (provider.length == 1) {
                         componentToProviderMap.put(currentComp, provider[0]);
                     }
 
-                    if (availableComponents != null && !ArrayUtils.contains(availableComponents, currentComp.getName())) {
-                        continue;
+                    // if the component is not needed in the current branding,
+                    // and that this one IS a specific component for code generation,
+                    // hide it
+                    if (availableComponents != null
+                            && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                            && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                    || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+                        currentComp.setVisible(false);
+                        currentComp.setTechnical(true);
                     }
 
                     TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$

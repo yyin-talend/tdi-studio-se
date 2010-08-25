@@ -174,6 +174,10 @@ public class EmfComponent implements IComponent {
 
     private Boolean useImport = null;
 
+    private Boolean visible = null;
+
+    private Boolean technical = null;
+
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
     private static WeakReference<ComponentResourceFactoryImpl> compResFactoryWeakRef;
 
@@ -1060,8 +1064,7 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
             newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-            newParam
-                    .setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
                     ENCODING_TYPE_CUSTOM });
             newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
@@ -2076,6 +2079,9 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isVisible(String family) {
+        if (visible != null) {
+            return visible;
+        }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
@@ -2095,6 +2101,9 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isVisibleInComponentDefinition() {
+        if (visible != null) {
+            return visible;
+        }
         return compType.getHEADER().isVISIBLE();
     }
 
@@ -2116,8 +2125,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
                 List<String> list = getInstallURL(importType);
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
-                        .isREQUIRED(), list);
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
+                        importType.isREQUIRED(), list);
                 moduleNames.add(importType.getMODULE());
                 componentImportNeeds.setShow(importType.isSHOW());
                 componentImportNeedsList.add(componentImportNeeds);
@@ -2530,6 +2539,10 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
     public boolean isTechnical() {
+        if (technical != null) {
+            return technical;
+        }
+
         return compType.getHEADER().isTECHNICAL();
     }
 
@@ -2605,4 +2618,21 @@ public class EmfComponent implements IComponent {
         return optionMap;
     }
 
+    /**
+     * Sets the visible.
+     * 
+     * @param visible the visible to set
+     */
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    /**
+     * Sets the technical.
+     * 
+     * @param technical the technical to set
+     */
+    public void setTechnical(Boolean technical) {
+        this.technical = technical;
+    }
 }
