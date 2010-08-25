@@ -1089,11 +1089,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
-        String[] lines = new String[strings.length + vmargs.length];
-        System.arraycopy(strings, 0, lines, 0, 1);
-        System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
-        System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
-        return lines;
+        if (vmargs != null && vmargs.length > 0) {
+            String[] lines = new String[strings.length + vmargs.length];
+            System.arraycopy(strings, 0, lines, 0, 1);
+            System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
+            System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
+            return lines;
+        }
+        return strings; // old
     }
 
     /*

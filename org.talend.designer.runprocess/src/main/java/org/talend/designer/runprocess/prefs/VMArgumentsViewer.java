@@ -192,7 +192,9 @@ public class VMArgumentsViewer extends TableEditor {
     protected String writeString(List<String> items) {
         int size = items.size();
         StringBuffer buf = new StringBuffer(size * 50);
-        buf.append(ARG_DELIMITER);
+        if (size > 0) {
+            buf.append(ARG_DELIMITER);
+        }
         for (int i = 0; i < size; i++) {
             buf.append(items.get(i));
             if (i != size - 1) {
