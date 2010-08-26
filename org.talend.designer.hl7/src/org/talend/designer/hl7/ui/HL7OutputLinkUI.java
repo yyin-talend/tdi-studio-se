@@ -86,6 +86,7 @@ public class HL7OutputLinkUI extends HL7OutputUI {
                 IStructuredSelection selection = (IStructuredSelection) metaTableViewer.getSelection();
                 Object obj = selection.getFirstElement();
                 xmlViewer.refresh();
+                xmlViewer.expandAll();
                 schemaViewer.setInput(((IConnection) obj).getMetadataTable().getListColumns());
                 initlinkers();
             }

@@ -450,4 +450,8 @@ public class HL7UI {
         return null;
     }
 
+    public void autoMap() {
+        linker.updateLinksStyleAndControlsSelection(hl7SchemaEditorView.getTable(), true);
+    }
+
 }

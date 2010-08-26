@@ -78,4 +78,5 @@ Import-Package: ca.uhn.hl7v2,
 Export-Package: org.talend.designer.hl7,
  org.talend.designer.hl7.action,
  org.talend.designer.hl7.ui.data,
- org.talend.designer.hl7.ui.edit
+ org.talend.designer.hl7.ui.edit,
+ org.talend.designer.hl7.ui.form

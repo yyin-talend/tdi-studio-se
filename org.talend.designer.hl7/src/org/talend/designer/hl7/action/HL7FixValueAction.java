@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.hl7.ui.HL7UI;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
+import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * 
@@ -29,15 +30,18 @@ public class HL7FixValueAction extends SelectionProviderAction {
 
     private HL7UI hl7ui;
 
+    private AbstractForm form;
+
     /**
      * Create constructor comment.
      * 
      * @param provider
      * @param text
      */
-    public HL7FixValueAction(TreeViewer xmlViewer, String text) {
+    public HL7FixValueAction(TreeViewer xmlViewer, String text, AbstractForm form) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+        this.form = form;
     }
 
     public HL7FixValueAction(TreeViewer xmlViewer, HL7UI hl7ui, String text) {
@@ -49,20 +53,24 @@ public class HL7FixValueAction extends SelectionProviderAction {
     public void init() {
         this.setEnabled(false);
 
-        // HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
-        // if (node == null) {
-        // this.setEnabled(false);
-        // } else {
-        // if (node.getParent() == null) {
-        // this.setEnabled(false);
-        // } else if (node.getColumn() != null) {
-        // this.setEnabled(false);
-        // } else if (node.getChildren() != null && !node.getChildren().isEmpty()) {
-        // this.setEnabled(false);
-        // } else {
-        // this.setEnabled(true);
-        // }
-        // }
+        HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
+        if (node == null) {
+            this.setEnabled(false);
+            return;
+        }
+        if (node.getParent() == null) {
+            this.setEnabled(false);
+            return;
+        }
+        if (node.getChildren() != null && node.getChildren().size() > 0) {
+            this.setEnabled(false);
+            return;
+        }
+        if (node.getColumn() == null) {
+            this.setEnabled(false);
+        }
+        this.setEnabled(true);
+
     }
 
     /*
@@ -95,7 +103,12 @@ public class HL7FixValueAction extends SelectionProviderAction {
         node.setDefaultValue(label);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();
-        hl7ui.redrawLinkers();
+        if (hl7ui != null) {
+            hl7ui.redrawLinkers();
+        } else if (form != null) {
+            form.refreshLinks();
+        }
+
     }
 
 }

@@ -15,7 +15,6 @@ package org.talend.designer.hl7.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -60,9 +59,11 @@ import org.talend.designer.hl7.action.CreateHL7ElementAction;
 import org.talend.designer.hl7.action.DeleteHL7NodeAction;
 import org.talend.designer.hl7.action.HL7DisconnectAction;
 import org.talend.designer.hl7.action.HL7FixValueAction;
+import org.talend.designer.hl7.action.ImportHL7StructureAction;
 import org.talend.designer.hl7.action.SetRepetableAction;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.managers.HL7OutputManager;
+import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.edit.HL7OutputTableViewerProvider;
 import org.talend.designer.hl7.ui.edit.HL7TargetTreeViewerProvider;
@@ -101,7 +102,7 @@ public class HL7OutputUI extends HL7UI {
 
     private CreateHL7AttributeAction createAttributeAction;
 
-    private IAction importFromXMLAction;
+    private ImportHL7StructureAction importAction;
 
     private SetRepetableAction setRepetableAction;
 
@@ -174,7 +175,8 @@ public class HL7OutputUI extends HL7UI {
         if (xmlTree.getItems().length > 0) {
             TreeItem root = xmlTree.getItem(0);
             TableItem[] tableItems = schemaViewer.getTable().getItems();
-            initLinker(root, tableItems);
+            redrawLinkers();
+            // initLinker(root, tableItems);
         }
 
     }
@@ -185,7 +187,11 @@ public class HL7OutputUI extends HL7UI {
 
     private void initLinker(TreeItem node, TableItem[] tableItems) {
         HL7TreeNode treeNode = (HL7TreeNode) node.getData();
-        IMetadataColumn column = treeNode.getColumn();
+        IMetadataColumn column = null;
+        if (treeNode != null) {
+            column = treeNode.getColumn();
+        }
+
         if (column != null) {
             if (this.gethl7Manager().getHl7Component().isHL7Output() && treeNode.getChildren().size() <= 0) {
                 for (int i = 0; i < tableItems.length; i++) {
@@ -221,10 +227,17 @@ public class HL7OutputUI extends HL7UI {
                 List<HL7TreeNode> treeData = this.hl7Manager.getTreeData(this.hl7Manager.getCurrentSchema(false));
                 if (treeData != null && treeData.size() > 0) {
                     HL7TreeNode rootTreeData = treeData.get(0);
-                    for (TreeItem item : xmlViewer.getTree().getItems()) {
-                        if (rootTreeData == item.getData()) {
-                            root = item;
-                            break;
+                    if (rootTreeData != null) {
+                        for (TreeItem item : xmlViewer.getTree().getItems()) {
+                            if (rootTreeData == item.getData()) {
+                                root = item;
+                                break;
+                            } else if (item.getData() instanceof Element) {
+                                if (((Element) item.getData()).getRow().equals(rootTreeData.getRow())) {
+                                    root = item;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -236,6 +249,7 @@ public class HL7OutputUI extends HL7UI {
         if (linker.linkSize() == 0) {
             linker.updateLinksStyleAndControlsSelection(xmlViewer.getTree(), true);
         }
+        xmlViewer.refresh();
     }
 
     public void refreshXMLViewer(HL7TreeNode targetNode) {
@@ -307,7 +321,7 @@ public class HL7OutputUI extends HL7UI {
         tree.setLinesVisible(true);
         tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-        column1.setText("XML Tree");
+        column1.setText("HL7 Structure");
         column1.setWidth(170);
 
         // Related Column
@@ -426,6 +440,8 @@ public class HL7OutputUI extends HL7UI {
             manager.add(new Separator());
             manager.add(setRepetableAction);
             setRepetableAction.init();
+            manager.add(importAction);
+            importAction.init();
         }
     }
 
@@ -444,8 +460,8 @@ public class HL7OutputUI extends HL7UI {
         deleteAction = new DeleteHL7NodeAction(xmlViewer, this, "Delete");
         disconnectAction = new HL7DisconnectAction(xmlViewer, this, "Disconnect Linker");
         fixValueAction = new HL7FixValueAction(xmlViewer, this, "Set A Fix Value");
-        setRepetableAction = new SetRepetableAction(xmlViewer, this, "Set As Repetable Element", this.getValue());
-
+        setRepetableAction = new SetRepetableAction(xmlViewer, this, "Set As Repeatable Element", this.getValue());
+        importAction = new ImportHL7StructureAction(xmlViewer, this, "import HL7 Structure");
     }
 
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {

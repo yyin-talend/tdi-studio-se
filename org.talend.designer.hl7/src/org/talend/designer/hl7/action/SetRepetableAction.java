@@ -80,6 +80,10 @@ public class SetRepetableAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
+        if (node.getParent().getParent() != null) {
+            this.setEnabled(false);
+            return;
+        }
         if (node.isRepetable()) {
             this.setEnabled(false);
             return;
@@ -128,19 +132,19 @@ public class SetRepetableAction extends SelectionProviderAction {
             node.setGroup(false);
         }
         node.setRepetable(true);
-        if (this.value) {
-            if (hl7ui != null && node.isGroup()) {
-                // hl7ui.updateStatus();
-            }
-            // TreeUtil.upsetMainNode(node);
-            // xmlViewer.refresh();
-        } else {
-            // if (hl7ui != null) {
-            // hl7ui.updateStatus();
-            // }
-            // upsetMainNode(node);
-            // xmlViewer.refresh();
-        }
+        // if (this.value) {
+        // if (hl7ui != null && node.isGroup()) {
+        // // hl7ui.updateStatus();
+        // }
+        // // TreeUtil.upsetMainNode(node);
+        // // xmlViewer.refresh();
+        // } else {
+        // // if (hl7ui != null) {
+        // // hl7ui.updateStatus();
+        // // }
+        // // upsetMainNode(node);
+        // // xmlViewer.refresh();
+        // }
         upsetMainNode(node);
         xmlViewer.refresh();
         if (form != null) {

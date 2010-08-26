@@ -12,10 +12,16 @@
 // ============================================================================
 package org.talend.designer.hl7.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.hl7.ui.HL7UI;
+import org.talend.designer.hl7.ui.data.Element;
+import org.talend.designer.hl7.ui.data.HL7TreeNode;
 
 /**
  * UI Manager<br/>
@@ -98,24 +104,47 @@ public class UIManager {
      * 
      * DOC xzhang Comment method "autoMap".
      */
-    // public void autoMap() {
-    // HL7TreeNode root = this.foxManager.getTreeData().get(0);
-    // List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
-    // getMappableNode((Element) root, mappableNodes);
-    // List<IMetadataColumn> schemaData = this.foxManager.getSchemaData();
-    //
-    // for (IMetadataColumn column : schemaData) {
-    // for (HL7TreeNode node : mappableNodes) {
-    // if (node.getLabel().equals(column.getLabel())) {
-    // node.setDefaultValue(null);
-    // node.setColumn(column);
-    // break;
-    // }
-    // }
-    // }
-    // // this.hl7UI.refreshXMLViewer(root);
-    // this.hl7UI.redrawLinkers();
-    // }
+    public void autoMap(String currentSchema) {
+        if (this.hl7Manager instanceof HL7OutputManager) {
+            List<HL7TreeNode> roots = this.hl7Manager.getTreeData(currentSchema);
+            List<HL7TreeNode> mappableNodes = new ArrayList<HL7TreeNode>();
+            for (HL7TreeNode root : roots) {
+                getMappableNode((Element) root, mappableNodes);
+            }
+
+            List<IMetadataColumn> schemaData = this.hl7Manager.getSchemaData(currentSchema);
+
+            for (HL7TreeNode node : mappableNodes) {
+                for (IMetadataColumn column : schemaData) {
+                    if (node.getLabel().equals(column.getLabel())) {
+                        node.setDefaultValue(null);
+                        node.setColumn(column);
+                        break;
+                    }
+                }
+            }
+            // this.hl7UI.refreshXMLViewer(root);
+            this.hl7UI.redrawLinkers();
+            return;
+        }
+        this.hl7UI.autoMap();
+    }
+
+    protected void getMappableNode(Element node, List<HL7TreeNode> mappableNodes) {
+        if (node.getElementChildren().size() == 0) {
+            if (node.getColumn() == null) {
+                mappableNodes.add(node);
+            }
+        }
+        for (HL7TreeNode attri : node.getAttributeChildren()) {
+            if (attri.getColumn() == null) {
+                mappableNodes.add(attri);
+            }
+        }
+        for (HL7TreeNode elem : node.getElementChildren()) {
+            getMappableNode((Element) elem, mappableNodes);
+        }
+    }
 
     private boolean saveAllData() {
         return hl7Manager.saveDataToComponent();

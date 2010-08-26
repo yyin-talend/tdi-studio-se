@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -143,6 +144,44 @@ public class HL7Parse {
                 hl7Manager.getUiManager().getHl7UI().initSchemaCombo();
                 hl7Manager.getUiManager().getHl7UI().getMetadataEditor().removeAll();
                 hl7Manager.getUiManager().getHl7UI().redrawLinkers();
+            } catch (IOException ex) {
+                ExceptionHandler.process(ex);
+            }
+        }
+        return messageList;
+    }
+
+    public List<Message> doParse(String filePath, TreeViewer messageViewerStep1, List<String> msgContentList, String startChar,
+            String endChar) {
+        List<Message> messageList = new ArrayList<Message>();
+        String filePathNoQuotes = TalendTextUtils.removeQuotes(filePath);
+        File file = Path.fromOSString(filePathNoQuotes).toFile();
+        if (file.exists()) {
+            msgContentList.clear();
+            ByteArray array = PropertiesFactory.eINSTANCE.createByteArray();
+            try {
+                array.setInnerContentFromFile(file);
+                TalendHL7Reader talendHL7Reader = new TalendHL7Reader(new java.io.FileInputStream(file), "ISO-8859-15"); //$NON-NLS-1$
+                String hl7InputTem = null;
+                if (startChar != null) {
+                    talendHL7Reader.setStartMsgChar(stringParse2Char(startChar));
+                }
+                if (endChar != null) {
+                    talendHL7Reader.setEndMsgChar(stringParse2Char(endChar));
+                }
+
+                while ((hl7InputTem = talendHL7Reader.getMessage()) != null) {
+                    msgContentList.add(hl7InputTem);
+                    Message message = getHL7MessageInput(hl7InputTem);
+                    messageList.add(message);
+                }
+                if (msgContentList == null || msgContentList.size() == 0) {
+                    String msgText = new String(array.getInnerContent());
+                    msgContentList.add(msgText);
+                    Message message = getHL7MessageInput(msgText);
+                    messageList.add(message);
+                }
+                messageViewerStep1.setInput(messageList.toArray());
             } catch (IOException ex) {
                 ExceptionHandler.process(ex);
             }

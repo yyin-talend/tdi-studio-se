@@ -102,30 +102,29 @@ public class FooterComposite extends Composite {
         cancelFormData.width = Math.max(IDialogConstants.BUTTON_WIDTH, minSize.x);
         cancelButton.setLayoutData(cancelFormData);
 
-        // Button autoMapButton = new Button(this, SWT.NONE);
-        // see bug 7087
-        // if (hl7Manager != null) {
-        // boolean canModify = hl7Manager.getHl7Component().getProcess().isReadOnly();
-        // if (canModify) {
-        // autoMapButton.setEnabled(false);
-        // }
-        // }
-        //        autoMapButton.setToolTipText(Messages.getString("FooterComposite.AutoMapTip")); //$NON-NLS-1$
-        //        autoMapButton.setText(Messages.getString("FooterComposite.AutoMap")); //$NON-NLS-1$
-        // autoMapButton.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // hl7Manager.getUiManager().autoMap();
-        // }
-        //
-        // });
-        // FormData autoMapFormData = new FormData();
-        // minSize = autoMapButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-        // autoMapFormData.width = Math.max(IDialogConstants.BUTTON_WIDTH, minSize.x);
-        // autoMapButton.setLayoutData(autoMapFormData);
+        Button autoMapButton = new Button(this, SWT.NONE);
+        if (hl7Manager != null) {
+            boolean canModify = hl7Manager.getHl7Component().getProcess().isReadOnly();
+            if (canModify) {
+                autoMapButton.setEnabled(false);
+            }
+        }
+        autoMapButton.setToolTipText(Messages.getString("FooterComposite.AutoMapTip")); //$NON-NLS-1$
+        autoMapButton.setText(Messages.getString("FooterComposite.AutoMap")); //$NON-NLS-1$
+        autoMapButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                hl7Manager.getUiManager().autoMap(hl7Manager.getCurrentSchema(false));
+            }
+
+        });
+        FormData autoMapFormData = new FormData();
+        minSize = autoMapButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+        autoMapFormData.width = Math.max(IDialogConstants.BUTTON_WIDTH, minSize.x);
+        autoMapButton.setLayoutData(autoMapFormData);
 
         cancelFormData.right = new FormAttachment(100, -5);
         okFormData.right = new FormAttachment(cancelButton, -5);

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -34,6 +35,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
+import org.talend.designer.hl7.ui.data.HL7TreeNode;
 import org.talend.designer.hl7.ui.header.TalendHL7Reader;
 
 /**
@@ -289,6 +291,18 @@ public class HL7Manager {
 
     public String getEndChar() {
         return this.endChar;
+    }
+
+    public String getCurrentSchema(boolean sign) {
+        return "";
+    }
+
+    public List<HL7TreeNode> getTreeData(String curSchema) {
+        return new ArrayList<HL7TreeNode>();
+    }
+
+    public List<IMetadataColumn> getSchemaData(String currentSchema) {
+        return new ArrayList<IMetadataColumn>();
     }
 
 }

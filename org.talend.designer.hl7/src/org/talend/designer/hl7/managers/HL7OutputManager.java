@@ -14,9 +14,13 @@ package org.talend.designer.hl7.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
@@ -58,49 +62,66 @@ public class HL7OutputManager extends HL7Manager {
         List<Map<String, String>> maps = (List<Map<String, String>>) ElementParameterParser.getObjectValue(hl7Component,
                 "__SCHEMAS__"); //$NON-NLS-1$
         List<String> schemaList = new ArrayList<String>();
-        for (IConnection connection : incomingConnections) {
-            IMetadataTable metadataTable = connection.getMetadataTable();
-            metadataTable.setLabel(connection.getUniqueName());
-            String metadataTableName = metadataTable.getLabel();
-            String rowName = metadataTable.getLabel();
-            for (Map<String, String> map : maps) {
-                if (map.containsValue(rowName)) {
-                    if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
-                        String schemaName = map.get("SCHEMA");
-                        int first = schemaName.indexOf("_");
-                        int second = schemaName.lastIndexOf("_");
-                        if (first > 0 && first < second) {
-                            schemaName = schemaName.substring(first + 1, second);
-                        }
-                        if (!schemaList.contains(schemaName)) {
-                            schemaList.add(schemaName);
-                            rowName = schemaName;// map.get(rowName);
-                            schemaMap.put(metadataTableName, rowName);
-                            break;
+        List<Map<String, String>> rootTable = (List<Map<String, String>>) hl7Component.getTableList(HL7InputComponent.ROOT);
+        List<String> columnList = new ArrayList<String>();
+        if (rootTable != null && rootTable.size() > 0) {
+            for (Map<String, String> rootMap : rootTable) {
+                String columnName = rootMap.get(HL7InputComponent.COLUMN);
+                if (columnName.contains(":")) {
+                    columnName = columnName.substring(0, columnName.indexOf(":"));
+                }
+                if (!columnList.contains(columnName)) {
+                    columnList.add(columnName);
+                }
+            }
+            for (String rowName : columnList) {
+                IMetadataTable metadataTable = null;
+                String metadataTableName = rowName;
+                for (IConnection connection : incomingConnections) {
+                    if (connection.getUniqueName().equals(rowName)) {
+                        metadataTable = connection.getMetadataTable();
+                        metadataTable.setLabel(connection.getUniqueName());
+                        metadataTableName = metadataTable.getLabel();
+                    }
+                }
+
+                for (Map<String, String> map : maps) {
+                    if (map.containsValue(rowName)) {
+                        if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
+                            String schemaName = map.get("SCHEMA");
+                            int first = schemaName.indexOf("_");
+                            int second = schemaName.lastIndexOf("_");
+                            if (first > 0 && first < second) {
+                                schemaName = schemaName.substring(first + 1, second);
+                            }
+                            if (!schemaList.contains(schemaName)) {
+                                schemaList.add(schemaName);
+                                rowName = schemaName;// map.get(rowName);
+                                schemaMap.put(metadataTableName, rowName);
+                                break;
+                            }
+
                         }
 
                     }
-
                 }
-            }
-            treeData = new ArrayList<HL7TreeNode>();
-            if (i == 0)// the first schema as current
-                currentSchema = metadataTableName;// metadataTable.getLabel();
-            HL7TreeNode rootNode = null;
-            HL7TreeNode current = null;
-            HL7TreeNode temp = null;
-            HL7TreeNode mainNode = null;
-            String mainPath = null;
-            String currentPath = null;
-            String defaultValue = null;
-            int nodeOrder = 0;
-            boolean haveOrder = true;
 
-            String schemaId = rowName + ":";//metadataTable.getLabel() + ":"; //$NON-NLS-1$
+                treeData = new ArrayList<HL7TreeNode>();
+                if (i == 0)// the first schema as current
+                    currentSchema = metadataTableName;// metadataTable.getLabel();
 
-            // build root tree
-            List<Map<String, String>> rootTable = (List<Map<String, String>>) hl7Component.getTableList(HL7InputComponent.ROOT);
-            if (rootTable != null) {
+                HL7TreeNode rootNode = null;
+                HL7TreeNode current = null;
+                HL7TreeNode temp = null;
+                HL7TreeNode mainNode = null;
+                String mainPath = null;
+                String currentPath = null;
+                String defaultValue = null;
+                int nodeOrder = 0;
+                boolean haveOrder = true;
+
+                String schemaId = rowName + ":";
+
                 for (Map<String, String> rootMap : rootTable) {
                     String newPath = rootMap.get(HL7InputComponent.PATH);
                     String columnName = rootMap.get(HL7InputComponent.COLUMN);
@@ -144,117 +165,11 @@ public class HL7OutputManager extends HL7Manager {
                     temp.setRepetable(repeatable);
                     temp.setRow(rowName);
                     if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                        temp.setColumn(metadataTable.getColumn(columnName));
-                        temp.setTable(metadataTable);
-                    }
-                }
-            }
-
-            // build group tree
-            current = mainNode;
-            currentPath = mainPath;
-            boolean isFirst = true;
-            List<Map<String, String>> groupTable = (List<Map<String, String>>) hl7Component.getTableList(HL7InputComponent.GROUP);
-            if (groupTable != null) {
-                for (Map<String, String> groupMap : groupTable) {
-                    String newPath = groupMap.get(HL7InputComponent.PATH);
-                    String columnName = groupMap.get(HL7InputComponent.COLUMN);
-                    defaultValue = groupMap.get(HL7InputComponent.VALUE);
-                    String orderValue = groupMap.get(HL7InputComponent.ORDER);
-                    if (orderValue == null || "".equals(orderValue)) {
-                        haveOrder = false;
-                    }
-                    if (haveOrder) {
-                        nodeOrder = Integer.valueOf(groupMap.get(HL7InputComponent.ORDER)).intValue();
-                    }
-                    String flag = columnName + ":"; //$NON-NLS-1$
-                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(rowName + ":")) { //$NON-NLS-1$
-                        continue;
-                    }
-                    if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
-                        temp = new Attribute(newPath);
-                        temp.setDefaultValue(defaultValue);
-                        current.addChild(temp);
-                    } else if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
-                        temp = new NameSpaceNode(newPath);
-                        temp.setDefaultValue(defaultValue);
-                        current.addChild(temp);
-                    } else {
-                        temp = this.addElement(current, currentPath, newPath, defaultValue);
-                        if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
-                            temp.setMain(true);
-                            mainNode = temp;
-                            mainPath = newPath;
+                        columnName = columnName.replace(schemaId, ""); // $!=Nnull-1$
+                        if (metadataTable != null) {
+                            temp.setColumn(metadataTable.getColumn(columnName));
+                            temp.setTable(metadataTable);
                         }
-                        if (isFirst) {
-                            temp.setGroup(true);
-                            isFirst = false;
-                        }
-                        current = temp;
-                        currentPath = newPath;
-                    }
-                    if (haveOrder) {
-                        temp.setOrder(nodeOrder);
-                    }
-                    temp.setRow(rowName);
-                    if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                        temp.setColumn(metadataTable.getColumn(columnName));
-                        temp.setTable(metadataTable);
-                    }
-                }
-            }
-
-            // build loop tree
-            current = mainNode;
-            currentPath = mainPath;
-            isFirst = true;
-            List<Map<String, String>> loopTable = (List<Map<String, String>>) hl7Component.getTableList(HL7InputComponent.LOOP);
-            if (loopTable != null) {
-                for (Map<String, String> loopMap : loopTable) {
-                    String newPath = loopMap.get(HL7InputComponent.PATH);
-                    String columnName = loopMap.get(HL7InputComponent.COLUMN);
-                    defaultValue = loopMap.get(HL7InputComponent.VALUE);
-                    String orderValue = loopMap.get(HL7InputComponent.ORDER);
-                    if (orderValue == null || "".equals(orderValue)) {
-                        haveOrder = false;
-                    }
-                    if (haveOrder) {
-                        nodeOrder = Integer.valueOf(loopMap.get(HL7InputComponent.ORDER)).intValue();
-                    }
-                    String flag = columnName + ":"; //$NON-NLS-1$
-                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(rowName + ":")) { //$NON-NLS-1$
-                        continue;
-                    }
-                    if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
-                        temp = new Attribute(newPath);
-                        temp.setDefaultValue(defaultValue);
-                        current.addChild(temp);
-                    } else if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
-                        temp = new NameSpaceNode(newPath);
-                        temp.setDefaultValue(defaultValue);
-                        current.addChild(temp);
-                    } else {
-                        temp = this.addElement(current, currentPath, newPath, defaultValue);
-                        if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
-                            temp.setMain(true);
-                        }
-                        if (isFirst) {
-                            temp.setRepetable(true);
-                            isFirst = false;
-                        }
-                        current = temp;
-                        currentPath = newPath;
-                    }
-                    if (haveOrder) {
-                        temp.setOrder(nodeOrder);
-                    }
-                    temp.setRow(rowName);
-                    if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
-                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
-                        temp.setColumn(metadataTable.getColumn(columnName));
-                        temp.setTable(metadataTable);
                     }
                 }
 
@@ -272,9 +187,247 @@ public class HL7OutputManager extends HL7Manager {
                 contents.put(metadataTableName, treeData);
                 i++;
             }
+            initCurrentSchema();
+
+        } else if (rootTable != null && rootTable.size() <= 0) {
+            for (IConnection connection : incomingConnections) {
+                IMetadataTable metadataTable = connection.getMetadataTable();
+                metadataTable.setLabel(connection.getUniqueName());
+                String metadataTableName = metadataTable.getLabel();
+                String rowName = metadataTable.getLabel();
+                for (Map<String, String> map : maps) {
+                    if (map.containsValue(rowName)) {
+                        if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
+                            String schemaName = map.get("SCHEMA");
+                            int first = schemaName.indexOf("_");
+                            int second = schemaName.lastIndexOf("_");
+                            if (first > 0 && first < second) {
+                                schemaName = schemaName.substring(first + 1, second);
+                            }
+                            if (!schemaList.contains(schemaName)) {
+                                schemaList.add(schemaName);
+                                rowName = schemaName;// map.get(rowName);
+                                schemaMap.put(metadataTableName, rowName);
+                                break;
+                            }
+
+                        }
+
+                    }
+                }
+                treeData = new ArrayList<HL7TreeNode>();
+                if (i == 0)// the first schema as current
+                    currentSchema = metadataTableName;// metadataTable.getLabel();
+                HL7TreeNode rootNode = null;
+                HL7TreeNode current = null;
+                HL7TreeNode temp = null;
+                HL7TreeNode mainNode = null;
+                String mainPath = null;
+                String currentPath = null;
+                String defaultValue = null;
+                int nodeOrder = 0;
+                boolean haveOrder = true;
+
+                String schemaId = rowName + ":";//metadataTable.getLabel() + ":"; //$NON-NLS-1$
+
+                // build root tree
+                // List<Map<String, String>> rootTable = (List<Map<String, String>>)
+                // hl7Component.getTableList(HL7InputComponent.ROOT);
+                if (rootTable != null) {
+                    for (Map<String, String> rootMap : rootTable) {
+                        String newPath = rootMap.get(HL7InputComponent.PATH);
+                        String columnName = rootMap.get(HL7InputComponent.COLUMN);
+                        defaultValue = rootMap.get(HL7InputComponent.VALUE);
+                        String orderValue = rootMap.get(HL7InputComponent.ORDER);
+                        boolean repeatable = Boolean.valueOf(rootMap.get("REPEATABLE"));
+                        if (orderValue == null || "".equals(orderValue)) {
+                            haveOrder = false;
+                        }
+                        if (haveOrder) {
+                            nodeOrder = Integer.valueOf(rootMap.get(HL7InputComponent.ORDER)).intValue();
+                        }
+                        String flag = columnName + ":"; //$NON-NLS-1$
+                        if (columnName != null && columnName.length() > 0 && !flag.startsWith(rowName + ":")) { //$NON-NLS-1$
+                            continue;
+                        }
+                        if (rootMap.get(HL7InputComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+                            temp = new Attribute(newPath);
+                            temp.setDefaultValue(defaultValue);
+                            current.addChild(temp);
+                        } else if (rootMap.get(HL7InputComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+                            temp = new NameSpaceNode(newPath);
+                            temp.setDefaultValue(defaultValue);
+                            current.addChild(temp);
+                        } else {
+                            temp = addElement(current, currentPath, newPath, defaultValue);
+                            if (rootNode == null) {
+                                rootNode = temp;
+                            }
+                            if (rootMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+                                temp.setMain(true);
+                                mainNode = temp;
+                                mainPath = newPath;
+                            }
+                            current = temp;
+                            currentPath = newPath;
+                        }
+                        if (haveOrder) {
+                            temp.setOrder(nodeOrder);
+                        }
+                        temp.setRepetable(repeatable);
+                        temp.setRow(rowName);
+                        if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+                            columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+                            temp.setColumn(metadataTable.getColumn(columnName));
+                            temp.setTable(metadataTable);
+                        }
+
+                    }
+                    if (rootNode == null) {
+                        rootNode = new Element("rootTag"); //$NON-NLS-1$
+                        // rootNode.setParent(root);
+                        // root.addChild(rootNode);
+                    }
+
+                    if (haveOrder) {
+                        orderNode(rootNode);
+                    }
+                    treeData.add(rootNode);
+                    rootNode.setRow(rowName);
+                    contents.put(metadataTableName, treeData);
+                    i++;
+                }
+            }
         }
-        // this.setTreeRoot(root);
+
     }
+
+    // // build group tree
+    // current = mainNode;
+    // currentPath = mainPath;
+    // boolean isFirst = true;
+    // List<Map<String, String>> groupTable = (List<Map<String, String>>)
+    // hl7Component.getTableList(HL7InputComponent.GROUP);
+    // if (groupTable != null) {
+    // for (Map<String, String> groupMap : groupTable) {
+    // String newPath = groupMap.get(HL7InputComponent.PATH);
+    // String columnName = groupMap.get(HL7InputComponent.COLUMN);
+    // defaultValue = groupMap.get(HL7InputComponent.VALUE);
+    // String orderValue = groupMap.get(HL7InputComponent.ORDER);
+    // if (orderValue == null || "".equals(orderValue)) {
+    // haveOrder = false;
+    // }
+    // if (haveOrder) {
+    // nodeOrder = Integer.valueOf(groupMap.get(HL7InputComponent.ORDER)).intValue();
+    // }
+    //                    String flag = columnName + ":"; //$NON-NLS-1$
+    //                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(rowName + ":")) { //$NON-NLS-1$
+    // continue;
+    // }
+    //                    if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+    // temp = new Attribute(newPath);
+    // temp.setDefaultValue(defaultValue);
+    // current.addChild(temp);
+    //                    } else if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+    // temp = new NameSpaceNode(newPath);
+    // temp.setDefaultValue(defaultValue);
+    // current.addChild(temp);
+    // } else {
+    // temp = this.addElement(current, currentPath, newPath, defaultValue);
+    //                        if (groupMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+    // temp.setMain(true);
+    // mainNode = temp;
+    // mainPath = newPath;
+    // }
+    // if (isFirst) {
+    // temp.setGroup(true);
+    // isFirst = false;
+    // }
+    // current = temp;
+    // currentPath = newPath;
+    // }
+    // if (haveOrder) {
+    // temp.setOrder(nodeOrder);
+    // }
+    // temp.setRow(rowName);
+    // if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+    //                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+    // temp.setColumn(metadataTable.getColumn(columnName));
+    // temp.setTable(metadataTable);
+    // }
+    // }
+    // }
+    //
+    // // build loop tree
+    // current = mainNode;
+    // currentPath = mainPath;
+    // isFirst = true;
+    // List<Map<String, String>> loopTable = (List<Map<String, String>>)
+    // hl7Component.getTableList(HL7InputComponent.LOOP);
+    // if (loopTable != null) {
+    // for (Map<String, String> loopMap : loopTable) {
+    // String newPath = loopMap.get(HL7InputComponent.PATH);
+    // String columnName = loopMap.get(HL7InputComponent.COLUMN);
+    // defaultValue = loopMap.get(HL7InputComponent.VALUE);
+    // String orderValue = loopMap.get(HL7InputComponent.ORDER);
+    // if (orderValue == null || "".equals(orderValue)) {
+    // haveOrder = false;
+    // }
+    // if (haveOrder) {
+    // nodeOrder = Integer.valueOf(loopMap.get(HL7InputComponent.ORDER)).intValue();
+    // }
+    //                    String flag = columnName + ":"; //$NON-NLS-1$
+    //                    if (columnName != null && columnName.length() > 0 && !flag.startsWith(rowName + ":")) { //$NON-NLS-1$
+    // continue;
+    // }
+    //                    if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
+    // temp = new Attribute(newPath);
+    // temp.setDefaultValue(defaultValue);
+    // current.addChild(temp);
+    //                    } else if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
+    // temp = new NameSpaceNode(newPath);
+    // temp.setDefaultValue(defaultValue);
+    // current.addChild(temp);
+    // } else {
+    // temp = this.addElement(current, currentPath, newPath, defaultValue);
+    //                        if (loopMap.get(HL7InputComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
+    // temp.setMain(true);
+    // }
+    // if (isFirst) {
+    // temp.setRepetable(true);
+    // isFirst = false;
+    // }
+    // current = temp;
+    // currentPath = newPath;
+    // }
+    // if (haveOrder) {
+    // temp.setOrder(nodeOrder);
+    // }
+    // temp.setRow(rowName);
+    // if (columnName != null && columnName.length() > 0 && columnName.startsWith(schemaId)) {
+    //                        columnName = columnName.replace(schemaId, ""); //$NON-NLS-1$
+    // temp.setColumn(metadataTable.getColumn(columnName));
+    // temp.setTable(metadataTable);
+    // }
+    // }
+    //
+    // if (rootNode == null) {
+    //                    rootNode = new Element("rootTag"); //$NON-NLS-1$
+    // // rootNode.setParent(root);
+    // // root.addChild(rootNode);
+    // }
+    //
+    // if (haveOrder) {
+    // orderNode(rootNode);
+    // }
+    // treeData.add(rootNode);
+    // rootNode.setRow(rowName);
+    // contents.put(metadataTableName, treeData);
+    // i++;
+    // }
+    // }
+    // this.setTreeRoot(root);
+    // }
 
     public List<Map<String, String>> getRootTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -490,15 +643,22 @@ public class HL7OutputManager extends HL7Manager {
      */
     protected List<HL7TreeNode> getOriginalNodes() {
         List<HL7TreeNode> tmpTreeData = new ArrayList<HL7TreeNode>();
-        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(getHl7Component(),
-                IConnectionCategory.FLOW);
-        if (incomingConnections.size() > 0) {
-            for (IConnection conn : incomingConnections) {
-                String uniqueName = conn.getUniqueName();
-                List<HL7TreeNode> list = contents.get(uniqueName);
-                tmpTreeData.addAll(list);
-            }
+        Set<Entry<String, List<HL7TreeNode>>> set = contents.entrySet();
+        Iterator<Entry<String, List<HL7TreeNode>>> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Entry<String, List<HL7TreeNode>> entry = iterator.next();
+            List<HL7TreeNode> list = entry.getValue();
+            tmpTreeData.addAll(list);
         }
+        // List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(getHl7Component(),
+        // IConnectionCategory.FLOW);
+        // if (incomingConnections.size() > 0) {
+        // for (IConnection conn : incomingConnections) {
+        // String uniqueName = conn.getUniqueName();
+        // List<HL7TreeNode> list = contents.get(uniqueName);
+        // tmpTreeData.addAll(list);
+        // }
+        // }
         return tmpTreeData;
     }
 
@@ -532,6 +692,22 @@ public class HL7OutputManager extends HL7Manager {
         if (sign && schemaMap.get(currentSchema) != null && !"".equals(schemaMap.get(currentSchema))) {
             return schemaMap.get(currentSchema);
         }
+        return this.currentSchema;
+    }
+
+    public String initCurrentSchema() {
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(hl7Component, IConnectionCategory.FLOW);
+        if (incomingConnections.size() <= 0) {
+            return this.currentSchema;
+        }
+        List<String> connNameList = new ArrayList<String>();
+        for (IConnection connection : incomingConnections) {
+            connNameList.add(connection.getUniqueName());
+        }
+        // if (connNameList.contains(this.currentSchema)) {
+        // return this.currentSchema;
+        // }
+        this.currentSchema = connNameList.get(0);
         return this.currentSchema;
     }
 
@@ -623,6 +799,21 @@ public class HL7OutputManager extends HL7Manager {
             return orderMap.get(path);
         }
         return 0;
+    }
+
+    public Map<String, List<HL7TreeNode>> getContents() {
+        return this.contents;
+    }
+
+    public List<IMetadataColumn> getSchemaData(String currentSchema) {
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(hl7Component, IConnectionCategory.FLOW);
+        for (IConnection connection : incomingConnections) {
+            IMetadataTable metadataTable = connection.getMetadataTable();
+            if (metadataTable.getLabel().equals(currentSchema)) {
+                return metadataTable.getListColumns();
+            }
+        }
+        return new ArrayList<IMetadataColumn>();
     }
 
 }
