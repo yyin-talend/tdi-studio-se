@@ -26,5 +26,6 @@ Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.gmf.runtime.draw2d.ui.render.awt,
  org.apache.batik.svggen,
  org.eclipse.ui.intro,
- org.apache.batik.ext.awt
+ org.apache.batik.ext.awt,
+ org.talend.metadata.managment
 Eclipse-LazyStart: true

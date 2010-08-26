@@ -187,8 +187,7 @@ public class RowGenProcessMain {
                             if (err.length() > 0) {
                                 String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
                                 new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(), PluginUtils.PLUGIN_ID,
-                                        mainMsg, Messages.getString(
-                                                "RowGenProcessMain.checkParameter", err.toString())); //$NON-NLS-1$
+                                        mainMsg, Messages.getString("RowGenProcessMain.checkParameter", err.toString())); //$NON-NLS-1$
                             }
                         } catch (Exception e) {
                             ExceptionHandler.process(e);

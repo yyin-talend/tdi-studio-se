@@ -37,10 +37,9 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
     }
 
     public IMetadataColumn createNewMetadataColumn() {
-        final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super
-                .createNewMetadataColumn());
-        metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
-                metadataColumnExt.getTalendType()));
+        final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super.createNewMetadataColumn());
+        metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt, metadataColumnExt
+                .getTalendType()));
         return metadataColumnExt;
     }
 

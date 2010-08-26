@@ -44,7 +44,8 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 
 /**
- * This class is used for generating HTML file for Component 'tRowGenerator'. <br/> <br/>
+ * This class is used for generating HTML file for Component 'tRowGenerator'. <br/>
+ * <br/>
  * 
  */
 public class RowGeneratorComponentDocumentation implements IComponentDocumentation {

@@ -406,8 +406,7 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
                     atLeastOneEntryInserted = true;
 
                 } else if (zoneSourceEntry == Zone.INPUTS && targetTableIsGlobalMapTable) {
-                    insertNewGlobalMapEntryFromInputEntry(currentLanguage, dataMapTableViewTarget, currentIndex,
-                            tableEntrySource);
+                    insertNewGlobalMapEntryFromInputEntry(currentLanguage, dataMapTableViewTarget, currentIndex, tableEntrySource);
                     atLeastOneEntryInserted = true;
 
                 } else if (zoneSourceEntry == Zone.INPUTS && zoneTarget != Zone.VARS) {
@@ -456,11 +455,11 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
             dataMapTableViewTarget.resizeAtExpandedSize();
         }
 
-        if(targetTableIsGlobalMapTable) {
+        if (targetTableIsGlobalMapTable) {
             dataMapTableViewTarget.updateGridDataHeightForTableGlobalMap();
             dataMapTableViewTarget.resizeAtExpandedSize();
         }
-        
+
         uiManager.unselectAllEntriesOfAllTables();
 
         uiManager.refreshBackground(true, false);

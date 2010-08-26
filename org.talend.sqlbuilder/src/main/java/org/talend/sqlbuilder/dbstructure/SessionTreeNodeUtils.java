@@ -37,7 +37,8 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeModel;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
- * Detailled comment for this class. <br/> $Id: SessionTreeNodeUtils.java,v 1.24 2006/11/08 09:58:55 peiqin.hou Exp $
+ * Detailled comment for this class. <br/>
+ * $Id: SessionTreeNodeUtils.java,v 1.24 2006/11/08 09:58:55 peiqin.hou Exp $
  * 
  * @author phou
  * 

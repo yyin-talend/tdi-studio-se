@@ -536,6 +536,10 @@
       <Service
             class="org.talend.designer.core.ui.editor.TalendEditor"
             serviceId="ITalendEditorService"/>
+      <Service
+            class="org.talend.designer.core.ManagementService"
+            serviceId="IManagementService">
+      </Service>
    </extension>
    
    <extension

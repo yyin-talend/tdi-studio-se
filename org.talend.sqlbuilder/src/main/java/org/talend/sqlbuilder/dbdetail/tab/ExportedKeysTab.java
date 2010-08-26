@@ -55,11 +55,11 @@ public class ExportedKeysTab extends AbstractDataSetTab {
             // For synonym table, should get the corresponding table.
             if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
-                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
-                        .getInteractiveConnection().getConnection(), ti.getSimpleName());
+                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
+                        .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getExportedKeys(ti.getCatalogName(),
-                        ti.getSchemaName(), realTableName);
+                resultSet = treeNode.getMetaData().getJDBCMetaData().getExportedKeys(ti.getCatalogName(), ti.getSchemaName(),
+                        realTableName);
 
             } else {
                 resultSet = node.getSession().getMetaData().getExportedKeys((tableNode.getTableInfo()));

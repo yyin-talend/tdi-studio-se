@@ -67,7 +67,8 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
                 .getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] { //$NON-NLS-1$
                 { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE }, //$NON-NLS-1$
                         { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent()); //$NON-NLS-1$
-        sqlwarn = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_WARNING, Messages.getString("SqlBuilderPreferencePage.sql"), //$NON-NLS-1$
+        sqlwarn = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_WARNING, Messages
+                .getString("SqlBuilderPreferencePage.sql"), //$NON-NLS-1$
                 getFieldEditorParent());
 
         // dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,

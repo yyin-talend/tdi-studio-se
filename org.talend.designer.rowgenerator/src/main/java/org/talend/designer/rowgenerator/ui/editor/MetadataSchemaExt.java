@@ -40,6 +40,7 @@ public class MetadataSchemaExt extends MetadataSchema {
     protected MetadataSchemaExt() {
         super();
     }
+
     @SuppressWarnings("unchecked")
     protected IMetadataColumn initializeOneColumn(final IMetadataColumn metadataColumn, final NamedNodeMap nodeMap) {
         IMetadataColumn column = super.initializeOneColumn(metadataColumn, nodeMap);
@@ -69,6 +70,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         }
         return columnExt;
     }
+
     protected void saveOneColumn(Document document, IMetadataColumn metadataColumn, Element column) {
         super.saveOneColumn(document, metadataColumn, column);
         if (metadataColumn instanceof MetadataColumnExt) {
@@ -76,15 +78,15 @@ public class MetadataSchemaExt extends MetadataSchema {
             Attr function = document.createAttribute("function"); //$NON-NLS-1$
             function.setNodeValue(columnExt.getFunction().getName());
             column.setAttributeNode(function);
-            
+
             Attr parameter = document.createAttribute("parameter"); //$NON-NLS-1$
             parameter.setNodeValue(columnExt.getParameter());
             column.setAttributeNode(parameter);
-         
+
             Attr preview = document.createAttribute("preview"); //$NON-NLS-1$
             preview.setNodeValue(columnExt.getPreview());
             column.setAttributeNode(preview);
         }
-        
+
     }
 }

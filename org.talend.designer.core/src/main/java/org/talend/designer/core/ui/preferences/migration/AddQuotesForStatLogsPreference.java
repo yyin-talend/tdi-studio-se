@@ -17,11 +17,11 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IWorkspaceMigrationTask;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.migration.AbstractMigrationTask;
+import org.talend.migration.IWorkspaceMigrationTask;
 
 /**
  * yzhang class global comment. Detailled comment

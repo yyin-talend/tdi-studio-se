@@ -102,7 +102,7 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             // modify for bug 9471
             try {
                 for (Variable varible : variables) {
-                    if (valueContains(expression, varible.getName())) {                        
+                    if (valueContains(expression, varible.getName())) {
                         Integer.parseInt(varible.getValue());
                     }
                 }

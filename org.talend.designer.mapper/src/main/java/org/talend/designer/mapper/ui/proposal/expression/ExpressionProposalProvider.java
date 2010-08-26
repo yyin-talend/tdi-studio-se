@@ -58,8 +58,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
      * @param tables
      * @param control
      */
-    public ExpressionProposalProvider(MapperManager mapperManager,
-            IContentProposalProvider[] otherContentProposalProviders) {
+    public ExpressionProposalProvider(MapperManager mapperManager, IContentProposalProvider[] otherContentProposalProviders) {
         super();
         this.mapperManager = mapperManager;
         this.currentLanguage = LanguageProvider.getCurrentLanguage();
@@ -133,8 +132,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 }
                 if (talendType != null) {
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
-                                nullable).toString(), talendType, nullable));
+                        variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType, nullable)
+                                .toString(), talendType, nullable));
                     } else {
                         variables.add(new Variable(variable, "", talendType, nullable)); //$NON-NLS-1$
                     }

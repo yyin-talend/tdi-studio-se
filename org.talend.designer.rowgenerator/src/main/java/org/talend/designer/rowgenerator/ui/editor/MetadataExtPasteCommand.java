@@ -23,12 +23,12 @@ import org.talend.core.ui.extended.command.MetadataPasteCommand;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 
 /**
- *  chuang class global comment. Detailled comment
+ * chuang class global comment. Detailled comment
  */
 public class MetadataExtPasteCommand extends MetadataPasteCommand {
 
     /**
-     *  chuang MetadataExtPasteCommand constructor comment.
+     * chuang MetadataExtPasteCommand constructor comment.
      * 
      * @param extendedTable
      */

@@ -56,11 +56,11 @@ public class IndexesTab extends AbstractDataSetTab {
             // For synonym table, should get the corresponding table.
             if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
-                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
-                        .getInteractiveConnection().getConnection(), ti.getSimpleName());
+                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
+                        .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getIndexInfo(ti.getCatalogName(),
-                        ti.getSchemaName(), realTableName, true, true);
+                resultSet = treeNode.getMetaData().getJDBCMetaData().getIndexInfo(ti.getCatalogName(), ti.getSchemaName(),
+                        realTableName, true, true);
 
             } else {
                 resultSet = node.getSession().getMetaData().getIndexInfo((tableNode.getTableInfo()));
