@@ -51,6 +51,7 @@ public class ConnectionAddUniqueNameMigrationTask extends AbstractJobMigrationTa
     @Override
     public ExecutionResult execute(Item item) {
         try {
+            uniqueConnectionNameList.clear();
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             ProcessType processType = getProcessType(item);
             boolean modified = false;
