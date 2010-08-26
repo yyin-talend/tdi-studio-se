@@ -109,8 +109,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
     // this list of component is always needed, they must always be loaded at least, since they can be used for code
     // generation indirectly.
+    // tFileInputFullRow + tSocketOutput : needed for DataViewer
     private static final String[] COMPONENTS_ALWAYS_NEEDED = { "tPrejob", "tPostjob", //$NON-NLS-1$ //$NON-NLS-2$ 
-            "tJava", "tLibraryLoad" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+            "tJava", "tLibraryLoad", "tFileInputFullRow", "tSocketOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$
