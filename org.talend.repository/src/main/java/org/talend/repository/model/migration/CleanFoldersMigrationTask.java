@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
+import org.talend.migration.AbstractMigrationTask;
+import org.talend.migration.IProjectMigrationTask;
 import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 

@@ -103,8 +103,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                 int size = draggedData.getTransferableEntryList().size();
                 if (itemIndexWhereInsertFromPosition != null) {
-                    draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition
-                            + size - 1);
+                    draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
                     if (!analyzer.targetTableIsFiltersTable()
                             && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                         insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
@@ -355,8 +354,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
             Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
 
-            TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget
-                    .getDataMapTable().getName(), tableEntrySource.getName());
+            TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget.getDataMapTable()
+                    .getName(), tableEntrySource.getName());
 
             if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.INPUTS
                     && tableEntrySource.getParentName().equals(tableEntryLocationTarget.tableName)) {
@@ -488,9 +487,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param metadataEditorEvent
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void updateExpressionsOfInsertedEntries(IDbLanguage currentLanguage,
-            MetadataTableEditorView metadataEditorView, int currentIndex,
-            ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
+    private void updateExpressionsOfInsertedEntries(IDbLanguage currentLanguage, MetadataTableEditorView metadataEditorView,
+            int currentIndex, ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
     // , MetadataEditorEvent metadataEditorEvent
     ) {
@@ -513,15 +511,13 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 if (zoneTarget == Zone.INPUTS) {
                     setDefaultOperator((InputColumnTableEntry) dataMapTableEntry);
                 }
-                DataMapTableView dataMapTableView = mapperManager.retrieveIDataMapTableView(tableEntrySource
-                        .getParent());
+                DataMapTableView dataMapTableView = mapperManager.retrieveIDataMapTableView(tableEntrySource.getParent());
                 Zone zoneSource = dataMapTableView.getZone();
                 String location = null;
                 if (zoneSource == Zone.OUTPUTS) {
                     location = tableEntrySource.getExpression();
                 } else {
-                    location = currentLanguage
-                            .getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                    location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
                 }
 
                 if (location != null) {
@@ -599,8 +595,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         sources.add(tableEntrySource);
     }
 
-    private void modifyExistingExpression(IDbLanguage currentLanguage, ITableEntry entryTarget,
-            ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
+    private void modifyExistingExpression(IDbLanguage currentLanguage, ITableEntry entryTarget, ITableEntry tableEntrySource,
+            boolean overwriteExpression, Zone zoneSourceEntry) {
         String expression = null;
         if (zoneSourceEntry == Zone.OUTPUTS) {
             expression = tableEntrySource.getExpression();

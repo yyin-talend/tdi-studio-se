@@ -25,12 +25,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.migration.AbstractMigrationTask;
+import org.talend.migration.IProjectMigrationTask;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 

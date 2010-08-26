@@ -30,7 +30,8 @@ Require-Bundle: org.apache.axis,
  org.talend.utils,
  org.eclipse.core.expressions,
  org.eclipse.emf.ecore.xmi,
- org.talend.migrationTool
+ org.talend.migrationTool,
+ org.talend.metadata.managment
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,

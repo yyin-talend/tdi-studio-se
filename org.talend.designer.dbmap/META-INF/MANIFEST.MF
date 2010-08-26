@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.commons.ui,
  org.talend.libraries.dom4j-jaxen,
  org.talend.designer.codegen,
- org.talend.core.runtime
+ org.talend.core.runtime,
+ org.talend.metadata.managment
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.dbmap,
  org.talend.designer.dbmap.external.connection,

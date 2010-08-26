@@ -22,10 +22,10 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.migration.IProjectMigrationTask;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**

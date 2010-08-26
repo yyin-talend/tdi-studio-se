@@ -75,7 +75,9 @@ public class InputTable extends AbstractInOutTable {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.dbmap.external.data.ExternalMapperTable)
+     * @see
+     * org.talend.designer.dbmap.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.dbmap.external
+     * .data.ExternalMapperTable)
      */
     @Override
     public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
@@ -102,8 +104,7 @@ public class InputTable extends AbstractInOutTable {
         ArrayList<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
         for (IMetadataColumn column : columns) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
-            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
-                    .getLabel());
+            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn().getLabel());
             // Entry match with current column
             if (externalMapperTableEntry != null) {
                 fillInputEntry(inputEntry, externalMapperTableEntry);
@@ -122,8 +123,7 @@ public class InputTable extends AbstractInOutTable {
             MetadataColumn column = new MetadataColumn();
             column.setLabel(perTableEntry.getName());
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
-            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
-                    .getLabel());
+            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn().getLabel());
             fillInputEntry(inputEntry, externalMapperTableEntry);
             dataMapTableEntries.add(inputEntry);
             columns.add(column);
@@ -135,8 +135,7 @@ public class InputTable extends AbstractInOutTable {
                 joinType = mapperManager.getCurrentLanguage().getAvailableJoins()[0];
             }
             alias = externalMapperTable.getAlias();
-            tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection
-                    .getName();
+            tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection.getName();
         }
     }
 
@@ -155,7 +154,9 @@ public class InputTable extends AbstractInOutTable {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn)
+     * @see
+     * org.talend.designer.dbmap.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn
+     * )
      */
     @Override
     protected AbstractInOutTableEntry getNewTableEntry(IMetadataColumn column) {

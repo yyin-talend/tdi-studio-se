@@ -181,8 +181,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         button = new Button(composite, SWT.CHECK);
         button.setText(Messages.getString("GenerateDocAsHTMLWizardPage.custom_css")); //$NON-NLS-1$
         button.setSelection(isCheck);
-        new Label(composite, SWT.NONE)
-                .setText(Messages.getString("GenerateDocAsHTMLWizardPage.default_css_template")); //$NON-NLS-1$
+        new Label(composite, SWT.NONE).setText(Messages.getString("GenerateDocAsHTMLWizardPage.default_css_template")); //$NON-NLS-1$
 
         Composite composite1 = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();

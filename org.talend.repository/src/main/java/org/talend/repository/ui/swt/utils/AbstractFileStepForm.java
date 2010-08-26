@@ -94,8 +94,8 @@ public abstract class AbstractFileStepForm extends AbstractForm {
                 ConnectionContextHelper.checkContextMode(connectionItem);
             }
             if (connectionItem.getConnection().isContextMode()) {
-                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(
-                        getShell(), connectionItem.getConnection());
+                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection());
                 getContextModeManager().setSelectedContextType(contextTypeForContextMode);
             }
 

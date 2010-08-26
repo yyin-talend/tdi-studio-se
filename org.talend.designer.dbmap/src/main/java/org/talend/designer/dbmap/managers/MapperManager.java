@@ -226,21 +226,18 @@ public class MapperManager extends AbstractMapperManager {
         } else if (currentLink.getPointLinkDescriptor2().getTableEntry() == entryCauseOfChange) {
             sourceIsCauseOfChange = false;
         } else {
-            throw new IllegalArgumentException(Messages
-                    .getString("MapperManager.exceptionMessage.mustBeSourceOrTarget")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.mustBeSourceOrTarget")); //$NON-NLS-1$
         }
 
         if (sourceIsCauseOfChange) {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor2().getTableEntry(),
-                        removedLink);
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor2().getTableEntry(), removedLink);
             }
         } else {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor1().getTableEntry(),
-                        removedLink);
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor1().getTableEntry(), removedLink);
             }
         }
         changeDependentEntriesState(currentLink, entryCauseOfChange, removedLink);
@@ -399,8 +396,7 @@ public class MapperManager extends AbstractMapperManager {
      * @param metadataColumn, can be null if added in VarsTable
      * @param index
      */
-    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn,
-            Integer index) {
+    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn, Integer index) {
         IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         IColumnEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.INPUTS) {
@@ -420,8 +416,8 @@ public class MapperManager extends AbstractMapperManager {
      * @param dataMapTableEntry
      * @param index
      */
-    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView,
-            IMetadataColumn metadataColumn, Integer index) {
+    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView, IMetadataColumn metadataColumn,
+            Integer index) {
         MetadataTableEditor metadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
         metadataTableEditor.add(metadataColumn, index);
     }
@@ -694,8 +690,7 @@ public class MapperManager extends AbstractMapperManager {
         for (int i = 0; i < tableEntryLocations.length; i++) {
             TableEntryLocation currentLocation = tableEntryLocations[i];
             if (currentLocation.equals(previousLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation,
-                        newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation, newLocation);
                 expressionHasChanged = true;
             }
         }
@@ -775,8 +770,8 @@ public class MapperManager extends AbstractMapperManager {
      */
     public void addInputAliasTable() {
 
-        AliasDialog aliasDialog = new AliasDialog(this, tableManager.getPhysicalInputTableNames(), tableManager
-                .getAliases(), tableManager.getVisibleTables());
+        AliasDialog aliasDialog = new AliasDialog(this, tableManager.getPhysicalInputTableNames(), tableManager.getAliases(),
+                tableManager.getVisibleTables());
         if (!aliasDialog.open()) {
             return;
         }
@@ -801,8 +796,7 @@ public class MapperManager extends AbstractMapperManager {
         boolean isPhysicalTable = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName()); //$NON-NLS-1$
         String aliasOrTableName = isPhysicalTable ? aliasDialog.getTableName() : alias;
 
-        IMetadataTable metadataTable = isPhysicalTable ? connectionFound.getTable() : connectionFound.getTable()
-                .clone();
+        IMetadataTable metadataTable = isPhysicalTable ? connectionFound.getTable() : connectionFound.getTable().clone();
 
         boolean isInvisiblePhysicalTable = aliasDialog.isSameAsPhysicalTable(aliasOrTableName)
                 && !aliasDialog.isSameAsVisibleTableName(aliasOrTableName);
@@ -817,8 +811,7 @@ public class MapperManager extends AbstractMapperManager {
         inputTable.initFromExternalData(null);
 
         TablesZoneView tablesZoneViewInputs = uiManager.getTablesZoneViewInputs();
-        DataMapTableView dataMapTableView = uiManager.createNewInputTableView(lastChild, inputTable,
-                tablesZoneViewInputs);
+        DataMapTableView dataMapTableView = uiManager.createNewInputTableView(lastChild, inputTable, tablesZoneViewInputs);
         tablesZoneViewInputs.setSize(tablesZoneViewInputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         tablesZoneViewInputs.layout(true, true);
         uiManager.moveInputScrollBarZoneToMax();
