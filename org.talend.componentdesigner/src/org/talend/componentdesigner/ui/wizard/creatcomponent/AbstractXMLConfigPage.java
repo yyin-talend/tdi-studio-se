@@ -85,7 +85,9 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.componentdesigner.ui.wizard.creatcomponent.AbstractComponentPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.talend.componentdesigner.ui.wizard.creatcomponent.AbstractComponentPage#createPageContent(org.eclipse.swt
+     * .widgets.Composite)
      */
     @Override
     protected void createPageContent(Composite parent) {

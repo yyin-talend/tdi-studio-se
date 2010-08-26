@@ -27,155 +27,164 @@ import org.talend.jspss.spssfile;
 import org.talend.jspss.spssvariable;
 import org.talend.jspss.spssvariables;
 
-public class spssComponent extends AbstractExternalNode{
+public class spssComponent extends AbstractExternalNode {
 
     private static Logger log = Logger.getLogger(spssComponent.class);
 
-	private String strFileName;
-	private String strTranslateLabels;
-	
+    private String strFileName;
+
+    private String strTranslateLabels;
+
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
     }
-    
+
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
         return null;
     }
-	
+
     public int open(Composite parent) {
-        return open(parent.getDisplay());  
+        return open(parent.getDisplay());
     }
-    
+
     public void initialize() {
     }
-    
+
     public IExternalData getExternalData() {
         return null;
     }
-    
+
     public void setExternalData(IExternalData persistentData) {
     }
-    
+
     public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
     }
 
     public void loadDataOut(OutputStream out, Writer writer) throws IOException {
     }
-    
+
     public void renameInputConnection(String oldName, String newName) {
     }
 
     public void renameOutputConnection(String oldName, String newName) {
     }
-    
+
     @Override
     public IODataComponentContainer getIODataComponents() {
         IODataComponentContainer inAndOut = new IODataComponentContainer();
         List<IODataComponent> outputs = inAndOut.getOuputs();
-        if(null!=getOutgoingConnections()){
-        	for (IConnection currentConnection : getOutgoingConnections()) {
-        		IODataComponent component = new IODataComponent(currentConnection, getMetadataList().get(0));
-        		outputs.add(component);
-        	}
+        if (null != getOutgoingConnections()) {
+            for (IConnection currentConnection : getOutgoingConnections()) {
+                IODataComponent component = new IODataComponent(currentConnection, getMetadataList().get(0));
+                outputs.add(component);
+            }
         }
         List<IODataComponent> inputs = inAndOut.getInputs();
-        if(null!=getIncomingConnections()){
-        	for (IConnection currentConnection : getIncomingConnections()) {
-        		IODataComponent component = new IODataComponent(currentConnection, getMetadataList().get(0));
-        		inputs.add(component);
-        	}
+        if (null != getIncomingConnections()) {
+            for (IConnection currentConnection : getIncomingConnections()) {
+                IODataComponent component = new IODataComponent(currentConnection, getMetadataList().get(0));
+                inputs.add(component);
+            }
         }
         return inAndOut;
     }
-    
+
     public int open(Display display) {
-    	try{
-    		getComponentProperties();
-    		if(MessageDialog.openQuestion(display.getActiveShell(), "SPSS - Sync Schema", "Retrive schema from the File? \n"+ strFileName)){
-    			getSchemaFromSPSSFile();
-    			return SWT.OK;	
-    		}else{
-    			return SWT.CANCEL;
-    		}
-    	}catch(Exception e){
+        try {
+            getComponentProperties();
+            if (MessageDialog.openQuestion(display.getActiveShell(), "SPSS - Sync Schema", "Retrive schema from the File? \n"
+                    + strFileName)) {
+                getSchemaFromSPSSFile();
+                return SWT.OK;
+            } else {
+                return SWT.CANCEL;
+            }
+        } catch (Exception e) {
             log.error("", e);
-    		return SWT.CANCEL;
-    	}
+            return SWT.CANCEL;
+        }
     }
-    
-    private void getComponentProperties(){
-    	try{
-    		strFileName = (String.valueOf(this.getElementParameter(IspssParameterNames.FILENAME).getValue())).replaceAll("\"", "");
-    		strTranslateLabels = String.valueOf(this.getElementParameter(IspssParameterNames.TRANSLATELABELS).getValue());
-    		
-    	}catch(Exception e){
-    	}
+
+    private void getComponentProperties() {
+        try {
+            strFileName = (String.valueOf(this.getElementParameter(IspssParameterNames.FILENAME).getValue()))
+                    .replaceAll("\"", "");
+            strTranslateLabels = String.valueOf(this.getElementParameter(IspssParameterNames.TRANSLATELABELS).getValue());
+
+        } catch (Exception e) {
+        }
     }
-    
-    private void getSchemaFromSPSSFile(){
 
-    	try {
-    		List<IMetadataTable> metadataList = getMetadataList();
-    		MetadataTable metaTable = (MetadataTable) metadataList.get(0);
-    		metaTable.getListColumns().clear();
-    		MetadataTableEditor tableEditor = new MetadataTableEditor(metaTable, "");
+    private void getSchemaFromSPSSFile() {
 
-    		spss spssIn = new spss();
-    		spssfile spssFile = spssIn.openFile(strFileName, spssfile.SPSS_READ);
-    		
-			String strComponentName = this.getComponent().getName();
-			spssvariables spssVars = spssFile.getVariables();
-			spssvariable spssVar;
-			for(int i=0;i<spssVars.getNumberOfVariables();i++){
-				spssVar = spssVars.getVariabelAtPos(i);
-				IMetadataColumn column = tableEditor.createNewMetadataColumn();
-				column.setLabel(spssVar.getName());
-				column.setOriginalDbColumnName(spssVar.getName());
-				
-				if(spssVar.hasLabels() && strTranslateLabels.toLowerCase().equals("true")){
-					column.setLength(spssVar.getMaxLengthByLableTranslation());
-					column.setPrecision(0);
-		    		column.setTalendType("id_String");
-				}else{
-					switch(spssVar.getJAVAType()){
-						case spssvariable.JAVA_TYPE_DOUBLE: column.setTalendType("id_Double"); break;
-						case spssvariable.JAVA_TYPE_STRING: column.setTalendType("id_String"); break;
-						case spssvariable.JAVA_TYPE_DATE: column.setTalendType("id_Date"); break;
-					}
-					column.setLength(spssVar.getDecimals());
-		    		column.setPrecision(spssVar.getPrecision());
-		    		
-				}
-				
-				String strLabel = spssVar.getLabel();
-				if(null!=strLabel && strLabel.length()>0) column.setComment(strLabel);
-				else column.setComment("");
-	    		
-				if(null == strComponentName || strComponentName.toLowerCase().equals("tspssinput"))	column.setReadOnly(true);
-				else column.setReadOnly(false);
-				
-	    		metaTable.getListColumns().add(column);
-			}
-			spssFile.close();
-    		
-    	}catch(Exception e){
+        try {
+            List<IMetadataTable> metadataList = getMetadataList();
+            MetadataTable metaTable = (MetadataTable) metadataList.get(0);
+            metaTable.getListColumns().clear();
+            MetadataTableEditor tableEditor = new MetadataTableEditor(metaTable, "");
+
+            spss spssIn = new spss();
+            spssfile spssFile = spssIn.openFile(strFileName, spssfile.SPSS_READ);
+
+            String strComponentName = this.getComponent().getName();
+            spssvariables spssVars = spssFile.getVariables();
+            spssvariable spssVar;
+            for (int i = 0; i < spssVars.getNumberOfVariables(); i++) {
+                spssVar = spssVars.getVariabelAtPos(i);
+                IMetadataColumn column = tableEditor.createNewMetadataColumn();
+                column.setLabel(spssVar.getName());
+                column.setOriginalDbColumnName(spssVar.getName());
+
+                if (spssVar.hasLabels() && strTranslateLabels.toLowerCase().equals("true")) {
+                    column.setLength(spssVar.getMaxLengthByLableTranslation());
+                    column.setPrecision(0);
+                    column.setTalendType("id_String");
+                } else {
+                    switch (spssVar.getJAVAType()) {
+                    case spssvariable.JAVA_TYPE_DOUBLE:
+                        column.setTalendType("id_Double");
+                        break;
+                    case spssvariable.JAVA_TYPE_STRING:
+                        column.setTalendType("id_String");
+                        break;
+                    case spssvariable.JAVA_TYPE_DATE:
+                        column.setTalendType("id_Date");
+                        break;
+                    }
+                    column.setLength(spssVar.getDecimals());
+                    column.setPrecision(spssVar.getPrecision());
+
+                }
+
+                String strLabel = spssVar.getLabel();
+                if (null != strLabel && strLabel.length() > 0)
+                    column.setComment(strLabel);
+                else
+                    column.setComment("");
+
+                if (null == strComponentName || strComponentName.toLowerCase().equals("tspssinput"))
+                    column.setReadOnly(true);
+                else
+                    column.setReadOnly(false);
+
+                metaTable.getListColumns().add(column);
+            }
+            spssFile.close();
+
+        } catch (Exception e) {
             log.error("", e);
-    	}
+        }
     }
-    
-    
-    
-    
+
     public static void main(String[] args) {
         Display display = new Display();
         spssComponent component = new spssComponent();
         component.open(display);
     }
 
-	public IExternalData getTMapExternalData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-    
+    public IExternalData getTMapExternalData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

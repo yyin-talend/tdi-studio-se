@@ -18,7 +18,6 @@
  */
 package it.eng.spagobi.engines.talend.client.exception;
 
-import org.apache.commons.httpclient.StatusLine;
 
 /**
  * @author Andrea Gioia

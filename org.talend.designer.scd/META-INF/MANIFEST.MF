@@ -12,5 +12,6 @@ Require-Bundle: org.talend.core,
  org.talend.commons.ui,
  org.eclipse.help.ui,
  org.talend.libraries.dom4j-jaxen,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.metadata.managment
 Eclipse-LazyStart: true
