@@ -189,8 +189,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                     Display.getDefault().asyncExec(new Runnable() {
 
                         public void run() {
-                            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
-                                    new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+                            CorePlugin.getDefault().getDesignerCoreService()
+                                    .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
                         }
 
                     });
@@ -205,8 +205,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             } catch (Exception e) {
                 log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
-                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, Messages
-                        .getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
+                        Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
             } finally {
                 try {
                     IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -231,9 +231,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                         message.append(tmpJetBean.getTemplateRelativeUri());
                     }
                 }
-                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, Messages
-                        .getString("CodeGeneratorEmittersPoolFactory.failCompail") //$NON-NLS-1$
-                        + message.toString());
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
+                        Messages.getString("CodeGeneratorEmittersPoolFactory.failCompail") //$NON-NLS-1$
+                                + message.toString());
             }
             CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
             return Status.OK_STATUS;
@@ -292,10 +292,11 @@ public final class CodeGeneratorEmittersPoolFactory {
         JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
                 + template.getResourceName() + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT,
                 template.getResourceName(), template.getVersion(), codeLanguage.getName(), ""); //$NON-NLS-1$
+        jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
+        jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$ //$NON-NLS-2$
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
-        jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$
         jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
         return jetBean;
     }
@@ -315,13 +316,13 @@ public final class CodeGeneratorEmittersPoolFactory {
             String templateURI = component.getPathSource() + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP
                     + fileNamingInstance.getJetFileName(component, codeLanguage.getExtension(), codePart);
 
-            JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(), component
-                    .getVersion(), codeLanguage.getName(), codePart.getName());
-            jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
+            JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(),
+                    component.getVersion(), codeLanguage.getName(), codePart.getName());
             jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$
+            jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
-            jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$
 
             for (String pluginDependency : component.getPluginDependencies()) {
                 jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES", pluginDependency); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -459,17 +460,17 @@ public final class CodeGeneratorEmittersPoolFactory {
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
                 // System.out.println("The new file is not in JetPersistence* cache:" + getFullTemplatePath(jetBean));
-                TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(), jetBean
-                        .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
-                        .getTalendEclipseHelper());
+                TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(),
+                        jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
+                        dummyEmitter.getTalendEclipseHelper());
                 // wzhang modified to fix bug 11439
                 if (monitorWrap.isCanceled()) {
                     if (!CommonsPlugin.isHeadless()) {
                         Display.getDefault().syncExec(new Runnable() {
 
                             public void run() {
-                                MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
-                                        .getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
+                                MessageDialog.openError(Display.getDefault().getActiveShell(),
+                                        Messages.getString("CodeGeneratorEmittersPoolFactory.operationCanceled"), //$NON-NLS-1$
                                         Messages.getString("CodeGeneratorEmittersPoolFactory.dialogContent")); //$NON-NLS-1$
 
                             }
@@ -481,9 +482,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 try {
                     emitter.initialize(sub);
                 } catch (JETException e) {
-                    log
-                            .error(
-                                    Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
+                    log.error(
+                            Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
                     continue;
                 }
 
