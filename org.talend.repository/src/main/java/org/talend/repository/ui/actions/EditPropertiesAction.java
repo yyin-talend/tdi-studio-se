@@ -158,7 +158,7 @@ public class EditPropertiesAction extends AContextualAction {
         if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
             return;
         }
-        if (originalName.equals(node.getObject().getLabel())) {
+        if (originalName.equals(node.getObject().getProperty().getLabel())) {
             return;
         }
 
@@ -179,7 +179,7 @@ public class EditPropertiesAction extends AContextualAction {
             if (unit == null) {
                 return;
             }
-            String newName = node.getObject().getLabel();
+            String newName = node.getObject().getProperty().getLabel();
 
             JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
             processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
