@@ -39,59 +39,61 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        EList elementParameter = processType.getParameters().getElementParameter();
-        String dbTypeImplicit = "";
-        String dbTypeStatsLog = "";
-        String dbImplicitVersionRepository = "";
-        String dbStasLogVersionRepository = "";
-        for (int i = 0; i < elementParameter.size(); i++) {
-            final Object object = elementParameter.get(i);
-            if (object instanceof ElementParameterTypeImpl) {
-                ElementParameterTypeImpl parameterType = (ElementParameterTypeImpl) object;
-                String name = parameterType.getName();
-                if ("DB_TYPE_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
-                    dbTypeImplicit = parameterType.getValue();
-                }
-                if ("DB_TYPE".equals(name)) {//$NON-NLS-N$
-                    dbTypeStatsLog = parameterType.getValue();
-                }
-                if ("DB_VERSION_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
-                    dbImplicitVersionRepository = parameterType.getValue();
-                }
-                if ("DB_VERSION".equals(name)) { //$NON-NLS-N$
-                    dbStasLogVersionRepository = parameterType.getValue();
+        if (processType.getParameters() != null) {
+            EList elementParameter = processType.getParameters().getElementParameter();
+            String dbTypeImplicit = "";
+            String dbTypeStatsLog = "";
+            String dbImplicitVersionRepository = "";
+            String dbStasLogVersionRepository = "";
+            for (int i = 0; i < elementParameter.size(); i++) {
+                final Object object = elementParameter.get(i);
+                if (object instanceof ElementParameterTypeImpl) {
+                    ElementParameterTypeImpl parameterType = (ElementParameterTypeImpl) object;
+                    String name = parameterType.getName();
+                    if ("DB_TYPE_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
+                        dbTypeImplicit = parameterType.getValue();
+                    }
+                    if ("DB_TYPE".equals(name)) {//$NON-NLS-N$
+                        dbTypeStatsLog = parameterType.getValue();
+                    }
+                    if ("DB_VERSION_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
+                        dbImplicitVersionRepository = parameterType.getValue();
+                    }
+                    if ("DB_VERSION".equals(name)) { //$NON-NLS-N$
+                        dbStasLogVersionRepository = parameterType.getValue();
+                    }
                 }
             }
-        }
-        boolean implicitSame = sameDB(dbTypeImplicit, dbImplicitVersionRepository);
-        boolean stasLogSame = sameDB(dbTypeStatsLog, dbStasLogVersionRepository);
+            boolean implicitSame = sameDB(dbTypeImplicit, dbImplicitVersionRepository);
+            boolean stasLogSame = sameDB(dbTypeStatsLog, dbStasLogVersionRepository);
 
-        if (!implicitSame) {
-            if (dbTypeImplicit.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
-            } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
-            } else if (dbTypeImplicit.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ACCESS_2003"); //$NON-NLS-N$//$NON-NLS-N$
+            if (!implicitSame) {
+                if (dbTypeImplicit.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
+                } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
+                } else if (dbTypeImplicit.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ACCESS_2003"); //$NON-NLS-N$//$NON-NLS-N$
+                }
             }
-        }
-        if (!stasLogSame) {
-            if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
-            } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
-            } else if (dbTypeStatsLog.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
-                setParameterValue(elementParameter, "DB_VERSION", "ACCESS_2007"); //$NON-NLS-N$//$NON-NLS-N$
+            if (!stasLogSame) {
+                if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
+                } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
+                } else if (dbTypeStatsLog.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
+                    setParameterValue(elementParameter, "DB_VERSION", "ACCESS_2007"); //$NON-NLS-N$//$NON-NLS-N$
+                }
             }
-        }
 
-        if (!implicitSame || !stasLogSame) {
-            try {
-                FACTORY.save(item, true);
-                return ExecutionResult.SUCCESS_NO_ALERT;
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
+            if (!implicitSame || !stasLogSame) {
+                try {
+                    FACTORY.save(item, true);
+                    return ExecutionResult.SUCCESS_NO_ALERT;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
+                }
             }
         }
         return ExecutionResult.NOTHING_TO_DO;
