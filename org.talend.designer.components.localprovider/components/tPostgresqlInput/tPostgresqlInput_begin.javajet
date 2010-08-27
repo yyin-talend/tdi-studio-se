@@ -29,7 +29,12 @@ imports="
 			return "org.postgresql.Driver";
 		}
 		
-		
+		public void createConnection(INode node) {
+			super.createConnection(node);
+%>
+			conn_<%=cid%>.setAutoCommit(false);
+<%
+		}
 		public void createStatement(INode node) {
 			super.createStatement(node);
 			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
