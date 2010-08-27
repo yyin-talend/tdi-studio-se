@@ -144,17 +144,23 @@ if("FLOW_MODE".equals(mode)){
 						errorMessage_<%=cid %> = errorHandler_<%=cid %>.returnMessage();
 						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
 							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
-							<%=rejectConnName%> = null;
+<%
+							if(rejectConnName != null){
+%>
+								<%=rejectConnName%> = null;
+<%
+							}
+%>
 						} else {
 <%
 							if(rejectConnName != null){
 %>
 								<%=rejectConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
 								<%=rejectConnName%>.errorMessage = "<%=column.getLabel()%>: "+errorMessage_<%=cid%>;
-								<%=outConnName%> = null;
 <%
 							}
 %>
+								<%=outConnName%> = null;
 						}
 <%
 		    		}else{
