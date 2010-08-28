@@ -49,7 +49,7 @@ public class ComponentIconLoading {
         super();
         this.folder = folder;
         try {
-            this.folderUrl = folder.toURL();
+            this.folderUrl = folder.toURI().toURL();
         } catch (MalformedURLException e) {
             ExceptionHandler.process(new SystemException("Cannot load component icon " + folder.getName(), e)); //$NON-NLS-1$
         }
@@ -92,8 +92,9 @@ public class ComponentIconLoading {
 
     private ImageDescriptor getImage(String name) {
         try {
-            if (new File(folder, name).exists()) {
-                return ImageDescriptor.createFromURL(new URL(folderUrl + name));
+            File imageFile = new File(folder, name);
+            if (imageFile.exists()) {
+                return ImageDescriptor.createFromURL(imageFile.toURI().toURL());
             } else {
                 return ImageProvider.getImageDesc(EComponentsImage.DEFAULT_COMPONENT_ICON);
             }

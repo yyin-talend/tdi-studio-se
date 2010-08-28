@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.epic.core.preferences.PerlMainPreferencePage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -231,9 +230,9 @@ public class LoginDialog extends TrayDialog {
             private IProgressMonitor monitorWrap;
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitorWrap = new EventLoopProgressMonitor(monitor);
+                // monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
-                    ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
+                    ProxyRepositoryFactory.getInstance().logOnProject(project, monitor);
                 } catch (LoginException e) {
                     throw new InvocationTargetException(e);
                 } catch (PersistenceException e) {
@@ -242,7 +241,7 @@ public class LoginDialog extends TrayDialog {
                     throw new InterruptedException(e.getLocalizedMessage());
                 }
 
-                monitorWrap.done();
+                monitor.done();
             }
         };
 

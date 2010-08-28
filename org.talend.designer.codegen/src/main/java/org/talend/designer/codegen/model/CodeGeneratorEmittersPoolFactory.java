@@ -22,6 +22,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -148,7 +149,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 List<JetBean> jetBeans = new ArrayList<JetBean>();
 
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
-                List<IComponent> components = componentsFactory.getComponents();
+                Set<IComponent> components = componentsFactory.getComponents();
 
                 monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), //$NON-NLS-1$
                         (2 * templates.size() + 5 * components.size()));
@@ -166,8 +167,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
-                    for (int i = 0; i < components.size(); i++) {
-                        IComponent component = components.get(i);
+                    for (IComponent component : components) {
                         // if (component.isTechnical() || component.isVisible()) {
                         if (component.getAvailableCodeParts().size() > 0) {
                             initComponent(codeLanguage, jetBeans, codePart, component);

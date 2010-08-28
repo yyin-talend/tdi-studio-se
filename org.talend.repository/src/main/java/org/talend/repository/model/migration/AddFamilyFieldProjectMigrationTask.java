@@ -14,7 +14,7 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
@@ -64,7 +64,7 @@ public class AddFamilyFieldProjectMigrationTask extends AbstractProjectMigration
     private void resetFamily(EList list) {
 
         IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-        List<IComponent> components = componentsFactory.getComponents();
+        Set<IComponent> components = componentsFactory.getComponents();
 
         list.clear();
 

@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,14 +38,13 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
@@ -77,7 +78,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
-    private static List<IComponent> componentList = null;
+    private static HashSet<IComponent> componentList = null;
 
     private static List<IComponent> customComponentList = null;
 
@@ -85,7 +86,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private IProgressMonitor monitor;
 
-    private SubProgressMonitor subMonitor;
+    private SubMonitor subMonitor;
 
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
@@ -99,7 +100,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
-    private static List<String> skeletonList = null;
+    private static ArrayList<String> skeletonList = null;
 
     private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
@@ -210,12 +211,10 @@ public class ComponentsFactory implements IComponentsFactory {
     private void init() {
         removeOldComponentsUserFolder(); // not used anymore
 
-        TimeMeasure.measureActive = false;
         // TimeMeasure.display = true;
         // TimeMeasure.displaySteps = true;
-        TimeMeasure.begin("ComponentsFactory.init"); //$NON-NLS-1$
         long startTime = System.currentTimeMillis();
-        componentList = new ArrayList<IComponent>();
+        componentList = new HashSet<IComponent>();
         customComponentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
 
@@ -225,7 +224,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        TimeMeasure.step("ComponentsFactory.init", Messages.getString("ComponentsFactory.afterSystemComponent")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // 3.Load Component from extension point: components_provider
         loadComponentsFromComponentsProviderExtension();
@@ -235,7 +233,6 @@ public class ComponentsFactory implements IComponentsFactory {
 
         XsdValidationCacheManager.getInstance().save();
 
-        TimeMeasure.end("ComponentsFactory.init"); //$NON-NLS-1$
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
@@ -243,7 +240,6 @@ public class ComponentsFactory implements IComponentsFactory {
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
-        TimeMeasure.measureActive = false;
     }
 
     private void loadComponentsFromComponentsProviderExtension() {
@@ -299,21 +295,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadComponentsFromFolder(String pathSource, AbstractComponentsProvider... provider) {
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder"); //$NON-NLS-1$
 
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
-
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
-
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
-
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
-
-        // TimeMeasure.display=false;
         if (pathSource != null) {
             Path userComponent = new Path(pathSource);
             Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
@@ -349,9 +331,7 @@ public class ComponentsFactory implements IComponentsFactory {
             return;
         }
 
-        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
         childDirectories = source.listFiles(fileFilter);
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
 
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
@@ -369,14 +349,13 @@ public class ComponentsFactory implements IComponentsFactory {
 
         if (childDirectories != null) {
             if (monitor != null) {
-                this.subMonitor = new SubProgressMonitor(monitor, childDirectories.length);
+                this.subMonitor = SubMonitor.convert(monitor,
+                        Messages.getString("ComponentsFactory.load.components"), childDirectories.length); //$NON-NLS-1$
             }
-
+            skeletonList.ensureCapacity(childDirectories.length);// to optimize the size of the array
             for (File currentFolder : childDirectories) {
                 // get the skeleton files first, then XML config files later.
-                TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
                 File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
-                TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
                 if (skeletonFiles != null) {
                     for (File file : skeletonFiles) {
                         skeletonList.add(file.getAbsolutePath()); // path
@@ -384,14 +363,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 }
 
                 try {
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
                     ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
                     File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                             currentFolder.getName(), getCodeLanguageSuffix()));
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
 
                     if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
                         // In headless mode, we assume the components won't change and we will use a cache
@@ -428,15 +402,11 @@ public class ComponentsFactory implements IComponentsFactory {
                         currentComp.setTechnical(true);
                     }
 
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
-
                     if (componentList.contains(currentComp)) {
                         log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
-                        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         loadIcons(currentFolder, currentComp);
-                        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         componentList.add(currentComp);
                         if (isCustom) {
                             customComponentList.add(currentComp);
@@ -470,15 +440,8 @@ public class ComponentsFactory implements IComponentsFactory {
                     return;
                 }
             }
+            skeletonList.trimToSize();// to optimize the size of the array
         }
-        // TimeMeasure.display=true;
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.listComponentsFolders"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.listSkeletonFiles"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder"); //$NON-NLS-1$
     }
 
     /**
@@ -547,6 +510,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadIcons(File folder, IComponent component) {
+
         ComponentIconLoading cil = new ComponentIconLoading(folder);
 
         component.setIcon32(cil.getImage32());
@@ -561,19 +525,15 @@ public class ComponentsFactory implements IComponentsFactory {
         return componentList.size();
     }
 
-    public IComponent get(final String name) {
-        IComponent comp = null;
+    public IComponent get(String name) {
         if (componentList == null) {
             init();
         }
 
-        for (int i = 0; i < componentList.size(); i++) {
-            comp = componentList.get(i);
-            if (comp != null) {
-                if (comp.getName().equals(name)) {
-                    return comp;
-                }
-            }
+        for (IComponent comp : componentList) {
+            if (comp != null && comp.getName().equals(name)) {
+                return comp;
+            }// else keep looking
         }
         return null;
     }
@@ -592,7 +552,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
-    public List<IComponent> getComponents() {
+    public Set<IComponent> getComponents() {
         if (componentList == null) {
             init();
         }

@@ -28,8 +28,8 @@ import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
-import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
+import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.image.ImageProvider;
@@ -83,13 +83,12 @@ public final class TalendEditorPaletteFactory {
         LinkedList<CreationToolEntry> nodeList = new LinkedList<CreationToolEntry>();
         List<String> families = new ArrayList<String>();
         HashMap<String, String> familyMap = new HashMap<String, String>();
-        List listName = new ArrayList();
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
-        List<IComponent> componentList = compFac.getComponents();
+        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
@@ -155,11 +154,11 @@ public final class TalendEditorPaletteFactory {
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             if (oraFamily.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
-                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
-                        .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
+                        Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
-                                .getImageDesc(ECoreImage.CODE_ICON));
+                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
+                        ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
                     PaletteDrawer drawer = ht.get(family); //$NON-NLS-1$
                     if (drawer != null) {
@@ -277,7 +276,7 @@ public final class TalendEditorPaletteFactory {
         if (a == 0) {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
-        List<IComponent> componentList = compFac.getComponents();
+        List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
@@ -355,11 +354,11 @@ public final class TalendEditorPaletteFactory {
             }
             // if (isFavorite == false) {
             if (oraFamily.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
-                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
-                        .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
+                        Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
-                                .getImageDesc(ECoreImage.CODE_ICON));
+                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
+                        ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
                     PaletteDrawer drawer = ht.get(family);//$NON-NLS-1$
                     if (drawer != null) {

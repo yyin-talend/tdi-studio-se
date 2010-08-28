@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.palette;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -256,7 +257,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
 
-        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
+        Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
         for (IComponent component : components) {
 
             if (fam != null) {
@@ -326,7 +327,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
 
-        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
+        Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
 
         for (IComponent component : components) {
 

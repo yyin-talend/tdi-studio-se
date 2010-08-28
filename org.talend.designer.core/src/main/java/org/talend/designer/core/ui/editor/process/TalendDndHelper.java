@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.process;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.database.EDatabaseTypeName;
@@ -76,7 +77,7 @@ final class TalendDndHelper {
             }
         }
 
-        List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
+        Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
         List<IComponent> neededComponents = new ArrayList<IComponent>();
 
         EmfComponent emfComponent = null;

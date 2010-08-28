@@ -14,7 +14,8 @@ package org.talend.designer.core.model.components;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.lang.ref.WeakReference;
+import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -122,7 +123,7 @@ public class EmfComponent implements IComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private Boolean isLoaded = null;
+    private boolean isLoaded = false;
 
     private COMPONENTType compType;
 
@@ -156,7 +157,7 @@ public class EmfComponent implements IComponent {
 
     private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
-    private List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
+    private List<IMultipleComponentManager> multipleComponentManagers;
 
     private static final boolean ADVANCED_PROPERTY = true;
 
@@ -166,7 +167,7 @@ public class EmfComponent implements IComponent {
 
     private String pathSource;
 
-    private List<ECodePart> codePartList;
+    private List<ECodePart> codePartListX;
 
     private Boolean useMerge = null;
 
@@ -179,10 +180,10 @@ public class EmfComponent implements IComponent {
     private Boolean technical = null;
 
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
-    private static WeakReference<ComponentResourceFactoryImpl> compResFactoryWeakRef;
+    private static SoftReference<ComponentResourceFactoryImpl> compResFactorySoftRef;
 
     // weak ref used so that memory is not used by a static HashMap instance
-    private static WeakReference<Map> optionMapWeakRef;
+    private static SoftReference<Map> optionMapSoftRef;
 
     public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
@@ -209,10 +210,10 @@ public class EmfComponent implements IComponent {
 
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
-        if (isLoaded == null) {
+        if (!isLoaded) {
+            URI createURI = URI.createURI(file.toURI().toString());
+            Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
-                URI createURI = URI.createURI(file.toURI().toString());
-                Resource res = getComponentResourceFactoryImpl().createResource(createURI);
                 res.load(getLoadingOptionMap());
 
                 DocumentRoot xmlDoc;
@@ -220,26 +221,22 @@ public class EmfComponent implements IComponent {
 
                 compType = xmlDoc.getCOMPONENT();
 
-                loadMultipleComponentManagerFromTemplates();
-
                 // just load the externalNode plugin to check if the plugin
                 // exists.
                 if (compType.getHEADER().getEXTENSION() != null) {
-                    ExternalNodesFactory.getInstance(this.getPluginFullName());
+                    try {
+                        ExternalNodesFactory.getInstance(this.getPluginFullName());
+                    } catch (RuntimeException re) {// unfortunatly this methos throws a runtime Exception which is bad
+                        throw new BusinessException("Failed to load plugin :" + this.getPluginFullName(), re); //$NON-NLS-1$
+                    }
                 }
 
-                checkAvailableCodeParts();
-
-                if (compType.getFAMILIES() == null) {
-                    throw new Exception("FAMILIES definition missing in the component"); //$NON-NLS-1$
-                }
-                if (compType.getFAMILIES().getFAMILY().isEmpty()) {
-                    throw new Exception("FAMILIES definition is empty in the component"); //$NON-NLS-1$
+                if (compType.getFAMILIES() == null || compType.getFAMILIES().getFAMILY().isEmpty()) {
+                    throw new BusinessException("FAMILIES definition missing or is empty in the component"); //$NON-NLS-1$
                 }
 
                 isLoaded = true;
-            } catch (Exception e) {
-                isLoaded = false;
+            } catch (IOException e) {
                 throw new BusinessException(Messages.getString("EmfComponent.0", file.getName()), e); //$NON-NLS-1$
             }
         }
@@ -2132,7 +2129,7 @@ public class EmfComponent implements IComponent {
                 componentImportNeedsList.add(componentImportNeeds);
             }
         }
-        for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
+        for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
             for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
                 IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
                 if (component == null) {
@@ -2172,93 +2169,97 @@ public class EmfComponent implements IComponent {
     }
 
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
-        return this.multipleComponentManagers;
+        if (multipleComponentManagers == null) {
+            multipleComponentManagers = createMultipleComponentManagerFromTemplates();
+        }// else already exist so return it
+        return multipleComponentManagers;
     }
 
     /**
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
+     * 
+     * @return
      */
-    private void loadMultipleComponentManagerFromTemplates() {
-
+    private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
+        ArrayList<IMultipleComponentManager> theMultipleComponentManagers = new ArrayList<IMultipleComponentManager>();
         EList templatesTypes = compType.getCODEGENERATION().getTEMPLATES();
-        if (templatesTypes == null) {
-            return;
-        }
+        if (templatesTypes != null) {
+            for (int ii = 0; ii < templatesTypes.size(); ii++) {
+                TEMPLATESType templatesType = (TEMPLATESType) templatesTypes.get(ii);
+                String input, output, connector;
 
-        for (int ii = 0; ii < templatesTypes.size(); ii++) {
-            TEMPLATESType templatesType = (TEMPLATESType) templatesTypes.get(ii);
-            String input, output, connector;
+                input = templatesType.getINPUT();
+                output = templatesType.getOUTPUT();
+                connector = templatesType.getCONNECTOR();
+                boolean lookupMode = templatesType.isLOOKUP();
 
-            input = templatesType.getINPUT();
-            output = templatesType.getOUTPUT();
-            connector = templatesType.getCONNECTOR();
-            boolean lookupMode = templatesType.isLOOKUP();
-
-            if (!lookupMode && (input == null || output == null)) {
-                continue;
-            }
-            IMultipleComponentManager multipleComponentManager = null;
-            if (lookupMode) {
-                multipleComponentManager = new MultipleComponentManager(lookupMode);
-            } else if (connector == null || connector.equals("")) { //$NON-NLS-1$
-                multipleComponentManager = new MultipleComponentManager(input, output);
-            } else {
-                multipleComponentManager = new MultipleComponentManager(input, output, connector);
-            }
-
-            EList listTempType = templatesType.getTEMPLATE();
-            for (int i = 0; i < listTempType.size(); i++) {
-                TEMPLATEType templateType = (TEMPLATEType) listTempType.get(i);
-
-                String name, component;
-                name = templateType.getNAME();
-                component = templateType.getCOMPONENT();
-
-                IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
-                EList listLinkTo = templateType.getLINKTO();
-                if (listLinkTo.size() > 0 && !multipleComponentManager.existsLinkTo()) {
-                    multipleComponentManager.setExistsLinkTo(true);
+                if (!lookupMode && (input == null || output == null)) {
+                    continue;
                 }
-                for (int j = 0; j < listLinkTo.size(); j++) {
-                    LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
-
-                    name = linkTo.getNAME();
-                    String cType = linkTo.getCTYPE();
-                    currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
+                IMultipleComponentManager multipleComponentManager = null;
+                if (lookupMode) {
+                    multipleComponentManager = new MultipleComponentManager(lookupMode);
+                } else if (connector == null || connector.equals("")) { //$NON-NLS-1$
+                    multipleComponentManager = new MultipleComponentManager(input, output);
+                } else {
+                    multipleComponentManager = new MultipleComponentManager(input, output, connector);
                 }
-            }
 
-            EList listTempParamType = templatesType.getTEMPLATEPARAM();
-            for (int i = 0; i < listTempParamType.size(); i++) {
-                TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
+                EList listTempType = templatesType.getTEMPLATE();
+                for (int i = 0; i < listTempType.size(); i++) {
+                    TEMPLATEType templateType = (TEMPLATEType) listTempType.get(i);
 
-                if ((templateParamType.getSOURCE() != null) && (templateParamType.getTARGET() != null)) {
-                    String source, target;
-                    source = templateParamType.getSOURCE();
-                    target = templateParamType.getTARGET();
+                    String name, component;
+                    name = templateType.getNAME();
+                    component = templateType.getCOMPONENT();
 
-                    if (lookupMode) {
-                        target = "LOOKUP." + target;
+                    IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
+                    EList listLinkTo = templateType.getLINKTO();
+                    if (listLinkTo.size() > 0 && !multipleComponentManager.existsLinkTo()) {
+                        multipleComponentManager.setExistsLinkTo(true);
                     }
+                    for (int j = 0; j < listLinkTo.size(); j++) {
+                        LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
 
-                    multipleComponentManager.addParam(source, target);
-                }
-                if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
-                    String value, target;
-                    value = templateParamType.getVALUE();
-                    target = templateParamType.getTARGET();
-
-                    if (lookupMode) {
-                        target = "LOOKUP." + target;
+                        name = linkTo.getNAME();
+                        String cType = linkTo.getCTYPE();
+                        currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
                     }
-
-                    multipleComponentManager.addValue(target, value);
                 }
-            }
 
-            multipleComponentManager.validateItems();
-            multipleComponentManagers.add(multipleComponentManager);
-        }
+                EList listTempParamType = templatesType.getTEMPLATEPARAM();
+                for (int i = 0; i < listTempParamType.size(); i++) {
+                    TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
+
+                    if ((templateParamType.getSOURCE() != null) && (templateParamType.getTARGET() != null)) {
+                        String source, target;
+                        source = templateParamType.getSOURCE();
+                        target = templateParamType.getTARGET();
+
+                        if (lookupMode) {
+                            target = "LOOKUP." + target;
+                        }
+
+                        multipleComponentManager.addParam(source, target);
+                    }
+                    if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
+                        String value, target;
+                        value = templateParamType.getVALUE();
+                        target = templateParamType.getTARGET();
+
+                        if (lookupMode) {
+                            target = "LOOKUP." + target;
+                        }
+
+                        multipleComponentManager.addValue(target, value);
+                    }
+                }
+
+                multipleComponentManager.validateItems();
+                theMultipleComponentManagers.add(multipleComponentManager);
+            }
+        }// else return an empty array
+        return theMultipleComponentManagers;
     }
 
     /*
@@ -2267,9 +2268,6 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isLoaded()
      */
     public boolean isLoaded() {
-        if (isLoaded == null) {
-            return false;
-        }
         return isLoaded;
     }
 
@@ -2351,22 +2349,24 @@ public class EmfComponent implements IComponent {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof EmfComponent)) {
             return false;
         }
         final IComponent other = (IComponent) obj;
-        if (this.getName() == null) {
-            if (other.getName() != null) {
+        String thisName = this.getName();
+        String otherName = other.getName();
+        if (thisName == null) {
+            if (otherName != null) {
                 return false;
             }
-        } else if (!this.getName().equals(other.getName())) {
+        } else if (!thisName.equals(otherName)) {
             return false;
         }
         return true;
     }
 
-    private void checkAvailableCodeParts() {
-        codePartList = new ArrayList<ECodePart>();
+    private ArrayList<ECodePart> createCodePartList() {
+        ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
         File dirFile = new File(file.getParent());
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
@@ -2384,13 +2384,17 @@ public class EmfComponent implements IComponent {
             name = name.replace(extension, ""); //$NON-NLS-1$
             ECodePart part = ECodePart.getCodePartByName(name);
             if (part != null) {
-                codePartList.add(part);
+                theCodePartList.add(part);
             }
         }
+        return theCodePartList;
     }
 
     public List<ECodePart> getAvailableCodeParts() {
-        return codePartList;
+        if (codePartListX == null) {
+            codePartListX = createCodePartList();
+        }
+        return codePartListX;
     }
 
     @SuppressWarnings("unchecked")
@@ -2588,13 +2592,13 @@ public class EmfComponent implements IComponent {
      * 
      * @return factoryImpl
      */
-    // here we are using weak references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
+    // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
     private static ComponentResourceFactoryImpl getComponentResourceFactoryImpl() {
-        ComponentResourceFactoryImpl factoryImpl = compResFactoryWeakRef == null ? null : compResFactoryWeakRef.get();
+        ComponentResourceFactoryImpl factoryImpl = compResFactorySoftRef == null ? null : compResFactorySoftRef.get();
         if (factoryImpl == null) {// if weak ref has not been created or if referenced factory has been GCed then create
             // a new one
             factoryImpl = new ComponentResourceFactoryImpl();
-            compResFactoryWeakRef = new WeakReference<ComponentResourceFactoryImpl>(factoryImpl);
+            compResFactorySoftRef = new SoftReference<ComponentResourceFactoryImpl>(factoryImpl);
         }
         return factoryImpl;
     }
@@ -2604,16 +2608,18 @@ public class EmfComponent implements IComponent {
      * 
      * @return factoryImpl
      */
-    // here we are using weak references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
+    // here we are using soft references so that whenever the GC runs it can collect the ComponentResourceFactoryImpl
     private static Map getLoadingOptionMap() {
-        Map optionMap = optionMapWeakRef == null ? null : optionMapWeakRef.get();
+        Map optionMap = (optionMapSoftRef == null ? null : optionMapSoftRef.get());
         if (optionMap == null) {// if weak ref has not been created or if referenced factory has been GCed then create
             // a new one
             optionMap = new HashMap();
+            optionMap.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
             optionMap.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
             optionMap.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl());
             optionMap.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap());
-            optionMapWeakRef = new WeakReference<Map>(optionMap);
+            optionMap.put(XMLResource.OPTION_USE_DEPRECATED_METHODS, Boolean.FALSE);
+            optionMapSoftRef = new SoftReference<Map>(optionMap);
         }
         return optionMap;
     }

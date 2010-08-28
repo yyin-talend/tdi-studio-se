@@ -29,8 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -59,16 +59,11 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
-
 import org.talend.core.prefs.ITalendCorePrefConstants;
-
-import org.talend.designer.codegen.config.TemplateUtil;
-
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 import org.talend.designer.runprocess.IProcessor;
-
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -113,7 +108,7 @@ public class TestComponentsAction extends Action {
                     // IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
                     monitor.beginTask("Component Test Running", 1100); //$NON-NLS-1$
                     IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                    List<IComponent> components = componentsFactory.getComponents();
+                    Set<IComponent> components = componentsFactory.getComponents();
                     monitor.worked(100);
 
                     RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -232,8 +227,7 @@ public class TestComponentsAction extends Action {
                 item.getProperty().setVersion(TestParameter.VERSION);
                 IProcess process = service.getProcessFromProcessItem(item);
                 setDefaultProperties(process, componentPath);
-                IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager()
-                        .getDefaultContext());
+                IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
                 try {
                     // generate
                     log.info(TestParameter.GENERATE_START + " : " + file.getName()); //$NON-NLS-1$
@@ -243,8 +237,7 @@ public class TestComponentsAction extends Action {
                     log.info(TestParameter.GENERATE_END + " : " + file.getName()); //$NON-NLS-1$
                     // run
                     log.info(TestParameter.RUN_START + " : " + file.getName()); //$NON-NLS-1$
-                    java.lang.Process runningProcess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES,
-                            null);
+                    java.lang.Process runningProcess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
                     StringBuffer errBuff = new StringBuffer();
                     if (isRunOK(runningProcess, errBuff)) {
                         log.info(TestParameter.RUN_SUCCESS + " : " + file.getName()); //$NON-NLS-1$
