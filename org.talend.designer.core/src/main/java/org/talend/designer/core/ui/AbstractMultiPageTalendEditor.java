@@ -719,8 +719,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void doSaveAs() {
         IEditorPart editor = getEditor(0);
         editor.doSaveAs();
-        setPageText(0, editor.getTitle());
-        setInput(editor.getEditorInput());
+        // setPageText(0, editor.getTitle());
+        // setInput(editor.getEditorInput());
     }
 
     /*

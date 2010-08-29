@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor;
 
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.action.SaveAsProcessAction;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -47,6 +48,12 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
 
     public MultiPageTalendEditor getParent() {
         return (MultiPageTalendEditor) super.getParent();
+    }
+
+    @Override
+    public void doSaveAs() {
+        SaveAsProcessAction saveAsAction = new SaveAsProcessAction(this);
+        saveAsAction.run();
     }
 
 }
