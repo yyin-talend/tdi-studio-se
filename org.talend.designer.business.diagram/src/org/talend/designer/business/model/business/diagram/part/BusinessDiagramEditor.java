@@ -59,6 +59,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
+import org.talend.designer.business.diagram.custom.actions.SaveAsBusinessModelAction;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
@@ -503,6 +504,12 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      */
     public void setLastVersion(Boolean lastVersion) {
         this.lastVersion = lastVersion;
+    }
+
+    @Override
+    public void doSaveAs() {
+        SaveAsBusinessModelAction saveAsAction = new SaveAsBusinessModelAction(this);
+        saveAsAction.run();
     }
 
 }
