@@ -68,7 +68,7 @@ public class PastSelectorDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(sourceNode.getProperties(EProperties.LABEL) + " " + sourceNode.getObject().getVersion()
-                + " - Selecte old versions to be past");
+                + " - Version list");
         newShell.setSize(600, 300);
     }
 
@@ -96,9 +96,9 @@ public class PastSelectorDialog extends Dialog {
         modificationTime.setText("Modification Time");
 
         for (IRepositoryViewObject object : versions) {
-            if (object.getVersion().equals(sourceNode.getObject().getVersion())) {
-                continue;
-            }
+            // if (object.getVersion().equals(sourceNode.getObject().getVersion())) {
+            // continue;
+            // }
             TableItem item = new TableItem(table, SWT.NONE);
             item.setData(object);
             item.setText(0, object.getVersion());
@@ -136,6 +136,7 @@ public class PastSelectorDialog extends Dialog {
                         }
                     }
                 }
+                checkSelectedItems();
             }
 
         });
@@ -147,6 +148,7 @@ public class PastSelectorDialog extends Dialog {
                     table.getItem(i).setChecked(true);
                     IRepositoryObject data = (IRepositoryObject) table.getItem(i).getData();
                     selectedVersionItems.add(data);
+                    checkSelectedItems();
                 }
             }
 
@@ -159,6 +161,7 @@ public class PastSelectorDialog extends Dialog {
                 for (int i = 0; i < table.getItemCount(); i++) {
                     table.getItem(i).setChecked(false);
                     selectedVersionItems.remove(table.getItem(i).getData());
+                    checkSelectedItems();
                 }
             }
 
@@ -171,4 +174,18 @@ public class PastSelectorDialog extends Dialog {
         return this.selectedVersionItems;
     }
 
+    private void checkSelectedItems() {
+        this.getOKButton().setEnabled(!selectedVersionItems.isEmpty());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        this.getOKButton().setEnabled(false);
+    }
 }

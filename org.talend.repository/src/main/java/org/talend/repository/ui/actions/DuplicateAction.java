@@ -14,6 +14,7 @@ package org.talend.repository.ui.actions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
@@ -370,41 +372,89 @@ public class DuplicateAction extends AContextualAction {
                         break;
                     }
                 }
-                Item newItem = factory.copy(originalItem, path, true);
-                newItem.getProperty().setLabel(newJobName);
-                // newItem.getProperty().setVersion(JOB_INIT_VERSION);
-                // factory.saveCopy(originalItem, newItem);
-                // qli modified to fix the bug 5400 and 6185.
-                if (newItem instanceof RoutineItem) {
-                    ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                            ICodeGeneratorService.class);
-                    if (codeGenService != null) {
-                        codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) newItem);
-                        codeGenService.createRoutineSynchronizer().syncRoutine((RoutineItem) newItem, true);
+
+                if (allVersion.size() == 1) {
+                    duplicateSingleVersionItem(originalItem, path, newJobName);
+
+                } else if (allVersion.size() > 1) {
+                    PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion,
+                            sourceNode);
+                    if (dialog.open() == Window.OK) {
+                        Set<IRepositoryViewObject> selectedVersionItems = dialog.getSelectedVersionItems();
+                        String id = null;
+                        String label = null;
+                        boolean isfirst = true;
+                        boolean needSys = true;
+                        for (IRepositoryViewObject object : selectedVersionItems) {
+                            Item selectedItem = object.getProperty().getItem();
+                            Item copy = factory.copy(selectedItem, path);
+                            if (isfirst) {
+                                id = copy.getProperty().getId();
+                                label = copy.getProperty().getLabel();
+                                isfirst = false;
+                            }
+                            copy.getProperty().setId(id);
+                            copy.getProperty().setLabel(label);
+                            if (needSys && originalItem instanceof RoutineItem) {
+                                String lastestVersion = getLastestVersion(selectedVersionItems);
+                                if (lastestVersion.equals(copy.getProperty().getVersion())) {
+                                    synDuplicatedRoutine((RoutineItem) copy);
+                                    needSys = false;
+                                }
+                            }
+                            factory.save(copy);
+                        }
                     }
                 }
-                factory.save(newItem);
-
-                // for oldversions
-                copyOldVersions(allVersion, sourceNode, newItem, path);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
     }
 
-    private void copyOldVersions(List<IRepositoryViewObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
-            IPath path) throws Exception {
-        if (allVersion != null && allVersion.size() > 1) {
-            PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
-            if (dialog.open() == Window.OK) {
-                for (IRepositoryViewObject object : dialog.getSelectedVersionItems()) {
-                    Item copy = factory.copy(object.getProperty().getItem(), path);
-                    copy.getProperty().setId(newLastVersionItem.getProperty().getId());
-                    copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());
-                    factory.save(copy);
+    private void duplicateSingleVersionItem(Item item, IPath path, String newName) {
+        try {
+            Item newItem = factory.copy(item, path, true);
+            newItem.getProperty().setLabel(newName);
+            // qli modified to fix the bug 5400 and 6185.
+            if (newItem instanceof RoutineItem) {
+                synDuplicatedRoutine((RoutineItem) newItem);
+            }// end
+            factory.save(newItem);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
 
+    private String getLastestVersion(Set<IRepositoryViewObject> set) {
+        if (set.isEmpty()) {
+            return null;
+        }
+        String version = null;
+        for (IRepositoryViewObject obj : set) {
+            String curVersion = obj.getProperty().getVersion();
+            if (version == null) {
+                version = curVersion;
+            } else {
+                Double dVersion = Double.valueOf(version);
+                Double dCurVersion = Double.valueOf(curVersion);
+                if (dCurVersion > dVersion) {
+                    version = curVersion;
                 }
+            }
+        }
+        return version;
+    }
+
+    private void synDuplicatedRoutine(RoutineItem item) {
+        ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                ICodeGeneratorService.class);
+        if (codeGenService != null) {
+            codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) item);
+            try {
+                codeGenService.createRoutineSynchronizer().syncRoutine((RoutineItem) item, true);
+            } catch (SystemException e) {
+                ExceptionHandler.process(e);
             }
         }
     }
