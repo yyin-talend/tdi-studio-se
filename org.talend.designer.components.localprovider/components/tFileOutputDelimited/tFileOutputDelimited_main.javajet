@@ -82,7 +82,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		        <%
 	                if(isIncludeHeader && hasDynamic){
     		        %>
-    		        if(isFirstCheckDyn_<%=cid %>){
+    		        if(isFirstCheckDyn_<%=cid %> && file<%=cid%>.length()==0){
         		        <%
                     	for (int i = 0; i < sizeColumns; i++) {
                             IMetadataColumn column = columns.get(i);
@@ -348,7 +348,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			int sizeColumns = columns.size();
             			if(isIncludeHeader && hasDynamic){
             			%>
-            			if(isFirstCheckDyn_<%=cid %>){
+            			if(isFirstCheckDyn_<%=cid %> && file<%=cid%>.length()==0){
             				headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             			<%
                         	for (int i = 0; i < sizeColumns; i++) {
