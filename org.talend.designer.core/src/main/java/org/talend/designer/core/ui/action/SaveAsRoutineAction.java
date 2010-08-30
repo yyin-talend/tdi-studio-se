@@ -21,9 +21,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -31,6 +33,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor;
+import org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor;
 import org.talend.designer.core.ui.wizards.SaveAsRoutineWizard;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -64,8 +67,16 @@ public class SaveAsRoutineAction extends Action {
                 // get the IFile
                 ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                         ICodeGeneratorService.class);
-                // only for talend java version
-                ITalendSynchronizer routineSynchronizer = service.createJavaRoutineSynchronizer();
+                ITalendSynchronizer routineSynchronizer = null;
+                switch (LanguageManager.getCurrentLanguage()) {
+                case JAVA:
+                    routineSynchronizer = service.createJavaRoutineSynchronizer();
+                    break;
+                case PERL:
+                    routineSynchronizer = service.createPerlRoutineSynchronizer();
+                    break;
+                default:
+                }
                 IFile file = routineSynchronizer.getFile(routineItem);
 
                 // Set readonly to false since created job will always be editable.
@@ -79,7 +90,7 @@ public class SaveAsRoutineAction extends Action {
                 routineEditorInput.setRepositoryNode(repositoryNode);
 
                 // here really do the normal save as function
-                IDocumentProvider provider = ((StandAloneTalendJavaEditor) this.editorPart).getDocumentProvider();
+                IDocumentProvider provider = ((AbstractTextEditor) this.editorPart).getDocumentProvider();
                 provider.aboutToChange(routineEditorInput);
                 provider.saveDocument(null, routineEditorInput, provider.getDocument(this.editorPart.getEditorInput()), true);
                 provider.changed(routineEditorInput);
@@ -90,7 +101,15 @@ public class SaveAsRoutineAction extends Action {
                 byteArray.setInnerContentFromFile(routineEditorInput.getFile());
 
                 // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
-                page.openEditor(routineEditorInput, StandAloneTalendJavaEditor.ID, true);
+                switch (LanguageManager.getCurrentLanguage()) {
+                case JAVA:
+                    page.openEditor(routineEditorInput, StandAloneTalendJavaEditor.ID, true);
+                    break;
+                case PERL:
+                    page.openEditor(routineEditorInput, StandAloneTalendPerlEditor.ID, true);
+                    break;
+                default:
+                }
 
                 // close the old editor
                 page.closeEditor(this.editorPart, false);

@@ -43,12 +43,15 @@ import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.action.SaveAsRoutineAction;
+import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -338,5 +341,17 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
     public void setLastVersion(Boolean lastVersion) {
         // not used yet
         // TODO
+    }
+
+    @Override
+    public void doSaveAs() {
+        ERepositoryObjectType type = this.rEditorInput.getRepositoryNode().getObject().getType();
+        if (type == ERepositoryObjectType.ROUTINES) {
+            SaveAsRoutineAction saveAsAction = new SaveAsRoutineAction(this);
+            saveAsAction.run();
+        } else if (type == ERepositoryObjectType.SQLPATTERNS) {
+            SaveAsSQLPatternAction saveAsAction = new SaveAsSQLPatternAction(this);
+            saveAsAction.run();
+        }
     }
 }
