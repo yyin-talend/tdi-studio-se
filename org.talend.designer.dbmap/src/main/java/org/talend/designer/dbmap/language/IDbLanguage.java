@@ -15,6 +15,7 @@ package org.talend.designer.dbmap.language;
 import java.util.List;
 
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.designer.dbmap.language.operator.IDbOperatorManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

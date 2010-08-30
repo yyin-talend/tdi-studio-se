@@ -17,7 +17,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
-import org.talend.designer.dbmap.language.AbstractDbLanguage;
+import org.talend.designer.dbmap.language.DbLanguageConstants;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
@@ -83,54 +83,48 @@ public class EntryContentProposal implements IContentProposal {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
 
             IMetadataColumn metadataColumn = inputEntry.getMetadataColumn();
-            sb
-                    .append(Messages.getString("EntryContentProposal.metadataColumn")).append(" '").append(metadataColumn.getLabel()) //$NON-NLS-1$ //$NON-NLS-2$
+            sb.append(Messages.getString("EntryContentProposal.metadataColumn")).append(" '").append(metadataColumn.getLabel()) //$NON-NLS-1$ //$NON-NLS-2$
                     .append("' "); //$NON-NLS-1$
             sb.append(Messages.getString("EntryContentProposal.properties")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb.append(separator)
-                    .append(Messages.getString("EntryContentProposal.column")).append(metadataColumn.getLabel()); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
+            sb.append(separator).append(Messages.getString("EntryContentProposal.column")).append(metadataColumn.getLabel()); //$NON-NLS-1$
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.key")).append(metadataColumn.isKey()); //$NON-NLS-1$
             if (!MapperMain.isStandAloneMode()) {
-                sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-                sb
-                        .append(separator)
+                sb.append(DbLanguageConstants.CARRIAGE_RETURN);
+                sb.append(separator)
                         .append(Messages.getString("EntryContentProposal.type")).append(format(metadataColumn.getTalendType())); //$NON-NLS-1$
             }
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator)
                     .append(Messages.getString("EntryContentProposal.dbType")).append(format(metadataColumn.getType())); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
             if (metadataColumn.getLength() != null && metadataColumn.getLength() > 0) {
                 sb.append(format(metadataColumn.getLength()));
             }
 
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.precision")); //$NON-NLS-1$
             if (metadataColumn.getPrecision() != null && metadataColumn.getPrecision() > 0) {
                 sb.append(format(metadataColumn.getPrecision()));
             }
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb
-                    .append(separator)
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
+            sb.append(separator)
                     .append(Messages.getString("EntryContentProposal.default")).append(format(metadataColumn.getDefault())); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb
-                    .append(separator)
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
+            sb.append(separator)
                     .append(Messages.getString("EntryContentProposal.comment")).append(format(metadataColumn.getComment())); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.expressionKey")); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(format(entry.getExpression()));
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
         } else if (entry instanceof VarTableEntry) {
-            sb
-                    .append(Messages.getString("EntryContentProposal.variable")).append(" '").append(entry.getName()).append("' :"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(Messages.getString("EntryContentProposal.variable")).append(" '").append(entry.getName()).append("' :"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.expressionKey")); //$NON-NLS-1$
-            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(format(entry.getExpression()));
         }
         return sb.toString();

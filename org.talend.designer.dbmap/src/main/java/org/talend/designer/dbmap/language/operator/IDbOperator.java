@@ -10,7 +10,9 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.dbmap.language;
+package org.talend.designer.dbmap.language.operator;
+
+import org.talend.designer.dbmap.language.IDbKeyWord;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
