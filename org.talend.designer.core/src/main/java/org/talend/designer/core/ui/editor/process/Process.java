@@ -1203,12 +1203,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @param process
      */
-    public void loadXmlFile(boolean... loadScreenshots) {
-        if (loadScreenshots != null && loadScreenshots.length == 1) {
-            this.loadScreenshots = loadScreenshots[0];
-        } else {
-            this.loadScreenshots = false;
-        }
+    public void loadXmlFile() {
+        loadXmlFile(false);
+    }
+
+    public void loadXmlFile(boolean loadScreenshots) {
+        this.loadScreenshots = loadScreenshots;
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 

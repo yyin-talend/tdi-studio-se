@@ -131,7 +131,11 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem
      * )
      */
-    public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean... loadScreenshots) {
+    public IProcess getProcessFromProcessItem(ProcessItem processItem) {
+        return getProcessFromProcessItem(processItem, false);
+    }
+
+    public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean loadScreenshots) {
         // achen modify to fix 0006107
         Process process = null;
         if (createdProcessMap.size() > 10) {
