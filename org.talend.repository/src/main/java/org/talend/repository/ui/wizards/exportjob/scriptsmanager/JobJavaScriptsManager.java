@@ -553,6 +553,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY,
                         userRoutinesFileUrls);
             }
+
+            // for db mapping xml
+            IFolder xmlMapping = javaProject
+                    .getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING);
+            List<URL> xmlMappingFileUrls = new ArrayList<URL>();
+            if (xmlMapping.exists()) {
+                for (IResource fileResource : xmlMapping.members()) {
+                    if (fileResource.getName().endsWith(".xml")) {
+                        xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
+                    }
+                }
+                resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
+                        xmlMappingFileUrls);
+            }
+
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -853,6 +868,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String classRoot = getClassRootLocation();
             List<String> include = new ArrayList<String>();
             include.add(SYSTEM_ROUTINES_PATH);
+            include.add(JavaUtils.JAVA_XML_MAPPING);
 
             String jarPath = getTmpFolder() + PATH_SEPARATOR + SYSTEMROUTINE_JAR;
 
