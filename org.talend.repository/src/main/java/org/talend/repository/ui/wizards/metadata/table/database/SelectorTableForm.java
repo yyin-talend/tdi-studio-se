@@ -901,27 +901,10 @@ public class SelectorTableForm extends AbstractForm {
                 dbtable.getColumns().add(metadataColumn);
             }
             if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
-                Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class);
-                Schema s = (Schema) ConnectionHelper.getPackage(getConnection().getUiSchema(), getConnection(), Schema.class);
-                if (c != null) {
-                    PackageHelper.addMetadataTable(dbtable, c);
-                } else if (s != null) {
-                    PackageHelper.addMetadataTable(dbtable, s);
-                } else {
-                    if (getConnection().getUiSchema() != null && !"".equals(getConnection().getUiSchema())) {
-                        s = SchemaHelper.createSchema(getConnection().getUiSchema());
-                        s.getDataManager().add(getConnection());
-                        PackageHelper.addMetadataTable(dbtable, s);
-                        ConnectionHelper.addSchema(s, getConnection());
-                    } else if (getConnection().getSID() != null && !"".equals(getConnection().getSID())) {
-                        c = CatalogHelper.createCatalog(getConnection().getSID());
-                        c.getDataManager().add(getConnection());
-                        PackageHelper.addMetadataTable(dbtable, c);
-                        ConnectionHelper.addCatalog(c, getConnection());
-                    }
-                }
+                addTableForCurrentCatalogOrSchema(iMetadataConnection.getDatabase(), iMetadataConnection.getSchema());
                 // getConnection().getTables().add(metadataTable);hywang
             }
+            // }
 
             checkConnectionIsDone = true;
 
@@ -961,6 +944,28 @@ public class SelectorTableForm extends AbstractForm {
 
             parentWizardPage.setPageComplete(threadExecutor.getQueue().isEmpty()
                     && (threadExecutor.getActiveCount() == 0 || countSuccess == countPending));
+        }
+
+        private void addTableForCurrentCatalogOrSchema(String dbsid, String dbuischema) {
+            Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, getConnection(), Catalog.class);
+            Schema s = (Schema) ConnectionHelper.getPackage(dbuischema, getConnection(), Schema.class);
+            if (c != null) {
+                PackageHelper.addMetadataTable(dbtable, c);
+            } else if (s != null) {
+                PackageHelper.addMetadataTable(dbtable, s);
+            } else {
+                if (dbuischema != null && !"".equals(dbuischema)) {
+                    s = SchemaHelper.createSchema(dbuischema);
+                    s.getDataManager().add(getConnection());
+                    PackageHelper.addMetadataTable(dbtable, s);
+                    ConnectionHelper.addSchema(s, getConnection());
+                } else if (dbsid != null && !"".equals(dbsid)) {
+                    c = CatalogHelper.createCatalog(dbsid);
+                    c.getDataManager().add(getConnection());
+                    PackageHelper.addMetadataTable(dbtable, c);
+                    ConnectionHelper.addCatalog(c, getConnection());
+                }
+            }
         }
     }
 
