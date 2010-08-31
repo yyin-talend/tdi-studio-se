@@ -148,8 +148,8 @@ public class PastSelectorDialog extends Dialog {
                     table.getItem(i).setChecked(true);
                     IRepositoryObject data = (IRepositoryObject) table.getItem(i).getData();
                     selectedVersionItems.add(data);
-                    checkSelectedItems();
                 }
+                checkSelectedItems();
             }
 
         });
@@ -161,8 +161,8 @@ public class PastSelectorDialog extends Dialog {
                 for (int i = 0; i < table.getItemCount(); i++) {
                     table.getItem(i).setChecked(false);
                     selectedVersionItems.remove(table.getItem(i).getData());
-                    checkSelectedItems();
                 }
+                checkSelectedItems();
             }
 
         });
