@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProjectSettingNode;
 import org.talend.repository.preference.CustomComponentSettingPage;
@@ -71,7 +72,8 @@ public class ProjectSettingDialog {
             String category = node.getCategory();
             if (category == null) {
                 if (node.getPage() instanceof CustomComponentSettingPage) {
-                    if (PluginChecker.isTIS() && PluginChecker.isSVNProviderPluginLoaded()) {
+                    if (PluginChecker.isTIS() && PluginChecker.isSVNProviderPluginLoaded()
+                            && !ProjectManager.getInstance().getCurrentProject().isLocal()) {
                         manager.addToRoot(node);
                     } else {
                         continue;
