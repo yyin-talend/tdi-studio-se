@@ -31,425 +31,383 @@ public class WsdlGenerator {
 
     public final String pNL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
 
-    protected final String pTEXT1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + this.pNL + "<wsdl:definitions " + this.pNL
-            + "\tname=\"";
+    protected final String text1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + pNL + "<wsdl:definitions " + pNL + "\tname=\"";
 
-    protected final String pTEXT2 = "Service\"" + this.pNL + "\ttargetNamespace=\"http://petals.ow2.org/talend/";
+    protected final String text2 = "Service\"" + pNL + "\ttargetNamespace=\"http://petals.ow2.org/talend/";
 
-    protected final String pTEXT3 = "/\" " + this.pNL + "\txmlns:tns=\"http://petals.ow2.org/talend/";
+    protected final String text3 = "/\" " + pNL + "\txmlns:tns=\"http://petals.ow2.org/talend/";
 
-    protected final String pTEXT4 = "/\"" + this.pNL + "\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " + this.pNL
-            + "\txmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\"" + this.pNL
-            + "\txmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\">" + this.pNL + "\t" + this.pNL + "\t<wsdl:types>" + this.pNL
-            + "\t\t<xs:schema " + this.pNL + "\t\t\txmlns:xs=\"http://www.w3.org/2001/XMLSchema\"" + this.pNL
-            + "\t\t\txmlns:ns1=\"http://jaxb.dev.java.net/array\" " + this.pNL
-            + "\t\t\txmlns:tns=\"http://petals.ow2.org/talend/";
-
-    protected final String pTEXT5 = "/\"" + this.pNL + "\t\t\tattributeFormDefault=\"unqualified\" " + this.pNL
-            + "\t\t\telementFormDefault=\"qualified\"" + this.pNL + "\t\t\ttargetNamespace=\"http://petals.ow2.org/talend/";
-
-    protected final String pTEXT6 = "/\">" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<xs:import namespace=\"http://jaxb.dev.java.net/array\" />" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<xs:complexType name=\"attachment\">" + this.pNL + "\t\t\t\t<xs:sequence>" + this.pNL
-            + "\t\t\t\t\t<xs:element " + this.pNL + "\t\t\t\t\t\txmlns:ns2=\"http://www.w3.org/2005/05/xmlmime\"" + this.pNL
-            + "\t\t\t\t\t\tminOccurs=\"0\" name=\"fileContent\" " + this.pNL
-            + "\t\t\t\t\t\tns2:expectedContentTypes=\"application/octet-stream\"" + this.pNL
-            + "\t\t\t\t\t\ttype=\"xs:base64Binary\" />" + this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL
-            + "\t\t\t</xs:complexType>" + this.pNL + "\t\t\t" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<!-- The input message -->" + this.pNL + "\t\t\t<xs:element name=\"executeJob\" type=\"tns:executeJob\" />"
-            + this.pNL + "\t\t\t<xs:complexType name=\"executeJob\">" + this.pNL + "\t\t\t\t<xs:sequence>" + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"contexts\" type=\"tns:talendContexts\" />" + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"in-attachments\" type=\"tns:inAttachments\" />" + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"in-data-bean\" type=\"tns:inRow\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"talend-option\" type=\"xs:string\" />"
-            + this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<xs:complexType name=\"talendContexts\">" + this.pNL + "\t\t\t\t<xs:sequence>";
-
-    protected final String pTEXT7 = this.pNL + "\t\t\t\t\t\t<xs:element name=\"";
-
-    protected final String pTEXT8 = "\" type=\"";
-
-    protected final String pTEXT9 = "\" ";
-
-    protected final String pTEXT10 = "minOccurs=\"0\" default=\"";
-
-    protected final String pTEXT11 = "\"";
-
-    protected final String pTEXT12 = " />";
-
-    protected final String pTEXT13 = this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL
-            + "\t\t\t" + this.pNL + "\t\t\t<xs:complexType name=\"inAttachments\">" + this.pNL + "\t\t\t\t<xs:sequence>";
-
-    protected final String pTEXT14 = this.pNL + "\t\t\t\t\t\t<xs:element name=\"";
-
-    protected final String pTEXT15 = "\" nillable=\"true\" type=\"tns:attachment\" />";
-
-    protected final String pTEXT16 = this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL
-            + "\t\t\t" + this.pNL + "\t\t\t<xs:complexType name=\"inRow\">" + this.pNL + "\t\t\t\t<xs:sequence>";
-
-    protected final String pTEXT17 = this.pNL + "\t\t\t\t\t<xs:element name=\"";
-
-    protected final String pTEXT18 = "\" type=\"";
-
-    protected final String pTEXT19 = "\" ";
-
-    protected final String pTEXT20 = "default=\"";
-
-    protected final String pTEXT21 = "\"";
-
-    protected final String pTEXT22 = "nillable=\"true\" ";
-
-    protected final String pTEXT23 = " />";
-
-    protected final String pTEXT24 = this.pNL
-            + "\t\t\t\t</xs:sequence>"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<!-- The output message -->"
-            + this.pNL
-            + "\t\t\t<xs:element name=\"executeJobResponse\" type=\"tns:executeJobResponse\" />"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"executeJobResponse\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence>"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"talend-job-output\" type=\"tns:talendJobOutput\" />"
-            + this.pNL
-            + "\t\t\t\t</xs:sequence>"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"talendJobOutput\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence>"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"executionResult\" nillable=\"true\" type=\"ns1:stringArray\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"outAttachment\" type=\"tns:outAttachments\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"outDataBean\" nillable=\"true\" type=\"tns:outRow\" />"
-            + this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<xs:complexType name=\"outAttachments\">" + this.pNL + "\t\t\t\t<xs:sequence>";
-
-    protected final String pTEXT25 = this.pNL + "\t\t\t\t\t\t<xs:element name=\"";
-
-    protected final String pTEXT26 = "\" nillable=\"true\" type=\"tns:attachment\" />";
-
-    protected final String pTEXT27 = this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL
-            + "\t\t\t" + this.pNL + "\t\t\t<xs:complexType name=\"outRow\">" + this.pNL + "\t\t\t\t<xs:sequence>";
-
-    protected final String pTEXT28 = this.pNL + "\t\t\t\t\t<xs:element name=\"";
-
-    protected final String pTEXT29 = "\" type=\"";
-
-    protected final String pTEXT30 = "\" ";
-
-    protected final String pTEXT31 = " default=\"";
-
-    protected final String pTEXT32 = "\" ";
-
-    protected final String pTEXT33 = "nillable=\"true\" ";
-
-    protected final String pTEXT34 = "minOccurs=\"";
-
-    protected final String pTEXT35 = "\" ";
-
-    protected final String pTEXT36 = "maxOccurs=\"";
-
-    protected final String pTEXT37 = "\"";
-
-    protected final String pTEXT38 = " />";
-
-    protected final String pTEXT39 = this.pNL
-            + "\t\t\t\t</xs:sequence>"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<!-- The possible faults -->"
-            + this.pNL
-            + "\t\t\t<xs:element name=\"TalendBusinessException\" type=\"tns:TalendBusinessException\" />"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"TalendBusinessException\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence />"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<xs:element name=\"TalendTechnicalException\" type=\"tns:TalendTechnicalException\" />"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"TalendTechnicalException\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence />"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<!-- Types for the operation with an empty result -->"
-            + this.pNL
-            + "\t\t\t<xs:element name=\"executeJobOnly\" type=\"tns:executeJobOnly\" />"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"executeJobOnly\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence>"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"contexts\" type=\"tns:talendContexts\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"in-attachments\" type=\"tns:inAttachments\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"in-data-bean\" type=\"tns:inRow\" />"
-            + this.pNL
-            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"talend-option\" type=\"xs:string\" />"
-            + this.pNL
-            + "\t\t\t\t</xs:sequence>"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t\t"
-            + this.pNL
-            + "\t\t\t<xs:element name=\"executeJobOnlyResponse\" type=\"tns:executeJobOnlyResponse\" />"
-            + this.pNL
-            + "\t\t\t<xs:complexType name=\"executeJobOnlyResponse\">"
-            + this.pNL
-            + "\t\t\t\t<xs:sequence />"
-            + this.pNL
-            + "\t\t\t</xs:complexType>"
-            + this.pNL
-            + "\t\t</xs:schema>"
-            + this.pNL
-            + "\t\t"
-            + this.pNL
+    protected final String text4 = "/\""
+            + pNL
+            + "\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+            + pNL
+            + "\txmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\""
+            + pNL
+            + "\txmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\">"
+            + pNL
+            + "\t"
+            + pNL
+            + "\t<wsdl:types>"
+            + pNL
             + "\t\t<xs:schema "
-            + this.pNL
+            + pNL
             + "\t\t\txmlns:xs=\"http://www.w3.org/2001/XMLSchema\""
-            + this.pNL
+            + pNL
             + "\t\t\ttargetNamespace=\"http://jaxb.dev.java.net/array\" "
-            + this.pNL
+            + pNL
             + "\t\t\tattributeFormDefault=\"unqualified\" "
-            + this.pNL
+            + pNL
             + "\t\t\telementFormDefault=\"qualified\""
-            + this.pNL
+            + pNL
             + "\t\t\tversion=\"1.0\">"
-            + this.pNL
+            + pNL
             + "\t\t\t"
-            + this.pNL
+            + pNL
             + "\t\t\t<xs:complexType final=\"#all\" name=\"stringArray\">"
-            + this.pNL
+            + pNL
             + "\t\t\t\t<xs:sequence>"
-            + this.pNL
+            + pNL
             + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"item\" nillable=\"true\" type=\"xs:string\" />"
-            + this.pNL + "\t\t\t\t</xs:sequence>" + this.pNL + "\t\t\t</xs:complexType>" + this.pNL + "\t\t</xs:schema>"
-            + this.pNL + "\t</wsdl:types>" + this.pNL + "\t" + this.pNL + "\t<wsdl:message name=\"executeJob\">" + this.pNL
-            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJob\" />" + this.pNL + "\t</wsdl:message>" + this.pNL
-            + "\t" + this.pNL + "\t<wsdl:message name=\"TalendBusinessException\">" + this.pNL
-            + "\t\t<wsdl:part name=\"TalendBusinessException\" element=\"tns:TalendBusinessException\" />" + this.pNL
-            + "\t</wsdl:message>" + this.pNL + "\t" + this.pNL + "\t<wsdl:message name=\"TalendTechnicalException\">" + this.pNL
-            + "\t\t<wsdl:part name=\"TalendTechnicalException\" element=\"tns:TalendTechnicalException\" />" + this.pNL
-            + "\t</wsdl:message>" + this.pNL + "\t" + this.pNL + "\t<wsdl:message name=\"executeJobResponse\">" + this.pNL
-            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobResponse\" />" + this.pNL + "\t</wsdl:message>"
-            + this.pNL + "\t" + this.pNL + "\t<wsdl:message name=\"executeJobOnlyResponse\">" + this.pNL
-            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnlyResponse\" />" + this.pNL + "\t</wsdl:message>"
-            + this.pNL + "\t" + this.pNL + "\t<wsdl:message name=\"executeJobOnly\">" + this.pNL
-            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnly\" />" + this.pNL + "\t</wsdl:message>" + this.pNL
-            + "\t" + this.pNL + "\t<wsdl:portType name=\"";
+            + pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t</xs:schema>" + pNL + "\t" + pNL
+            + "\t\t<xs:schema " + pNL + "\t\t\txmlns:xs=\"http://www.w3.org/2001/XMLSchema\"" + pNL
+            + "\t\t\txmlns:ns1=\"http://jaxb.dev.java.net/array\" " + pNL + "\t\t\txmlns:tns=\"http://petals.ow2.org/talend/";
 
-    protected final String pTEXT40 = "ServicePortType\">" + this.pNL + "\t\t<wsdl:operation name=\"executeJob\">" + this.pNL
-            + "\t\t\t<wsdl:input name=\"executeJob\" message=\"tns:executeJob\" />" + this.pNL
-            + "\t\t\t<wsdl:output name=\"executeJobResponse\" message=\"tns:executeJobResponse\" />" + this.pNL
-            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + this.pNL
-            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + this.pNL
-            + "\t\t</wsdl:operation>" + this.pNL + "\t\t" + this.pNL + "\t\t<wsdl:operation name=\"executeJobOnly\">" + this.pNL
-            + "\t\t\t<wsdl:input name=\"executeJobOnly\" message=\"tns:executeJobOnly\" />" + this.pNL
-            + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\" message=\"tns:executeJobOnlyResponse\" />" + this.pNL
-            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + this.pNL
-            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + this.pNL
-            + "\t\t</wsdl:operation>" + this.pNL + "\t</wsdl:portType>" + this.pNL + "\t" + this.pNL + "\t<wsdl:binding name=\"";
+    protected final String text5 = "/\"" + pNL + "\t\t\tattributeFormDefault=\"unqualified\" " + pNL
+            + "\t\t\telementFormDefault=\"qualified\"" + pNL + "\t\t\ttargetNamespace=\"http://petals.ow2.org/talend/";
 
-    protected final String pTEXT41 = "ServiceSoapBinding\" type=\"tns:";
+    protected final String text6 = "/\">" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:import namespace=\"http://jaxb.dev.java.net/array\" />" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"attachment\">" + pNL + "\t\t\t\t<xs:sequence>" + pNL + "\t\t\t\t\t<xs:element " + pNL
+            + "\t\t\t\t\t\txmlns:ns2=\"http://www.w3.org/2005/05/xmlmime\"" + pNL
+            + "\t\t\t\t\t\tminOccurs=\"0\" name=\"fileContent\" " + pNL
+            + "\t\t\t\t\t\tns2:expectedContentTypes=\"application/octet-stream\"" + pNL
+            + "\t\t\t\t\t\ttype=\"xs:base64Binary\" />" + pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL
+            + "\t\t\t" + pNL + "\t\t\t" + pNL + "\t\t\t<!-- The input message -->" + pNL
+            + "\t\t\t<xs:element name=\"executeJob\" type=\"tns:executeJob\" />" + pNL
+            + "\t\t\t<xs:complexType name=\"executeJob\">" + pNL + "\t\t\t\t<xs:sequence>" + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"contexts\" type=\"tns:talendContexts\" />" + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"in-attachments\" type=\"tns:inAttachments\" />" + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"in-data-bean\" type=\"tns:inRow\" />" + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"talend-option\" type=\"xs:string\" />" + pNL
+            + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"talendContexts\">" + pNL + "\t\t\t\t<xs:sequence>";
 
-    protected final String pTEXT42 = "ServicePortType\">" + this.pNL
-            + "\t\t<soap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\" />" + this.pNL + "\t\t"
-            + this.pNL + "\t\t<!-- ExecuteJob (with result) -->" + this.pNL + "\t\t<wsdl:operation name=\"executeJob\">"
-            + this.pNL + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<wsdl:input name=\"executeJob\">" + this.pNL + "\t\t\t\t<soap:body use=\"literal\" />" + this.pNL
-            + "\t\t\t</wsdl:input>" + this.pNL + "\t\t\t" + this.pNL + "\t\t\t<wsdl:output name=\"executeJobResponse\">"
-            + this.pNL + "\t\t\t\t<soap:body use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:output>" + this.pNL + "\t\t\t"
-            + this.pNL + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + this.pNL
-            + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:fault>"
-            + this.pNL + "\t\t\t" + this.pNL + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + this.pNL
-            + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:fault>\t\t\t"
-            + this.pNL + "\t\t</wsdl:operation>" + this.pNL + "\t\t" + this.pNL + "\t\t<!-- ExecuteJob (without any result) -->"
-            + this.pNL + "\t\t<wsdl:operation name=\"executeJobOnly\">" + this.pNL
-            + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + this.pNL + "\t\t\t" + this.pNL
-            + "\t\t\t<wsdl:input name=\"executeJobOnly\">" + this.pNL + "\t\t\t\t<soap:body use=\"literal\" />" + this.pNL
-            + "\t\t\t</wsdl:input>" + this.pNL + "\t\t\t" + this.pNL + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\">"
-            + this.pNL + "\t\t\t\t<soap:body use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:output>" + this.pNL + "\t\t\t"
-            + this.pNL + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + this.pNL
-            + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:fault>"
-            + this.pNL + "\t\t\t" + this.pNL + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + this.pNL
-            + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + this.pNL + "\t\t\t</wsdl:fault>"
-            + this.pNL + "\t\t</wsdl:operation>" + this.pNL + "\t</wsdl:binding>" + this.pNL + "\t" + this.pNL
-            + "\t<wsdl:service name=\"";
+    protected final String text7 = pNL + "\t\t\t\t\t\t<xs:element name=\"";
 
-    protected final String pTEXT43 = "Service_";
+    protected final String text8 = "\" type=\"";
 
-    protected final String pTEXT44 = "\">" + this.pNL + "\t\t<wsdl:port name=\"";
+    protected final String text9 = "\" ";
 
-    protected final String pTEXT45 = "\" binding=\"tns:";
+    protected final String text10 = "minOccurs=\"0\" default=\"";
 
-    protected final String pTEXT46 = "ServiceSoapBinding\">" + this.pNL
-            + "\t\t\t<soap:address location=\"http://localhost:9090/petals.does.not.use.it\" />" + this.pNL + "\t\t</wsdl:port>"
-            + this.pNL + "\t</wsdl:service>" + this.pNL + "</wsdl:definitions>";
+    protected final String text11 = "\"";
 
-    protected final String pTEXT47 = this.pNL;
+    protected final String text12 = " />";
+
+    protected final String text13 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"inAttachments\">" + pNL + "\t\t\t\t<xs:sequence>";
+
+    protected final String text14 = pNL + "\t\t\t\t\t\t<xs:element name=\"";
+
+    protected final String text15 = "\" nillable=\"true\" type=\"tns:attachment\" />";
+
+    protected final String text16 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"inRow\">" + pNL + "\t\t\t\t<xs:sequence>";
+
+    protected final String text17 = pNL + "\t\t\t\t\t<xs:element name=\"";
+
+    protected final String text18 = "\" type=\"";
+
+    protected final String text19 = "\" ";
+
+    protected final String text20 = "default=\"";
+
+    protected final String text21 = "\"";
+
+    protected final String text22 = "nillable=\"true\" ";
+
+    protected final String text23 = " />";
+
+    protected final String text24 = pNL
+            + "\t\t\t\t</xs:sequence>"
+            + pNL
+            + "\t\t\t</xs:complexType>"
+            + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t<!-- The output message -->"
+            + pNL
+            + "\t\t\t<xs:element name=\"executeJobResponse\" type=\"tns:executeJobResponse\" />"
+            + pNL
+            + "\t\t\t<xs:complexType name=\"executeJobResponse\">"
+            + pNL
+            + "\t\t\t\t<xs:sequence>"
+            + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"talend-job-output\" type=\"tns:talendJobOutput\" />"
+            + pNL
+            + "\t\t\t\t</xs:sequence>"
+            + pNL
+            + "\t\t\t</xs:complexType>"
+            + pNL
+            + "\t\t\t"
+            + pNL
+            + "\t\t\t<xs:complexType name=\"talendJobOutput\">"
+            + pNL
+            + "\t\t\t\t<xs:sequence>"
+            + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"executionResult\" nillable=\"true\" type=\"ns1:stringArray\" />"
+            + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"outAttachment\" type=\"tns:outAttachments\" />"
+            + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"outDataBean\" nillable=\"true\" type=\"tns:outRow\" />"
+            + pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"outAttachments\">" + pNL + "\t\t\t\t<xs:sequence>";
+
+    protected final String text25 = pNL + "\t\t\t\t\t\t<xs:element name=\"";
+
+    protected final String text26 = "\" nillable=\"true\" type=\"tns:attachment\" />";
+
+    protected final String text27 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:complexType name=\"outRow\">" + pNL + "\t\t\t\t<xs:sequence>";
+
+    protected final String text28 = pNL + "\t\t\t\t\t<xs:element name=\"";
+
+    protected final String text29 = "\" type=\"";
+
+    protected final String text30 = "\" ";
+
+    protected final String text31 = " default=\"";
+
+    protected final String text32 = "\" ";
+
+    protected final String text33 = "nillable=\"true\" ";
+
+    protected final String text34 = "minOccurs=\"";
+
+    protected final String text35 = "\" ";
+
+    protected final String text36 = "maxOccurs=\"";
+
+    protected final String text37 = "\"";
+
+    protected final String text38 = " />";
+
+    protected final String text39 = pNL + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t" + pNL + "\t\t\t<!-- The possible faults -->" + pNL
+            + "\t\t\t<xs:element name=\"TalendBusinessException\" type=\"tns:TalendBusinessException\" />" + pNL
+            + "\t\t\t<xs:complexType name=\"TalendBusinessException\">" + pNL + "\t\t\t\t<xs:sequence>" + pNL
+            + "\t\t\t\t\t<xs:element name=\"message\" type=\"xs:string\" />" + pNL + "\t\t\t\t</xs:sequence>" + pNL
+            + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:element name=\"TalendTechnicalException\" type=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t\t\t<xs:complexType name=\"TalendTechnicalException\">" + pNL + "\t\t\t\t<xs:sequence>" + pNL
+            + "\t\t\t\t\t<xs:element name=\"message\" type=\"xs:string\" />" + pNL + "\t\t\t\t</xs:sequence>" + pNL
+            + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<!-- Types for the operation with an empty result -->" + pNL
+            + "\t\t\t<xs:element name=\"executeJobOnly\" type=\"tns:executeJobOnly\" />" + pNL
+            + "\t\t\t<xs:complexType name=\"executeJobOnly\">" + pNL + "\t\t\t\t<xs:sequence>" + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"contexts\" type=\"tns:talendContexts\" />" + pNL
+            + "\t\t\t\t\t<xs:element minOccurs=\"0\" name=\"in-attachments\" type=\"tns:inAttachments\" />" + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"in-data-bean\" type=\"tns:inRow\" />" + pNL
+            + "\t\t\t\t\t<xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"talend-option\" type=\"xs:string\" />" + pNL
+            + "\t\t\t\t</xs:sequence>" + pNL + "\t\t\t</xs:complexType>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<xs:element name=\"executeJobOnlyResponse\" type=\"tns:executeJobOnlyResponse\" />" + pNL
+            + "\t\t\t<xs:complexType name=\"executeJobOnlyResponse\">" + pNL + "\t\t\t\t<xs:sequence />" + pNL
+            + "\t\t\t</xs:complexType>" + pNL + "\t\t</xs:schema>" + pNL + "\t</wsdl:types>" + pNL + "\t" + pNL
+            + "\t<wsdl:message name=\"executeJob\">" + pNL + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJob\" />"
+            + pNL + "\t</wsdl:message>" + pNL + "\t" + pNL + "\t<wsdl:message name=\"TalendBusinessException\">" + pNL
+            + "\t\t<wsdl:part name=\"TalendBusinessException\" element=\"tns:TalendBusinessException\" />" + pNL
+            + "\t</wsdl:message>" + pNL + "\t" + pNL + "\t<wsdl:message name=\"TalendTechnicalException\">" + pNL
+            + "\t\t<wsdl:part name=\"TalendTechnicalException\" element=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t</wsdl:message>" + pNL + "\t" + pNL + "\t<wsdl:message name=\"executeJobResponse\">" + pNL
+            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobResponse\" />" + pNL + "\t</wsdl:message>" + pNL + "\t"
+            + pNL + "\t<wsdl:message name=\"executeJobOnlyResponse\">" + pNL
+            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnlyResponse\" />" + pNL + "\t</wsdl:message>" + pNL
+            + "\t" + pNL + "\t<wsdl:message name=\"executeJobOnly\">" + pNL
+            + "\t\t<wsdl:part name=\"parameters\" element=\"tns:executeJobOnly\" />" + pNL + "\t</wsdl:message>" + pNL + "\t"
+            + pNL + "\t<wsdl:portType name=\"";
+
+    protected final String text40 = "ServicePortType\">" + pNL + "\t\t<wsdl:operation name=\"executeJob\">" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJob\" message=\"tns:executeJob\" />" + pNL
+            + "\t\t\t<wsdl:output name=\"executeJobResponse\" message=\"tns:executeJobResponse\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t\t</wsdl:operation>" + pNL + "\t\t" + pNL + "\t\t<wsdl:operation name=\"executeJobOnly\">" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJobOnly\" message=\"tns:executeJobOnly\" />" + pNL
+            + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\" message=\"tns:executeJobOnlyResponse\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\" message=\"tns:TalendTechnicalException\" />" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\" message=\"tns:TalendBusinessException\" />" + pNL
+            + "\t\t</wsdl:operation>" + pNL + "\t</wsdl:portType>" + pNL + "\t" + pNL + "\t<wsdl:binding name=\"";
+
+    protected final String text41 = "ServiceSoapBinding\" type=\"tns:";
+
+    protected final String text42 = "ServicePortType\">" + pNL
+            + "\t\t<soap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\" />" + pNL + "\t\t" + pNL
+            + "\t\t<!-- ExecuteJob (with result) -->" + pNL + "\t\t<wsdl:operation name=\"executeJob\">" + pNL
+            + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJob\">" + pNL + "\t\t\t\t<soap:body use=\"literal\" />" + pNL
+            + "\t\t\t</wsdl:input>" + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:output name=\"executeJobResponse\">" + pNL
+            + "\t\t\t\t<soap:body use=\"literal\" />" + pNL + "\t\t\t</wsdl:output>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>" + pNL
+            + "\t\t\t" + pNL + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>\t\t\t"
+            + pNL + "\t\t</wsdl:operation>" + pNL + "\t\t" + pNL + "\t\t<!-- ExecuteJob (without any result) -->" + pNL
+            + "\t\t<wsdl:operation name=\"executeJobOnly\">" + pNL
+            + "\t\t\t<soap:operation soapAction=\"\" style=\"document\" />" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:input name=\"executeJobOnly\">" + pNL + "\t\t\t\t<soap:body use=\"literal\" />" + pNL
+            + "\t\t\t</wsdl:input>" + pNL + "\t\t\t" + pNL + "\t\t\t<wsdl:output name=\"executeJobOnlyResponse\">" + pNL
+            + "\t\t\t\t<soap:body use=\"literal\" />" + pNL + "\t\t\t</wsdl:output>" + pNL + "\t\t\t" + pNL
+            + "\t\t\t<wsdl:fault name=\"TalendTechnicalException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendTechnicalException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>" + pNL
+            + "\t\t\t" + pNL + "\t\t\t<wsdl:fault name=\"TalendBusinessException\">" + pNL
+            + "\t\t\t\t<soap:fault name=\"TalendBusinessException\" use=\"literal\" />" + pNL + "\t\t\t</wsdl:fault>" + pNL
+            + "\t\t</wsdl:operation>" + pNL + "\t</wsdl:binding>" + pNL + "\t" + pNL + "\t<wsdl:service name=\"";
+
+    protected final String text43 = "Service_";
+
+    protected final String text44 = "\">" + pNL + "\t\t<wsdl:port name=\"";
+
+    protected final String text45 = "\" binding=\"tns:";
+
+    protected final String text46 = "ServiceSoapBinding\">" + pNL
+            + "\t\t\t<soap:address location=\"http://localhost:9090/petals.does.not.use.it\" />" + pNL + "\t\t</wsdl:port>" + pNL
+            + "\t</wsdl:service>" + pNL + "</wsdl:definitions>";
+
+    protected final String text47 = pNL;
 
     public String generate(Object argument) {
         final StringBuffer stringBuffer = new StringBuffer();
 
         PetalsWsdlBean bean = (PetalsWsdlBean) argument;
 
-        stringBuffer.append(this.pTEXT1);
+        stringBuffer.append(text1);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT2);
+        stringBuffer.append(text2);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT3);
+        stringBuffer.append(text3);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT4);
+        stringBuffer.append(text4);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT5);
+        stringBuffer.append(text5);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT6);
+        stringBuffer.append(text6);
 
         for (ContextTypeDefinition def : bean.contextDefinitions) {
             if (def.exportType == ContextExportType.PARAMETER || def.exportType == ContextExportType.PARAMETER_AND_OUT_ATTACHMENT) {
 
-                stringBuffer.append(this.pTEXT7);
+                stringBuffer.append(text7);
                 stringBuffer.append(def.definition.name);
-                stringBuffer.append(this.pTEXT8);
+                stringBuffer.append(text8);
                 stringBuffer.append(def.definition.type);
-                stringBuffer.append(this.pTEXT9);
+                stringBuffer.append(text9);
 
                 if (def.definition.defaultValue != null && def.definition.defaultValue.trim().length() > 0) {
 
-                    stringBuffer.append(this.pTEXT10);
+                    stringBuffer.append(text10);
                     stringBuffer.append(def.definition.defaultValue);
-                    stringBuffer.append(this.pTEXT11);
+                    stringBuffer.append(text11);
 
                 }
 
-                stringBuffer.append(this.pTEXT12);
+                stringBuffer.append(text12);
 
             }
         }
 
-        stringBuffer.append(this.pTEXT13);
+        stringBuffer.append(text13);
 
         for (ContextTypeDefinition def : bean.contextDefinitions) {
             if (def.exportType == ContextExportType.IN_ATTACHMENT) {
 
-                stringBuffer.append(this.pTEXT14);
+                stringBuffer.append(text14);
                 stringBuffer.append(def.definition.name);
-                stringBuffer.append(this.pTEXT15);
+                stringBuffer.append(text15);
 
             }
         }
 
-        stringBuffer.append(this.pTEXT16);
+        stringBuffer.append(text16);
 
         for (ElementTypeDefinition def : bean.tPetalsInputSchema) {
 
-            stringBuffer.append(this.pTEXT17);
+            stringBuffer.append(text17);
             stringBuffer.append(def.name);
-            stringBuffer.append(this.pTEXT18);
+            stringBuffer.append(text18);
             stringBuffer.append(def.type);
-            stringBuffer.append(this.pTEXT19);
+            stringBuffer.append(text19);
 
             if (def.defaultValue != null) {
-                stringBuffer.append(this.pTEXT20);
+                stringBuffer.append(text20);
                 stringBuffer.append(def.defaultValue);
-                stringBuffer.append(this.pTEXT21);
+                stringBuffer.append(text21);
             } else if (def.nillable) {
-                stringBuffer.append(this.pTEXT22);
+                stringBuffer.append(text22);
             }
-            stringBuffer.append(this.pTEXT23);
+            stringBuffer.append(text23);
 
         } // End of "for" loop
 
-        stringBuffer.append(this.pTEXT24);
+        stringBuffer.append(text24);
 
         for (ContextTypeDefinition def : bean.contextDefinitions) {
             if (def.exportType == ContextExportType.OUT_ATTACHMENT
                     || def.exportType == ContextExportType.PARAMETER_AND_OUT_ATTACHMENT) {
 
-                stringBuffer.append(this.pTEXT25);
+                stringBuffer.append(text25);
                 stringBuffer.append(def.definition.name);
-                stringBuffer.append(this.pTEXT26);
+                stringBuffer.append(text26);
 
             }
         }
 
-        stringBuffer.append(this.pTEXT27);
+        stringBuffer.append(text27);
 
         for (ElementTypeDefinition def : bean.tPetalsOutputSchema) {
 
-            stringBuffer.append(this.pTEXT28);
+            stringBuffer.append(text28);
             stringBuffer.append(def.name);
-            stringBuffer.append(this.pTEXT29);
+            stringBuffer.append(text29);
             stringBuffer.append(def.type);
-            stringBuffer.append(this.pTEXT30);
+            stringBuffer.append(text30);
 
             if (def.defaultValue != null) {
-                stringBuffer.append(this.pTEXT31);
+                stringBuffer.append(text31);
                 stringBuffer.append(def.defaultValue);
-                stringBuffer.append(this.pTEXT32);
+                stringBuffer.append(text32);
             } else if (def.nillable) {
-                stringBuffer.append(this.pTEXT33);
+                stringBuffer.append(text33);
             } else {
-                stringBuffer.append(this.pTEXT34);
+                stringBuffer.append(text34);
                 stringBuffer.append(def.minOccurs);
-                stringBuffer.append(this.pTEXT35);
+                stringBuffer.append(text35);
             }
             if (def.maxOccurs > 1) {
-                stringBuffer.append(this.pTEXT36);
+                stringBuffer.append(text36);
                 stringBuffer.append(def.maxOccurs);
-                stringBuffer.append(this.pTEXT37);
+                stringBuffer.append(text37);
             }
-            stringBuffer.append(this.pTEXT38);
+            stringBuffer.append(text38);
 
         } // end of "for" loop
 
-        stringBuffer.append(this.pTEXT39);
+        stringBuffer.append(text39);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT40);
+        stringBuffer.append(text40);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT41);
+        stringBuffer.append(text41);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT42);
+        stringBuffer.append(text42);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT43);
+        stringBuffer.append(text43);
         stringBuffer.append(bean.jobVersion);
-        stringBuffer.append(this.pTEXT44);
-        stringBuffer.append(bean.autogenerate ? "autogenerate" : (bean.jobName + "_" + bean.jobVersion + "_Endpoint"));
-        stringBuffer.append(this.pTEXT45);
+        stringBuffer.append(text44);
+        stringBuffer.append(bean.autogenerate ? "autogenerate" : (bean.jobName + "_" + bean.jobVersion + "Endpoint"));
+        stringBuffer.append(text45);
         stringBuffer.append(bean.jobName);
-        stringBuffer.append(this.pTEXT46);
-        stringBuffer.append(this.pTEXT47);
+        stringBuffer.append(text46);
+        stringBuffer.append(text47);
         return stringBuffer.toString();
     }
 }
