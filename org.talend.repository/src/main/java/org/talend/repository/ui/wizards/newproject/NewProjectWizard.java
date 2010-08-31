@@ -20,12 +20,12 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.utils.ProjectHelper;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -72,8 +72,9 @@ public class NewProjectWizard extends Wizard {
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         try {
-            project = repositoryFactory.createProject(mainPage.getName(), mainPage.getDescription(), ECodeLanguage
-                    .getCodeLanguage(mainPage.getLanguage()), repositoryContext.getUser());
+            Project projectInfor = ProjectHelper.createProject(mainPage.getName(), mainPage.getDescription(), mainPage
+                    .getLanguage(), repositoryContext.getUser());
+            project = repositoryFactory.createProject(projectInfor);
             return true;
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages //$NON-NLS-1$

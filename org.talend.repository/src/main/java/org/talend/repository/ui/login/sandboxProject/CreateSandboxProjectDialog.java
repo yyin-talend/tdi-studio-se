@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.login.sandboxProject;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -34,19 +33,17 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
-import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.properties.PropertiesFactory;
-import org.talend.core.model.properties.User;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizardPage;
+import org.talend.repository.utils.ProjectHelper;
 
 /**
  * ggu class global comment. Detailled comment
@@ -178,7 +175,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
             public void modifyText(ModifyEvent e) {
                 if (e.widget == userLoginText.getTextControl()) {
-                    String generateProjectName = generateProjectName();
+                    String generateProjectName = ProjectHelper.generateSandbocProjectName(userLoginText.getText());
                     projectLabelText.setText(generateProjectName);
                 }
                 checkFields();
@@ -219,25 +216,6 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     }
 
-    private String generateProjectName() {
-        String text = userLoginText.getText();
-
-        if (Pattern.matches(RepositoryConstants.MAIL_PATTERN, text)) {
-            int at = text.indexOf('@');
-            if (at > -1) {
-                String mailName = text.substring(0, at);
-                if (mailName.length() > 0) {
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("Sandbox_"); //$NON-NLS-1$
-                    sb.append(mailName);
-                    sb.append("_project"); //$NON-NLS-1$
-                    return sb.toString();
-                }
-            }
-        }
-        return null;
-    }
-
     private void checkProjectLabel(boolean editable) {
         if (editable) {
             projectLabelText.getTextControl().setEditable(true);
@@ -262,27 +240,21 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     @Override
     protected void okPressed() {
         //
-        Project newProject = new Project();
-        newProject.setLabel(projectLabelText.getText());
-        newProject.setTechnicalLabel(Project.createTechnicalName(newProject.getLabel()));
-        newProject.setLanguage(ECodeLanguage.getCodeLanguage(languageCombo.getText()));
-        newProject.setDescription(newProject.getLabel());
+        String projectName = projectLabelText.getText();
+        String projectLanguage = languageCombo.getText();
+        String projectAuthor = userLoginText.getText();
+        String projectAuthorPass = userPassText.getText();
+        String projectAuthorFirstname = userFirstNameText.getText();
+        String projectAuthorLastname = userLastNameText.getText();
 
-        User newUser = PropertiesFactory.eINSTANCE.createUser();
-        newUser.setLogin(userLoginText.getText());
-        newUser.setFirstName(userFirstNameText.getText());
-        newUser.setLastName(userLastNameText.getText());
-        try {
-            newUser.setPassword(PasswordHelper.encryptPasswd(userPassText.getText()));
-        } catch (NoSuchAlgorithmException e) {
-            ExceptionHandler.process(e);
-        }
-
-        newProject.setAuthor(newUser); // set in project to record
+        Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage, projectAuthor,
+                projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
 
         boolean ok = false;
         try {
-            ok = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createSandboxProject(newProject);
+            Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
+                    projectInfor);
+            ok = (createProject != null);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             MessageDialog

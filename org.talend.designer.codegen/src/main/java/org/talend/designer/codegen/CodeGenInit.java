@@ -45,6 +45,7 @@ import org.talend.core.model.properties.User;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.utils.ProjectHelper;
 
 /***/
 public class CodeGenInit implements IApplication {
@@ -121,7 +122,9 @@ public class CodeGenInit implements IApplication {
     private void createAndLogonProject(ECodeLanguage language) throws Exception {
         Project project = getProject(language);
         if (project == null) {
-            project = repositoryFactory.createProject(getProjectName(language), "", language, createUser()); //$NON-NLS-1$
+            Project projectInfor = ProjectHelper.createProject(getProjectName(language), "", //$NON-NLS-1$
+                    language.getName(), createUser());
+            project = repositoryFactory.createProject(projectInfor);
         }
         repositoryFactory.logOnProject(project, new NullProgressMonitor());
     }

@@ -50,7 +50,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ConnectionBean;
@@ -118,6 +117,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileWiz
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaWizard;
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaWizard;
+import org.talend.repository.utils.ProjectHelper;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 ;
@@ -383,7 +383,9 @@ public class RepositoryService implements IRepositoryService {
                     ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
                 }
                 if (project == null || deleteProjectIfExist) {
-                    project = repositoryFactory.createProject(projectName, "", ECodeLanguage.getCodeLanguage(language), userInfo);
+                    Project projectInfor = ProjectHelper.createProject(projectName, "", //$NON-NLS-1$
+                            language, userInfo);
+                    project = repositoryFactory.createProject(projectInfor);
                 }
                 Context ctx = CorePlugin.getContext();
                 RepositoryContext repositoryContext = new RepositoryContext();
