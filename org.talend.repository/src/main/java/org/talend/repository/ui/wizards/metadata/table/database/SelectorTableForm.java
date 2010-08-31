@@ -902,7 +902,7 @@ public class SelectorTableForm extends AbstractForm {
             }
             if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
                 Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class);
-                Schema s = (Schema) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Schema.class);
+                Schema s = (Schema) ConnectionHelper.getPackage(getConnection().getUiSchema(), getConnection(), Schema.class);
                 if (c != null) {
                     PackageHelper.addMetadataTable(dbtable, c);
                 } else if (s != null) {
