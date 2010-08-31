@@ -78,7 +78,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.cwm.helper.ConnectionHelper;
-import org.talend.cwm.helper.PackageHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
@@ -96,7 +95,6 @@ import org.talend.repository.ui.wizards.context.ContextWizard;
 import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 import orgomg.cwm.objectmodel.core.Package;
-import orgomg.cwm.resource.relational.Catalog;
 
 /**
  * ggu class global comment. Detailled comment
@@ -921,9 +919,7 @@ public final class ConnectionContextHelper {
         // not clone
         // targetConn.setContextId(sourceConn.getContextId());
         // targetConn.setContextMode(sourceConn.isContextMode());
-
         targetConn.setVersion(sourceConn.getVersion());
-
         QueriesConnection queryConnection = sourceConn.getQueries();
         if (queryConnection != null) {
             QueriesConnection cloneQueriesConnection = ConnectionFactory.eINSTANCE.createQueriesConnection();
@@ -943,16 +939,10 @@ public final class ConnectionContextHelper {
             targetConn.setQueries(cloneQueriesConnection);
 
         }
-        if (targetConn instanceof DatabaseConnection) { // hywang
-            Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(), targetConn,
-                    Catalog.class);
-            if (c != null) {
-                c.getOwnedElement().clear();
-            }
-        } else {
-            Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
-            pkg.getOwnedElement().clear();
-        }
+        // no need to clean targetconn's datapackage because when clone the connection,the datapacage won't be cloned.
+
+        // Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
+
         Set<MetadataTable> tables = (Set<MetadataTable>) ConnectionHelper.getTables(sourceConn);
         for (MetadataTable table : tables) {
             MetadataTable cloneTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -990,18 +980,27 @@ public final class ConnectionContextHelper {
                 Package pkg = (Package) cloneTable.getNamespace();
                 pkg.getDataManager().add(targetConn);
             }
-            if (targetConn instanceof DatabaseConnection) { // hywang
-                Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(), targetConn,
-                        Catalog.class);
-                if (c != null) {
-                    PackageHelper.addMetadataTable(cloneTable, c);
-                }
-            } else {
-                Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
-                if (pkg != null) {
-                    PackageHelper.addMetadataTable(cloneTable, pkg);
-                }
-            }
+            // if (targetConn instanceof DatabaseConnection) { // hywang,need to see if schema or catalog
+            // // Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(),
+            // // ((DatabaseConnection) targetConn), Catalog.class);
+            // // Schema s = (Schema) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getUiSchema(),
+            // // ((DatabaseConnection) targetConn), Schema.class);
+            // // if (c != null) {
+            // // PackageHelper.addMetadataTable(cloneTable, c);
+            // // } else if (s != null) {
+            // // PackageHelper.addMetadataTable(cloneTable, s);
+            // // }
+            // Catalog c = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) targetConn).getSID(), targetConn,
+            // Catalog.class);
+            // if (c != null) {
+            // PackageHelper.addMetadataTable(cloneTable, c);
+            // }
+            // } else {
+            // Package pkg = (Package) ConnectionHelper.getPackage(targetConn.getName(), targetConn, Package.class);
+            // if (pkg != null) {
+            // PackageHelper.addMetadataTable(cloneTable, pkg);
+            // }
+            // }
             // cloneTable.setConnection(targetConn);
             // targetConn.getTables().add(cloneTable);
         }
