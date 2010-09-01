@@ -49,12 +49,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
         String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
         String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
-        String keyStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_KEYSTORE__");
-        String keyStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_KEYSTOREPASSWORD__");
-
-	String keyStoreType = ElementParameterParser.getValue(node, "__KEYSTORE_TYPE__");
-
-	String verifyName = ElementParameterParser.getValue(node, "__VERIFY_NAME__");
         
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -80,40 +74,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         };
 <% 
 		if (needSSLtoTrustServer) {
-			if(!("PKCS12".equals(keyStoreType))) {
 %>   
-				//System.out.println(<%=keyStoreType%>):
-			        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
-<%
-			}
-%>
+        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
 
-			System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
-			System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
-<%
-			if("PKCS12".equals(keyStoreType)) {
-%>
-				System.setProperty("javax.net.ssl.keyStore", <%=keyStoreFile %>);
-				System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
-				System.setProperty("javax.net.ssl.keyStorePassword", <%=keyStorePassword %>);
-<%
-				if("false".equals(verifyName)) {
-%>				
-					java.net.URL url_<%=cid%> = new java.net.URL(<%=endpoint%>);
-					javax.net.ssl.HttpsURLConnection httpsCon_<%=cid%> = (javax.net.ssl.HttpsURLConnection) url_<%=cid%>.openConnection();  
-					httpsCon_<%=cid%>.setHostnameVerifier(new javax.net.ssl.HostnameVerifier()  
-				 	{        
-				     
-						public boolean verify(String arg0, javax.net.ssl.SSLSession arg1) {
-							return true;
-						}  
-				 	});
-					httpsCon_<%=cid%>.connect();
-<%
-				}
-%>
-<%
-			} 
+		System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
+		System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
+<% 
 		}
 		if (needAuth&&!winAuth) {
 %>        	   
