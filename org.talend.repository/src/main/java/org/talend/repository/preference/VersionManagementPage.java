@@ -472,6 +472,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         versionLatest = new Button(option, SWT.CHECK);
         versionLatest.setText(Messages.getString("VersionManagementDialog.FixVersion"));
+        versionLatest.setToolTipText(Messages.getString("VersionManagementDialog.FixLastVersion"));
         // event
         fixedVersionBtn.addSelectionListener(new SelectionAdapter() {
 
