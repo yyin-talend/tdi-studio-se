@@ -241,7 +241,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
-                    processItem.getProcess().getNode();
                     resource.setNode(node);
                     list.add(resource);
                 }
