@@ -205,9 +205,9 @@ public class DropContextAnalyzer {
             return;
         }
 
-        int maxY = (currentTableTarget.getItemCount() * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem
-                .isGTK() ? 2 : 0)))
-                + currentTableTarget.getHeaderHeight();
+        int maxY = (WindowSystem.isWIN32() && currentTableTarget.getHeaderVisible() ? currentTableTarget.getHeaderHeight() : 0)
+                + (currentTableTarget.getItemCount() * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem
+                        .isGTK() ? 2 : 0)));
 
         if (pointCursor.y < 0 || pointCursor.y >= maxY) {
             isCursorOverExpressionCell = false;
