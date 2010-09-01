@@ -234,10 +234,10 @@ public class UpdateContextParameterCommand extends Command {
             for (String paramName : names) {
                 ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(contextType, paramName);
                 // check if there is a parameter with same name
-                IContextParameter paramExisted = helper.getExistedContextParameter(contextParameterType.getName());
-                if (paramExisted == null) {
-                    helper.addContextParameterType(contextParameterType);
-                }
+                // IContextParameter paramExisted = helper.getExistedContextParameter(contextParameterType.getName());
+                // if (paramExisted == null) {
+                helper.addContextParameterType(contextParameterType);
+                // }
             }
         }
     }

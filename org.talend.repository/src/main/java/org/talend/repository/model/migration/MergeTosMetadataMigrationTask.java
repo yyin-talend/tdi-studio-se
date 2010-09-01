@@ -29,7 +29,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
@@ -39,7 +38,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.model.migration.TosMetadataMigrationFrom400to410;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.utils.URIHelper;
 
@@ -53,8 +51,6 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
     TosMetadataMigrationFrom400to410 metadata400to410 = new TosMetadataMigrationFrom400to410();
 
     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
-
-    IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
 
     static final HashMap XML_SAVE_OTIONS = new HashMap(2);
     static {
@@ -77,12 +73,6 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                                 itemResourceURI, XML_SAVE_OTIONS);
                         try {
                             migratedResource.save(outputStream, XML_SAVE_OTIONS);
-                            factory.reload(item.getProperty()); // only need to reload after this migrationtask
-                            // rather
-                            // than
-                            // in
-                            // AbstractItemMigrationTask.java,cause we only add
-                            // cwm after this migration task
                         } finally {
                             outputStream.close();
                         }
@@ -94,10 +84,6 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 ExceptionHandler.process(e);
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (IOException e) {
-                log.error(e);
-                ExceptionHandler.process(e);
-                return ExecutionResult.SUCCESS_NO_ALERT;
-            } catch (PersistenceException e) {
                 log.error(e);
                 ExceptionHandler.process(e);
                 return ExecutionResult.SUCCESS_NO_ALERT;
@@ -152,7 +138,7 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
 
     public Date getOrder() {
         // TODO Auto-generated method stub
-        GregorianCalendar gc = new GregorianCalendar(2010, 6, 29, 10, 20, 0);
+        GregorianCalendar gc = new GregorianCalendar(2000, 6, 29, 10, 20, 0);
         return gc.getTime();
     }
 }

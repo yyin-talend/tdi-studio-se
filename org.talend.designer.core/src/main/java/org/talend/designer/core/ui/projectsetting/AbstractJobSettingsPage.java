@@ -55,7 +55,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -68,13 +67,10 @@ import org.talend.designer.core.utils.DetectContextVarsUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
-import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 
 /**
@@ -92,7 +88,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     private List<IProcess> openedProcessList = new ArrayList<IProcess>();
 
-    private List<RepositoryNode> checkedNode = new ArrayList<RepositoryNode>();
+    private List<IRepositoryViewObject> checkedNodeObject = new ArrayList<IRepositoryViewObject>();
 
     private boolean isConnectionChanged = false;
 
@@ -253,11 +249,10 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     }
 
-    protected boolean isStatUseProjectSetting(RepositoryNode node) {
-        Property property = node.getObject().getProperty();
+    protected boolean isStatUseProjectSetting(IRepositoryViewObject object) {
+        Property property = object.getProperty();
         ProcessItem pItem = (ProcessItem) property.getItem();
         ParametersType pType = pItem.getProcess().getParameters();
-
         String statB = ElementParameter2ParameterType.getParameterValue(pType, getParameterName().getName());
 
         return Boolean.parseBoolean(statB);
@@ -343,17 +338,17 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         }
     }
 
-    protected org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess> list, RepositoryNode p) {
+    protected org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess> list, IRepositoryViewObject object) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId().equals(p.getId())) {
+            if (list.get(i).getId().equals(object.getId())) {
                 return (org.talend.designer.core.ui.editor.process.Process) list.get(i);
             }
         }
         return null;
     }
 
-    protected boolean isOpenProcess(RepositoryNode node) {
-        Property property = node.getObject().getProperty();
+    protected boolean isOpenProcess(IRepositoryViewObject object) {
+        Property property = object.getProperty();
         if (property.getItem() instanceof ProcessItem) {
             for (IProcess process : openedProcessList) {
                 if (process.getId().equals(property.getId()) && process.getLabel().equals(property.getLabel())
@@ -371,20 +366,23 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     protected void save() {
         List<String> checkedObjects = new ArrayList<String>();
-        IRepositoryView repositoryView = RepositoryManager.getRepositoryView();
-        IRepositoryNode root = ((RepositoryContentProvider) repositoryView.getViewer().getContentProvider()).getRoot();
-        RepositoryNode processNode = ((ProjectRepositoryNode) root).getRootRepositoryNode(ERepositoryObjectType.PROCESS);
-        List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
-        processItems(objects, processNode);
-        for (RepositoryNode node : objects) {
-            if (isStatUseProjectSetting(node)) {
-                if (!checkedObjects.contains(node.getObject().getProperty().getId())) {
-                    checkedObjects.add(node.getObject().getProperty().getId());
-                    if (!checkedNode.contains(node)) {
-                        checkedNode.add(node);
+        List<IRepositoryViewObject> allProcess = null;
+        try {
+            allProcess = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.PROCESS);
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
+
+        for (IRepositoryViewObject object : allProcess) {
+            if (isStatUseProjectSetting(object)) {
+                if (!checkedObjects.contains(object.getProperty().getId())) {
+                    checkedObjects.add(object.getProperty().getId());
+                    if (!checkedNodeObject.contains(object)) {
+                        checkedNodeObject.add(object);
                     }
                 }
             }
+
         }
 
         List<IProcess> allOpenedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(getEditors());
@@ -400,7 +398,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask(getTaskMessages(), (checkedNode.size()) * 100);
+                monitor.beginTask(getTaskMessages(), (checkedNodeObject.size()) * 100);
                 final Map<String, Set<String>> contextVars = DetectContextVarsUtils.detectByPropertyType(elem, true);
 
                 addContextModel = false; // must init this
@@ -458,8 +456,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                 }
                 monitor.worked(10);
 
-                for (RepositoryNode node : checkedNode) {
-                    saveProcess(node, addContextModel, contextVars, monitor);
+                for (IRepositoryViewObject object : checkedNodeObject) {
+                    saveProcess(object, addContextModel, contextVars, monitor);
                 }
                 monitor.done();
             }
@@ -487,13 +485,13 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     protected abstract String getTaskMessages();
 
-    protected void saveProcess(RepositoryNode node, boolean addContextModel, Map<String, Set<String>> contextVars,
+    protected void saveProcess(IRepositoryViewObject object, boolean addContextModel, Map<String, Set<String>> contextVars,
             IProgressMonitor monitor) {
-        Property property = node.getObject().getProperty();
+        Property property = object.getProperty();
         ProcessItem pItem = (ProcessItem) property.getItem();
 
-        if (isOpenProcess(node)) {
-            Process process = getProcess(openedProcessList, node);
+        if (isOpenProcess(object)) {
+            Process process = getProcess(openedProcessList, object);
             LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, getParameterName().getName(),
                     Boolean.TRUE);
             exeCommand(process, command);
@@ -520,6 +518,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
             monitor.worked(100);
         } else {
             try {
+
                 reloadFromProjectSetings(pItem, addContextModel, contextVars);
                 factory.save(pItem);
                 monitor.worked(100);

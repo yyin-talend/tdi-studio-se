@@ -13,8 +13,10 @@
 package org.talend.designer.core.ui.editor.update;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -141,20 +143,23 @@ public class UpdateDetectionDialog extends SelectionDialog {
                 contextResult.add(result);
             }
         }
+
         // filter
         List<ConnectionItem> connItems = new ArrayList<ConnectionItem>();
         List<UpdateResult> duplicatedResult = new ArrayList<UpdateResult>();
         Iterator<UpdateResult> iterator = contextResult.iterator();
+        List tempItems = new ArrayList();
         while (iterator.hasNext()) {
+            Map<Object, ConnectionItem> jobAndContext = new HashMap<Object, ConnectionItem>();
             UpdateResult result = iterator.next();
             ConnectionItem item = result.getContextModeConnectionItem();
-            if (item != null) {
-                if (connItems.contains(item)) { // duplicate
-                    duplicatedResult.add(result);
-                } else {
-                    connItems.add(item);
-                }
+            jobAndContext.put(result.getJob(), item);
+            if (tempItems.contains(jobAndContext)) { // duplicate
+                duplicatedResult.add(result);
+            } else {
+                tempItems.add(item);
             }
+
         }
         // remove
         getInputElements().removeAll(duplicatedResult);

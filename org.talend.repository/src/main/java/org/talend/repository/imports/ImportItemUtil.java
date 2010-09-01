@@ -100,12 +100,12 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.PropertiesProjectResourceImpl;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.utils.FileCopyUtils;
 import org.talend.repository.utils.RoutineUtils;
 import org.talend.repository.utils.XmiResourceManager;
@@ -598,12 +598,12 @@ public class ImportItemUtil {
                         }
                     }
                     if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService()
-                                .reloadParamFromProjectSettings(paType, "STATANDLOG_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
+                                "STATANDLOG_USE_PROJECT_SETTINGS");
                     }
                     if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService()
-                                .reloadParamFromProjectSettings(paType, "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
+                                "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
                     }
 
                 }
@@ -624,8 +624,8 @@ public class ImportItemUtil {
                         // IPath itemPath = itemRecord.getPath().removeFileExtension().addFileExtension(
                         // FileConstants.ITEM_EXTENSION);
 
-                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension()
-                                .addFileExtension(FileConstants.ITEM_EXTENSION));
+                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension().addFileExtension(
+                                FileConstants.ITEM_EXTENSION));
                         try {
                             URI relativePlateformDestUri = EcoreUtil.getURI(((ConnectionItem) tmpItem).getConnection());
                             URL fileURL = FileLocator.toFileURL(new java.net.URL(
@@ -702,25 +702,45 @@ public class ImportItemUtil {
             return;
         }
 
+        List<IProjectMigrationTask> toExecute = new ArrayList<IProjectMigrationTask>();
         for (String taskId : itemRecord.getMigrationTasksToApply()) {
             IProjectMigrationTask task = GetTasksHelper.getProjectTask(taskId);
             if (task == null) {
                 log.warn(Messages.getString("ImportItemUtil.taskLogWarn", taskId)); //$NON-NLS-1$
             } else {
-                monitor.subTask(Messages.getString("ImportItemUtil.taskMonitor", task.getName(), itemRecord.getItemName())); //$NON-NLS-1$
-                try {
-                    if (item != null) {
-                        ExecutionResult executionResult = task.execute(repositoryContext.getProject(), item);
-                        if (executionResult == ExecutionResult.FAILURE) {
-                            log.warn(Messages.getString("ImportItemUtil.itemLogWarn", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
-                            // TODO smallet add a warning/error to the job using
-                            // model
-                        }
-                    }
-                } catch (Exception e) {
-                    log.warn(Messages.getString("ImportItemUtil.itemLogException", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
+                toExecute.add(task);
+            }
 
+        }
+        Collections.sort(toExecute, new Comparator<IProjectMigrationTask>() {
+
+            public int compare(IProjectMigrationTask o1, IProjectMigrationTask o2) {
+                return o1.getOrder().compareTo(o2.getOrder());
+            }
+        });
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+        for (IProjectMigrationTask task : toExecute) {
+            monitor.subTask(Messages.getString("ImportItemUtil.taskMonitor", task.getName(), itemRecord.getItemName())); //$NON-NLS-1$
+            try {
+                // in case the resource has been modified (see MergeTosMetadataMigrationTask for example)
+                if ((item.getProperty().eResource() == null || item.eResource() == null)) {
+                    Property updatedProperty = factory.reload(item.getProperty());
+                    item = updatedProperty.getItem();
                 }
+
+                if (item != null) {
+                    ExecutionResult executionResult = task.execute(repositoryContext.getProject(), item);
+                    if (executionResult == ExecutionResult.FAILURE) {
+                        log.warn(Messages.getString("ImportItemUtil.itemLogWarn", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
+                        // TODO smallet add a warning/error to the job using
+                        // model
+                    }
+                }
+            } catch (Exception e) {
+                log.warn(Messages.getString("ImportItemUtil.itemLogException", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
+
             }
         }
         RelationshipItemBuilder.getInstance().saveRelations();
@@ -946,8 +966,8 @@ public class ImportItemUtil {
             stream = manager.getStream(itemRecord.getPath());
             Resource resource = createResource(itemRecord.getResourceSet(), itemRecord.getPath(), false);
             resource.load(stream, null);
-            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
-                    PropertiesPackage.eINSTANCE.getProperty()));
+            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
+                    .getProperty()));
         } catch (IOException e) {
             // ignore
         } finally {
@@ -1028,8 +1048,8 @@ public class ImportItemUtil {
         } else
         // connectionItem
         if (item instanceof ConnectionItem) {
-            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents,
-                    ConnectionPackage.eINSTANCE.getConnection()));
+            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents, ConnectionPackage.eINSTANCE
+                    .getConnection()));
         } else
         // context
         if (item instanceof ContextItem) {
@@ -1056,15 +1076,15 @@ public class ImportItemUtil {
         } else
         // link doc
         if (item instanceof LinkDocumentationItem) {
-            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents,
-                    PropertiesPackage.eINSTANCE.getLinkType()));
+            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents, PropertiesPackage.eINSTANCE
+                    .getLinkType()));
         } else
         // business
         if (item instanceof BusinessProcessItem) {
             BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
 
-            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents,
-                    BusinessPackage.eINSTANCE.getBusinessProcess()));
+            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents, BusinessPackage.eINSTANCE
+                    .getBusinessProcess()));
 
             businessProcessItem.setNotationHolder((NotationHolder) EcoreUtil.getObjectByType(contents,
                     PropertiesPackage.eINSTANCE.getNotationHolder()));
@@ -1080,8 +1100,8 @@ public class ImportItemUtil {
                 stream = manager.getStream(path);
                 Resource resource = createResource(itemRecord.getResourceSet(), path, false);
                 resource.load(stream, null);
-                projects.put(path,
-                        (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE.getProject()));
+                projects.put(path, (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
+                        .getProject()));
             }
             return projects.get(path);
         } catch (IOException e) {
