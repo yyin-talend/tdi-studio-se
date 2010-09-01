@@ -205,8 +205,9 @@ public class DropContextAnalyzer {
             return;
         }
 
-        int maxY = (currentTableTarget.getItemCount() * (currentTableTarget.getItemHeight()
-                + currentTableTarget.getBorderWidth() + (WindowSystem.isGTK() ? 2 : 0)));
+        int maxY = (currentTableTarget.getItemCount() * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem
+                .isGTK() ? 2 : 0)))
+                + currentTableTarget.getHeaderHeight();
 
         if (pointCursor.y < 0 || pointCursor.y >= maxY) {
             isCursorOverExpressionCell = false;
@@ -261,8 +262,7 @@ public class DropContextAnalyzer {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed()
-                            && draggedData.getTransferableEntryList().size() > 1) {
+                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -352,8 +352,7 @@ public class DropContextAnalyzer {
     @Override
     public String toString() {
         return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + insertionEntryMode
-                + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
+                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
                 + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell; //$NON-NLS-1$
     }
 
