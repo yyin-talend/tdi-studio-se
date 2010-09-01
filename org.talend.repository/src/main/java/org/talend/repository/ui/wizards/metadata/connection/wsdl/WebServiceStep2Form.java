@@ -212,14 +212,14 @@ public class WebServiceStep2Form extends AbstractWSDLSchemaStepForm {
                 metadataTable = metadatatable;
             }
         }
-
-        String label = MetadataTool.validateValue(metadataTable.getLabel());
-        metadataNameText.setText(label);
-        metadataCommentText.setText(metadataTable.getComment());
-        metadataEditor.setMetadataTable(metadataTable);
-        tableEditorView.setMetadataEditor(metadataEditor);
-        tableEditorView.getTableViewerCreator().layout();
-
+        if (metadataTable != null) {
+            String label = MetadataTool.validateValue(metadataTable.getLabel());
+            metadataNameText.setText(label);
+            metadataCommentText.setText(metadataTable.getComment());
+            metadataEditor.setMetadataTable(metadataTable);
+            tableEditorView.setMetadataEditor(metadataEditor);
+            tableEditorView.getTableViewerCreator().layout();
+        }
         if (getConnection().isReadOnly()) {
             adaptFormToReadOnly();
         } else {
