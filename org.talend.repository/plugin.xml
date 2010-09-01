@@ -1195,6 +1195,20 @@
              id="org.talend.repository.MergeTosMetadataMigrationTask"
              name="MergeTosMetadataMigrationTask">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddRulesGlobalMapMigrationTask"
+             description="modify metadata"
+             id="org.talend.repository.AddRulesGlobalMapMigrationTask"
+             name="AddRulesGlobalMapMigrationTask">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddWebServiceOutputTableMigrationTask"
+             description="modify metadataTable"
+             id="org.talend.repository.AddWebServiceOutputTableMigrationTask"
+             name="AddWebServiceOutputTableMigrationTask">
+       </projecttask>
    </extension>
    
    <extension
