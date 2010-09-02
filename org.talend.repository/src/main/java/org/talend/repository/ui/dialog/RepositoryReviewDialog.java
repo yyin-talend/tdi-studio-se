@@ -1646,6 +1646,8 @@ class DatabaseTypeFilter extends ViewerFilter {
                         return true;
                     }
                 }
+            } else if (item instanceof FolderItem) {
+                return true;
             }
         }
 
