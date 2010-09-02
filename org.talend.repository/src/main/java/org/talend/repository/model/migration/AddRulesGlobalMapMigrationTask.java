@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import jxl.Workbook;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
@@ -66,55 +68,58 @@ public class AddRulesGlobalMapMigrationTask extends AbstractItemMigrationTask {
      */
     private void addNewColumn(Item item) {
         // TODO Auto-generated method stub
-        ByteArrayInputStream tInputStringStream = new ByteArrayInputStream(((RulesItem) item).getContent().getInnerContent());
-        InputStreamReader input = new InputStreamReader(tInputStringStream);
-
-        BufferedReader sb = new BufferedReader(input);
-        StringBuffer buffer = new StringBuffer();
-        String line = null;
-        String splite = "";
-        int i = 0;
-        boolean modify = true;
-        try {
-            while ((line = sb.readLine()) != null) {
-                i++;
-                if (i == 5) {
-                    if (line.trim().equals("import java.util.HashMap")) {
-                        modify = false;
-                    } else {
-                        line = line + ("\nimport java.util.HashMap\r\n" + "import java.lang.Integer ");
+        Workbook wb;
+        if (!((RulesItem) item).getExtension().equals(".xls")) {
+            StringBuffer buffer = new StringBuffer();
+            ByteArrayInputStream tInputStringStream = new ByteArrayInputStream(((RulesItem) item).getContent().getInnerContent());
+            InputStreamReader input = new InputStreamReader(tInputStringStream);
+            BufferedReader sb = new BufferedReader(input);
+            String line = null;
+            String splite = "";
+            int i = 0;
+            boolean modify = true;
+            try {
+                while ((line = sb.readLine()) != null) {
+                    i++;
+                    if (i == 5) {
+                        if (line.trim().equals("import java.util.HashMap")) {
+                            modify = false;
+                        } else {
+                            line = line + ("\nimport java.util.HashMap\r\n" + "import java.lang.Integer ");
+                        }
                     }
-                }
-                if (modify) {
-                    if (line.trim().equals("global ArrayList list")) {
-                        line = line + ("\nglobal HashMap globalMap" + "\n");
-                    } else if (line.trim().indexOf("rule") != -1 && line.indexOf("\"") != -1) {
-                        String[] pp = line.split("\"");
-                        splite = pp[1];
-                    } else if (line.trim().equals("then")) {
-                        line = line
-                                + ("\n        Integer count = (Integer)globalMap.get(\"" + splite + "_count\");\r\n"
-                                        + "        if(count==null){\r\n" + "           count=1;\r\n" + "        }else{\r\n"
-                                        + "        ++count;\r\n" + "        }\r\n" + "        globalMap.put(\"" + splite + "_count\",count);");
-                    } else if (line.trim().equals("list.add(output);")) {
-                        line = line + "\n        retract(input);";
+                    if (modify) {
+                        if (line.trim().equals("global ArrayList list")) {
+                            line = line + ("\nglobal HashMap globalMap" + "\n");
+                        } else if (line.trim().indexOf("rule") != -1 && line.indexOf("\"") != -1) {
+                            String[] pp = line.split("\"");
+                            splite = pp[1];
+                        } else if (line.trim().equals("then")) {
+                            line = line
+                                    + ("\n        Integer count = (Integer)globalMap.get(\"" + splite + "_count\");\r\n"
+                                            + "        if(count==null){\r\n" + "           count=1;\r\n" + "        }else{\r\n"
+                                            + "        ++count;\r\n" + "        }\r\n" + "        globalMap.put(\"" + splite + "_count\",count);");
+                        } else if (line.trim().equals("list.add(output);")) {
+                            line = line + "\n        retract(input);";
+                        }
                     }
+                    buffer.append(line + "\n");
                 }
-                buffer.append(line + "\n");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-        byteArray.setInnerContent(buffer.toString().getBytes());
-        ((RulesItem) item).setContent(byteArray);
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        try {
-            factory.save(item, true);
-        } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+            byteArray.setInnerContent(buffer.toString().getBytes());
+            ((RulesItem) item).setContent(byteArray);
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            try {
+                factory.save(item, true);
+            } catch (PersistenceException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
