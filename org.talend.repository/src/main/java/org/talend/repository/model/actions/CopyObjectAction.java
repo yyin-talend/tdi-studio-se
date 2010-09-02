@@ -13,11 +13,14 @@
 package org.talend.repository.model.actions;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
@@ -145,37 +148,87 @@ public class CopyObjectAction {
             // wzhang modified to fix bug 12349 and 11535
             Item originalItem = factory.getUptodateProperty(sourceNode.getObject().getProperty()).getItem();
             List<IRepositoryViewObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
+
+            if (allVersion.size() == 1) {
+                copySingleVersionItem(originalItem, path);
+
+            } else if (allVersion.size() > 1) {
+                PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
+                if (dialog.open() == Window.OK) {
+                    Set<IRepositoryViewObject> selectedVersionItems = dialog.getSelectedVersionItems();
+                    String id = null;
+                    String label = null;
+                    boolean isfirst = true;
+                    boolean needSys = true;
+                    for (IRepositoryViewObject object : selectedVersionItems) {
+                        Item selectedItem = object.getProperty().getItem();
+                        Item copy = factory.copy(selectedItem, path);
+                        if (isfirst) {
+                            id = copy.getProperty().getId();
+                            label = copy.getProperty().getLabel();
+                            isfirst = false;
+                        }
+                        copy.getProperty().setId(id);
+                        copy.getProperty().setLabel(label);
+                        if (needSys && originalItem instanceof RoutineItem) {
+                            String lastestVersion = getLastestVersion(selectedVersionItems);
+                            if (lastestVersion.equals(copy.getProperty().getVersion())) {
+                                synDuplicatedRoutine((RoutineItem) copy);
+                                needSys = false;
+                            }
+                        }
+                        factory.save(copy);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void copySingleVersionItem(Item item, IPath path) {
+        try {
+            Item newItem = factory.copy(item, path, true);
             // qli modified to fix the bug 5400 and 6185.
-            Item newItem = factory.copy(originalItem, path);
             if (newItem instanceof RoutineItem) {
-                ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                        ICodeGeneratorService.class);
-                if (codeGenService != null) {
-                    codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) newItem);
-                    codeGenService.createRoutineSynchronizer().syncRoutine((RoutineItem) newItem, true);
-                }
-            }
+                synDuplicatedRoutine((RoutineItem) newItem);
+            }// end
             factory.save(newItem);
-
-            // for oldversions
-            copyOldVersions(allVersion, sourceNode, newItem, path);
-
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
     }
 
-    private void copyOldVersions(List<IRepositoryViewObject> allVersion, RepositoryNode sourceNode, Item newLastVersionItem,
-            IPath path) throws Exception {
-        if (allVersion != null && allVersion.size() > 1) {
-            PastSelectorDialog dialog = new PastSelectorDialog(Display.getCurrent().getActiveShell(), allVersion, sourceNode);
-            if (dialog.open() == Window.OK) {
-                for (IRepositoryViewObject object : dialog.getSelectedVersionItems()) {
-                    Item copy = factory.copy(object.getProperty().getItem(), path);
-                    copy.getProperty().setId(newLastVersionItem.getProperty().getId());
-                    copy.getProperty().setLabel(newLastVersionItem.getProperty().getLabel());
-                    factory.save(copy);
-
+    private String getLastestVersion(Set<IRepositoryViewObject> set) {
+        if (set.isEmpty()) {
+            return null;
+        }
+        String version = null;
+        for (IRepositoryViewObject obj : set) {
+            String curVersion = obj.getProperty().getVersion();
+            if (version == null) {
+                version = curVersion;
+            } else {
+                Double dVersion = Double.valueOf(version);
+                Double dCurVersion = Double.valueOf(curVersion);
+                if (dCurVersion > dVersion) {
+                    version = curVersion;
                 }
             }
         }
+        return version;
     }
+
+    private void synDuplicatedRoutine(RoutineItem item) {
+        ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                ICodeGeneratorService.class);
+        if (codeGenService != null) {
+            codeGenService.createRoutineSynchronizer().renameRoutineClass((RoutineItem) item);
+            try {
+                codeGenService.createRoutineSynchronizer().syncRoutine((RoutineItem) item, true);
+            } catch (SystemException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+    }
+
 }
