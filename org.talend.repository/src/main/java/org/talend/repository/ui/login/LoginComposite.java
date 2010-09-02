@@ -212,12 +212,6 @@ public class LoginComposite extends Composite {
 
     private Composite colorComposite = null;
 
-    private Composite colorC1 = null;
-
-    private Composite colorC2 = null;
-
-    private Label colorLabel = null;
-
     /**
      * Constructs a new LoginComposite.
      * 
@@ -277,19 +271,9 @@ public class LoginComposite extends Composite {
         //
         // // Project
         // createProjectArea(formBody);
-        //
-        // // restart
 
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        if (prefManipulator.getBoolean(ImportDemoProjectAction.DEMO_ALREADY_IMPORTED)) {
-            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(1) }));
-        } else {
-            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
-        }
         readConnectionData();
-        // if (PluginChecker.isTIS()) {
         fillContents();
-        // }
         addListeners();
         parent.getShell().pack();
         if (inuse) {
@@ -303,6 +287,15 @@ public class LoginComposite extends Composite {
         setStatusArea();
     }
 
+    private void setManageViewer() {
+        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        if (prefManipulator.getBoolean(ImportDemoProjectAction.DEMO_ALREADY_IMPORTED)) {
+            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(1) }));
+        } else {
+            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
+        }
+    }
+
     private ManageItem[] getManageElements() {
         boolean tis = PluginChecker.isTIS();
         boolean isTisRemote = isTisRemote();
@@ -313,7 +306,7 @@ public class LoginComposite extends Composite {
                 IBrandingService.class);
         boolean usesDemoProjects = brandingService.getBrandingConfiguration().isUseDemoProjects();
 
-        if (!tis || !isTisRemote) {// demo for Tos and Tis_Local
+        if (!tis || !isTisRemote) { // demo for Tos and Tis_Local
             if (usesDemoProjects) {
                 toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
 
@@ -324,7 +317,7 @@ public class LoginComposite extends Composite {
                 });
             }
         }
-        if (!tis || !isTisRemote) {// create new project for Tos and Tis_Local
+        if (!tis || !isTisRemote) { // create new project for Tos and Tis_Local
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 
                         @Override
@@ -334,7 +327,7 @@ public class LoginComposite extends Composite {
 
                     });
         }
-        if (!tis || !isTisRemote) {// import project for Tos and Tis_Local
+        if (!tis || !isTisRemote) { // import project for Tos and Tis_Local
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
 
                         @Override
@@ -354,7 +347,7 @@ public class LoginComposite extends Composite {
 
                 });
 
-        if (isTisRemote) {// Sendbox for Tis_Remote
+        if (isTisRemote) { // Sendbox for Tis_Remote
             ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
             repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                     .getRepositoryId()));
@@ -1023,7 +1016,7 @@ public class LoginComposite extends Composite {
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
-        } else {
+        } else if (isTisRemote()) {
             if (passwordText.getText() != null && !"".equals(passwordText.getText())) {
                 iconLabel.setVisible(false);
                 onIiconLabel.setVisible(false);
@@ -1046,6 +1039,7 @@ public class LoginComposite extends Composite {
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
+
         }
 
     }
@@ -1117,6 +1111,7 @@ public class LoginComposite extends Composite {
             populateProjectList();
         }
         manageViewer.setInput(getManageElements());
+        setManageViewer();
     }
 
     /**
