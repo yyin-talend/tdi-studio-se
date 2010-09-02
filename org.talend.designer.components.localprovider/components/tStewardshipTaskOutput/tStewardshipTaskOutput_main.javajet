@@ -1,0 +1,139 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map		
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+    
+	String loopingColumn = ElementParameterParser.getValue(node, "__LOOPING_COLUMN__");
+	String maxTaskCount = ElementParameterParser.getValue(node, "__NB_TASKS_PER_COMMIT__");
+	String type = ElementParameterParser.getValue(node, "__TASKTYPE__");
+	String createdBy = ElementParameterParser.getValue(node, "__CREATED_BY__");
+	String owner = ElementParameterParser.getValue(node, "__OWNER__");
+	
+	String recordType = ElementParameterParser.getValue(node, "__RECORD_TYPE__");
+	
+	String source = ElementParameterParser.getValue(node, "__SOURCE__");
+	String score = ElementParameterParser.getValue(node, "__SCORE__");
+	String weights = ElementParameterParser.getValue(node, "__WEIGHTS__");
+	
+	List<Map<String, String>> extraInfos = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__EXTRA_INFO__");
+	List<Map<String, String>> recordColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RECORD_COLUMN__");
+
+class DataUtil{
+	Map<String,String> colTypeMap = new java.util.HashMap<String,String>();
+	Map<String,JavaType> colTalendTypeMap = new java.util.HashMap<String,JavaType>();
+    Map<String,Boolean> colKeyMap = new java.util.HashMap<String,Boolean>();
+    Map<String,String> colPatternMap = new java.util.HashMap<String,String>();
+	public DataUtil(IMetadataTable metadata){
+		List<IMetadataColumn> columns = metadata.getListColumns();
+        int sizeColumns = columns.size();
+        for (int i = 0; i < sizeColumns; i++) {
+        	IMetadataColumn column = columns.get(i);
+        	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+        	String typeName;
+        	if(javaType == JavaTypesManager.DATE){
+        		String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+        		colPatternMap.put(column.getLabel(),patternValue);
+        		typeName = "date";
+        	}else if(javaType == JavaTypesManager.BIGDECIMAL){
+        		typeName = "decimal";
+        	}else{
+        		typeName = JavaTypesManager.getShortNameFromJavaType(javaType).toLowerCase();
+        	}
+        	//JavaTypesManager.getShortNameFromJavaType(javaType)
+        	colTypeMap.put(column.getLabel(),typeName);
+        	colKeyMap.put(column.getLabel(),column.isKey());
+        	colTalendTypeMap.put(column.getLabel(),javaType);
+        }
+	}
+    public String getValueExpression(String connName,String columnName){
+    	if(colTalendTypeMap.get(columnName) == JavaTypesManager.DATE){
+    		return "FormatterUtils.format_Date("+connName+"."+columnName+","+colPatternMap.get(columnName)+")";
+    	}else{
+    		return "String.valueOf("+connName+"."+columnName+")";
+    	}
+	}
+	public String getColType(String columnName){
+		return colTypeMap.get(columnName);
+	}
+	public String isKey(String columnName){
+		return colKeyMap.get(columnName)?"1":"0";
+	}
+}
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+    			DataUtil dataUtil = new DataUtil(metadata);
+%>
+
+if(!taskFlag_<%=cid%>.equals(<%=dataUtil.getValueExpression(conn.getName(),loopingColumn)%>)){
+	if(tasks_<%=cid%>.getTaskCount()>=<%=maxTaskCount%>){
+		String content = tasks_<%=cid%>.getTasksAndClear();
+		//System.out.println(content);
+		boolean loadResult_<%=cid%> = taskLoadClient_<%=cid%>.doLoad(content);
+		if(!loadResult_<%=cid%>){
+			System.err.println("Connect server false!");
+		}
+	}
+	taskFlag_<%=cid%> = <%=dataUtil.getValueExpression(conn.getName(),loopingColumn)%>;
+	task_<%=cid%> = tasks_<%=cid%>.addTask();
+	task_<%=cid%>.setBasicInfo("<%=type%>",<%=createdBy%>,<%=owner%>);
+}
+org.talend.stewardship.Record record_<%=cid%> = null;
+if(<%=conn.getName() %>.<%=recordType%>){
+	record_<%=cid%> = task_<%=cid%>.addTargetRecord();
+}else{
+	record_<%=cid%> = task_<%=cid%>.addSourceRecord();
+	record_<%=cid%>.setBasicInfo(<%=dataUtil.getValueExpression(conn.getName(),source)%>,<%=dataUtil.getValueExpression(conn.getName(),score)%>,<%=dataUtil.getValueExpression(conn.getName(),weights)%>);
+<%
+	if(extraInfos.size()>0){
+		for(Map<String, String> extraInfo:extraInfos){
+%>
+    if(<%=conn.getName() %>.<%=extraInfo.get("INFO")%>!=null && !"".equals(<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>)){
+    	record_<%=cid%>.addExtraInfo("<%=extraInfo.get("INFO")%>",<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>,<%=extraInfo.get("SCOPE")%>);
+    }
+<%
+		}
+	}
+%>
+}
+<%
+if(recordColumns.size()>0){
+	for(Map<String, String> recordColumn:recordColumns){
+%>
+    if(<%=conn.getName() %>.<%=recordColumn.get("CONTENT")%>!=null && !"".equals(<%=dataUtil.getValueExpression(conn.getName(),recordColumn.get("CONTENT"))%>)){
+    	record_<%=cid%>.addSrcColumn("<%=recordColumn.get("CONTENT")%>",<%=dataUtil.getValueExpression(conn.getName(),recordColumn.get("CONTENT"))%>,"<%=dataUtil.getColType(recordColumn.get("CONTENT"))%>","<%=dataUtil.isKey(recordColumn.get("CONTENT"))%>");
+    }
+<%
+	}
+}
+%>
+
+<%
+			}//4
+		}//3
+	}//2
+}//1
+%>
+
+
