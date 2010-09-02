@@ -387,7 +387,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 view.refresh(false, firstElement);
             } else if (firstElement instanceof BusinessProcessEditPart || firstElement instanceof CompartmentEditPart) {
 
-                view.refresh(false, this);
+                view.refresh(true, this);
             }
 
         }
