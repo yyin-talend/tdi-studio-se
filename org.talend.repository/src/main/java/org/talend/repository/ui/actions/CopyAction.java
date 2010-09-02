@@ -86,15 +86,25 @@ public class CopyAction extends AContextualAction {
         // && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.READ_ONLY) {
         // canWork = false;
         // }
+        ERepositoryObjectType objectType = null;
         for (Object obj : ((StructuredSelection) selection).toArray()) {
             if (canWork) {
                 RepositoryNode sourceNode = (RepositoryNode) obj;
+                ERepositoryObjectType type = sourceNode.getObjectType();
+                if (objectType != null && objectType != type) {
+                    canWork = false; // different objects was copyed
+                    break;
+                } else {
+                    objectType = type;
+                }
                 if (!CopyObjectAction.getInstance().validateAction(sourceNode, null)) {
                     canWork = false;
                 } else if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
                         || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
                     canWork = false;
                 }
+            } else {
+                break;
             }
         }
         setEnabled(canWork);

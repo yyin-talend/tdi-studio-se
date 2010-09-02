@@ -21,6 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -60,13 +61,20 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
         if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
+        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
         if (canWork) {
-            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             if (node.getObjectType() != ERepositoryObjectType.SQLPATTERNS
                     || !ProjectManager.getInstance().isInCurrentMainProject(node) || !isLastVersion(node)) {
                 canWork = false;
+            } else {
+                Item item = node.getObject().getProperty().getItem();
+                if (item instanceof SQLPatternItem) {
+                    canWork = !((SQLPatternItem) item).isSystem();
+                }
             }
-
+        }
+        if (canWork && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+            canWork = false;
         }
         setEnabled(canWork);
     }

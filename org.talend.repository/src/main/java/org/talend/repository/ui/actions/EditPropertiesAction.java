@@ -57,7 +57,9 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -68,7 +70,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -278,10 +280,22 @@ public class EditPropertiesAction extends AContextualAction {
                     switch (node.getType()) {
                     case REPOSITORY_ELEMENT:
                         if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
-                                || node.getObjectType() == ERepositoryObjectType.PROCESS
-                                || node.getObjectType() == ERepositoryObjectType.ROUTINES
-                                || node.getObjectType() == ERepositoryObjectType.SQLPATTERNS) {
+                                || node.getObjectType() == ERepositoryObjectType.PROCESS) {
                             canWork = true;
+                        } else if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+                            Item item = node.getObject().getProperty().getItem();
+                            if (item instanceof RoutineItem) {
+                                canWork = !((RoutineItem) item).isBuiltIn();
+                            } else {
+                                canWork = false;
+                            }
+                        } else if (node.getObjectType() == ERepositoryObjectType.SQLPATTERNS) {
+                            Item item = node.getObject().getProperty().getItem();
+                            if (item instanceof SQLPatternItem) {
+                                canWork = !((SQLPatternItem) item).isSystem();
+                            } else {
+                                canWork = false;
+                            }
                         } else {
                             canWork = false;
                         }
@@ -290,8 +304,8 @@ public class EditPropertiesAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
-                    RepositoryNode parent = node.getParent();
-                    if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    if (canWork && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                         canWork = false;
                         break;
                     }

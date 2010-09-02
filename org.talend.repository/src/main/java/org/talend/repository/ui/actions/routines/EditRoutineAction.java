@@ -18,12 +18,13 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -62,13 +63,14 @@ public class EditRoutineAction extends AbstractRoutineAction {
             if (node.getObjectType() != ERepositoryObjectType.ROUTINES
                     || !ProjectManager.getInstance().isInCurrentMainProject(node) || !isLastVersion(node)) {
                 canWork = false;
+            } else {
+                Item item = node.getObject().getProperty().getItem();
+                if (item instanceof RoutineItem) {
+                    canWork = !((RoutineItem) item).isBuiltIn();
+                }
             }
         }
-        RepositoryNode parent = null;
-        if (node != null) {
-            parent = node.getParent();
-        }
-        if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+        if (canWork && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
             canWork = false;
         }
         setEnabled(canWork);

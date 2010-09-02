@@ -100,7 +100,7 @@ public class PasteAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean enabled = true;
-        if (selection.isEmpty()) {
+        if (selection.size() != 1) { // only one current node selected
             setEnabled(false);
             return;
         }
@@ -129,35 +129,35 @@ public class PasteAction extends AContextualAction {
             if (target != null && proxyFactory.getStatus(object) == ERepositoryStatus.READ_ONLY) {
                 enabled = false;
                 visible = false;
-            } else if (target != null && object instanceof Folder && enabled == true) {
+            } else if (target != null && object instanceof Folder && enabled) {
                 visible = true;
             }
         } else if (isReferencedProject(target)) {
             visible = false;
             enabled = false;
         }
-        boolean canPast = false;
-        if (selectionInClipboard != null && !((StructuredSelection) selectionInClipboard).isEmpty()) {
+        if (enabled && selectionInClipboard != null && !((StructuredSelection) selectionInClipboard).isEmpty()) {
+            visible = true;
+            ERepositoryObjectType objectType = null;
             for (Object obj : ((StructuredSelection) selectionInClipboard).toArray()) {
                 if (enabled) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;
-                    if (!CopyObjectAction.getInstance().validateAction(sourceNode, target)) {
-                        visible = true;
-                        enabled = canPast || false;
+                    ERepositoryObjectType type = sourceNode.getObjectType();
+                    if (objectType != null && objectType != type) {
+                        enabled = false; // different objects was copyed
+                        break;
                     } else {
-                        if (sourceNode.getObjectType().getKey().equals("repository.routines")) { //$NON-NLS-1$
-                            visible = true;
-                            enabled = false;
-                        } else {
-                            visible = true;
-                            enabled = true;
-                            canPast = true;
-                        }
+                        objectType = type;
                     }
-
+                    if (CopyObjectAction.getInstance().validateAction(sourceNode, target)) {
+                        enabled = true;
+                    } else {
+                        enabled = false;
+                    }
+                } else {
+                    break;
                 }
             }
-
         } else {
             enabled = false;
             visible = false;
