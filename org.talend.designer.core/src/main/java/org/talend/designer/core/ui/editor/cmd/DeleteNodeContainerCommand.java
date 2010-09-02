@@ -71,7 +71,8 @@ public class DeleteNodeContainerCommand extends Command {
                     // nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
                     // }
                     prevNode.removeOutput(connection);
-                    process.removeUniqueConnectionName(connection.getUniqueName());
+                    if (!prevNode.getComponent().getName().equals("tMap") && !prevNode.isELTComponent())
+                        process.removeUniqueConnectionName(connection.getUniqueName());
                 }
             }
             for (Connection connection : outputList) {
