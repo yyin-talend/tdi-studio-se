@@ -60,9 +60,12 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -93,6 +96,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
 
     protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
+
+    private boolean needMappingInSystemRoutine = false;
 
     /*
      * (non-Javadoc)
@@ -558,7 +563,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IFolder xmlMapping = javaProject
                     .getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING);
             List<URL> xmlMappingFileUrls = new ArrayList<URL>();
-            if (xmlMapping.exists()) {
+            if (xmlMapping.exists() && needXmlMapping(resource)) {
                 for (IResource fileResource : xmlMapping.members()) {
                     if (fileResource.getName().endsWith(".xml")) {
                         xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
@@ -566,11 +571,45 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
                 resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
                         xmlMappingFileUrls);
+                needMappingInSystemRoutine = true;
             }
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    private boolean needXmlMapping(ExportFileResource resource) {
+        boolean hasDynamicMetadata = false;
+        if (resource.getItem() instanceof ProcessItem) {
+            ProcessItem processItem = (ProcessItem) resource.getItem();
+            final ProcessType process = processItem.getProcess();
+            if (process != null) {
+                out:for (NodeType node : (List<NodeType>) process.getNode()) {
+                    // to check if node is db component , maybe need modification
+                    boolean isDbNode = false;
+                    for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                        if ("TYPE".equals(param.getName()) && "TEXT".equals(param.getField()) && param.getValue() != null
+                                && !"".equals(param.getValue())) {
+                            isDbNode = true;
+                            break;
+                        }
+                    }
+                    if (isDbNode) {
+                        for (MetadataType metadataType : (List<MetadataType>) node.getMetadata()) {
+                            for (ColumnType column : (List<ColumnType>) metadataType.getColumn()) {
+                                if ("id_Dynamic".equals(column.getType())) {
+                                    hasDynamicMetadata = true;
+                                    break out;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        return hasDynamicMetadata;
     }
 
     protected String calculateLibraryPathFromDirectory(String directory) {
@@ -868,7 +907,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String classRoot = getClassRootLocation();
             List<String> include = new ArrayList<String>();
             include.add(SYSTEM_ROUTINES_PATH);
-            include.add(JavaUtils.JAVA_XML_MAPPING);
+            if (needMappingInSystemRoutine) {
+                include.add(JavaUtils.JAVA_XML_MAPPING);
+            }
 
             String jarPath = getTmpFolder() + PATH_SEPARATOR + SYSTEMROUTINE_JAR;
 
