@@ -24,6 +24,8 @@ boolean needPersonalName = "true".equals(ElementParameterParser.getValue(node, "
 String personalName = needPersonalName ? ElementParameterParser.getValue(node, "__PERSONAL_NAME__") : null;
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String mimesubtype = ElementParameterParser.getValue(node, "__TEXT_SUBTYPE__");  
+boolean setLocalhost = "true".equals(ElementParameterParser.getValue(node, "__SET_LOCALHOST__"));  
+String localhost = ElementParameterParser.getValue(node, "__LOCALHOST__");  
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 
 	//Bug12952, move all begin part to here below
@@ -96,6 +98,10 @@ String message_<%=cid %> = ((<%=message %>) == null || "".equals(<%=message %>))
 java.util.Properties props_<%=cid %> = System.getProperties();     
 props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
 props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+<% 
+if (setLocalhost){%>
+props_<%=cid %>.put("mail.smtp.localhost", <%=localhost%>);
+<% }%>
 props_<%=cid %>.put("mail.mime.encodefilename", "true");
 <% 
 if (startTLS){%>
