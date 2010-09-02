@@ -43,7 +43,6 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
@@ -299,10 +298,9 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             if (!connectionParameters.getRepositoryId().equals(obj2.getProperty().getId())) {
                 continue;
             }
-            IRepositoryObject repositoryObject = obj2.cloneNewObject();
             RepositoryViewObject viewObject = new RepositoryViewObject(obj2.getProperty());
             maps.put((obj2).getId(), viewObject);
-            addNode(parent, repositoryObject, false, null);
+            addNode(parent, viewObject, false, null);
         }
     }
 
