@@ -113,7 +113,7 @@ try{
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
 %>
-	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%><%=trim?".trim()":""%>;
 <%
 				break;
 			}
