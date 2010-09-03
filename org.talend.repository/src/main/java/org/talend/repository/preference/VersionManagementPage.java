@@ -980,7 +980,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                                     String id = item.getProperty().getId();
                                     FACTORY.save(project, item.getProperty());
                                     if (versionLatest.getSelection()) {
-                                        builder.updateItemVersion(item, FACTORY, object.getOldVersion(), id);
+                                        builder.updateItemVersion(item, object.getOldVersion(), id);
                                     }
                                     builder.addOrUpdateItem(item);
                                 }
