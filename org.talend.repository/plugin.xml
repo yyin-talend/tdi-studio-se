@@ -1223,6 +1223,13 @@
              id="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
              name="rename tMergeFields into tSurviveFields">
        </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametGroupTotMatchGroup"
+            description="feature 15391"
+            id="org.talend.repository.model.migration.RenametGroupTotMatchGroup"
+            name="Rename tGroup into tMatchGroup">
+      </projecttask>
    </extension>
    
    <extension
