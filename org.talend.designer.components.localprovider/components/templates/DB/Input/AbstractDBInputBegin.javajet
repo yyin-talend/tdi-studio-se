@@ -83,7 +83,7 @@ imports="
                 	dcm_<%=cid%>.setName(rsmd_<%=cid%>.getColumnName(i));
                 	dcm_<%=cid%>.setDbName(rsmd_<%=cid%>.getColumnName(i));
                 	dcm_<%=cid%>.setType(routines.system.Dynamic.getTalendTypeFromDBType("<%=dbms==null?"":dbms.toLowerCase()%>_id", rsmd_<%=cid%>.getColumnTypeName(i), rsmd_<%=cid%>.getPrecision(i), rsmd_<%=cid%>.getScale(i)));
-                	dcm_<%=cid%>.setDbType(rsmd_<%=cid%>.getTableName(i));
+                	dcm_<%=cid%>.setDbType(rsmd_<%=cid%>.getColumnTypeName(i));
                 	dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
                 	dcm_<%=cid%>.setPrecision(rsmd_<%=cid%>.getScale(i));
                 	dcm_<%=cid%>.setNullable(rsmd_<%=cid%>.isNullable(i) == 0 ? false : true);
