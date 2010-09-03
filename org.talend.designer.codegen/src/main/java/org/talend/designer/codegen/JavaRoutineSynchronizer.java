@@ -102,7 +102,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
                 // see 14713
-                String version = routineItem.getProperty().getVersion();
+                String version = CodeGeneratorActivator.getDefault().getVersion();
                 if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
                     String routineHeader = ((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(
                             IBrandingService.class)).getRoutineLicenseHeader(version);

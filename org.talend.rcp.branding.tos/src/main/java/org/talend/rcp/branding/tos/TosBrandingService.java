@@ -75,4 +75,8 @@ public class TosBrandingService extends AbstractTalendBrandingService {
         return "tos";
     }
 
+    @Override
+    public String getJobLicenseHeader(String version) {
+        return Messages.getString("TosBrandingService_job_license_header_content", this.getFullProductName(), version);
+    }
 }
