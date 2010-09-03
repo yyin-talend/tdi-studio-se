@@ -1160,7 +1160,7 @@ public class LoginComposite extends Composite {
                     passwordText.setText(getConnection().getPassword());
                     updateServerFields();
                     // updateButtons();
-                    // updateVisible();
+                    updateVisible();
 
                     // Validate data
                     if (validateFields()) {
