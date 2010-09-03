@@ -1216,6 +1216,13 @@
              id="org.talend.repository.model.migration.RenametWindowKeyTotGenKey"
              name="Rename tWindowKey into tGenKey">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
+             description="feature 15390"
+             id="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
+             name="rename tMergeFields into tSurviveFields">
+       </projecttask>
    </extension>
    
    <extension
