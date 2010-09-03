@@ -1221,7 +1221,7 @@
              class="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
              description="feature 15390"
              id="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
-             name="rename tMergeFields into tSurviveFields">
+             name="Rename tMergeFields into tSurviveFields">
        </projecttask>
       <projecttask
             beforeLogon="false"

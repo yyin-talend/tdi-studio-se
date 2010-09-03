@@ -23,7 +23,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * Migration task to rename tFSFilterRow into tFSFilterRows.
+ * Migration task to rename tMergeFields into tSurviveFields.
  */
 
 public class RenametMergeFieldsTotSurviveFields extends AbstractJobMigrationTask {
