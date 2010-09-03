@@ -110,13 +110,22 @@ try{
 		}
 		boolean isOirginalColumn = false;
 		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+			JavaType stringType =  JavaTypesManager.getJavaTypeFromId(inputCol.getTalendType());
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
+				
+				if(stringType == JavaTypesManager.STRING){
 %>
-	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%><%=trim?".trim()":""%>;
+				<%
+				break;
+				}else {
+				%>
+				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 <%
 				break;
-			}
+				}
+		    }
 		}
 		if(!isOirginalColumn){
 			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
