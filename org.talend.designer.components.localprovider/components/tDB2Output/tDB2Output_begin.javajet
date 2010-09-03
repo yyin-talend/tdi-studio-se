@@ -8,7 +8,8 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
         org.talend.core.model.metadata.MappingTypeRetriever
-        org.talend.core.model.metadata.MetadataTalendType        
+        org.talend.core.model.metadata.MetadataTalendType    
+		org.talend.core.model.process.IConnection
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -42,6 +43,13 @@ boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__
 
 <%
 getManager(dbmsId, cid, node);
+
+boolean isDynamic = false;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+	isDynamic = metadata.isDynamicSchema(); 
+}
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
@@ -143,6 +151,7 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 }
 
 <%
+if(!isDynamic) {
 if(columnList != null && columnList.size() > 0) {        
        Manager manager = null;
     %>
@@ -192,6 +201,14 @@ if(columnList != null && columnList.size() > 0) {
        	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
     }
+}
+}// end isDynamic
+if(isDynamic) {
+%>
+	java.sql.PreparedStatement pstmt_<%=cid %> =null;
+	java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
+	java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
+<%
 }
 %>
 

@@ -404,12 +404,12 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-            createSQL.append(")");
+            //createSQL.append(")");
             
             // add VectorWise option
-            if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
-            	createSQL.append("WITH STRUCTURE = VECTORWISE");
-            }
+            //if ("vectorwise_id".equalsIgnoreCase(getDBMSId())){
+            //	createSQL.append("WITH STRUCTURE = VECTORWISE");
+            //}
             
             return createSQL.toString();
         }
@@ -537,9 +537,11 @@ public class CLASS {
                         }
                     }
                 }
-                Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
-                skeletonColumn.setOperator("=");
-                stmtStructure.add(skeletonColumn);
+				if(!("id_Dynamic".equals(column.getTalendType()))) {
+					Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
+					skeletonColumn.setOperator("=");
+					stmtStructure.add(skeletonColumn);
+				}
             }
             if(addCols != null && addCols.size() > 0) {
                 for(IMetadataColumn column : columnList) {
@@ -705,7 +707,19 @@ public class CLASS {
             }
             return typeToGenerate;
         }
-        public String generateSetStmt(String typeToGenerate, String dbType, Column column, int index, String incomingConnName, String cid, int actionType) {
+		
+		public String generateSetStmt(String typeToGenerate, String dbType, Column column, int index, String incomingConnName, String cid, int actionType) {
+			return generateSetStmt(typeToGenerate, dbType, column, index, incomingConnName, cid, actionType, null);	
+		}
+		
+        public String generateSetStmt(String typeToGenerate, String dbType, Column column, int index, String incomingConnName, String cid, int actionType, String dynamic) {
+		
+			if(dynamic==null) {
+				dynamic="";
+			} else {
+				dynamic+=cid;
+			}
+			
             boolean isObject = false;
             String prefix = null;
             if(actionType == NORMAL_TYPE) {
@@ -719,53 +733,53 @@ public class CLASS {
             if(typeToGenerate.equals("Character")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");                
-            } else if(typeToGenerate.equals("Date")) {
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");                
+			} else if(typeToGenerate.equals("Date")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");                
             } else if(typeToGenerate.equals("byte[]")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
                 if(dbType != null && (dbType.equals("LONG RAW") || dbType.equals("RAW"))) {
-                    setStmt.append(prefix + cid + ".setBytes(" + index + ", null);\r\n");
+                    setStmt.append(prefix + cid + ".setBytes(" + index + dynamic + ", null);\r\n");
                 } else {
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.ARRAY);\r\n");                    
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.ARRAY);\r\n");                    
                 }                
             } else if(typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.INTEGER);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.INTEGER);\r\n");                
             } else if(typeToGenerate.equals("String")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
                 if(dbType != null && dbType.equals("CLOB")) {
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");                    
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CLOB);\r\n");                    
                 } else {
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                    
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.VARCHAR);\r\n");                    
                 }                
             } else if(typeToGenerate.equals("Object")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
                 if(dbType != null && dbType.equals("BLOB")) {
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.BLOB);\r\n");
         		} else if("CLOB".equals(dbType)){
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CLOB);\r\n");
                 } else {
-                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                    
+                    setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.OTHER);\r\n");                    
                 }               
             } else if(typeToGenerate.equals("Boolean")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BOOLEAN);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.BOOLEAN);\r\n");                
             } else if(typeToGenerate.equals("Double")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DOUBLE);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DOUBLE);\r\n");                
             } else if(typeToGenerate.equals("Float")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.FLOAT);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.FLOAT);\r\n");                
             }
             if(isObject) {
                 setStmt.append("} else {");
@@ -777,35 +791,47 @@ public class CLASS {
                 } else {
                     setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
                 }
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");
                 setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
-                setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", \"\");\r\n");
                 setStmt.append("} else {\r\n");
-                setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
                 setStmt.append("}");
             } else if(typeToGenerate.equals("Date")) {
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
-                setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+                setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
                 setStmt.append("} else {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");
                 setStmt.append("}\r\n");
             } else if(typeToGenerate.equals("Bytes") && (dbType != null && (dbType.equals("LONG RAW") || dbType.equals("RAW")))) {
-                setStmt.append(prefix + cid + ".setBytes(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+                setStmt.append(prefix + cid + ".setBytes(" + index + dynamic + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             } else if(typeToGenerate.equals("String") && (dbType != null && dbType.equals("CLOB"))) {
-                setStmt.append(prefix + cid + ".setCharacterStream(" + index + ", new java.io.StringReader(" + incomingConnName + "." + column.getName() + "), " + incomingConnName + "." + column.getName() + ".length());\r\n");                
+                setStmt.append(prefix + cid + ".setCharacterStream(" + index + dynamic + ", new java.io.StringReader(" + incomingConnName + "." + column.getName() + "), " + incomingConnName + "." + column.getName() + ".length());\r\n");                
             } else if (typeToGenerate.equals("Bytes") && (dbType != null && dbType.equals("BLOB"))) {
-                setStmt.append(prefix + cid + ".setBinaryStream(" + index + ", new java.io.ByteArrayInputStream((byte[])" + incomingConnName + "." + column.getName() + "), ((byte[])" + incomingConnName + "." + column.getName() + ").length);\r\n");
+                setStmt.append(prefix + cid + ".setBinaryStream(" + index + dynamic + ", new java.io.ByteArrayInputStream((byte[])" + incomingConnName + "." + column.getName() + "), ((byte[])" + incomingConnName + "." + column.getName() + ").length);\r\n");
             }
             else {
-                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             }
             if(isObject) {
                 setStmt.append("}\r\n");
             }
             return setStmt.toString();            
         }
+		
+		public String generateSetStmt(String typeToGenerate, Column column, int index, String incomingConnName, String cid, int actionType) {
+			return generateSetStmt(typeToGenerate, column, index, incomingConnName, cid, actionType, null);	
+		}
+		
         public String generateSetStmt(String typeToGenerate, Column column, int index, 
-                String incomingConnName, String cid, int actionType) {
+                String incomingConnName, String cid, int actionType, String dynamic) {
+			
+			if(dynamic==null) {
+				dynamic="";
+			} else {
+				dynamic+=cid;
+			}
+			
             boolean isObject = false;
             String prefix = null;
             if(actionType == NORMAL_TYPE) {
@@ -819,39 +845,39 @@ public class CLASS {
             if(typeToGenerate.equals("Character")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");                
             } else if(typeToGenerate.equals("Date")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");                
             } else if(typeToGenerate.equals("byte[]")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.ARRAY);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.ARRAY);\r\n");                
             } else if(typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.INTEGER);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.INTEGER);\r\n");                
             } else if(typeToGenerate.equals("String")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.VARCHAR);\r\n");                
             } else if(typeToGenerate.equals("Object")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.OTHER);\r\n");                
             } else if(typeToGenerate.equals("Boolean")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BOOLEAN);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.BOOLEAN);\r\n");                
             } else if(typeToGenerate.equals("Double")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DOUBLE);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DOUBLE);\r\n");                
             } else if(typeToGenerate.equals("Float")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.FLOAT);\r\n");                
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.FLOAT);\r\n");                
             }
             if(isObject) {
                 setStmt.append("} else {");
@@ -863,20 +889,20 @@ public class CLASS {
                 } else {
                     setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
                 }
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.CHAR);\r\n");
                 setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
-                setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", \"\");\r\n");
                 setStmt.append("} else {\r\n");
-                setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + dynamic + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
                 setStmt.append("}");
             } else if(typeToGenerate.equals("Date")) {
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
-                setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+                setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
                 setStmt.append("} else {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");
                 setStmt.append("}\r\n");
             } else {
-                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             }
             if(isObject) {
                 setStmt.append("}\r\n");
@@ -2345,7 +2371,7 @@ public class CLASS {
                 }
                 createSQL.append(")");
             }
-            createSQL.append(")");
+            //createSQL.append(")");
             return createSQL.toString();
         }
     }

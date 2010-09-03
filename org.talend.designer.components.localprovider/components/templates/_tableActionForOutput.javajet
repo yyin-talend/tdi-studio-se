@@ -3,9 +3,15 @@
 <%  
 //issue 0010346 Parallelization crash with "Drop table if exists and create"
 Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+String dbms=ElementParameterParser.getValue(node, "__TYPE__");
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
-	manager = getManager(dbmsId, cid);   
+	manager = getManager(dbmsId, cid);
+	String ending="";
+	
+	if("VECTORWISE".equalsIgnoreCase(dbmsId)) {
+		ending="WITH STRUCTURE = VECTORWISE";
+	}
 
 	if(!("NONE").equals(tableAction)) {
 
@@ -15,13 +21,56 @@ if (!isParallelize) {
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.close();
 <%
+			if(isDynamic) {
+				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+				if(conns_dynamic!=null && conns_dynamic.size()>0){
+					IConnection conn = conns_dynamic.get(0);
+					String query=manager.getCreateTableSQL(stmtStructure);
+					if(query.lastIndexOf("(")==query.length()-1) {
+%>
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					} else {
+%>				
+					stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					}
+				}
+			} else {
+%>
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+<%
+			}
+%>
+			stmtCreate_<%=cid%>.close();
+<%				
+
         } else if(("CREATE").equals(tableAction)) {
 %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+<%
+			if(isDynamic) {
+				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+				if(conns_dynamic!=null && conns_dynamic.size()>0){
+					IConnection conn = conns_dynamic.get(0);
+					String query=manager.getCreateTableSQL(stmtStructure);
+					if(query.lastIndexOf("(")==query.length()-1) {
+%>
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					} else {
+%>				
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					}
+				}
+			} else {
+%>
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+<%
+			}
+%>
             stmtCreate_<%=cid%>.close();
 <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
@@ -92,7 +141,28 @@ if (!isParallelize) {
 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+<%
+			if(isDynamic) {
+				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+				if(conns_dynamic!=null && conns_dynamic.size()>0){
+					IConnection conn = conns_dynamic.get(0);
+					String query=manager.getCreateTableSQL(stmtStructure);
+					if(query.lastIndexOf("(")==query.length()-1) {
+%>
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					} else {
+%>				
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					}
+				}
+			} else {
+%>
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+<%
+			}
+%>
                     stmtCreate_<%=cid%>.close();            
                 }                
 <%
@@ -104,10 +174,31 @@ if (!isParallelize) {
                     stmtDrop_<%=cid%>.close();
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+<%
+			if(isDynamic) {
+				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+				if(conns_dynamic!=null && conns_dynamic.size()>0){
+					IConnection conn = conns_dynamic.get(0);
+					String query=manager.getCreateTableSQL(stmtStructure);
+					if(query.lastIndexOf("(")==query.length()-1) {
+%>
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					} else {
+%>				
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+<%
+					}
+				}
+			} else {
+%>
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+<%
+			}
+%>
                 stmtCreate_<%=cid%>.close();
 <%
-            }
+			}
 %>
 <%
 			//to fixed: bug8422
