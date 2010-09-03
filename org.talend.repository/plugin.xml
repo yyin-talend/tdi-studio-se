@@ -1209,6 +1209,13 @@
              id="org.talend.repository.AddWebServiceOutputTableMigrationTask"
              name="AddWebServiceOutputTableMigrationTask">
        </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.RenametWindowKeyTotGenKey"
+             description="feature 15392"
+             id="org.talend.repository.model.migration.RenametWindowKeyTotGenKey"
+             name="Rename tWindowKey into tGenKey">
+       </projecttask>
    </extension>
    
    <extension
