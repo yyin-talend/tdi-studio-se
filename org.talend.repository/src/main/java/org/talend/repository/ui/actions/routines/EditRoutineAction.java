@@ -70,9 +70,9 @@ public class EditRoutineAction extends AbstractRoutineAction {
                 }
             }
         }
-        if (canWork && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
-            canWork = false;
-        }
+        if (canWork) {
+            canWork = (factory.getStatus(node.getObject()) != ERepositoryStatus.DELETED);
+        }       
         setEnabled(canWork);
     }
 

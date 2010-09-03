@@ -273,42 +273,43 @@ public class EditPropertiesAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = selection.size() == 1;
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
-            if (canWork) {
-                if (o instanceof RepositoryNode) {
-                    RepositoryNode node = (RepositoryNode) o;
-                    switch (node.getType()) {
-                    case REPOSITORY_ELEMENT:
-                        if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
-                                || node.getObjectType() == ERepositoryObjectType.PROCESS) {
-                            canWork = true;
-                        } else if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
-                            Item item = node.getObject().getProperty().getItem();
-                            if (item instanceof RoutineItem) {
-                                canWork = !((RoutineItem) item).isBuiltIn();
-                            } else {
-                                canWork = false;
-                            }
-                        } else if (node.getObjectType() == ERepositoryObjectType.SQLPATTERNS) {
-                            Item item = node.getObject().getProperty().getItem();
-                            if (item instanceof SQLPatternItem) {
-                                canWork = !((SQLPatternItem) item).isSystem();
-                            } else {
-                                canWork = false;
-                            }
+        if (canWork) {
+            Object o = ((IStructuredSelection) selection).getFirstElement();
+            if (o instanceof RepositoryNode) {
+                RepositoryNode node = (RepositoryNode) o;
+                switch (node.getType()) {
+                case REPOSITORY_ELEMENT:
+                    if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
+                            || node.getObjectType() == ERepositoryObjectType.PROCESS) {
+                        canWork = true;
+                    } else if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+                        Item item = node.getObject().getProperty().getItem();
+                        if (item instanceof RoutineItem) {
+                            canWork = !((RoutineItem) item).isBuiltIn();
                         } else {
                             canWork = false;
                         }
-                        break;
-                    default:
+                    } else if (node.getObjectType() == ERepositoryObjectType.SQLPATTERNS) {
+                        Item item = node.getObject().getProperty().getItem();
+                        if (item instanceof SQLPatternItem) {
+                            canWork = !((SQLPatternItem) item).isSystem();
+                        } else {
+                            canWork = false;
+                        }
+                    } else {
                         canWork = false;
-                        break;
                     }
-                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    if (canWork && factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
-                        canWork = false;
-                        break;
-                    }
+                    break;
+                default:
+                    canWork = false;
+                    break;
+                }
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                if (canWork) {
+                    canWork = (factory.getStatus(node.getObject()) != ERepositoryStatus.DELETED);
+                }
+                if (canWork) {
+                    canWork = isLastVersion(node);
                 }
             }
         }
