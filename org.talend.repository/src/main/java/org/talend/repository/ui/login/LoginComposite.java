@@ -522,7 +522,7 @@ public class LoginComposite extends Composite {
         svnBranchLabel = toolkit.createLabel(tosProjectComposite, null);
         branchesViewer = new ComboViewer(tosProjectComposite, SWT.BORDER | SWT.READ_ONLY);
         branchesViewer.setContentProvider(new ArrayContentProvider());
-        branchesViewer.setLabelProvider(new ConnectionLabelProvider());
+        branchesViewer.setLabelProvider(new LabelProvider());
         branchesViewer.getControl().setVisible(false);
 
         Label tosProjectLabel = toolkit.createLabel(tosProjectComposite, "Project"); //$NON-NLS-1$
