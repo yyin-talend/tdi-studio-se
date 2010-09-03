@@ -82,6 +82,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.jface.viewers,
    org.talend.repository.ui.actions,
    org.eclipse.gef",
+ org.talend.designer.core.ui.dialog,
  org.talend.designer.core.ui.dialog.mergeorder,
  org.talend.designer.core.ui.editor;
   uses:="org.eclipse.ui.views.properties.tabbed,

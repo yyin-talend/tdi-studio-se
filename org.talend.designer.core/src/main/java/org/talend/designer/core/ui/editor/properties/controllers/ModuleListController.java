@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -48,9 +51,12 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.ui.dialog.IBrmsExtension;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -77,28 +83,48 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     }
 
     public Command createCommand(Button button) {
-        FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
-        dial.setFilterExtensions(FilesUtils.getAcceptJARFilesSuffix());
-        String file = dial.open();
-        if (file != null && !file.equals("")) { //$NON-NLS-1$
+        Node node = (Node) elem;
+        IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+        if (externalNode.getUniqueName().contains("tBRMS_")) {
+            IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                    "org.talend.designer.core.brms_provider");
             String propertyName = (String) button.getData(PARAMETER_NAME);
-            String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
-            if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
+            for (IConfigurationElement elem : elems) {
+                IBrmsExtension createExecutableExtension;
                 try {
-                    CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
-                } catch (Exception e) {
+                    createExecutableExtension = (IBrmsExtension) elem.createExecutableExtension("class");
+                    createExecutableExtension.initialize(node, propertyName, hashCurControls);
+                    createExecutableExtension.createBrmsDialog(composite.getShell());
+                } catch (CoreException e) {
                     ExceptionHandler.process(e);
                 }
 
-                // update the combo current value
-                CCombo combo = (CCombo) hashCurControls.get(propertyName);
-                if (combo != null && !combo.isDisposed()) {
-                    combo.setText(Path.fromOSString(file).lastSegment());
-                }
+            }
+        } else {
+            FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
+            dial.setFilterExtensions(FilesUtils.getAcceptJARFilesSuffix());
+            String file = dial.open();
+            if (file != null && !file.equals("")) { //$NON-NLS-1$
+                String propertyName = (String) button.getData(PARAMETER_NAME);
+                String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
+                if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
+                    try {
+                        CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
 
-                return new PropertyChangeCommand(elem, propertyName, lastSegment);
+                    // update the combo current value
+                    CCombo combo = (CCombo) hashCurControls.get(propertyName);
+                    if (combo != null && !combo.isDisposed()) {
+                        combo.setText(Path.fromOSString(file).lastSegment());
+                    }
+
+                    return new PropertyChangeCommand(elem, propertyName, lastSegment);
+                }
             }
         }
+
         return null;
     }
 

@@ -4,6 +4,7 @@
 	<extension-point id="generators" name="Controller Generators" schema="schema/generators.exsd"/>
  <extension-point id="process_provider" name="Process Provider" schema="schema/process_provider.exsd"/>
  <extension-point id="replace_nodes" name="Replace Nodes when generating code" schema="schema/replace_nodes.exsd"/>
+ <extension-point id="brms_provider" name="Brms provider" schema="schema/brms_provider.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
