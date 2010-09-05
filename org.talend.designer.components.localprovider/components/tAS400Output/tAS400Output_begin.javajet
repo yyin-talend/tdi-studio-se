@@ -159,6 +159,9 @@ if(!("true").equals(useExistingConn)) {
     }
 }
 if(!isDynamic) {
+%>
+int count_<%=cid%>=0;
+<%
 if(columnList != null && columnList.size() > 0) {    
    %>
    <%@ include file="../templates/_tableActionForOutput.javajet"%>

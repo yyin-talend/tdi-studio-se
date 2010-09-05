@@ -207,6 +207,9 @@ if(!useExistingConnection) {
 }
 
 if(!isDynamic) {
+%>
+int count_<%=cid%>=0;
+<%
 ///// hint options/////
 boolean useHintOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_HINT_OPTIONS__"));
 Map<String, String> hintsValues = null; 

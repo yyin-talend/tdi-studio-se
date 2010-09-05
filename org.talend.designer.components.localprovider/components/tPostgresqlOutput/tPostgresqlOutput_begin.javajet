@@ -173,6 +173,9 @@ if(!("true").equals(useExistingConn)) {
 
 <%
 if(!isDynamic) {
+%>
+int count_<%=cid%>=0;
+<%
 if(columnList != null && columnList.size()>0) {    
        Manager manager = null;
     %>
