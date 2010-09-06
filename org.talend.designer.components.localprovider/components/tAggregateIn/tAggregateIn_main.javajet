@@ -172,7 +172,12 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 
 							boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 							boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
-							boolean outputIsGeometry = outputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
+							boolean outputIsGeometry = false;
+							boolean inputIsGeometry = false;
+							try {
+								outputIsGeometry = outputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
+							} catch (IllegalArgumentException e) {
+							}
 							boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
 							boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 							boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
@@ -181,7 +186,10 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 							
 							boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 							boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
-							boolean inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
+							try {
+								inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
+							} catch (IllegalArgumentException e) {
+							}
 							boolean inputIsBoolean = inputJavaType == JavaTypesManager.BOOLEAN;
 							boolean inputIsList = inputJavaType == JavaTypesManager.LIST;
 							boolean inputIsString = inputJavaType == JavaTypesManager.STRING;
@@ -387,8 +395,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     							
     						} // T_InMain_AggR_636
 
-                			continue next_column;
-                			
+                			continue next_column;                			
                 		} // T_InMain_AggR_616
 
                 		
