@@ -114,16 +114,19 @@ try{
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
 				
-				if(stringType == JavaTypesManager.STRING){
+				if(stringType == JavaTypesManager.STRING ){
 %>
-				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%><%=trim?".trim()":""%>;
+				if(<%=inConn.getName()%>.<%=inputCol.getLabel()%> != null)
+					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%><%=trim?".trim()":""%>;
+				else
+					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 				<%
-				break;
+					break;
 				}else {
 				%>
-				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 <%
-				break;
+					break;
 				}
 		    }
 		}
