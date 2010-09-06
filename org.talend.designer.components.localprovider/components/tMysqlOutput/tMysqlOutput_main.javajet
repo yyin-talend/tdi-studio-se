@@ -1452,9 +1452,9 @@ if(columnList != null && columnList.size() > 0) {
                 <%
             }            
             %>
-            int count_<%=cid%> = 0;
+            int count_on_duplicate_key_<%=cid%> = 0;
             try {
-                count_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+                count_on_duplicate_key_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
             } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
@@ -1484,11 +1484,11 @@ if(columnList != null && columnList.size() > 0) {
                 }
                 %>                
             }
-            if(count_<%=cid%> == 1) {
-                insertedCount_<%=cid%> += count_<%=cid%>;
+            if(count_on_duplicate_key_<%=cid%> == 1) {
+                insertedCount_<%=cid%> += count_on_duplicate_key_<%=cid%>;
             } else {
                 insertedCount_<%=cid%> += 1;
-                updatedCount_<%=cid%> += count_<%=cid%> - 1;
+                updatedCount_<%=cid%> += count_on_duplicate_key_<%=cid%> - 1;
             }
             <%
     	}else if(("INSERT_IGNORE").equals(dataAction)) {
