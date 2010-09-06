@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.hl7.edit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.util.TransferDragSourceListener;
@@ -113,14 +114,17 @@ public class HL7Message2SchemaDragAndDropHandler {
                 event.doit = false;
             } else {
                 MessageToSchemaDraggedData draggedData = new MessageToSchemaDraggedData();
+                List<TreeItem> itemList = new ArrayList<TreeItem>();
                 for (TreeItem treeItem : items) {
                     if (treeItem.getData() instanceof PrimitiveModel) {
                         PrimitiveModel pm = (PrimitiveModel) treeItem.getData();
                         draggedData.add(new TransferableSegmentEntry(pm));
+                        itemList.add(treeItem);
                     }
                 }
                 SegmentTransfer.getInstance().setDragedItem(items[0]);
                 SegmentTransfer.getInstance().setDraggedData(draggedData);
+                SegmentTransfer.getInstance().setDragedItemList(itemList);
             }
         }
 
@@ -202,7 +206,8 @@ public class HL7Message2SchemaDragAndDropHandler {
 
                 // ExtendedTableModel<MetadataColumn> extendedTableModel = hl7TableEditorView.getExtendedTableModel();
                 if (transferableEntryList.size() > 0) {
-                    for (TransferableSegmentEntry entry : transferableEntryList) {
+                    for (int i = 0; i < transferableEntryList.size(); i++) {
+                        TransferableSegmentEntry entry = transferableEntryList.get(i);
                         String segName = entry.getPm().getDisplayName();
                         Display display = linker.getTree().getDisplay();
                         Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
@@ -214,7 +219,7 @@ public class HL7Message2SchemaDragAndDropHandler {
                         metacolumn.setLength(226);
                         metacolumn.setPrecision(0);
                         hl7TableEditorView.getMetadataEditor().add(metacolumn);
-                        TreeItem item = SegmentTransfer.getInstance().getDragedItem();
+                        TreeItem item = SegmentTransfer.getInstance().getDragedItemList().get(i);
                         TableItem targetitem = targetTable.getSelection()[0];
                         createLinks(item, targetitem);
                         final Combo combo = linker.getMainui().getMetaTableViewer().getCombo();

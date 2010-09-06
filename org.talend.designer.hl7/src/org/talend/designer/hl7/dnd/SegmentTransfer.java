@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.hl7.dnd;
 
+import java.util.List;
+
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.TreeItem;
@@ -33,6 +35,8 @@ public class SegmentTransfer extends ByteArrayTransfer {
     private static final int SEGMENT_TO_SCHEMA_NAME_ID = registerType(SEGMENT_TO_SCHEMA_NAME);
 
     private static final SegmentTransfer INSTANCE = new SegmentTransfer();
+
+    private List<TreeItem> dragedItemList;
 
     public static SegmentTransfer getInstance() {
         return INSTANCE;
@@ -83,6 +87,24 @@ public class SegmentTransfer extends ByteArrayTransfer {
 
     public void setDragedItem(TreeItem dragedItem) {
         this.dragedItem = dragedItem;
+    }
+
+    /**
+     * Getter for dragedItemList.
+     * 
+     * @return the dragedItemList
+     */
+    public List<TreeItem> getDragedItemList() {
+        return this.dragedItemList;
+    }
+
+    /**
+     * Sets the dragedItemList.
+     * 
+     * @param dragedItemList the dragedItemList to set
+     */
+    public void setDragedItemList(List<TreeItem> dragedItemList) {
+        this.dragedItemList = dragedItemList;
     }
 
 }
