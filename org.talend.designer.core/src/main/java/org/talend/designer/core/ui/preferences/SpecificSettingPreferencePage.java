@@ -12,11 +12,19 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.RepositoryManager;
 
 public class SpecificSettingPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+    public SpecificSettingPreferencePage() {
+        setPreferenceStore(RepositoryManager.getPreferenceStore());
+    }
 
     /*
      * (non-Javadoc)
@@ -25,7 +33,10 @@ public class SpecificSettingPreferencePage extends FieldEditorPreferencePage imp
      */
     @Override
     protected void createFieldEditors() {
-        // TODO Auto-generated method stub
+        if (PluginChecker.isTIS()) {
+            addField(new BooleanFieldEditor(IRepositoryPrefConstants.ALLOW_SPECIFIC_CHARACTERS_FOR_SCHEMA_COLUMNS,
+                    "Allow specific characters (UTF8,...) for columns of schemas", getFieldEditorParent()));
+        }
 
     }
 
@@ -35,7 +46,6 @@ public class SpecificSettingPreferencePage extends FieldEditorPreferencePage imp
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
-        // TODO Auto-generated method stub
 
     }
 

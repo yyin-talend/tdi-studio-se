@@ -42,8 +42,6 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
                     getFieldEditorParent()));
         }
 
-        addField(new BooleanFieldEditor(IRepositoryPrefConstants.ALLOW_SPECIFIC_CHARACTERS_FOR_SCHEMA_COLUMNS,
-                "Allow specific characters (UTF8,...) for columns of schemas", getFieldEditorParent()));
     }
 
     /*
