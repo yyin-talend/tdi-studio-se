@@ -157,6 +157,13 @@ imports="
                                   <%=firstConnName%>.<%=column.getLabel()%>=dcg_<%=cid%>;
                                   routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>);
 <%
+								} else if(typeToGenerate.equals("Geometry")) {
+%>
+                                	org.postgis.Geometry o = org.postgis.PGgeometry.geomFromString(rs_<%=cid %>.getObject(<%=currentColNo%>).toString());
+                                	StringBuffer sb = new StringBuffer();
+                                	o.outerWKT(sb, false);
+                                	<%=firstConnName%>.<%=column.getLabel()%> = new Geometry(sb.toString());
+<%
                  	            } else {
 %>
 		                          <%dbInputBeginUtil.generateOthersResultSet( firstConnName, column,  currentColNo,  typeToGenerate);%>

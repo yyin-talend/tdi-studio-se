@@ -18,6 +18,7 @@
 
   <FAMILIES>
     <FAMILY>Databases/PostgreSQL</FAMILY>
+	<FAMILY>Geo/Database</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -196,12 +197,42 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
+    </PARAMETER> 
+
+<PARAMETER
+      NAME="USE_SPATIAL_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="9"
+      SHOW_IF="(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SPATIAL_INDEX"
+      FIELD="CHECK"
+      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="GEOMETRY_COLUMNS"
+      FIELD="CHECK"
+      SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or 
+      		(TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
     
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -296,12 +327,17 @@
 		NUM_ROW="20">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
-	    
+	<PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
+	  <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
+	</PARAMETER>    
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Postgis" MODULE="postgis_1.4.0.jar" REQUIRED="true" />
+     	<IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="true" />
+     	<IMPORT NAME="jts" MODULE="jts-1.9.jar" REQUIRED="true"/>
     </IMPORTS>
   </CODEGENERATION>
    

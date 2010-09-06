@@ -16,6 +16,7 @@
 
   <FAMILIES>
     <FAMILY>Databases/PostgreSQL</FAMILY>
+	<FAMILY>Geo/Database</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -213,12 +214,19 @@
 		<ITEMS BASED_ON_SCHEMA="true">
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
-	</PARAMETER>	    
+	</PARAMETER>
+		
+	<PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
+	  <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
 	
    <CODEGENERATION>
      <IMPORTS>
      	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Postgis" MODULE="postgis_1.4.0.jar" REQUIRED="true" />
+     	<IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="true" />
+     	<IMPORT NAME="jts" MODULE="jts-1.9.jar" REQUIRED="true"/>
      </IMPORTS>
    </CODEGENERATION>
 

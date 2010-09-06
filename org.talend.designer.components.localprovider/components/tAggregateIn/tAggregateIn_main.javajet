@@ -31,6 +31,7 @@ String FIRST = "first";
 String LAST = "last";
 String AVG = "avg";
 String COUNT_DISTINCT = "distinct";
+String UNION = "union";
 String LIST = "list";
 String LIST_OBJECT = "list_object";
 String STD_DEV = "std_dev";
@@ -171,6 +172,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 
 							boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 							boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
+							boolean outputIsGeometry = outputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
 							boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
 							boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 							boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
@@ -179,6 +181,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 							
 							boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 							boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
+							boolean inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
 							boolean inputIsBoolean = inputJavaType == JavaTypesManager.BOOLEAN;
 							boolean inputIsList = inputJavaType == JavaTypesManager.LIST;
 							boolean inputIsString = inputJavaType == JavaTypesManager.STRING;
@@ -203,6 +206,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 								|| function.equals(FIRST) && sameInOutType
 								|| function.equals(LAST) && sameInOutType
 								|| function.equals(LIST) && outputIsString
+								|| function.equals(UNION) && outputIsGeometry
 								|| function.equals(LIST_OBJECT) && outputIsList
 								|| function.equals(COUNT) && outputIsNumber
 								|| function.equals(COUNT_DISTINCT) && outputIsNumber

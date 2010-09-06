@@ -42,6 +42,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	
+	boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+    boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+    boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+
     
     //feature:2880
     getManager(dbmsId, cid, node);
@@ -259,7 +264,45 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry")) {
+                        counter++;
+                        if((createGeometryColumns || createSpatialIndex) && useSpatialOptions) {
+                            %>
+                            geometryColumnName_<%=cid %> = "<%=column.getColumn().getLabel() %>";
+                            if (firstGeometry_<%=cid %>) {
+                                dimension_<%=cid %> = 2;
+                                
+                                // A null first geometry will lead to unknown coordinate system  
+                                if (<%=incomingConnName%>.<%=column.getName()%> == null) {
+                            	    SRID_<%=cid %> = -1;
+                                } else {
+                                    org.opengis.referencing.crs.CoordinateReferenceSystem refSys_<%=cid %> = 
+                                        ((org.talend.sdi.geometry.Geometry) <%=incomingConnName%>.<%=column.getName()%>).getCRS();
+                                    if (refSys_<%=cid %> != null) {
+                                        dimension_<%=cid %> = refSys_<%=cid %>.getCoordinateSystem().getDimension();
+                                        try {
+                                            java.util.Set ident_<%=cid %> = refSys_<%=cid %>.getIdentifiers();
+                                            if ((ident_<%=cid %> == null || ident_<%=cid %>.isEmpty())
+                                                && refSys_<%=cid %> == org.geotools.referencing.crs.DefaultGeographicCRS.WGS84) {
+                                                SRID_<%=cid %> = 4326;
+                                            } else {
+                                                String code_<%=cid %> = ((org.geotools.referencing.NamedIdentifier) ident_<%=cid %>.toArray()[0]).getCode();
+                                                SRID_<%=cid %> = Integer.parseInt(code_<%=cid %>);
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println("SRID_<%=cid %> could not be determined");
+                                            SRID_<%=cid %> = -1;
+                                        }
+                                     }  else {
+                                        SRID_<%=cid %> = -1;
+                                     }
+                                     firstGeometry_<%=cid %> = false;
+                                 }
+                            }
+                            <%
+                        }
+                    } 
                     counter++;                        
                 }
             }
@@ -323,7 +366,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry"))
+                        counterCol++;  
                     counterCol++;                   
                 }
             }
@@ -354,6 +399,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
                         <%
                     }
+					if (typeToGenerate.equals("Geometry"))
+    	                    counterCol++;
                     	counterCol++;
                        }
                      //#############                      
@@ -365,7 +412,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry"))
+    	                counterCol++;       	
                     counterCol++;
                 }
             }
@@ -426,6 +475,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
+					if (typeToGenerate.equals("Geometry")) 
+                       columnIndex++;
                     columnIndex++;
                 }
             }
@@ -477,7 +528,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                        %>
 	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
 	                        <%
-	                    	} 
+	                    	}
+							if (typeToGenerate.equals("Geometry")) 
+								counterCol++;
 	                    	counterCol++;
 	                       }
 	                     //#############                      
@@ -542,7 +595,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                             %>
                             query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
                             <%
-                        }                        
+                        }
+						if (typeToGenerate.equals("Geometry")) 
+	                        counterInsert++;
                         counterInsert++;
                     }
                 }
@@ -610,7 +665,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry")) 
+                        counterColUpdate++;
                     counterColUpdate++;
                 }
             }
@@ -640,6 +697,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null)?1:0)")%>;
 	                        <%
 	                    	}
+							if (typeToGenerate.equals("Geometry")) 
+								counterColUpdate++;
                     	counterColUpdate++;
                        }
                      //#############                      
@@ -651,7 +710,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry")) 
+						counterColUpdate++;
                     counterColUpdate++;
                 }
             }
@@ -712,7 +773,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                             %>
                             query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                             <%
-                        }                        
+                        }
+						if (typeToGenerate.equals("Geometry")) 
+                    	    counter++;
                         counter++;
                     }
                 }
@@ -783,6 +846,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
 	                        <%
 	                    	}
+						if (typeToGenerate.equals("Geometry")) 
+                    	    keyCounter++;
                     	 keyCounter++;
                        }
                      //#############                      
@@ -793,7 +858,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
                         <%
-                    }                    
+                    }
+					if (typeToGenerate.equals("Geometry")) 
+                        keyCounter++;
                     keyCounter++;
                 }
             }

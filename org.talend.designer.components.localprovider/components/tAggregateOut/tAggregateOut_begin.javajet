@@ -53,6 +53,7 @@ String COUNT_DISTINCT = "distinct";
 String LIST = "list";
 String LIST_OBJECT = "list_object";
 String STD_DEV = "std_dev";
+String UNION = "union";
 
 int sizeOperations = operations.size();
 
@@ -438,6 +439,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 	
 			boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 			boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
+			boolean outputIsGeometry = outputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
 			boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
 			boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 			boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
@@ -446,6 +448,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			
 			boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 			boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
+			boolean inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
 			boolean inputIsBoolean = inputJavaType == JavaTypesManager.BOOLEAN;
 			boolean inputIsList = inputJavaType == JavaTypesManager.LIST;
 			boolean inputIsString = inputJavaType == JavaTypesManager.STRING;
@@ -472,6 +475,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				|| function.equals(LIST) && outputIsString
 				|| function.equals(LIST_OBJECT) && outputIsList
 				|| function.equals(COUNT) && outputIsNumber
+				|| function.equals(UNION) && outputIsGeometry
 				|| function.equals(COUNT_DISTINCT) && outputIsNumber
 				|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
 			;
@@ -517,7 +521,12 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		 
            		 	%>java.util.List <%=funin[OUTPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
            			<%
-           			
+				
+				} else if(UNION.equals(function)) {
+           		 
+           		 	%>org.talend.sdi.geometry.Geometry <%=funin[OUTPUT_COLUMN] %>_<%=function %> = null;
+           			<%
+  			
            		} else if(STD_DEV.equals(function)) {
            		
            			%>java.util.List<Double> <%=funin[OUTPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();

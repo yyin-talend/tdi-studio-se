@@ -76,6 +76,7 @@
             <ITEM NAME="LIST_OBJECT"    VALUE="list_object"/>
             <ITEM NAME="DISTINCT"    VALUE="distinct"/>            
             <ITEM NAME="STD_DEV"    VALUE="std_dev"/>
+			<ITEM NAME="UNION"    VALUE="union"/>
           </ITEMS>
         </ITEM>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
