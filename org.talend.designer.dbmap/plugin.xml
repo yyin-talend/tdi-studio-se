@@ -5,5 +5,11 @@
          point="org.talend.core.external_component">
       <ExternalComponent class="org.talend.designer.dbmap.DbMapComponent"/>
    </extension>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.talend.org/dbmap"
+            class="org.talend.designer.dbmap.model.emf.dbmap.DbmapPackage"
+            genModel="model/dbmap.genmodel"/>
+   </extension>
 
 </plugin>

@@ -13,5 +13,11 @@
             serviceId="IDesignerMapperService">
       </Service>
    </extension>
+      <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.talend.org/mapper"
+            class="org.talend.designer.mapper.model.emf.mapper.MapperPackage"
+            genModel="model/mapper.genmodel"/>
+   </extension>
 
 </plugin>
