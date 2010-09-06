@@ -23,11 +23,9 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -212,6 +210,8 @@ public class LoginComposite extends Composite {
 
     private Composite colorComposite = null;
 
+    private Label passwordLabel = null;
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -280,11 +280,16 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+            // warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
             warningLabel.setVisible(true);
             restartBut.setVisible(false);
         }
-        setStatusArea();
+        try {
+            setStatusArea();
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            ExceptionHandler.process(e);
+        }
     }
 
     private void setManageViewer() {
@@ -356,7 +361,7 @@ public class LoginComposite extends Composite {
             try {
                 enableSandboxProject = ProxyRepositoryFactory.getInstance().enableSandboxProject();
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
             if (enableSandboxProject) {
@@ -680,7 +685,7 @@ public class LoginComposite extends Composite {
         user.setLayoutData(formData);
 
         // tis password
-        Label passwordLabel = toolkit.createLabel(group, null);
+        passwordLabel = toolkit.createLabel(group, null);
         passwordLabel.setBackground(tisRepositoryComposite.getBackground());
         passwordLabel.setText("Password");
         formData = new FormData();
@@ -901,6 +906,8 @@ public class LoginComposite extends Composite {
     // }
 
     private void createRestartArea(Composite parent) {
+        iconLabel.setVisible(true);
+        onIiconLabel.setVisible(true);
         differentWorkSpace = toolkit.createComposite(parent);
         differentWorkSpace.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout layout = createLayout(2);
@@ -909,16 +916,18 @@ public class LoginComposite extends Composite {
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
         differentWorkSpace.setLayout(layout);
-
+        //
         warningLabel = new CLabel(differentWorkSpace, SWT.NONE); // toolkit.createLabel(differentWorkSpace,
-        // "The workspace is different,please restart");
-
-        warningLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
-        warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
+        // // "The workspace is different,please restart");
+        //
+        // warningLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+        //warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
         warningLabel.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
         warningLabel.setVisible(false);
-        warningLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+        GridData data = new GridData();
+        data.widthHint = 310;
+        warningLabel.setLayoutData(data);
+        //
         restartBut = toolkit.createButton(differentWorkSpace, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
         restartBut.setVisible(false);
         restartBut.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -992,9 +1001,35 @@ public class LoginComposite extends Composite {
         return isRemote;
     }
 
-    public void setStatusArea() {
+    public void setStatusArea() throws PersistenceException {
         if (!PluginChecker.isTIS()) {
-            if (projectViewer.getCombo().getItemCount() > 0) {
+            passwordText.setVisible(true);
+            passwordLabel.setVisible(true);
+            if (!isWorkSpaceSame()) {
+                iconLabel.setVisible(false);
+                onIiconLabel.setVisible(false);
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIiconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (inuse) {
+                iconLabel.setVisible(true);
+                onIiconLabel.setVisible(true);
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIiconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (projectViewer.getCombo().getItemCount() > 0) {
                 iconLabel.setVisible(false);
                 onIiconLabel.setVisible(false);
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
@@ -1016,8 +1051,40 @@ public class LoginComposite extends Composite {
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
-        } else if (isTisRemote()) {
-            if (passwordText.getText() != null && !"".equals(passwordText.getText())) {
+        } else if (PluginChecker.isTIS()) {
+            if (ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
+                passwordText.setVisible(false);
+                passwordLabel.setVisible(false);
+
+            } else if (!ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
+                passwordText.setVisible(true);
+                passwordLabel.setVisible(true);
+            }
+            if (!isWorkSpaceSame()) {
+                iconLabel.setVisible(true);
+                onIiconLabel.setVisible(true);
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIiconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (inuse) {
+                iconLabel.setVisible(true);
+                onIiconLabel.setVisible(true);
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIiconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (projectViewer.getCombo().getItemCount() > 0) {
                 iconLabel.setVisible(false);
                 onIiconLabel.setVisible(false);
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
@@ -1029,17 +1096,16 @@ public class LoginComposite extends Composite {
             } else {
                 iconLabel.setVisible(true);
                 onIiconLabel.setVisible(true);
-                iconLabel.setImage(LOGIN_WARNING_IMAGE);
-                onIiconLabel.setImage(LOGIN_WARNING_IMAGE);
-                colorComposite.setBackground(YELLOW_COLOR);
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
                 onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText("A password is needed...");
-                statusLabel.setBackground(YELLOW_COLOR);
+                statusLabel.setText(" A project is needed...");
+                statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
-
         }
 
     }
@@ -1167,7 +1233,12 @@ public class LoginComposite extends Composite {
                         populateProjectList();
                         validateProject();
                     }
-                    setStatusArea();
+                    try {
+                        setStatusArea();
+                    } catch (PersistenceException e) {
+                        // TODO Auto-generated catch block
+                        ExceptionHandler.process(e);
+                    }
                 }
             });
 
@@ -1236,7 +1307,12 @@ public class LoginComposite extends Composite {
                     fillContents();
                     updateVisible();
                 }
-                setStatusArea();
+                try {
+                    setStatusArea();
+                } catch (PersistenceException e1) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e1);
+                }
             }
         });
 
@@ -1251,7 +1327,12 @@ public class LoginComposite extends Composite {
 
                 }
                 item.run();
-                setStatusArea();
+                try {
+                    setStatusArea();
+                } catch (PersistenceException e1) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e1);
+                }
             }
         });
 
@@ -1404,14 +1485,13 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
             warningLabel.setVisible(true);
             restartBut.setVisible(true);
         } else if (inuse) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+            //warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
             warningLabel.setVisible(true);
             restartBut.setVisible(false);
         } else {
