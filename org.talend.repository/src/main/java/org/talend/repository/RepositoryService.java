@@ -599,6 +599,10 @@ public class RepositoryService implements IRepositoryService {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn);
     }
 
+    public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext) {
+        return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext);
+    }
+
     public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) {
         IEditorPart openSQLPatternEditor = null;
         try {
