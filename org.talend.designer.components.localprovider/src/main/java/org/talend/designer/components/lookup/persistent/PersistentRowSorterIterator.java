@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jboss.serial.io.JBossObjectInputStream;
-import org.jboss.serial.io.JBossObjectOutputStream;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.components.persistent.utils.FileUtils;
 
@@ -216,7 +214,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         File file = new File(buildFilePath());
         count++;
-        ObjectOutputStream rw = new JBossObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+        ObjectOutputStream rw = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
         // System.out.println("Start write buffer ");
         for (int i = 0; i < bufferBeanIndex + 1; i++) {
             buffer[i].writeData(rw);
@@ -289,7 +287,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         bufferBeanIndex = INIT_BUFFER_INDEX;
 
         for (int i = 0; i < numFiles; i++) {
-            ObjectInputStream dis = new JBossObjectInputStream(new BufferedInputStream(new FileInputStream(files.get(i))));
+            ObjectInputStream dis = new ObjectInputStream(new BufferedInputStream(new FileInputStream(files.get(i))));
             dissList.add(dis);
             // V bean = getNextFreeRow();
             V bean = createRowInstance();

@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jboss.serial.io.JBossObjectInputStream;
-import org.jboss.serial.io.JBossObjectOutputStream;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.components.persistent.IRowCreator;
 import org.talend.designer.components.persistent.utils.FileUtils;
@@ -30,8 +28,7 @@ import org.talend.designer.components.persistent.utils.FileUtils;
 import routines.system.IPersistableRow;
 
 /**
- * Manager for lookup type 'ALL_ROWS'.
- * 
+ * Ordered bean lookup for "All matches" matching mode.
  * @param <B> bean
  */
 public class PersistentLookupManager<B extends IPersistableRow<B>> implements IPersistentLookupManager<B>, Cloneable {
@@ -47,14 +44,18 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
 
     private B dataInstance;
 
+    private MATCHING_MODE matchingMode;
+
+
     /**
-     * PersistentLookupManager constructor.
+     * DOC amaumont PersistentLookupManager constructor comment.
      * 
      * @param container
      * @throws IOException
      */
     public PersistentLookupManager(MATCHING_MODE matchingMode, String container, IRowCreator<B> rowCreator) throws IOException {
         super();
+        this.matchingMode = matchingMode;
         this.container = container;
         this.rowCreator = rowCreator;
         FileUtils.createParentFolderIfNotExists(container);
@@ -62,7 +63,7 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
 
     public void initPut() throws IOException {
 
-        objectOutStream = new JBossObjectOutputStream(new BufferedOutputStream(new FileOutputStream(buildDataFilePath())));
+        objectOutStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(buildDataFilePath())));
         this.dataInstance = this.rowCreator.createRowInstance();
 
     }
@@ -103,7 +104,7 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
 
     private void initDataIn() throws IOException {
         this.bufferedInStream = new BufferedInputStream(new FileInputStream(buildDataFilePath()));
-        this.objectInStream = new JBossObjectInputStream(bufferedInStream);
+        this.objectInStream = new ObjectInputStream(bufferedInStream);
     }
 
     public B getNextFreeRow() {
