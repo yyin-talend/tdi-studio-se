@@ -267,6 +267,9 @@ public class ComponentsFactory implements IComponentsFactory {
                     if (componentList.contains(component)) {
                         componentList.remove(component);
                     }
+                    if (customComponentList.contains(component)) {
+                        customComponentList.remove(component);
+                    }
                 }
 
             }
@@ -592,6 +595,7 @@ public class ComponentsFactory implements IComponentsFactory {
     public void reset() {
         componentList = null;
         skeletonList = null;
+        customComponentList = null;
     }
 
     /*
