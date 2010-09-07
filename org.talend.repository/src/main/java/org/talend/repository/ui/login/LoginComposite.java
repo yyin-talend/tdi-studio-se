@@ -1071,9 +1071,11 @@ public class LoginComposite extends Composite {
                 if (ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
                     passwordText.setVisible(false);
                     passwordLabel.setVisible(false);
+                    branchesViewer.getControl().setVisible(false);
                 } else {
                     passwordText.setVisible(true);
                     passwordLabel.setVisible(true);
+                    branchesViewer.getControl().setVisible(true);
                 }
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(true);
@@ -1520,6 +1522,7 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
+            projectViewer.getControl().setEnabled(false);
             warningLabel.setVisible(true);
             restartBut.setVisible(true);
         } else if (inuse) {
