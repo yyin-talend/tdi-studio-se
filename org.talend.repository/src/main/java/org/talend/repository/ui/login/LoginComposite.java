@@ -615,7 +615,7 @@ public class LoginComposite extends Composite {
         formData2.top = new FormAttachment(colorComposite, 4, SWT.CENTER);
         formData2.height = 24;
         formData2.left = new FormAttachment(0, 70);
-        formData2.right = new FormAttachment(90, 0);
+        formData2.right = new FormAttachment(100, 0);
         statusLabel.setLayoutData(formData2);
 
     }
@@ -1005,39 +1005,54 @@ public class LoginComposite extends Composite {
         if (!PluginChecker.isTIS()) {
             passwordText.setVisible(true);
             passwordLabel.setVisible(true);
-            if (!isWorkSpaceSame()) {
-                iconLabel.setVisible(false);
-                onIiconLabel.setVisible(false);
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
-            } else if (inuse) {
-                iconLabel.setVisible(true);
-                onIiconLabel.setVisible(true);
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
-            } else if (projectViewer.getCombo().getItemCount() > 0) {
-                iconLabel.setVisible(false);
-                onIiconLabel.setVisible(false);
-                colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                statusLabel.setText("Welcome to Talend Open Studio!");
-                statusLabel.setBackground(YELLOW_GREEN_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
+            if (getConnection() != null) {
+                if (!isWorkSpaceSame()) {
+                    iconLabel.setVisible(false);
+                    onIiconLabel.setVisible(false);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                } else if (inuse) {
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                } else if (projectViewer.getCombo().getItemCount() > 0) {
+                    iconLabel.setVisible(false);
+                    onIiconLabel.setVisible(false);
+                    colorComposite.setBackground(YELLOW_GREEN_COLOR);
+                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_welcome"));
+                    statusLabel.setBackground(YELLOW_GREEN_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                    fillProjectsBtn.setEnabled(true);
+                } else {
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                }
             } else {
                 iconLabel.setVisible(true);
                 onIiconLabel.setVisible(true);
@@ -1045,54 +1060,68 @@ public class LoginComposite extends Composite {
                 onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
                 onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(" A project is needed...");
+                statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
         } else if (PluginChecker.isTIS()) {
-            if (ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
-                passwordText.setVisible(false);
-                passwordLabel.setVisible(false);
-
-            } else if (!ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
-                passwordText.setVisible(true);
-                passwordLabel.setVisible(true);
-            }
-            if (!isWorkSpaceSame()) {
-                iconLabel.setVisible(true);
-                onIiconLabel.setVisible(true);
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
-            } else if (inuse) {
-                iconLabel.setVisible(true);
-                onIiconLabel.setVisible(true);
-                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
-                statusLabel.setBackground(RED_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
-            } else if (projectViewer.getCombo().getItemCount() > 0) {
-                iconLabel.setVisible(false);
-                onIiconLabel.setVisible(false);
-                colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                statusLabel.setText("Welcome to Talend Open Studio!");
-                statusLabel.setBackground(YELLOW_GREEN_COLOR);
-                statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
-                statusLabel.setFont(font);
+            if (getConnection() != null) {
+                if (ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
+                    passwordText.setVisible(false);
+                    passwordLabel.setVisible(false);
+                } else {
+                    passwordText.setVisible(true);
+                    passwordLabel.setVisible(true);
+                }
+                if (!isWorkSpaceSame()) {
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                } else if (inuse) {
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                } else if (projectViewer.getCombo().getItemCount() > 0) {
+                    iconLabel.setVisible(false);
+                    onIiconLabel.setVisible(false);
+                    colorComposite.setBackground(YELLOW_GREEN_COLOR);
+                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_welcome"));
+                    statusLabel.setBackground(YELLOW_GREEN_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                    fillProjectsBtn.setEnabled(true);
+                } else {
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    colorComposite.setBackground(RED_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
+                    statusLabel.setBackground(RED_COLOR);
+                    statusLabel.setForeground(WHITE_COLOR);
+                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    statusLabel.setFont(font);
+                }
             } else {
                 iconLabel.setVisible(true);
                 onIiconLabel.setVisible(true);
@@ -1100,14 +1129,14 @@ public class LoginComposite extends Composite {
                 onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
                 onIiconLabel.setBackground(colorComposite.getBackground());
-                statusLabel.setText(" A project is needed...");
+                statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
         }
-
+        updateVisible();
     }
 
     private void readConnectionData() {
@@ -1481,7 +1510,13 @@ public class LoginComposite extends Composite {
     }
 
     private void updateVisible() {
-        if (!isWorkSpaceSame()) {
+        if (getConnection() == null) {
+            manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
+            openProjectBtn.setEnabled(false);
+            fillProjectsBtn.setEnabled(false);
+            projectViewer.getControl().setEnabled(false);
+        } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
@@ -1498,6 +1533,8 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
             openProjectBtn.setEnabled(true);
+            // fillProjectsBtn.setEnabled(true);
+            // projectViewer.getControl().setEnabled(true);
             warningLabel.setVisible(false);
             restartBut.setVisible(false);
         }
