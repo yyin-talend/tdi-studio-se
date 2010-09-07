@@ -139,19 +139,18 @@ public class FOXManager {
             metadataTable = new MetadataTable();
         }
         String componentName = foxComponent.getComponent().getName();
-        if (componentName.equals("tWriteXMLField")) { //$NON-NLS-1$ //$NON-NLS-2$
-            IConnection inConn = null;
-            for (IConnection conn : foxComponent.getIncomingConnections()) {
-                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
-                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
-                    inConn = conn;
-                    break;
-                }
-            }
-            if (inConn != null) {
-                metadataTable = inConn.getMetadataTable();
+        //        if (componentName.equals("tWriteXMLField")) { //$NON-NLS-1$ //$NON-NLS-2$
+        IConnection inConn = null;
+        for (IConnection conn : foxComponent.getIncomingConnections()) {
+            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                inConn = conn;
+                break;
             }
         }
+        if (inConn != null) {
+            metadataTable = inConn.getMetadataTable();
+        }
+        // }
 
         treeData = new ArrayList<FOXTreeNode>();
         FOXTreeNode rootNode = null;

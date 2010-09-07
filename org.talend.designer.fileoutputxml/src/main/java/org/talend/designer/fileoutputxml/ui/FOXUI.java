@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -280,31 +279,37 @@ public class FOXUI {
     }
 
     protected void initSchemaTable() {
-        if (!externalNode.istWriteXMLField()) {
-            IMetadataTable metadataTable = this.externalNode.getMetadataList().get(0);
-            if (metadataTable != null) {
-                List<IMetadataColumn> columnList = metadataTable.getListColumns();
-                schemaViewer.setInput(columnList);
-            } else {
-                schemaViewer.setInput(new ArrayList<IMetadataColumn>());
-            }
-
-        } else {
-            IConnection inConn = null;
-            for (IConnection conn : externalNode.getIncomingConnections()) {
-                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
-                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
-                    inConn = conn;
-                    break;
-                }
-            }
-            if (inConn != null) {
-                List<IMetadataColumn> columnList = inConn.getMetadataTable().getListColumns();
-                schemaViewer.setInput(columnList);
-            } else {
-                schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+        // if (!externalNode.istWriteXMLField()) {
+        // INode originalNode = this.externalNode.getOriginalNode();
+        // IMetadataTable metadataTable = null;
+        // if (originalNode != null && originalNode.getIncomingConnections().size() > 0) {
+        // metadataTable = originalNode.getIncomingConnections().get(0).getMetadataTable();
+        // } else {
+        // metadataTable = this.externalNode.getMetadataList().get(0);
+        // }
+        //
+        // if (metadataTable != null) {
+        // List<IMetadataColumn> columnList = metadataTable.getListColumns();
+        // schemaViewer.setInput(columnList);
+        // } else {
+        // schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+        // }
+        //
+        // } else {
+        IConnection inConn = null;
+        for (IConnection conn : externalNode.getIncomingConnections()) {
+            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                inConn = conn;
+                break;
             }
         }
+        if (inConn != null) {
+            List<IMetadataColumn> columnList = inConn.getMetadataTable().getListColumns();
+            schemaViewer.setInput(columnList);
+        } else {
+            schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+        }
+        // }
 
     }
 
