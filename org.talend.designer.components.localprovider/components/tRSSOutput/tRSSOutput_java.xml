@@ -180,7 +180,7 @@
       		<COLUMN KEY="false" LENGTH="50" NAME="id" TYPE="id_String" NULLABLE="true" READONLY="true"/>
       		<COLUMN KEY="false" LENGTH="30" NAME="title" TYPE="id_String" NULLABLE="true" READONLY="true"/>
       		<COLUMN KEY="false" LENGTH="100" NAME="link" TYPE="id_String" NULLABLE="true" READONLY="true"/>
-      		<COLUMN KEY="false" NAME="updated" TYPE="id_Date" NULLABLE="true" READONLY="true"/>
+      		<COLUMN KEY="false" NAME="updated" TYPE="id_String" NULLABLE="true" READONLY="true"/>
       		<COLUMN KEY="false" LENGTH="200" NAME="summary" TYPE="id_String" NULLABLE="true" READONLY="true"/>
       	</TABLE>
      </PARAMETER>
