@@ -151,6 +151,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             // generate jar file for job
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
+
+            // dynamic db xml mapping
+            addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
+
         }
 
         prepareESBFiles(jobMap, exportChoice);

@@ -105,6 +105,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             List<URL> talendLibraries = getExternalLibraries(process, true);
             libResource.addResources(talendLibraries);
 
+            // dynamic db xml mapping
+            addXmlMapping(proces, isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
+
             List<URL> systemRoutineList = getSystemRoutine(process, true);
             libResource.addResources(systemRoutineList);
 

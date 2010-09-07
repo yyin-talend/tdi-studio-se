@@ -201,6 +201,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 selectedJobVersion);
 
         addDependenciesSourceCode(process, process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
+        addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
 
         addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
 
@@ -559,57 +560,66 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         userRoutinesFileUrls);
             }
 
-            // for db mapping xml
-            IFolder xmlMapping = javaProject
-                    .getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING);
-            List<URL> xmlMappingFileUrls = new ArrayList<URL>();
-            if (xmlMapping.exists() && needXmlMapping(resource)) {
-                for (IResource fileResource : xmlMapping.members()) {
-                    if (fileResource.getName().endsWith(".xml")) {
-                        xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
-                    }
-                }
-                resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
-                        xmlMappingFileUrls);
-                needMappingInSystemRoutine = true;
-            }
-
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
     }
 
-    private boolean needXmlMapping(ExportFileResource resource) {
-        boolean hasDynamicMetadata = false;
-        if (resource.getItem() instanceof ProcessItem) {
-            ProcessItem processItem = (ProcessItem) resource.getItem();
-            final ProcessType process = processItem.getProcess();
-            if (process != null) {
-                out:for (NodeType node : (List<NodeType>) process.getNode()) {
-                    // to check if node is db component , maybe need modification
-                    boolean isDbNode = false;
-                    for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
-                        if ("TYPE".equals(param.getName()) && "TEXT".equals(param.getField()) && param.getValue() != null
-                                && !"".equals(param.getValue())) {
-                            isDbNode = true;
-                            break;
+    protected void addXmlMapping(ExportFileResource resource, boolean needSource) {
+        try {
+            boolean hasDynamicMetadata = false;
+            if (resource.getItem() instanceof ProcessItem) {
+                ProcessItem processItem = (ProcessItem) resource.getItem();
+                final ProcessType process = processItem.getProcess();
+                if (process != null) {
+                    out: for (NodeType node : (List<NodeType>) process.getNode()) {
+                        // to check if node is db component , maybe need modification
+                        boolean isDbNode = false;
+                        for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                            if ("TYPE".equals(param.getName()) && "TEXT".equals(param.getField()) && param.getValue() != null
+                                    && !"".equals(param.getValue())) {
+                                isDbNode = true;
+                                break;
+                            }
                         }
-                    }
-                    if (isDbNode) {
-                        for (MetadataType metadataType : (List<MetadataType>) node.getMetadata()) {
-                            for (ColumnType column : (List<ColumnType>) metadataType.getColumn()) {
-                                if ("id_Dynamic".equals(column.getType())) {
-                                    hasDynamicMetadata = true;
-                                    break out;
+                        if (isDbNode) {
+                            for (MetadataType metadataType : (List<MetadataType>) node.getMetadata()) {
+                                for (ColumnType column : (List<ColumnType>) metadataType.getColumn()) {
+                                    if ("id_Dynamic".equals(column.getType())) {
+                                        hasDynamicMetadata = true;
+                                        break out;
+                                    }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
+            if (hasDynamicMetadata) {
+                needMappingInSystemRoutine = true;
+                if (needSource) {
+                    IRunProcessService service = CorePlugin.getDefault().getRunProcessService();
+                    IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+                    // for db mapping xml
+                    IFolder xmlMapping = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR
+                            + JavaUtils.JAVA_XML_MAPPING);
+                    List<URL> xmlMappingFileUrls = new ArrayList<URL>();
+                    if (xmlMapping.exists()) {
+                        for (IResource fileResource : xmlMapping.members()) {
+                            if (fileResource.getName().endsWith(".xml")) {
+                                xmlMappingFileUrls.add(fileResource.getLocationURI().toURL());
+                            }
+                        }
+                        resource.addResources(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_XML_MAPPING,
+                                xmlMappingFileUrls);
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
-        return hasDynamicMetadata;
     }
 
     protected String calculateLibraryPathFromDirectory(String directory) {
