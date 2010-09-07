@@ -80,8 +80,13 @@ public class ExternalNodeChangeCommand extends Command {
 
     private boolean forTemlate;
 
+    private boolean isMetaLanguage = false;
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
+    public ExternalNodeChangeCommand(Node node, IExternalNode externalNode, boolean... bs) {
+        if (bs.length > 0)
+            this.isMetaLanguage = bs[0];
+
         this.node = node;
 
         this.inAndOut = externalNode.getIODataComponents();
@@ -299,8 +304,10 @@ public class ExternalNodeChangeCommand extends Command {
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }
         ((Process) node.getProcess()).checkProcess();
-        refreshCodeView();
-        ComponentSettings.switchToCurComponentSettingsView();
+        if (!isMetaLanguage) {
+            refreshCodeView();
+            ComponentSettings.switchToCurComponentSettingsView();
+        }
     }
 
     @Override
@@ -341,7 +348,9 @@ public class ExternalNodeChangeCommand extends Command {
             cmd.undo();
         }
         ((Process) node.getProcess()).checkProcess();
-        refreshCodeView();
+        if (!isMetaLanguage) {
+            refreshCodeView();
+        }
     }
 
     public boolean isForTemlate() {
