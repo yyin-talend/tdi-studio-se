@@ -70,6 +70,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 			String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 			boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
 			
+			boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+			
 			boolean hasDynamic = metadata.isDynamicSchema();
 
         	List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -81,9 +83,15 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     				StringBuilder sb_<%=cid %> = new StringBuilder();
     		        <%
 	                if(isIncludeHeader && hasDynamic){
+	                	if(!split && compress && !isAppend){
+	                	%>
+	        		if(isFirstCheckDyn_<%=cid %> && (new java.io.File(zipName_<%=cid%>).length()==0)){
+	                	<%
+	                	}else{
     		        %>
     		        if(isFirstCheckDyn_<%=cid %> && file<%=cid%>.length()==0){
         		        <%
+        		        }
                     	for (int i = 0; i < sizeColumns; i++) {
                             IMetadataColumn column = columns.get(i);
                             if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -337,6 +345,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	
+        	boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
+        	
         	boolean hasDynamic = metadata.isDynamicSchema();
         	IMetadataColumn dynamicCol = metadata.getDynamicColumn();
         	
@@ -347,10 +357,17 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         				List<IMetadataColumn> columns = metadata.getListColumns();
             			int sizeColumns = columns.size();
             			if(isIncludeHeader && hasDynamic){
+            				if(!split && compress && !isAppend){
+            				%>
+        				if(isFirstCheckDyn_<%=cid %> && (new java.io.File(zipName_<%=cid%>).length()==0)){
+        					headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
+            				<%
+            				}else{
             			%>
             			if(isFirstCheckDyn_<%=cid %> && file_<%=cid%>.length()==0){
             				headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             			<%
+            				}
                         	for (int i = 0; i < sizeColumns; i++) {
                                 IMetadataColumn column = columns.get(i);
                                 if(!("id_Dynamic".equals(column.getTalendType()))) {
