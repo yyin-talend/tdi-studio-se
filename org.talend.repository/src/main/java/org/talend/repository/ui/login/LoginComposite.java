@@ -1003,8 +1003,6 @@ public class LoginComposite extends Composite {
 
     public void setStatusArea() throws PersistenceException {
         if (!PluginChecker.isTIS()) {
-            passwordText.setVisible(true);
-            passwordLabel.setVisible(true);
             if (getConnection() != null) {
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(false);
@@ -1039,7 +1037,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setForeground(WHITE_COLOR);
                     Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
-                    fillProjectsBtn.setEnabled(true);
+                    // fillProjectsBtn.setEnabled(true);
                 } else {
                     iconLabel.setVisible(true);
                     onIiconLabel.setVisible(true);
@@ -1516,8 +1514,14 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            fillProjectsBtn.setEnabled(false);
+            if (PluginChecker.isTIS()) {
+                fillProjectsBtn.setEnabled(false);
+            }
             projectViewer.getControl().setEnabled(false);
+        } else if (getConnection() != null && projectViewer.getInput() == null) {
+            manageViewer.getControl().setEnabled(false);
+            projectViewer.getControl().setEnabled(false);
+            openProjectBtn.setEnabled(false);
         } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
@@ -1578,6 +1582,17 @@ public class LoginComposite extends Composite {
 
     protected void populateProjectList() {
         Project[] projects = null;
+        if (!PluginChecker.isTIS() && getConnection() != null) {
+            String user2 = getConnection().getUser();
+            String repositoryId2 = getConnection().getRepositoryId();
+            String workSpace = getConnection().getWorkSpace();
+            String name = getConnection().getName();
+            if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null
+                    && !"".equals(workSpace) && name != null && !"".equals(name)) {
+                getConnection().setComplete(true);
+            }
+        }
+
         if (getConnection() == null || !getConnection().isComplete()) {
             return;
         }

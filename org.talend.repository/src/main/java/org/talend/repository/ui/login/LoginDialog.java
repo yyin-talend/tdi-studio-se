@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -35,11 +34,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.epic.core.preferences.PerlMainPreferencePage;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
@@ -48,13 +45,9 @@ import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
-import org.talend.repository.ui.wizards.license.LicenseWizard;
-import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
 
 /**
  * Login dialog. <br/>
@@ -146,24 +139,9 @@ public class LoginDialog extends TrayDialog {
                 IBrandingService.class);
         new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
 
-        try {
-
-            if (!perReader.isHaveUserPer()) {
-                LicenseWizard licenseWizard = new LicenseWizard();
-                LicenseWizardDialog dialog = new LicenseWizardDialog(getShell(), licenseWizard);
-                dialog.setTitle(Messages.getString("LicenseWizard.windowTitle")); //$NON-NLS-1$
-                if (dialog.open() == WizardDialog.OK) {
-                    perReader.createPropertyFile();
-                    LicenseManagement.acceptLicense();
-                } else {
-                    System.exit(0);
-                }
-            }
-        } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
-                    Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
+        if (!perReader.isHaveUserPer()) {
+            perReader.createPropertyFile();
         }
-
         loginComposite = new LoginComposite(container, SWT.NONE, this, inuse);
         GridData data = new GridData(GridData.FILL_BOTH);
         // data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
