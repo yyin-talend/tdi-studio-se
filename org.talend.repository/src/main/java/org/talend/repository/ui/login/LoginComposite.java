@@ -1167,7 +1167,16 @@ public class LoginComposite extends Composite {
         // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         //
         // List<ConnectionBean> storedConnections = prefManipulator.readConnections();
-
+        for (ConnectionBean bean : storedConnections) {
+            String user2 = bean.getUser();
+            String repositoryId2 = bean.getRepositoryId();
+            String workSpace = bean.getWorkSpace();
+            String name = bean.getName();
+            if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-N$
+                    && !"".equals(workSpace) && name != null && !"".equals(name)) {//$NON-NLS-N$
+                bean.setComplete(true);
+            }
+        }
         connectionsViewer.setInput(storedConnections);
 
         // Check number of connection available.
