@@ -29,6 +29,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -272,6 +273,9 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                             }
                         }
                     }
+                    this.connection
+                            .setDriverClass(EDatabase4DriverClassName.getDriverClassByDbType(connection.getDatabaseType()));
+                    this.connection.setName(connectionProperty.getLabel());
                     factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
                 } else {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
