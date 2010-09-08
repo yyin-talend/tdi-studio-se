@@ -212,6 +212,8 @@ public class LoginComposite extends Composite {
 
     private Label passwordLabel = null;
 
+    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -405,7 +407,7 @@ public class LoginComposite extends Composite {
         formData2.bottom = new FormAttachment(100, -HORIZONTAL_SPACE);
         repositoryLabel.setLayoutData(formData2);
 
-        Text repositoryText = toolkit.createText(repositoryComposite, "local", SWT.NONE);
+        Text repositoryText = toolkit.createText(repositoryComposite, "local", SWT.NONE);//$NON-NLS-N$
         formData2 = new FormData();
         formData2.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
         formData2.left = new FormAttachment(repositoryLabel, HORIZONTAL_SPACE);
@@ -428,7 +430,7 @@ public class LoginComposite extends Composite {
         userEmailComposite.setBackground(GREY_COLOR);
         userEmailComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         userEmailComposite.setLayout(new FormLayout());
-        Label userLabel = toolkit.createLabel(userEmailComposite, "E-Mail"); //$NON-NLS-1$
+        Label userLabel = toolkit.createLabel(userEmailComposite, "E-Mail");
         userLabel.setBackground(userEmailComposite.getBackground());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
@@ -1032,7 +1034,9 @@ public class LoginComposite extends Composite {
                     iconLabel.setVisible(false);
                     onIiconLabel.setVisible(false);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_welcome"));
+
+                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
+                            .getFullProductName()));
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
                     Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
@@ -1104,8 +1108,7 @@ public class LoginComposite extends Composite {
                     Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
-                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                            IBrandingService.class);
+
                     iconLabel.setVisible(false);
                     onIiconLabel.setVisible(false);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
