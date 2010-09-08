@@ -1037,9 +1037,10 @@ public class LoginComposite extends Composite {
 
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
                             .getFullProductName()));
+                    int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, "Arial", size, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                     // fillProjectsBtn.setEnabled(true);
                 } else {
@@ -1114,9 +1115,10 @@ public class LoginComposite extends Composite {
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
                             .getFullProductName()));
+                    int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, "Arial", size, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                     fillProjectsBtn.setEnabled(true);
                 } else {
@@ -2030,5 +2032,25 @@ public class LoginComposite extends Composite {
         branchesViewer.getControl().setVisible(!hide);
 
         branchesViewer.getControl().getShell().pack();
+    }
+
+    private int calStatusLabelFont(int defaultSize, String text) {
+        int fontsize = defaultSize;
+        if (text == null) {
+            return fontsize;
+        }
+        final int length = text.length();
+        if (length > 38 && length <= 45) {
+            fontsize -= 1;
+        } else if (length > 45 && length <= 52) {
+            fontsize -= 2;
+        } else if (length > 52 && length <= 59) {
+            fontsize -= 3;
+        } else if (length > 59 && length <= 67) {
+            fontsize -= 4;
+        } else if (length > 67) {
+            fontsize -= 5;
+        }
+        return fontsize;
     }
 }
