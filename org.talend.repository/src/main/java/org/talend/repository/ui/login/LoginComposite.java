@@ -1070,11 +1070,15 @@ public class LoginComposite extends Composite {
                     passwordText.setVisible(false);
                     passwordLabel.setVisible(false);
                     branchesViewer.getControl().setVisible(false);
+                    svnBranchLabel.setVisible(false);
                 } else {
                     passwordText.setVisible(true);
                     passwordLabel.setVisible(true);
                     branchesViewer.getControl().setVisible(true);
+                    svnBranchLabel.setVisible(true);
                 }
+                manageViewer.setInput(getManageElements());
+                setManageViewer();
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(true);
                     onIiconLabel.setVisible(true);
