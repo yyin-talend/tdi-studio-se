@@ -1151,7 +1151,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
 
-        // manager = createJobScriptsManager();
+        List<ContextParameterType> contextEditableResultValuesList = manager.getContextEditableResultValuesList();
+
+        manager = createJobScriptsManager();
+        // for feature:11976, recover back the old default manager value with ContextParameters
+        if (contextEditableResultValuesList == null) {
+            manager.setContextEditableResultValuesList(new ArrayList());
+        } else {
+            manager.setContextEditableResultValuesList(contextEditableResultValuesList);
+        }
+
         if (manager instanceof PetalsJobJavaScriptsManager) {
             PetalsTemporaryOptionsKeeper.INSTANCE.setSelection(selection);
         }
