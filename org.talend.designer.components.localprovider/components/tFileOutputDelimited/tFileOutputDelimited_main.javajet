@@ -409,12 +409,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							}
             				if(!split && compress && !isAppend){
             				%>
-        				if(isFirstCheckDyn_<%=cid %> && (new java.io.File(zipName_<%=cid%>).length()==0)){
+        				if(new java.io.File(zipName_<%=cid%>).length()==0){
         					headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             				<%
             				}else{
             			%>
-            			if(isFirstCheckDyn_<%=cid %> && file_<%=cid%>.length()==0){
+            			if(file_<%=cid%>.length()==0){
             				headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             			<%
             				}
@@ -435,15 +435,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             %>
                             CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
         	            	CsvWriter<%=cid%>.flush();
-        	            	<%if(isInRowMode){%>
-        	            	out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
-        	            	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
-                    		<%}%>
-                    		CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
-            				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
-            				CsvWriter<%=cid %>.setForceQualifier(true);
-                    		isFirstCheckDyn_<%=cid %> = false;
-                    	}
+        	            }
             	        <% 
             	        	if (isParallelize) {
             			%>
@@ -461,6 +453,16 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			<%
             				}
             	        %>
+        	            if(isFirstCheckDyn_<%=cid %>){
+        	            	<%if(isInRowMode){%>
+        	            	out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+        	            	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
+                    		<%}%>
+                    		CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
+            				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
+            				CsvWriter<%=cid %>.setForceQualifier(true);
+                    		isFirstCheckDyn_<%=cid %> = false;
+                    	}
                         <%
             			}
             			%>  	
