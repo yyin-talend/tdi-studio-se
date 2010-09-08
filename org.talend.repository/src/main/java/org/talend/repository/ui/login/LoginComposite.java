@@ -614,7 +614,7 @@ public class LoginComposite extends Composite {
         formData2 = new FormData();
         formData2.top = new FormAttachment(colorComposite, 4, SWT.CENTER);
         formData2.height = 24;
-        formData2.left = new FormAttachment(0, 70);
+        formData2.left = new FormAttachment(0, 60);
         formData2.right = new FormAttachment(100, 0);
         statusLabel.setLayoutData(formData2);
 
@@ -1100,10 +1100,13 @@ public class LoginComposite extends Composite {
                     Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
+                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                            IBrandingService.class);
                     iconLabel.setVisible(false);
                     onIiconLabel.setVisible(false);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                    statusLabel.setText(Messages.getString("LoginComposite.Workspace_welcome"));
+                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
+                            .getFullProductName()));
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
                     Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
