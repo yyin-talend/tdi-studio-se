@@ -325,32 +325,32 @@ public class LoginComposite extends Composite {
         if (!tis || !isTisRemote) { // create new project for Tos and Tis_Local
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createNewProject();
-                        }
+                @Override
+                public void run() {
+                    createNewProject();
+                }
 
-                    });
+            });
         }
         if (!tis || !isTisRemote) { // import project for Tos and Tis_Local
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            importProjects();
-                        }
+                @Override
+                public void run() {
+                    importProjects();
+                }
 
-                    });
+            });
         }
         // delete project for Tos and Tis_Remote
         toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.deleteProject.desc")) { //$NON-NLS-1$
 
-                    @Override
-                    public void run() {
-                        deleteProject();
-                    }
+            @Override
+            public void run() {
+                deleteProject();
+            }
 
-                });
+        });
 
         if (isTisRemote) { // Sendbox for Tis_Remote
             ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
@@ -367,12 +367,12 @@ public class LoginComposite extends Composite {
             if (enableSandboxProject) {
                 toReturn.add(new ManageItem("Create sandbox project") { //$NON-NLS-1$
 
-                            @Override
-                            public void run() {
-                                createSendboxProject();
-                            }
+                    @Override
+                    public void run() {
+                        createSendboxProject();
+                    }
 
-                        });
+                });
             }
         }
         return toReturn.toArray(new ManageItem[] {});
@@ -1066,7 +1066,7 @@ public class LoginComposite extends Composite {
             }
         } else if (PluginChecker.isTIS()) {
             if (getConnection() != null) {
-                if (ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
+                if (getConnection().getRepositoryId().equals("local")) { //$NON-NLS-1$
                     passwordText.setVisible(false);
                     passwordLabel.setVisible(false);
                     branchesViewer.getControl().setVisible(false);
@@ -1105,8 +1105,8 @@ public class LoginComposite extends Composite {
                     iconLabel.setVisible(false);
                     onIiconLabel.setVisible(false);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
-                            .getFullProductName()));
+                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome",
+                            brandingService.getFullProductName()));
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
                     Font font = new Font(null, "Arial", 11, SWT.BOLD);// Arial courier
