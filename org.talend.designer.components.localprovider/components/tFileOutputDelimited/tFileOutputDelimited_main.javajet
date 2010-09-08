@@ -435,6 +435,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             %>
                             CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
         	            	CsvWriter<%=cid%>.flush();
+        	            	<%if(isInRowMode){%>
+        	            	out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+        	            	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
+                    		<%}%>
         	            }
             	        <% 
             	        	if (isParallelize) {
@@ -454,10 +458,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             				}
             	        %>
         	            if(isFirstCheckDyn_<%=cid %>){
-        	            	<%if(isInRowMode){%>
-        	            	out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
-        	            	strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length()); 	
-                    		<%}%>
                     		CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
             				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
             				CsvWriter<%=cid %>.setForceQualifier(true);
