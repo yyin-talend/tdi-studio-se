@@ -106,6 +106,10 @@ public class InputDataMapTableView extends DataMapTableView {
 
     protected boolean previousValidPersistentMode;
 
+    private static final String INNER_JOIN = "Inner Join";
+
+    private static final String LEFT_OUTER_JOIN = "Left Outer Join";
+
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
         previousValidPersistentMode = inputTable.isPersistent();
@@ -210,7 +214,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     }
 
                 } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
-                    String[] items = new String[] { "Inner Join", "null" };
+                    String[] items = new String[] { INNER_JOIN, LEFT_OUTER_JOIN };
                     functComboBox.setItems(items);
                     IDataMapTable parent = bean.getParent();
                     boolean innerJoin = ((InputTable) parent).isInnerJoin();
@@ -265,7 +269,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
                     previousValue = ((InputTable) bean.getParent()).isInnerJoin();
                     IDataMapTable parent = bean.getParent();
-                    if ("null".equals(value)) {
+                    if (LEFT_OUTER_JOIN.equals(value)) {
                         ((InputTable) parent).setInnerJoin(false);
                         previousInnerJoinSelection = false;
                     } else {
