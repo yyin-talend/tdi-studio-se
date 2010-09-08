@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
@@ -232,11 +231,9 @@ public class LoginComposite extends Composite {
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         setLayout(layout);
-
         toolkit = new FormToolkit(this.getDisplay());
         Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
-
         formBody.setBackgroundMode(SWT.INHERIT_DEFAULT);
         GridData formBodyGd = new GridData(GridData.FILL_BOTH);
         form.setLayoutData(formBodyGd);
@@ -246,7 +243,6 @@ public class LoginComposite extends Composite {
         createLayout.marginHeight = 0;
         createLayout.marginWidth = 0;
         formBody.setLayout(createLayout);
-
         if (!PluginChecker.isTIS()) {
             createTosRepositoryArea(formBody);
             createSeparator(formBody);
@@ -624,12 +620,12 @@ public class LoginComposite extends Composite {
 
     private void createTisRepositoryArea(Composite parent) {
         tisRepositoryComposite = toolkit.createComposite(parent);
-        tisRepositoryComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        tisRepositoryComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         tisRepositoryComposite.setLayout(new FormLayout());
         tisRepositoryComposite.setBackground(GREY_COLOR);
 
         FormData formData;
-        Group group = new Group(tisRepositoryComposite, SWT.BOLD);
+        Composite group = new Composite(tisRepositoryComposite, SWT.None);
 
         // tis repository button
         manageConnectionsButton = toolkit.createButton(tisRepositoryComposite, null, SWT.PUSH);
@@ -642,7 +638,7 @@ public class LoginComposite extends Composite {
 
         group.setLayout(new FormLayout());
         formData = new FormData();
-        formData.top = new FormAttachment(0, -6);
+        formData.top = new FormAttachment(0, 0);
         formData.left = new FormAttachment(0, -HORIZONTAL_SPACE);
         formData.right = new FormAttachment(manageConnectionsButton, -HORIZONTAL_SPACE);
         formData.bottom = new FormAttachment(100, 2);
@@ -1611,6 +1607,11 @@ public class LoginComposite extends Composite {
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null
                     && !"".equals(workSpace) && name != null && !"".equals(name)) {
                 getConnection().setComplete(true);
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                List a = new ArrayList();
+                a.add(getConnection());
+                prefManipulator.saveConnections(a);
+                perReader.saveConnections(a);
             }
         }
 

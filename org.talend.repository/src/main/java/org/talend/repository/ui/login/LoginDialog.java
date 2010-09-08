@@ -24,6 +24,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -134,7 +135,7 @@ public class LoginDialog extends TrayDialog {
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
         container.setLayout(layout);
-
+        container.setBackground(new Color(null, 215, 215, 215));
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
