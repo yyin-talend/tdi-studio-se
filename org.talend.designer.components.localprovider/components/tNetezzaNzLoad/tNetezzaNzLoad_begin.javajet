@@ -129,7 +129,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			java.sql.Statement stmtCreate_<%=cid%> =  null;
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>)
 					 throw new RuntimeException ("Failure on DROP_CREATE action, process terminated");
@@ -140,7 +140,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			java.sql.Statement stmtCreate_<%=cid%> = null; 
 			try{
 				stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+				stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
 			}catch(java.sql.SQLException e){
 				if(<%=dieOnError%>)
 					 throw new RuntimeException ("Table '" + tableName_<%=cid%>  + "' already exists. process terminated");
@@ -167,7 +167,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					java.sql.Statement stmtCreate_<%=cid%> = null;
 					try{
 						stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>"); 
+						stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)"); 
 					}catch(java.sql.SQLException e){
 						if(<%=dieOnError%>)
 							 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
@@ -195,7 +195,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 java.sql.Statement stmtCreate_<%=cid%> = null;
                 try{
                 stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");           
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");           
                 }catch(java.sql.SQLException e){
                 	if(<%=dieOnError%>)
 						 throw new RuntimeException ("Failure to create table '" + tableName_<%=cid%>  + "'. process terminated");
