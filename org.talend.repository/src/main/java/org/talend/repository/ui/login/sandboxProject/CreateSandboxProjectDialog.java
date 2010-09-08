@@ -239,6 +239,12 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     @Override
     protected void okPressed() {
+
+        boolean confirm = MessageDialog.openConfirm(getShell(), "Confirm", "Are you sure to create project?");
+        if (!confirm) {
+            super.okPressed();
+            return;
+        }
         //
         String projectName = projectLabelText.getText();
         String projectLanguage = languageCombo.getText();
