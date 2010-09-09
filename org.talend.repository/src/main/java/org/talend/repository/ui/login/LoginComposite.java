@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -58,6 +59,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -210,6 +213,8 @@ public class LoginComposite extends Composite {
     private Composite colorComposite = null;
 
     private Label passwordLabel = null;
+
+    private Hyperlink repositoryHyperlink = null;
 
     IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
@@ -412,13 +417,24 @@ public class LoginComposite extends Composite {
         repositoryText.setEditable(false);
         repositoryText.setEnabled(false);
 
-        Hyperlink repositoryHyperlink = toolkit.createHyperlink(repositoryComposite, "Need a shared repository?", SWT.NONE);
+        repositoryHyperlink = toolkit.createHyperlink(repositoryComposite, "Need a shared repository?", SWT.NONE);
         repositoryHyperlink.setBackground(repositoryComposite.getBackground());
         formData2 = new FormData();
         formData2.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
         formData2.left = new FormAttachment(repositoryText, HORIZONTAL_FOUR_SPACE);
         formData2.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         repositoryHyperlink.setLayoutData(formData2);
+        repositoryHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                try {
+                    Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/matrix.php");
+                } catch (IOException e1) {
+                    ExceptionHandler.process(e1);
+                }
+            }
+        });
 
         // user E_mail
         userEmailComposite = toolkit.createComposite(parent);
