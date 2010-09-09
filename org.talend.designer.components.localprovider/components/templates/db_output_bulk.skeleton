@@ -140,10 +140,14 @@ public class CLASS {
             this.sqlStmt = sql;
         }
         public String getSqlStmt() {
-			if (this.getColumn().getTalendType().equals("id_Geometry"))
-               return "GeomFromText(?, ?)";    // For PostGIS
-            else
+			if(this.getColumn()!=null) {
+				if (this.getColumn().getTalendType().equals("id_Geometry"))
+				   return "GeomFromText(?, ?)";    // For PostGIS
+				else
+					return this.sqlStmt;
+			} else {
 				return this.sqlStmt;
+			}
         }
         public void setValue(String value) {
             this.value = value;
