@@ -1607,11 +1607,6 @@ public class LoginComposite extends Composite {
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null
                     && !"".equals(workSpace) && name != null && !"".equals(name)) {
                 getConnection().setComplete(true);
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-                List a = new ArrayList();
-                a.add(getConnection());
-                prefManipulator.saveConnections(a);
-                perReader.saveConnections(a);
             }
         }
 
