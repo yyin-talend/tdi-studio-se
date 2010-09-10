@@ -282,10 +282,11 @@
 	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, zipInputStream_<%=cid%>);
 	            
 	        }
+	         bufferedStream_<%=cid%>.close();
+	         zipInputStream_<%=cid%>.close();
 	         System.out.println();
 			 System.out.println("Process finished"); 
-	      
-		//	zip_<%=cid %>.close();
+			 
 		<%} %>
 	}
 	
