@@ -10,6 +10,7 @@
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnectionCategory
     java.util.List
+    java.util.ArrayList
     java.util.Map
     "
 %>
@@ -280,12 +281,18 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       }
     }
 
-    public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid){      
+    public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid, List<Map<String, String>> list){
+	  List<String> listEmptyAsNull = new ArrayList<String>();
+	  for(Map<String, String> map : list){
+	  	if("true".equals(map.get("EMPTY_NULL"))){
+	  		listEmptyAsNull.add(map.get("SCHEMA_COLUMN"));
+	  	}
+	  }
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
       if (!isPrimitive){
-      	if(emptyIsNull){
+      	if(emptyIsNull && listEmptyAsNull.contains(metadataColumn.getLabel())){
 %>
-	        // validate nullable
+	        // validate nullable (empty as null)
 	        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
 <%
 		}else{
@@ -351,7 +358,8 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
 
     // NULL checking
     if (!bNullable){
-      checker.testNull(sInConnName, inColumn, cid);
+      List<Map<String, String>> list = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__EMPTY_NULL_TABLE__");
+      checker.testNull(sInConnName, inColumn, cid, list);
     }
       
     // type checking
