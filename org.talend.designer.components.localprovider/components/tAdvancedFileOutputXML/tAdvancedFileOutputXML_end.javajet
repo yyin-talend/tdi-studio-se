@@ -186,23 +186,25 @@ if(currentRowCount_<%=cid %> > 0){
 		}
 %>    
 	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+	if(doc_<%=cid %>.getRootElement()!=null){
 <%
 		if(!useStream && ("true").equals(outputAsXSD)){
 %>
-	doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", file_<%=cid%>.substring(file_<%=cid%>.lastIndexOf("/")+1)+".xsd");
-    doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", file_<%=cid%>.substring(file_<%=cid%>.lastIndexOf("/")+1)+".xsd");
+    	doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 <%
 		}
 %>  
-    nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
+    	nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
 <%
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>
-    nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
+    	nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
 <%
 		}
 %>
-    output_<%=cid%>.write(doc_<%=cid%>);
+    	output_<%=cid%>.write(doc_<%=cid%>);
+    }
 <%
 		if(!useStream){
 %>
