@@ -98,6 +98,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -120,6 +121,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -1144,7 +1146,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IFigure backgroundLayer = layerManager.getLayer(LayerConstants.GRID_LAYER);
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
         // create image from root figure
-        Image img = new Image(null, contentLayer.getSize().width, contentLayer.getSize().height);
+        int width = contentLayer.getSize().width;
+        int height = contentLayer.getSize().height;
+
+        Transform transform = new Transform(null);
+        org.eclipse.swt.graphics.Point newSize = ImageUtils.AdjustSize(new org.eclipse.swt.graphics.Point(width, height),
+                new org.eclipse.swt.graphics.Point(800, 600));
+        if (newSize.x < width) { // changed
+            final float p = (float) newSize.x / width;
+            transform.scale(p, p);
+        }
+        Image img = new Image(null, newSize.x, newSize.y);
         GC gc = new GC(img);
         Graphics graphics = new SWTGraphics(gc);
         Point point = contentLayer.getBounds().getTopLeft();
