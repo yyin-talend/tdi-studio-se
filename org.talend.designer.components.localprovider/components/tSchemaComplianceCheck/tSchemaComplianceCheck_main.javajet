@@ -83,7 +83,11 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
             true
           <%}%>        
           ) {
-			<% if(typeSelected.equals("BigDecimal") ) {%>
+			<% if(typeSelected.equals("Boolean") ) {%>
+				if(!"true".equals(<%=_sInConnName%>.<%=colName%>) || !"false".equals(<%=_sInConnName%>.<%=colName%>)){
+					throw new Exception("Wrong Boolean type!");
+				}
+			<% }else if(typeSelected.equals("BigDecimal") ) {%>
 				<%=typeSelected%> tester_<%=cid%> = new <%=typeSelected%>(<%=_sInConnName%>.<%=colName%>);
 			<% } else if(typeSelected.equals("Object")){%>
         		<%=typeSelected%> tester_<%=cid%> = new <%=typeSelected%>();
