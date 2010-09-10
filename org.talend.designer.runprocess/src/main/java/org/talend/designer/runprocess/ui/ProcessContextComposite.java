@@ -71,6 +71,8 @@ public class ProcessContextComposite extends Composite {
 
     private IContextListener contextListener;
 
+    private ProcessManager rubjobManager;
+
     /**
      * Constructs a new ProcessContextComposite.
      * 
@@ -118,7 +120,7 @@ public class ProcessContextComposite extends Composite {
         contextTableViewer.getControl().setLayoutData(data);
 
         // Add listeners
-
+        rubjobManager = ProcessManager.getInstance();
         contextComboViewer.addSelectionChangedListener(contextComboListener);
     }
 
@@ -130,6 +132,7 @@ public class ProcessContextComposite extends Composite {
                 IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
                 input = selectedContext.getContextParameterList();
                 process.setLastRunContext(selectedContext);
+                rubjobManager.setSelectContext(selectedContext);
                 // see bug 0003924
                 processNeedGenCode(process);
             }
