@@ -437,7 +437,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                 values.add(line);
             }
         }
-        getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()).setValue(values);
+        if (getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()) != null && values != null)
+            getElementParameter(EParameterName.TRACES_CONNECTION_FILTER.getName()).setValue(values);
         if (trace != null) {
             this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
         }
