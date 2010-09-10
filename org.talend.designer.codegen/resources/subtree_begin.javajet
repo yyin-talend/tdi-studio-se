@@ -22,11 +22,19 @@
 // Start of branch "<%= connection.getName()%>"
 if(<%= connection.getName()%> != null) { 
 <%
-    for (Object conn :NodeUtil.getAllInLineJobConnections(connection.getTarget())) {
-    	IConnection connec = (IConnection) conn;
-    	if ("REJECT".equals(connec.getConnectorName())) {
+	java.util.Set<? extends IConnection> conns = NodeUtil.getAllInLineJobConnections(connection.getTarget());
+	//Bug15479, if there is any non-Main_Flow link(OK/ERROR/IF/ITERATOR...) followed, REJECT will not assigned to NULL at here
+	boolean flag = true;
+	for(IConnection conn : conns){
+		if(conn.getLineStyle().compareTo(org.talend.core.model.process.EConnectionType.FLOW_MAIN) > 0){
+			flag = false;
+		}
+	}
+    for (Object obj : conns) {
+    	IConnection conn = (IConnection)obj;
+    	if("REJECT".equals(conn.getConnectorName()) && flag) {
 %>
-		<%= connec.getName()%> = null;
+			<%= conn.getName()%> = null;
 <%
     	}
     }
