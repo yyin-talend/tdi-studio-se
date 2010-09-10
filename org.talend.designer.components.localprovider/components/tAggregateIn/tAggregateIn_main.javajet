@@ -331,6 +331,14 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 										<%
 
     								%>
+    								}else{
+    								<%
+    									if(!JavaTypesManager.isJavaPrimitiveType(outputJavaType, outputColumn.isNullable())){// is Object%>
+    									<%= outputConn.getName() %>.<%=outOperation %> = null;
+    									<%
+    									}else{%>
+    									<%= outputConn.getName() %>.<%=outOperation %> = 0;
+    									<%}%>
     								}
     								<%
 								
