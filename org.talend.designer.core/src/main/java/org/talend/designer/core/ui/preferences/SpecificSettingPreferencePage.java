@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 
@@ -33,10 +32,8 @@ public class SpecificSettingPreferencePage extends FieldEditorPreferencePage imp
      */
     @Override
     protected void createFieldEditors() {
-        if (PluginChecker.isTIS()) {
-            addField(new BooleanFieldEditor(IRepositoryPrefConstants.ALLOW_SPECIFIC_CHARACTERS_FOR_SCHEMA_COLUMNS,
-                    "Allow specific characters (UTF8,...) for columns of schemas", getFieldEditorParent()));
-        }
+        addField(new BooleanFieldEditor(IRepositoryPrefConstants.ALLOW_SPECIFIC_CHARACTERS_FOR_SCHEMA_COLUMNS,
+                "Allow specific characters (UTF8,...) for columns of schemas", getFieldEditorParent()));
 
     }
 
