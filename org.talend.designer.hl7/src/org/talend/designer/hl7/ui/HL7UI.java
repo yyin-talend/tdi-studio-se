@@ -52,7 +52,6 @@ import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.model.IModel;
 import org.talend.designer.hl7.model.PrimitiveModel;
-import org.talend.designer.hl7.ui.footer.FooterComposite;
 import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.ui.header.HeaderComposite;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeContentProvider;
@@ -156,7 +155,7 @@ public class HL7UI {
         linker.init(messageViewer, hl7SchemaEditorView);
         linker.setManager(hl7Manager);
         initMessageTree();
-        new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
+        // new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
         initSchemaCombo();
         initTableViewer();
         initlinkers();
