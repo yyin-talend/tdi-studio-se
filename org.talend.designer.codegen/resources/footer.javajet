@@ -128,8 +128,11 @@
     public int runJobInTOS(String[] args) {
     	
         String lastStr = "";
+        boolean hasContextArg = false;
         for (String arg : args) {
-            if (arg.equalsIgnoreCase("--context_param")) {
+            if (arg.toLowerCase().contains("--context=")) {
+                hasContextArg = true;
+            } else if (arg.equalsIgnoreCase("--context_param")) {
                 lastStr = arg;
             } else if (lastStr.equals("")) {
                 evalParam(arg);
@@ -181,9 +184,9 @@
 	    		defaultProps.load(inContext);
     			inContext.close();
 	    		context = new ContextProperties(defaultProps);
-	    	}else {
+	    	}else if(hasContextArg){
 	    		//print info and job continue to run, for case: context_param is not empty.
-				System.err.println("Could not find the context " + contextStr);
+	    		System.err.println("Could not find the context " + contextStr);
 			}
 			
 			if(!context_param.isEmpty()) {						
