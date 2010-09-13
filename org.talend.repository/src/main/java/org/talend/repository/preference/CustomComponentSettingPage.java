@@ -13,6 +13,7 @@
 package org.talend.repository.preference;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         composite.setLayoutData(gridData);
         addTreeViewer(compositesSachForm);
-
+        init();
         return composite;
     }
 
@@ -394,6 +395,20 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
                         monitor.worked(10);
                     }
                 }
+                if (!backAdded.isEmpty()) {
+                    getCustomComponentSettings().removeAll(backAdded.values());
+                }
+
+                FileFilter ff = new FileFilter() {
+
+                    public boolean accept(File pathname) {
+                        if (pathname.getName().equals(".svn")) {
+                            return false;
+                        }
+                        return true;
+                    }
+
+                };
 
                 // share
                 for (IComponent component : sharedAdded.keySet()) {
@@ -402,7 +417,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
 
                     String targetPath = targetRoot + File.separatorChar + component.getName();
                     File targetFile = new File(targetPath);
-                    FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
+                    FilesUtils.copyFolder(sourceFile, targetFile, true, ff, null, true, false);
                     if (monitor != null) {
                         monitor.worked(10);
                     }
@@ -421,20 +436,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
             try {
                 eclipseProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
             } catch (CoreException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                service.svnEclipseHandlerCommit(eclipseProject, pro);
-            } catch (Exception e) {
-                // if commit fialed , reset custom component setting
-                resetCustomComponentSetting();
-                try {
-                    prf.saveProject(pro);
-                } catch (PersistenceException ex) {
-                    ExceptionHandler.process(ex);
-                }
-                ExceptionHandler.process(e);
+                ExceptionHandler.process(e1);
             }
 
         }
@@ -442,12 +444,6 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
             monitor.done();
         }
 
-    }
-
-    @Override
-    public boolean performCancel() {
-        resetCustomComponentSetting();
-        return super.performCancel();
     }
 
     private void resetCustomComponentSetting() {
