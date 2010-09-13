@@ -49,7 +49,7 @@ public class ChangeXmiSerialization extends AbstractProjectMigrationTask {
             }
 
             IProject iProject = ResourceModelUtils.getProject(project);
-            xmiResourceManager = XmiResourceManager.getInstance();
+            xmiResourceManager = new XmiResourceManager();
             xmiResourceManager.setUseOldProjectFile(true);
             if (!xmiResourceManager.hasTalendProjectFile(iProject)) {
                 return ExecutionResult.NOTHING_TO_DO;

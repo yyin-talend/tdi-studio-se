@@ -118,7 +118,7 @@ public class ImportItemUtil {
 
     private static final String SEGMENT_PARENT = ".."; //$NON-NLS-1$
 
-    private XmiResourceManager xmiResourceManager = XmiResourceManager.getInstance();
+    private XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
     private boolean hasErrors = false;
 
