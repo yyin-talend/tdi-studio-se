@@ -85,7 +85,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     public Command createCommand(Button button) {
         Node node = (Node) elem;
         IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
-        if (externalNode.getUniqueName().contains("tBRMS_")) {
+        if (externalNode != null && externalNode.getUniqueName().contains("tBRMS_")) {
             IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     "org.talend.designer.core.brms_provider");
             String propertyName = (String) button.getData(PARAMETER_NAME);
