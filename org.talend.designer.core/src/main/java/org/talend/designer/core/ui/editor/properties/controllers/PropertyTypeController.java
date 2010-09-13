@@ -422,6 +422,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
                     }
+                    if (ERepositoryCategoryType.WEBSERVICE.getName().equals(repositoryValue)) {
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+                    }
                     // salesforce
                     if (ERepositoryCategoryType.SALESFORCE.getName().equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = (RepositoryNode) repositoryService
