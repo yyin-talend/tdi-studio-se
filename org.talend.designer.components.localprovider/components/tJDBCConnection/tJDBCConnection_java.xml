@@ -38,7 +38,7 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      SHOW="false"
+      SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:JDBC"
     />

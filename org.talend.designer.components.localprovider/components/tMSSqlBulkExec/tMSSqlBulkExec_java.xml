@@ -40,6 +40,7 @@
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SQL_SERVER"
+      SHOW_IF="(ACTION=='EXPORT') or (USE_EXISTING_CONNECTION == 'false')"
     />
     
     <PARAMETER

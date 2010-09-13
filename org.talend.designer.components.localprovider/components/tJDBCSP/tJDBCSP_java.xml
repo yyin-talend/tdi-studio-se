@@ -37,7 +37,7 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      SHOW="false"
+      SHOW="true"
       NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:JDBC"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"

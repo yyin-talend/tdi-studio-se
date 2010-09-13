@@ -50,6 +50,7 @@
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
     />
     
     <PARAMETER
