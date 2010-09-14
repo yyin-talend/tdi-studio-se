@@ -9,6 +9,10 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+	if(destination!=null && !"".equals(destination)){
+		cid = destination;
+	}
 	
 	String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
 	String username = ElementParameterParser.getValue(node, "__USERNAME__");

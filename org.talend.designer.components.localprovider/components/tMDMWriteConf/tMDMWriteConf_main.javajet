@@ -17,6 +17,10 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+if(destination!=null && !"".equals(destination)){
+	cid = destination;
+}
 
 boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 String xmlField = ElementParameterParser.getValue(node,"__XMLFIELD__");

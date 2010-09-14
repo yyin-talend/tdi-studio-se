@@ -31,6 +31,15 @@
 	      NUM_ROW="10"
 	    >
 	    </PARAMETER>
+	    
+	    <PARAMETER 
+	    	NAME="DESTINATION"
+	    	FIELD="TEXT"
+	    	NUM_ROW="11"
+	    	SHOW_IF="false"
+	    	>
+	    	<DEFAULT>tMDMInputIn_1</DEFAULT>
+	    </PARAMETER>
 	
 	    <PARAMETER
 	      NAME="XMLFIELD"
