@@ -112,7 +112,6 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
     public void testPrecision(int _maxLength, int iPrecision, String _sInConnName, IMetadataColumn metadataColumn, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       String colName = metadataColumn.getLabel();
-      
       if (javaType == JavaTypesManager.BIGDECIMAL) {
         /* NULLable, in case input value is Null, do nothing... 
            Non-NULLable, 
@@ -123,23 +122,10 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
           if precision value is not empty or Null, checking "Precision" at first, if passed then checking "Length"
         */
       %>
-        if (<%=_sInConnName%>.<%=colName%> != null){        
-          int len1_<%=cid%> = 0; //number of digits before the decimal point(ignoring frontend zeroes)
-          int len2_<%=cid%> = 0; //number of digits after the decimal point(ignoring trailing  zeroes)
-          String s_<%=cid%> = (<%=_sInConnName%>.<%=colName%>).toPlainString();
-          
-          if (s_<%=cid%>.startsWith("-")){
-            s_<%=cid%> = s_<%=cid%>.substring(1);
-          }
-          s_<%=cid%> = org.apache.commons.lang.StringUtils.stripStart(s_<%=cid%>, "0");
-          
-          if (s_<%=cid%>.indexOf(".") >= 0){
-            len1_<%=cid%> = s_<%=cid%>.indexOf(".");    
-            s_<%=cid%> = org.apache.commons.lang.StringUtils.stripEnd(s_<%=cid%>, "0");
-            len2_<%=cid%> = s_<%=cid%>.length() - (len1_<%=cid%> + 1);
-          } else{
-            len1_<%=cid%> = s_<%=cid%>.length();
-          }
+        if (<%=_sInConnName%>.<%=colName%> != null){
+		  sccUtil_<%=cid%>.handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString());
+          int len1_<%=cid%> = sccUtil_<%=cid%>.len1;
+          int len2_<%=cid%> = sccUtil_<%=cid%>.len2;
 
           if (<%=iPrecision%> < len2_<%=cid%>) {
             ifPassed_<%=cid%> = false;
@@ -388,9 +374,9 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       checker.testPrecision(maxLength, Integer.parseInt(pre_iPrecision.toString()), sInConnName, inColumn, cid);
     }
     %>
-    resultErrorCode_<%=cid%> = errorUtil_<%=cid%>.handleErrorCode(errorCode_<%=cid%>,resultErrorCode_<%=cid%>);
+    resultErrorCode_<%=cid%> = sccUtil_<%=cid%>.handleErrorCode(errorCode_<%=cid%>,resultErrorCode_<%=cid%>);
     errorCode_<%=cid%> = 0;
-    resultErrorMessage_<%=cid%> = errorUtil_<%=cid%>.handleErrorMessage(errorMessage_<%=cid%>,resultErrorMessage_<%=cid%>,"<%=inColumn.getLabel()%>:");
+    resultErrorMessage_<%=cid%> = sccUtil_<%=cid%>.handleErrorMessage(errorMessage_<%=cid%>,resultErrorMessage_<%=cid%>,"<%=inColumn.getLabel()%>:");
     errorMessage_<%=cid%> = "";
     
   <%

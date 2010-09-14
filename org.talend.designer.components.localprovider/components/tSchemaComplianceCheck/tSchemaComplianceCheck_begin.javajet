@@ -17,7 +17,26 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
 	
-class ErrorUtil_<%=cid%>{
+class SccUtil_<%=cid%>{
+	public int len1;
+	public int len2;
+	void handleBigdecimalPrecision(String s){
+		//number of digits before the decimal point(ignoring frontend zeroes)
+		len1 = 0;
+		len2 = 0;
+		if(s.startsWith("-")){
+			s = s.substring(1);
+		}
+		s = org.apache.commons.lang.StringUtils.stripStart(s, "0");
+		  
+		if(s.indexOf(".") >= 0){
+			len1 = s.indexOf(".");    
+		    s = org.apache.commons.lang.StringUtils.stripEnd(s, "0");
+		    len2 = s.length() - (len1 + 1);
+		}else{
+		    len1 = s.length();
+		}
+	}
 	int handleErrorCode(int errorCode, int resultErrorCode){
 		if (errorCode > 0) {
 			if (resultErrorCode > 0) {
@@ -39,4 +58,4 @@ class ErrorUtil_<%=cid%>{
 		return resultErrorMessage;
 	}
 }
-ErrorUtil_<%=cid%> errorUtil_<%=cid%> = new ErrorUtil_<%=cid%>();
+SccUtil_<%=cid%> sccUtil_<%=cid%> = new SccUtil_<%=cid%>();
