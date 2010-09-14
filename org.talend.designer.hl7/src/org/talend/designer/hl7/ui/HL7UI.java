@@ -15,11 +15,11 @@ package org.talend.designer.hl7.ui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -32,26 +32,28 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
-import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
-import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
-import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.hl7.HL7InputComponent;
 import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.model.IModel;
 import org.talend.designer.hl7.model.PrimitiveModel;
+import org.talend.designer.hl7.ui.footer.FooterComposite;
 import org.talend.designer.hl7.ui.header.HL7Parse;
 import org.talend.designer.hl7.ui.header.HeaderComposite;
 import org.talend.designer.hl7.ui.provider.HL7MessageTreeContentProvider;
@@ -155,30 +157,24 @@ public class HL7UI {
         linker.init(messageViewer, hl7SchemaEditorView);
         linker.setManager(hl7Manager);
         initMessageTree();
-        // new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
+        new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
         initSchemaCombo();
         initTableViewer();
         initlinkers();
-        hl7SchemaEditorView.setReadOnly(isRepository);
-        final ICellModifier cellModifier = hl7SchemaEditorView.getTableViewerCreator().getCellModifier();
-        if (cellModifier instanceof DefaultCellModifier) {
-            ((DefaultCellModifier) cellModifier).addCellEditorAppliedListener(new ITableCellValueModifiedListener() {
 
-                public void cellValueModified(TableCellValueModifiedEvent e) {
-                    // uu
-
-                }
-            });
+        final boolean jobReadOnly = externalNode.getProcess().isReadOnly();
+        if (jobReadOnly || isRepository) {
+            hl7SchemaEditorView.setReadOnly(true);
         }
+        addModifylistener();
     }
 
     private void judgeRepository() {
-        for (IElementParameter param : this.hl7Manager.getHl7Component().getElementParametersWithChildrens()) {
-            if (param.getName().equals("REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$
-                if (param.getValue() != null && !"".equals(param.getValue().toString())) {
-                    isRepository = true;
-                    break;
-                }
+        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
+        if (elem != null) {
+            String value = (String) elem.getValue();
+            if (value != null && value.equals("REPOSITORY")) { //$NON-NLS-1$
+                isRepository = true;
             }
         }
     }
@@ -308,6 +304,32 @@ public class HL7UI {
         hl7SchemaEditorView.setShowDbTypeColumn(true, true, false);
         hl7SchemaEditorView.setShowDbColumnName(true, false);
 
+    }
+
+    private void addModifylistener() {
+        hl7SchemaEditorView.getMetadataEditor().addModifiedBeanListener(new IModifiedBeanListener<MetadataColumn>() {
+
+            public void handleEvent(ModifiedBeanEvent<MetadataColumn> event) {
+                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
+                    MetadataColumnImpl bean = (MetadataColumnImpl) event.bean;
+                    if (bean != null) {
+                        final Map<String, List<MetadataColumn>> schemaRelationMap = hl7Manager.getSchemaRelationMap();
+                        if (schemaRelationMap != null) {
+                            final String key = bean.getTable().getLabel();
+                            final List<MetadataColumn> schema = schemaRelationMap.get(key);
+                            if (schema != null) {
+                                for (MetadataColumn column : schema) {
+                                    if (column.getLabel().equals(event.previousValue)) {
+                                        schema.add(bean);
+                                        schema.remove(column);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // just judge if select the advance model
