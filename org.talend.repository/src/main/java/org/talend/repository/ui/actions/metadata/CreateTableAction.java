@@ -20,6 +20,7 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
+import org.talend.core.model.properties.BRMSConnectionItem;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
@@ -196,6 +197,10 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         }
 
                         if (item2 instanceof HL7ConnectionItem) {
+                            setEnabled(false);
+                            return;
+                        }
+                        if (item2 instanceof BRMSConnectionItem) {
                             setEnabled(false);
                             return;
                         }

@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.dialog;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -27,6 +28,10 @@ public abstract class BrmsDialog extends SelectionDialog {
     protected String propertyName;
 
     protected BidiMap hashCurControls;
+
+    protected ConnectionItem connectionItem;
+
+    protected boolean isRepository;
 
     /**
      * DOC Administrator BrmsDialog constructor comment.
@@ -41,6 +46,22 @@ public abstract class BrmsDialog extends SelectionDialog {
         this.propertyName = propertyName;
         this.node = node;
         this.hashCurControls = hashCurControls;
+    }
+
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
+
+    public void setConnectionItem(ConnectionItem connectionItem) {
+        this.connectionItem = connectionItem;
+    }
+
+    public boolean isRepository() {
+        return this.isRepository;
+    }
+
+    public void setRepository(boolean isRepository) {
+        this.isRepository = isRepository;
     }
 
 }

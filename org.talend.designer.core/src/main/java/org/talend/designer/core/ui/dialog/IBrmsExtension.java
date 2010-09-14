@@ -23,5 +23,7 @@ public interface IBrmsExtension {
 
     BrmsDialog createBrmsDialog(Shell parent);
 
+    BrmsDialog createBrmsDialogForRepository(Shell parent);
+
     public void initialize(Node node, String propertyName, BidiMap hashCurControls);
 }

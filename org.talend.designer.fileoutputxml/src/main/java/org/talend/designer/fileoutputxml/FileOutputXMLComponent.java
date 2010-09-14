@@ -361,7 +361,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @return
      */
     public boolean istWriteXMLField() {
-        return getComponent().getName().equals("tWriteXMLField"); //$NON-NLS-1$
+        return getComponent().getName().equals("tWriteXMLField") || getComponent().getName().equals("tBRMS"); //$NON-NLS-1$
     }
 
     /**

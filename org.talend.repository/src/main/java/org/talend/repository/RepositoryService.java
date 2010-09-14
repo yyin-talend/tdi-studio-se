@@ -74,6 +74,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.ui.DisableLanguageActions;
+import org.talend.core.ui.IBRMSProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IFTPProviderService;
 import org.talend.core.ui.IHL7ProviderService;
@@ -550,6 +551,14 @@ public class RepositoryService implements IRepositoryService {
                             IFTPProviderService.class);
                     if (service != null) {
                         relatedWizard = service.newFTPWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+                    }
+                }
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_BRMS)) {
+                if (PluginChecker.isBRMSPluginLoaded()) {
+                    IBRMSProviderService service = (IBRMSProviderService) GlobalServiceRegister.getDefault().getService(
+                            IBRMSProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newBRMSWizard(PlatformUI.getWorkbench(), creation, realNode);
                     }
                 }
             }

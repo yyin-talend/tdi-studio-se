@@ -50,7 +50,7 @@ import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.utils.TreeUtils;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
+import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlExtractorBgRefresher;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 
@@ -65,7 +65,7 @@ public class XmlFileSchema2TreeLinker extends TableToTreeLinker<Object, Object> 
 
     private Color selectedRelativeLinkColor;
 
-    private XmlFileOutputStep2Form form;
+    private AbstractXmlStepForm form;
 
     private StyleLink selectedLoopStyleLink;
 
@@ -98,11 +98,11 @@ public class XmlFileSchema2TreeLinker extends TableToTreeLinker<Object, Object> 
         initListeners();
     }
 
-    public XmlFileOutputStep2Form getForm() {
+    public AbstractXmlStepForm getForm() {
         return this.form;
     }
 
-    public void setForm(XmlFileOutputStep2Form form) {
+    public void setForm(AbstractXmlStepForm form) {
         this.form = form;
     }
 

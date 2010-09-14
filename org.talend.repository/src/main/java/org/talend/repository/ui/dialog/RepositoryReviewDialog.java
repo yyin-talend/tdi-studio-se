@@ -897,6 +897,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFTPConnectionNode();
                 }
             }
+            if (repositoryType.equals(ERepositoryCategoryType.BRMS.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_BRMS);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFTPConnectionNode();
+                }
+            }
             if (repositoryType.equals(ERepositoryCategoryType.HL7.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)

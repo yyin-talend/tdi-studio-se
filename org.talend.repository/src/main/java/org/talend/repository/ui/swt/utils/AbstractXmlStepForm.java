@@ -46,6 +46,8 @@ public abstract class AbstractXmlStepForm extends AbstractForm {
 
     public abstract MetadataTable getMetadataTable();
 
+    public abstract MetadataTable getMetadataOutputTable();
+
     public abstract TableViewer getSchemaViewer();
 
 }

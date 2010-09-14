@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.process;
 
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.properties.BRMSConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
@@ -126,7 +127,7 @@ public enum EDatabaseComponentName {
     FILEMDM(MDMConnectionItem.class, "tMDMInput", "tMDMOutput", "MDM"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     FTP(FTPConnectionItem.class, "", null, "FTP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
+    BRMS(BRMSConnectionItem.class, "tBRMS", "tBRMS", "BRMS"),
     LDAP(LDAPSchemaConnectionItem.class, "tLDAPInput", "tLDAPOutput", "LDAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"), //$NON-NLS-1$ //$NON-NLS-2$    

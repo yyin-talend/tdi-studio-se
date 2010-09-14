@@ -33,6 +33,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
@@ -95,7 +96,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
-            metadataHeaderFooterConnectionNode;
+            metadataHeaderFooterConnectionNode, metadataBRMSConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -217,6 +218,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 break;
             case METADATA_FILE_FTP:
                 this.metadataFTPConnectionNode = null;
+                break;
+            case METADATA_FILE_BRMS:
+                this.metadataBRMSConnectionNode = null;
                 break;
             case METADATA_FILE_LDIF:
                 this.metadataFileLdifNode = null;
@@ -475,6 +479,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFTPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_FTP);
             metadataNode.getChildren().add(metadataFTPConnectionNode);
         }
+
+        if (PluginChecker.isBRMSPluginLoaded()) {
+            metadataBRMSConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataBRMSConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_BRMS);
+            metadataBRMSConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_BRMS);
+            metadataNode.getChildren().add(metadataBRMSConnectionNode);
+        }
         // if (PluginChecker.isTIS() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
         // metadataSAPFunctionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
         // metadataSAPFunctionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAP_FUNCTION);
@@ -596,6 +607,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataFTPConnectionNode) {
                 convert(newProject, factory.getMetadataFTP(newProject, true), metadataFTPConnectionNode,
                         ERepositoryObjectType.METADATA_FILE_FTP, recBinNode);
+            } else if (parent == metadataBRMSConnectionNode) {
+                convert(newProject, factory.getMetadataBRMS(newProject, true), metadataBRMSConnectionNode,
+                        ERepositoryObjectType.METADATA_FILE_BRMS, recBinNode);
             } else if (parent == sqlPatternNode) {
                 convert(newProject, factory.getMetadataSQLPattern(newProject, true), sqlPatternNode,
                         ERepositoryObjectType.SQLPATTERNS, recBinNode);
@@ -1121,6 +1135,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             FTPConnection ftpConnection = (FTPConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, ftpConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_BRMS) {
+            BRMSConnection brmsConnection = (BRMSConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, brmsConnection);
         }
         if (type == ERepositoryObjectType.METADATA_MDMCONNECTION) {
             MDMConnection mdmConnection = (MDMConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
@@ -1655,6 +1674,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataFTPConnectionNode;
     }
 
+    public IRepositoryNode getMetadataBRMSConnectionNode() {
+        return this.metadataBRMSConnectionNode;
+    }
+
     public RepositoryNode getMetadataMDMConnectionNode() {
         return this.metadataMDMConnectionNode;
     }
@@ -1749,6 +1772,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataHL7ConnectionNode;
         case METADATA_FILE_FTP:
             return this.metadataFTPConnectionNode;
+        case METADATA_FILE_BRMS:
+            return this.metadataBRMSConnectionNode;
         case METADATA_MDMCONNECTION:
         case MDM_CONCEPT:
             return this.metadataMDMConnectionNode;

@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -25,6 +27,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * A job hierarchy provides navigations between a job and its resolved superjobs and subjobs for a specific job.
@@ -69,6 +72,11 @@ public class JobHierarchy {
 
     public Collection<IRepositoryViewObject> getContextDependencies(IProcess process) {
         List<Item> items = new ArrayList<Item>(1);
+        try {
+            process.setProperty(ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()));
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
         items.add(process.getProperty().getItem());
         return ProcessUtils.getProcessDependencies(ERepositoryObjectType.CONTEXT, items);
     }

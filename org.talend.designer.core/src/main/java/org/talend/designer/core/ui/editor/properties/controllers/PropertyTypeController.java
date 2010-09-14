@@ -457,6 +457,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
                     }
+                    // brms
+                    if (ERepositoryCategoryType.BRMS.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                        realNode = (RepositoryNode) repositoryService
+                                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_BRMS);
+                    }
 
                     if (realNode != null) {
                         ConnectionItem connItem = repositoryService.openMetadataConnection(true, realNode, node);

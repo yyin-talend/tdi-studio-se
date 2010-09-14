@@ -41,7 +41,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
+import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -67,7 +67,7 @@ public class XmlFileDragAndDropHandler {
         createDropTarget();
     }
 
-    private XmlFileOutputStep2Form getMainForm() {
+    private AbstractXmlStepForm getMainForm() {
         return linker.getForm();
     }
 

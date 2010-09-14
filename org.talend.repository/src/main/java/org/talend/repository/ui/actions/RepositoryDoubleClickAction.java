@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
@@ -194,6 +195,18 @@ public class RepositoryDoubleClickAction extends Action {
         return false;
     }
 
+    private boolean isBRMSTable(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_FILE_BRMS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ITreeContextualAction getAction(RepositoryNode obj) {
         final boolean isCDC = isLinkCDCNode(obj);
         final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
@@ -224,6 +237,10 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
                 if (isHL7Table(obj) && current.getClassForDoubleClick().equals(HL7Connection.class)) {
+                    return current;
+                }
+
+                if (isBRMSTable(obj) && current.getClassForDoubleClick().equals(BRMSConnection.class)) {
                     return current;
                 }
 

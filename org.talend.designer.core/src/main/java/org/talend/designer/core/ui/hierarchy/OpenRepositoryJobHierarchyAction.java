@@ -16,16 +16,22 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -59,13 +65,25 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
         RepositoryNode node = (RepositoryNode) obj;
         Property property = (Property) node.getObject().getProperty();
 
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        // update the property of the node repository object
+        if (node.getObject() instanceof IRepositoryObject) {
+            IRepositoryObject iobject = (IRepositoryObject) node.getObject();
+            iobject.setProperty(updatedProperty);
+        }
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
         // TODO should use a fake Process here to replace the real Process.
         // Process loadedProcess = new Process(property);
         // loadedProcess.loadXmlFile();
         IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-        Process loadedProcess = (Process) designerCoreService.getProcessFromProcessItem((ProcessItem) property.getItem());
+        Process loadedProcess = (Process) designerCoreService.getProcessFromProcessItem((ProcessItem) updatedProperty.getItem());
 
         OpenJobHierarchyAction openAction = new OpenJobHierarchyAction(this.getViewPart());
         openAction.run(loadedProcess);

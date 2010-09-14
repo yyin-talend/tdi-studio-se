@@ -37,13 +37,13 @@ import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
  */
 public class XmlFileSchemaDialog extends Dialog {
 
-    private AbstractXmlStepForm form;
+    protected AbstractXmlStepForm form;
 
-    private MetadataEmfTableEditor tableEditor;
+    protected MetadataEmfTableEditor tableEditor;
 
-    private MetadataEmfTableEditorView tableEditorView;
+    protected MetadataEmfTableEditorView tableEditorView;
 
-    private Map<MetadataColumn, String> changedNameColumns = new HashMap<MetadataColumn, String>();
+    protected Map<MetadataColumn, String> changedNameColumns = new HashMap<MetadataColumn, String>();
 
     public XmlFileSchemaDialog(Shell parent, AbstractXmlStepForm form) {
         super(parent);
@@ -92,7 +92,7 @@ public class XmlFileSchemaDialog extends Dialog {
         return composite;
     }
 
-    private void addListeners() {
+    protected void addListeners() {
         tableEditor.addModifiedBeanListener(new IModifiedBeanListener<MetadataColumn>() {
 
             public void handleEvent(ModifiedBeanEvent<MetadataColumn> event) {

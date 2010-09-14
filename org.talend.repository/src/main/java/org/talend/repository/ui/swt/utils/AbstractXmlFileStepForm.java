@@ -105,4 +105,10 @@ public abstract class AbstractXmlFileStepForm extends AbstractXmlStepForm {
     public TableViewer getSchemaViewer() {
         return null;
     }
+
+    @Override
+    public MetadataTable getMetadataOutputTable() {
+        return null;
+    }
+
 }

@@ -332,6 +332,7 @@ public class RepositoryNodeUtilities {
             case METADATA_FILE_EBCDIC:
             case METADATA_FILE_HL7:
             case METADATA_FILE_FTP:
+            case METADATA_FILE_BRMS:
             case METADATA_MDMCONNECTION:
             case METADATA_FILE_RULES:// added by hyWang
             case METADATA_FILE_LINKRULES:
