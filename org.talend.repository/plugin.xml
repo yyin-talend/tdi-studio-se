@@ -1230,6 +1230,13 @@
             id="org.talend.repository.model.migration.RenametGroupTotMatchGroup"
             name="Rename tGroup into tMatchGroup">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameCustomerColumnOftGenKey"
+            description="feature 15392"
+            id="org.talend.repository.model.migration.RenameCustomerColumnOftGenKey"
+            name="rename customer column">
+      </projecttask>
    </extension>
    
    <extension
