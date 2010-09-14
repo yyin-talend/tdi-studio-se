@@ -138,6 +138,8 @@ public class LoginComposite extends Composite {
 
     private static final Image LOGIN_WARNING_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_WARNING_ICON);
 
+    private static final Image LOGIN_CORRECT_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_CORRECT_ICON);
+
     private FormToolkit toolkit;
 
     private ComboViewer connectionsViewer;
@@ -429,7 +431,7 @@ public class LoginComposite extends Composite {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                 try {
-                    Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/matrix.php");
+                    Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");// http://www.talend.com/products-data-integration/matrix.php
                 } catch (IOException e1) {
                     ExceptionHandler.process(e1);
                 }
@@ -1021,8 +1023,8 @@ public class LoginComposite extends Composite {
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(false);
                     onIiconLabel.setVisible(false);
-                    iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    // iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    // onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
                     onIiconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
@@ -1043,9 +1045,12 @@ public class LoginComposite extends Composite {
                     Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
-                    iconLabel.setVisible(false);
-                    onIiconLabel.setVisible(false);
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CORRECT_IMAGE);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
 
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
                             .getFullProductName()));
@@ -1122,9 +1127,12 @@ public class LoginComposite extends Composite {
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
 
-                    iconLabel.setVisible(false);
-                    onIiconLabel.setVisible(false);
+                    iconLabel.setVisible(true);
+                    onIiconLabel.setVisible(true);
+                    iconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                    onIiconLabel.setImage(LOGIN_CORRECT_IMAGE);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
+                    onIiconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
                             .getFullProductName()));
                     int size = calStatusLabelFont(11, statusLabel.getText());

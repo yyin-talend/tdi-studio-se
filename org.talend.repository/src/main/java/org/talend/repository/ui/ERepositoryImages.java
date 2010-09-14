@@ -32,6 +32,7 @@ public enum ERepositoryImages implements IImage {
     OPEN_PROJECT_ICON("/icons/bullet_go.png"), //$NON-NLS-1$
     LOGIN_CRITICAL_ICON("/icons/messagebox_critical.png"), //$NON-NLS-1$
     LOGIN_WARNING_ICON("/icons/messagebox_warning.png"), //$NON-NLS-1$
+    LOGIN_CORRECT_ICON("/icons/messagebox_greenCoche.png"), //
     ADD_ICON("/icons/add.gif"), //$NON-NLS-N$
     DEFAULT_COMPONENT_ICON("/icons/default-32.png"), //$NON-NLS-N$
     DEFAULT_PROCESS_ICON("/icons/process_icon.gif"), //$NON-NLS-N$
