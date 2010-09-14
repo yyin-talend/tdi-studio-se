@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.login.sandboxProject;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -35,13 +38,19 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.User;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizardPage;
 import org.talend.repository.utils.ProjectHelper;
 
@@ -51,6 +60,8 @@ import org.talend.repository.utils.ProjectHelper;
 public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     private Group projectGroup;
+
+    private LabelledText urlText;
 
     private LabelledCombo languageCombo;
 
@@ -62,8 +73,13 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     private Project[] projects = null;
 
-    public CreateSandboxProjectDialog(Shell parentShell) {
+    private ConnectionBean bean;
+
+    private final ConnectionBean currentConnBean;
+
+    public CreateSandboxProjectDialog(Shell parentShell, ConnectionBean currentConnBean) {
         super(parentShell);
+        this.currentConnBean = currentConnBean;
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
@@ -72,6 +88,17 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         }
 
         initProjectList();
+    }
+
+    public boolean existedBeforeConn() {
+        return this.currentConnBean != null;
+    }
+
+    private String getExistedBeforeConnURL() {
+        if (existedBeforeConn()) {
+            return this.currentConnBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
+        }
+        return null;
     }
 
     private void initProjectList() {
@@ -107,9 +134,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         checkFields();
-        if (userLoginText != null) {
-            userLoginText.getTextControl().forceFocus(); // focus this first
-        }
+        // if (userLoginText != null) {
+        // userLoginText.getTextControl().forceFocus(); // focus this first
+        // }
         return contents;
     }
 
@@ -117,7 +144,14 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+        Composite urlComp = new Composite(composite, SWT.NONE);
+        urlComp.setLayout(new GridLayout(2, false));
+        urlComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        urlText = new LabelledText(urlComp, Messages.getString("CreateSandboxProjectDialog.UrlTitle")); //$NON-NLS-1$
+        if (existedBeforeConn()) {
+            urlText.setText(getExistedBeforeConnURL());
+            urlText.setEditable(false);
+        }
         projectGroup = new Group(composite, SWT.NONE);
         projectGroup.setText(Messages.getString("CreateSandboxProjectDialog.Settings")); //$NON-NLS-1$
         projectGroup.setLayout(new GridLayout(2, false));
@@ -151,6 +185,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                 checkFields();
             }
         };
+        urlText.addModifyListener(listener);
         projectLabelText.addModifyListener(listener);
     }
 
@@ -181,30 +216,41 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                 checkFields();
             }
         };
+
         userLoginText.addModifyListener(listener);
         userPassText.addModifyListener(listener);
+        userFirstNameText.addModifyListener(listener);
+        userLastNameText.addModifyListener(listener);
     }
 
     private void checkFields() {
 
         // check field
         String projectLabel = projectLabelText.getText();
-        if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText.getText()))) {
+        boolean enableProjectLabel = false;
+        if (urlText.getText().trim().length() == 0) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.URLEmptyMessage")); //$NON-NLS-1$
+        } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText
+                .getText()))) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, projectLabel)
                 || NewProjectWizardPage.isKeywords(projectLabel.toLowerCase())
                 || ECodeLanguage.JAVA.getName().equalsIgnoreCase(projectLabel)) {
             setErrorMessage(Messages.getString("NewProjectWizardPage.illegalCharacter")); //$NON-NLS-1$
-            checkProjectLabel(true);
+            enableProjectLabel = true;
         } else if (isProjectNameAlreadyUsed(projectLabel)) {
             setErrorMessage(Messages.getString("NewProjectWizardPage.projectNameAlredyExists")); //$NON-NLS-1$
-            checkProjectLabel(true);
+            enableProjectLabel = true;
         } else if (userPassText.getText().length() == 0) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userPasswordEmptyMessage")); //$NON-NLS-1$
+        } else if (userFirstNameText.getText().trim().length() == 0) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.FirstNameEmptyMessages")); //$NON-NLS-1$
+        } else if (userLastNameText.getText().trim().length() == 0) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.LastNameEmptyMessages")); //$NON-NLS-1$
         } else {
             setErrorMessage(null);
-            checkProjectLabel(false);
         }
+        checkProjectLabel(enableProjectLabel);
     }
 
     public void setErrorMessage(String newErrorMessage) {
@@ -227,7 +273,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
 
         if (projects == null) { // need check later.
-            return true;
+            return false;
         }
         for (Project project : projects) {
             if (Project.createTechnicalName(newProjectName).compareTo(project.getTechnicalLabel()) == 0) {
@@ -237,45 +283,109 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         return false;
     }
 
+    private String generateConnectionName(String login) {
+
+        if (Pattern.matches(RepositoryConstants.MAIL_PATTERN, login)) {
+            int at = login.indexOf('@');
+            if (at > -1) {
+                String mailName = login.substring(0, at);
+                if (mailName.length() > 0) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(mailName);
+                    sb.append("-Connection"); //$NON-NLS-1$
+                    return sb.toString();
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     protected void okPressed() {
 
-        boolean confirm = MessageDialog.openConfirm(getShell(), "Confirm", "Are you sure to create project?");
-        if (!confirm) {
-            super.okPressed();
-            return;
+        //        boolean confirm = MessageDialog.openConfirm(getShell(), Messages.getString("CreateSandboxProjectDialog.ConfirmTitle"), //$NON-NLS-1$
+        //                Messages.getString("CreateSandboxProjectDialog.ConfirmMessages")); //$NON-NLS-1$ 
+        // if (!confirm) {
+        // super.okPressed();
+        // return;
+        // }
+        //
+        final String url = urlText.getText();
+        final String projectName = projectLabelText.getText();
+        final String projectLanguage = languageCombo.getText();
+        final String projectAuthor = userLoginText.getText();
+        final String projectAuthorPass = userPassText.getText();
+        final String projectAuthorFirstname = userFirstNameText.getText();
+        final String projectAuthorLastname = userLastNameText.getText();
+
+        boolean needCreateNewConn = !existedBeforeConn() || !url.trim().equals(getExistedBeforeConnURL());
+
+        bean = new ConnectionBean();
+        bean.setRepositoryId(RepositoryConstants.REPOSITORY_REMOTE_ID);
+        bean.setUser(projectAuthor);
+        bean.setPassword(projectAuthorPass);
+        bean.setName(generateConnectionName(projectAuthor));
+        bean.setDescription(bean.getName());
+        bean.setWorkSpace(new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath());
+        bean.getDynamicFields().put(RepositoryConstants.REPOSITORY_URL, url);
+        bean.setComplete(true);
+
+        // set context for url and in order to create project later.
+        RepositoryContext repositoryContext = new RepositoryContext();
+        User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+        repositoryContext.setUser(user);
+        repositoryContext.setFields(bean.getDynamicFields());
+        repositoryContext.setClearPassword(projectAuthorPass);
+        Context ctx = CorePlugin.getContext();
+        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+
+        // set provider
+        if (!existedBeforeConn()) { // no connection
+            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
+                    .getRepositoryId()));
         }
         //
-        String projectName = projectLabelText.getText();
-        String projectLanguage = languageCombo.getText();
-        String projectAuthor = userLoginText.getText();
-        String projectAuthorPass = userPassText.getText();
-        String projectAuthorFirstname = userFirstNameText.getText();
-        String projectAuthorLastname = userLastNameText.getText();
-
         Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage, projectAuthor,
                 projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+        projectInfor.setSandboxProject(true);
 
         boolean ok = false;
         try {
-            Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
-                    projectInfor);
-            ok = (createProject != null);
+            if (false) {
+                Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
+                        projectInfor);
+                ok = (createProject != null);
+            } else {
+                ok = true;
+            }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
-            MessageDialog
-                    .openError(
-                            getShell(),
-                            Messages.getString("CreateSandboxProjectDialog.Failure"), Messages.getString("CreateSandboxProjectDialog.failureMessage") //$NON-NLS-1$ //$NON-NLS-2$
-                                    + "\n\n" + e.getMessage()); //$NON-NLS-1$
+            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.Failure"), //$NON-NLS-1$
+                    Messages.getString("CreateSandboxProjectDialog.failureMessage") //$NON-NLS-1$
+                            + "\n\n" + e.getMessage()); //$NON-NLS-1$
         }
         if (ok) { // if not created, will don't close the dialog
-            MessageDialog
-                    .openInformation(
-                            getShell(),
-                            Messages.getString("CreateSandboxProjectDialog.successTitile"), Messages.getString("CreateSandboxProjectDialog.successMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+            String messages = Messages.getString("CreateSandboxProjectDialog.successMessage");
+            if (needCreateNewConn) {
+                messages += "\n\n" //$NON-NLS-1$ 
+                        + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
+            }
+            MessageDialog.openInformation(getShell(), Messages.getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
+
+            if (needCreateNewConn) {
+                // save connection
+                ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
+                List<ConnectionBean> connections = instance.forceReadConnections();
+                connections.add(bean);
+                instance.saveConnections(connections);
+            }
             super.okPressed();
         }
+    }
+
+    public ConnectionBean getConnectionBean() {
+        return this.bean;
     }
 
 }

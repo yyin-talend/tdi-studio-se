@@ -55,7 +55,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -108,6 +107,8 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
  * 
  */
 public class LoginComposite extends Composite {
+
+    private static final String FONT_ARIAL = "Arial"; //$NON-NLS-1$
 
     private static final int VERTICAL_SPACE = 0;
 
@@ -162,21 +163,15 @@ public class LoginComposite extends Composite {
 
     private Button manageConnectionsButton;
 
-    private Button createSandboxProjectButton;
-
     private Button manageProjectsButton;
 
     private Label statusLabel;
-
-    private Composite messageImageStatus;
 
     private ComboViewer manageViewer;
 
     private Label manageProjectLabel1;
 
     private String lastWarnings;
-
-    // private Label existingLabel;
 
     private Composite differentWorkSpace;
 
@@ -264,19 +259,6 @@ public class LoginComposite extends Composite {
         createTosWelcomArea(formBody);
         createRestartArea(formBody);
 
-        // status
-        // createStatusArea(formBody);
-
-        // connection
-        // createConnectionArea(formBody);
-        //
-        // // empty line
-        // Label emptyLabel = toolkit.createLabel(formBody, null);
-        // emptyLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        //
-        // // Project
-        // createProjectArea(formBody);
-
         readConnectionData();
         fillContents();
         addListeners();
@@ -285,14 +267,16 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            // warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
             warningLabel.setVisible(true);
             restartBut.setVisible(false);
+        }
+        if (PluginChecker.isTIS()) {
+            manageViewer.getControl().setEnabled(true);
+            manageProjectsButton.setEnabled(true);
         }
         try {
             setStatusArea();
         } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
             ExceptionHandler.process(e);
         }
     }
@@ -309,14 +293,23 @@ public class LoginComposite extends Composite {
     private ManageItem[] getManageElements() {
         boolean tis = PluginChecker.isTIS();
         boolean isTisRemote = isTisRemote();
+        boolean hasConnection = (getConnection() != null);
+        boolean enableSanbox = false;
+        try {
 
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (factory.getRepositoryFactoryFromProvider() != null) {
+                enableSanbox = factory.enableSandboxProject();
+            }
+        } catch (PersistenceException e) {
+            //
+        }
         List<ManageItem> toReturn = new ArrayList<ManageItem>();
 
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        boolean usesDemoProjects = brandingService.getBrandingConfiguration().isUseDemoProjects();
+        IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+        boolean usesDemoProjects = service.getBrandingConfiguration().isUseDemoProjects();
 
-        if (!tis || !isTisRemote) { // demo for Tos and Tis_Local
+        if (hasConnection && (!tis || !isTisRemote)) { // demo for Tos and Tis_Local
             if (usesDemoProjects) {
                 toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
 
@@ -326,8 +319,6 @@ public class LoginComposite extends Composite {
                     }
                 });
             }
-        }
-        if (!tis || !isTisRemote) { // create new project for Tos and Tis_Local
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 
                         @Override
@@ -336,8 +327,7 @@ public class LoginComposite extends Composite {
                         }
 
                     });
-        }
-        if (!tis || !isTisRemote) { // import project for Tos and Tis_Local
+
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
 
                         @Override
@@ -357,28 +347,15 @@ public class LoginComposite extends Composite {
 
                 });
 
-        if (isTisRemote) { // Sendbox for Tis_Remote
-            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
-                    .getRepositoryId()));
+        if (!hasConnection || (isTisRemote && enableSanbox)) { // Sendbox for Tis_Remote
+            toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
-            boolean enableSandboxProject = false;
-            try {
-                enableSandboxProject = ProxyRepositoryFactory.getInstance().enableSandboxProject();
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
+                        @Override
+                        public void run() {
+                            createSendboxProject();
+                        }
 
-            if (enableSandboxProject) {
-                toReturn.add(new ManageItem("Create sandbox project") { //$NON-NLS-1$
-
-                            @Override
-                            public void run() {
-                                createSendboxProject();
-                            }
-
-                        });
-            }
+                    });
         }
         return toReturn.toArray(new ManageItem[] {});
     }
@@ -410,7 +387,7 @@ public class LoginComposite extends Composite {
         formData2.bottom = new FormAttachment(100, -HORIZONTAL_SPACE);
         repositoryLabel.setLayoutData(formData2);
 
-        Text repositoryText = toolkit.createText(repositoryComposite, "local", SWT.NONE);//$NON-NLS-N$
+        Text repositoryText = toolkit.createText(repositoryComposite, RepositoryConstants.REPOSITORY_LOCAL_ID, SWT.NONE);
         formData2 = new FormData();
         formData2.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
         formData2.left = new FormAttachment(repositoryLabel, HORIZONTAL_SPACE);
@@ -515,7 +492,7 @@ public class LoginComposite extends Composite {
         manageProjectsButton.setLayoutData(data);
 
         // TODO action
-        manageProjectLabel1 = toolkit.createLabel(tosActionComposite, "Action"); //$NON-NLS-1$
+        manageProjectLabel1 = toolkit.createLabel(tosActionComposite, "Action");
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
         data = new FormData();
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
@@ -546,7 +523,7 @@ public class LoginComposite extends Composite {
         branchesViewer.setLabelProvider(new LabelProvider());
         branchesViewer.getControl().setVisible(false);
 
-        Label tosProjectLabel = toolkit.createLabel(tosProjectComposite, "Project"); //$NON-NLS-1$
+        Label tosProjectLabel = toolkit.createLabel(tosProjectComposite, "Project");
 
         openProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
@@ -756,171 +733,6 @@ public class LoginComposite extends Composite {
         branchesViewer.getControl().setLayoutData(data);
     }
 
-    // private void createStatusArea(Composite parent) {
-    // messageImageStatus = toolkit.createComposite(parent);
-    // messageImageStatus.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    // messageImageStatus.setLayout(new FormLayout());
-    //
-    // Label createLabel = toolkit.createLabel(messageImageStatus, null);
-    // createLabel.setBackgroundImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
-    // FormData formData2 = new FormData();
-    // formData2.left = new FormAttachment(0);
-    // formData2.right = new FormAttachment(0, 16);
-    // formData2.top = new FormAttachment(0);
-    // formData2.bottom = new FormAttachment(0, 16);
-    // createLabel.setLayoutData(formData2);
-    //
-    // statusLabel = toolkit.createLabel(messageImageStatus, null);
-    // formData2 = new FormData();
-    // formData2.left = new FormAttachment(createLabel, HORIZONTAL_SPACE);
-    // formData2.right = new FormAttachment(100, -HORIZONTAL_SPACE);
-    // statusLabel.setLayoutData(formData2);
-    //
-    // }
-
-    // private void createConnectionArea(Composite parent) {
-    // Group groupConnection = new Group(parent, SWT.NONE);
-    // groupConnection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    // groupConnection.setLayout(createLayout(4));
-    //        groupConnection.setText(Messages.getString("LoginComposite.connection")); //$NON-NLS-1$       
-    //
-    // // Connections listbox:
-    //        Label connectionLabel = toolkit.createLabel(groupConnection, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
-    // // Point size = connectionLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-    // // TODO SML this method assume that this label is the longest and must be optimize
-    // // GridData conGrid2 = new GridData();
-    // // conGrid2.widthHint = horizontalMerge;
-    // // connectionLabel.setLayoutData(conGrid2);
-    //
-    // connectionsViewer = new ComboViewer(groupConnection, SWT.BORDER | SWT.READ_ONLY);
-    // GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
-    // connectionsViewer.getControl().setLayoutData(conGrid);
-    // connectionsViewer.setContentProvider(new ArrayContentProvider());
-    // connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
-    //
-    // manageConnectionsButton = toolkit.createButton(groupConnection, null, SWT.PUSH);
-    //        manageConnectionsButton.setToolTipText(Messages.getString("LoginComposite.manageConnectionsToolTipHint")); //$NON-NLS-1$
-    // manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
-    // manageConnectionsButton.setLayoutData(new GridData(SWT.BORDER | SWT.RIGHT));
-    //
-    // createSandboxProjectButton = toolkit.createButton(groupConnection, null, SWT.PUSH);
-    //        createSandboxProjectButton.setToolTipText(Messages.getString("LoginComposite.createSandboxProjectToolTipHint")); //$NON-NLS-1$
-    // createSandboxProjectButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
-    // createSandboxProjectButton.setLayoutData(new GridData(SWT.BORDER | SWT.RIGHT));
-    //
-    // // Username:
-    // IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-    // IBrandingService.class);
-    // boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
-    // Label userLabel;
-    // if (usesMailCheck) {
-    //            userLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
-    // } else {
-    //            userLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
-    // }
-    //        user = toolkit.createText(groupConnection, "", SWT.BORDER); //$NON-NLS-1$
-    // GridData userGrid2 = new GridData(GridData.FILL_HORIZONTAL);
-    // userGrid2.horizontalSpan = 3;
-    // user.setLayoutData(userGrid2);
-    // user.setEnabled(false);
-    //
-    // // Password:
-    //        Label passLabel = toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
-    //
-    //        passwordText = toolkit.createText(groupConnection, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
-    // GridData passwordGrid = new GridData(GridData.FILL_HORIZONTAL);
-    // passwordGrid.horizontalSpan = 3;
-    // passwordText.setLayoutData(passwordGrid);
-    //
-    // }
-
-    // private void createProjectArea(Composite parent) {
-    // Group group = new Group(parent, SWT.NONE);
-    //        group.setText(Messages.getString("LoginComposite.project")); //$NON-NLS-1$
-    // group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    //
-    // FormData data;
-    //
-    // FormLayout groupLayout = new FormLayout();
-    // group.setLayout(groupLayout);
-    //
-    // // go
-    // manageProjectsButton = toolkit.createButton(group, null, SWT.PUSH);
-    //        manageProjectsButton.setText(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
-    //
-    // manageViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
-    // manageViewer.setContentProvider(new ArrayContentProvider());
-    // manageViewer.setInput(getManageElements());
-    //
-    // data = new FormData();
-    // // data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
-    // data.left = new FormAttachment(manageViewer.getControl(), HORIZONTAL_SPACE);
-    // data.top = new FormAttachment(0, HORIZONTAL_SPACE);
-    // manageProjectsButton.setLayoutData(data);
-    //
-    // // TODO select
-    //        manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.existing")); //$NON-NLS-1$
-    // data = new FormData();
-    // data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(manageProjectsButton, VERTICAL_SPACE, SWT.CENTER);
-    //
-    // manageProjectLabel1.setLayoutData(data);
-    // // data for managerViewer
-    // data = new FormData();
-    // data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
-    // Point pbtnPoint = manageProjectsButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-    // data.right = new FormAttachment(100, -HORIZONTAL_SPACE * 2 - pbtnPoint.x);
-    // manageViewer.getControl().setLayoutData(data);
-    //
-    //        existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
-    // data = new FormData();
-    // data.left = new FormAttachment(manageProjectLabel1, 0, SWT.CENTER);
-    // data.top = new FormAttachment(manageProjectLabel1, 25);
-    // existingLabel.setLayoutData(data);
-    //
-    // // open
-    // openProjectBtn = toolkit.createButton(group, null, SWT.PUSH);
-    //        openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
-    //        openProjectBtn.setToolTipText(Messages.getString("LoginComposite.buttons.open.desc")); //$NON-NLS-1$
-    // Image image = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
-    // openProjectBtn.setImage(image);
-    // data = new FormData();
-    //
-    // data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(existingLabel, VERTICAL_SPACE, SWT.CENTER);
-    // openProjectBtn.setLayoutData(data);
-    // // refresh
-    // fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
-    //        // fillProjectsBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
-    //        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.buttons.fill.desc")); //$NON-NLS-1$
-    // fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
-    // data = new FormData();
-    // data.right = new FormAttachment(openProjectBtn, -HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(openProjectBtn, VERTICAL_SPACE, SWT.CENTER);
-    // fillProjectsBtn.setLayoutData(data);
-    // // branches
-    // branchesViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
-    // branchesViewer.setContentProvider(new ArrayContentProvider());
-    // branchesViewer.setLabelProvider(new LabelProvider());
-    // data = new FormData();
-    // data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(fillProjectsBtn, VERTICAL_SPACE, SWT.CENTER);
-    // branchesViewer.getControl().setLayoutData(data);
-    //
-    // // project
-    // projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
-    //
-    // projectViewer.setContentProvider(new ArrayContentProvider());
-    // projectViewer.setLabelProvider(new ProjectLabelProvider());
-    //
-    // data = new FormData();
-    // data.left = new FormAttachment(manageViewer.getControl(), 0, SWT.LEFT);
-    // data.right = new FormAttachment(branchesViewer.getControl(), -HORIZONTAL_SPACE);
-    // data.bottom = new FormAttachment(branchesViewer.getControl(), VERTICAL_SPACE, SWT.CENTER);
-    // projectViewer.getControl().setLayoutData(data);
-    // }
-
     private void createRestartArea(Composite parent) {
         iconLabel.setVisible(true);
         onIiconLabel.setVisible(true);
@@ -995,15 +807,6 @@ public class LoginComposite extends Composite {
         super.dispose();
     }
 
-    // public void setErrorMessage(String string) {
-    // if (string == null) {
-    // messageImageStatus.setVisible(false);
-    // } else {
-    // statusLabel.setText(string);
-    // messageImageStatus.setVisible(true);
-    // }
-    // }
-
     private boolean isTisRemote() {
         boolean isRemote = false;
         if (PluginChecker.isTIS()) {
@@ -1011,7 +814,7 @@ public class LoginComposite extends Composite {
             Object firstElement = selection.getFirstElement();
             if (firstElement instanceof ConnectionBean) {
                 ConnectionBean bean = (ConnectionBean) firstElement;
-                isRemote = "remote".equals(bean.getRepositoryId());
+                isRemote = RepositoryConstants.REPOSITORY_REMOTE_ID.equals(bean.getRepositoryId());
             }
         }
         return isRemote;
@@ -1030,7 +833,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (inuse) {
                     iconLabel.setVisible(true);
@@ -1042,7 +845,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
                     iconLabel.setVisible(true);
@@ -1057,7 +860,7 @@ public class LoginComposite extends Composite {
                     int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", size, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, size, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                     // fillProjectsBtn.setEnabled(true);
                 } else {
@@ -1070,7 +873,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 }
             } else {
@@ -1083,7 +886,7 @@ public class LoginComposite extends Composite {
                 statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
         } else if (PluginChecker.isTIS()) {
@@ -1111,7 +914,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (inuse) {
                     iconLabel.setVisible(true);
@@ -1123,7 +926,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
 
@@ -1138,7 +941,7 @@ public class LoginComposite extends Composite {
                     int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", size, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, size, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                     fillProjectsBtn.setEnabled(true);
                 } else {
@@ -1151,7 +954,7 @@ public class LoginComposite extends Composite {
                     statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
-                    Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                    Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                     statusLabel.setFont(font);
                 }
             } else {
@@ -1164,7 +967,7 @@ public class LoginComposite extends Composite {
                 statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
-                Font font = new Font(null, "Arial", 9, SWT.BOLD);// Arial courier
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             }
         }
@@ -1201,7 +1004,7 @@ public class LoginComposite extends Composite {
 
         // Check number of connection available.
         if (storedConnections.size() == 0) {
-
+            //
         } else if (storedConnections.size() == 1) {
             connectionsViewer.setSelection(new StructuredSelection(new Object[] { storedConnections.get(0) }));
         } else {
@@ -1306,7 +1109,6 @@ public class LoginComposite extends Composite {
                     try {
                         setStatusArea();
                     } catch (PersistenceException e) {
-                        // TODO Auto-generated catch block
                         ExceptionHandler.process(e);
                     }
                 }
@@ -1400,7 +1202,6 @@ public class LoginComposite extends Composite {
                 try {
                     setStatusArea();
                 } catch (PersistenceException e1) {
-                    // TODO Auto-generated catch block
                     ExceptionHandler.process(e1);
                 }
             }
@@ -1414,19 +1215,6 @@ public class LoginComposite extends Composite {
                 dialog.okPressed();
             }
         });
-
-        // createSandboxProjectButton.addSelectionListener(new SelectionAdapter() {
-        //
-        // @Override
-        // public void widgetSelected(SelectionEvent e) {
-        // setRepositoryContextInContext(); // must set the current connection
-        // CreateSandboxProjectDialog sandboxDialog = new CreateSandboxProjectDialog(getShell());
-        // if (sandboxDialog.open() == Window.OK) {
-        // fillProjectsBtn.notifyListeners(SWT.Selection, null); // refresh
-        //
-        // }
-        // }
-        // });
 
         restartBut.addSelectionListener(new SelectionAdapter() {
 
@@ -1482,11 +1270,28 @@ public class LoginComposite extends Composite {
         validateProject();
     }
 
-    public void createSendboxProject() {
-        setRepositoryContextInContext(); // must set the current connection
-        CreateSandboxProjectDialog sandboxDialog = new CreateSandboxProjectDialog(getShell());
+    private void createSendboxProject() {
+        if (getConnection() != null) {
+            setRepositoryContextInContext(); // must set the current connection, if existed
+        }
+        CreateSandboxProjectDialog sandboxDialog = new CreateSandboxProjectDialog(getShell(), getConnection());
+
         if (sandboxDialog.open() == Window.OK) {
-            fillProjectsBtn.notifyListeners(SWT.Selection, null); // refresh
+            ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
+            this.storedConnections = instance.forceReadConnections();
+            this.lastConnection = sandboxDialog.getConnectionBean().getName();
+
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+            prefManipulator.saveConnections(this.storedConnections);
+            perReader.saveConnections(this.storedConnections);
+
+            fillContents();
+            updateVisible();
+        }
+        try {
+            setStatusArea();
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
         }
     }
 
@@ -1504,34 +1309,6 @@ public class LoginComposite extends Composite {
             unpopulateRemoteLoginElements();
         }
         dialog.updateButtons();
-    }
-
-    private void updateButtons() {
-        if (isAuthenticationNeeded() || !validateFields()) {
-            manageViewer.getControl().setVisible(false);
-            manageProjectLabel1.setVisible(false);
-            manageProjectsButton.setVisible(false);
-            // createSandboxProjectButton.setVisible(false);
-            // existingLabel.setVisible(false);
-        } else {
-            manageViewer.getControl().setVisible(true);
-            manageProjectLabel1.setVisible(true);
-            manageProjectsButton.setVisible(true);
-            // createSandboxProjectButton.setVisible(true);
-            // existingLabel.setVisible(true);
-        }
-        // createSandboxProjectButton.setVisible(false);
-
-    }
-
-    private void updateSandboxButton() {
-        boolean enableSandboxProject = false;
-        try {
-            enableSandboxProject = ProxyRepositoryFactory.getInstance().enableSandboxProject();
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
-        // createSandboxProjectButton.setVisible(enableSandboxProject);
     }
 
     private boolean isWorkSpaceSame() {
@@ -1585,6 +1362,10 @@ public class LoginComposite extends Composite {
             // projectViewer.getControl().setEnabled(true);
             warningLabel.setVisible(false);
             restartBut.setVisible(false);
+        }
+        if (PluginChecker.isTIS()) {
+            manageViewer.getControl().setEnabled(true);
+            manageProjectsButton.setEnabled(true);
         }
     }
 
@@ -2030,37 +1811,6 @@ public class LoginComposite extends Composite {
             }
         }
         return brancesList;
-    }
-
-    private void hideBranchesView() {
-        boolean hide = true;
-        Project project = getProject();
-        ISVNProviderService svnService = getSVNService();
-        if (project != null && svnService != null) {
-            try {
-                if (!project.isLocal() && svnService.isSVNProject(project)) {
-                    hide = false;
-                }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        Control nextControl = null;
-        if (hide) {
-            nextControl = fillProjectsBtn;
-        } else {
-            nextControl = branchesViewer.getControl();
-        }
-        FormData data = new FormData();
-        data.left = new FormAttachment(manageViewer.getControl(), 0, SWT.LEFT);
-        data.right = new FormAttachment(nextControl, -HORIZONTAL_SPACE);
-        data.bottom = new FormAttachment(nextControl, VERTICAL_SPACE, SWT.CENTER);
-        projectViewer.getControl().setLayoutData(data);
-        projectViewer.getControl().getParent().layout();
-
-        branchesViewer.getControl().setVisible(!hide);
-
-        branchesViewer.getControl().getShell().pack();
     }
 
     private int calStatusLabelFont(int defaultSize, String text) {
