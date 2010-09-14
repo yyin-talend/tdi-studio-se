@@ -75,13 +75,13 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       %>
         try {
           if (
-      <%if (_bNullable){%>
-        <%=_sInConnName%>.<%=colName%> != null  && (!"".equals(<%=_sInConnName%>.<%=colName%>)) 
-          <%}else if (!isPrimitive){%> 
+      	<%if (_bNullable){%>
+        	<%=_sInConnName%>.<%=colName%> != null  && (!"".equals(<%=_sInConnName%>.<%=colName%>)) 
+        <%}else if (!isPrimitive){%> 
             <%=_sInConnName%>.<%=colName%> != null
-          <%}else{%> 
+        <%}else{%> 
             true
-          <%}%>        
+        <%}%>        
           ) {
 			<% if(typeSelected.equals("Boolean") ) {%>
 				if(!"true".equals(<%=_sInConnName%>.<%=colName%>) || !"false".equals(<%=_sInConnName%>.<%=colName%>)){
@@ -388,24 +388,10 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
       checker.testPrecision(maxLength, Integer.parseInt(pre_iPrecision.toString()), sInConnName, inColumn, cid);
     }
     %>
-    
-    if (errorCode_<%=cid%> > 0){
-      if (resultErrorCode_<%=cid%> > 0){
-        resultErrorCode_<%=cid%> = 16;
-    }else{
-        resultErrorCode_<%=cid%> = errorCode_<%=cid%>;
-      }
-      errorCode_<%=cid%> = 0;
-    }
-    
-    if (errorMessage_<%=cid%>.length() > 0){
-      if (resultErrorMessage_<%=cid%>.length() > 0){
-        resultErrorMessage_<%=cid%> += ";" + errorMessage_<%=cid%>.replaceFirst("\\|", "<%=inColumn.getLabel()%>:");
-      }else{
-        resultErrorMessage_<%=cid%> = errorMessage_<%=cid%>.replaceFirst("\\|", "<%=inColumn.getLabel()%>:");
-      }
-      errorMessage_<%=cid%>="";
-    }
+    resultErrorCode_<%=cid%> = errorUtil_<%=cid%>.handleErrorCode(errorCode_<%=cid%>,resultErrorCode_<%=cid%>);
+    errorCode_<%=cid%> = 0;
+    resultErrorMessage_<%=cid%> = errorUtil_<%=cid%>.handleErrorMessage(errorMessage_<%=cid%>,resultErrorMessage_<%=cid%>,"<%=inColumn.getLabel()%>:");
+    errorMessage_<%=cid%> = "";
     
   <%
   } // end for
