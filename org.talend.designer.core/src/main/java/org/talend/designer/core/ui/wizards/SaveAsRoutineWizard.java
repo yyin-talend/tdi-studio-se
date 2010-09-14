@@ -18,10 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -56,6 +53,12 @@ public class SaveAsRoutineWizard extends Wizard {
 
     private RoutineEditorInput routineEditorInput;
 
+    private RoutineItem oldRoutineItem;
+
+    private Property oldProperty;
+
+    private boolean isUpdate;
+
     public SaveAsRoutineWizard(EditorPart editorPart) {
 
         this.routineEditorInput = (RoutineEditorInput) editorPart.getEditorInput();
@@ -70,17 +73,12 @@ public class SaveAsRoutineWizard extends Wizard {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         this.path = service.getRepositoryPath((RepositoryNode) repositoryNode);
 
+        oldRoutineItem = (RoutineItem) routineEditorInput.getItem();
+        oldProperty = oldRoutineItem.getProperty();
+
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
 
-        Property oldProperty = routineEditorInput.getItem().getProperty();
-
-        this.property.setPurpose(oldProperty.getPurpose());
-        this.property.setDescription(oldProperty.getDescription());
-        this.property.setLabel(oldProperty.getLabel());
+        assginVlaues(this.property, oldProperty);
 
         routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
 
@@ -106,17 +104,27 @@ public class SaveAsRoutineWizard extends Wizard {
         boolean ok = false;
         try {
 
-            property.setId(repositoryFactory.getNextId());
+            isUpdate = isUpdate();
 
-            // copy the byte[] content, the new routineItem get the old saved content, it is not the newest.
-            RoutineItem oldItem = (RoutineItem) routineEditorInput.getItem();
-            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-            byteArray.setInnerContent(oldItem.getContent().getInnerContent());
-            routineItem.setContent(byteArray);
+            if (isUpdate) {
+                assginVlaues(oldProperty, property);
 
-            // don't need to add depended routines.
+                repositoryFactory.save(oldRoutineItem);
 
-            repositoryFactory.create(routineItem, mainPage.getDestinationPath());
+                // assign value
+                routineItem = oldRoutineItem;
+
+            } else {
+                property.setId(repositoryFactory.getNextId());
+
+                // copy the byte[] content, the new routineItem get the old saved content, it is not the newest.
+                ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+                byteArray.setInnerContent(oldRoutineItem.getContent().getInnerContent());
+                routineItem.setContent(byteArray);
+
+                // don't need to add depended routines.
+                repositoryFactory.create(routineItem, mainPage.getDestinationPath());
+            }
 
             ok = true;
 
@@ -130,5 +138,27 @@ public class SaveAsRoutineWizard extends Wizard {
 
     public RoutineItem getRoutineItem() {
         return this.routineItem;
+    }
+
+    // left = right
+    private void assginVlaues(Property leftProperty, Property rightProperty) {
+        // 6 fields, don't contains the "locker" and "path". and author , they are the same.
+        leftProperty.setLabel(rightProperty.getLabel());
+        leftProperty.setPurpose(rightProperty.getPurpose());
+        leftProperty.setDescription(rightProperty.getDescription());
+        // same author as old one.
+        leftProperty.setAuthor(rightProperty.getAuthor());
+        leftProperty.setVersion(rightProperty.getVersion());
+        leftProperty.setStatusCode(rightProperty.getStatusCode());
+    }
+
+    // if name is different, it will create a new job, if name is the same, means to update the job(version or
+    // description...)
+    private boolean isUpdate() {
+        if (oldProperty.getLabel().trim().equalsIgnoreCase(property.getLabel().trim())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

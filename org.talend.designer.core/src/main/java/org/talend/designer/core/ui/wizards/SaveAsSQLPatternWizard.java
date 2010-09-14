@@ -18,10 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -32,18 +29,18 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.wizards.routines.NewRoutineWizardPage;
+import org.talend.repository.ui.wizards.sqlpattern.NewSqlpatternWizardPage;
 
 /**
  * Wizard for the creation of a new project. <br/>
  * 
- * $Id: NewProcessWizard.java 46332 2010-08-05 06:48:56Z cli $
+ * $Id: SaveAsSQLPatternWizard.java 46332 2010-08-05 06:48:56Z cli $
  * 
  */
 public class SaveAsSQLPatternWizard extends Wizard {
 
     /** Main page. */
-    private NewRoutineWizardPage mainPage;
+    private NewSqlpatternWizardPage mainPage;
 
     /** Created project. */
     private SQLPatternItem sqlpatternItem;
@@ -55,6 +52,12 @@ public class SaveAsSQLPatternWizard extends Wizard {
     private IProxyRepositoryFactory repositoryFactory;
 
     private RepositoryEditorInput repositoryEditorInput;
+
+    private SQLPatternItem oldSqlpatternItem;
+
+    private Property oldProperty;
+
+    private boolean isUpdate;
 
     public SaveAsSQLPatternWizard(EditorPart editorPart) {
 
@@ -70,17 +73,12 @@ public class SaveAsSQLPatternWizard extends Wizard {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         this.path = service.getRepositoryPath((RepositoryNode) repositoryNode);
 
+        oldSqlpatternItem = (SQLPatternItem) repositoryEditorInput.getItem();
+        oldProperty = oldSqlpatternItem.getProperty();
+
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
 
-        Property oldProperty = repositoryEditorInput.getItem().getProperty();
-
-        this.property.setPurpose(oldProperty.getPurpose());
-        this.property.setDescription(oldProperty.getDescription());
-        this.property.setLabel(oldProperty.getLabel());
+        assginVlaues(this.property, oldProperty);
 
         sqlpatternItem = PropertiesFactory.eINSTANCE.createSQLPatternItem();
 
@@ -95,7 +93,7 @@ public class SaveAsSQLPatternWizard extends Wizard {
     }
 
     public void addPages() {
-        mainPage = new NewRoutineWizardPage(property, path);
+        mainPage = new NewSqlpatternWizardPage(property, path);
         // overwrite it.
         mainPage.setTitle("Save As");
         mainPage.setDescription("Save as another new SQLTemplate.");
@@ -109,17 +107,28 @@ public class SaveAsSQLPatternWizard extends Wizard {
         boolean ok = false;
         try {
 
-            property.setId(repositoryFactory.getNextId());
+            isUpdate = isUpdate();
 
-            // copy the byte[] content, the new routineItem get the old saved content, it is not the newest.
-            SQLPatternItem oldItem = (SQLPatternItem) repositoryEditorInput.getItem();
-            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-            byteArray.setInnerContent(oldItem.getContent().getInnerContent());
-            sqlpatternItem.setContent(byteArray);
+            if (isUpdate) {
+                assginVlaues(oldProperty, property);
 
-            // don't need to add depended routines.
+                repositoryFactory.save(oldSqlpatternItem);
 
-            repositoryFactory.create(sqlpatternItem, mainPage.getDestinationPath());
+                // assign value
+                sqlpatternItem = oldSqlpatternItem;
+
+            } else {
+                property.setId(repositoryFactory.getNextId());
+
+                // copy the byte[] content, the new routineItem get the old saved content, it is not the newest.
+                SQLPatternItem oldItem = (SQLPatternItem) repositoryEditorInput.getItem();
+                ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+                byteArray.setInnerContent(oldItem.getContent().getInnerContent());
+                sqlpatternItem.setContent(byteArray);
+
+                // don't need to add depended routines.
+                repositoryFactory.create(sqlpatternItem, mainPage.getDestinationPath());
+            }
 
             ok = true;
 
@@ -133,5 +142,27 @@ public class SaveAsSQLPatternWizard extends Wizard {
 
     public SQLPatternItem getSQLPatternItem() {
         return this.sqlpatternItem;
+    }
+
+    // left = right
+    private void assginVlaues(Property leftProperty, Property rightProperty) {
+        // 6 fields, don't contains the "locker" and "path". and author , they are the same.
+        leftProperty.setLabel(rightProperty.getLabel());
+        leftProperty.setPurpose(rightProperty.getPurpose());
+        leftProperty.setDescription(rightProperty.getDescription());
+        // same author as old one.
+        leftProperty.setAuthor(rightProperty.getAuthor());
+        leftProperty.setVersion(rightProperty.getVersion());
+        leftProperty.setStatusCode(rightProperty.getStatusCode());
+    }
+
+    // if name is different, it will create a new job, if name is the same, means to update the job(version or
+    // description...)
+    private boolean isUpdate() {
+        if (oldProperty.getLabel().trim().equalsIgnoreCase(property.getLabel().trim())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -32,9 +32,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor;
 import org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor;
 import org.talend.designer.core.ui.wizards.SaveAsRoutineWizard;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.routines.RoutineEditorInput;
@@ -99,6 +101,12 @@ public class SaveAsRoutineAction extends Action {
                 // @see:StandAloneTalendJavaEditor.doSave(IProgressMonitor monitor)
                 ByteArray byteArray = routineItem.getContent();
                 byteArray.setInnerContentFromFile(routineEditorInput.getFile());
+                IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getRepositoryService()
+                        .getProxyRepositoryFactory();
+                repFactory.save(routineItem);
+
+                // close the old editor
+                page.closeEditor(this.editorPart, false);
 
                 // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
                 switch (LanguageManager.getCurrentLanguage()) {
@@ -110,9 +118,6 @@ public class SaveAsRoutineAction extends Action {
                     break;
                 default:
                 }
-
-                // close the old editor
-                page.closeEditor(this.editorPart, false);
 
             } catch (Exception e) {
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Routine could not be saved" + " : "

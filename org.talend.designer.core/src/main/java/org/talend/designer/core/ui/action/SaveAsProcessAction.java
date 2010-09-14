@@ -64,11 +64,11 @@ public class SaveAsProcessAction extends Action {
                         .getProperty().getId(), false);
                 newJobEditorInput.setRepositoryNode(repositoryNode);
 
-                // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
-                page.openEditor(newJobEditorInput, MultiPageTalendEditor.ID, true);
-
                 // close the old editor
                 page.closeEditor(((AbstractTalendEditor) this.editorPart).getParent(), false);
+
+                // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
+                page.openEditor(newJobEditorInput, MultiPageTalendEditor.ID, true);
 
             } catch (Exception e) {
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Job could not be saved" + " : "

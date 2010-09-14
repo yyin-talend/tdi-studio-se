@@ -18,10 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -56,6 +53,12 @@ public class SaveAsProcessWizard extends Wizard {
 
     private JobEditorInput jobEditorInput;
 
+    private ProcessItem oldProcessItem;
+
+    private Property oldProperty;
+
+    private boolean isUpdate;
+
     public SaveAsProcessWizard(EditorPart editorPart) {
 
         this.jobEditorInput = (JobEditorInput) editorPart.getEditorInput();
@@ -70,17 +73,12 @@ public class SaveAsProcessWizard extends Wizard {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         this.path = service.getRepositoryPath((RepositoryNode) repositoryNode);
 
+        this.oldProcessItem = (ProcessItem) jobEditorInput.getItem();
+        oldProperty = this.oldProcessItem.getProperty();
+
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
 
-        Property oldProperty = jobEditorInput.getItem().getProperty();
-
-        this.property.setPurpose(oldProperty.getPurpose());
-        this.property.setDescription(oldProperty.getDescription());
-        this.property.setLabel(oldProperty.getLabel());
+        assginVlaues(this.property, oldProperty);
 
         processItem = PropertiesFactory.eINSTANCE.createProcessItem();
 
@@ -106,16 +104,28 @@ public class SaveAsProcessWizard extends Wizard {
         boolean ok = false;
         try {
 
-            property.setId(repositoryFactory.getNextId());
-
             IProcess2 loadedProcess = jobEditorInput.getLoadedProcess();
             ProcessType processType = loadedProcess.saveXmlFile();
-            processItem.setProcess(processType);
 
-            // don't need to add depended routines.
+            isUpdate = isUpdate();
 
-            repositoryFactory.create(processItem, mainPage.getDestinationPath());
+            if (isUpdate) {
+                oldProcessItem.setProcess(processType);
 
+                assginVlaues(oldProperty, property);
+
+                repositoryFactory.save(oldProcessItem);
+
+                // assign value
+                processItem = oldProcessItem;
+            } else {
+                processItem.setProcess(processType);
+
+                property.setId(repositoryFactory.getNextId());
+                // don't need to add depended routines.
+
+                repositoryFactory.create(processItem, mainPage.getDestinationPath());
+            }
             ok = true;
 
         } catch (Exception e) {
@@ -128,5 +138,31 @@ public class SaveAsProcessWizard extends Wizard {
 
     public ProcessItem getProcess() {
         return this.processItem;
+    }
+
+    public boolean isUpdateOperation() {
+        return this.isUpdate;
+    }
+
+    // if name is different, it will create a new job, if name is the same, means to update the job(version or
+    // description...)
+    private boolean isUpdate() {
+        if (oldProperty.getLabel().trim().equalsIgnoreCase(property.getLabel().trim())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // left = right
+    private void assginVlaues(Property leftProperty, Property rightProperty) {
+        // 6 fields, don't contains the "locker" and "path". and author , they are the same.
+        leftProperty.setLabel(rightProperty.getLabel());
+        leftProperty.setPurpose(rightProperty.getPurpose());
+        leftProperty.setDescription(rightProperty.getDescription());
+        // same author as old one.
+        leftProperty.setAuthor(rightProperty.getAuthor());
+        leftProperty.setVersion(rightProperty.getVersion());
+        leftProperty.setStatusCode(rightProperty.getStatusCode());
     }
 }
