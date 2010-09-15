@@ -142,5 +142,26 @@ public class FooterComposite extends Composite {
         okFormData.right = new FormAttachment(cancelButton, -5);
         autoMapFormData.left = new FormAttachment(0, 5);
 
+        // tree operation buttons
+        FormData treeNodeData = new FormData();
+        MoveDownTreeNodeButton moveDown = new MoveDownTreeNodeButton(this, foxManager);
+        treeNodeData.right = new FormAttachment(okButton, -5);
+        moveDown.getButton().setLayoutData(treeNodeData);
+
+        MoveUpTreeNodeButton moveUpBtn = new MoveUpTreeNodeButton(this, foxManager);
+        treeNodeData = new FormData();
+        treeNodeData.right = new FormAttachment(moveDown.getButton(), -5);
+        moveUpBtn.getButton().setLayoutData(treeNodeData);
+
+        RemoveTreeNodeButton removeNodeBtn = new RemoveTreeNodeButton(this, foxManager);
+        treeNodeData = new FormData();
+        treeNodeData.right = new FormAttachment(moveUpBtn.getButton(), -5);
+        removeNodeBtn.getButton().setLayoutData(treeNodeData);
+
+        AddTreeNodeButton addNodeBtn = new AddTreeNodeButton(this, foxManager);
+        treeNodeData = new FormData();
+        treeNodeData.right = new FormAttachment(removeNodeBtn.getButton(), -5);
+        addNodeBtn.getButton().setLayoutData(treeNodeData);
+
     }
 }

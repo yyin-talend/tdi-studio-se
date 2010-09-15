@@ -484,8 +484,8 @@ public class Schema2XMLDragAndDropHandler {
                 for (FOXTreeNode child : children) {
                     setTreeNodeRow(child, row);
                 }
-                children = element.getNameSpaceChildren();
-                for (FOXTreeNode child : children) {
+                final List<? extends FOXTreeNode> nameSpaceChildren = element.getNameSpaceChildren();
+                for (FOXTreeNode child : nameSpaceChildren) {
                     setTreeNodeRow(child, row);
                 }
             }

@@ -40,6 +40,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -76,6 +77,10 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.Imp
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.RemoveGroupAction;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.SetForLoopAction;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.action.SetGroupAction;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.buttons.AddTreeNodeButton;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.buttons.MoveDownTreeNodeButton;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.buttons.MoveUpTreeNodeButton;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.buttons.RemoveTreeNodeButton;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -198,8 +203,12 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
 
     private void addXmlFileViewer(final Composite mainComposite, final int width, final int height) {
         final Group group = Form.createGroup(mainComposite, 1, "Linker Target", height);
-        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         GridData data = new GridData(GridData.FILL_BOTH);
+        Composite composite = new Composite(group, SWT.BORDER);
+        composite.setLayout(new GridLayout());
+        composite.setLayoutData(data);
+        xmlViewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        data = new GridData(GridData.FILL_BOTH);
         xmlViewer.getControl().setLayoutData(data);
         xmlViewer.setUseHashlookup(true);
         Tree tree = xmlViewer.getTree();
@@ -301,6 +310,22 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
             }
 
         });
+        initToolBar(composite);
+
+    }
+
+    private void initToolBar(Composite parent) {
+        // tool buttons
+        Composite toolBarComp = new Composite(parent, SWT.BORDER);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 4;
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        toolBarComp.setLayout(layout);
+        toolBarComp.setLayoutData(data);
+        AddTreeNodeButton addTreeNodeBtn = new AddTreeNodeButton(toolBarComp, this);
+        RemoveTreeNodeButton removeNodeBtn = new RemoveTreeNodeButton(toolBarComp, this);
+        MoveUpTreeNodeButton moveUpBtn = new MoveUpTreeNodeButton(toolBarComp, this);
+        MoveDownTreeNodeButton moveDown = new MoveDownTreeNodeButton(toolBarComp, this);
     }
 
     private void createAction() {
@@ -970,6 +995,11 @@ public class XmlFileOutputStep2Form extends AbstractXmlFileStepForm {
             return (Text) editor.getControl();
         }
 
+    }
+
+    @Override
+    public TreeViewer getTreeViewer() {
+        return this.xmlViewer;
     }
 
 }

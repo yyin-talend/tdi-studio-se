@@ -112,16 +112,16 @@ public class Element extends FOXTreeNode {
         return super.getChildren();
     }
 
-    public List<FOXTreeNode> getAttributeChildren() {
-        List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
-        list.addAll(attributes);
-        return list;
+    public List<? extends FOXTreeNode> getAttributeChildren() {
+        // List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+        // list.addAll(attributes);
+        return this.attributes;
     }
 
-    public List<FOXTreeNode> getNameSpaceChildren() {
-        List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
-        list.addAll(nameSpaces);
-        return list;
+    public List<? extends FOXTreeNode> getNameSpaceChildren() {
+        // List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+        // list.addAll(nameSpaces);
+        return this.nameSpaces;
     }
 
 }

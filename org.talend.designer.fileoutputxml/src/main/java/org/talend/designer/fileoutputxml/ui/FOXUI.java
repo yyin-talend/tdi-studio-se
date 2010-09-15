@@ -219,6 +219,7 @@ public class FOXUI {
      */
     private void initLinker(TreeItem node, TableItem[] tableItems) {
         FOXTreeNode treeNode = (FOXTreeNode) node.getData();
+
         IMetadataColumn column = treeNode.getColumn();
         if (column != null) {
             if (this.getFoxManager().getFoxComponent().istFileOutputMSXML() && treeNode.getChildren().size() <= 0) {
@@ -327,7 +328,7 @@ public class FOXUI {
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.0"), height); //$NON-NLS-1$
         // group.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         xmlViewer.getControl().setLayoutData(gridData);
         xmlViewer.setUseHashlookup(true);
@@ -690,5 +691,9 @@ public class FOXUI {
             }
         }
         return false;
+    }
+
+    public TreeViewer getTreeViewer() {
+        return this.xmlViewer;
     }
 }

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.action;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,27 +47,32 @@ public class DeleteNodeAction extends SelectionProviderAction {
 
     @Override
     public void run() {
-        FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (node == null) {
-            return;
-        }
-        FOXTreeNode parent = node.getParent();
-        if (parent == null) {
-            return;
-        }
-        if (node instanceof Element) {
-            disconnectSubTree(node);
-        }
-        parent.removeChild(node);
+        List<FOXTreeNode> objectToRemove = new ArrayList<FOXTreeNode>();
 
-        // if (node.isLoop() || node.isGroup())
-        if (node.isLoop()) {
-            form.updateStatus();
+        final Iterator iterator = this.getStructuredSelection().iterator();
+        while (iterator.hasNext()) {
+            FOXTreeNode selectedNode = (FOXTreeNode) iterator.next();
+            objectToRemove.add(selectedNode);
         }
-        xmlViewer.refresh(parent);
+
+        for (FOXTreeNode node : objectToRemove) {
+            if (node == null) {
+                return;
+            }
+
+            FOXTreeNode parent = node.getParent();
+            if (parent == null) {
+                return;
+            }
+            if (node instanceof Element) {
+                disconnectSubTree(node);
+            }
+            parent.removeChild(node);
+
+            xmlViewer.refresh(parent);
+        }
         xmlViewer.expandAll();
-        form.redrawLinkers();
-        form.updateConnection();
+
     }
 
     private void disconnectSubTree(FOXTreeNode node) {

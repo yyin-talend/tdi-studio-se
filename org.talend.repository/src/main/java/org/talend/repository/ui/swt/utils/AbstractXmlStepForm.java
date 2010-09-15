@@ -15,6 +15,7 @@ package org.talend.repository.ui.swt.utils;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
@@ -32,6 +33,10 @@ public abstract class AbstractXmlStepForm extends AbstractForm {
      */
     public AbstractXmlStepForm(Composite parent, int style, String[] existingNames) {
         super(parent, style, existingNames);
+    }
+
+    public TreeViewer getTreeViewer() {
+        return null;
     }
 
     public abstract void redrawLinkers();
