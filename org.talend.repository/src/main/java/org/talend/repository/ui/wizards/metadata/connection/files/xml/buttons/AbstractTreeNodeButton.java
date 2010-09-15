@@ -18,8 +18,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -64,18 +62,14 @@ public abstract class AbstractTreeNodeButton implements ISelectionChangedListene
         });
 
         treeViewer = form.getTreeViewer();
+        addTreeListeners();
+
+    }
+
+    protected void addTreeListeners() {
         if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
             treeViewer.addSelectionChangedListener(this);
         }
-        button.addDisposeListener(new DisposeListener() {
-
-            public void widgetDisposed(DisposeEvent e) {
-                if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-                    treeViewer.removeSelectionChangedListener(AbstractTreeNodeButton.this);
-                }
-            }
-        });
-
     }
 
     public Button getButton() {

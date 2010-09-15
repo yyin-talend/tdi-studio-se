@@ -48,7 +48,6 @@ public class DeleteNodeAction extends SelectionProviderAction {
     @Override
     public void run() {
         List<FOXTreeNode> objectToRemove = new ArrayList<FOXTreeNode>();
-
         final Iterator iterator = this.getStructuredSelection().iterator();
         while (iterator.hasNext()) {
             FOXTreeNode selectedNode = (FOXTreeNode) iterator.next();
@@ -69,9 +68,14 @@ public class DeleteNodeAction extends SelectionProviderAction {
             }
             parent.removeChild(node);
 
+            if (node.isLoop() || node.isGroup()) {
+                form.updateStatus();
+            }
+
             xmlViewer.refresh(parent);
         }
         xmlViewer.expandAll();
+        form.redrawLinkers();
 
     }
 

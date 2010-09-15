@@ -13,6 +13,9 @@
 package org.talend.designer.fileoutputxml.ui.footer;
 
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -62,4 +65,25 @@ public class RemoveTreeNodeButton extends AbstractTreeNodeButton {
 
     }
 
+    @Override
+    protected void addTreeListeners() {
+        super.addTreeListeners();
+        if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
+            treeViewer.getTree().addKeyListener(new KeyListener() {
+
+                public void keyReleased(KeyEvent e) {
+                }
+
+                public void keyPressed(KeyEvent e) {
+                    if (e.keyCode == SWT.DEL) {
+                        final FOXUI foxUI = manager.getUiManager().getFoxUI();
+                        if (foxUI != null) {
+                            DeleteNodeAction deleteAction = new DeleteNodeAction(foxUI.getTreeViewer(), foxUI, "");
+                            deleteAction.run();
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
