@@ -49,26 +49,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 				org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
 				
-				String startDateString_<%=cid%> = <%=startDate%>;
-				String endDateString_<%=cid%> = <%=endDate%>;
+				String startDateString_<%=cid%> = <%=startDate.equals("")?null:startDate%>;
+				String endDateString_<%=cid%> = <%=endDate.equals("")?null:endDate%>;
             	com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl startXMLGregorianCalendar_<%=cid%> = null;
             	com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl endXMLGregorianCalendar_<%=cid%> = null;
             	if(startDateString_<%=cid%>!=null && !startDateString_<%=cid%>.equals("")){
             		java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					startdf_<%=cid%>.parse(<%=startDate%>);
+					startdf_<%=cid%>.parse(startDateString_<%=cid%>);
 					java.util.Calendar startCal_<%=cid%> = startdf_<%=cid%>.getCalendar();
 					java.util.GregorianCalendar startDate_<%=cid%> = (java.util.GregorianCalendar) startCal_<%=cid%>;
 					startXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(startDate_<%=cid%>);
 				}
             	if(endDateString_<%=cid%>!=null && !endDateString_<%=cid%>.equals("")){
                 	java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    enddf_<%=cid%>.parse(<%=endDate%>);
+                    enddf_<%=cid%>.parse(endDateString_<%=cid%>);
                     java.util.Calendar endCal_<%=cid%> = enddf_<%=cid%>.getCalendar();
                     java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 					endXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(endDate_<%=cid%>);
 				}
 				
-				java.util.List<org.talend.datastewardship.server.ws.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner%>,<%=tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>);
+				java.util.List<org.talend.datastewardship.server.ws.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>);
 				for(org.talend.datastewardship.server.ws.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
 					java.util.List<String> taskCols_<%=cid%> = taskResult_<%=cid%>.getItem();
 					
