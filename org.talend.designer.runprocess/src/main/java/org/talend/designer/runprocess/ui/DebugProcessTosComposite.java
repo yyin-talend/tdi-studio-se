@@ -335,11 +335,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             debugSize = computeSize(itemDropDown.getText());
 
             // set exec text to judge size
-            itemDropDown.setText(menuItem1.getText());
-            execSize = computeSize(itemDropDown.getText());
+            execSize = computeSize(menuItem1.getText());
             if (debugSize.x > execSize.x) {
-                formDatat.right = new FormAttachment(0, debugSize.x + 50);
+                formDatat.right = new FormAttachment(0, debugSize.x + 60);
             } else {
+                // itemDropDown.setText(menuItem1.getText());
+
                 formDatat.right = new FormAttachment(0, execSize.x + 50);
             }
         } else {
