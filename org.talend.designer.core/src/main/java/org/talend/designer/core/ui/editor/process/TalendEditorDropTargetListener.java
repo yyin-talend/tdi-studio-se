@@ -417,7 +417,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         List<IContext> listContext = contextManager.getListContext();
                         // context group will reflect absolutely if no context variable in contextViewer
                         if (!ConnectionContextHelper.containsVariable(contextManager)) {
-                            ConnectionContextHelper.checkAndAddContextsVarDND(contextItem, contextManager);
+                            // for bug 15608
+                            ConnectionContextHelper.addContextVarForJob(process, contextItem, contextManager);
+                            // ConnectionContextHelper.checkAndAddContextsVarDND(contextItem, contextManager);
                             created = true;
                         } else {
                             Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,

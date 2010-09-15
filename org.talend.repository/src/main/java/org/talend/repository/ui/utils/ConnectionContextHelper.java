@@ -669,6 +669,34 @@ public final class ConnectionContextHelper {
         return addedVars;
     }
 
+    /**
+     * DOC zli Comment method "addContextVarForJob".
+     * 
+     * @param process
+     * @param contextItem
+     * @param contextManager added for bug 15608
+     */
+    public static void addContextVarForJob(IProcess2 process, final ContextItem contextItem, final IContextManager contextManager) {
+        if (process == null || contextItem == null || contextManager == null) {
+            return;
+        }
+        CommandStack commandStack = process.getCommandStack();
+
+        Command cmd = new Command() {
+
+            @Override
+            public void execute() {
+                checkAndAddContextsVarDND(contextItem, contextManager);
+            }
+        };
+        if (commandStack == null) {
+            cmd.execute();
+        } else {
+            commandStack.execute(cmd);
+        }
+
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static void addContextVarForJob(IProcess2 process, final ContextItem contextItem, final Set<String> addedVars) {
         if (process == null || contextItem == null || addedVars == null || addedVars.isEmpty()) {
