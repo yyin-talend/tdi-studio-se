@@ -190,8 +190,12 @@ public class LDAPConnectionUtils {
                             attributeSet.add(ldapName);
                         } else {
                             Attributes myldapEntry = schema.getAttributes("AttributeDefinition/" + attOID);//$NON-NLS-1$
-                            ldapName = myldapEntry.get("NAME").get().toString();//$NON-NLS-1$
-                            attributeSet.add(ldapName);
+                            if (myldapEntry != null) {
+                                Attribute attribute = myldapEntry.get("NAME");
+                                ldapName = attribute.get().toString();//$NON-NLS-1$
+                                attributeSet.add(ldapName);
+                            }
+
                         }
                     }
                 }

@@ -23,6 +23,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -242,8 +245,19 @@ public class ShadowProcess<T extends IProcessDescription> {
             LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description.getEncoding(),
                     description.getLdapSchemaBean());
-
-            outNode.setMetadataList(inLDAPSchemaNode.getMetadataList());
+            List<IMetadataTable> metadataList = inLDAPSchemaNode.getMetadataList();
+            for (IMetadataTable metadataTable : metadataList) {
+                // for bug15450
+                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                for (IMetadataColumn metadataColumn : listColumns) {
+                    String label = metadataColumn.getLabel();
+                    boolean validColumnName = MetadataTool.isValidColumnName(label);
+                    if (!validColumnName) {
+                        metadataColumn.setLabel(label.replaceAll("[^a-zA-Z0-9_]", "_"));//$NON-NLS-N$//$NON-NLS-N$
+                    }
+                }
+            }
+            outNode.setMetadataList(metadataList);
             ps = new FileinToDelimitedProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
             break;
         case WSDL_SCHEMA:
