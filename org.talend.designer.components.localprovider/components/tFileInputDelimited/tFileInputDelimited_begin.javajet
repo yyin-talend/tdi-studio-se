@@ -236,7 +236,21 @@ if(temp_<%=cid %>.length() > 0){
 <%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 <%
 	}
-}else{ 
+}else if(column.getTalendType().equals("id_Dynamic")){
+%>
+dynamic_<%=cid%>.clearColumnValues();
+int fieldCount = fid_<%=cid%>.getColumnsCountOfCurrentRow();
+for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
+	if ((<%=sizeListColumns%>-1+i) < fieldCount){
+		dynamic_<%=cid%>.addColumnValue(fid_<%=cid%>.get(<%=sizeListColumns%>-1+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
+	}
+	else{
+		dynamic_<%=cid%>.addColumnValue("");
+	}
+}
+<%=firstConnName %>.<%=column.getLabel() %>=dynamic_<%=cid%>;
+<%
+}else{
 %>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 if(temp_<%=cid %>.length() > 0) {
 <%
@@ -254,20 +268,6 @@ if(temp_<%=cid %>.length() > 0) {
 						}
 					}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
-<%
-					}else if(column.getTalendType().equals("id_Dynamic")){
-%>
-for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
-	dynamic_<%=cid%>.clearColumnValues();
-}
-int fieldCount = fid_<%=cid%>.getColumnsCountOfCurrentRow();
-for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
-	if ((<%=sizeListColumns%>-1+i) < fieldCount)
-		dynamic_<%=cid%>.addColumnValue(fid_<%=cid%>.get(<%=sizeListColumns%>-1+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
-	else
-		dynamic_<%=cid%>.addColumnValue("");
-}
-<%=firstConnName %>.<%=column.getLabel() %>=dynamic_<%=cid%>;
 <%
 					} else { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
