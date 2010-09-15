@@ -94,6 +94,8 @@ final class TalendDndHelper {
                 }
                 if (hl7Output && !component.getName().equals("tHL7Output")) { //$NON-NLS-1$
                     value = false;
+                } else if (!hl7Output && !component.getName().equals("tHL7Input")) {//$NON-NLS-N$ bug15632
+                    value = false;
                 }
 
                 boolean flag = filterComponent(component, name, type);
