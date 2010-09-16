@@ -29,6 +29,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -104,12 +105,14 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                 // see 14713
                 String version = CodeGeneratorActivator.getDefault().getVersion();
                 if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
-                    String routineHeader = ((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(
-                            IBrandingService.class)).getRoutineLicenseHeader(version);
-                    routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                    IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+                    if (service instanceof AbstractBrandingService) {
+                        String routineHeader = ((AbstractBrandingService) service).getRoutineLicenseHeader(version);
+                        routineContent = routineContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                    }
                 }// end
                 String label = routineItem.getProperty().getLabel();
-                if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
+                if (!label.equals(ITalendSynchronizer.TEMPLATE) && routineContent != null) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
                     // routineContent = renameRoutinePackage(routineItem,
                     // routineContent);
