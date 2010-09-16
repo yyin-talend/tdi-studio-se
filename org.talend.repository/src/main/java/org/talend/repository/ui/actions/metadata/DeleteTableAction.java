@@ -51,6 +51,8 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.utils.AbstractResourceChangesService;
+import org.talend.repository.utils.ResourceChangesServiceRegister;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -118,27 +120,35 @@ public class DeleteTableAction extends AContextualAction {
                     if (abstractMetadataObject == null) {
                         return;
                     }
-
-                    if (SubItemHelper.isDeleted(abstractMetadataObject)) {
-                        if (confirm == null) {
-                            String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                            String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                                    + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                            confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
+                    boolean isSave = true;
+                    if (item instanceof ConnectionItem) {
+                        AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
+                                .getResourceChangeService(AbstractResourceChangesService.class);
+                        if (resChangeService != null) {
+                            isSave = resChangeService.handleResourceChange(((ConnectionItem) item).getConnection());
                         }
-                        if (confirm) {
-                            subRepositoryObject.removeFromParent();
+                    }
+                    if (isSave) {
+                        if (SubItemHelper.isDeleted(abstractMetadataObject) && isSave) {
+                            if (confirm == null) {
+                                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+                                confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
+                            }
+                            if (confirm) {
+                                subRepositoryObject.removeFromParent();
+                            }
+                        } else {
+                            SubItemHelper.setDeleted(abstractMetadataObject, true);
                         }
-                    } else {
-                        SubItemHelper.setDeleted(abstractMetadataObject, true);
+                        final String id = item.getProperty().getId();
+                        Item tmpItem = procItems.get(id);
+                        if (tmpItem == null) {
+                            procItems.put(id, item);
+                        }
+                        connections.add(node.getObject());
                     }
-                    final String id = item.getProperty().getId();
-                    Item tmpItem = procItems.get(id);
-                    if (tmpItem == null) {
-                        procItems.put(id, item);
-                    }
-                    connections.add(node.getObject());
-
                 }
             }
         }
