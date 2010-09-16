@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.sandboxProject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -63,6 +66,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     private LabelledText urlText;
 
+    private Button checkBtn;
+
     private LabelledCombo languageCombo;
 
     private LabelledText projectLabelText;
@@ -74,6 +79,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     private Project[] projects = null;
 
     private ConnectionBean bean;
+
+    private boolean enableSandboxProject;
 
     private final ConnectionBean currentConnBean;
 
@@ -144,14 +151,18 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // url
         Composite urlComp = new Composite(composite, SWT.NONE);
-        urlComp.setLayout(new GridLayout(2, false));
+        urlComp.setLayout(new GridLayout(3, false));
         urlComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         urlText = new LabelledText(urlComp, Messages.getString("CreateSandboxProjectDialog.UrlTitle")); //$NON-NLS-1$
         if (existedBeforeConn()) {
             urlText.setText(getExistedBeforeConnURL());
             urlText.setEditable(false);
         }
+        checkBtn = new Button(urlComp, SWT.PUSH);
+        checkBtn.setText(Messages.getString("CreateSandboxProjectDialog.CheckTitle")); //$NON-NLS-1$
+
         projectGroup = new Group(composite, SWT.NONE);
         projectGroup.setText(Messages.getString("CreateSandboxProjectDialog.Settings")); //$NON-NLS-1$
         projectGroup.setLayout(new GridLayout(2, false));
@@ -182,11 +193,54 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         ModifyListener listener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
+                if (e.widget == urlText.getTextControl()) {
+                    enableSandboxProject = false;
+                }
                 checkFields();
             }
         };
         urlText.addModifyListener(listener);
         projectLabelText.addModifyListener(listener);
+        checkBtn.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                Context ctx = CorePlugin.getContext();
+                RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+                try {
+                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    // set provider
+                    if (factory.getRepositoryFactoryFromProvider() == null) { // same !existedBeforeConn()
+                        factory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider
+                                .getRepositoriyById(RepositoryConstants.REPOSITORY_REMOTE_ID));
+                    }
+                    if (factory.isLocalConnectionProvider()) {
+                        MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
+                                Messages.getString("CreateSandboxProjectDialog.ErrorLocalSuppportMessages")); //$NON-NLS-1$ 
+                    } else {
+                        // set url for
+                        RepositoryContext repositoryContext = new RepositoryContext();
+                        repositoryContext.setFields(new HashMap<String, String>());
+                        repositoryContext.getFields().put(RepositoryConstants.REPOSITORY_URL, urlText.getText());
+                        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+                        //
+                        enableSandboxProject = factory.enableSandboxProject();
+                        if (!enableSandboxProject) {
+                            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
+                                    Messages.getString("CreateSandboxProjectDialog.ErrorSuppportMessages")); //$NON-NLS-1$ 
+                        }
+                    }
+                } catch (PersistenceException e1) {
+                    ExceptionHandler.process(e1);
+                } finally {
+                    // revert
+                    if (oldContext != null) {
+                        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, oldContext);
+                    }
+                }
+                checkFields();
+            }
+
+        });
     }
 
     private void createUserInfors(Composite parent) {
@@ -227,9 +281,14 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
         // check field
         String projectLabel = projectLabelText.getText();
+
+        checkEnable();
+
         boolean enableProjectLabel = false;
         if (urlText.getText().trim().length() == 0) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.URLEmptyMessage")); //$NON-NLS-1$
+        } else if (!this.enableSandboxProject) {
+            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.needCheckMessages")); //$NON-NLS-1$
         } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText
                 .getText()))) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
@@ -268,6 +327,15 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         } else {
             projectLabelText.getTextControl().setEditable(false);
         }
+    }
+
+    private void checkEnable() {
+        projectLabelText.setEnabled(this.enableSandboxProject);
+        languageCombo.setEnabled(this.enableSandboxProject);
+        userLoginText.setEnabled(this.enableSandboxProject);
+        userPassText.setEnabled(this.enableSandboxProject);
+        userFirstNameText.setEnabled(this.enableSandboxProject);
+        userLastNameText.setEnabled(this.enableSandboxProject);
     }
 
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
@@ -349,7 +417,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage, projectAuthor,
                 projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
         projectInfor.setSandboxProject(true);
-        projectInfor.setNoAuthor(!existedBeforeConn());
+        projectInfor.setNeedAuthor(existedBeforeConn());
 
         boolean ok = false;
         try {
@@ -363,7 +431,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                             + "\n\n" + e.getMessage()); //$NON-NLS-1$
         }
         if (ok) { // if not created, will don't close the dialog
-            String messages = Messages.getString("CreateSandboxProjectDialog.successMessage");
+            String messages = Messages.getString("CreateSandboxProjectDialog.successMessage"); //$NON-NLS-1$
             if (needCreateNewConn) {
                 messages += "\n\n" //$NON-NLS-1$ 
                         + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
