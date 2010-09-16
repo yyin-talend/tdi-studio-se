@@ -39,15 +39,16 @@ public class URIHelper {
     }
 
     public static IPath convert(URI uri) {
-        if (PLATFORM.equals(uri.scheme()) && uri.segmentCount() > 1 && RESOURCE.equals(uri.segment(0))) {
-            StringBuffer platformResourcePath = new StringBuffer();
-            for (int i = 1, size = uri.segmentCount(); i < size; ++i) {
-                platformResourcePath.append('/');
-                platformResourcePath.append(URI.decode(uri.segment(i)));
-            }
+        if (uri != null)
+            if (PLATFORM.equals(uri.scheme()) && uri.segmentCount() > 1 && RESOURCE.equals(uri.segment(0))) {
+                StringBuffer platformResourcePath = new StringBuffer();
+                for (int i = 1, size = uri.segmentCount(); i < size; ++i) {
+                    platformResourcePath.append('/');
+                    platformResourcePath.append(URI.decode(uri.segment(i)));
+                }
 
-            return new Path(platformResourcePath.toString());
-        }
+                return new Path(platformResourcePath.toString());
+            }
 
         return null;
     }
