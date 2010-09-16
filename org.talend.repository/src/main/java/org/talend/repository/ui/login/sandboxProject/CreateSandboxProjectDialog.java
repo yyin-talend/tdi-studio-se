@@ -349,16 +349,13 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage, projectAuthor,
                 projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
         projectInfor.setSandboxProject(true);
+        projectInfor.setNoAuthor(!existedBeforeConn());
 
         boolean ok = false;
         try {
-            if (false) {
-                Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
-                        projectInfor);
-                ok = (createProject != null);
-            } else {
-                ok = true;
-            }
+            Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
+                    projectInfor);
+            ok = (createProject != null);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.Failure"), //$NON-NLS-1$
