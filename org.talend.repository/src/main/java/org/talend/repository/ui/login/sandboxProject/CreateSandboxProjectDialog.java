@@ -158,7 +158,6 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         urlText = new LabelledText(urlComp, Messages.getString("CreateSandboxProjectDialog.UrlTitle")); //$NON-NLS-1$
         if (existedBeforeConn()) {
             urlText.setText(getExistedBeforeConnURL());
-            urlText.setEditable(false);
         }
         checkBtn = new Button(urlComp, SWT.PUSH);
         checkBtn.setText(Messages.getString("CreateSandboxProjectDialog.CheckTitle")); //$NON-NLS-1$
@@ -400,10 +399,17 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
         // set context for url and in order to create project later.
         RepositoryContext repositoryContext = new RepositoryContext();
-        User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
-        repositoryContext.setUser(user);
+        if (existedBeforeConn()) {
+            Context ctx = CorePlugin.getContext();
+            RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            repositoryContext.setUser(oldContext.getUser());
+            repositoryContext.setClearPassword(oldContext.getClearPassword());
+        } else {
+            User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+            repositoryContext.setUser(user);
+            repositoryContext.setClearPassword(projectAuthorPass);
+        }
         repositoryContext.setFields(bean.getDynamicFields());
-        repositoryContext.setClearPassword(projectAuthorPass);
         Context ctx = CorePlugin.getContext();
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
 
