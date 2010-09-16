@@ -15,10 +15,8 @@ package org.talend.repository.model.actions;
 import org.eclipse.core.runtime.IPath;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -42,8 +40,7 @@ public class RestoreObjectAction {
 
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT || sourceNode.getType() == ENodeType.SIMPLE_FOLDER) {
             IRepositoryViewObject objectToRestore = sourceNode.getObject();
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            return factory.getStatus(objectToRestore) == ERepositoryStatus.DELETED;
+            return objectToRestore.getRepositoryStatus() == ERepositoryStatus.DELETED;
         } else {
             return false;
         }

@@ -31,10 +31,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.ImportItemWizard;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -65,7 +66,7 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
                     canWork = false;
                 }
                 if (repositoryNode.getObject() != null
-                        && repositoryNode.getObject().getProperty().getItem().getState().isDeleted()) {
+                        && repositoryNode.getObject().getRepositoryStatus() == ERepositoryStatus.DELETED) {
                     canWork = false;
                 }
             }

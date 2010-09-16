@@ -132,8 +132,8 @@ public class EditPropertiesAction extends AContextualAction {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
             }
             // refresh ...
-            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                    IJobSettingsView.ID);
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView(IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
@@ -213,8 +213,8 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), Messages
-                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                MessageDialog.openError(this.getViewPart().getViewSite().getShell(),
+                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 
@@ -304,9 +304,8 @@ public class EditPropertiesAction extends AContextualAction {
                     canWork = false;
                     break;
                 }
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 if (canWork) {
-                    canWork = (factory.getStatus(node.getObject()) != ERepositoryStatus.DELETED);
+                    canWork = (node.getObject().getRepositoryStatus() != ERepositoryStatus.DELETED);
                 }
                 if (canWork) {
                     canWork = isLastVersion(node);

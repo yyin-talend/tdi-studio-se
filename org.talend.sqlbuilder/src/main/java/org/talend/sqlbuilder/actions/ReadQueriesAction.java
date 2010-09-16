@@ -70,8 +70,8 @@ public class ReadQueriesAction extends AContextualAction {
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
 
-        Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
+        Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
 
@@ -92,8 +92,7 @@ public class ReadQueriesAction extends AContextualAction {
 
             switch (repositoryNode.getType()) {
             case REPOSITORY_ELEMENT:
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                if (factory.getStatus(repositoryNode.getObject()) == ERepositoryStatus.DELETED) {
+                if (repositoryNode.getObject().getRepositoryStatus() == ERepositoryStatus.DELETED) {
                     canWork = false;
                 }
                 if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS

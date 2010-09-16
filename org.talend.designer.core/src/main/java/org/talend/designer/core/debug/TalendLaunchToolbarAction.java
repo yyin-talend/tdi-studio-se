@@ -116,7 +116,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         if (jobId != null) {
             if (allVersion != null && allVersion.length > 0) {
                 for (IRepositoryViewObject obj : allVersion) {
-                    if (obj.getProperty().getVersion().equals(jobVersion)) {
+                    if (obj.getVersion().equals(jobVersion)) {
                         return true;
                     }
                 }
@@ -161,7 +161,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             if ((o instanceof RepositoryNode)) {
                 RepositoryNode node = (RepositoryNode) o;
                 if (node.getObject() != null && node.getObject().getType().equals(ERepositoryObjectType.PROCESS)) {
-                    action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getProperty().getLabel()); //$NON-NLS-1$
+                    action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getLabel()); //$NON-NLS-1$
                     return;
                 }
             }

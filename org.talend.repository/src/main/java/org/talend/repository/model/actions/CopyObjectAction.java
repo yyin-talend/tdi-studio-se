@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -33,11 +32,11 @@ import org.talend.core.ui.ICDCProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.dialog.PastSelectorDialog;
 
 /**
@@ -69,7 +68,6 @@ public class CopyObjectAction {
         IRepositoryViewObject objectToCopy = sourceNode.getObject();
 
         // Cannot move logically deleted objects :
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         // try {
         if (objectToCopy != null && objectToCopy.getId() == null) {
             return false;
@@ -80,15 +78,7 @@ public class CopyObjectAction {
         // }
 
         // if copied item has been deleted
-        try {
-            if (factory.getLastVersion(objectToCopy.getId()) == null) {
-                return false;
-            }
-        } catch (PersistenceException e) {
-            return false;
-        }
-
-        if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
+        if (objectToCopy == null || objectToCopy.getRepositoryStatus() == ERepositoryStatus.DELETED) {
             return false;
         }
 

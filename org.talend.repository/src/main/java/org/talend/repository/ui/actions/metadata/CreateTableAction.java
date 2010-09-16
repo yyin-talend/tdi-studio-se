@@ -36,12 +36,12 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * Action used to create table on metadata.<br/>
@@ -159,8 +159,8 @@ public class CreateTableAction extends AbstractCreateTableAction {
             setEnabled(false);
         } else {
             if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED
-                        || factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER) {
+                if (node.getObject().getRepositoryStatus() == ERepositoryStatus.DELETED
+                        || node.getObject().getRepositoryStatus() == ERepositoryStatus.LOCK_BY_OTHER) {
                     setEnabled(false);
                     return;
                 }

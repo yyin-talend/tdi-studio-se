@@ -31,12 +31,12 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -59,7 +59,7 @@ public class ReadTableAction extends AbstractCreateTableAction {
         setEnabled(false);
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-            if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+            if (node.getObject().getRepositoryStatus() == ERepositoryStatus.DELETED) {
                 return;
             }
             ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
