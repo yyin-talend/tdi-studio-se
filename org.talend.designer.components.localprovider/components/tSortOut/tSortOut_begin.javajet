@@ -772,7 +772,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
-				dos.writeByte(-1);
+				dos.writeInt(-1);
 			} else {
 				java.io.ByteArrayOutputStream bao_<%=column.getLabel() %> = new java.io.ByteArrayOutputStream();
             	java.io.ObjectOutputStream oos_<%=column.getLabel() %> = new java.io.ObjectOutputStream(bao_<%=column.getLabel() %>);
