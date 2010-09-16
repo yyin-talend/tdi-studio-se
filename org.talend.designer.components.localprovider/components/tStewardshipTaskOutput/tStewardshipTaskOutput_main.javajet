@@ -121,9 +121,7 @@ if(<%=conn.getName() %>.<%=recordType%>){
 if(recordColumns.size()>0){
 	for(Map<String, String> recordColumn:recordColumns){
 %>
-    if(<%=conn.getName() %>.<%=recordColumn.get("CONTENT")%>!=null && !"".equals(<%=dataUtil.getValueExpression(conn.getName(),recordColumn.get("CONTENT"))%>)){
     	record_<%=cid%>.addSrcColumn("<%=recordColumn.get("CONTENT")%>",<%=dataUtil.getValueExpression(conn.getName(),recordColumn.get("CONTENT"))%>,"<%=dataUtil.getColType(recordColumn.get("CONTENT"))%>","<%=dataUtil.isKey(recordColumn.get("CONTENT"))%>");
-    }
 <%
 	}
 }
