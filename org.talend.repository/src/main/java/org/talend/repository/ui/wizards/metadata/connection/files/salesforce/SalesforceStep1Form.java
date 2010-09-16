@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -346,6 +347,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     getConnection().setUseProxy(false);
                     useProxyBtn.setSelection(false);
                 }
+
+                MessageDialog messageDialog = new MessageDialog(getShell(), "Restare", null, //$NON-NLS-1$
+                        "If you have modified the http set,you have to restare the system!", MessageDialog.INFORMATION,
+                        new String[] { "OK" }, 0);
+                messageDialog.open();
             }
         });
         proxyHostText.addModifyListener(new ModifyListener() {
@@ -355,7 +361,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                     getConnection().setProxyHost(proxyHostText.getText());
                 }
-
             }
 
         });
@@ -366,7 +371,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                     getConnection().setProxyPort(proxyPortText.getText());
                 }
-
             }
 
         });
@@ -504,14 +508,22 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     monitorWrap.worked(50);
                     boolean socksProxy = false;
                     boolean httpProxy = false;
+                    boolean httpsProxy = false;
                     if (useProxyBtn.getSelection()) {
                         socksProxy = true;
                     } else if (useHttpBtn.getSelection()) {
-                        httpProxy = true;
+                        String webURL = webServiceUrlText.getText();
+                        if (webURL.startsWith("https")) {
+                            httpsProxy = true;
+                        } else {
+                            httpProxy = true;
+                        }
                     }
                     try {
+                        salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
                         salesforceAPI.setProxy(proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
-                                proxyPasswordText.getText(), httpProxy, socksProxy);
+                                proxyPasswordText.getText(), httpProxy, socksProxy, httpsProxy);
+
                         if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
                             describeGlobalResult = describeGlobal();
                             if (describeGlobalResult != null) {
@@ -525,7 +537,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                         }
                         monitorWrap.worked(50);
 
-                        salesforceAPI.resetProxy();
+                        salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
                         INode node = getSalesforceNode();
 
                         List list = new ArrayList();

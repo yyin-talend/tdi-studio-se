@@ -49,6 +49,26 @@ public class SalesforceModuleParseAPI {
 
     public static final String USE_HTTP_PROXY = "useHttpBtn";
 
+    public static final String HTTPS_PROXY_HOST = "https.proxyHost"; //$NON-NLS-1$
+
+    public static final String HTTPS_PROXY_PORT = "https.proxyPort"; //$NON-NLS-1$
+
+    public static final String HTTPS_PROXY_USER = "https.proxyUser";//$NON-NLS-1$
+
+    public static final String HTTPS_PROXY_PASSWORD = "https.proxyPassword";//$NON-NLS-1$
+
+    public static final String HTTPS_PROXY_SET = "https.proxySet";//$NON-NLS-1$
+
+    //    public static final String FTP_PROXY_HOST = "FtpproxyHost"; //$NON-NLS-1$
+    //
+    //    public static final String FTP_PROXY_PORT = "Ftpproxyport"; //$NON-NLS-1$
+    //
+    //    public static final String FTP_PROXY_USER = "FtpproxyUser";//$NON-NLS-1$
+    //
+    //    public static final String FTP_PROXY_PASSWORD = "FtpproxyPassword";//$NON-NLS-1$
+    //
+    //    public static final String FTP_PROXY_SET = "FtpproxySet";//$NON-NLS-1$
+
     private String oldProxyHost;
 
     private String oldProxyPort;
@@ -62,6 +82,8 @@ public class SalesforceModuleParseAPI {
     private boolean socksProxy;
 
     private boolean httpProxy;
+
+    private boolean httpsProxy;
 
     private boolean login;
 
@@ -157,10 +179,11 @@ public class SalesforceModuleParseAPI {
     }
 
     public void setProxy(String proxyHost, String proxyPort, String proxyUsername, String proxyPassword, boolean httpProxy,
-            boolean socksProxy) {
+            boolean socksProxy, boolean httpsProxy) {
         Properties properties = System.getProperties();
         this.socksProxy = false;
         this.httpProxy = false;
+        this.httpsProxy = false;
         if (socksProxy && proxyHost != null && proxyPort != null) { //$NON-NLS-1$ 
             this.socksProxy = true;
             oldProxyHost = (String) properties.get(SalesforceModuleParseAPI.SOCKS_PROXY_HOST);
@@ -184,10 +207,25 @@ public class SalesforceModuleParseAPI {
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, proxyPort);
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+
+        } else if (httpsProxy && proxyHost != null && proxyPort != null) {
+            this.httpsProxy = true;
+            oldHttpProxySet = (String) properties.get(SalesforceModuleParseAPI.HTTPS_PROXY_SET);
+            oldProxyHost = (String) properties.get(SalesforceModuleParseAPI.HTTPS_PROXY_HOST);
+            oldProxyPort = (String) properties.get(SalesforceModuleParseAPI.HTTPS_PROXY_PORT);
+            oldProxyUser = (String) properties.get(SalesforceModuleParseAPI.HTTPS_PROXY_USER);
+            oldProxyPwd = (String) properties.get(SalesforceModuleParseAPI.HTTPS_PROXY_PASSWORD);
+
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_SET, "true"); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_HOST, proxyHost);
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_PORT, proxyPort);
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_USER, proxyUsername == null ? "" : proxyUsername); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_PASSWORD, proxyPassword == null ? "" : proxyPassword); //$NON-NLS-1$
+
         }
     }
 
-    public void resetProxy() {
+    public void resetProxy(boolean socksProxy, boolean httpProxy, boolean httpsProxy) {
         Properties properties = System.getProperties();
         if (socksProxy) {
             properties.put(SalesforceModuleParseAPI.SOCKS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
@@ -202,6 +240,14 @@ public class SalesforceModuleParseAPI {
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
             properties.put(SalesforceModuleParseAPI.HTTP_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
+        }
+
+        if (httpsProxy) {
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_SET, oldHttpProxySet == null ? "" : oldHttpProxySet); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_HOST, oldProxyHost == null ? "" : oldProxyHost); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_PORT, oldProxyPort == null ? "" : oldProxyPort); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_USER, oldProxyUser == null ? "" : oldProxyUser); //$NON-NLS-1$
+            properties.put(SalesforceModuleParseAPI.HTTPS_PROXY_PASSWORD, oldProxyPwd == null ? "" : oldProxyPwd); //$NON-NLS-1$
         }
 
     }

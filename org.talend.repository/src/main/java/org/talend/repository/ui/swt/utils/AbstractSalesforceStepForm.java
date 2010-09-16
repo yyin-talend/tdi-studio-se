@@ -181,13 +181,20 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                             IProgressMonitor.UNKNOWN);
                     boolean socksProxy = false;
                     boolean httpProxy = false;
+                    boolean httpsProxy = false;
                     if (SalesforceModuleParseAPI.USE_SOCKS_PROXY.equals(proxy)) {
                         socksProxy = true;
                     }
                     if (SalesforceModuleParseAPI.USE_HTTP_PROXY.equals(proxy)) {
-                        httpProxy = true;
+                        if (endPoint.startsWith("https")) {
+                            httpsProxy = true;
+                        } else {
+                            httpProxy = true;
+                        }
+
                     }
-                    salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy);
+                    salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
+                    salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy, httpsProxy);
                     if (!salesforceAPI.isLogin()) {
                         try {
 
@@ -204,7 +211,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         }
                     }
                     salesforceAPI.fetchMetaDataColumns(moduleName);
-                    salesforceAPI.resetProxy();
+                    salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
                     monitor.done();
                 }
             });
@@ -246,13 +253,20 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     }
                     boolean socksProxy = false;
                     boolean httpProxy = false;
+                    boolean httpsProxy = false;
                     if (SalesforceModuleParseAPI.USE_SOCKS_PROXY.equals(proxy)) {
                         socksProxy = true;
                     }
                     if (SalesforceModuleParseAPI.USE_HTTP_PROXY.equals(proxy)) {
-                        httpProxy = true;
+                        if (endPoint.startsWith("https")) {
+                            httpsProxy = true;
+                        } else {
+                            httpProxy = true;
+                        }
                     }
-                    salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy);
+                    salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
+
+                    salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy, httpsProxy);
                     try {
                         // binding ;
                         ArrayList loginList = salesforceAPI.login(endPoint, username, password);
@@ -275,8 +289,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     } catch (Throwable e) {
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
+                    } finally {
+                        salesforceAPI.resetProxy(httpProxy, socksProxy, httpsProxy);
                     }
-                    salesforceAPI.resetProxy();
                     monitor.done();
                 }
             });
