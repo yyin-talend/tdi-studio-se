@@ -322,12 +322,14 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                     if (!isContextMode()) {
                         saveDialogSettings();
                     }
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
                             Messages.getString("LDAPSchemaStep2Form.checkSuccessful")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
                 } else {
 
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
                             Messages.getString("LDAPSchemaStep2Form.checkFailed")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, null);
                 }
@@ -384,11 +386,13 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                     if (!isContextMode()) {
                         saveDialogSettings();
                     }
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
                             Messages.getString("LDAPSchemaStep2Form.fetchSuccessful")); //$NON-NLS-1$
                     updateStatus(IStatus.OK, null);
                 } else {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
                             Messages.getString("LDAPSchemaStep2Form.fetchFailed")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, null);
                 }
@@ -535,7 +539,9 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
         boolean isSampleAuthMethod = authenticationMethodCombo.getText().equals(EAuthenticationMethod.SIMPLE.getName());
 
-        if (isSampleAuthMethod && (bindPrincipalCombo.getText() == null || bindPrincipalCombo.getText().equals(""))) { //$NON-NLS-1$
+        String[] items = bindPrincipalCombo.getItems();
+        if (isSampleAuthMethod && (items == null || (items != null && items[0] == null))
+                && (bindPrincipalCombo.getText() == null || bindPrincipalCombo.getText().equals(""))) { //$NON-NLS-1$
             // bindPrincipalCombo.forceFocus();
             this.checkPrincipalPasswordAuthButton.setEnabled(false);
             this.fetchBaseDnsButton.setEnabled(false);
@@ -550,7 +556,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         // updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
         // return false;
         // }
-        else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
+        else if (isSampleAuthMethod && (bindPasswordText.getText() == null || "".equals(bindPasswordText.getText()))) {
             updateStatus(IStatus.ERROR, Messages.getString("LDAPSchemaStep2Form.verifyAuthentication")); //$NON-NLS-1$
             checkPrincipalPasswordAuthButton.setEnabled(true);
             return false;
@@ -585,7 +591,6 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         if (bindPrincipal != null && bindPrincipal.length() > 0) {
             this.bindPrincipalCombo.setText(bindPrincipal);
         }
-
         String password = connection.getBindPassword();
         if (password != null && password.length() > 0) {
             this.bindPasswordText.setText(password);
@@ -599,10 +604,24 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         this.baseDNCombo.setEnabled(!isGetBaseDNsFromRoot);
 
         EList baseDNs = connection.getBaseDNs();
+        String selectedDN = connection.getSelectedDN();
+        if (!baseDNs.contains(selectedDN)) {
+            baseDNs.add(selectedDN);
+        }
         int size = baseDNs.size();
-        if (baseDNs != null && size > 0) {
+        for (int i = 0; i < size; i++) {
+            if (baseDNs.get(i) == null) {
+                baseDNs.set(i, "");//$NON-NLS-N$
+            }
+        }
+        if (baseDNs != null && size > 0 && baseDNs.get(0) != null) {
             this.baseDNCombo.setItems((String[]) baseDNs.toArray(new String[size]));
-            this.baseDNCombo.setText(connection.getSelectedDN());
+            for (int i = 0; i < size; i++) {
+                if (baseDNs.get(i).equals(selectedDN)) {
+                    this.baseDNCombo.select(i);
+                }
+            }
+            this.baseDNCombo.setText(selectedDN);
             // updateStatus(IStatus.OK, null);
         }
 
