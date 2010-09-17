@@ -12,15 +12,18 @@
 // ============================================================================
 package org.talend.repository.ui.login.sandboxProject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,8 +35,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -203,37 +208,39 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         checkBtn.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                Context ctx = CorePlugin.getContext();
-                RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-                try {
-                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    // set provider
-                    if (factory.getRepositoryFactoryFromProvider() == null) { // same !existedBeforeConn()
-                        factory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider
-                                .getRepositoriyById(RepositoryConstants.REPOSITORY_REMOTE_ID));
-                    }
-                    if (factory.isLocalConnectionProvider()) {
-                        MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
-                                Messages.getString("CreateSandboxProjectDialog.ErrorLocalSuppportMessages")); //$NON-NLS-1$ 
-                    } else {
-                        // set url for
-                        RepositoryContext repositoryContext = new RepositoryContext();
-                        repositoryContext.setFields(new HashMap<String, String>());
-                        repositoryContext.getFields().put(RepositoryConstants.REPOSITORY_URL, urlText.getText());
-                        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
-                        //
-                        enableSandboxProject = factory.enableSandboxProject();
-                        if (!enableSandboxProject) {
-                            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
-                                    Messages.getString("CreateSandboxProjectDialog.ErrorSuppportMessages")); //$NON-NLS-1$ 
+                if (urlText.getText().trim().length() > 0) {
+                    Context ctx = CorePlugin.getContext();
+                    RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+                    try {
+                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        // set provider
+                        if (factory.getRepositoryFactoryFromProvider() == null) { // same !existedBeforeConn()
+                            factory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider
+                                    .getRepositoriyById(RepositoryConstants.REPOSITORY_REMOTE_ID));
                         }
-                    }
-                } catch (PersistenceException e1) {
-                    ExceptionHandler.process(e1);
-                } finally {
-                    // revert
-                    if (oldContext != null) {
-                        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, oldContext);
+                        if (factory.isLocalConnectionProvider()) {
+                            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
+                                    Messages.getString("CreateSandboxProjectDialog.ErrorLocalSuppportMessages")); //$NON-NLS-1$ 
+                        } else {
+                            // set url for
+                            RepositoryContext repositoryContext = new RepositoryContext();
+                            repositoryContext.setFields(new HashMap<String, String>());
+                            repositoryContext.getFields().put(RepositoryConstants.REPOSITORY_URL, urlText.getText());
+                            ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+                            //
+                            enableSandboxProject = factory.enableSandboxProject();
+                            if (!enableSandboxProject) {
+                                MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
+                                        Messages.getString("CreateSandboxProjectDialog.ErrorSuppportMessages")); //$NON-NLS-1$ 
+                            }
+                        }
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    } finally {
+                        // revert
+                        if (oldContext != null) {
+                            ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, oldContext);
+                        }
                     }
                 }
                 checkFields();
@@ -367,6 +374,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         return null;
     }
 
+    @SuppressWarnings("restriction")
     @Override
     protected void okPressed() {
 
@@ -385,7 +393,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         final String projectAuthorFirstname = userFirstNameText.getText();
         final String projectAuthorLastname = userLastNameText.getText();
 
-        boolean needCreateNewConn = !existedBeforeConn() || !url.trim().equals(getExistedBeforeConnURL());
+        final boolean needCreateNewConn = !existedBeforeConn() || !url.trim().equals(getExistedBeforeConnURL());
 
         bean = new ConnectionBean();
         bean.setRepositoryId(RepositoryConstants.REPOSITORY_REMOTE_ID);
@@ -420,38 +428,66 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                     .getRepositoryId()));
         }
         //
-        Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage, projectAuthor,
-                projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
-        projectInfor.setSandboxProject(true);
-        projectInfor.setNeedAuthor(existedBeforeConn());
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-        boolean ok = false;
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                Display disp = Display.getCurrent();
+                if (disp == null) {
+                    disp = Display.getDefault();
+                }
+                disp.syncExec(new Runnable() {
+
+                    public void run() {
+                        monitor.beginTask("Creating...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                        Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage,
+                                projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+                        projectInfor.setSandboxProject(true);
+                        projectInfor.setNeedAuthor(existedBeforeConn());
+
+                        boolean ok = false;
+                        try {
+                            Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                                    .createProject(projectInfor);
+                            ok = (createProject != null);
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.Failure"), //$NON-NLS-1$
+                                    Messages.getString("CreateSandboxProjectDialog.failureMessage") //$NON-NLS-1$
+                                            + "\n\n" + e.getMessage()); //$NON-NLS-1$
+                        }
+                        if (ok) { // if not created, will don't close the dialog
+                            String messages = Messages.getString("CreateSandboxProjectDialog.successMessage"); //$NON-NLS-1$
+                            if (needCreateNewConn) {
+                                messages += "\n\n" //$NON-NLS-1$ 
+                                        + Messages.getString(
+                                                "CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
+                            }
+                            MessageDialog.openInformation(getShell(), Messages
+                                    .getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
+
+                            if (needCreateNewConn) {
+                                // save connection
+                                ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
+                                List<ConnectionBean> connections = instance.forceReadConnections();
+                                connections.add(bean);
+                                instance.saveConnections(connections);
+                            }
+                            CreateSandboxProjectDialog.super.okPressed();
+                        }
+                        monitor.done();
+                    }
+                });
+
+            }
+        };
         try {
-            Project createProject = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().createProject(
-                    projectInfor);
-            ok = (createProject != null);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-            MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.Failure"), //$NON-NLS-1$
-                    Messages.getString("CreateSandboxProjectDialog.failureMessage") //$NON-NLS-1$
-                            + "\n\n" + e.getMessage()); //$NON-NLS-1$
-        }
-        if (ok) { // if not created, will don't close the dialog
-            String messages = Messages.getString("CreateSandboxProjectDialog.successMessage"); //$NON-NLS-1$
-            if (needCreateNewConn) {
-                messages += "\n\n" //$NON-NLS-1$ 
-                        + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
-            }
-            MessageDialog.openInformation(getShell(), Messages.getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
+            final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+            dialog.run(true, false, runnable);
 
-            if (needCreateNewConn) {
-                // save connection
-                ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
-                List<ConnectionBean> connections = instance.forceReadConnections();
-                connections.add(bean);
-                instance.saveConnections(connections);
-            }
-            super.okPressed();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            ExceptionHandler.process(e);
         }
     }
 
