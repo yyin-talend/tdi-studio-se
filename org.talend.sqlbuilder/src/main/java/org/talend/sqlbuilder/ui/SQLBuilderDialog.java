@@ -13,6 +13,9 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +46,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.DriverShim;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.IRepositoryChangedListener;
@@ -93,6 +103,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     private ConnectionParameters connParameters;
 
     private RepositoryNode node;
+
+    private RepositoryNode nodeInEditor;
 
     // Ends
 
@@ -278,6 +290,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor) {
+        this.nodeInEditor = node;
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
     }
 
@@ -398,6 +411,18 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     @Override
     public boolean close() {
         SqlBuilderPlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+        try {
+            if (this.nodeInEditor != null) {
+                RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot(this.nodeInEditor);
+                if (root != null) {
+                    DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty()
+                            .getItem()).getConnection();
+                    shutDownDb(connection);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
 
         clean();
         SQLBuilderRepositoryNodeManager.removeAllRepositoryNodes();
@@ -407,6 +432,56 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     private void clean() {
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
+    }
+
+    private void shutDownDb(DatabaseConnection databaseConnection) {
+        IMetadataConnection iMetadataConnection = null;
+        iMetadataConnection = ConvertionHelper.convert(databaseConnection);
+        String dbType = iMetadataConnection.getDbType();
+        if ((dbType.equals("JavaDB Embeded") || dbType.equals("General JDBC") || dbType.equals("HSQLDB In-Process"))) {
+            String username = iMetadataConnection.getUsername();
+            String pwd = iMetadataConnection.getPassword();
+            String dbVersion = iMetadataConnection.getDbVersionString();
+            String url = iMetadataConnection.getUrl();
+
+            Connection connection = null;
+            DriverShim wapperDriver = null;
+            try {
+                List list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, iMetadataConnection.getDriverClass(),
+                        iMetadataConnection.getDriverJarPath(), dbVersion);
+                if (list != null && list.size() > 0) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i) instanceof Connection) {
+                            connection = (Connection) list.get(i);
+                        }
+                        if (list.get(i) instanceof DriverShim) {
+                            wapperDriver = (DriverShim) list.get(i);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            } finally {
+                try {
+                    // for derby
+                    if (wapperDriver != null) {
+                        wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                    }
+                    // for hsqldb in-process
+                    if (connection != null) {
+                        final Statement createStatement = connection.createStatement();
+                        createStatement.execute("shutdown");
+                        createStatement.close();
+                        connection.close();
+                    }
+
+                } catch (SQLException e) {
+                    // exception of shutdown success. no need to catch.
+                }
+
+            }
+        }
+
     }
 
     /**
@@ -647,6 +722,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor, List<IRepositoryNode> nodeSel) {
+        this.nodeInEditor = node;
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
 
