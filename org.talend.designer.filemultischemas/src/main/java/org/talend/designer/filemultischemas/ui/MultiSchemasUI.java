@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -1035,7 +1036,10 @@ public class MultiSchemasUI {
                             if (item.getData() instanceof SchemasKeyData) {
                                 SchemasKeyData key = (SchemasKeyData) item.getData();
                                 if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_KEY)) {
-                                    key.setUniqueRecord(value.toString());
+                                    final boolean flag = checkKeyValue(key.getUniqueRecord(), value.toString());
+                                    if (flag) {
+                                        key.setUniqueRecord(value.toString());
+                                    }
                                 }
                                 if (property.equals(ExternalMultiSchemasUIProperties.COLUMN_RECORD)) {
                                     key.setRecordType(value.toString());
@@ -1747,6 +1751,34 @@ public class MultiSchemasUI {
                 changeSchemaDetailsView();
             }
         }
+    }
+
+    private boolean checkKeyValue(String oldValue, String newValue) {
+        String errorMsg = null;
+        boolean canModify = true;
+        if (newValue.equals("")) {
+            errorMsg = "'" + newValue + "' is invalid value.";
+        } else {
+            final Object input = schemaTreeViewer.getInput();
+            if (input instanceof SchemasKeyData) {
+                List<String> list = new ArrayList<String>();
+                final List<SchemasKeyData> children = ((SchemasKeyData) input).getChildren();
+                for (SchemasKeyData schema : children) {
+                    final String name = schema.getUniqueRecord();
+                    if (!name.equals(oldValue)) {
+                        list.add(name);
+                    }
+                }
+                if (list.contains(newValue)) {
+                    errorMsg = "'" + newValue + "' already exist.";
+                }
+            }
+        }
+        if (errorMsg != null) {
+            MessageDialog.openError(schemaTreeViewer.getTree().getShell(), "Invalid value", errorMsg);
+            canModify = false;
+        }
+        return canModify;
     }
 
     private void changeSchemaDetailsView() {
