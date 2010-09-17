@@ -349,10 +349,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         codeNode.getChildren().add(routineNode);
 
         // 4.2 jobscripts
-        jobscriptsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        jobscriptsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOB_SCRIPT);
-        jobscriptsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOB_SCRIPT);
-        codeNode.getChildren().add(jobscriptsNode);
+        if (PluginChecker.isMetalanguagePluginLoaded()) {
+            jobscriptsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            jobscriptsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOB_SCRIPT);
+            jobscriptsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOB_SCRIPT);
+            codeNode.getChildren().add(jobscriptsNode);
+        }
 
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
             IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault().getService(
