@@ -50,9 +50,10 @@ final class TalendDndHelper {
     public static List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         String productNameWanted = filterProductNameWanted(name, item);
-
+        boolean hl7Related = false;
         boolean hl7Output = false;
         if (item instanceof HL7ConnectionItem) {
+            hl7Related = true;
             EList list = ((HL7Connection) ((HL7ConnectionItem) item).getConnection()).getRoot();
             if (list != null && list.size() > 0) {
                 hl7Output = true;
@@ -94,7 +95,7 @@ final class TalendDndHelper {
                 }
                 if (hl7Output && !component.getName().equals("tHL7Output")) { //$NON-NLS-1$
                     value = false;
-                } else if (!hl7Output && !component.getName().equals("tHL7Input")) {//$NON-NLS-N$ bug15632
+                } else if (hl7Related && !hl7Output && !component.getName().equals("tHL7Input")) {//$NON-NLS-N$ bug15632
                     value = false;
                 }
 
