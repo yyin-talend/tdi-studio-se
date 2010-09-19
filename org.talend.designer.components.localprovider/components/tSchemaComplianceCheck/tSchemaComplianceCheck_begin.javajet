@@ -18,23 +18,37 @@ String cid = node.getUniqueName();
 %>
 	
 class SccUtil_<%=cid%>{
-	public int len1;
-	public int len2;
-	void handleBigdecimalPrecision(String s){
+	boolean ifPassed = true;
+	int errorCode = 0;
+	String errorMessage = "";
+	void handleBigdecimalPrecision(String data, int iPrecision, int maxLength){
 		//number of digits before the decimal point(ignoring frontend zeroes)
-		len1 = 0;
-		len2 = 0;
-		if(s.startsWith("-")){
-			s = s.substring(1);
+		int len1 = 0;
+		int len2 = 0;
+		ifPassed = true;
+		errorCode = 0;
+		errorMessage = "";
+		if(data.startsWith("-")){
+			data = data.substring(1);
 		}
-		s = org.apache.commons.lang.StringUtils.stripStart(s, "0");
+		data = org.apache.commons.lang.StringUtils.stripStart(data, "0");
 		  
-		if(s.indexOf(".") >= 0){
-			len1 = s.indexOf(".");    
-		    s = org.apache.commons.lang.StringUtils.stripEnd(s, "0");
-		    len2 = s.length() - (len1 + 1);
+		if(data.indexOf(".") >= 0){
+			len1 = data.indexOf(".");    
+		    data = org.apache.commons.lang.StringUtils.stripEnd(data, "0");
+		    len2 = data.length() - (len1 + 1);
 		}else{
-		    len1 = s.length();
+		    len1 = data.length();
+		}
+		
+		if (iPrecision < len2) {
+			ifPassed = false;
+			errorCode += 8;
+			errorMessage += "|precision Non-matches";
+		} else if (maxLength < len1 + iPrecision) {
+			ifPassed = false;
+			errorCode += 8;
+			errorMessage += "|invalid Length setting is unsuitable for Precision";
 		}
 	}
 	int handleErrorCode(int errorCode, int resultErrorCode){

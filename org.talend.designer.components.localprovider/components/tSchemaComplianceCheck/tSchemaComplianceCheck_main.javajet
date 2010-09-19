@@ -123,19 +123,11 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
         */
       %>
         if (<%=_sInConnName%>.<%=colName%> != null){
-		  sccUtil_<%=cid%>.handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString());
-          int len1_<%=cid%> = sccUtil_<%=cid%>.len1;
-          int len2_<%=cid%> = sccUtil_<%=cid%>.len2;
+		  sccUtil_<%=cid%>.handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString(), <%=iPrecision%>, <%=_maxLength%>);
+          ifPassed_<%=cid%> = sccUtil_<%=cid%>.ifPassed;
+          errorCode_<%=cid%> += sccUtil_<%=cid%>.errorCode;
+          errorMessage_<%=cid%> += sccUtil_<%=cid%>.errorMessage;
 
-          if (<%=iPrecision%> < len2_<%=cid%>) {
-            ifPassed_<%=cid%> = false;
-            errorCode_<%=cid%> += 8;
-            errorMessage_<%=cid%> += "|precision Non-matches";
-          } else if (<%=_maxLength%> < len1_<%=cid%> + <%=iPrecision%>) {
-            ifPassed_<%=cid%> = false;
-            errorCode_<%=cid%> += 8;
-            errorMessage_<%=cid%> += "|invalid Length setting is unsuitable for Precision";
-          }
         }
       <%
       }
