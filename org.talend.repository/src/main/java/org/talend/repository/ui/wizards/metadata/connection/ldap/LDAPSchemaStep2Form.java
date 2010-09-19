@@ -606,23 +606,21 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         EList baseDNs = connection.getBaseDNs();
         String selectedDN = connection.getSelectedDN();
         if (!baseDNs.contains(selectedDN)) {
-            baseDNs.add(selectedDN);
-        }
-        int size = baseDNs.size();
-        for (int i = 0; i < size; i++) {
-            if (baseDNs.get(i) == null) {
-                baseDNs.set(i, "");//$NON-NLS-N$
+            if (selectedDN == null) {
+                baseDNs.add("");//$NON-NLS-N$
+            } else {
+                baseDNs.add(selectedDN);
             }
         }
+        int size = baseDNs.size();
         if (baseDNs != null && size > 0 && baseDNs.get(0) != null) {
             this.baseDNCombo.setItems((String[]) baseDNs.toArray(new String[size]));
             for (int i = 0; i < size; i++) {
                 if (baseDNs.get(i).equals(selectedDN)) {
                     this.baseDNCombo.select(i);
+                    break;
                 }
             }
-            this.baseDNCombo.setText(selectedDN);
-            // updateStatus(IStatus.OK, null);
         }
 
         String aliases = connection.getAliases();
