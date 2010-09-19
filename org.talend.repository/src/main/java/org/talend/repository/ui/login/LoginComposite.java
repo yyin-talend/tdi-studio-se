@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -55,7 +54,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -175,7 +173,7 @@ public class LoginComposite extends Composite {
 
     private Composite differentWorkSpace;
 
-    private CLabel warningLabel;
+    // private CLabel warningLabel;
 
     private Button restartBut;
 
@@ -257,7 +255,7 @@ public class LoginComposite extends Composite {
             createTisProjectArea(formBody);
         }
         createTosWelcomArea(formBody);
-        createRestartArea(formBody);
+        // createRestartArea(formBody);
 
         readConnectionData();
         fillContents();
@@ -267,7 +265,7 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            warningLabel.setVisible(true);
+            // warningLabel.setVisible(true);
             restartBut.setVisible(false);
         }
         if (PluginChecker.isTIS()) {
@@ -551,7 +549,7 @@ public class LoginComposite extends Composite {
             data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
         }
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(100, 0);
+        data.bottom = new FormAttachment(100, -20);
         openProjectBtn.setLayoutData(data);
     }
 
@@ -600,6 +598,15 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0, 60);
         formData2.right = new FormAttachment(100, -5);
         statusLabel.setLayoutData(formData2);
+
+        restartBut = toolkit.createButton(tosWelcomeComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
+        restartBut.setVisible(false);
+        FormData formData = new FormData();
+        formData.top = new FormAttachment(colorComposite, 0);// 5, 315
+        formData.left = new FormAttachment(0, 310);
+        formData.right = new FormAttachment(100, -5);
+        formData.bottom = new FormAttachment(100, 0);
+        restartBut.setLayoutData(formData);// new GridData(GridData.FILL_HORIZONTAL)
 
     }
 
@@ -723,33 +730,42 @@ public class LoginComposite extends Composite {
         branchesViewer.getControl().setLayoutData(data);
     }
 
-    private void createRestartArea(Composite parent) {
-        iconLabel.setVisible(true);
-        onIiconLabel.setVisible(true);
-        differentWorkSpace = toolkit.createComposite(parent);
-        differentWorkSpace.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        GridLayout layout = createLayout(2);
-        layout.marginWidth = 0;
-        layout.marginHeight = 0;
-        layout.horizontalSpacing = 0;
-        layout.verticalSpacing = 0;
-        differentWorkSpace.setLayout(layout);
-        //
-        warningLabel = new CLabel(differentWorkSpace, SWT.NONE); // toolkit.createLabel(differentWorkSpace,
-        // // "The workspace is different,please restart");
-        //
-        // warningLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
-        //warningLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACE")); //$NON-NLS-1$
-        warningLabel.setForeground(new Color(Display.getDefault(), new RGB(255, 102, 102)));
-        warningLabel.setVisible(false);
-        GridData data = new GridData();
-        data.widthHint = 310;
-        warningLabel.setLayoutData(data);
-        //
-        restartBut = toolkit.createButton(differentWorkSpace, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
-        restartBut.setVisible(false);
-        restartBut.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    }
+    // private void createRestartArea(Composite parent) {
+    // iconLabel.setVisible(true);
+    // onIiconLabel.setVisible(true);
+    // differentWorkSpace = toolkit.createComposite(parent);
+    // differentWorkSpace.setLayout(new FormLayout());
+    //
+    // // differentWorkSpace.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    // // GridLayout layout = createLayout(2);
+    // // layout.marginWidth = 0;
+    // // layout.marginHeight = 0;
+    // // layout.horizontalSpacing = 0;
+    // // layout.verticalSpacing = 0;
+    // // differentWorkSpace.setLayout(layout);
+    // //
+    //
+    // warningLabel = new CLabel(differentWorkSpace, SWT.NONE); // toolkit.createLabel(differentWorkSpace,
+    //
+    // warningLabel.setForeground(new Color(Display.getDefault(), new RGB(255, 0, 0)));// 255, 102, 102
+    // warningLabel.setVisible(false);
+    // // GridData data = new GridData();
+    // // data.widthHint = 310;
+    // FormData formData = null;
+    // formData = new FormData();
+    // formData.top = new FormAttachment(0, 0);
+    // formData.left = new FormAttachment(5, 315);
+    // formData.bottom = new FormAttachment(100, 0);
+    // warningLabel.setLayoutData(formData);
+    // //
+    //        restartBut = toolkit.createButton(differentWorkSpace, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
+    // restartBut.setVisible(false);
+    // formData = new FormData();
+    // formData.top = new FormAttachment(0, 0);
+    // formData.right = new FormAttachment(100, 0);
+    // formData.bottom = new FormAttachment(100, -5);
+    // restartBut.setLayoutData(formData);// new GridData(GridData.FILL_HORIZONTAL)
+    // }
 
     private GridLayout createLayout(int numColumns) {
         GridLayout layout = new GridLayout(numColumns, false);
@@ -1340,14 +1356,14 @@ public class LoginComposite extends Composite {
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
             projectViewer.getControl().setEnabled(false);
-            warningLabel.setVisible(true);
+            // warningLabel.setVisible(true);
             restartBut.setVisible(true);
         } else if (inuse) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
             //warningLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
-            warningLabel.setVisible(true);
+            // warningLabel.setVisible(true);
             restartBut.setVisible(false);
         } else {
             manageViewer.getControl().setEnabled(true);
@@ -1355,7 +1371,7 @@ public class LoginComposite extends Composite {
             openProjectBtn.setEnabled(true);
             // fillProjectsBtn.setEnabled(true);
             // projectViewer.getControl().setEnabled(true);
-            warningLabel.setVisible(false);
+            // warningLabel.setVisible(false);
             restartBut.setVisible(false);
         }
         if (PluginChecker.isTIS()) {
