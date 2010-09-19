@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -396,9 +397,14 @@ public class LoginComposite extends Composite {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                 try {
-                    Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");// http://www.talend.com/products-data-integration/matrix.php
-                } catch (IOException e1) {
+                    // Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");//
+                    // http://www.talend.com/products-data-integration/matrix.php
+                    java.net.URI uri = new java.net.URI("http://www.talend.com/products-data-integration/sharedRepository.php");
+                    java.awt.Desktop.getDesktop().browse(uri);
+                } catch (URISyntaxException e1) {
                     ExceptionHandler.process(e1);
+                } catch (IOException e2) {
+                    ExceptionHandler.process(e2);
                 }
             }
         });
