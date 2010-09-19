@@ -811,6 +811,13 @@ public class LoginComposite extends Composite {
     }
 
     public void setStatusArea() throws PersistenceException {
+        String productName = brandingService.getFullProductName();
+        if (productName != null) {
+            String[] split = productName.split(" ");//$NON-NLS-N$
+            if (split != null && split.length > 3) {
+                productName = brandingService.getShortProductName();
+            }
+        }
         if (!PluginChecker.isTIS()) {
             if (getConnection() != null) {
                 if (!isWorkSpaceSame()) {
@@ -845,8 +852,7 @@ public class LoginComposite extends Composite {
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
                     onIiconLabel.setBackground(colorComposite.getBackground());
 
-                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
-                            .getFullProductName()));
+                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName));
                     int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -926,8 +932,7 @@ public class LoginComposite extends Composite {
                     onIiconLabel.setImage(LOGIN_CORRECT_IMAGE);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
                     onIiconLabel.setBackground(colorComposite.getBackground());
-                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", brandingService
-                            .getFullProductName()));
+                    statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName));
                     int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
