@@ -108,9 +108,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     				IMetadataColumn outputColumn = outputColumns.get(c);
     				String outputColumnName = outputColumn.getLabel();
     				String outputTypeToGenerate = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable());
-    			
     				String primitiveOutputType = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false);
-    				System.out.println(primitiveOutputType + " ================");
     				JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
     				String patternValue = outputColumn.getPattern() == null || outputColumn.getPattern().trim().length() == 0 ? null : outputColumn.getPattern();
     				
@@ -185,10 +183,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 							boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 							boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
 							boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
-							
 							boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
-							if(inputIsNumber)
-								System.out.println(inputColumn.getTalendType() + " input java type ");
 							boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
 							try {
 								inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
