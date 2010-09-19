@@ -337,15 +337,16 @@ public class LoginComposite extends Composite {
 
                 });
 
-        // Sendbox for Tis_Remote
-        toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
+        if (tis) {// Sendbox for Tis_Remote
+            toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
-                    @Override
-                    public void run() {
-                        createSendboxProject();
-                    }
+                        @Override
+                        public void run() {
+                            createSendboxProject();
+                        }
 
-                });
+                    });
+        }
         return toReturn.toArray(new ManageItem[] {});
     }
 
