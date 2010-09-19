@@ -28,6 +28,12 @@ boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true")
 String strXMLField = ElementParameterParser.getValue(node, "__USE_XML_FIELD__");
 boolean useXMLField = (strXMLField!=null&&!("").equals(strXMLField))?("true").equals(strXMLField):false;
 String strXMLText = ElementParameterParser.getValue(node, "__XML_TEXT__");
+String strXMLPrefix = ElementParameterParser.getValue(node, "__XML_PREFIX__");
+if(("TRIGGER_ITEM").equals(strXMLPrefix)){
+	strXMLPrefix = "\"/exchange/item\"";
+}else if(("PROCESS_ITEM").equals(strXMLPrefix)){
+	strXMLPrefix = "\"/item\"";
+}
 
 List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
@@ -104,16 +110,20 @@ if (outConn!=null) {
     java.util.HashMap xmlNameSpaceMap_<%=cid%> = null;
     org.dom4j.XPath x_<%=cid%> = null;
     java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = null;
-    
+<%if(useXMLField){%>
+	String loopQuery_<%=cid %> = <%=strXMLPrefix %>+<%=loopQuery %>;
+<%}else{%>
+    String loopQuery_<%=cid %> = <%=loopQuery %>;
+<%}%>
     boolean isStructError_<%=cid %>= true;
-    
+        
     try{
     
 	    doc_<%=cid%>= reader_<%=cid%>.read(new java.io.StringReader(xmlStr_<%=cid%>));
 	    nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 	    xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
 
-    	x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));
+    	x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(loopQuery_<%=cid %>,loopQuery_<%=cid %>));
       
     	x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
     
@@ -197,7 +207,7 @@ if(outConns!=null){
 			String nodeCheck = mapping.get(i).get("NODECHECK");
 			if(query!=null && query.trim().length()>0){  // if S_0_0
 %>
-				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
+				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
 			    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
 <%
