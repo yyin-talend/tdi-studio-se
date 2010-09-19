@@ -250,7 +250,7 @@
 		<PARAMETER
 		  NAME="OPERATION"
 		  FIELD="TABLE"
-		  REQUIRED="false"
+		  REQUIRED="true"
 		  NUM_ROW="6"
 		  NB_LINES="4"
 		>
@@ -278,6 +278,7 @@
 		  NAME="GROUPBY"
 		  FIELD="TABLE"
 		  NUM_ROW="7"
+		  REQUIRED="true"
 		  NB_LINES="4"
 		>
 		  <ITEMS>
