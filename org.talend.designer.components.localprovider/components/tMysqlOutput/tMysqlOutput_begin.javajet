@@ -470,10 +470,97 @@ if(columnList != null && columnList.size() > 0) {
 }
 }
 if(isDynamic) {
+	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion) && extendedInsert) {
 %>
+
+	class BufferLine_<%=cid%> {
+    	            <% 
+    	            for(Column column : stmtStructure) {
+    	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+        	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+        	                %>
+                            <%=typeToGenerate%> <%=column.getName()%>;                
+                            <%
+    	                }
+                    }
+		    if(isDynamic) {
+		    	Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+			if("Dynamic".equals(typeToGenerate)) {
+			%>
+				Dynamic <%=dynamicColumn.getName()%>;
+			<%
+			}
+		    }            
+                    %>   
+	            
+	                public BufferLine_<%=cid%>(
+                    <% 
+                    int count = 0;
+                    for(Column column : stmtStructure) {
+                        if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                            if(count != 0) {
+                                %>
+                                ,
+                                <%
+                            }
+                            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                            %>
+                            <%=typeToGenerate%> <%=column.getName()%>
+                            <%
+                            count++;                        
+                        }
+                    }
+		    if(isDynamic) {
+		    	Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+			if("Dynamic".equals(typeToGenerate)) {
+			%>
+				, Dynamic <%=dynamicColumn.getName()%>
+			<%
+			}
+		    }
+	            
+                    %> 
+	                ){
+	                    <% 
+                        for(Column column : stmtStructure) {
+                            if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                                %>
+                                this.<%=column.getName()%> = <%=column.getName()%>;              
+                                <%   
+                            }
+                        }
+			if(isDynamic) {
+		    	Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+			if("Dynamic".equals(typeToGenerate)) {
+			%>
+				this.<%=dynamicColumn.getName()%>=<%=dynamicColumn.getName()%>;
+			<%
+			}
+		    }            
+	                    %>   	                
+                    }
+	            }
+
+		    java.util.List<BufferLine_<%=cid%>> exInsertColValueList<%=cid%> = new java.util.ArrayList();
+	            BufferLine_<%=cid%> exInsertColValue<%=cid%> = null; 
+		    String insert_<%=cid%>="";
+		    String insertColValue<%=cid%>="";
+		    String insertColName<%=cid%>="";
+		    int counter<%=cid%>=1;
+<%
+	}
+%>
+
+
 	java.sql.PreparedStatement pstmt_<%=cid %> =null;
 	java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
 	java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
+	int batchSizeCounter_<%=cid%>=0;
+	int batchSize_<%=cid%>=0;
+	int rowCount<%=cid%>=0;
 <%
 }
 %>

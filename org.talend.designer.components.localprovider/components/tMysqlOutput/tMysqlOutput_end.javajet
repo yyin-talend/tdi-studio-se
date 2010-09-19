@@ -79,7 +79,14 @@ skeleton="../templates/db_output_bulk.skeleton"
         incomingConnName = conn.getName();
     }
     List<Column> stmtStructure =  getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
-    
+ 
+    boolean isDynamic = false;
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+        IMetadataTable metadata = metadatas.get(0);
+	isDynamic = metadata.isDynamicSchema(); 
+    }
+   
 	if(extendedInsert){
 		
 		String dbVersion = "" ;
@@ -286,12 +293,25 @@ skeleton="../templates/db_output_bulk.skeleton"
 	        pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	        
 	        int row2Count<%=cid%> = 0;
-	        int count<%=cid%> = 0;
+<%
+		if(isDynamic) {
+%>
+	        	int count<%=cid%> = 1;
+<%
+		} else {
+%>
+			int count<%=cid%> = 0;
+<%
+		}
+%>
 	        
 	        for(BufferLine_<%=cid%> bufferL<%=cid%> : exInsertColValueList<%=cid%>){            
-	            count<%=cid%> = row2Count<%=cid%>*<%=columnList.size()%>+1;         
-	          
-	            <%   
+<%
+		if(!isDynamic) {
+%>
+	            count<%=cid%> = row2Count<%=cid%>*<%=columnList.size()%>+1;         	          
+<%   
+		}
 	            for(Column column : stmtStructure) {
 	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
 	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());                     
@@ -301,6 +321,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                    <%
 	                }
 	            }
+		    if(isDynamic) {
+				Column dynamicColumn = getColumn(columnList.get(columnList.size()-1));
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
+				if("Dynamic".equals(typeToGenerate)) {
+				%>
+					int count_dyn_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, count<%=cid%>-1);
+					count<%=cid%>+=count_dyn_<%=cid%>;
+				<%
+				}
+			}
 	            %>
 	    
 	            row2Count<%=cid%>++;
