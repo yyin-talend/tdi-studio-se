@@ -294,16 +294,6 @@ public class LoginComposite extends Composite {
         boolean tis = PluginChecker.isTIS();
         boolean isTisRemote = isTisRemote();
         boolean hasConnection = (getConnection() != null);
-        boolean enableSanbox = false;
-        try {
-
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            if (factory.getRepositoryFactoryFromProvider() != null) {
-                enableSanbox = factory.enableSandboxProject();
-            }
-        } catch (PersistenceException e) {
-            //
-        }
         List<ManageItem> toReturn = new ArrayList<ManageItem>();
 
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
@@ -347,16 +337,15 @@ public class LoginComposite extends Composite {
 
                 });
 
-        if (!hasConnection || (isTisRemote && enableSanbox)) { // Sendbox for Tis_Remote
-            toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
+        // Sendbox for Tis_Remote
+        toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createSendboxProject();
-                        }
+                    @Override
+                    public void run() {
+                        createSendboxProject();
+                    }
 
-                    });
-        }
+                });
         return toReturn.toArray(new ManageItem[] {});
     }
 

@@ -103,7 +103,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     }
 
     public boolean existedBeforeConn() {
-        return this.currentConnBean != null;
+        return this.currentConnBean != null // there is no any connection.
+                && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(this.currentConnBean.getRepositoryId()); // if not
+                                                                                                            // local
     }
 
     private String getExistedBeforeConnURL() {
