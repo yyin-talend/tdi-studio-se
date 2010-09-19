@@ -108,7 +108,9 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     				IMetadataColumn outputColumn = outputColumns.get(c);
     				String outputColumnName = outputColumn.getLabel();
     				String outputTypeToGenerate = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable());
+    			
     				String primitiveOutputType = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false);
+    				System.out.println(primitiveOutputType + " ================");
     				JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
     				String patternValue = outputColumn.getPattern() == null || outputColumn.getPattern().trim().length() == 0 ? null : outputColumn.getPattern();
     				
@@ -185,6 +187,8 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 							boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 							
 							boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
+							if(inputIsNumber)
+								System.out.println(inputColumn.getTalendType() + " input java type ");
 							boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
 							try {
 								inputIsGeometry = inputJavaType == JavaTypesManager.getJavaTypeFromId("id_Geometry");
@@ -251,21 +255,35 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 	    								<% 
 	    								if(outputIsString) {
 	    								
-		    								%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(<%= outputConn.getName() %>_<%=outOperation %>_temp);
+		    								%>
+		    								<%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(<%= outputConn.getName() %>_<%=outOperation %>_temp);
 											<%
 											
 										} else {
 		    							
 		    								%><%= outputConn.getName() %>.<%=outOperation %> = (<%=primitiveOutputType%>) <%= outputConn.getName() %>_<%=outOperation %>_temp;
-											<%
+										<%
 										
 										}
 										%>
     								<%
     								}
     								%>
+                                } else {
+                                		String count = "0";
+   	    								<% 
+    	    								if(outputIsString) {
+    		    						%>
+    		    								<%= outputConn.getName() %>.<%=outOperation %> = count;
+    									<%
+    										} else {
+    		    						%>
+    		    							<%= outputConn.getName() %>.<%=outOperation %> = ParserUtils.parseTo_<%= outputTypeToGenerate %>(count);
+    									<%
+    										}
+    									%>
                                 }
-                                <%
+                            <%
                 			}  // T_InMain_AggR_617
                 			else if(function.equals(COUNT)) { // T_InMain_AggR_638
                 			
