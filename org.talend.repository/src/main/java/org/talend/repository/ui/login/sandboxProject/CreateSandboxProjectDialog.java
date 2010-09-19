@@ -105,7 +105,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     public boolean existedBeforeConn() {
         return this.currentConnBean != null // there is no any connection.
                 && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(this.currentConnBean.getRepositoryId()); // if not
-                                                                                                            // local
+        // local
     }
 
     private String getExistedBeforeConnURL() {
@@ -415,7 +415,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             repositoryContext.setUser(oldContext.getUser());
             repositoryContext.setClearPassword(oldContext.getClearPassword());
         } else {
-            User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+            User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname,
+                    false);
             repositoryContext.setUser(user);
             repositoryContext.setClearPassword(projectAuthorPass);
         }
