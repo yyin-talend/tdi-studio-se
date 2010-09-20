@@ -94,6 +94,9 @@ public class PasteAction extends AContextualAction {
                 contentType = target.getObjectType();
             }
             RepositoryManager.refreshCreatedNode(contentType);
+            if (contentType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
+            }
             RepositoryManager.refreshCreatedNode(target.getContentType());
         }
     }
