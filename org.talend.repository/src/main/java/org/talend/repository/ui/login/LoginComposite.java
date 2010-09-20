@@ -207,7 +207,13 @@ public class LoginComposite extends Composite {
 
     private Composite colorComposite = null;
 
+    private Composite formBody = null;
+
     private Label passwordLabel = null;
+
+    private Composite passwordComposite = null;
+
+    private Composite tisBlankCompoiste = null;
 
     private Hyperlink repositoryHyperlink = null;
 
@@ -233,7 +239,7 @@ public class LoginComposite extends Composite {
         setLayout(layout);
         toolkit = new FormToolkit(this.getDisplay());
         Form form = toolkit.createForm(this);
-        Composite formBody = form.getBody();
+        formBody = form.getBody();
         formBody.setBackgroundMode(SWT.INHERIT_DEFAULT);
         GridData formBodyGd = new GridData(GridData.FILL_BOTH);
         form.setLayoutData(formBodyGd);
@@ -253,6 +259,7 @@ public class LoginComposite extends Composite {
             createSeparator(formBody);
             createTosActionArea(formBody);
             createTisProjectArea(formBody);
+            createTisBlankArea(formBody);
         }
         createTosWelcomArea(formBody);
         // createRestartArea(formBody);
@@ -276,6 +283,65 @@ public class LoginComposite extends Composite {
             setStatusArea();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
+        }
+        displayPasswordComposite();
+    }
+
+    private void displayPasswordComposite() {
+        if (PluginChecker.isTIS()) {
+            if (getConnection() != null) {
+                boolean local = "local".equals(getConnection().getRepositoryId());
+                if (local) {
+                    GridData layoutData = (GridData) passwordComposite.getLayoutData();
+                    layoutData.heightHint = -20;
+                    passwordComposite.setLayoutData(layoutData);
+                    passwordComposite.setVisible(false);
+                    passwordComposite.layout();
+                    formBody.layout();
+                    formBody.pack();
+
+                    GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
+                    layoutData2.heightHint = 20;
+                    tisBlankCompoiste.setLayoutData(layoutData2);
+                    tisBlankCompoiste.setVisible(true);
+                    tisBlankCompoiste.layout();
+                    formBody.layout();
+                    formBody.pack();
+                } else {
+                    GridData layoutData = (GridData) passwordComposite.getLayoutData();
+                    layoutData.heightHint = 20;
+                    passwordComposite.setLayoutData(layoutData);
+                    passwordComposite.setVisible(true);
+                    passwordComposite.layout();
+                    formBody.layout();
+                    formBody.pack();
+
+                    GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
+                    layoutData2.heightHint = -20;
+                    tisBlankCompoiste.setLayoutData(layoutData2);
+                    tisBlankCompoiste.setVisible(false);
+                    tisBlankCompoiste.layout();
+                    formBody.layout();
+                    formBody.pack();
+                }
+            } else {
+                GridData layoutData = (GridData) passwordComposite.getLayoutData();
+                layoutData.heightHint = 20;
+                passwordComposite.setLayoutData(layoutData);
+                passwordComposite.setVisible(true);
+                passwordComposite.layout();
+                formBody.layout();
+                formBody.pack();
+
+                GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
+                layoutData2.heightHint = -20;
+                tisBlankCompoiste.setLayoutData(layoutData2);
+                tisBlankCompoiste.setVisible(false);
+                tisBlankCompoiste.layout();
+                formBody.layout();
+                formBody.pack();
+            }
+
         }
     }
 
@@ -635,7 +701,7 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(0, 0);
         formData.left = new FormAttachment(0, -HORIZONTAL_SPACE);
         formData.right = new FormAttachment(manageConnectionsButton, -HORIZONTAL_SPACE);
-        formData.bottom = new FormAttachment(100, 2);
+        formData.bottom = new FormAttachment(100, -2);
         group.setLayoutData(formData);
 
         // tis connection
@@ -659,7 +725,7 @@ public class LoginComposite extends Composite {
 
         // tis e-mail
         Label emailLabel = toolkit.createLabel(group, null);
-        emailLabel.setBackground(tisRepositoryComposite.getBackground());
+        emailLabel.setBackground(tisRepositoryComposite.getBackground());// 
         emailLabel.setText("E-Mail");
         formData = new FormData();
         formData.top = new FormAttachment(connectionLabel, HORIZONTAL_TWO_SPACE);
@@ -676,24 +742,49 @@ public class LoginComposite extends Composite {
         formData.right = new FormAttachment(95, 12);
         user.setLayoutData(formData);
 
+        // passwordLabel = toolkit.createLabel(group, null);
+        // passwordLabel.setBackground(tisRepositoryComposite.getBackground());
+        // passwordLabel.setText("Password");
+        // formData = new FormData();
+        // formData.top = new FormAttachment(emailLabel, HORIZONTAL_TWO_SPACE);
+        // formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
+        // formData.right = new FormAttachment(0, LEFTSPACE);
+        // formData.bottom = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
+        // passwordLabel.setLayoutData(formData);
+        //
+        // passwordText = toolkit.createText(group, null, SWT.PASSWORD | SWT.BORDER);
+        // passwordText.setEditable(false);
+        // passwordText.setEnabled(false);
+        // formData = new FormData();
+        // formData.top = new FormAttachment(passwordLabel, 0, SWT.CENTER);
+        // formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
+        // formData.right = new FormAttachment(95, 12);
+        // passwordText.setLayoutData(formData);
+
         // tis password
-        passwordLabel = toolkit.createLabel(group, null);
-        passwordLabel.setBackground(tisRepositoryComposite.getBackground());
+        passwordComposite = toolkit.createComposite(parent);
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        passwordComposite.setLayoutData(gd);
+        passwordComposite.setLayout(new FormLayout());
+        passwordComposite.setBackground(GREY_COLOR);
+
+        passwordLabel = toolkit.createLabel(passwordComposite, null);
+        passwordLabel.setBackground(passwordComposite.getBackground());
         passwordLabel.setText("Password");
         formData = new FormData();
-        formData.top = new FormAttachment(emailLabel, HORIZONTAL_TWO_SPACE);
-        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        formData.right = new FormAttachment(0, LEFTSPACE);
-        formData.bottom = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
+        formData.top = new FormAttachment(0, 2);
+        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);// 
+        formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
+        formData.bottom = new FormAttachment(100, 0);
         passwordLabel.setLayoutData(formData);
 
-        passwordText = toolkit.createText(group, null, SWT.PASSWORD | SWT.BORDER);
+        passwordText = toolkit.createText(passwordComposite, null, SWT.PASSWORD | SWT.BORDER);
         passwordText.setEditable(false);
         passwordText.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(passwordLabel, 0, SWT.CENTER);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
-        formData.right = new FormAttachment(95, 12);
+        formData.right = new FormAttachment(100, -48);
         passwordText.setLayoutData(formData);
 
     }
@@ -730,6 +821,16 @@ public class LoginComposite extends Composite {
         data.left = new FormAttachment(svnBranchLabel, HORIZONTAL_SPACE);
         data.right = new FormAttachment(50, 0);
         branchesViewer.getControl().setLayoutData(data);
+    }
+
+    private void createTisBlankArea(Composite parent) {
+        tisBlankCompoiste = toolkit.createComposite(parent);
+        // tisBlankCompoiste.setBackground(RED_COLOR);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.heightHint = -20;
+        tisBlankCompoiste.setLayoutData(gd);
+        tisBlankCompoiste.setVisible(false);
+        tisBlankCompoiste.setBackgroundMode(SWT.INHERIT_DEFAULT);
     }
 
     // private void createRestartArea(Composite parent) {
@@ -1124,6 +1225,7 @@ public class LoginComposite extends Composite {
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
                     }
+                    displayPasswordComposite();
                 }
             });
 
@@ -1190,6 +1292,7 @@ public class LoginComposite extends Composite {
                     LoginComposite.this.storedConnections = connectionsDialog.getConnections();
                     perReader.saveConnections(LoginComposite.this.storedConnections);
                     fillContents();
+                    displayPasswordComposite();
                     updateVisible();
                 }
                 try {
