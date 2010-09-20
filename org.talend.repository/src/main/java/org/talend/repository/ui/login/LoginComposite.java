@@ -1454,8 +1454,15 @@ public class LoginComposite extends Composite {
             projectViewer.getControl().setEnabled(false);
         } else if (getConnection() != null && projectViewer.getInput() == null) {
             manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
             projectViewer.getControl().setEnabled(false);
             openProjectBtn.setEnabled(false);
+            statusLabel.setText("Connection incomplete");//$NON-NLS-N$
+            statusLabel.setBackground(RED_COLOR);
+            statusLabel.setForeground(WHITE_COLOR);
+            Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+            statusLabel.setFont(font);
+            restartBut.setVisible(false);
         } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
