@@ -540,7 +540,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         boolean isSampleAuthMethod = authenticationMethodCombo.getText().equals(EAuthenticationMethod.SIMPLE.getName());
 
         String[] items = bindPrincipalCombo.getItems();
-        if (isSampleAuthMethod && (items == null || (items != null && items[0] == null))
+        if (isSampleAuthMethod && (items == null || items.length == 0 || items[0] == null)
                 && (bindPrincipalCombo.getText() == null || bindPrincipalCombo.getText().equals(""))) { //$NON-NLS-1$
             // bindPrincipalCombo.forceFocus();
             this.checkPrincipalPasswordAuthButton.setEnabled(false);
