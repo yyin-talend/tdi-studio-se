@@ -417,6 +417,7 @@ public class LoginComposite extends Composite {
     // create for feature 15083
     private void createTosRepositoryArea(Composite parent) {
         // local repository
+
         repositoryComposite = toolkit.createComposite(parent);
         repositoryComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         repositoryComposite.setLayout(new FormLayout());
@@ -593,9 +594,9 @@ public class LoginComposite extends Composite {
 
         FormData data = new FormData();
         if (PluginChecker.isTIS()) {
-            data.top = new FormAttachment(0, 7);
+            data.top = new FormAttachment(0, 12);
         } else {
-            data.top = new FormAttachment(0, 17);
+            data.top = new FormAttachment(0, 10);
         }
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
         data.right = new FormAttachment(0, LEFTSPACE);
@@ -772,7 +773,7 @@ public class LoginComposite extends Composite {
         passwordLabel.setBackground(passwordComposite.getBackground());
         passwordLabel.setText("Password");
         formData = new FormData();
-        formData.top = new FormAttachment(0, 2);
+        formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);// 
         formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
         formData.bottom = new FormAttachment(100, 0);
@@ -782,7 +783,7 @@ public class LoginComposite extends Composite {
         passwordText.setEditable(false);
         passwordText.setEnabled(false);
         formData = new FormData();
-        formData.top = new FormAttachment(passwordLabel, 0, SWT.CENTER);
+        formData.top = new FormAttachment(passwordComposite, 1, SWT.TOP);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
         formData.right = new FormAttachment(100, -48);
         passwordText.setLayoutData(formData);
