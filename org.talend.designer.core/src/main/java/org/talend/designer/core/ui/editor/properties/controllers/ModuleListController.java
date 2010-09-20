@@ -56,6 +56,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.ui.dialog.BrmsDialog;
 import org.talend.designer.core.ui.dialog.IBrmsExtension;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -89,12 +90,32 @@ public class ModuleListController extends AbstractElementPropertySectionControll
             IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     "org.talend.designer.core.brms_provider");
             String propertyName = (String) button.getData(PARAMETER_NAME);
-            for (IConfigurationElement elem : elems) {
+            for (IConfigurationElement conElem : elems) {
                 IBrmsExtension createExecutableExtension;
                 try {
-                    createExecutableExtension = (IBrmsExtension) elem.createExecutableExtension("class");
+                    createExecutableExtension = (IBrmsExtension) conElem.createExecutableExtension("class");
                     createExecutableExtension.initialize(node, propertyName, hashCurControls);
-                    createExecutableExtension.createBrmsDialog(composite.getShell());
+                    BrmsDialog brmsDialog = createExecutableExtension.createBrmsDialog(composite.getShell());
+                    String file = brmsDialog.getFile();
+                    if (file != null && !file.equals("")) {
+                        String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
+                        if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
+                            try {
+                                CorePlugin.getDefault().getLibrariesService().deployLibrary(
+                                        Path.fromOSString(file).toFile().toURL());
+                            } catch (Exception e) {
+                                ExceptionHandler.process(e);
+                            }
+
+                            // update the combo current value
+                            CCombo combo = (CCombo) hashCurControls.get(propertyName);
+                            if (combo != null && !combo.isDisposed()) {
+                                combo.setText(Path.fromOSString(file).lastSegment());
+                            }
+                        }
+                        return new PropertyChangeCommand(elem, propertyName, lastSegment);
+                    }
+
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
                 }

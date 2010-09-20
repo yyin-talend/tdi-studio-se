@@ -64,4 +64,6 @@ public abstract class BrmsDialog extends SelectionDialog {
         this.isRepository = isRepository;
     }
 
+    public abstract String getFile();
+
 }
