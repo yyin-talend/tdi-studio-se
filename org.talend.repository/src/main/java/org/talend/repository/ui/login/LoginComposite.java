@@ -14,7 +14,6 @@ package org.talend.repository.ui.login;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -310,41 +309,41 @@ public class LoginComposite extends Composite {
             }
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createNewProject();
-                        }
+                @Override
+                public void run() {
+                    createNewProject();
+                }
 
-                    });
+            });
 
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            importProjects();
-                        }
+                @Override
+                public void run() {
+                    importProjects();
+                }
 
-                    });
+            });
         }
         // delete project for Tos and Tis_Remote
         toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.deleteProject.desc")) { //$NON-NLS-1$
 
-                    @Override
-                    public void run() {
-                        deleteProject();
-                    }
+            @Override
+            public void run() {
+                deleteProject();
+            }
 
-                });
+        });
 
         if (tis) {// Sendbox for Tis_Remote
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createSendboxProject();
-                        }
+                @Override
+                public void run() {
+                    createSendboxProject();
+                }
 
-                    });
+            });
         }
         return toReturn.toArray(new ManageItem[] {});
     }
@@ -397,12 +396,11 @@ public class LoginComposite extends Composite {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                 try {
-                    // Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");//
+                    Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");//
                     // http://www.talend.com/products-data-integration/matrix.php
-                    java.net.URI uri = new java.net.URI("http://www.talend.com/products-data-integration/sharedRepository.php");
-                    java.awt.Desktop.getDesktop().browse(uri);
-                } catch (URISyntaxException e1) {
-                    ExceptionHandler.process(e1);
+                    // java.net.URI uri = new
+                    // java.net.URI("http://www.talend.com/products-data-integration/sharedRepository.php");
+                    // java.awt.Desktop.getDesktop().browse(uri);
                 } catch (IOException e2) {
                     ExceptionHandler.process(e2);
                 }
