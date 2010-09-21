@@ -92,7 +92,7 @@ if(("UPDATE").equals(dataAction)) {
         }
         tableName_<%=cid%> = "tmp_<%=cid%>";
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + tableName_<%=cid%>);
         stmtCreateTmp_<%=cid%>.close();
         java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();

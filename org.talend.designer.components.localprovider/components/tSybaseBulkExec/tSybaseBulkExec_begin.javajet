@@ -176,7 +176,7 @@ if(("INSERT").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         %>
         java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.close();            
         Runtime runtime_<%=cid%> = Runtime.getRuntime();
         final Process ps_<%=cid %> = runtime_<%=cid%>.exec(command_<%=cid %>.toString());       

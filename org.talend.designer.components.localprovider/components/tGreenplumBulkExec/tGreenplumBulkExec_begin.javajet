@@ -147,7 +147,7 @@ if(("UPDATE").equals(dataAction)) {
         String tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>";
         java.sql.Statement stmtCreateTmp_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreateTmp_<%=cid%>.close();
         java.sql.Statement stmtTmpBulk_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);

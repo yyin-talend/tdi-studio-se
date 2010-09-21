@@ -108,13 +108,13 @@ if(columnList != null && columnList.size() > 0) {
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         stmtDrop_<%=cid%>.close();
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreate_<%=cid%>.close();
         <%
     } else if(("CREATE").equals(tableAction)) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         stmtCreate_<%=cid%>.close();
         <%
     } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
@@ -132,7 +132,7 @@ if(columnList != null && columnList.size() > 0) {
         rsTable_<%=cid%>.close();
         if(!whetherExist_<%=cid%>) {
             java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreate_<%=cid%>.close();
         }
         <%

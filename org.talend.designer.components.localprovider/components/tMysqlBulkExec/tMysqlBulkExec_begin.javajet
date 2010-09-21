@@ -139,7 +139,7 @@ if(("UPDATE").equals(dataAction)) {
         }        
         tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
         java.sql.Statement stmtTmpCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-        stmtTmpCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtTmpCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
         
         java.sql.Statement stmtTmpBulk_<%=cid %> = conn_<%=cid %>.createStatement();
         stmtTmpBulk_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
