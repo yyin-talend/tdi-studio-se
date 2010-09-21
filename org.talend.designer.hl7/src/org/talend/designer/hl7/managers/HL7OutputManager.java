@@ -612,6 +612,9 @@ public class HL7OutputManager extends HL7Manager {
         if (currentSchema == null) {
             return treeData;
         } else {
+            if (!contents.containsKey(curSchema)) {
+                return new ArrayList<HL7TreeNode>();
+            }
             return contents.get(curSchema);
         }
 
@@ -809,7 +812,7 @@ public class HL7OutputManager extends HL7Manager {
         List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(hl7Component, IConnectionCategory.FLOW);
         for (IConnection connection : incomingConnections) {
             IMetadataTable metadataTable = connection.getMetadataTable();
-            if (metadataTable.getLabel().equals(currentSchema)) {
+            if (metadataTable.getLabel() != null && currentSchema != null && metadataTable.getLabel().equals(currentSchema)) {
                 return metadataTable.getListColumns();
             }
         }
