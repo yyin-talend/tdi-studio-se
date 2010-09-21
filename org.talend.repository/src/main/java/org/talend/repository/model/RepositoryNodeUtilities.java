@@ -79,6 +79,7 @@ public class RepositoryNodeUtilities {
                     && !label.equals(ERepositoryObjectType.JOBLET.toString())
                     && !label.equals(ERepositoryObjectType.CONTEXT.toString())
                     && !label.equals(ERepositoryObjectType.ROUTINES.toString())
+                    && !label.equals(ERepositoryObjectType.JOB_SCRIPT.toString())
                     && !label.equals(ERepositoryObjectType.SQLPATTERNS.toString())
                     && !label.equals(ERepositoryObjectType.DOCUMENTATION.toString())
                     && !label.equals(ERepositoryObjectType.BUSINESS_PROCESS.toString())

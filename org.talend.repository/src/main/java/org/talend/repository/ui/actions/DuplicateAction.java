@@ -254,7 +254,8 @@ public class DuplicateAction extends AContextualAction {
     private boolean isKeyword(String itemName) {
         ERepositoryObjectType itemType = sourceNode.getObjectType();
         ERepositoryObjectType[] types = { ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
-                ERepositoryObjectType.JOBS, ERepositoryObjectType.JOBLET, ERepositoryObjectType.JOBLETS };
+                ERepositoryObjectType.JOBS, ERepositoryObjectType.JOBLET, ERepositoryObjectType.JOBLETS,
+                ERepositoryObjectType.JOB_SCRIPT };
         if (Arrays.asList(types).contains(itemType)) {
             return KeywordsValidator.isKeyword(itemName);
         }
@@ -336,6 +337,9 @@ public class DuplicateAction extends AContextualAction {
                 break;
             case ROUTINES:
                 item = PropertiesFactory.eINSTANCE.createRoutineItem();
+                break;
+            case JOB_SCRIPT:
+                item = PropertiesFactory.eINSTANCE.createJobScriptItem();
                 break;
             case SNIPPETS:
                 item = PropertiesFactory.eINSTANCE.createSnippetItem();
