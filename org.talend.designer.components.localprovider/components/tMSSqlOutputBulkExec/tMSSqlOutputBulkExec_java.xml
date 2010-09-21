@@ -49,7 +49,7 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
-      REPOSITORY_VALUE="DATABASE"
+      REPOSITORY_VALUE="DATABASE:SQL_SERVER"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
     />
     
