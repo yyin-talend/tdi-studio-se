@@ -109,6 +109,7 @@
       NAME="DIFFERENT_TABLE_NAME"
       FIELD="TEXT"
       NUM_ROW="30"
+      REQUIRED="true"
       SHOW_IF="USE_DIFFERENT_TABLE=='true'"
     >
       <DEFAULT>""</DEFAULT>
