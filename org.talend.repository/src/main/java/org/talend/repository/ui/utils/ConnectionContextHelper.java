@@ -656,10 +656,36 @@ public final class ConnectionContextHelper {
                 String repositoryValue = param.getRepositoryValue();
                 if (repositoryValue != null) {
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, null);
-                    if (objectValue != null && objectValue instanceof String) {
-                        var = ContextParameterUtils.getVariableFromCode((String) objectValue);
-                        if (var != null) {
-                            addedVars.add(var);
+
+                    if (objectValue != null) {
+                        if (objectValue instanceof List) {
+                            List list = (List) objectValue;
+                            for (int i = 0; i < list.size(); i++) {
+                                Object object = list.get(i);
+                                if (object instanceof HashMap) {
+                                    Map map = (HashMap) object;
+                                    if (!map.isEmpty()) {
+                                        Set keySet = map.keySet();
+                                        Iterator iterator = keySet.iterator();
+                                        while (iterator.hasNext()) {
+                                            String key = (String) iterator.next();
+                                            Object object2 = map.get(key);
+                                            if (object2 instanceof String) {
+                                                var = ContextParameterUtils.getVariableFromCode((String) object2);
+                                                if (var != null) {
+                                                    addedVars.add(var);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (objectValue instanceof String) {
+                            var = ContextParameterUtils.getVariableFromCode((String) objectValue);
+                            if (var != null) {
+                                addedVars.add(var);
+                            }
                         }
                     }
                 }
