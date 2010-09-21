@@ -61,8 +61,8 @@ import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -107,7 +107,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public void createPartControl(Composite parent) {
         // tabFactory = new HorizontalTabFactory();
         this.parent = parent;
-        tabFactory.initComposite(parent);
+        tabFactory.initComposite(parent, false);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
@@ -134,14 +134,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     if (data instanceof Element) {
                         element = (Element) data;
                         currentSelectedTab = descriptor;
-                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
-                                .getCategory());
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element,
+                                descriptor.getCategory());
 
                     } else if (data instanceof IRepositoryViewObject) {
 
                         currentSelectedTab = descriptor;
-                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data, descriptor
-                                .getCategory());
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data,
+                                descriptor.getCategory());
 
                     } else if (data instanceof IEditorPart) {
                         currentSelectedTab = descriptor;
@@ -153,8 +153,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
                     } else {
                         currentSelectedTab = descriptor;
-                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), null, descriptor
-                                .getCategory());
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), null,
+                                descriptor.getCategory());
                     }
                     selectedPrimary = false;
                 }
@@ -167,21 +167,24 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private IRepositoryViewObject retrieveBusiness(IEditorPart businessPart) {
         if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
             IRepositoryViewObject lastVersion = null;
-            selectedModel = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
+            selectedModel = CorePlugin
+                    .getDefault()
+                    .getDiagramModelService()
+                    .getBusinessEditorSelection(
+                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
 
             try {
 
-                RepositoryEditorInput input = CorePlugin.getDefault().getDiagramModelService().getBusinessDiagramEditorInput(
-                        businessPart);
+                RepositoryEditorInput input = CorePlugin.getDefault().getDiagramModelService()
+                        .getBusinessDiagramEditorInput(businessPart);
 
                 if (input != null) {
                     RepositoryNode node = input.getRepositoryNode();
                     if (node != null) {
                         lastVersion = node.getObject();
                     } else {
-                        lastVersion = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                                input.getItem().getProperty().getId());
+                        lastVersion = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                .getLastVersion(input.getItem().getProperty().getId());
                     }
                 }
                 return lastVersion;

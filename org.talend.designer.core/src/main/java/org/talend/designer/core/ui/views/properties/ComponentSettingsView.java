@@ -146,7 +146,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
     @Override
     public void createPartControl(Composite parent) {
         this.parent = parent;
-        tabFactory.initComposite(parent);
+        tabFactory.initComposite(parent, true);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
@@ -200,17 +200,17 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 // tabFactory.getTabbedPropertyComposite().setVisible(true);
                 if (ComponentSettingsView.DEFAULT.equals(getPreference().getString(TalendDesignerPrefConstants.VIEW_OPTIONS))) {
                     tabFactory.getTabbedPropertyComposite().setCompactView(true);
-                    tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
-                            ImageProvider.getImage(EImage.COMPACT_VIEW));
-                    tabFactory.getTabbedPropertyComposite().getTableButton().setImage(
-                            ImageProvider.getImage(EImage.NO_TABLE_VIEW));
+                    tabFactory.getTabbedPropertyComposite().getCompactButton()
+                            .setImage(ImageProvider.getImage(EImage.COMPACT_VIEW));
+                    tabFactory.getTabbedPropertyComposite().getTableButton()
+                            .setImage(ImageProvider.getImage(EImage.NO_TABLE_VIEW));
                     dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                             element, true);
                 } else if (ComponentSettingsView.TABLEVIEW.equals(getPreference().getString(
                         TalendDesignerPrefConstants.VIEW_OPTIONS))) {
                     tabFactory.getTabbedPropertyComposite().setCompactView(false);
-                    tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
-                            ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
+                    tabFactory.getTabbedPropertyComposite().getCompactButton()
+                            .setImage(ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
                     tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
                     dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                             element, false);
@@ -350,8 +350,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 // TODO Auto-generated method stub
                 tabFactory.getTabbedPropertyComposite().setCompactView(false);
                 getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.TABLEVIEW);
-                tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
-                        ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
+                tabFactory.getTabbedPropertyComposite().getCompactButton()
+                        .setImage(ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
                 tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
 
                 if (getDc() != null) {
