@@ -81,7 +81,8 @@ public class RepositoryNodeUtilities {
                     && !label.equals(ERepositoryObjectType.ROUTINES.toString())
                     && !label.equals(ERepositoryObjectType.SQLPATTERNS.toString())
                     && !label.equals(ERepositoryObjectType.DOCUMENTATION.toString())
-                    && !label.equals(ERepositoryObjectType.BUSINESS_PROCESS.toString())) {
+                    && !label.equals(ERepositoryObjectType.BUSINESS_PROCESS.toString())
+                    && !label.equals(ERepositoryObjectType.METADATA_HEADER_FOOTER.toString())) {
                 return getPath(node.getParent()).append(label);
             } else {
                 return getPath(node.getParent());
