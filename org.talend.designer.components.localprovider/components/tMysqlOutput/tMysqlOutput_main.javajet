@@ -269,11 +269,7 @@ if(columnList != null && columnList.size() > 0) {
 %>
 						insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 <%
-					}
-				
-%>
-				//String insert_<%=cid%> = "INSERT INTO `"+<%=table%>+"` (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
-<%	
+					}	
 				if (supportDuplicateUpdate) {
 %>            
 				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
@@ -320,9 +316,6 @@ if(columnList != null && columnList.size() > 0) {
 <%
 					}
 				}
-%>
-				//String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
-<%	
 				if (supportDuplicateUpdate) {
 %>            
 				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
