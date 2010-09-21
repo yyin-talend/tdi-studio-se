@@ -32,11 +32,11 @@ import org.talend.core.ui.ICDCProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.dialog.PastSelectorDialog;
 
 /**
@@ -136,7 +136,7 @@ public class CopyObjectAction {
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
             // wzhang modified to fix bug 12349 and 11535
-            Item originalItem = factory.getUptodateProperty(sourceNode.getObject().getProperty()).getItem();
+            Item originalItem = sourceNode.getObject().getProperty().getItem();
             List<IRepositoryViewObject> allVersion = factory.getAllVersion(originalItem.getProperty().getId());
 
             if (allVersion.size() == 1) {

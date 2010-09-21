@@ -126,7 +126,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
 
         try {
             IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            Project[] projects = repositoryFactory.readProject();
+            // fix for bug 15454
+            Project[] projects = repositoryFactory.readProject(true);
             for (Project project : projects) {
                 IProject fsProject = ResourceModelUtils.getProject(project);
                 IFolder libJavaFolder = fsProject.getFolder(ExportProjectsAsAction.LIB);
@@ -195,7 +196,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         Map<Project, List<LinkTargetStore>> map = new HashMap<Project, List<LinkTargetStore>>();
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
-            Project[] projects = repositoryFactory.readProject();
+            // fix for bug 15454
+            Project[] projects = repositoryFactory.readProject(true);
             for (Project project : projects) {
                 IProject fsProject = ResourceModelUtils.getProject(project);
                 IFolder libJavaFolder = fsProject.getFolder(ExportProjectsAsAction.CODE);
