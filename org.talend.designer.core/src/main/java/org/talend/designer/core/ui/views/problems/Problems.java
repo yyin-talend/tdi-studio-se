@@ -41,9 +41,9 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.ProcessItem;
@@ -177,7 +177,7 @@ public class Problems {
         }
     }
 
-    public static void clearAll(Element element) {
+    public static void clearAll(Node element) {
         removeProblemsByElement(element);
     }
 
@@ -207,11 +207,12 @@ public class Problems {
         // }
     }
 
-    public static List<String> getStatusList(ProblemStatus status, Element element) {
+    public static List<String> getStatusList(ProblemStatus status, Node element) {
         List<String> statusList = new ArrayList<String>();
 
         for (Problem problem : problemList.getProblemList()) {
-            if (problem.getElement() != null && problem.getElement().equals(element) && problem.getStatus().equals(status)) {
+            if (problem.getNodeName() != null && problem.getNodeName().equals(element.getLabel())
+                    && problem.getStatus().equals(status)) {
                 statusList.add(problem.getDescription());
             }
         }
@@ -342,9 +343,9 @@ public class Problems {
         boolean hasInfo = false;
 
         for (Problem problem : problemList) {
-            if (problem.getElement() == null) {
+            if (problem.getNodeName() == null) {
                 continue;
-            } else if (problem.getElement() != null && (!problem.getElement().equals(node))) {
+            } else if (problem.getNodeName() != null && (!problem.getNodeName().equals(node.getLabel()))) {
                 continue;
             }
             if (problem.getStatus().equals(ProblemStatus.INFO)) {
@@ -381,7 +382,9 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getJob() != null && (problem.getJob().equals(process))) {
+            if (problem.getJobInfo() != null
+                    && (problem.getJobInfo().getJobName().equals(process.getLabel()) && problem.getJobInfo().getJobVersion()
+                            .equals(process.getVersion()))) {
                 iter.remove();
             }
 
@@ -394,11 +397,11 @@ public class Problems {
         openJobs.remove(process);
     }
 
-    public static void removeProblemsByElement(Element element) {
+    public static void removeProblemsByElement(Node element) {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getElement() != null && (problem.getElement().equals(element))) {
+            if (problem.getNodeName() != null && (problem.getNodeName().equals(element.getLabel()))) {
                 iter.remove();
             }
         }
@@ -427,19 +430,8 @@ public class Problems {
         Problems.problemView = problemView;
     }
 
-    /**
-     * 
-     * ggu Comment method "addRoutineFile".
-     * 
-     * 
-     */
     public static List<Information> addRoutineFile(IFile file, final Property property, boolean... fromJob) {
-        if (file == null || !file.exists()) {
-            return null;
-        }
-
         String routineFileName = null;
-        String uniName = null;
         String version = null;
         if (property == null) {
             routineFileName = getFileName(file);
@@ -447,12 +439,39 @@ public class Problems {
             routineFileName = property.getLabel();
             version = property.getVersion();
         }
+        ProblemType type = ProblemType.NONE;
+        if (property.getItem() instanceof RoutineItem) {
+            type = ProblemType.ROUTINE;
+        } else if (property.getItem() instanceof ProcessItem) {
+            type = ProblemType.JOB;
+        }
+
+        List<Information> listInfos = addRoutineFile(file, type, routineFileName, version, fromJob);
+
+        if (property == null) {
+            return null;
+        }
+
+        return listInfos;
+    }
+
+    /**
+     * 
+     * ggu Comment method "addRoutineFile".
+     * 
+     * 
+     */
+    public static List<Information> addRoutineFile(IFile file, ProblemType type, String label, String version, boolean... fromJob) {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        String uniName = null;
 
         List<Information> informations = new ArrayList<Information>();
         try {
             IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
 
-            Problems.clearAllComliationError(routineFileName);
+            Problems.clearAllComliationError(label);
             for (IMarker marker : markers) {
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
                 String message = (String) marker.getAttribute(IMarker.MESSAGE);
@@ -488,22 +507,13 @@ public class Problems {
                         break;
                     }
                     if (status != null) {
-                        ProblemType type = ProblemType.NONE;
-                        if (property.getItem() instanceof RoutineItem) {
-                            type = ProblemType.ROUTINE;
-                            if (status != ProblemStatus.ERROR) {
-                                continue;
-                            }
-                        } else if (property.getItem() instanceof ProcessItem) {
-                            type = ProblemType.JOB;
-                            if (status != ProblemStatus.ERROR) {
-                                continue;
-                            }
+                        if (status != ProblemStatus.ERROR) {
+                            continue;
                         }
                         if ("".equals(uniName) || uniName == null) { //$NON-NLS-1$
                             uniName = "uniName";//$NON-NLS-1$
                         }
-                        add(status, marker, routineFileName, message, lineNr, uniName, start, end, type, version);
+                        add(status, marker, label, message, lineNr, uniName, start, end, type, version);
                     }
                 }
 
@@ -514,10 +524,6 @@ public class Problems {
 
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
-        }
-
-        if (property == null) {
-            return null;
         }
 
         return informations;

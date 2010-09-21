@@ -28,15 +28,12 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.designer.codegen.ITalendSynchronizer;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
 
 /**
@@ -47,12 +44,6 @@ public class JobErrorsChecker {
     public static boolean hasErrors(Shell shell) {
 
         try {
-            // CorePlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage()).build(
-            // IncrementalProjectBuilder.AUTO_BUILD, null);
-
-            List<ProcessItem> items = ProcessorUtilities.getAllProcessItems();
-            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
-
             boolean isPerl = false;
             if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
                 isPerl = true;
@@ -61,34 +52,19 @@ public class JobErrorsChecker {
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
             Set<String> jobNames = new HashSet<String>();
-            for (ProcessItem item : items) {
+            for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
                 // get source file
-                IFile sourceFile = synchronizer.getFile(item);
-
-                // See Bug 5421
-                // Get job from editor if it is opened.
-                IProcess process = DesignerUtilities.findProcessFromEditors(item.getProperty().getId(), item.getProperty()
-                        .getVersion());
-                if (process == null) {
-                    // Get job from file if it is not opened.
-                    process = service.getProcessFromProcessItem(item);
-                }//
+                IFile sourceFile = synchronizer.getProcessFile(jobInfo);
 
                 if (isPerl) {
                     // check syntax error in perl. java use auto build to check syntax
-                    validatePerlScript(sourceFile, process);
+                    validatePerlScript(sourceFile);
                 }
 
-                jobNames.add(process.getLabel());
+                jobNames.add(jobInfo.getJobName());
 
-                if (process instanceof IProcess2) {
-                    IProcess2 process2 = (IProcess2) process;
-                    process2.setActivate(true);
-                    process2.checkProcess();
-
-                }
                 // Property property = process.getProperty();
-                Problems.addRoutineFile(sourceFile, item.getProperty(), true);
+                Problems.addRoutineFile(sourceFile, ProblemType.JOB, jobInfo.getJobName(), jobInfo.getJobVersion(), true);
             }
             Problems.refreshProblemTreeView();
 
@@ -110,17 +86,13 @@ public class JobErrorsChecker {
         return false;
     }
 
-    public static void validatePerlScript(IFile file, IProcess process) {
+    public static void validatePerlScript(IFile file) {
         try {
             String sourceCode = getSourceCode(file.getContents());
             TalendPerlValidator.instance().validate(file, sourceCode);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-
-    }
-
-    private static void adderrorMark() {
 
     }
 

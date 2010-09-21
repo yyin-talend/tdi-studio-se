@@ -79,8 +79,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
@@ -92,7 +91,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
@@ -101,10 +99,10 @@ import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -821,10 +819,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                     }
                     if (property.equals(contextParameterName)) {
                         if (value == null || "".equals(value) || nameList.contains(value)) {
-                            MessageDialog
-                                    .openError(
-                                            new Shell(),
-                                            Messages.getString("ContextProcessSection.errorTitle"), Messages.getString("ContextProcessSection.ParameterNameIsNotValid")); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageDialog.openError(
+                                    new Shell(),
+                                    Messages.getString("ContextProcessSection.errorTitle"), Messages.getString("ContextProcessSection.ParameterNameIsNotValid")); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
                             node.setName((String) value);
                         }
@@ -1176,9 +1173,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (selectedJobVersion != null && selectedJobVersion.equals(allVersions)) {
                     String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
                     for (String version : allVersions) {
-                        monitor
-                                .subTask(Messages
-                                        .getString("JobScriptsExportWizardPage.exportJob0", nodes[0].getLabel(), version)); //$NON-NLS-1$
+                        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob0", nodes[0].getLabel(), version)); //$NON-NLS-1$
                         ok = exportJobScript(version, progressMonitor);
                         if (!ok) {
                             return;
@@ -1205,6 +1200,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         } catch (InterruptedException e) {
             ExceptionHandler.process(e);
         }
+
+        if (treeViewer != null) {
+            treeViewer.dispose();
+        }
+        nodes = null;
+        process = null;
+        selection = null;
+
         // end
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         return ok;
@@ -1231,8 +1234,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
         if (!canExport) {
-            MessageDialog.openInformation(getContainer().getShell(), Messages
-                    .getString("JobScriptsExportWizardPage.exportResourceError"), //$NON-NLS-1$
+            MessageDialog.openInformation(getContainer().getShell(),
+                    Messages.getString("JobScriptsExportWizardPage.exportResourceError"), //$NON-NLS-1$
                     Messages.getString("JobScriptsExportWizardPage.chooseResource")); //$NON-NLS-1$
             return false;
         }
@@ -1258,9 +1261,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             for (int i = 0; i <= process.length - 1; i++) {
                 process[i].removeAllMap();
                 ProcessItem processItem = (ProcessItem) process[i].getItem();
-                processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
-                // update with the correct version.
-                process[i].setProcess(processItem);
+                if (!processItem.getProperty().getVersion().equals(version)) {
+                    processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
+                    // update with the correct version.
+                    process[i].setProcess(processItem);
+                }
             }
 
         }
@@ -1303,13 +1308,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         List<JobResource> jobResources = new ArrayList<JobResource>();
 
         for (int i = 0; i < process.length; i++) {
-            try {
-                process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[i].getItem().getProperty()).getItem());
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e);
-                return false;
-            }
+            // don't update anymore, it should be done automatically in function getItem when needed.
+            // try {
+            // process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+            // process[i].getItem().getProperty()).getItem());
+            // } catch (PersistenceException e) {
+            // MessageBoxExceptionHandler.process(e);
+            // return false;
+            // }
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext(), version);
             jobResources.add(new JobResource(projectName, jobInfo));
@@ -1342,7 +1348,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportSuccess")); //$NON-NLS-1$
         // achen modify to fix bug 0006108
         // rearchieve the jobscript zip file
-        ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
         // if (curLanguage == ECodeLanguage.JAVA) {
         reBuildJobZipFile();
         // }

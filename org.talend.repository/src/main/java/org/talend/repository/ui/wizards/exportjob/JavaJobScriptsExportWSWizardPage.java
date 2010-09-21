@@ -52,7 +52,6 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -597,11 +596,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected void restoreWidgetValuesForPOJO() {
         IDialogSettings settings = getDialogSettings();
 
-        Property property = null;
-        if (process.length == 1) {
-            property = process[0].getItem().getProperty();
-        }
-
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null) {
@@ -635,12 +629,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             launcherCombo.select(0);
         }
         if (process.length > 0 && contextCombo != null) {
-            try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
+            // don't update the property, this one will be automatically updated if needed when call the getItem()
+
+            // try {
+            // process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+            // process[0].getItem().getProperty()).getItem());
+            // } catch (PersistenceException e) {
+            // ExceptionHandler.process(e);
+            // }
             ProcessItem item = (ProcessItem) process[0].getItem();
             try {
                 String id = item.getProperty().getId();

@@ -37,6 +37,8 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -45,7 +47,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -87,16 +88,17 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = getSelectedJobVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
+            IProcess jobProcess = null;
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, context, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
-                        progressMonitor);
+                jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, isOptionChoosed(
+                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             String contextName = context.getName();
             if (contextName != null) {
                 boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort,
-                        i, processItem, selectedJobVersion, resources, codeOptions);
+                        i, jobProcess, processItem, selectedJobVersion, resources, codeOptions);
                 addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName,
                         selectedJobVersion);
             }
@@ -128,14 +130,15 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = getSelectedJobVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
+            IProcess jobProcess = null;
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
-                        progressMonitor);
+                jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, isOptionChoosed(
+                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                    processItem, selectedJobVersion, resources, codeOptions);
+                    jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
         }
@@ -159,11 +162,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     private boolean posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
-            String launcher, int statisticPort, int tracePort, int i, ProcessItem processItem, String selectedJobVersion,
-            List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                ExportChoice.setParameterValues), processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort,
-                tracePort, codeOptions));
+            String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
+            String selectedJobVersion, List<URL> resources, String... codeOptions) {
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), jobProcess, processItem,
+                escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         // Gets system routines.
         List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));

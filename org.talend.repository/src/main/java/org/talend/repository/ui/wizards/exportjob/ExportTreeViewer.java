@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -70,10 +71,6 @@ public class ExportTreeViewer {
     private Button moveButton;
 
     private JobScriptsExportWizardPage jobScriptExportWizardPage;
-
-    public ExportTreeViewer(IStructuredSelection selection) {
-        this.selection = selection;
-    }
 
     public ExportTreeViewer(IStructuredSelection selection, JobScriptsExportWizardPage jobScriptExportWizardPage) {
         this.selection = selection;
@@ -421,5 +418,19 @@ public class ExportTreeViewer {
         public void createActionComposite(Composite parent) {
         }
 
+    }
+
+    /**
+     * DOC nrousseau Comment method "dispose".
+     */
+    public void dispose() {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setCheckedElements(ArrayUtils.EMPTY_OBJECT_ARRAY);
+        exportItemsTreeViewer.dispose();
+        jobScriptExportWizardPage = null;
+        repositoryView = null;
+        exportItemsTreeViewer = null;
+        repositoryNodes.clear();
+        repositoryNodes = null;
+        filteredCheckboxTree = null;
     }
 }

@@ -86,6 +86,7 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
@@ -99,15 +100,10 @@ import org.talend.repository.ProjectManager;
  */
 public class DesignerCoreService implements IDesignerCoreService {
 
-    // achen add to store created process
-    private Map<String, IProcess> createdProcessMap = new HashMap<String, IProcess>();
-
     private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
 
     public List<IProcess> getOpenedProcess(IEditorReference[] reference) {
         List<IProcess> list = new ArrayList<IProcess>();
-        // IEditorReference[] reference =
-        // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
         for (IEditorReference er : reference) {
             IEditorPart part = er.getEditor(false);
             if (part instanceof AbstractMultiPageTalendEditor) {
@@ -136,24 +132,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     }
 
     public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean loadScreenshots) {
-        // achen modify to fix 0006107
         Process process = null;
-        if (createdProcessMap.size() > 10) {
-            for (IProcess curProcess : createdProcessMap.values()) {
-                if (curProcess instanceof Process) {
-                    ((Process) curProcess).dispose();
-                }
-            }
-            createdProcessMap.clear();
-        }
-        String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId()
-                + processItem.getProperty().getVersion();
-        if (createdProcessMap.get(id) == null) {
-            process = new Process(processItem.getProperty());
-            process.loadXmlFile(loadScreenshots);
-            createdProcessMap.put(id, process);
-        }
-        process = (Process) createdProcessMap.get(id);
+        process = new Process(processItem.getProperty());
+        process.loadXmlFile(loadScreenshots);
         return process;
     }
 
@@ -263,108 +244,11 @@ public class DesignerCoreService implements IDesignerCoreService {
         // List<String> openJobs = new ArrayList<String>();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
             AbstractTalendEditor abstractTalendEditor = ((AbstractTalendEditor) editor);
-            // abstractTalendEditor.updateGraphicalNodes(evt);
             IProcess2 process = abstractTalendEditor.getProcess();
             process.getUpdateManager().addNodesPropertyChanger(evt);
-            // openJobs.add(process.getName() + process.getVersion());
         }
-        // removed by (featrue 3232)
-
-        // if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
-        // try {
-        // String oldName = ((IProcess) evt.getSource()).getName();
-        //
-        // Object[] oldMetadataTables = (Object[]) evt.getOldValue();
-        // Object[] newMetadataTables = (Object[]) evt.getNewValue();
-        // List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
-        // List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
-        //
-        // List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
-        // List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
-        // IMetadataTable newInputMetadataTable = null;
-        // IMetadataTable newOutputMetadataTable = null;
-        //
-        // ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        // List<IRepositoryObject> allJobsAndJoblets = new ArrayList<IRepositoryObject>();
-        // allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.PROCESS, true));
-        // allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.JOBLET, true));
-        // for (IRepositoryObject repositoryObject : allJobsAndJoblets) {
-        // String keyId = repositoryObject.getProperty().getLabel() + repositoryObject.getProperty().getVersion();
-        // // if (!openJobs.contains(keyId)) {
-        // Item item2 = repositoryObject.getProperty().getItem();
-        // EList node = null;
-        // if (item2 instanceof ProcessItem) {
-        // ProcessItem item = (ProcessItem) item2;
-        // node = item.getProcess().getNode();
-        // } else if (item2 instanceof JobletProcessItem) {
-        // JobletProcessItem item = (JobletProcessItem) item2;
-        // node = item.getJobletProcess().getNode();
-        // }
-        // boolean isModify = false;
-        // if (node != null) {
-        // for (Object o : node) {
-        // NodeType currentNode = (NodeType) o;
-        // if (currentNode.getComponentName().equals(oldName)) {
-        // EList metadata = currentNode.getMetadata();
-        // for (Object object : metadata) {
-        // MetadataType metadataTable = (MetadataType) object;
-        // newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
-        // .getConnector());
-        // newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-        // .getName());
-        // if (newInputMetadataTable != null) {
-        // MetadataTool.copyTable(newInputMetadataTable, metadataTable);
-        // } else if (newOutputMetadataTable != null) {
-        // MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
-        // }
-        // isModify = true;
-        // }
-        // }
-        // }
-        // }
-        // if (isModify) {
-        // factory.save(item2, true);
-        // }
-        // // }
-        // }
-        // } catch (PersistenceException e) {
-        // ExceptionHandler.process(e);
-        // }
-        // }
     }
 
-    /**
-     * DOC qzhang Comment method "getNewInputTableForConnection".
-     * 
-     * @param newInputTableList
-     * @param connector
-     * 
-     * @return
-     */
-    // private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
-    // for (IMetadataTable metadataTable : newInputTableList) {
-    // if (connector != null && connector.equals(metadataTable.getAttachedConnector())) {
-    // return metadataTable;
-    // }
-    // }
-    // return null;
-    // }
-    /**
-     * DOC qzhang Comment method "getNewOutputTableForConnection".
-     * 
-     * @param newOutputTableList
-     * @param attachedConnector
-     * @return
-     */
-    // private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName)
-    // {
-    // for (IMetadataTable metadataTable : newOutputTableList) {
-    // if (tableName != null && tableName.equals(metadataTable.getTableName())) {
-    // return metadataTable;
-    // }
-    // }
-    // return null;
-    // }
     /*
      * (non-Javadoc)
      * 
@@ -755,5 +639,16 @@ public class DesignerCoreService implements IDesignerCoreService {
                     .getCurrentProject());
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getNeededLibrariesForProcess(org.talend.core.model.process.IProcess
+     * , boolean)
+     */
+    public Set<String> getNeededLibrariesForProcess(IProcess process, boolean withChildrens) {
+        return JavaProcessUtil.getNeededLibraries(process, withChildrens);
     }
 }

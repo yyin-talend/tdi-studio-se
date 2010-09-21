@@ -42,6 +42,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
@@ -49,7 +50,6 @@ import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -87,12 +87,13 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
+            IProcess jobProcess = null;
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                jobProcess = generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
                         statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), processItem,
+            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), jobProcess, processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.

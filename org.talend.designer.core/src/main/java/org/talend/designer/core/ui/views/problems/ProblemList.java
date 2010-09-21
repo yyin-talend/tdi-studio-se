@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.process.TalendProblem;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -77,7 +77,7 @@ public class ProblemList {
         if (status.equals(ProblemType.JOB)) {
 
             for (Problem problem : problemList) {
-                if (problem.getJob() != null) {
+                if (problem.getJobInfo() != null) {
                     list.add(problem);
                 }
             }

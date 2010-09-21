@@ -99,6 +99,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
@@ -112,7 +113,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
-import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -271,8 +272,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     private String computeMethodSizeIfNeeded(String processCode) {
         // must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
-        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                "displayMethodSize")); //$NON-NLS-1$
+        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService()
+                .getPreferenceStore("displayMethodSize")); //$NON-NLS-1$
         if (displayMethodSize) {
             StringBuffer code = new StringBuffer(processCode);
             int fromIndex = 0;
@@ -934,7 +935,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
         }
 
-        Set<String> neededLibraries = process.getNeededLibraries(true);
+        Set<String> neededLibraries = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+                process.getVersion());
 
         Property property = process.getProperty();
         if (neededLibraries == null) {
@@ -1008,8 +1010,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
             exportJar = classPathSeparator
                     + (!win32 && exportingJob ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
-            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
-            for (JobInfo jobInfo : jobInfos) {
+
+            JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
+            for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
+                if (lastMainJob.equals(jobInfo)) {
+                    continue;
+                }
                 if (jobInfo.getJobVersion() != null) {
                     version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
                     version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1153,8 +1159,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
+                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
@@ -1178,8 +1184,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
+                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);

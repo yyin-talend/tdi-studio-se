@@ -125,7 +125,10 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      * (non-Javadoc) Method declared on IWizard.
      */
     public boolean performFinish() {
-        return mainPage.finish();
+        boolean finish = mainPage.finish();
+        selection = null;
+        mainPage = null;
+        return finish;
     }
 
     /*
@@ -137,6 +140,8 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     public boolean performCancel() {
         ProcessorUtilities.resetExportConfig();
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
+        selection = null;
+        mainPage = null;
         return true;
     }
 }

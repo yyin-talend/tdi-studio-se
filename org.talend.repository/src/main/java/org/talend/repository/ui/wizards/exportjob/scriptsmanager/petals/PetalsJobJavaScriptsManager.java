@@ -33,11 +33,11 @@ import java.util.jar.Manifest;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ExportFileResource;
@@ -102,7 +102,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             ExportFileResource libResource = new ExportFileResource(processItem, null);
             resources.add(libResource);
 
-            List<URL> talendLibraries = getExternalLibraries(process, true);
+            List<URL> talendLibraries = getExternalLibraries(true, process);
             libResource.addResources(talendLibraries);
 
             // dynamic db xml mapping

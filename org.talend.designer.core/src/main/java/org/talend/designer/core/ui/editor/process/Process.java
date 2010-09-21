@@ -2659,6 +2659,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     public void dispose() {
+        if (editor != null && !duplicate) {
+            CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
+            commandStack.removeCommandStackEventListener(commandStackEventListener);
+        }
         generatingProcess = null;
         editor = null;
         viewer = null;

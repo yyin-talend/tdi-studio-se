@@ -48,7 +48,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.ProcessUtils;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
@@ -56,6 +56,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -70,7 +71,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
@@ -79,7 +80,6 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -110,22 +110,27 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
 
+        Set<String> neededLibraries = new HashSet<String>();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
 
+            IProcess jobProcess = null;
+
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, context, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
-                        progressMonitor);
+                jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
+                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), selectedJobVersion));
             }
 
             List<URL> resources = new ArrayList<URL>();
             String contextName = context.getName();
             if (contextName != null) {
                 List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort,
-                        tracePort, i, processItem, selectedJobVersion, resources, codeOptions);
+                        tracePort, i, jobProcess, processItem, selectedJobVersion, resources, codeOptions);
                 resources.addAll(childrenList);
             }
             process[i].addResources(resources);
@@ -149,7 +154,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(process, isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries),
+                process, neededLibraries);
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -191,11 +197,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     private List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
-            String launcher, int statisticPort, int tracePort, int i, ProcessItem processItem, String selectedJobVersion,
-            List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                ExportChoice.setParameterValues), processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort,
-                tracePort, codeOptions));
+            String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
+            String selectedJobVersion, List<URL> resources, String... codeOptions) {
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), jobProcess, processItem,
+                escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
@@ -260,19 +265,24 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
+        Set<String> neededLibraries = new HashSet<String>();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
             selectedJobVersion = preExportResource(process, i, selectedJobVersion);
 
+            IProcess jobProcess = null;
+
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
-                        progressMonitor);
+                jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
+                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), selectedJobVersion));
             }
             List<URL> resources = new ArrayList<URL>();
             List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
-                    processItem, selectedJobVersion, resources, codeOptions);
+                    jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             resources.addAll(childrenList);
             process[i].addResources(resources);
 
@@ -295,7 +305,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(process, isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries));
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries),
+                process, neededLibraries);
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -361,11 +372,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             classRoot = classRoot.append(projectName).append(folderName).append(JOB_CONTEXT_FOLDER);
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
-                // hywang for 0010727
-                final Project project = ProjectManager.getInstance().getProject(processItem);
-                processItem = (ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        new org.talend.core.model.general.Project(project), processItem.getProperty()).getItem();
-                // See bug 0003568: Three contexts file exported, while only two contexts in the job.
                 list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
             }
 
@@ -387,17 +393,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return An url list of context files.
      * @throws MalformedURLException
      */
-    @SuppressWarnings("deprecation")
     private List<URL> getActiveContextFiles(File[] listFiles, ProcessItem processItem) throws MalformedURLException {
         List<URL> contextFileUrls = new ArrayList<URL>();
         try {
             // get all context name from process
             Set<String> contextNames = new HashSet<String>();
-            for (Object o : processItem.getProcess().getContext()) {
-                if (o instanceof ContextType) {
-                    ContextType context = (ContextType) o;
-                    contextNames.add(context.getName().replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
-                }
+            for (String contextName : LastGenerationInfo.getInstance().getContextPerJob(processItem.getProperty().getId(),
+                    processItem.getProperty().getVersion())) {
+                contextNames.add(contextName.replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             for (File file : listFiles) {
                 String fileName = file.getName();
@@ -449,8 +452,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
-                    .toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
@@ -657,8 +660,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                         isOptionChoosed(exportChoice, ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(exportChoice,
-                        ExportChoice.needDependencies), resource);
+                addDependencies(allResources, jobInfo.getProcessItem(),
+                        isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
             }
         }
 
@@ -689,6 +692,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
+     * It's preferable to use the function with additional parameter neededLibraries. <br>
+     * Right now all the needed librairies in jobs can be retrieved just after the code generation with the method
+     * ProcessorUtilities.getNeededModules(), which will be really faster and memory used will be much lower.
+     * 
+     * @deprecated
+     */
+    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process) {
+        return getExternalLibraries(needLibraries, process, null);
+    }
+
+    /**
      * Gets required java jars.
      * 
      * @param process
@@ -696,7 +710,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param boolean1
      * @return
      */
-    protected List<URL> getExternalLibraries(ExportFileResource[] process, boolean needLibraries) {
+    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
         List<URL> list = new ArrayList<URL>();
         if (!needLibraries) {
             return list;
@@ -714,31 +728,32 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         });
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
-        IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-        List<Item> processItems = new ArrayList<Item>();
-
-        for (int i = 0; i < process.length; i++) {
-            ExportFileResource resource = process[i];
-            ProcessItem item = (ProcessItem) resource.getItem();
-            processItems.add(item);
-            String version = item.getProperty().getVersion();
-            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
-                version = this.getSelectedJobVersion();
+        if (neededLibraries == null) {
+            // in case export as been done with option "not recompile", then libraires can't be retrieved when build.
+            IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
+            for (int i = 0; i < process.length; i++) {
+                ExportFileResource resource = process[i];
+                ProcessItem item = (ProcessItem) resource.getItem();
+                String version = item.getProperty().getVersion();
+                if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                    version = this.getSelectedJobVersion();
+                }
+                ProcessItem selectedProcessItem;
+                if (resource.getNode() != null) {
+                    selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                            .getProperty().getId(), version);
+                } else {
+                    // if no node given, take in the current project only
+                    selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+                }
+                IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
+                neededLibraries = iProcess.getNeededLibraries(true);
+                if (neededLibraries != null) {
+                    listModulesReallyNeeded.addAll(neededLibraries);
+                }
             }
-            ProcessItem selectedProcessItem;
-            if (resource.getNode() != null) {
-                selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
-                        .getProperty().getId(), version);
-            } else {
-                // if no node given, take in the current project only
-                selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
-            }
-            IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
-            Set<String> neededLibraries = iProcess.getNeededLibraries(true);
-            if (neededLibraries != null) {
-                listModulesReallyNeeded.addAll(neededLibraries);
-            }
-
+        } else {
+            listModulesReallyNeeded.addAll(neededLibraries);
         }
 
         // jar from routines
@@ -1031,13 +1046,39 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process) {
-        List<Item> processItems = new ArrayList<Item>();
+        Set<String> allRoutinesId = new HashSet<String>();
         for (ExportFileResource resource : process) {
             if (resource.getItem() instanceof ProcessItem) {
-                processItems.add(resource.getItem());
+                allRoutinesId.addAll(LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
+                        resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion()));
+            }
+
+        }
+
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
+
+        toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
+
+        for (String id : allRoutinesId) {
+            boolean isSystem = false;
+            for (IRepositoryViewObject curRoutine : toReturn) {
+                if (curRoutine.getLabel().equals(id)) {
+                    isSystem = true;
+                    break;
+                }
+            }
+            if (!isSystem) {
+                try {
+                    toReturn.add(factory.getLastVersion(id));
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
             }
         }
-        return ProcessUtils.getProcessDependencies(ERepositoryObjectType.ROUTINES, processItems);
+
+        return toReturn;
     }
 
     /**

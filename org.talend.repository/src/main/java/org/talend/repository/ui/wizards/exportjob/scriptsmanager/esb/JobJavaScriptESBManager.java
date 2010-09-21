@@ -49,11 +49,11 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -105,14 +105,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(process, true);
+        List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String jobName = processItem.getProperty().getLabel();
-            String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
-                    + "." //$NON-NLS-1$
+            String packageName = JavaResourcesHelper.getProjectFolderName(processItem) + "." //$NON-NLS-1$
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                             .getVersion());
             jobMap.put(jobName, packageName);
@@ -196,8 +195,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      * @param contextName
      */
     protected void generateESBActionFile(ProcessItem processItem, String contextName) {
-        String packageName = JavaResourcesHelper.getProjectFolderName(processItem)
-                + "." //$NON-NLS-1$
+        String packageName = JavaResourcesHelper.getProjectFolderName(processItem) + "." //$NON-NLS-1$
                 + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                         .getVersion());
         String jobName = processItem.getProperty().getLabel();
@@ -250,8 +248,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             ExceptionHandler.process(e);
         }
         try {
-            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                    IncrementalProjectBuilder.AUTO_BUILD, null);
+            CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                    .build(IncrementalProjectBuilder.AUTO_BUILD, null);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }

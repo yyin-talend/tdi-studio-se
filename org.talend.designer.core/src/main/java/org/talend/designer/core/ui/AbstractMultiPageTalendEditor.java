@@ -83,6 +83,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
@@ -116,7 +117,6 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryWorkUnit;
@@ -401,6 +401,37 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     /**
+     * DOC bqian Comment method "selectNode".
+     * 
+     * @param node
+     */
+    @SuppressWarnings("unchecked")
+    public void selectNode(String nodeName) {
+        GraphicalViewer viewer = designerEditor.getViewer();
+        Object object = viewer.getRootEditPart().getChildren().get(0);
+        if (object instanceof ProcessPart) {
+            // the structure in memory is:
+            // ProcessPart < SubjobContainerPart < NodeContainerPart < NodePart
+            for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
+                if (editPart instanceof SubjobContainerPart) {
+                    SubjobContainerPart subjobPart = (SubjobContainerPart) editPart;
+                    for (EditPart part : (List<EditPart>) subjobPart.getChildren()) {
+                        if (part instanceof NodeContainerPart) {
+                            EditPart nodePart = (EditPart) part.getChildren().get(0);
+                            if (nodePart instanceof NodePart) {
+                                if (((Node) ((NodePart) nodePart).getModel()).getLabel().equals(nodeName)) {
+                                    viewer.select(nodePart);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Calculates the contents of page 2 when the it is activated.
      */
     @Override
@@ -616,49 +647,47 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                             factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) { //$NON-NLS-1$
 
-                                        @Override
-                                        protected void run() throws LoginException, PersistenceException {
-                                            try {
-                                                IProxyRepositoryFactory factory = CorePlugin.getDefault()
-                                                        .getProxyRepositoryFactory();
+                                @Override
+                                protected void run() throws LoginException, PersistenceException {
+                                    try {
+                                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
 
-                                                Set<String> curContextVars = getCurrentContextVariables(manager);
-                                                IProcess process2 = getProcess();
-                                                String jobId = process2.getProperty().getId();
-                                                IEditorReference[] reference = PlatformUI.getWorkbench()
-                                                        .getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-                                                List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
-                                                        .getOpenedProcess(reference);
+                                        Set<String> curContextVars = getCurrentContextVariables(manager);
+                                        IProcess process2 = getProcess();
+                                        String jobId = process2.getProperty().getId();
+                                        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                                .getActivePage().getEditorReferences();
+                                        List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                .getOpenedProcess(reference);
 
-                                                // gcui:if nameMap is empty it do nothing.
-                                                if (!nameMap.isEmpty()) {
-                                                    UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(
-                                                            factory, nameMap, jobId, curContextVars);
-                                                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(
-                                                            processes, nameMap, jobId, curContextVars);
-                                                }
-                                                // add for bug 9564
-                                                List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS,
-                                                        true);
-                                                List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
-                                                for (IRepositoryViewObject repositoryObject : all) {
-                                                    Item item = repositoryObject.getProperty().getItem();
-                                                    if (item instanceof ProcessItem) {
-                                                        ProcessItem processItem = (ProcessItem) item;
-                                                        allProcess.add(processItem);
-                                                    }
-                                                }
-                                                UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
-                                                        allProcess, process2);
-
-                                            } catch (PersistenceException e) {
-                                                // e.printStackTrace();
-                                                ExceptionHandler.process(e);
-                                            }
-                                            nameMap.clear();
-                                            manager.setModified(false);
+                                        // gcui:if nameMap is empty it do nothing.
+                                        if (!nameMap.isEmpty()) {
+                                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory,
+                                                    nameMap, jobId, curContextVars);
+                                            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
+                                                    nameMap, jobId, curContextVars);
                                         }
-                                    });
+                                        // add for bug 9564
+                                        List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                                        List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
+                                        for (IRepositoryViewObject repositoryObject : all) {
+                                            Item item = repositoryObject.getProperty().getItem();
+                                            if (item instanceof ProcessItem) {
+                                                ProcessItem processItem = (ProcessItem) item;
+                                                allProcess.add(processItem);
+                                            }
+                                        }
+                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
+                                                allProcess, process2);
+
+                                    } catch (PersistenceException e) {
+                                        // e.printStackTrace();
+                                        ExceptionHandler.process(e);
+                                    }
+                                    nameMap.clear();
+                                    manager.setModified(false);
+                                }
+                            });
 
                         }
 
@@ -912,8 +941,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codePath = processor.getCodePath();
         }
 
-        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                processor.getCodeProject().getFullPath().append(codePath));
+        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot()
+                .getFile(processor.getCodeProject().getFullPath().append(codePath));
         if (!codeFile.exists()) {
             // Create empty one
             try {

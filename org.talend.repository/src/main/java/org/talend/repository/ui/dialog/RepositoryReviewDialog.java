@@ -382,6 +382,7 @@ public class RepositoryReviewDialog extends Dialog {
         IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
         result = (RepositoryNode) selection.getFirstElement();
         super.okPressed();
+        repositoryView.dispose();
     }
 
     public RepositoryNode getResult() {

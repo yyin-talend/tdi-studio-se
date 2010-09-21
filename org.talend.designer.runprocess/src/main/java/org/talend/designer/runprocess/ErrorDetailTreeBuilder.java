@@ -21,11 +21,12 @@ import java.util.Set;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
-import org.talend.core.model.process.INode;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuang class global comment. Detailled comment
@@ -58,11 +59,11 @@ public class ErrorDetailTreeBuilder {
                 jobEntry.addItem(componentName, talendProblem);
 
             } else {
-                String job = error.getJob().getLabel();
+                String job = error.getJobInfo().getJobName();
                 if (!jobNames.contains(job)) {
                     continue;
                 }
-                String componentName = ((INode) error.getElement()).getLabel();
+                String componentName = error.getNodeName();
                 JobErrorEntry jobEntry = getJobEntry(job);
                 jobEntry.addItem(componentName, error);
             }
@@ -160,9 +161,9 @@ public class ErrorDetailTreeBuilder {
 
         public void addItem(Problem problem) {
             errors.add(problem);
-            if (icon == null && problem.getElement() != null && problem.getElement() instanceof INode) {
-                INode node = (INode) problem.getElement();
-                icon = CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_16);
+            if (icon == null && problem.getNodeName() != null) {
+                IComponent component = ComponentsFactoryProvider.getInstance().get(problem.getComponentName());
+                icon = CoreImageProvider.getComponentIcon(component, ICON_SIZE.ICON_16);
             }
         }
 

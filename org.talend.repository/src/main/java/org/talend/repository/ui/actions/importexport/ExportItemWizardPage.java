@@ -73,10 +73,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -794,7 +794,7 @@ class ExportItemWizardPage extends WizardPage {
         } catch (InvocationTargetException e) {
             //
         } catch (InterruptedException e) {
-            // 
+            //
         }
 
     }
@@ -910,6 +910,10 @@ class ExportItemWizardPage extends WizardPage {
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
+        } finally {
+            if (exportItemsTreeViewer != null) {
+                exportItemsTreeViewer.dispose();
+            }
         }
         return true;
     }
@@ -985,6 +989,9 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     public boolean performCancel() {
+        if (exportItemsTreeViewer != null) {
+            exportItemsTreeViewer.dispose();
+        }
         return true;
     }
 

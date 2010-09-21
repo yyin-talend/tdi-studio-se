@@ -664,8 +664,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      */
     @Override
     public void dispose() {
-        super.dispose();
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
+        super.dispose();
     }
 
     /**

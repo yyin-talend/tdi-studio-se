@@ -32,6 +32,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
@@ -120,6 +121,20 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return tempfile;
     }
 
+    public IFile getProcessFile(JobInfo jobInfo) throws SystemException {
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        try {
+            IProject perlProject = service.getProject(ECodeLanguage.PERL);
+
+            String projectFolderName = jobInfo.getProjectFolderName();
+            IFile file = perlProject.getFile(PerlResourcesHelper.getJobFileName(projectFolderName, jobInfo.getJobName(), jobInfo
+                    .getJobVersion()));
+            return file;
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        }
+    }
+
     private IFile getProcessFile(ProcessItem processItem) throws SystemException {
         IFile tempfile = null;
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -128,7 +143,6 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
             String rootProjectName = PerlResourcesHelper.getRootProjectName(processItem);
             tempfile = perlProject.getFile(PerlResourcesHelper.getJobFileName(rootProjectName, processItem.getProperty()
                     .getLabel(), processItem.getProperty().getVersion()));
-
         } catch (CoreException e) {
             throw new SystemException(e);
         }

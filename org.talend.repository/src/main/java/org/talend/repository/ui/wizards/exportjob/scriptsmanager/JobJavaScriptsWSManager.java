@@ -49,10 +49,10 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -117,7 +117,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(process, true);
+        List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
         for (int i = 0; i < process.length; i++) {
@@ -215,8 +215,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), isOptionChoosed(
-                    exportChoice, ExportChoice.needJobScript)));
+            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
+                    isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
                     isOptionChoosed(exportChoice, ExportChoice.needContext));
         }
@@ -620,8 +620,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 if (!j2w.getCls().isInterface()) {
                     w2j.setImplementationClassName(j2w.getCls().getName());
                 } else {
-                    throw new Exception(org.talend.repository.i18n.Messages
-                            .getString("JobJavaScriptsWSManager.impClassNotSpecified")); //$NON-NLS-1$
+                    throw new Exception(
+                            org.talend.repository.i18n.Messages.getString("JobJavaScriptsWSManager.impClassNotSpecified")); //$NON-NLS-1$
                 }
             }
             // w2j.run(wsdlFileName);

@@ -35,6 +35,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
@@ -177,6 +178,23 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    public IFile getProcessFile(JobInfo jobInfo) throws SystemException {
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        try {
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+
+            String projectFolderName = jobInfo.getProjectFolderName();
+
+            String folderName = JavaResourcesHelper.getJobFolderName(jobInfo.getJobName(), jobInfo.getJobVersion());
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
+                    + projectFolderName + "/" + folderName + "/" //$NON-NLS-1$ //$NON-NLS-2$
+                    + jobInfo.getJobName() + JavaUtils.JAVA_EXTENSION);
+            return file;
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        }
+    }
+
     private IFile getProcessFile(ProcessItem item) throws SystemException {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         try {
@@ -193,7 +211,6 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         } catch (CoreException e) {
             throw new SystemException(e);
         }
-
     }
 
     /**

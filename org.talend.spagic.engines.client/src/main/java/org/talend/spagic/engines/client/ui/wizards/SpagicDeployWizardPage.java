@@ -46,20 +46,20 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.spagic.engines.client.i18n.Messages;
@@ -391,8 +391,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
             }
         }
         if (!canExport) {
-            MessageDialog.openInformation(getContainer().getShell(), Messages
-                    .getString("SpagicDeployWizardPage.exportResourceError"), //$NON-NLS-1$
+            MessageDialog.openInformation(getContainer().getShell(),
+                    Messages.getString("SpagicDeployWizardPage.exportResourceError"), //$NON-NLS-1$
                     Messages.getString("SpagicDeployWizardPage.chooseResource")); //$NON-NLS-1$
             return false;
         }
@@ -434,8 +434,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
         for (int i = 0; i < process.length; i++) {
             try {
-                process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[i].getItem().getProperty()).getItem());
+                process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[i].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }

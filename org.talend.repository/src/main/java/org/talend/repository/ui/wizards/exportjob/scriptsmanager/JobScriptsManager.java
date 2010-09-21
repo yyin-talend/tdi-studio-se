@@ -41,6 +41,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -229,28 +230,32 @@ public abstract class JobScriptsManager {
      * @param codeOptions TODO
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment,
-            int statisticPort, int tracePort, String... codeOptions) {
+    protected List<URL> getLauncher(boolean needLauncher, IProcess process, ProcessItem processItem, String contextName,
+            String environment, int statisticPort, int tracePort, String... codeOptions) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
             return list;
         }
-        String processId = process.getProperty().getId();
-        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processId, contextName, process.getProperty().getVersion(),
-                statisticPort, tracePort, codeOptions);
-        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
-                statisticPort, tracePort, codeOptions);
+        String windowsCmd;
+        String unixCmd;
+        if (process == null) {
+            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processItem, contextName, statisticPort, tracePort, codeOptions);
+            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processItem, contextName, statisticPort, tracePort, codeOptions);
+        } else {
+            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort, codeOptions);
+            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort, codeOptions);
+        }
 
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
-            createLauncherFile(process, list, unixCmd, UNIX_LAUNCHER, tmpFold);
-            createLauncherFile(process, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
+            createLauncherFile(processItem, list, unixCmd, UNIX_LAUNCHER, tmpFold);
+            createLauncherFile(processItem, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
         } else if (environment.equals(UNIX_ENVIRONMENT)) {
-            createLauncherFile(process, list, unixCmd, UNIX_LAUNCHER, tmpFold);
+            createLauncherFile(processItem, list, unixCmd, UNIX_LAUNCHER, tmpFold);
         } else if (environment.equals(WINDOWS_ENVIRONMENT)) {
-            createLauncherFile(process, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
+            createLauncherFile(processItem, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
         }
 
         return list;
@@ -320,6 +325,20 @@ public abstract class JobScriptsManager {
         return list;
     }
 
+    /**
+     * @deprecated <br>
+     * Call instead the function with IProcess.<br>
+     * This avoids to reload the ProcessItem another time.
+     * 
+     * @param targetPlatform
+     * @param processId
+     * @param context
+     * @param processVersion
+     * @param statisticPort
+     * @param tracePort
+     * @param codeOptions
+     * @return
+     */
     protected String getCommandByTalendJob(String targetPlatform, String processId, String context, String processVersion,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
@@ -340,12 +359,42 @@ public abstract class JobScriptsManager {
         return finalCommand;
     }
 
+    /**
+     * @deprecated <br>
+     * Call instead the function with IProcess.<br>
+     * This avoids to reload the ProcessItem another time.
+     * 
+     * @param targetPlatform
+     * @param processItem
+     * @param context
+     * @param statisticPort
+     * @param tracePort
+     * @param codeOptions
+     * @return
+     */
     protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, int statisticPort,
             int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
             cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort, tracePort,
                     codeOptions);
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
+        StringBuffer sb = new StringBuffer();
+        sb.append(""); //$NON-NLS-1$
+        for (String s : cmd) {
+            sb.append(s).append(' ');
+        }
+        return sb.toString();
+    }
+
+    protected String getCommandByTalendJob(String targetPlatform, IProcess process, String context, int statisticPort,
+            int tracePort, String... codeOptions) {
+        String[] cmd = new String[] {};
+        try {
+            cmd = ProcessorUtilities
+                    .getCommandLine(targetPlatform, true, process, context, statisticPort, tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -453,9 +502,9 @@ public abstract class JobScriptsManager {
      * @param process
      * @throws ProcessorException
      */
-    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
+    protected IProcess generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
             boolean applyContextToChildren) throws ProcessorException {
-        ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
+        return ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
     }
 
     /**
@@ -466,9 +515,9 @@ public abstract class JobScriptsManager {
      * @param process
      * @throws ProcessorException
      */
-    protected void generateJobFiles(ProcessItem process, IContext context, String version, boolean statistics, boolean trace,
+    protected IProcess generateJobFiles(ProcessItem process, IContext context, String version, boolean statistics, boolean trace,
             boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
-        ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor);
+        return ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor);
     }
 
     /**
@@ -479,9 +528,9 @@ public abstract class JobScriptsManager {
      * @param process
      * @throws ProcessorException
      */
-    protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
-            boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
-        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
+    protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
+            boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
     }
 
     protected IResource[] sourceResouces = null;
@@ -632,8 +681,8 @@ public abstract class JobScriptsManager {
         if (!needDependencies) {
             return;
         }
-        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(Arrays
-                .asList(new Item[] { processItem }), false);
+        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
+                Arrays.asList(new Item[] { processItem }), false);
 
         for (IRepositoryViewObject object : allDependencies) {
             Item item = object.getProperty().getItem();
@@ -653,10 +702,10 @@ public abstract class JobScriptsManager {
                 checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
-                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
-                        itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
-                        itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
+                        .append(itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
+                        .append(itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
                                 + FileConstants.PROPERTIES_EXTENSION);
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();

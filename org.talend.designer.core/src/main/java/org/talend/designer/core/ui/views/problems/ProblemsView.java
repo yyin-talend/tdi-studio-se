@@ -55,6 +55,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.RoutineItem;
@@ -67,7 +68,6 @@ import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
@@ -130,8 +130,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Problem problem = (Problem) selection.getFirstElement();
                 if (problem != null && problem.isConcrete()) {
-                    if (problem.getElement() instanceof Node) {
-                        selectInDesigner((Node) problem.getElement());
+                    if (problem.getNodeName() != null) {
+                        selectInDesigner(problem.getJobInfo(), problem.getNodeName());
                     } else if (problem instanceof TalendProblem) {
                         selectInRoutine((TalendProblem) problem);
                     }
@@ -194,7 +194,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void selectInDesigner(Node node) {
+    private void selectInDesigner(JobInfo jobInfo, String nodeName) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
@@ -203,9 +203,10 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             IEditorPart editor = reference.getEditor(false);
             if (editor instanceof AbstractMultiPageTalendEditor) {
                 AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) editor;
-                if (mpte.getTalendEditor().getProcess().equals(node.getProcess())) {
+                if (mpte.getTalendEditor().getProcess().getId().equals(jobInfo.getJobId())
+                        && mpte.getTalendEditor().getProcess().getVersion().equals(jobInfo.getJobVersion())) {
                     page.bringToTop(mpte);
-                    mpte.selectNode(node);
+                    mpte.selectNode(nodeName);
                 }
             }
         }
