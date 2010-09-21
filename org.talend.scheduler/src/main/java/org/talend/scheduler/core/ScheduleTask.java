@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.talend.designer.runprocess.JobInfo;
+import org.talend.core.model.process.JobInfo;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.scheduler.i18n.Messages;
