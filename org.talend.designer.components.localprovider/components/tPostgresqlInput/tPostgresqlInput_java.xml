@@ -16,7 +16,6 @@
 
   <FAMILIES>
     <FAMILY>Databases/PostgreSQL</FAMILY>
-	<FAMILY>Geo/Database</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
