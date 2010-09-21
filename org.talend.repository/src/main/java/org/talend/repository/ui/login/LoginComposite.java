@@ -68,7 +68,6 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EnvironmentUtils;
-import org.talend.core.BareBonesBrowserLaunch;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -81,6 +80,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.ISVNProviderService;
+import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -464,7 +464,7 @@ public class LoginComposite extends Composite {
             public void linkActivated(HyperlinkEvent e) {
 
                 String url = "http://www.talend.com/products-data-integration/sharedRepository.php";
-                BareBonesBrowserLaunch.openURL(url);
+                TalendBrowserLaunchHelper.openURL(url);
                 // Runtime.getRuntime().exec("explorer http://www.talend.com/products-data-integration/sharedRepository.php");
                 // java.net.URI uri = new
                 // java.net.URI("http://www.talend.com/products-data-integration/sharedRepository.php");
@@ -1346,7 +1346,7 @@ public class LoginComposite extends Composite {
 
     public void createNewProject() {
         Project project = null;
-        NewProjectWizard newPrjWiz = new NewProjectWizard();
+        NewProjectWizard newPrjWiz = new NewProjectWizard((Project[]) projectViewer.getInput());
         WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
         newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
         if (newProjectDialog.open() == Window.OK) {

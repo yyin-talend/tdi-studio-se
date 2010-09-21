@@ -40,6 +40,8 @@ public class NewProjectWizard extends Wizard {
 
     private Project project;
 
+    private Project[] projects;
+
     /**
      * Constructs a new NewProjectWizard.
      * 
@@ -48,9 +50,10 @@ public class NewProjectWizard extends Wizard {
      * @param password
      * @param port2
      */
-    public NewProjectWizard() {
+    public NewProjectWizard(Project[] projects) {
         super();
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROJECT_WIZ));
+        this.projects = projects;
     }
 
     /**
@@ -59,6 +62,7 @@ public class NewProjectWizard extends Wizard {
     @Override
     public void addPages() {
         mainPage = new NewProjectWizardPage();
+        mainPage.setProjects(projects);
         addPage(mainPage);
         setWindowTitle(Messages.getString("NewProjectWizard.windowTitle")); //$NON-NLS-1$
     }

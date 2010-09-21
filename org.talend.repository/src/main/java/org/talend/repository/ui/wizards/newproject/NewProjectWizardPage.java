@@ -177,6 +177,10 @@ public class NewProjectWizardPage extends WizardPage {
 
     Project[] projects;
 
+    public void setProjects(Project[] projects) {
+        this.projects = projects;
+    }
+
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         if (projects == null) {
