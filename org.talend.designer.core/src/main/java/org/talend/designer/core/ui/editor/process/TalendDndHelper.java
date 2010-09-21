@@ -22,6 +22,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
+import org.talend.core.model.metadata.builder.connection.MdmConceptType;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.HL7ConnectionItem;
@@ -47,6 +48,8 @@ final class TalendDndHelper {
 
     private static final String INPUT = "Input"; //$NON-NLS-1$
 
+    private static final String RECEIVE = "Receive"; //$NON-NLS-1$
+
     public static List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         String productNameWanted = filterProductNameWanted(name, item);
@@ -61,7 +64,7 @@ final class TalendDndHelper {
         }
 
         // for mdm
-        boolean inputModel = false;
+        MdmConceptType mdmType = null;
         if (item instanceof MDMConnectionItem) {
             MDMConnectionItem mdmItem = (MDMConnectionItem) item;
             if (seletetedNode != null && seletetedNode.getObject() instanceof MetadataTableRepositoryObject) {
@@ -70,7 +73,7 @@ final class TalendDndHelper {
                     MDMConnection connection = (MDMConnection) mdmItem.getConnection();
                     for (Object obj : connection.getSchemas()) {
                         if (obj instanceof Concept && object.getLabel().equals(((Concept) obj).getLabel())) {
-                            inputModel = ((Concept) obj).isInputModel();
+                            mdmType = ((Concept) obj).getConceptType();
                         }
 
                     }
@@ -103,9 +106,11 @@ final class TalendDndHelper {
 
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                     if (item instanceof MDMConnectionItem) {
-                        if (inputModel && emfComponent.getName().endsWith(INPUT)) {
+                        if (MdmConceptType.INPUT.equals(mdmType) && emfComponent.getName().endsWith(INPUT)) {
                             neededComponents.add(emfComponent);
-                        } else if (!inputModel && emfComponent.getName().endsWith(OUTPUT)) {
+                        } else if (MdmConceptType.OUTPUT.equals(mdmType) && emfComponent.getName().endsWith(OUTPUT)) {
+                            neededComponents.add(emfComponent);
+                        } else if (MdmConceptType.RECEIVE.equals(mdmType) && emfComponent.getName().endsWith(RECEIVE)) {
                             neededComponents.add(emfComponent);
                         }
 
