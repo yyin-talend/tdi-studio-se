@@ -337,8 +337,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
     private void beforeLoopFind() throws IOException {
         int numFiles = files.size();
         List<V> datasList = new ArrayList<V>();
-        List<ObjectInputStream> oisList = new ArrayList<ObjectInputStream>();
-        List<BufferedInputStream> bisList = new ArrayList<BufferedInputStream>();
+        List<StreamContainer> scList = new ArrayList<StreamContainer>();
 
         boolean someFileStillHasRows = false;
 
@@ -346,13 +345,11 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         for (int i = 0; i < numFiles; i++) {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(files.get(i)));
-            // ObjectInputStream dis = new ObjectInputStream(bufferedInputStream);
-            ObjectInputStream dis = new JBossObjectInputStream(bufferedInputStream);
-            oisList.add(dis);
-            bisList.add(bufferedInputStream);
-            // V bean = getNextFreeRow();
+            // ObjectInputStream ois = new ObjectInputStream(bufferedInputStream);
+            ObjectInputStream ois = new JBossObjectInputStream(bufferedInputStream);
+            scList.add(new StreamContainer(ois, bufferedInputStream));
             V bean = createRowInstance();
-            bean.readData(dis);
+            bean.readData(ois);
             if (!someFileStillHasRows) {
                 someFileStillHasRows = true;
             }
@@ -361,8 +358,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         int size = datasList.size();
         datas = (V[]) datasList.toArray(new IPersistableRow[size]);
-        scArray = (StreamContainer[]) oisList.toArray(new StreamContainer[size]);
-
+        scArray = (StreamContainer[]) scList.toArray(new StreamContainer[size]);
     }
 
     /**
