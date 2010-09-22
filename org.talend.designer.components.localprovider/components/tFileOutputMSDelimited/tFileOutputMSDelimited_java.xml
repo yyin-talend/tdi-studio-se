@@ -107,7 +107,7 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
-			<IMPORT NAME="Advanced_Persistent_Lookup" MODULE="advancedPersistentLookupLib.jar"
+			<IMPORT NAME="Advanced_Persistent_Lookup" MODULE="advancedPersistentLookupLib-1.0.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="ApacheCommonsCollection32" MODULE="commons-collections-3.2.jar"
 				REQUIRED="true" />
