@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jboss.serial.io.JBossObjectInputStream;
+import org.jboss.serial.io.JBossObjectOutputStream;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.components.persistent.utils.FileUtils;
 
@@ -34,13 +36,44 @@ import routines.system.IPersistableRow;
 
 /**
  * 
- * DOC amaumont class global comment. Detailled comment <br/>
+ * <code>PersistentRowSorterIterator</code>. Allow to serialize objects sequentially and be able to iterate on them.
+ * 
+ * JBoss library is used to avoid memory leaks noticed with Sun ObjectInputStream class.
+ * 
+ * Warning: JBossObjectInputStream may not deserialize any objects such as for example java.io.File, you could encounter
+ * the following error:
+ * 
+ * <pre>
+ * Caused by: java.lang.reflect.InvocationTargetException
+ *     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+ *     at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+ *     at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ *     at java.lang.reflect.Method.invoke(Method.java:597)
+ *     at org.jboss.serial.persister.RegularObjectPersister.readSlotWithMethod(RegularObjectPersister.java:103)
+ *     ... 32 more
+ * Caused by: java.io.EOFException
+ *     at java.io.DataInputStream.readFully(DataInputStream.java:180)
+ *     at java.io.DataInputStream.readLong(DataInputStream.java:399)
+ *     at org.jboss.serial.util.StringUtil.readString(StringUtil.java:212)
+ *     at org.jboss.serial.objectmetamodel.DataContainer$DataContainerDirectInput.readUTF(DataContainer.java:757)
+ *     at org.jboss.serial.persister.ObjectInputStreamProxy.readUTF(ObjectInputStreamProxy.java:196)
+ *     at org.jboss.serial.objectmetamodel.FieldsContainer.readField(FieldsContainer.java:147)
+ *     at org.jboss.serial.objectmetamodel.FieldsContainer.readMyself(FieldsContainer.java:218)
+ *     at org.jboss.serial.persister.ObjectInputStreamProxy.readFields(ObjectInputStreamProxy.java:224)
+ *     at java.io.File.readObject(File.java:1927)
+ *     ... 37 more
+ *</pre>
+ * 
+ * @see http://www.talendforge.org/bugs/view.php?id=6780#bugnotes
  * 
  * @param <V> object value to sort
  */
 public abstract class PersistentRowSorterIterator<V extends IPersistableRow> implements IPersistentRowManager<V>, Iterator<V> {
 
     private static final int INIT_BUFFER_INDEX = -1;
+
+    /** This is 0 when using Sun stream library and 1 when using JBoss implementation */
+    private static final int JBOSS_EOF = 1;
 
     private static final float MARGIN_MAX = 0.35f;
 
@@ -58,10 +91,6 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
     private int bufferSize = 10000000;
 
-    // private int bufferSize = 100;
-
-    // private int bufferSize = 20;
-
     private int bufferBeanIndex = INIT_BUFFER_INDEX;
 
     private V[] buffer;
@@ -70,7 +99,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
     private int beansCount;
 
-    private ObjectInputStream[] diss;
+    private StreamContainer[] scArray;
 
     private ArrayList<File> files = new ArrayList<File>();
 
@@ -97,6 +126,38 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
     private boolean nextFreeRowCalled;
 
     private boolean sortEnabled = true;
+
+    /**
+     * 
+     * StreamContainer.
+     */
+    static class StreamContainer {
+
+        private ObjectInputStream objectInputStream;
+
+        private BufferedInputStream bufferedInputStream;
+
+        public StreamContainer(ObjectInputStream ois, BufferedInputStream bis) {
+            super();
+            this.objectInputStream = ois;
+            this.bufferedInputStream = bis;
+        }
+
+        public void close() {
+            try {
+                this.objectInputStream.close();
+            } catch (IOException e) {
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
+            }
+            try {
+                this.bufferedInputStream.close();
+            } catch (IOException e) {
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
+            }
+        }
+    }
 
     /**
      * DOC amaumont SortedMultipleHashFile constructor comment.
@@ -162,9 +223,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         buffer[bufferBeanIndex] = bean;
 
         if (bufferBeanIndex + 1 == bufferSize || bufferIsMarked && bufferBeanIndex == bufferMarkLimit) {// buffer is
-            // full do
-            // sort and write.
-            // sort
+            /* full do sort and write. */
             writeBuffer();
             if (!bufferIsMarked) {
                 bufferMarkLimit = bufferBeanIndex;
@@ -214,7 +273,8 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         File file = new File(buildFilePath());
         count++;
-        ObjectOutputStream rw = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+        // ObjectOutputStream rw = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+        ObjectOutputStream rw = new JBossObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
         // System.out.println("Start write buffer ");
         for (int i = 0; i < bufferBeanIndex + 1; i++) {
             buffer[i].writeData(rw);
@@ -275,20 +335,21 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
      * @throws IOException
      */
     private void beforeLoopFind() throws IOException {
-        // File file = new File(workDirectory + "TEMP_" + count);
-
-        // DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
         int numFiles = files.size();
         List<V> datasList = new ArrayList<V>();
-        List<ObjectInputStream> dissList = new ArrayList<ObjectInputStream>();
+        List<ObjectInputStream> oisList = new ArrayList<ObjectInputStream>();
+        List<BufferedInputStream> bisList = new ArrayList<BufferedInputStream>();
 
         boolean someFileStillHasRows = false;
 
         bufferBeanIndex = INIT_BUFFER_INDEX;
 
         for (int i = 0; i < numFiles; i++) {
-            ObjectInputStream dis = new ObjectInputStream(new BufferedInputStream(new FileInputStream(files.get(i))));
-            dissList.add(dis);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(files.get(i)));
+            // ObjectInputStream dis = new ObjectInputStream(bufferedInputStream);
+            ObjectInputStream dis = new JBossObjectInputStream(bufferedInputStream);
+            oisList.add(dis);
+            bisList.add(bufferedInputStream);
             // V bean = getNextFreeRow();
             V bean = createRowInstance();
             bean.readData(dis);
@@ -300,7 +361,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         int size = datasList.size();
         datas = (V[]) datasList.toArray(new IPersistableRow[size]);
-        diss = (ObjectInputStream[]) dissList.toArray(new ObjectInputStream[size]);
+        scArray = (StreamContainer[]) oisList.toArray(new StreamContainer[size]);
 
     }
 
@@ -354,11 +415,10 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
             currentObject = min;
 
             // get another data from the file
-            ObjectInputStream dis = diss[minIndex];
-            if (dis.available() > 0) {
-                // bean = getNextFreeRow();
+            StreamContainer sc = scArray[minIndex];
+            if (sc.objectInputStream.available() > JBOSS_EOF || sc.bufferedInputStream.available() > 0) {
                 bean = createRowInstance();
-                bean.readData(dis);
+                bean.readData(sc.objectInputStream);
                 datas[minIndex] = bean;
             } else {
                 datas[minIndex] = null;
@@ -386,16 +446,13 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
 
         buffer = null;
 
-        if (diss != null) {
-            for (int i = 0; i < diss.length; i++) {
-                try {
-                    diss[i].close();
-                } catch (IOException e) {
-                    // e.printStackTrace();
-                    ExceptionHandler.process(e);
-                }
+        if (scArray != null) {
+            for (int i = 0; i < scArray.length; i++) {
+                scArray[i].close();
             }
         }
+        scArray = null;
+
         // delete files
         for (int i = 0; i < files.size(); i++) {
             files.get(i).delete();
@@ -438,7 +495,6 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         };
     }
 
-    
     /**
      * Getter for sortEnabled.
      * 

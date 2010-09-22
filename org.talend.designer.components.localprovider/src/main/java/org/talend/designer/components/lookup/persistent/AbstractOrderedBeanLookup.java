@@ -29,6 +29,34 @@ import routines.system.IPersistableLookupRow;
  * 
  * Abstract class for ordered beans used in lookups with "Store on disk".
  * 
+ * JBoss library is used to avoid memory leaks noticed with Sun ObjectInputStream class.
+ * 
+ * Warning: JBossObjectInputStream may not deserialize any objects such as for example java.io.File, you could encounter
+ * the following error:
+ * 
+ * <pre>
+ * Caused by: java.lang.reflect.InvocationTargetException
+ *     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+ *     at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+ *     at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ *     at java.lang.reflect.Method.invoke(Method.java:597)
+ *     at org.jboss.serial.persister.RegularObjectPersister.readSlotWithMethod(RegularObjectPersister.java:103)
+ *     ... 32 more
+ * Caused by: java.io.EOFException
+ *     at java.io.DataInputStream.readFully(DataInputStream.java:180)
+ *     at java.io.DataInputStream.readLong(DataInputStream.java:399)
+ *     at org.jboss.serial.util.StringUtil.readString(StringUtil.java:212)
+ *     at org.jboss.serial.objectmetamodel.DataContainer$DataContainerDirectInput.readUTF(DataContainer.java:757)
+ *     at org.jboss.serial.persister.ObjectInputStreamProxy.readUTF(ObjectInputStreamProxy.java:196)
+ *     at org.jboss.serial.objectmetamodel.FieldsContainer.readField(FieldsContainer.java:147)
+ *     at org.jboss.serial.objectmetamodel.FieldsContainer.readMyself(FieldsContainer.java:218)
+ *     at org.jboss.serial.persister.ObjectInputStreamProxy.readFields(ObjectInputStreamProxy.java:224)
+ *     at java.io.File.readObject(File.java:1927)
+ *     ... 37 more
+ *</pre>
+ * 
+ * @see http://www.talendforge.org/bugs/view.php?id=6780#bugnotes
+ * 
  * @param <B> bean
  */
 public abstract class AbstractOrderedBeanLookup<B extends Comparable<B> & IPersistableLookupRow<B>> implements

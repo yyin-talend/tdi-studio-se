@@ -44,6 +44,10 @@ import routines.system.IPersistableLookupRow;
 /**
  * Persistent Sorted Lookup Manager.
  * 
+ * JBoss library is used to avoid memory leaks noticed with Sun ObjectInputStream class.
+ * 
+ * @see http://www.talendforge.org/bugs/view.php?id=6780#bugnotes
+ * 
  * @param <B> bean
  */
 public class PersistentSortedLookupManager<B extends IPersistableComparableLookupRow<B>> extends AbstractPersistentLookup<B>
