@@ -403,7 +403,7 @@ public class WsdlGenerator {
         stringBuffer.append(text43);
         stringBuffer.append(bean.jobVersion);
         stringBuffer.append(text44);
-        stringBuffer.append(bean.autogenerate ? "autogenerate" : (bean.jobName + "_" + bean.jobVersion + "Endpoint"));
+        stringBuffer.append(bean.autogenerate ? "autogenerate" : (bean.jobName + "_" + bean.jobVersion + "_Endpoint"));
         stringBuffer.append(text45);
         stringBuffer.append(bean.jobName);
         stringBuffer.append(text46);
