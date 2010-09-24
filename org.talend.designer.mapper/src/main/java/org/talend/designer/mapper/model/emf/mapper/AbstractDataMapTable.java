@@ -33,6 +33,7 @@ public interface AbstractDataMapTable extends EObject {
     /**
      * Returns the value of the '<em><b>Size State</b></em>' attribute.
      * The default value is <code>""</code>.
+     * The literals are from the enumeration {@link org.talend.designer.mapper.model.emf.mapper.SizeState}.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Size State</em>' attribute isn't clear,
@@ -40,22 +41,24 @@ public interface AbstractDataMapTable extends EObject {
      * </p>
      * <!-- end-user-doc -->
      * @return the value of the '<em>Size State</em>' attribute.
-     * @see #setSizeState(String)
+     * @see org.talend.designer.mapper.model.emf.mapper.SizeState
+     * @see #setSizeState(SizeState)
      * @see org.talend.designer.mapper.model.emf.mapper.MapperPackage#getAbstractDataMapTable_SizeState()
      * @model default=""
      * @generated
      */
-    String getSizeState();
+    SizeState getSizeState();
 
     /**
      * Sets the value of the '{@link org.talend.designer.mapper.model.emf.mapper.AbstractDataMapTable#getSizeState <em>Size State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @param value the new value of the '<em>Size State</em>' attribute.
+     * @see org.talend.designer.mapper.model.emf.mapper.SizeState
      * @see #getSizeState()
      * @generated
      */
-    void setSizeState(String value);
+    void setSizeState(SizeState value);
 
     /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.

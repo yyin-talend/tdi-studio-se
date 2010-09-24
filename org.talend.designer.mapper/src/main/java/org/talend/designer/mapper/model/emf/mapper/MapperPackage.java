@@ -611,6 +611,16 @@ public interface MapperPackage extends EPackage {
     int INPUT_TABLE_FEATURE_COUNT = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 2;
 
     /**
+     * The meta object id for the '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.mapper.model.emf.mapper.SizeState
+     * @see org.talend.designer.mapper.model.emf.mapper.impl.MapperPackageImpl#getSizeState()
+     * @generated
+     */
+    int SIZE_STATE = 8;
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.mapper.model.emf.mapper.MapperData <em>Data</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -933,6 +943,16 @@ public interface MapperPackage extends EPackage {
     EAttribute getInputTable_LookupMode();
 
     /**
+     * Returns the meta object for enum '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for enum '<em>Size State</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.SizeState
+     * @generated
+     */
+    EEnum getSizeState();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1209,6 +1229,16 @@ public interface MapperPackage extends EPackage {
          * @generated
          */
         EAttribute INPUT_TABLE__LOOKUP_MODE = eINSTANCE.getInputTable_LookupMode();
+
+        /**
+         * The meta object literal for the '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}' enum.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.mapper.model.emf.mapper.SizeState
+         * @see org.talend.designer.mapper.model.emf.mapper.impl.MapperPackageImpl#getSizeState()
+         * @generated
+         */
+        EEnum SIZE_STATE = eINSTANCE.getSizeState();
 
     }
 

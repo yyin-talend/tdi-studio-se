@@ -77,6 +77,36 @@ public class MapperFactoryImpl extends EFactoryImpl implements MapperFactory {
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
+    public Object createFromString(EDataType eDataType, String initialValue) {
+        switch (eDataType.getClassifierID()) {
+            case MapperPackage.SIZE_STATE:
+                return createSizeStateFromString(eDataType, initialValue);
+            default:
+                throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public String convertToString(EDataType eDataType, Object instanceValue) {
+        switch (eDataType.getClassifierID()) {
+            case MapperPackage.SIZE_STATE:
+                return convertSizeStateToString(eDataType, instanceValue);
+            default:
+                throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public MapperData createMapperData() {
         MapperDataImpl mapperData = new MapperDataImpl();
         return mapperData;
@@ -130,6 +160,26 @@ public class MapperFactoryImpl extends EFactoryImpl implements MapperFactory {
     public InputTable createInputTable() {
         InputTableImpl inputTable = new InputTableImpl();
         return inputTable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SizeState createSizeStateFromString(EDataType eDataType, String initialValue) {
+        SizeState result = SizeState.get(initialValue);
+        if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String convertSizeStateToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
     }
 
     /**

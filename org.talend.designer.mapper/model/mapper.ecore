@@ -20,7 +20,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractDataMapTable" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeState" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeState" eType="#//SizeState"
         defaultValueLiteral=""/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -48,5 +48,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="InputTable" eSuperTypes="#//AbstractInOutTable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="matchingMode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lookupMode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SizeState">
+    <eLiterals name="MINIMIZED" literal="MINIMIZED"/>
+    <eLiterals name="INTERMEDIATE" value="1" literal="INTERMEDIATE"/>
+    <eLiterals name="MAXIMIZED" value="2" literal="MAXIMIZED"/>
   </eClassifiers>
 </ecore:EPackage>

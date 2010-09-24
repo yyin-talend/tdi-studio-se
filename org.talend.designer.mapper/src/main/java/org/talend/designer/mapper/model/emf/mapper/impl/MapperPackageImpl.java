@@ -24,6 +24,7 @@ import org.talend.designer.mapper.model.emf.mapper.MapperFactory;
 import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
 import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
 import org.talend.designer.mapper.model.emf.mapper.OutputTable;
+import org.talend.designer.mapper.model.emf.mapper.SizeState;
 import org.talend.designer.mapper.model.emf.mapper.UiProperties;
 import org.talend.designer.mapper.model.emf.mapper.VarTable;
 
@@ -89,6 +90,13 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      * @generated
      */
     private EClass inputTableEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EEnum sizeStateEEnum = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -429,6 +437,15 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EEnum getSizeState() {
+        return sizeStateEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public MapperFactory getMapperFactory() {
         return (MapperFactory)getEFactoryInstance();
     }
@@ -489,6 +506,9 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         inputTableEClass = createEClass(INPUT_TABLE);
         createEAttribute(inputTableEClass, INPUT_TABLE__MATCHING_MODE);
         createEAttribute(inputTableEClass, INPUT_TABLE__LOOKUP_MODE);
+
+        // Create enums
+        sizeStateEEnum = createEEnum(SIZE_STATE);
     }
 
     /**
@@ -542,7 +562,7 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         initEAttribute(getMapperTableEntry_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, MapperTableEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(abstractDataMapTableEClass, AbstractDataMapTable.class, "AbstractDataMapTable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAbstractDataMapTable_SizeState(), ecorePackage.getEString(), "sizeState", "", 0, 1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractDataMapTable_SizeState(), this.getSizeState(), "sizeState", "", 0, 1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractDataMapTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractDataMapTable_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractDataMapTable_MapperTableEntries(), this.getMapperTableEntry(), null, "mapperTableEntries", null, 0, -1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -566,6 +586,12 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         initEClass(inputTableEClass, InputTable.class, "InputTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getInputTable_MatchingMode(), ecorePackage.getEString(), "matchingMode", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputTable_LookupMode(), ecorePackage.getEString(), "lookupMode", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        // Initialize enums and add enum literals
+        initEEnum(sizeStateEEnum, SizeState.class, "SizeState");
+        addEEnumLiteral(sizeStateEEnum, SizeState.MINIMIZED);
+        addEEnumLiteral(sizeStateEEnum, SizeState.INTERMEDIATE);
+        addEEnumLiteral(sizeStateEEnum, SizeState.MAXIMIZED);
 
         // Create resource
         createResource(eNS_URI);
