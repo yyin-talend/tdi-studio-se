@@ -49,9 +49,9 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
 
     private static final String CREATE_LABEL = "Create FTP";
 
-    ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.UNKNOWN);
+    ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.FTP_ICON);
 
-    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.UNKNOWN));
+    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.FTP_ICON));
 
     public CreateFTPConnectionAction() {
         super();
