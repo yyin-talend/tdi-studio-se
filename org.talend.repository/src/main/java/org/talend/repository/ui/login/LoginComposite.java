@@ -187,7 +187,7 @@ public class LoginComposite extends Composite {
 
     private Label iconLabel = null;
 
-    private Label onIiconLabel = null;
+    private Label onIconLabel = null;
 
     private ConnectionUserPerReader perReader = null;
 
@@ -635,13 +635,13 @@ public class LoginComposite extends Composite {
 
         // display the icon on the colorComposite
         // iconLabel and onIiconLabel both for the display of icon.
-        onIiconLabel = toolkit.createLabel(colorComposite, null);
+        onIconLabel = toolkit.createLabel(colorComposite, null);
         formData2 = new FormData();
         formData2.height = 46;
         formData2.top = new FormAttachment(0, -11);
         formData2.left = new FormAttachment(0, 8);
         formData2.right = new FormAttachment(0, 54);
-        onIiconLabel.setLayoutData(formData2);
+        onIconLabel.setLayoutData(formData2);
 
         colorComposite.setLayout(new FormLayout());
         formData2 = new FormData();
@@ -672,7 +672,7 @@ public class LoginComposite extends Composite {
         restartBut.setVisible(false);
         FormData formData = new FormData();
         formData.top = new FormAttachment(colorComposite, 0);// 5, 315
-        formData.left = new FormAttachment(0, 310);
+        // formData.left = new FormAttachment(0, 310);
         formData.right = new FormAttachment(100, -5);
         formData.bottom = new FormAttachment(100, 0);
         restartBut.setLayoutData(formData);// new GridData(GridData.FILL_HORIZONTAL)
@@ -942,11 +942,11 @@ public class LoginComposite extends Composite {
             if (getConnection() != null) {
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(false);
-                    onIiconLabel.setVisible(false);
+                    onIconLabel.setVisible(false);
                     // iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     // onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -954,11 +954,11 @@ public class LoginComposite extends Composite {
                     statusLabel.setFont(font);
                 } else if (inuse) {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -966,11 +966,11 @@ public class LoginComposite extends Composite {
                     statusLabel.setFont(font);
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CORRECT_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                    onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
 
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName));
                     int size = calStatusLabelFont(11, statusLabel.getText());
@@ -981,11 +981,11 @@ public class LoginComposite extends Composite {
                     // fillProjectsBtn.setEnabled(true);
                 } else {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -994,11 +994,11 @@ public class LoginComposite extends Composite {
                 }
             } else {
                 iconLabel.setVisible(true);
-                onIiconLabel.setVisible(true);
+                onIconLabel.setVisible(true);
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
+                onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
@@ -1022,11 +1022,11 @@ public class LoginComposite extends Composite {
                 setManageViewer();
                 if (!isWorkSpaceSame()) {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -1034,11 +1034,11 @@ public class LoginComposite extends Composite {
                     statusLabel.setFont(font);
                 } else if (inuse) {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -1047,11 +1047,11 @@ public class LoginComposite extends Composite {
                 } else if (projectViewer.getCombo().getItemCount() > 0) {
 
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CORRECT_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                    onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
                     colorComposite.setBackground(YELLOW_GREEN_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName));
                     int size = calStatusLabelFont(11, statusLabel.getText());
                     statusLabel.setBackground(YELLOW_GREEN_COLOR);
@@ -1061,11 +1061,11 @@ public class LoginComposite extends Composite {
                     fillProjectsBtn.setEnabled(true);
                 } else {
                     iconLabel.setVisible(true);
-                    onIiconLabel.setVisible(true);
+                    onIconLabel.setVisible(true);
                     iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                    onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                    onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                     colorComposite.setBackground(RED_COLOR);
-                    onIiconLabel.setBackground(colorComposite.getBackground());
+                    onIconLabel.setBackground(colorComposite.getBackground());
                     statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED"));
                     statusLabel.setBackground(RED_COLOR);
                     statusLabel.setForeground(WHITE_COLOR);
@@ -1074,11 +1074,11 @@ public class LoginComposite extends Composite {
                 }
             } else {
                 iconLabel.setVisible(true);
-                onIiconLabel.setVisible(true);
+                onIconLabel.setVisible(true);
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
-                onIiconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
-                onIiconLabel.setBackground(colorComposite.getBackground());
+                onIconLabel.setBackground(colorComposite.getBackground());
                 statusLabel.setText(Messages.getString("LoginComposite.connectionEmpty"));
                 statusLabel.setBackground(RED_COLOR);
                 statusLabel.setForeground(WHITE_COLOR);
@@ -1227,6 +1227,7 @@ public class LoginComposite extends Composite {
                         ExceptionHandler.process(e);
                     }
                     displayPasswordComposite();
+                    getShell().pack();
                 }
             });
 
