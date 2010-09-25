@@ -785,7 +785,7 @@ public class LoginComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(passwordComposite, 1, SWT.TOP);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
-        formData.right = new FormAttachment(100, -48);
+        formData.right = new FormAttachment(100, -45);
         passwordText.setLayoutData(formData);
 
     }
