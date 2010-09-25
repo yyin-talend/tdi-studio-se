@@ -208,6 +208,12 @@ public class ImportItemUtil {
                     if (!isSqlPattern || current.getProperty().getItem().getState().getPath().equals(itemPath)) {
                         nameAvailable = false;
                     }
+                    // overwrite the item with same label but diff id: 15787: import items does not overwrite some
+                    // elements
+                    itemWithSameId = current;
+                    if (!nameAvailable) {
+                        break;
+                    }
                 }
                 if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getProperty().getId())) {
                     itemWithSameId = current;
