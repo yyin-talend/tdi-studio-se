@@ -87,6 +87,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
     private boolean enableSandboxProject;
 
+    /**
+     * @deprecated should be no used after bug 15815.
+     */
     private final ConnectionBean currentConnBean;
 
     public CreateSandboxProjectDialog(Shell parentShell, ConnectionBean currentConnBean) {
@@ -102,18 +105,18 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         initProjectList();
     }
 
-    public boolean existedBeforeConn() {
-        return this.currentConnBean != null // there is no any connection.
-                && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(this.currentConnBean.getRepositoryId()); // if not
-        // local
-    }
+    // public boolean existedBeforeConn() {
+    // return this.currentConnBean != null // there is no any connection.
+    // && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(this.currentConnBean.getRepositoryId()); // if not
+    // // local
+    // }
 
-    private String getExistedBeforeConnURL() {
-        if (existedBeforeConn()) {
-            return this.currentConnBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-        }
-        return null;
-    }
+    // private String getExistedBeforeConnURL() {
+    // if (existedBeforeConn()) {
+    // return this.currentConnBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
+    // }
+    // return null;
+    // }
 
     private void initProjectList() {
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
@@ -163,9 +166,9 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         urlComp.setLayout(new GridLayout(3, false));
         urlComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         urlText = new LabelledText(urlComp, Messages.getString("CreateSandboxProjectDialog.UrlTitle")); //$NON-NLS-1$
-        if (existedBeforeConn()) {
-            urlText.setText(getExistedBeforeConnURL());
-        }
+        // if (existedBeforeConn()) {
+        // urlText.setText(getExistedBeforeConnURL());
+        // }
         checkBtn = new Button(urlComp, SWT.PUSH);
         checkBtn.setText(Messages.getString("CreateSandboxProjectDialog.CheckTitle")); //$NON-NLS-1$
 
@@ -174,7 +177,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         projectGroup.setLayout(new GridLayout(2, false));
         projectGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        projectLabelText = new LabelledText(projectGroup, Messages.getString("CreateSandboxProjectDialog.ProjectLabel")); //$NON-NLS-1$
+        projectLabelText = new LabelledText(projectGroup,
+                Messages.getString("CreateSandboxProjectDialog.ProjectLabel"), 1, SWT.SINGLE); //$NON-NLS-1$
         GridData layoutData = new GridData();
         layoutData.widthHint = 180;
         layoutData.minimumWidth = 180;
@@ -238,6 +242,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                         }
                     } catch (PersistenceException e1) {
                         ExceptionHandler.process(e1);
+                        MessageDialog.openError(getShell(), Messages.getString("CreateSandboxProjectDialog.ErrorTitle"), //$NON-NLS-1$ 
+                                e1.getMessage());
                     } finally {
                         // revert
                         if (oldContext != null) {
@@ -395,7 +401,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         final String projectAuthorFirstname = userFirstNameText.getText();
         final String projectAuthorLastname = userLastNameText.getText();
 
-        final boolean needCreateNewConn = !existedBeforeConn() || !url.trim().equals(getExistedBeforeConnURL());
+        // final boolean needCreateNewConn = !existedBeforeConn() || !url.trim().equals(getExistedBeforeConnURL());
 
         bean = new ConnectionBean();
         bean.setRepositoryId(RepositoryConstants.REPOSITORY_REMOTE_ID);
@@ -409,27 +415,26 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
         // set context for url and in order to create project later.
         RepositoryContext repositoryContext = new RepositoryContext();
-        if (existedBeforeConn()) {
-            Context ctx = CorePlugin.getContext();
-            RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-            repositoryContext.setUser(oldContext.getUser());
-            repositoryContext.setClearPassword(oldContext.getClearPassword());
-        } else {
-            User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname,
-                    false);
-            repositoryContext.setUser(user);
-            repositoryContext.setClearPassword(projectAuthorPass);
-        }
+        // if (existedBeforeConn()) {
+        // Context ctx = CorePlugin.getContext();
+        // RepositoryContext oldContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        // repositoryContext.setUser(oldContext.getUser());
+        // repositoryContext.setClearPassword(oldContext.getClearPassword());
+        // } else {
+        User user = ProjectHelper.createUser(projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname,
+                false);
+        repositoryContext.setUser(user);
+        repositoryContext.setClearPassword(projectAuthorPass);
+        // }
         repositoryContext.setFields(bean.getDynamicFields());
         Context ctx = CorePlugin.getContext();
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
 
         // set provider
-        if (!existedBeforeConn()) { // no connection
-            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
-                    .getRepositoryId()));
-        }
+        // if (!existedBeforeConn()) { // no connection
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean.getRepositoryId()));
+        // }
         //
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
@@ -445,7 +450,6 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                         Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage,
                                 projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
                         projectInfor.setSandboxProject(true);
-                        projectInfor.setNeedAuthor(existedBeforeConn());
 
                         boolean ok = false;
                         try {
@@ -460,21 +464,20 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                         }
                         if (ok) { // if not created, will don't close the dialog
                             String messages = Messages.getString("CreateSandboxProjectDialog.successMessage"); //$NON-NLS-1$
-                            if (needCreateNewConn) {
-                                messages += "\n\n" //$NON-NLS-1$ 
-                                        + Messages.getString(
-                                                "CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
-                            }
+                            // if (needCreateNewConn) {
+                            messages += "\n\n" //$NON-NLS-1$ 
+                                    + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
+                            // }
                             MessageDialog.openInformation(getShell(), Messages
                                     .getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
 
-                            if (needCreateNewConn) {
-                                // save connection
-                                ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
-                                List<ConnectionBean> connections = instance.forceReadConnections();
-                                connections.add(bean);
-                                instance.saveConnections(connections);
-                            }
+                            // if (needCreateNewConn) {
+                            // save connection
+                            ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
+                            List<ConnectionBean> connections = instance.forceReadConnections();
+                            connections.add(bean);
+                            instance.saveConnections(connections);
+                            // }
                             CreateSandboxProjectDialog.super.okPressed();
                         }
                         monitor.done();

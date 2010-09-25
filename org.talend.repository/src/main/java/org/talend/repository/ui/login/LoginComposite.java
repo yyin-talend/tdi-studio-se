@@ -401,7 +401,7 @@ public class LoginComposite extends Composite {
 
                 });
 
-        if (tis) {// Sendbox for Tis_Remote
+        if (tis) { // Sendbox for Tis_Remote
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
                         @Override
