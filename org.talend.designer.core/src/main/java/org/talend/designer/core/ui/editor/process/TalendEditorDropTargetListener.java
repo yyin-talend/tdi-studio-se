@@ -63,9 +63,12 @@ import org.talend.core.model.metadata.ISAPConstant;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
+import org.talend.core.model.metadata.builder.connection.Concept;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
+import org.talend.core.model.metadata.builder.connection.MdmConceptType;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -87,6 +90,7 @@ import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
@@ -974,8 +978,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param connectionItem
      */
     private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
-                || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+        if ((selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE || selectedNode
+                .getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION)
+                && !isMdmOutput(selectedNode, connectionItem)) {
             String etlSchema = null;
             if (connectionItem.getConnection() instanceof DatabaseConnection) {
                 DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
@@ -1040,6 +1045,28 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             return command2;
         }
         return null;
+    }
+
+    private boolean isMdmOutput(RepositoryNode selectedNode, ConnectionItem connectionItem) {
+        boolean isMdmOutput = false;
+        if (connectionItem instanceof MDMConnectionItem) {
+            MDMConnectionItem mdmItem = (MDMConnectionItem) connectionItem;
+            final MDMConnection connection = (MDMConnection) mdmItem.getConnection();
+            final EList<Concept> schemas = connection.getSchemas();
+            final Object properties = selectedNode.getProperties(EProperties.LABEL);
+            Concept concept = null;
+            for (int i = 0; i < schemas.size(); i++) {
+                final String label = schemas.get(i).getLabel();
+                if (label != null && label.equals(properties)) {
+                    concept = schemas.get(i);
+                    break;
+                }
+            }
+            if (concept != null && MdmConceptType.OUTPUT.equals(concept.getConceptType())) {
+                isMdmOutput = true;
+            }
+        }
+        return isMdmOutput;
     }
 
     private Command getChangeQueryCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {

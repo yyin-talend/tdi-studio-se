@@ -580,7 +580,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                             }
                                         }
                                     }
-                                } else {
+                                } else if (!isMdmOutput()) {
                                     if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
                                             && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
                                         if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
@@ -723,6 +723,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
+    }
+
+    private boolean isMdmOutput() {
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            if ("tMDMOutput".equals(node.getComponent().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setQueryToRepositoryMode(IElementParameter queryParam, List<Query> queries, Item item) {
