@@ -52,6 +52,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
@@ -69,16 +70,18 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.JobletReferenceBean;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
 import org.talend.repository.ui.dialog.JobletReferenceDialog;
+import org.talend.repository.utils.AbstractResourceChangesService;
+import org.talend.repository.utils.ResourceChangesServiceRegister;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -486,8 +489,8 @@ public class DeleteAction extends AContextualAction {
                                             String path = item2.getState().getPath();
 
                                             boolean found = false;
-                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
-                                                    property2.getVersion(), path, refP.getLabel());
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                                    .getVersion(), path, refP.getLabel());
                                             bean.setJobFlag(isJob, isDelete);
 
                                             for (JobletReferenceBean b : list) {
@@ -519,8 +522,8 @@ public class DeleteAction extends AContextualAction {
                                 if (equals) {
 
                                     boolean found = false;
-                                    JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
-                                            property2.getVersion(), path, refP.getLabel());
+                                    JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                            .getVersion(), path, refP.getLabel());
                                     bean.setJobFlag(isJob, isDelete);
 
                                     for (JobletReferenceBean b : list) {
@@ -629,6 +632,17 @@ public class DeleteAction extends AContextualAction {
             dialog.open();
             return true;
         }
+
+        Item item = objToDelete.getProperty().getItem();
+        if (item instanceof ConnectionItem) {
+            AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
+                    .getResourceChangeService(AbstractResourceChangesService.class);
+            if (resChangeService != null) {
+                return !resChangeService.handleResourceChange(((ConnectionItem) item).getConnection());
+
+            }
+        }
+
         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
         ERepositoryObjectType nodeType = (ERepositoryObjectType) currentJobNode.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType.isSubItem()) {
@@ -662,6 +676,7 @@ public class DeleteAction extends AContextualAction {
                 }
             } else {
                 factory.deleteObjectLogical(objToDelete);
+
             }
         }
 
