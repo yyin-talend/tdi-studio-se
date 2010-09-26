@@ -638,8 +638,9 @@ public class DeleteAction extends AContextualAction {
             AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
                     .getResourceChangeService(AbstractResourceChangesService.class);
             if (resChangeService != null) {
-                return !resChangeService.handleResourceChange(((ConnectionItem) item).getConnection());
-
+                if (!resChangeService.handleResourceChange(((ConnectionItem) item).getConnection())) {
+                    return true;
+                }
             }
         }
 
