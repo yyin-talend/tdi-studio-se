@@ -322,6 +322,7 @@ public class HL7UI {
                                     if (column.getLabel().equals(event.previousValue)) {
                                         schema.add(bean);
                                         schema.remove(column);
+                                        break;
                                     }
                                 }
                             }
