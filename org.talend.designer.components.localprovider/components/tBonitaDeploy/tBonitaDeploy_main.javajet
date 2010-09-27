@@ -1,0 +1,63 @@
+<%@ jet 
+imports="
+			org.talend.core.model.process.INode 
+			org.talend.core.model.process.ElementParameterParser 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String bonitaRuntimePath = ElementParameterParser.getValue(node, "__BONITA_RUNTIME_PATH__");
+	String businessArchive = ElementParameterParser.getValue(node, "__BUSINESS_ARCHIVE__");
+	String userName = ElementParameterParser.getValue(node, "__USERNAME__");
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+	
+	boolean useBonitaEnvironmentFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_BONITA_ENVIRONMENT_FILE__"));
+	String bonitaEnvironmentFile = ElementParameterParser.getValue(node, "__BONITA_ENVIRONMENT_FILE__");
+	boolean useJassFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_JASS_STANDARD_FILE__"));
+	String jassFile = ElementParameterParser.getValue(node, "__JASS_STANDARD_FILE__");
+	boolean useLoggingFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOGGING_FILE__"));
+	String loggingFile = ElementParameterParser.getValue(node, "__LOGGING_FILE__");
+%>
+	System.setProperty("org.ow2.bonita.environment", <%=useBonitaEnvironmentFile? bonitaEnvironmentFile :bonitaRuntimePath + "+\"/runtime/conf/bonita-environment.xml\""%> );
+	System.setProperty("java.security.auth.login.config", <%=useJassFile? jassFile :bonitaRuntimePath + "+\"/runtime/conf/jaas-standard.cfg\""%> );
+	System.setProperty("java.util.logging.config.file", new java.io.File(<%=useLoggingFile? loggingFile :bonitaRuntimePath + "+\"/runtime/conf/logging.properties\""%>).toURI().toURL().toString());
+	
+	
+	org.ow2.bonita.facade.ManagementAPI managementAPI_<%=cid%> = org.ow2.bonita.util.AccessorUtil.getAPIAccessor().getManagementAPI();
+	javax.security.auth.login.LoginContext loginContext_<%=cid%> = null;
+	org.ow2.bonita.facade.def.majorElement.ProcessDefinition process_<%=cid%> = null;
+	
+	String processDefinitionUUID = null;
+	try {
+		
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext("Bonita", new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		loginContext_<%=cid%>.login();
+		process_<%=cid%> = managementAPI_<%=cid%>.deploy(org.ow2.bonita.util.BusinessArchiveFactory.getBusinessArchive(new java.io.File(<%=businessArchive%>).toURI().toURL()));
+		processDefinitionUUID = process_<%=cid%>.getUUID().getValue();
+		
+		System.out.println("**** Process "+ processDefinitionUUID + " deploy successful ****");
+		
+	} catch (Exception e_<%=cid%>) {
+<%
+	if (dieOnError) {
+%>
+		throw e_<%=cid%>;		
+<%
+	} else {
+%>
+		System.err.println(e_<%=cid%>.getMessage());
+<%	
+	}
+%>
+	} finally {
+		loginContext_<%=cid%>.logout();
+	}
+
+	globalMap.put("<%=cid %>_ProcessDefinitionUUID", processDefinitionUUID); 
