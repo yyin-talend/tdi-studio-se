@@ -382,6 +382,15 @@ public class DataProcess {
         dataConnec.setActivate(connection.isActivate());
         if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
             dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+            IElementParameter param2 = new ElementParameter(dataConnec);
+            param2.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+            param2.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
+            param2.setField(EParameterFieldType.CHECK);
+            param2.setValue(Boolean.TRUE);
+            param2.setCategory(EComponentCategory.ADVANCED);
+            param2.setShow(false);
+            param2.setNumRow(1);
+            ((List<IElementParameter>) dataConnec.getElementParameters()).add(param2);
         } else {
             dataConnec.setLineStyle(connection.getLineStyle());
         }
