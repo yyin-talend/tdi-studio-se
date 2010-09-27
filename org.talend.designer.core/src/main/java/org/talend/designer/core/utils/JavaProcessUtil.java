@@ -103,6 +103,10 @@ public class JavaProcessUtil {
                 }
             }
             for (IElementParameter curParam : node.getElementParameters()) {
+                if (curParam.getField() == null) {
+                    continue; // field can be null in some really specific cases, like for example when preview from
+                              // wizard.
+                }
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
                     if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
                         // is not empty.
