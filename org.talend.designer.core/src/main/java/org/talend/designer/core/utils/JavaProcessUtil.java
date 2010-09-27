@@ -163,6 +163,9 @@ public class JavaProcessUtil {
 
     private static void getModulsInTable(final IProcess process, IElementParameter curParam, Set<String> neededLibraries) {
 
+        if (!(curParam.getValue() instanceof List)) {
+            return;
+        }
         List<Map<String, Object>> values = (List<Map<String, Object>>) curParam.getValue();
         if (values != null && !values.isEmpty()) {
             Object[] listItemsValue = curParam.getListItemsValue();
