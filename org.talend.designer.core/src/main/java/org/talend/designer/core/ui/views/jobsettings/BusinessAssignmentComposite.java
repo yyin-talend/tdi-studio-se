@@ -86,6 +86,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -386,6 +387,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                             if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
                                 action.init(null, new StructuredSelection(repositoryNode));
                                 if (action.isVisible()) {
+                                    ((AContextualAction) action).setAvoidUnloadResources(true);
                                     mgr.add(action);
                                 }
                             }
