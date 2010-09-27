@@ -587,19 +587,21 @@ public class ImportItemUtil {
                     // 14446: item apply project setting param if use project setting
                     String statslogUsePSetting = null;
                     String implicitUsePSetting = null;
-                    EList listParamType = paType.getElementParameter();
-                    for (int j = 0; j < listParamType.size(); j++) {
-                        ElementParameterType pType = (ElementParameterType) listParamType.get(j);
-                        if (pType != null) {
-                            if (!statsPSettingRemoved && "STATANDLOG_USE_PROJECT_SETTINGS".equals(pType.getName())) {
-                                statslogUsePSetting = pType.getValue();
-                            }
-                            if ("IMPLICITCONTEXT_USE_PROJECT_SETTINGS".equals(pType.getName())) {
-                                implicitUsePSetting = pType.getValue();
-                            }
-                            if (statsPSettingRemoved && implicitUsePSetting != null || !statsPSettingRemoved
-                                    && implicitUsePSetting != null && statslogUsePSetting != null) {
-                                break;
+                    if (paType != null) {
+                        EList listParamType = paType.getElementParameter();
+                        for (int j = 0; j < listParamType.size(); j++) {
+                            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+                            if (pType != null) {
+                                if (!statsPSettingRemoved && "STATANDLOG_USE_PROJECT_SETTINGS".equals(pType.getName())) {
+                                    statslogUsePSetting = pType.getValue();
+                                }
+                                if ("IMPLICITCONTEXT_USE_PROJECT_SETTINGS".equals(pType.getName())) {
+                                    implicitUsePSetting = pType.getValue();
+                                }
+                                if (statsPSettingRemoved && implicitUsePSetting != null || !statsPSettingRemoved
+                                        && implicitUsePSetting != null && statslogUsePSetting != null) {
+                                    break;
+                                }
                             }
                         }
                     }
