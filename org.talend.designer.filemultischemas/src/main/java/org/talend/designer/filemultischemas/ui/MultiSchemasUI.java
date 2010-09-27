@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -136,6 +137,8 @@ public class MultiSchemasUI {
             TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private MultiSchemasManager multiSchemaManager;
+
+    private static final String SCHEMA_NAME_PATTERN = "^[a-zA-Z0-9\\_]+[a-zA-Z0-9\\_]*$"; //$NON-NLS-1$
 
     /**
      * for schema details viewer.
@@ -1756,7 +1759,7 @@ public class MultiSchemasUI {
     private boolean checkKeyValue(String oldValue, String newValue) {
         String errorMsg = null;
         boolean canModify = true;
-        if (newValue.equals("")) {
+        if (!Pattern.matches(SCHEMA_NAME_PATTERN, newValue)) {
             errorMsg = "'" + newValue + "' is invalid value.";
         } else {
             final Object input = schemaTreeViewer.getInput();
