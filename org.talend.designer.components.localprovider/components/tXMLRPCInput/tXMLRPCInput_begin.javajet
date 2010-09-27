@@ -40,29 +40,29 @@ config<%=cid%>.setReplyTimeout(60 * 1000);
 <%
  if ("true".equals(needAuth)) {
  %>
- 	config<%=cid%>.setBasicUserName(<%=authUsername%>);
-    config<%=cid%>.setBasicPassword(<%=authPassword%>);
+	config<%=cid%>.setBasicUserName(<%=authUsername%>);
+	config<%=cid%>.setBasicPassword(<%=authPassword%>);
  <%
- }
+}
 %>
 org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.client.XmlRpcClient();
 // use Commons HttpClient as transport
  client<%=cid%>.setTransportFactory(
               new org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory(client<%=cid%>));
-          // set configuration
-	client<%=cid%>.setConfig(config<%=cid%>);
-          // make the a regular call
-         Object[] params_<%=cid %> = new Object[] {         
-	<%
-        for (int i = 0; i < params.size(); i++) {
-            Map<String, String> line = params.get(i);
-	%>
-        <%= line.get("VALUE") %>,
-	<%
-        }
-	%>      
+        // set configuration
+		client<%=cid%>.setConfig(config<%=cid%>);
+        // make the a regular call
+        Object[] params_<%=cid %> = new Object[] {         
+	  <%
+	        for (int i = 0; i < params.size(); i++) {
+	            Map<String, String> line = params.get(i);
+	  %>
+	        	<%= line.get("VALUE") %>,
+		    <%
+	        }
+		    %>      
         };  
-        String[] results_<%=cid %> = null;
+        Object[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;	 
         Object reValue<%=cid%> = client<%=cid%>.execute(<%=method%>, params_<%=cid %>);
         
@@ -73,8 +73,8 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 			tempArray_<%=cid %> = new Object[1];
 			tempArray_<%=cid %>[0] = reValue<%=cid%>;
 		}
-      for (int i_<%=cid %> = 0; i_<%=cid %> < tempArray_<%=cid %>.length; i_<%=cid %>++) {
-		    results_<%=cid %> = new String[<%=listColumns.size() %>];		    
+        for (int i_<%=cid %> = 0; i_<%=cid %> < tempArray_<%=cid %>.length; i_<%=cid %>++) {
+		    results_<%=cid %> = new Object[<%=listColumns.size() %>];		    
 			
 			if (tempArray_<%=cid %>[i_<%=cid %>] instanceof java.util.Map) {
 				java.util.Map map_<%=cid %> = (java.util.Map)tempArray_<%=cid %>[i_<%=cid %>];
@@ -82,13 +82,19 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
                 int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
                 int k_<%=cid %> = 0;
                 for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
-                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
+                    results_<%=cid %>[k_<%=cid %>] =iter_<%=cid %>.next();
+                    if(results_<%=cid %>[k_<%=cid %>] instanceof Object[] ){
+                    	java.util.List<Object> val_<%=cid%> = new java.util.ArrayList();
+                    	results_<%=cid %> = org.talend.rpc.util.ArrayUtilities.dumpMapInArray((Object[])results_<%=cid %>[k_<%=cid %>], val_<%=cid%>).toArray();
+                    }
+                    else 
+                     results_<%=cid %>[k_<%=cid %>] =String.valueOf(results_<%=cid %>[k_<%=cid %>]);
+                    	
                 }				
 			} else {
 				results_<%=cid %>[0] = String.valueOf(tempArray_<%=cid %>[i_<%=cid %>]);
 			}
 			
-	
         nb_line_<%=cid %>++;
 	       
 // for output
@@ -101,8 +107,6 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 			firstConnName = conn.getName();			
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//3
 				%>
-
-			
 <%
 			List<IMetadataColumn> columns=metadata.getListColumns();
 			int columnSize = columns.size();
@@ -112,13 +116,12 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 			%>
-						
 			
 			if(<%=i %> < results_<%=cid %>.length && results_<%=cid %>[<%=i %>]!=null){				
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>];
+					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].toString();
 <%
 					} else if(javaType == JavaTypesManager.DATE) { //Date
 %>
@@ -135,18 +138,12 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 <%
 					}
 %>
-			
 			} else { 
-			
 					<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 			}
-			
-			
 <%			
 			} //4
 		}//3
-		
-		
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn2 = conns.get(i);
@@ -158,8 +155,6 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 				}
 			}
 		}
-		
-		
 	}//2
 	
 }//1
