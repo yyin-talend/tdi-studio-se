@@ -15,6 +15,7 @@ package org.talend.designer.hl7.ui.view;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -187,6 +188,26 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
             public boolean getEnabledState() {
                 return super.getEnabledState() && !isRepository; // 13749
             }
+
+            @Override
+            protected void afterCommandExecution(Command executedCommand) {
+                MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
+                        .getExtendedControlModel();
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    List<MetadataColumn> metadataColumnList = tableEditorModel.getMetadataColumnList();
+                    Map<String, List<MetadataColumn>> schemaRelationMap = linker.getManager().getSchemaRelationMap();
+                    if (schemaRelationMap != null) {
+                        List<MetadataColumn> schemas = new ArrayList<MetadataColumn>();
+                        schemas.addAll(metadataColumnList);
+                        schemaRelationMap.put(key, schemas);
+                    }
+
+                }
+            }
         };
     }
 
@@ -308,6 +329,21 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
 
             @Override
             protected void afterCommandExecution(Command executedCommand) {
+                MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
+                        .getExtendedControlModel();
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    List<MetadataColumn> metadataColumnList = tableEditorModel.getMetadataColumnList();
+                    Map<String, List<MetadataColumn>> schemaRelationMap = linker.getManager().getSchemaRelationMap();
+                    if (schemaRelationMap != null) {
+                        List<MetadataColumn> schemas = new ArrayList<MetadataColumn>();
+                        schemas.addAll(metadataColumnList);
+                        schemaRelationMap.put(key, schemas);
+                    }
+                }
                 linker.getMainui().redrawLinkers();
                 linker.getBackgroundRefresher().refreshBackground();
             }
@@ -326,6 +362,22 @@ public class HL7MetadataEmfToolbarEditor extends ExtendedToolbarView {
 
             @Override
             protected void afterCommandExecution(Command executedCommand) {
+                MetadataEmfTableEditor tableEditorModel = (MetadataEmfTableEditor) getExtendedTableViewer()
+                        .getExtendedControlModel();
+                IStructuredSelection selection = (IStructuredSelection) ((HL7MultiSchemaUI) linker.getMainui())
+                        .getMetaTableViewer().getSelection();
+                Object selectedObj = selection.getFirstElement();
+                if (selectedObj != null) {
+                    String key = ((IModel) selectedObj).getDisplayName();
+                    List<MetadataColumn> metadataColumnList = tableEditorModel.getMetadataColumnList();
+                    Map<String, List<MetadataColumn>> schemaRelationMap = linker.getManager().getSchemaRelationMap();
+                    if (schemaRelationMap != null) {
+                        List<MetadataColumn> schemas = new ArrayList<MetadataColumn>();
+                        schemas.addAll(metadataColumnList);
+                        schemaRelationMap.put(key, schemas);
+                    }
+
+                }
                 linker.getMainui().redrawLinkers();
                 linker.getBackgroundRefresher().refreshBackground();
             }

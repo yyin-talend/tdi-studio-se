@@ -210,7 +210,7 @@ public class HL7Manager {
                 oneSchema.put("MAPPING", displayName); //$NON-NLS-N$
                 schemas.add(oneSchema);
             }
-            if (table != null && !table.getListColumns().isEmpty()) {
+            if (table != null && !table.getListColumns().isEmpty()) {// 
                 boolean find = false;
                 int index = 0;
                 for (int i = 0; i < hl7Component.getMetadataList().size(); i++) {
@@ -228,6 +228,20 @@ public class HL7Manager {
                     table.setTableName(schemaKey);
                 }
                 hl7Component.getMetadataList().add(table);
+            } else if (table != null && table.getListColumns().isEmpty()) {
+                boolean find = false;
+                int index = 0;
+                for (int i = 0; i < hl7Component.getMetadataList().size(); i++) {
+                    if (table.getLabel().equals(hl7Component.getMetadataList().get(i).getLabel())) {
+                        find = true;
+                        index = i;
+                        break;
+                    }
+                }
+                if (find) {
+                    hl7Component.getMetadataList().remove(index);
+                    hl7Component.getMetadataList().add(table);
+                }
             }
         }
         return schemas;
