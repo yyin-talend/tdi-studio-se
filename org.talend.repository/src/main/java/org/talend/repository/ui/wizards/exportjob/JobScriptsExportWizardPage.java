@@ -79,6 +79,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -576,7 +578,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         modelButton.setLayoutData(gd);
 
         jobScriptButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobScriptButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            jobScriptButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
+        } else {
+            jobScriptButton.setText(Messages.getString("JobScriptsExportWizardPage.jobJavaScripts")); //$NON-NLS-1$
+        }
         jobScriptButton.setSelection(true);
         jobScriptButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
