@@ -111,6 +111,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
+					} else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT ) {
+%>
+								FormatterUtils.formatUnwithE(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%
 					} else {//others
 %>
 				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
@@ -228,6 +232,10 @@ if (basic) {
 %>
 								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
 <%
+					} else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT ) {
+%>
+								FormatterUtils.formatUnwithE(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%
 					} else {//others
 %>    
 				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
@@ -288,6 +296,10 @@ if (basic) {
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
 								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
+<%
+					} else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT ) {
+%>
+								FormatterUtils.formatUnwithE(<%=conn.getName() %>.<%=column.getLabel() %>)
 <%
 					} else {//others
 %>    
