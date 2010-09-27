@@ -610,6 +610,9 @@ public class HL7OutputManager extends HL7Manager {
 
     public List<HL7TreeNode> getTreeData(String curSchema) {
         if (currentSchema == null) {
+            if (treeData == null) {
+                return new ArrayList<HL7TreeNode>();
+            }
             return treeData;
         } else {
             if (!contents.containsKey(curSchema)) {
