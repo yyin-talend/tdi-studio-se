@@ -35,9 +35,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -353,6 +355,12 @@ class ImportItemWizardPage extends WizardPage {
         });
         viewer.setSorter(TreeBuilder.createSorter());
         viewer.setInput(this);
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                updateFinishStatus();
+            }
+        });
         return viewer;
 
     }
@@ -373,6 +381,7 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 itemsList.setCheckedElements(selectedItems.toArray());
+                updateFinishStatus();
             }
         });
         Dialog.applyDialogFont(selectAll);
@@ -385,6 +394,7 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 itemsList.setCheckedElements(new Object[0]);
+                updateFinishStatus();
             }
         });
         Dialog.applyDialogFont(deselectAll);
@@ -755,7 +765,6 @@ class ImportItemWizardPage extends WizardPage {
         ItemRecord[] validItems = getValidItems();
         boolean hasValidItems = validItems.length > 0;
 
-        setPageComplete(hasValidItems);
         itemListInfo.setVisible(!hasValidItems);
         return validItems;
     }
@@ -914,4 +923,24 @@ class ImportItemWizardPage extends WizardPage {
         return this.needToRefreshPalette;
     }
 
+    private void updateFinishStatus() {
+        if (getCheckedElements().isEmpty()) {
+            this.setPageComplete(false);
+        } else {
+            this.setPageComplete(true);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+     */
+    @Override
+    public boolean isPageComplete() {
+        if (selectedItems.isEmpty()) {
+            return false;
+        }
+        return super.isPageComplete();
+    }
 }
