@@ -75,6 +75,24 @@ imports="
 			
 <%
 	    }
+	    
+		public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
+%>
+            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+            if(tmpContent_<%=cid%> != null) {
+            	java.util.List<String> talendToDBList_<%=cid %> = new java.util.ArrayList();
+            	talendToDBList_<%=cid %> .addAll(MetadataTalendType.getTalendToDBList("mssql_id","id_Double"));
+            	talendToDBList_<%=cid %> .addAll(MetadataTalendType.getTalendToDBList("mssql_id","id_Float"));
+            	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%=currentColNo%>).toUpperCase(java.util.Locale.ENGLISH))) {
+            		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(Double.valueOf(tmpContent_<%=cid%>));
+            	} else {
+                	<%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+                }
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> = null;
+            }
+<%
+	    }
 	    //---------end according schema type to generate ResultSet
 	}//end class
 	
