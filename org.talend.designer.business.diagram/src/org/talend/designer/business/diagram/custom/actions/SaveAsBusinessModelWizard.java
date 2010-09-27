@@ -22,10 +22,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -61,6 +58,14 @@ public class SaveAsBusinessModelWizard extends Wizard {
 
     private RepositoryEditorInput repositoryEditorInput;
 
+    private IFile file;
+
+    private Property oldProperty;
+
+    private boolean isUpdate;
+
+    private BusinessProcessItem oldBusinessProcessItem;
+
     public SaveAsBusinessModelWizard(EditorPart editorPart) {
 
         this.repositoryEditorInput = ((BusinessDiagramEditor) editorPart).getDiagramEditorInput();
@@ -75,17 +80,12 @@ public class SaveAsBusinessModelWizard extends Wizard {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         this.path = service.getRepositoryPath((RepositoryNode) repositoryNode);
 
+        oldBusinessProcessItem = (BusinessProcessItem) repositoryEditorInput.getItem();
+        oldProperty = oldBusinessProcessItem.getProperty();
+
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
 
-        Property oldProperty = repositoryEditorInput.getItem().getProperty();
-
-        this.property.setPurpose(oldProperty.getPurpose());
-        this.property.setDescription(oldProperty.getDescription());
-        this.property.setLabel(oldProperty.getLabel());
+        assginVlaues(this.property, oldProperty);
 
         businessProcessItem = PropertiesFactory.eINSTANCE.createBusinessProcessItem();
 
@@ -111,25 +111,35 @@ public class SaveAsBusinessModelWizard extends Wizard {
         boolean ok = false;
         try {
 
-            property.setId(repositoryFactory.getNextId());
-
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             DiagramResourceManager diagramResourceManager = new DiagramResourceManager(page, new NullProgressMonitor());
-            IFile file = diagramResourceManager.createDiagramFile();
-            diagramResourceManager.updateFromResource(businessProcessItem, file);
+            file = diagramResourceManager.createDiagramFile();
 
-            BusinessProcessItem oldItem = (BusinessProcessItem) repositoryEditorInput.getItem();
+            isUpdate = isUpdate();
 
-            BusinessProcess businessProcess = BusinessFactory.eINSTANCE.createBusinessProcess();
-            businessProcessItem.setSemantic(businessProcess);
+            if (isUpdate) {
+                assginVlaues(oldProperty, property);
 
-            // don't set these values directly
-            // businessProcessItem.setSemantic(oldItem.getSemantic());
-            // businessProcessItem.setNotation(oldItem.getNotation());
-            // businessProcessItem.setNotationHolder(oldItem.getNotationHolder());
+                repositoryFactory.save(oldBusinessProcessItem);
 
-            repositoryFactory.create(businessProcessItem, mainPage.getDestinationPath());
+                // assign value
+                businessProcessItem = oldBusinessProcessItem;
 
+            } else {
+                property.setId(repositoryFactory.getNextId());
+
+                diagramResourceManager.updateFromResource(businessProcessItem, file);
+
+                BusinessProcess businessProcess = BusinessFactory.eINSTANCE.createBusinessProcess();
+                businessProcessItem.setSemantic(businessProcess);
+
+                // don't set these values directly
+                // businessProcessItem.setSemantic(oldItem.getSemantic());
+                // businessProcessItem.setNotation(oldItem.getNotation());
+                // businessProcessItem.setNotationHolder(oldItem.getNotationHolder());
+
+                repositoryFactory.create(businessProcessItem, mainPage.getDestinationPath());
+            }
             ok = true;
 
         } catch (Exception e) {
@@ -142,5 +152,31 @@ public class SaveAsBusinessModelWizard extends Wizard {
 
     public BusinessProcessItem getBusinessProcessItem() {
         return this.businessProcessItem;
+    }
+
+    public IFile getTempFile() {
+        return this.file;
+    }
+
+    // left = right
+    private void assginVlaues(Property leftProperty, Property rightProperty) {
+        // 6 fields, don't contains the "locker" and "path". and author , they are the same.
+        leftProperty.setLabel(rightProperty.getLabel());
+        leftProperty.setPurpose(rightProperty.getPurpose());
+        leftProperty.setDescription(rightProperty.getDescription());
+        // same author as old one.
+        leftProperty.setAuthor(rightProperty.getAuthor());
+        leftProperty.setVersion(rightProperty.getVersion());
+        leftProperty.setStatusCode(rightProperty.getStatusCode());
+    }
+
+    // if name is different, it will create a new job, if name is the same, means to update the job(version or
+    // description...)
+    private boolean isUpdate() {
+        if (oldProperty.getLabel().trim().equalsIgnoreCase(property.getLabel().trim())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

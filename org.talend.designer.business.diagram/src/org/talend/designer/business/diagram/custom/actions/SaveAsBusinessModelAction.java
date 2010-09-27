@@ -31,6 +31,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -47,21 +48,21 @@ public class SaveAsBusinessModelAction extends Action {
 
     @Override
     public void run() {
-        SaveAsBusinessModelWizard processWizard = new SaveAsBusinessModelWizard(editorPart);
+        SaveAsBusinessModelWizard businessModelWizard = new SaveAsBusinessModelWizard(editorPart);
 
-        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
+        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), businessModelWizard);
         if (dlg.open() == Window.OK) {
 
             try {
 
                 RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
 
-                BusinessProcessItem businessProcessItem = processWizard.getBusinessProcessItem();
+                BusinessProcessItem businessProcessItem = businessModelWizard.getBusinessProcessItem();
 
                 IWorkbenchPage page = getActivePage();
 
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(page, new NullProgressMonitor());
-                IFile file = diagramResourceManager.createDiagramFile();
+                IFile file = businessModelWizard.getTempFile();
                 // Set readonly to false since created job will always be editable.
                 RepositoryEditorInput newBusinessModelEditorInput = new RepositoryEditorInput(file, businessProcessItem);
 
@@ -82,14 +83,16 @@ public class SaveAsBusinessModelAction extends Action {
                 // @see:BusinessDiagramEditor.doSave(IProgressMonitor progressMonitor)
                 diagramResourceManager.updateFromResource(businessProcessItem, newBusinessModelEditorInput.getFile());
 
-                // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
-                IEditorPart openEditor = page.openEditor(newBusinessModelEditorInput, BusinessDiagramEditor.ID, true);
-                // notice: here, must save it, unless close the editor without any modification, there won't save the
+                // notice: here, must save it, save the item to disk, otherwise close the editor
+                // without any modification, there won't save the
                 // model again, so, will lost the graphic when reopen it.
-                openEditor.doSave(null);
+                ProxyRepositoryFactory.getInstance().save(businessProcessItem);
 
                 // close the old editor
                 page.closeEditor(this.editorPart, false);
+
+                // open the new editor, because at the same time, there will update the jobSetting/componentSetting view
+                IEditorPart openEditor = page.openEditor(newBusinessModelEditorInput, BusinessDiagramEditor.ID, true);
 
             } catch (Exception e) {
                 MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Business model could not be saved"
