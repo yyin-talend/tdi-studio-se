@@ -30,21 +30,21 @@ imports="
 	System.setProperty("java.util.logging.config.file", new java.io.File(<%=useLoggingFile? loggingFile :bonitaRuntimePath + "+\"/runtime/conf/logging.properties\""%>).toURI().toURL().toString());
 	
 	
-	org.ow2.bonita.facade.RuntimeAPI runtimeAPI = org.ow2.bonita.util.AccessorUtil.getAPIAccessor().getRuntimeAPI();
+	org.ow2.bonita.facade.RuntimeAPI runtimeAPI_<%=cid%> = org.ow2.bonita.util.AccessorUtil.getAPIAccessor().getRuntimeAPI();
 	javax.security.auth.login.LoginContext loginContext_<%=cid%> = null;
-	org.ow2.bonita.facade.uuid.ProcessDefinitionUUID processID=null;
+	org.ow2.bonita.facade.uuid.ProcessDefinitionUUID processID_<%=cid%> =null;
 	
-	String processInstanceUUID = null;
+	String processInstanceUUID_<%=cid%> = null;
 	
 	try {
 			
 		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext("Bonita", new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
 		loginContext_<%=cid%>.login();
-		processID = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=processID%>);
-		org.ow2.bonita.facade.uuid.ProcessInstanceUUID instanceUUID = runtimeAPI.instantiateProcess(processID);
-		processInstanceUUID = instanceUUID.getValue();
+		processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=processID%>);
+		org.ow2.bonita.facade.uuid.ProcessInstanceUUID instanceUUID_<%=cid%> = runtimeAPI_<%=cid%>.instantiateProcess(processID_<%=cid%>);
+		processInstanceUUID_<%=cid%> = instanceUUID_<%=cid%>.getValue();
 		 
-		System.out.println("**** Instance "+ processInstanceUUID + " created ****");
+		System.out.println("**** Instance "+ processInstanceUUID_<%=cid%> + " created ****");
 	} catch (Exception e_<%=cid%>) {
 <%
 	if (dieOnError) {
@@ -61,4 +61,4 @@ imports="
 		loginContext_<%=cid%>.logout();
 	}
 
-	globalMap.put("<%=cid %>_ProcessInstanceUUID", processInstanceUUID); 
+	globalMap.put("<%=cid %>_ProcessInstanceUUID", processInstanceUUID_<%=cid%>); 

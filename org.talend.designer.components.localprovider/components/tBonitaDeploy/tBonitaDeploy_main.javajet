@@ -34,15 +34,15 @@ imports="
 	javax.security.auth.login.LoginContext loginContext_<%=cid%> = null;
 	org.ow2.bonita.facade.def.majorElement.ProcessDefinition process_<%=cid%> = null;
 	
-	String processDefinitionUUID = null;
+	String processDefinitionUUID_<%=cid%> = null;
 	try {
 		
 		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext("Bonita", new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
 		loginContext_<%=cid%>.login();
 		process_<%=cid%> = managementAPI_<%=cid%>.deploy(org.ow2.bonita.util.BusinessArchiveFactory.getBusinessArchive(new java.io.File(<%=businessArchive%>).toURI().toURL()));
-		processDefinitionUUID = process_<%=cid%>.getUUID().getValue();
+		processDefinitionUUID_<%=cid%> = process_<%=cid%>.getUUID().getValue();
 		
-		System.out.println("**** Process "+ processDefinitionUUID + " deploy successful ****");
+		System.out.println("**** Process "+ processDefinitionUUID_<%=cid%> + " deploy successful ****");
 		
 	} catch (Exception e_<%=cid%>) {
 <%
@@ -60,4 +60,4 @@ imports="
 		loginContext_<%=cid%>.logout();
 	}
 
-	globalMap.put("<%=cid %>_ProcessDefinitionUUID", processDefinitionUUID); 
+	globalMap.put("<%=cid %>_ProcessDefinitionUUID", processDefinitionUUID_<%=cid%>); 
