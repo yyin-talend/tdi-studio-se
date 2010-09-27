@@ -256,9 +256,6 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             return false;
         }
         if (node.getObject() != null) {
-            if (node.getObject().isDeleted()) {
-                return false;
-            }
             ERepositoryStatus status = FACTORY.getStatus(node.getObject());
             if (status == ERepositoryStatus.LOCK_BY_OTHER
                     || (status == ERepositoryStatus.LOCK_BY_USER && RepositoryManager.isOpenedItemInEditor(node.getObject()))) {
@@ -284,6 +281,9 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                     }
                 }
             default:
+            }
+            if (node.getObject().isDeleted()) {
+                return false;
             }
         }
         ERepositoryObjectType contentType = node.getContentType();
