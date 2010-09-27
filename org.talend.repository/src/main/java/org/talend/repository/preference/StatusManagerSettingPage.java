@@ -877,7 +877,20 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 if (confirm) {
                     // set all items for new version
                     for (RepositoryObject object : getModifiedVersionItems()) {
-                        object.setStatusCode(newStatus);
+                        if (techinalButton.getSelection()) {
+                            ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                            if (!type.equals(ERepositoryObjectType.DOCUMENTATION)
+                                    && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
+                                object.setStatusCode(newStatus);
+                            }
+                        } else {
+                            ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                            if (type.equals(ERepositoryObjectType.DOCUMENTATION)
+                                    || type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
+                                object.setStatusCode(newStatus);
+                            }
+                        }
+
                     }
                 }
             } else {
