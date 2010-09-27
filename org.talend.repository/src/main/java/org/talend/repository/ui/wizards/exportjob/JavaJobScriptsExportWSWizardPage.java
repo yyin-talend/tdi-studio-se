@@ -60,8 +60,8 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextExportDialog;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.ContextTypeDefinition;
@@ -525,8 +525,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (process.length > 0 && contextCombo != null) {
             try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
@@ -580,8 +580,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (process.length > 0 && contextCombo != null) {
             try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
@@ -991,8 +991,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         exportedCtxCount++;
                 }
 
-                exposedContextsLink
-                        .setText(Messages.getString("PetalsJobScriptsExportWizardPage.EditTheExposedContexts_") + exportedCtxCount + ")</a>"); //$NON-NLS-1$ //$NON-NLS-2$
+                exposedContextsLink.setText(Messages.getString("PetalsJobScriptsExportWizardPage.EditTheExposedContexts_") + exportedCtxCount + ")</a>"); //$NON-NLS-1$ //$NON-NLS-2$
                 exposedContextsLink.setEnabled(currentCtxTypes.size() != 0);
             }
         });
@@ -1039,8 +1038,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         contextCombo = new Combo(left, SWT.PUSH);
         if (process.length > 0) {
             try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
@@ -1326,11 +1325,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             suFile.exists();
             boolean ok = true;
             try {
+                // Get the job description
+                String desc = ((ProcessItem) this.process[0].getItem()).getProperty().getDescription();
+
                 // The super class packages the job in the SU file
                 if ((ok = super.finish()) == true) {
-
-                    // Get the job description
-                    String desc = ((ProcessItem) this.process[0].getItem()).getProperty().getDescription();
                     if (desc == null)
                         desc = ""; //$NON-NLS-1$
                     else {
