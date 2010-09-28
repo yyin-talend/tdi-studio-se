@@ -136,7 +136,9 @@ public class ImportItemUtil {
 
     private Map<String, Set<String>> routineExtModulesMap = new HashMap<String, Set<String>>();
 
-    private boolean initTDQRepository = false;
+    private boolean statAndLogsSettingsReloaded = false;
+
+    private boolean implicitSettingsReloaded = false;
 
     private static boolean hasJoblets = false;
 
@@ -347,6 +349,8 @@ public class ImportItemUtil {
     public List<ItemRecord> importItemRecords(final ResourcesManager manager, final List<ItemRecord> itemRecords,
             final IProgressMonitor monitor, final boolean overwrite, final IPath destinationPath) {
         hasJoblets = false;
+        statAndLogsSettingsReloaded = false;
+        implicitSettingsReloaded = false;
         monitor.beginTask(Messages.getString("ImportItemWizardPage.ImportSelectedItems"), itemRecords.size() * 2 + 1); //$NON-NLS-1$
 
         RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Import Items") { //$NON-NLS-1$
@@ -407,8 +411,7 @@ public class ImportItemUtil {
 
         clearAllData();
         if (hasJoblets) {
-            ComponentsFactoryProvider.getInstance().reset();
-            ComponentsFactoryProvider.getInstance().initializeComponents(monitor);
+            ComponentsFactoryProvider.getInstance().resetSpecificComponents();
         }
 
         return itemRecords;
@@ -572,7 +575,7 @@ public class ImportItemUtil {
                     hasJoblets = true;
                 }
 
-                if (tmpItem instanceof ProcessItem) {
+                if (tmpItem instanceof ProcessItem && !statAndLogsSettingsReloaded && !implicitSettingsReloaded) {
                     ProcessItem processItem = (ProcessItem) tmpItem;
                     ParametersType paType = processItem.getProcess().getParameters();
                     boolean statsPSettingRemoved = false;
@@ -614,19 +617,20 @@ public class ImportItemUtil {
                             }
                         }
                     }
-                    if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting)) {
+                    if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting) && !statAndLogsSettingsReloaded) {
                         CorePlugin.getDefault().getDesignerCoreService()
                                 .reloadParamFromProjectSettings(paType, "STATANDLOG_USE_PROJECT_SETTINGS");
+                        statAndLogsSettingsReloaded = true;
                     }
-                    if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting)) {
+                    if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting) && !implicitSettingsReloaded) {
                         CorePlugin.getDefault().getDesignerCoreService()
                                 .reloadParamFromProjectSettings(paType, "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
+                        implicitSettingsReloaded = true;
                     }
 
                 }
 
                 if (lastVersion == null) {
-                    boolean originalDeleteState = tmpItem.getState().isDeleted(); // hywang add for 0008632
                     // import has not been developed to cope with migration in mind
                     // so some model may not be able to load like the ConnectionItems
                     // in that case items needs to be copied before migration
@@ -823,7 +827,6 @@ public class ImportItemUtil {
         cache.clear();
         projects.clear();
         routineExtModulesMap.clear();
-        initTDQRepository = false;
         List<ItemRecord> items = new ArrayList<ItemRecord>();
 
         int nbItems = 0;

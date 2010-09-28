@@ -766,4 +766,13 @@ public class ComponentsFactory implements IComponentsFactory {
         return familyNames;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#resetSpecificComponents()
+     */
+    public void resetSpecificComponents() {
+        loadComponentsFromExtensions();
+    }
+
 }

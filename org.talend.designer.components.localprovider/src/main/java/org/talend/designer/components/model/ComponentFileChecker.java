@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.IOUtils;
@@ -54,7 +55,10 @@ public class ComponentFileChecker {
         try {
             fis = new FileInputStream(xmlMainFile);
             currentCRC = IOUtils.computeCRC(fis);
-            if (xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
+            // do not check anymore XSD when be in headless mode.
+            // check is mainly usefull for GUI to be able to check why component is not loaded after be developped.
+            // if be in headless mode (like commandline), it's supposed to use only stable components
+            if (!CommonsPlugin.isHeadless() && xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
                 checkXSD(xmlMainFile);
                 xsdValidationCacheManager.setChecked(xmlMainFile, currentCRC);
             }
@@ -65,7 +69,7 @@ public class ComponentFileChecker {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    // 
+                    //
                 }
             }
         }
