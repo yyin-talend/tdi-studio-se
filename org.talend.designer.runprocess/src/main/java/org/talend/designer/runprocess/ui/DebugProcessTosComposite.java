@@ -177,6 +177,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     private Double extend = new Double(0);
 
+    private boolean isRuning = true;
+
     /**
      * DOC Administrator DebugProcessComposite constructor comment.
      * 
@@ -563,7 +565,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             pause(ProcessView.RESUME_ID);
         } else if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
             addInHistoryRunningList();
-            itemDropDown.setData(ProcessView.PAUSE_ID);
+            if (isRuning) {
+                itemDropDown.setData(ProcessView.PAUSE_ID);
+            } else {
+                itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                isRuning = true;
+            }
             // exec();
         }
     }
@@ -857,6 +864,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     setRunnable(!running);
                     if (!killBtn.isDisposed() && killBtn != null)
                         killBtn.setEnabled(running);
+                    isRuning = false;
                     // previousRow.setEnabled(running);
                     // nextRow.setEnabled(running);
                     // nextBreakPoint.setEnabled(running);
