@@ -173,6 +173,7 @@ public class DeleteAction extends AContextualAction {
                 if (updatePalette) {
                     ComponentUtilities.updatePalette();
                 }
+                RepositoryManager.refresh(ERepositoryObjectType.JOB_SCRIPT);
                 RepositoryManager.getRepositoryView().refresh();
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 for (IEditorReference editors : page.getEditorReferences()) {
@@ -237,7 +238,8 @@ public class DeleteAction extends AContextualAction {
                         }
                         if (!objectType.getKey().toString().startsWith("repository.metadata")
                                 && objectType != ERepositoryObjectType.SQLPATTERNS
-                                && objectType != ERepositoryObjectType.ROUTINES && curItem.getParent() instanceof FolderItem
+                                && objectType != ERepositoryObjectType.ROUTINES && objectType != ERepositoryObjectType.JOB_SCRIPT
+                                && curItem.getParent() instanceof FolderItem
                                 && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
                             FolderItem parentFolder = (FolderItem) curItem.getParent();
                             if ("".equals(fullPath)) {
@@ -267,6 +269,18 @@ public class DeleteAction extends AContextualAction {
                                 curItem = (FolderItem) curItem.getParent();
                             }
                         }
+
+                        if (objectType == ERepositoryObjectType.JOB_SCRIPT) {
+                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                                if ("".equals(fullPath)) {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                                } else {
+                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                                }
+                                curItem = (FolderItem) curItem.getParent();
+                            }
+                        }
+
                         if (objectType == ERepositoryObjectType.SQLPATTERNS) {
                             while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
                                 if ("".equals(fullPath)) {

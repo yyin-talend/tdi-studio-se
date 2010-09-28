@@ -90,6 +90,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
                 MessageBoxExceptionHandler.process(e);
             }
         }
+        RepositoryManager.refresh(ERepositoryObjectType.JOB_SCRIPT);
         RepositoryManager.getRepositoryView().refresh();
     }
 
