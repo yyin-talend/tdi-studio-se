@@ -89,8 +89,9 @@ if(inConn!=null){
 			        <%=rejectConnName %> = new <%=rejectConnName%>Struct();
 			        <%=rejectConnName %>.errorMessage = <%=inConn.getName()%>.<%=field%> + " doesn't match regex:" + <%=reg%>;
 			        isNotMatch_<%=cid %> = true;
-//========= START MODIFICATION JR =========
 <%
+//========= Bug 15631 START =========
+//output rows to reject
                     for (IMetadataColumn outputRejCol : outputMetadataTable.getListColumns()) {
                         for (IMetadataColumn inputRejCol : inputMetadataTable.getListColumns()) {
                             if( outputRejCol.getLabel().equals( inputRejCol.getLabel()) ){
@@ -101,8 +102,8 @@ if(inConn!=null){
                             }
                         }
                     }
+//========= Bug 15631 END =========
 %>
-//========= END MODIFICATION JR =========
 			    }
 			    matcher_<%=cid %>.reset();
 <%
