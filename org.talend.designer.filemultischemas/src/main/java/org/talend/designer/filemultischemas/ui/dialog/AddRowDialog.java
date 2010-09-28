@@ -14,6 +14,7 @@ package org.talend.designer.filemultischemas.ui.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -76,7 +77,7 @@ public class AddRowDialog extends Dialog {
 
     private void createControls(Composite main) {
         keyLbl = new Label(main, SWT.NONE);
-        keyLbl.setText("Schema:");
+        keyLbl.setText("Schema:"); //$NON-NLS-1$
         key = new Text(main, SWT.BORDER);
         key.addModifyListener(new ModifyListener() {
 
@@ -87,7 +88,7 @@ public class AddRowDialog extends Dialog {
         });
 
         recoredLbl = new Label(main, SWT.NONE);
-        recoredLbl.setText("Record:");
+        recoredLbl.setText("Record:"); //$NON-NLS-1$
         record = new Text(main, SWT.BORDER);
         record.addModifyListener(new ModifyListener() {
 
@@ -97,7 +98,7 @@ public class AddRowDialog extends Dialog {
         });
 
         sepLbl = new Label(main, SWT.NONE);
-        sepLbl.setText("Seperator:");
+        sepLbl.setText("Seperator:"); //$NON-NLS-1$
         sep = new Text(main, SWT.BORDER);
         sep.addModifyListener(new ModifyListener() {
 
@@ -109,21 +110,21 @@ public class AddRowDialog extends Dialog {
 
     public String getKeyValue() {
         if (this.keyValue == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return this.keyValue;
     }
 
     public String getRecordValue() {
         if (this.recordValue == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return this.recordValue;
     }
 
     public String getSepValue() {
         if (this.sepValue == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return this.sepValue;
     }
@@ -141,15 +142,19 @@ public class AddRowDialog extends Dialog {
     }
 
     private void validate(String currentName) {
-        if (!keyNames.contains(currentName)) {
-            this.OK.setEnabled(true);
-            this.parentShell.setText(TITLE);
-            this.parentShell.pack();
+        boolean enabled = false;
+        String msg = null;
+        if (!Pattern.matches("^[a-zA-Z0-9\\_]+[a-zA-Z0-9\\_]*$", currentName)) { //$NON-NLS-1$
+            msg = "Invalid value";
+        } else if (!keyNames.contains(currentName)) {
+            enabled = true;
+            msg = TITLE;
         } else {
-            this.OK.setEnabled(false);
-            this.parentShell.setText("Name already exsist");
-            this.parentShell.pack();
+            msg = "Name already exsist";
         }
+        this.OK.setEnabled(enabled);
+        this.parentShell.setText(msg);
+        this.parentShell.pack();
     }
 
     @Override
