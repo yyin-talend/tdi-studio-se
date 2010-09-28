@@ -74,9 +74,12 @@ use <%=routine%>;
 %>
 
 my $_licence = <<'END_OF_LICENCE';
-
-<%=((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getJobLicenseHeader(version).replace("//", "#").replace("#www", "//www") %>
-
+<%
+IBrandingService service=(IBrandingService)GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+if(service instanceof AbstractBrandingService){
+%>
+<%=((AbstractBrandingService) service).getJobLicenseHeader(version).replace("//", "#").replace("#www", "//www") %>
+<%}%>
 END_OF_LICENCE
 
 # print $_licence;

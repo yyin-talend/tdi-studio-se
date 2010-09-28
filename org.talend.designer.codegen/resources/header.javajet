@@ -36,8 +36,13 @@
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
 %>
-<%=((AbstractBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getJobLicenseHeader(version) %>
 <%
+IBrandingService service=(IBrandingService)GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+if(service instanceof AbstractBrandingService){
+ %>
+ <%=((AbstractBrandingService) service).getJobLicenseHeader(version)%>
+<%
+ }
   String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
   String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
 %> 
