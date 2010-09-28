@@ -516,9 +516,9 @@ public class RunProcessContext {
                                                 // catch any Exception or Error
                                                 // to kill the process, see bug
                                                 // 0003567
+                                                running = true;
                                                 Throwable cause = e.getCause();
                                                 if (cause != null && cause.getClass().equals(InterruptedException.class)) {
-                                                    running = true;
                                                     setRunning(false);
                                                 } else {
                                                     ExceptionHandler.process(e);
@@ -551,6 +551,7 @@ public class RunProcessContext {
                         } catch (Throwable e) {
                             // catch any Exception or Error to kill the process,
                             // see bug 0003567
+                            running = true;
                             ExceptionHandler.process(e);
                             addErrorMessage(e);
                             kill();
