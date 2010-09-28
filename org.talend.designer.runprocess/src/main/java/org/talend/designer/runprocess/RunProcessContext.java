@@ -509,6 +509,7 @@ public class RunProcessContext {
                                                     processMonitorThread.start();
                                                 } else {
                                                     kill();
+                                                    running = true;
                                                     setRunning(false);
                                                 }
                                             } catch (Throwable e) {
@@ -517,6 +518,7 @@ public class RunProcessContext {
                                                 // 0003567
                                                 Throwable cause = e.getCause();
                                                 if (cause != null && cause.getClass().equals(InterruptedException.class)) {
+                                                    running = true;
                                                     setRunning(false);
                                                 } else {
                                                     ExceptionHandler.process(e);
@@ -569,6 +571,7 @@ public class RunProcessContext {
             // See bug 0003567: When a prompt from context is cancelled or a
             // fatal error occurs during a job exec the
             // Kill button have to be pressed manually.
+            this.running = true;
             setRunning(false);
         }
     }
