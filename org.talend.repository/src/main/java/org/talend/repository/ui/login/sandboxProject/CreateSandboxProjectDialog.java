@@ -220,7 +220,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                     try {
                         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         // set provider
-                        if (factory.getRepositoryFactoryFromProvider() == null) { // same !existedBeforeConn()
+                        if (factory.getRepositoryFactoryFromProvider() == null) { // 
                             factory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider
                                     .getRepositoriyById(RepositoryConstants.REPOSITORY_REMOTE_ID));
                         }
@@ -448,7 +448,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                     public void run() {
                         monitor.beginTask("Creating...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         Project projectInfor = ProjectHelper.createProject(projectName, projectName, projectLanguage,
-                                projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname);
+                                projectAuthor, projectAuthorPass, projectAuthorFirstname, projectAuthorLastname, false);
                         projectInfor.setSandboxProject(true);
 
                         boolean ok = false;
