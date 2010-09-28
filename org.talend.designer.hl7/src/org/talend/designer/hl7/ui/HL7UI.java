@@ -320,7 +320,7 @@ public class HL7UI {
                             if (schema != null) {
                                 for (MetadataColumn column : schema) {
                                     if (column.getLabel().equals(event.previousValue)) {
-                                        schema.add(bean);
+                                        schema.add(copyColumn(bean));
                                         schema.remove(column);
                                         break;
                                     }
