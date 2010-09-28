@@ -73,6 +73,8 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.XMLFileNode;
+import org.talend.core.model.metadata.builder.connection.impl.BRMSConnectionImpl;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.process.EParameterFieldType;
@@ -825,6 +827,66 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                 .getLabel(), ConvertionHelper.convert(table));
                         list.add(hl7Cmd);
                     }
+                }
+            }
+
+            // for brms
+            if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
+                    || (selectedNode.getParent() != null
+                            && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
+                            .isBRMSPluginLoaded())) {
+                if (originalConnection instanceof BRMSConnectionImpl) {
+                    if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
+                        List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
+                        List<Map<String, String>> loopList = new ArrayList<Map<String, String>>();
+                        List<Map<String, String>> groupList = new ArrayList<Map<String, String>>();
+                        for (Object obj : ((BRMSConnectionImpl) originalConnection).getRoot()) {
+                            if (obj instanceof XMLFileNode) {
+                                Map<String, String> rootMap = new HashMap<String, String>();
+                                rootMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
+                                rootMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
+                                rootMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
+                                rootMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
+                                rootMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                rootList.add(rootMap);
+
+                            }
+                        }
+                        for (Object obj : ((BRMSConnectionImpl) originalConnection).getLoop()) {
+                            if (obj instanceof XMLFileNode) {
+                                Map<String, String> loopMap = new HashMap<String, String>();
+                                loopMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
+                                loopMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
+                                loopMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
+                                loopMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
+                                loopMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                loopList.add(loopMap);
+                            }
+                        }
+                        for (Object obj : ((BRMSConnectionImpl) originalConnection).getGroup()) {
+                            if (obj instanceof XMLFileNode) {
+                                Map<String, String> groupMap = new HashMap<String, String>();
+                                groupMap.put("ATTRIBUTE", ((XMLFileNode) obj).getAttribute());
+                                groupMap.put("PATH", ((XMLFileNode) obj).getXMLPath());
+                                groupMap.put("COLUMN", ((XMLFileNode) obj).getRelatedColumn());
+                                groupMap.put("ORDER", String.valueOf(((XMLFileNode) obj).getOrder()));
+                                groupMap.put("VALUE", ((XMLFileNode) obj).getDefaultValue());
+                                groupList.add(groupMap);
+                            }
+                        }
+                        IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+                        if (externalNode != null && externalNode.getElementParameter("ROOT") != null) {
+                            externalNode.getElementParameter("ROOT").setValue(rootList);
+                        }
+                        if (externalNode != null && externalNode.getElementParameter("LOOP") != null) {
+                            externalNode.getElementParameter("LOOP").setValue(loopList);
+                        }
+                        if (externalNode != null && externalNode.getElementParameter("GROUP") != null) {
+                            externalNode.getElementParameter("GROUP").setValue(groupList);
+                        }
+
+                    }
+
                 }
             }
 
