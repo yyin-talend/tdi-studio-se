@@ -24,7 +24,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -90,10 +89,8 @@ public class OpentRunJobComponentAction extends SelectionAction {
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
             String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
-            boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
-                    .isAvoidToShowJobAfterDoubleClick();
 
-            if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
+            if (processName != null && !"".equals(processName)) { //$NON-NLS-1$
                 try {
                     ItemCacheManager.clearCache();
                     ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
