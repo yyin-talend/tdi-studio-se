@@ -1454,6 +1454,7 @@ public class LoginComposite extends Composite {
 
         boolean initialized = false;
 
+        final String newLine = ":\n"; //$NON-NLS-1$
         try {
             try {
                 repositoryFactory.checkAvailability();
@@ -1486,7 +1487,8 @@ public class LoginComposite extends Composite {
         } catch (Exception e) {
             projects = new Project[0];
 
-            MessageDialog.openError(getShell(), "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                    Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
         }
 
         if (initialized) {
@@ -1502,15 +1504,13 @@ public class LoginComposite extends Composite {
             } catch (PersistenceException e) {
                 projects = new Project[0];
 
-                //                setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
-                //                        + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
-                MessageDialog.openError(getShell(),
-                        "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$ 
             } catch (BusinessException e) {
                 projects = new Project[0];
 
-                MessageDialog.openError(getShell(),
-                        "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$ 
             }
         }
         projectViewer.setInput(projects);
