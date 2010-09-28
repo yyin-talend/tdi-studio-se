@@ -100,12 +100,12 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.PropertiesProjectResourceImpl;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.utils.FileCopyUtils;
 import org.talend.repository.utils.RoutineUtils;
 import org.talend.repository.utils.XmiResourceManager;
@@ -201,6 +201,7 @@ public class ImportItemUtil {
 
             boolean nameAvailable = true;
             IRepositoryViewObject itemWithSameId = null;
+            IRepositoryViewObject itemWithSameName = null;
             for (IRepositoryViewObject current : itemsFromRepository.get(itemType)) {
                 if (itemRecord.getProperty().getLabel().equalsIgnoreCase(current.getProperty().getLabel())
                         && itemRecord.getProperty().getId() != current.getProperty().getId()) {
@@ -210,9 +211,8 @@ public class ImportItemUtil {
                     }
                     // overwrite the item with same label but diff id: 15787: import items does not overwrite some
                     // elements
-                    itemWithSameId = current;
                     if (!nameAvailable) {
-                        break;
+                        itemWithSameName = current;
                     }
                 }
                 if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getProperty().getId())) {
@@ -280,6 +280,14 @@ public class ImportItemUtil {
                 if (idAvailable) {
                     // same name but different id
                     itemRecord.setState(State.NAME_EXISTED);
+
+                    if (!isSystem && overwrite) {
+                        // if anything system, don't replace the source item if same name.
+                        // if not from system, can overwrite.
+                        itemRecord.setExistingItemWithSameId(itemWithSameName);
+                        result = true;
+                    }
+
                 } else {
                     // same name and same id
                     itemRecord.setState(State.ID_EXISTED);
@@ -528,7 +536,8 @@ public class ImportItemUtil {
                 String id = itemRecord.getProperty().getId();
 
                 IRepositoryViewObject lastVersion = itemRecord.getExistingItemWithSameId();
-                if (lastVersion != null && overwrite && !itemRecord.isLocked() && itemRecord.getState() == State.ID_EXISTED
+                if (lastVersion != null && overwrite && !itemRecord.isLocked()
+                        && (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_EXISTED)
                         && !deletedItems.contains(id)) {
                     if (!overwriteDeletedItems.contains(id)) { // bug 10520.
                         ERepositoryStatus status = repFactory.getStatus(lastVersion);
@@ -606,12 +615,12 @@ public class ImportItemUtil {
                         }
                     }
                     if (statslogUsePSetting != null && Boolean.parseBoolean(statslogUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
-                                "STATANDLOG_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService()
+                                .reloadParamFromProjectSettings(paType, "STATANDLOG_USE_PROJECT_SETTINGS");
                     }
                     if (implicitUsePSetting != null && Boolean.parseBoolean(implicitUsePSetting)) {
-                        CorePlugin.getDefault().getDesignerCoreService().reloadParamFromProjectSettings(paType,
-                                "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
+                        CorePlugin.getDefault().getDesignerCoreService()
+                                .reloadParamFromProjectSettings(paType, "IMPLICITCONTEXT_USE_PROJECT_SETTINGS");
                     }
 
                 }
@@ -632,8 +641,8 @@ public class ImportItemUtil {
                         // IPath itemPath = itemRecord.getPath().removeFileExtension().addFileExtension(
                         // FileConstants.ITEM_EXTENSION);
 
-                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension().addFileExtension(
-                                FileConstants.ITEM_EXTENSION));
+                        InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension()
+                                .addFileExtension(FileConstants.ITEM_EXTENSION));
                         try {
                             URI relativePlateformDestUri = EcoreUtil.getURI(((ConnectionItem) tmpItem).getConnection());
                             URL fileURL = FileLocator.toFileURL(new java.net.URL(
@@ -974,8 +983,8 @@ public class ImportItemUtil {
             stream = manager.getStream(itemRecord.getPath());
             Resource resource = createResource(itemRecord.getResourceSet(), itemRecord.getPath(), false);
             resource.load(stream, null);
-            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
-                    .getProperty()));
+            itemRecord.setProperty((Property) EcoreUtil.getObjectByType(resource.getContents(),
+                    PropertiesPackage.eINSTANCE.getProperty()));
         } catch (IOException e) {
             // ignore
         } finally {
@@ -1056,8 +1065,8 @@ public class ImportItemUtil {
         } else
         // connectionItem
         if (item instanceof ConnectionItem) {
-            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents, ConnectionPackage.eINSTANCE
-                    .getConnection()));
+            ((ConnectionItem) item).setConnection((Connection) EcoreUtil.getObjectByType(contents,
+                    ConnectionPackage.eINSTANCE.getConnection()));
         } else
         // context
         if (item instanceof ContextItem) {
@@ -1084,15 +1093,15 @@ public class ImportItemUtil {
         } else
         // link doc
         if (item instanceof LinkDocumentationItem) {
-            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents, PropertiesPackage.eINSTANCE
-                    .getLinkType()));
+            ((LinkDocumentationItem) item).setLink((LinkType) EcoreUtil.getObjectByType(contents,
+                    PropertiesPackage.eINSTANCE.getLinkType()));
         } else
         // business
         if (item instanceof BusinessProcessItem) {
             BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
 
-            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents, BusinessPackage.eINSTANCE
-                    .getBusinessProcess()));
+            businessProcessItem.setSemantic((BusinessProcess) EcoreUtil.getObjectByType(contents,
+                    BusinessPackage.eINSTANCE.getBusinessProcess()));
 
             businessProcessItem.setNotationHolder((NotationHolder) EcoreUtil.getObjectByType(contents,
                     PropertiesPackage.eINSTANCE.getNotationHolder()));
@@ -1108,8 +1117,8 @@ public class ImportItemUtil {
                 stream = manager.getStream(path);
                 Resource resource = createResource(itemRecord.getResourceSet(), path, false);
                 resource.load(stream, null);
-                projects.put(path, (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE
-                        .getProject()));
+                projects.put(path,
+                        (Project) EcoreUtil.getObjectByType(resource.getContents(), PropertiesPackage.eINSTANCE.getProject()));
             }
             return projects.get(path);
         } catch (IOException e) {
