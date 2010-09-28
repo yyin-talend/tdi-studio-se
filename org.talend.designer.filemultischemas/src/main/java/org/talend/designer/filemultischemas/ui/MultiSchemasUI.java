@@ -1324,7 +1324,9 @@ public class MultiSchemasUI {
                             if (needRefresh) {
                                 schemaTreeViewer.refresh();
                                 int len = schemaTreeViewer.getTree().getItems().length;
-                                schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
+                                if (len > 0) {
+                                    schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
+                                }
                                 removeRow.setEnabled(!all.isEmpty());
                                 editSchema.setEnabled(!all.isEmpty());
                                 getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer,
