@@ -60,13 +60,14 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.commons.utils.threading.TalendCustomThreadPoolExecutor;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
@@ -79,14 +80,15 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
-import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.cwm.relational.RelationalFactory;
+import org.talend.cwm.relational.TdColumn;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
+import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
 
@@ -544,6 +546,7 @@ public class SelectorTableForm extends AbstractForm {
                     if (managerConnection.getIsValide()) {
                         itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
                                 getTableInfoParameters());
+
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
@@ -658,7 +661,8 @@ public class SelectorTableForm extends AbstractForm {
             } else {
                 dbtable = RelationalFactory.eINSTANCE.createTdTable();
             }
-            List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
+            dbtable.getTaggedValue().add(CoreFactory.eINSTANCE.createTaggedValue());
+            List<TdColumn> metadataColumns = new ArrayList<TdColumn>();
             metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableItem
                     .getText(0));
 
@@ -668,7 +672,7 @@ public class SelectorTableForm extends AbstractForm {
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-            dbtable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            // dbtable = ConnectionFactory.eINSTANCE.createMetadataTable();
 
             initExistingNames();
             String labelName = IndiceHelper.getIndexedLabel(tableString, existingNames);
@@ -819,7 +823,7 @@ public class SelectorTableForm extends AbstractForm {
 
         boolean checkConnectionIsDone = false;
 
-        List<MetadataColumn> metadataColumns = null;
+        List<TdColumn> metadataColumns = null;
 
         volatile boolean isCanceled = false;
 
@@ -884,6 +888,17 @@ public class SelectorTableForm extends AbstractForm {
             // }
             dbtable.setLabel(lableName);
             dbtable.setSourceName(tableString);
+
+            Iterator<String> it = ExtractMetaDataFromDataBase.tableCommentsMap.keySet().iterator();
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                if (key.equals(tableString)) {
+                    String comment = ExtractMetaDataFromDataBase.tableCommentsMap.get(key);
+                    dbtable.setComment(comment);
+                    TableHelper.setComment(comment, dbtable);
+                    break;
+                }
+            }
             dbtable.setId(factory.getNextId());
             dbtable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
             List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
@@ -901,7 +916,34 @@ public class SelectorTableForm extends AbstractForm {
                 dbtable.getColumns().add(metadataColumn);
             }
             if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
-                addTableForCurrentCatalogOrSchema(iMetadataConnection.getDatabase(), iMetadataConnection.getSchema());
+                String schema = iMetadataConnection.getSchema();
+                String catalog = iMetadataConnection.getDatabase();
+                String databaseType = getConnection().getDatabaseType();
+                EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
+                EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
+                EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
+                if (curCatalog != null && curSchema != null) {
+                    switch (curCatalog) {
+                    case Login:
+                        catalog = iMetadataConnection.getUsername();
+                        break;
+                    case None:
+                        schema = "";
+                        break;
+                    }
+                    switch (curSchema) {
+                    case Login:
+                        schema = iMetadataConnection.getUsername();
+                        break;
+                    case Schema:
+                        schema = iMetadataConnection.getSchema();
+                        break;
+                    case None:
+                        schema = "";
+                        break;
+                    }
+                }
+                addTableForCurrentCatalogOrSchema(catalog, schema);
                 // getConnection().getTables().add(metadataTable);hywang
             }
             // }
@@ -946,24 +988,31 @@ public class SelectorTableForm extends AbstractForm {
                     && (threadExecutor.getActiveCount() == 0 || countSuccess == countPending));
         }
 
-        private void addTableForCurrentCatalogOrSchema(String dbsid, String dbuischema) {
+        private void addTableForCurrentCatalogOrSchema(String dbsid, String schema) {
+            boolean hasSchemaInCatalog = false;
             Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, getConnection(), Catalog.class);
-            Schema s = (Schema) ConnectionHelper.getPackage(dbuischema, getConnection(), Schema.class);
+            Schema s = (Schema) ConnectionHelper.getPackage(schema, getConnection(), Schema.class);
+            List<Schema> subschemas = new ArrayList<Schema>();
             if (c != null) {
+                subschemas = CatalogHelper.getSchemas(c);
+                hasSchemaInCatalog = subschemas.size() > 0;
+            }
+            if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
                 PackageHelper.addMetadataTable(dbtable, c);
-            } else if (s != null) {
+
+            } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
                 PackageHelper.addMetadataTable(dbtable, s);
-            } else {
-                if (dbuischema != null && !"".equals(dbuischema)) {
-                    s = SchemaHelper.createSchema(dbuischema);
-                    s.getDataManager().add(getConnection());
+            } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
+                subschemas = CatalogHelper.getSchemas(c);
+                hasSchemaInCatalog = subschemas.size() > 0;
+                if (subschemas.size() > 0) {
+                    for (Schema current : subschemas) {
+                        if (current.getName().equals(schema)) {
+                            s = current;
+                            break;
+                        }
+                    }
                     PackageHelper.addMetadataTable(dbtable, s);
-                    ConnectionHelper.addSchema(s, getConnection());
-                } else if (dbsid != null && !"".equals(dbsid)) {
-                    c = CatalogHelper.createCatalog(dbsid);
-                    c.getDataManager().add(getConnection());
-                    PackageHelper.addMetadataTable(dbtable, c);
-                    ConnectionHelper.addCatalog(c, getConnection());
                 }
             }
         }

@@ -34,6 +34,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.cwm.relational.TdColumn;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -409,7 +410,7 @@ public class TableNode extends AbstractNode {
         }
         // Retrive metadataColumns from Database
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
-        List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
+        List<TdColumn> metadataColumns = new ArrayList<TdColumn>();
         metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, getLabelText());
         Iterator iterate = metadataColumns.iterator();
 

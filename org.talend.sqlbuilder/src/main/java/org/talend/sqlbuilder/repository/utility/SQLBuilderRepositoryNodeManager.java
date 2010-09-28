@@ -52,6 +52,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.relational.TdColumn;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -429,8 +430,9 @@ public class SQLBuilderRepositoryNodeManager {
                     }
                 }
                 if (tableFromDB != null) {
-                    List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
-                            iMetadataConnection, tableFromDB.getSourceName());
+                    List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
+                    columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                            tableFromDB.getSourceName()));
                     fixedColumns(columnsFromDB, metadataTable.getColumns());
                 }
                 // for (MetadataColumn metadataColumn : (List<MetadataColumn>) metadataTable.getColumns()) {
@@ -474,8 +476,9 @@ public class SQLBuilderRepositoryNodeManager {
             }
         }
         if (tableFromDB != null) {
-            List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                    tableFromDB.getSourceName());
+            List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB
+                    .getSourceName()));
             modifyOldOneColumnFromDB(columnsFromDB, metadataColumn);
         }
     }
@@ -492,8 +495,9 @@ public class SQLBuilderRepositoryNodeManager {
             List<MetadataTable> tablesFromDB, RepositoryNode oldNode) {
         for (MetadataTable tableFromDB : tablesFromDB) {
             // /Get MetadataColumn from DB
-            List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                    tableFromDB.getSourceName());
+            List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB
+                    .getSourceName()));
             for (MetadataTable tableFromEMF : tablesFromEMF) {
                 // /Get MetadataColumn From EMF
                 List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
@@ -569,8 +573,9 @@ public class SQLBuilderRepositoryNodeManager {
                         .returnMetaTablesFormConnection(iMetadataConnection);
                 ExtractMetaDataUtils.isReconnect = false;
                 for (MetadataTable table : tablesFromDB) {
-                    List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
-                            iMetadataConnection, table.getSourceName());
+                    List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
+                    columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, table
+                            .getSourceName()));
                     table.getColumns().clear();
                     for (MetadataColumn column : columnsFromDB) {
                         column.setLabel(""); //$NON-NLS-1$
@@ -992,7 +997,7 @@ public class SQLBuilderRepositoryNodeManager {
             MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
             table.setSourceName(db.getSourceName());
             table.setLabel(""); //$NON-NLS-1$
-            List<MetadataColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, table
+            List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, table
                     .getSourceName());
             for (MetadataColumn column : columns) {
                 MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
@@ -1119,8 +1124,8 @@ public class SQLBuilderRepositoryNodeManager {
         for (MetadataColumn col : columnNodes) {
             for (MetadataTable table : tables) {
                 if (table.getLabel().equals(col.getTable().getLabel())) {
-                    List<MetadataColumn> returnCols = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
-                            iMetadataConnection, table.getSourceName());
+                    List<TdColumn> returnCols = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                            table.getSourceName());
                     for (MetadataColumn emfcolumn : (List<MetadataColumn>) table.getColumns()) {
                         for (MetadataColumn column : returnCols) {
                             if (emfcolumn.getLabel().equals(col.getLabel()) && column.getLabel().equals(col.getOriginalField())) {

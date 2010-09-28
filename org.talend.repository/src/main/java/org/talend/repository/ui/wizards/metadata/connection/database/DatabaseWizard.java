@@ -33,6 +33,8 @@ import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -40,6 +42,9 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.CatalogHelper;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SchemaHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -51,6 +56,8 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * DatabaseWizard present the DatabaseForm. Use to manage the metadata connection.
@@ -273,9 +280,13 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                             }
                         }
                     }
-                    this.connection
-                            .setDriverClass(EDatabase4DriverClassName.getDriverClassByDbType(connection.getDatabaseType()));
+                    EDatabaseTypeName type = EDatabaseTypeName.getTypeFromDbType(connection.getDatabaseType());
+                    if (!type.equals(EDatabaseTypeName.GENERAL_JDBC)) {
+                        this.connection.setDriverClass(EDatabase4DriverClassName.getDriverClassByDbType(connection
+                                .getDatabaseType()));
+                    }
                     this.connection.setName(connectionProperty.getLabel());
+                    addCatalogOrSchema();
                     factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
                 } else {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
@@ -328,6 +339,106 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
             connectionItem.getProperty().setStatusCode(this.originalStatus);
         }
         return super.performCancel();
+    }
+
+    private void addCatalogOrSchema() {
+        EDatabaseSchemaOrCatalogMapping catalog = null;
+        EDatabaseSchemaOrCatalogMapping schema = null;
+        EDatabaseTypeName type = EDatabaseTypeName.getTypeFromDbType(connection.getDatabaseType());
+        if (type.equals(EDatabaseTypeName.GENERAL_JDBC)) {
+            String realtype = ExtractMetaDataUtils.getDbTypeByClassName(connection.getDriverClass());
+            type = EDatabaseTypeName.getTypeFromDbType(realtype);
+            catalog = type.getCatalogMappingField();
+            schema = type.getSchemaMappingField();
+        } else {
+            catalog = type.getCatalogMappingField();
+            schema = type.getSchemaMappingField();
+        }
+        fillValuesForSchemaOrCatalog(catalog, schema);
+    }
+
+    // Schema s = null;
+    // Catalog c = null;
+    // List<Schema> schemas = new ArrayList<Schema>();
+    // String dbsid = this.connection.getSID();
+    // String dbuischema = this.connection.getUiSchema();
+    // if (dbuischema != null && !"".equals(dbuischema) && (dbsid == null || "".equals(dbsid))) {
+    // s = SchemaHelper.createSchema(dbuischema);
+    // s.getDataManager().add(this.connection);
+    // ConnectionHelper.addSchema(s, this.connection);
+    // } else if (dbsid != null && !"".equals(dbsid) && (dbuischema == null || "".equals(dbuischema))) {
+    // c = CatalogHelper.createCatalog(dbsid);
+    // c.getDataManager().add(this.connection);
+    // ConnectionHelper.addCatalog(c, this.connection);
+    // } else if (connection.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
+    // s = SchemaHelper.createSchema(dbuischema);
+    // s.getDataManager().add(this.connection);
+    // ConnectionHelper.addSchema(s, this.connection);
+    // } else { // database such
+    // // as sqlserver
+    // // got both
+    // // catalog and
+    // // schema
+    // c = CatalogHelper.createCatalog(dbsid);
+    // s = SchemaHelper.createSchema(dbuischema);
+    // schemas.add(s);
+    // CatalogHelper.addSchemas(schemas, c);
+    // c.getDataManager().add(this.connection);
+    // ConnectionHelper.addCatalog(c, this.connection);
+    // }}
+
+    private void fillValuesForSchemaOrCatalog(EDatabaseSchemaOrCatalogMapping catalog, EDatabaseSchemaOrCatalogMapping schema) {
+        Schema s = null;
+        Catalog c = null;
+        List<Schema> schemas = new ArrayList<Schema>();
+        String user = this.connection.getUsername();
+        String dbsid = this.connection.getSID();
+        String dbuischema = this.connection.getUiSchema();
+        if (schema != null && catalog != null) {
+            if (schema.equals(EDatabaseSchemaOrCatalogMapping.None) && !catalog.equals(EDatabaseSchemaOrCatalogMapping.None)) {// only
+                // catalog
+                if (catalog.equals(EDatabaseSchemaOrCatalogMapping.Sid)) {
+                    c = CatalogHelper.createCatalog(dbsid);
+                    c.getDataManager().add(this.connection);
+                    ConnectionHelper.addCatalog(c, this.connection);
+                }
+
+            } else if (!schema.equals(EDatabaseSchemaOrCatalogMapping.None) // only schema
+                    && catalog.equals(EDatabaseSchemaOrCatalogMapping.None)) {
+                if (schema.equals(EDatabaseSchemaOrCatalogMapping.Schema)) {
+                    s = SchemaHelper.createSchema(dbuischema);
+                    s.getDataManager().add(this.connection);
+                    ConnectionHelper.addSchema(s, this.connection);
+                }
+                if (schema.equals(EDatabaseSchemaOrCatalogMapping.Login)) {
+                    s = SchemaHelper.createSchema(user);
+                    s.getDataManager().add(this.connection);
+                    ConnectionHelper.addSchema(s, this.connection);
+                }
+            } else { // both schema and catalog
+                String cvalue = dbsid;
+                String svalue = null;
+                cvalue = dbsid;
+                switch (schema) {
+                case Sid:
+                    svalue = dbsid;
+                    break;
+                case Schema:
+                    svalue = dbuischema;
+                    break;
+                case Login:
+                    svalue = user;
+                    break;
+                }
+                c = CatalogHelper.createCatalog(cvalue);
+                s = SchemaHelper.createSchema(svalue);
+                schemas.add(s);
+                CatalogHelper.addSchemas(schemas, c);
+                c.getDataManager().add(this.connection);
+                ConnectionHelper.addCatalog(c, this.connection);
+            }
+        }
+
     }
 
     /**

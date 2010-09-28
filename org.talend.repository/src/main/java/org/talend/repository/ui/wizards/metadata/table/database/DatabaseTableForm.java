@@ -84,6 +84,7 @@ import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.cwm.relational.TdColumn;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.RepositoryPlugin;
@@ -991,7 +992,7 @@ public class DatabaseTableForm extends AbstractForm {
                     tableString = tableCombo.getItem(selectionIndex);
                 }
 
-                List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
+                List<TdColumn> metadataColumns = new ArrayList<TdColumn>();
                 metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
 
                 tableEditorView.getMetadataEditor().removeAll();

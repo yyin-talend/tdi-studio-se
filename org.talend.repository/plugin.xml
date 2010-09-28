@@ -1248,6 +1248,14 @@
             id="org.talend.repository.model.migration.MdmConceptMigrationTask"
             name="MdmConceptMigrationTask">
       </projecttask>
+       <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.FillParametersForDatabaseConnectionMigrationTask"
+            description="SetDatabaseConnectionNameMigrationTask"
+            id="org.talend.repository.SetDatabaseConnectionNameMigrationTask"
+            name="Set name for database connection">
+      </projecttask>
+      
    </extension>
    
    <extension
