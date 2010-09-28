@@ -43,7 +43,19 @@ imports="
 		processDefinitionUUID_<%=cid%> = process_<%=cid%>.getUUID().getValue();
 		
 		System.out.println("**** Process "+ processDefinitionUUID_<%=cid%> + " deploy successful ****");
-		
+
+	} catch (javax.security.auth.login.LoginException le_<%=cid%>) {//just login exception
+<%
+	if (dieOnError) {
+%>
+		throw le_<%=cid%>;		
+<%
+	} else {
+%>
+		System.err.println(le_<%=cid%>.getCause().getMessage());
+<%	
+	}
+%>		
 	} catch (Exception e_<%=cid%>) {
 <%
 	if (dieOnError) {

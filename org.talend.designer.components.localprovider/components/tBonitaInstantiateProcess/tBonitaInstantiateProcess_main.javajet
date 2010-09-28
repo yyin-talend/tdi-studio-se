@@ -45,6 +45,19 @@ imports="
 		processInstanceUUID_<%=cid%> = instanceUUID_<%=cid%>.getValue();
 		 
 		System.out.println("**** Instance "+ processInstanceUUID_<%=cid%> + " created ****");
+
+	} catch (javax.security.auth.login.LoginException le_<%=cid%>) {//just login exception
+<%
+	if (dieOnError) {
+%>
+		throw le_<%=cid%>;		
+<%
+	} else {
+%>
+		System.err.println(le_<%=cid%>.getCause().getMessage());
+<%	
+	}
+%>	
 	} catch (Exception e_<%=cid%>) {
 <%
 	if (dieOnError) {
