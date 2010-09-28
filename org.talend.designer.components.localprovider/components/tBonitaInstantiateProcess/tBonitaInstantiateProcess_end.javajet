@@ -1,0 +1,35 @@
+<%@ jet 
+imports="
+			org.talend.core.model.process.INode 
+			org.talend.core.model.process.ElementParameterParser 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+			java.util.List
+			org.talend.core.model.process.IConnection
+			org.talend.core.model.process.IConnectionCategory
+			org.talend.core.model.metadata.IMetadataColumn
+			org.talend.core.model.metadata.IMetadataTable
+" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+%>	
+try {
+	loginContext_<%=cid%>.logout();
+} catch (javax.security.auth.login.LoginException lee_<%=cid%>) {
+<%
+	if (dieOnError) {
+%>
+		throw le_<%=cid%>;	
+<%
+	} else {
+%>
+		System.err.println(lee_<%=cid%>.getMessage());
+<%	
+	}
+%>
+}
