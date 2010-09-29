@@ -16,7 +16,6 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -28,8 +27,6 @@ import org.talend.repository.ui.utils.ManagerConnection;
 public class DatabaseTableWizardPage extends WizardPage {
 
     private DatabaseTableForm tableForm;
-
-    private MetadataTable metadataTable;
 
     private ConnectionItem connectionItem;
 
@@ -48,11 +45,10 @@ public class DatabaseTableWizardPage extends WizardPage {
      * @param ISelection
      */
     public DatabaseTableWizardPage(ManagerConnection managerConnection, ConnectionItem connectionItem,
-            MetadataTable metadataTable, boolean isRepositoryObjectEditable, IMetadataConnection metadataConnection) {
+            boolean isRepositoryObjectEditable, IMetadataConnection metadataConnection) {
         super("wizardPage"); //$NON-NLS-1$
         this.managerConnection = managerConnection;
         this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.metadataConnection = metadataConnection;
     }
@@ -64,7 +60,7 @@ public class DatabaseTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new DatabaseTableForm(parent, connectionItem, metadataTable, managerConnection, this);
+        tableForm = new DatabaseTableForm(parent, connectionItem, managerConnection, this);
         tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 

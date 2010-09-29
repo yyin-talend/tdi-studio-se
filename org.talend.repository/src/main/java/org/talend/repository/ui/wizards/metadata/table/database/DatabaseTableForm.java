@@ -197,11 +197,10 @@ public class DatabaseTableForm extends AbstractForm {
      * @param page
      * @param managerConnection2
      */
-    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            ManagerConnection managerConnection, IWizardPage page) {
+    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, ManagerConnection managerConnection,
+            IWizardPage page) {
         super(parent, SWT.NONE);
         this.managerConnection = managerConnection;
-        this.metadataTable = metadataTable;
         this.connectionItem = connectionItem;
         this.parentWizardPage = page;
         setupForm();
@@ -732,9 +731,9 @@ public class DatabaseTableForm extends AbstractForm {
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
-                                SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
-                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                        .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
+                                SelectorTableForm.openInfoDialogInUIThread(getShell(),
+                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                                .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
                             }
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
@@ -769,8 +768,8 @@ public class DatabaseTableForm extends AbstractForm {
                                         if (!isReadOnly()) {
                                             msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                                         }
-                                        SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
-                                                .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
+                                        SelectorTableForm.openInfoDialogInUIThread(getShell(),
+                                                Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
                                     }
                                 }
                             });

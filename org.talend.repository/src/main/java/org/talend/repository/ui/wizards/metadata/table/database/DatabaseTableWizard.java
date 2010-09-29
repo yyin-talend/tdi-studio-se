@@ -55,8 +55,6 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
 
     private final ConnectionItem connectionItem;
 
-    private final MetadataTable metadataTable;
-
     private boolean skipStep;
 
     private final ManagerConnection managerConnection;
@@ -81,7 +79,6 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
             String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection,
             IMetadataConnection metadataConnection) {
         super(workbench, creation, forceReadOnly);
-        this.metadataTable = metadataTable;
         this.existingNames = existingNames;
         this.managerConnection = managerConnection;
         this.metadataConnection = metadataConnection;
@@ -115,11 +112,11 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
         TableInfoParameters tableInfoParameters = new TableInfoParameters();
-        selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable(),
-                tableInfoParameters, metadataConnection);
+        selectorWizardPage = new SelectorTableWizardPage(connectionItem, isRepositoryObjectEditable(), tableInfoParameters,
+                metadataConnection);
 
-        tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, metadataTable,
-                isRepositoryObjectEditable(), metadataConnection);
+        tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, isRepositoryObjectEditable(),
+                metadataConnection);
         tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters, this.connectionItem);
         if (creation && !skipStep) {
 

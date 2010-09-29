@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -40,8 +39,6 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
     private SelectorTableForm tableForm;
 
     private StateComposite stateCom;
-
-    private final MetadataTable metadataTable;
 
     private final ConnectionItem connectionItem;
 
@@ -63,23 +60,20 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
      * 
      * @param ISelection
      */
-    public SelectorTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean isRepositoryObjectEditable, TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection) {
+    public SelectorTableWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
         this.metadataConnection = metadataConnection;
     }
 
-    public SelectorTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean isRepositoryObjectEditable, TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection,
-            boolean isCreateTemplate) {
+    public SelectorTableWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection, boolean isCreateTemplate) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.templateConnection = connectionItem;
-        this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
         this.metadataConnection = metadataConnection;

@@ -69,9 +69,9 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
@@ -663,8 +663,8 @@ public class SelectorTableForm extends AbstractForm {
             }
             dbtable.getTaggedValue().add(CoreFactory.eINSTANCE.createTaggedValue());
             List<TdColumn> metadataColumns = new ArrayList<TdColumn>();
-            metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableItem
-                    .getText(0));
+            metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    tableItem.getText(0));
 
             tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
             tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
@@ -1014,6 +1014,12 @@ public class SelectorTableForm extends AbstractForm {
                     }
                     PackageHelper.addMetadataTable(dbtable, s);
                 }
+            } else if (c == null && s == null) {
+                // no catalog or schema by default, so create a catalog
+                c = CatalogHelper.createCatalog(getConnection().getSID());
+                c.getDataManager().add(getConnection());
+                PackageHelper.addMetadataTable(dbtable, c);
+                ConnectionHelper.addCatalog(c, getConnection());
             }
         }
     }
