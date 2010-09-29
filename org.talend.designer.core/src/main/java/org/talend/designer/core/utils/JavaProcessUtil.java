@@ -105,7 +105,7 @@ public class JavaProcessUtil {
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField() == null) {
                     continue; // field can be null in some really specific cases, like for example when preview from
-                              // wizard.
+                    // wizard.
                 }
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
                     if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
@@ -176,9 +176,29 @@ public class JavaProcessUtil {
                         for (Map<String, Object> line : values) {
                             String moduleName = (String) line.get(param.getName());
                             if (moduleName != null && !"".equals(moduleName)) {
-                                moduleName = getModuleValue(process, moduleName);
-                                if (!neededLibraries.contains(moduleName)) {
-                                    neededLibraries.add(moduleName);
+
+                                boolean isContextMode = ContextParameterUtils.containContextVariables(moduleName);
+                                if (isContextMode) {
+                                    List<IContext> listContext = process.getContextManager().getListContext();
+                                    for (IContext context : listContext) {
+                                        List<IContextParameter> contextParameterList = context.getContextParameterList();
+                                        for (IContextParameter contextPara : contextParameterList) {
+                                            String var = ContextParameterUtils.getVariableFromCode(moduleName);
+                                            if (var.equals(contextPara.getName())) {
+                                                String value = context.getContextParameter(contextPara.getName()).getValue();
+                                                value = value.substring(value.lastIndexOf("\\") + 1);
+                                                if (!neededLibraries.contains(value)) {
+                                                    neededLibraries.add(value);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    moduleName = getModuleValue(process, moduleName);
+                                    if (!neededLibraries.contains(moduleName)) {
+                                        neededLibraries.add(moduleName);
+                                    }
                                 }
                             }
                         }

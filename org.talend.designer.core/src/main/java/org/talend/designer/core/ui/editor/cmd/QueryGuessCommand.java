@@ -131,6 +131,8 @@ public class QueryGuessCommand extends Command {
                     dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
                 }
             }
+            // data view， conn=null
+            // need add code here for dbtype(oracle)
         }
 
         if (dbNameAndSchemaMap != null) {
