@@ -27,6 +27,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
@@ -108,8 +109,8 @@ public class NewProcessWizard extends Wizard {
             List<ItemInforType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
             process.getRoutinesDependencies().addAll(dependenciesInPreference);
 
-
             processItem.setProcess(process);
+            RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
 
         } catch (PersistenceException e) {

@@ -23,9 +23,11 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
@@ -166,6 +168,9 @@ public class CopyObjectAction {
                                 synDuplicatedRoutine((RoutineItem) copy);
                                 needSys = false;
                             }
+                        }
+                        if (copy instanceof ProcessItem) {
+                            RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
                         }
                         factory.save(copy);
                     }
