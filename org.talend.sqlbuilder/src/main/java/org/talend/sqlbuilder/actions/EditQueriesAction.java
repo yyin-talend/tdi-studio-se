@@ -52,6 +52,7 @@ public class EditQueriesAction extends AContextualAction {
     public EditQueriesAction() {
         super();
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_QUERY_ICON));
+        setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
     }
 
     protected void doRun() {
@@ -127,10 +128,9 @@ public class EditQueriesAction extends AContextualAction {
                     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
                             IRepositoryService.class);
                     IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                    if (repFactory.isPotentiallyEditable(repositoryNode.getObject())) {
-                        this.setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
-                    } else {
-                        this.setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
+                    if (!repFactory.isPotentiallyEditable(repositoryNode.getObject())) {
+                        canWork = false;
+                        break;
                     }
                 }
                 break;

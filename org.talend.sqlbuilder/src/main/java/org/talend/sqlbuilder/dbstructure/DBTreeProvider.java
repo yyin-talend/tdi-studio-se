@@ -378,19 +378,19 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         displayQueries.clear();
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
             Query query = (Query) iter.next();
-            if (!TableHelper.isDeleted(query)) {
-                QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
-                repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
-                repositoryObject.setSourceName(query.getLabel());
-                RepositoryNode node = new RepositoryNodeExt(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
-                node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
-                queriesConnectionNode.getChildren().add(node);
-                if (connectionParameters.getQueryObject() != null
-                        && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
-                    this.selectedExtReposiotryNode = node;
-                }
-                displayQueries.add(query);
+            // if (!TableHelper.isDeleted(query)) {
+            QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
+            repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
+            repositoryObject.setSourceName(query.getLabel());
+            RepositoryNode node = new RepositoryNodeExt(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
+            node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
+            queriesConnectionNode.getChildren().add(node);
+            if (connectionParameters.getQueryObject() != null
+                    && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
+                this.selectedExtReposiotryNode = node;
             }
+            displayQueries.add(query);
+            // }
         }
     }
 
