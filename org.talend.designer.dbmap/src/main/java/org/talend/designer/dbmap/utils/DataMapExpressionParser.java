@@ -69,23 +69,45 @@ public class DataMapExpressionParser {
         resultList.clear();
         if (expression != null) {
             matcher.setMultiline(true);
-            if (patternMatcherInput == null) {
-                patternMatcherInput = new PatternMatcherInput(expression);
-            } else {
-                patternMatcherInput.setInput(expression);
+
+            String[] expressSplit = expression.split("  ");//$NON-NLS-N$
+            for (int i = 0; i < expressSplit.length; i++) {
+                String str = expressSplit[i];
+                String[] split = str.split("\\.");//$NON-NLS-N$
+                int length = split.length;
+
+                if (patternMatcherInput == null) {
+                    patternMatcherInput = new PatternMatcherInput(str);
+                } else {
+                    patternMatcherInput.setInput(str);
+                }
+
+                if (length == 2) {
+                    // for table name without schema
+                    pattern = recompilePatternIfNecessary(locationPattern);
+
+                    while (matcher.contains(patternMatcherInput, pattern)) {
+                        MatchResult matchResult = matcher.getMatch();
+                        resultList.add(new TableEntryLocation(matchResult.group(1), matchResult.group(2)));
+                    }
+                } else {
+                    // for table name with schema
+                    String patternStr = "\\s*(\\w+)\\s*";//$NON-NLS-N$
+                    pattern = recompilePatternIfNecessary(patternStr + "." + patternStr + "." + patternStr);//$NON-NLS-N$ //$NON-NLS-N$
+                    while (matcher.contains(patternMatcherInput, pattern)) {
+                        MatchResult matchResult = matcher.getMatch();
+                        resultList.add(new TableEntryLocation(matchResult.group(1) + "." + matchResult.group(2), matchResult //$NON-NLS-N$
+                                .group(3)));
+                    }
+                }
+
             }
 
-            recompilePatternIfNecessary(locationPattern);
-
-            while (matcher.contains(patternMatcherInput, pattern)) {
-                MatchResult matchResult = matcher.getMatch();
-                resultList.add(new TableEntryLocation(matchResult.group(1), matchResult.group(2)));
-            }
         }
         return resultList.toArray(new TableEntryLocation[0]);
     }
 
-    private void recompilePatternIfNecessary(String regexpPattern) {
+    private Pattern recompilePatternIfNecessary(String regexpPattern) {
         if (pattern == null || !regexpPattern.equals(pattern.getPattern())) {
             try {
                 pattern = compiler.compile(regexpPattern);
@@ -93,20 +115,20 @@ public class DataMapExpressionParser {
                 throw new RuntimeException(e);
             }
         }
+        return pattern;
     }
 
     public String addTablePrefixToColumnName(String expression, TableEntryLocation[] locations) {
         String returnedExpression = expression;
         for (TableEntryLocation location : locations) {
-            recompilePatternIfNecessary(StringHelper.replacePrms(language.getSubstPatternForPrefixColumnName(),
-                    new Object[] { location.tableName, location.columnName }));
+            recompilePatternIfNecessary(StringHelper.replacePrms(language.getSubstPatternForPrefixColumnName(), new Object[] {
+                    location.tableName, location.columnName }));
             if (returnedExpression != null) {
                 matcher.setMultiline(true);
                 Perl5Substitution substitution = new Perl5Substitution(
                         language.getPrefixTableRegexp() + "$1" //$NON-NLS-1$
                                 + language.getPrefixFieldRegexp() + "$1__$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
-                returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
-                        Util.SUBSTITUTE_ALL);
+                returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
             }
         }
         return returnedExpression;
@@ -124,8 +146,7 @@ public class DataMapExpressionParser {
                     + language.getSuffixTableRegexp()
                     + "$3" + language.getPrefixFieldRegexp() + "$4" + newLocation.columnName + "$5" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL);
-            returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
-                    Util.SUBSTITUTE_ALL);
+            returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
         }
         return returnedExpression;
     }
