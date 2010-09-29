@@ -302,15 +302,26 @@ parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema-ful
 parser_<%=cid%>.setFeature("http://xml.org/sax/features/namespaces", true);
 parser_<%=cid%>.setErrorHandler(null);
 Object filename_<%=cid %> = <%=filename %>;
-if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
-	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+boolean isValidFile_<%=cid %> = true;
+try{
+    if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
+    	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+    }
+    if(filename_<%=cid %> instanceof java.io.InputStream){
+    	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
+    }else{
+    	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
+    	parser_<%=cid%>.parse(new org.xml.sax.InputSource(in_<%=cid %>));
+    }
+}catch(Exception e){
+<%if (dieOnError) {%>
+	throw(e);
+<%}else{%>
+	System.err.println(e.getMessage());
+	isValidFile_<%=cid %> = false;
+<%}%>
 }
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
-}else{
-	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
-	parser_<%=cid%>.parse(new org.xml.sax.InputSource(in_<%=cid %>));
-}
+if(isValidFile_<%=cid %>){
 org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
 
 xml_api_<%=cid%>.initXPath(doc_<%=cid%>);
@@ -534,14 +545,24 @@ filename_<%=cid %> = <%=tmp_filename %>;
 <%
 	}
 %>
+boolean isValidFile_<%=cid %> = true;
 org.dom4j.Document doc_<%=cid%> = null;
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	doc_<%=cid%> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
-}else{
-	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
-	doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
+try{
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		doc_<%=cid%> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
+	}else{
+		java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
+		doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
+	}
+}catch(Exception e){
+<%if (dieOnError) {%>
+	throw(e);
+<%}else{%>
+	System.err.println(e.getMessage());
+	isValidFile_<%=cid %> = false;
+<%}%>
 }
-
+if(isValidFile_<%=cid %>){
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
