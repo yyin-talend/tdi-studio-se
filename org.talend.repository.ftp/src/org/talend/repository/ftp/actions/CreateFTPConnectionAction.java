@@ -30,6 +30,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.FTPWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -43,11 +44,11 @@ import org.talend.repository.ui.actions.metadata.AbstractCreateAction;
  */
 public class CreateFTPConnectionAction extends AbstractCreateAction {
 
-    private static final String EDIT_LABEL = "Edit FTP";
+    private static final String EDIT_LABEL = Messages.getString("CreateFTPConnectionAction_edit_ftp"); //$NON-NLS-1$
 
-    private static final String OPEN_LABEL = "Open FTP";
+    private static final String OPEN_LABEL = Messages.getString("CreateFTPConnectionAction_open_ftp"); //$NON-NLS-1$
 
-    private static final String CREATE_LABEL = "Create FTP";
+    private static final String CREATE_LABEL = Messages.getString("CreateFTPConnectionAction_create_ftp"); //$NON-NLS-1$
 
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.FTP_ICON);
 

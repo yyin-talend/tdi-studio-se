@@ -33,6 +33,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -187,8 +188,8 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
         }
         propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_FTP,
                 !isRepositoryObjectEditable(), creation);
-        propertiesWizardPage.setTitle("Talend FTP");
-        propertiesWizardPage.setDescription("Create a FTPConnection");
+        propertiesWizardPage.setTitle("Talend FTP"); //$NON-NLS-1$
+        propertiesWizardPage.setDescription(Messages.getString("FTPWizard_create_ftp_conn")); //$NON-NLS-1$
 
         ftpPage = new FTPPage(connectionItem, isRepositoryObjectEditable(), existingNames);
 
