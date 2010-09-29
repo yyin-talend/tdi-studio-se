@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
@@ -44,12 +45,14 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
@@ -376,9 +379,23 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                             // hywang add for excel 2007
                             if (repositoryValue.equals(EParameterName.FILE_PATH.getName())) {
-                                String s = TalendTextUtils.removeQuotes(objectValue.toString());
+                                String filePath = "";
+                                if (connection.isContextMode()) {
+                                    ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
+
+                                    if (contextItem != null) {
+                                        String selectedContext = contextItem.getDefaultContext();
+                                        final ContextType contextTypeByName = ContextUtils.getContextTypeByName(contextItem,
+                                                selectedContext, true);
+                                        filePath = ConnectionContextHelper.getOriginalValue(contextTypeByName, objectValue
+                                                .toString());
+                                    }
+                                } else {
+
+                                    filePath = TalendTextUtils.removeQuotes(objectValue.toString());
+                                }
                                 boolean versionCheckFor2007 = false; //$NON-NLS-N$
-                                if (s.endsWith(".xlsx")) { //$NON-NLS-N$
+                                if (filePath != null && filePath.endsWith(".xlsx")) { //$NON-NLS-N$
                                     versionCheckFor2007 = true; //$NON-NLS-N$
                                 }
                                 if (elem.getElementParameter("VERSION_2007") != null) { //$NON-NLS-N$
