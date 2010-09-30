@@ -713,6 +713,9 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
     }
 
     private void initFileContent() {
+        if (getConnection().getXmlFilePath() == null || "".equals(getConnection().getXmlFilePath())) {
+            return;
+        }
         byte[] bytes = getConnection().getFileContent();
         Project project = ProjectManager.getInstance().getCurrentProject();
         IProject fsProject = null;
@@ -726,9 +729,15 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
         }
         String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
         String fileName = "";
-        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xml")) {
+
+        String xmlXsdPath = getConnection().getXmlFilePath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection());
+            xmlXsdPath = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, xmlXsdPath));
+        }
+        if (xmlXsdPath != null && xmlXsdPath.endsWith(".xml")) {
             fileName = "tempXMLFile.xml";
-        } else if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+        } else if (xmlXsdPath != null && xmlXsdPath.endsWith(".xsd")) {
             fileName = "tempXSDFile.xsd";
         }
         File temfile = new File(temPath + File.separator + fileName);

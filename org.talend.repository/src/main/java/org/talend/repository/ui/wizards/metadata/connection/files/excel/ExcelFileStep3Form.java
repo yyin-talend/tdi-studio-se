@@ -56,12 +56,14 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
@@ -379,6 +381,11 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
             String[] label = new String[numberOfCol.intValue()];
             // modify for bug 11711
             String firstColumn = getConnection().getFirstColumn();
+            if (getConnection().isContextMode()) {
+                final ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getConnection(), true);
+                firstColumn = ConnectionContextHelper.getOriginalValue(contextType, firstColumn);
+            }
+
             Integer valueOf = Integer.valueOf(firstColumn);
             if (valueOf != null) {
                 String[] excelStyleTitles = ExcelReader.getColumnsTitle(valueOf, label.length);// Excel style column

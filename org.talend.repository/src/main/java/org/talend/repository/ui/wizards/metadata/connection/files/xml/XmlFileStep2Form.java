@@ -947,9 +947,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         }
         String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
         String fileName = "";
-        if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xml")) {
+
+        String pathStr = getConnection().getXmlFilePath();
+        if (isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connectionItem.getConnection(), true);
+            pathStr = TalendTextUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
+        }
+        if (pathStr != null && pathStr.endsWith(".xml")) {
             fileName = "tempXMLFile.xml";
-        } else if (getConnection().getXmlFilePath() != null && getConnection().getXmlFilePath().endsWith(".xsd")) {
+        } else if (pathStr != null && pathStr.endsWith(".xsd")) {
             fileName = "tempXSDFile.xsd";
         }
         File temfile = new File(temPath + File.separator + fileName);
