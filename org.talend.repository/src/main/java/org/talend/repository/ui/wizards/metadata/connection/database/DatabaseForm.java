@@ -20,12 +20,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -178,6 +182,10 @@ public class DatabaseForm extends AbstractForm {
 
     private boolean isModify = false;
 
+    private Composite newParent;
+
+    private ScrolledComposite scrolledComposite;
+
     /**
      * Constructor to use by a Wizard to create a new database connection.
      * 
@@ -324,8 +332,21 @@ public class DatabaseForm extends AbstractForm {
     protected void addFields() {
         int width = getSize().x;
         GridLayout layout2;
-        databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 310); //$NON-NLS-1$
-        compositeGroupDbSettings = Form.startNewGridLayout(databaseSettingGroup, 1);
+        databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 270); //$NON-NLS-1$
+
+        scrolledComposite = new ScrolledComposite(databaseSettingGroup, SWT.V_SCROLL | SWT.H_SCROLL);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        newParent = new Composite(scrolledComposite, SWT.NONE);
+        GridLayout gridLayout = new GridLayout();
+        newParent.setLayout(gridLayout);
+        scrolledComposite.setContent(newParent);
+
+        compositeGroupDbSettings = Form.startNewGridLayout(newParent, 1);
+        // compositeGroupDbSettings = new Composite(newParent, SWT.NONE);
+        // compositeGroupDbSettings.setLayout(new GridLayout(1, false));
+        // compositeGroupDbSettings.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -335,7 +356,6 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginWidth = 0;
 
         compositeDbSettings = new Composite(compositeGroupDbSettings, SWT.NULL);
-
         compositeDbSettings.setLayout(new GridLayout(3, false));
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.minimumWidth = width;
@@ -369,6 +389,16 @@ public class DatabaseForm extends AbstractForm {
 
         checkDBTypeAS400();
 
+        // scrolledComposite.setSize(compositeGroupDbSettings.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        //
+
+        scrolledComposite.addControlListener(new ControlAdapter() {
+
+            public void controlResized(ControlEvent e) {
+                Rectangle r = scrolledComposite.getClientArea();
+                scrolledComposite.setMinSize(newParent.computeSize(r.width, 300));
+            }
+        });
     }
 
     /**
@@ -381,7 +411,6 @@ public class DatabaseForm extends AbstractForm {
 
         typeDbCompositeParent = new Composite(compositeGroupDbSettings, SWT.NULL);
         typeDbCompositeParent.setLayout(new GridLayout(3, false));
-
         GridLayout layout2 = (GridLayout) typeDbCompositeParent.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -517,13 +546,28 @@ public class DatabaseForm extends AbstractForm {
 
         fileField.hide();
         directoryField.hide();
-        // Button Check
 
-        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.BOTTOM);
+        // Button Check
+        // Group checkGroup = Form.createGroup(this, 1, "", 5);
+        Composite checkGroup = new Composite(this, SWT.NONE);
+        GridLayout gridLayout = new GridLayout(1, false);
+        checkGroup.setLayout(gridLayout);
+        GridData gridData23 = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData23.minimumHeight = 2;
+        gridData23.heightHint = 2;
+        checkGroup.setLayoutData(gridData23);
+        Composite compositeCheckButton = Form.startNewGridLayout(checkGroup, 1, false, SWT.CENTER, SWT.BOTTOM);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
         layout2.marginBottom = 0;
+        layout2.marginLeft = 0;
+        layout2.marginRight = 0;
+        layout2.marginWidth = 0;
+
+        GridData checkGridData = new GridData(GridData.FILL_HORIZONTAL);
+        checkGridData.minimumHeight = 5;
+        checkGroup.setLayoutData(checkGridData);
         checkButton = new UtilsButton(compositeCheckButton, Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                 HEIGHT_BUTTON_PIXEL);
         checkButton.setEnabled(false);
@@ -1155,6 +1199,7 @@ public class DatabaseForm extends AbstractForm {
                         schemaText.setText(""); //$NON-NLS-1$
                     }
                 }
+                checkScrolledCompositeSize();
             }
 
         });
@@ -1274,6 +1319,43 @@ public class DatabaseForm extends AbstractForm {
         // }
         // });
 
+    }
+
+    private void checkScrolledCompositeSize() {
+        // TODO Auto-generated method stub
+        int i = 0;
+        if (urlConnectionStringText.isVisiable()) {
+            i = i + 1;
+        }
+        if (usernameText.isVisiable()) {
+            i = i + 1;
+        }
+        if (passwordText.isVisiable()) {
+            i = i + 1;
+        }
+        if (serverText.isVisiable()) {
+            i = i + 1;
+        }
+        if (portText.isVisiable()) {
+            i = i + 1;
+        }
+        if (sidOrDatabaseText.isVisiable()) {
+            i = i + 1;
+        }
+        if (schemaText.isVisiable()) {
+            i = i + 1;
+        }
+        if (datasourceText.isVisiable()) {
+            i = i + 1;
+        }
+        if (additionParamText.isVisiable()) {
+            i = i + 1;
+        }
+        if (i > 6) {
+            scrolledComposite.setMinSize(SWT.DEFAULT, 310);
+        } else {
+            scrolledComposite.setMinSize(SWT.DEFAULT, 240);
+        }
     }
 
     /**
@@ -1764,9 +1846,9 @@ public class DatabaseForm extends AbstractForm {
                 s = template.getUrlTemplate(version);
             }
             urlConnectionStringText.setEditable(!visible);
-
+            schemaText.hide();
             if (template == EDatabaseConnTemplate.MSSQL) {
-                // schemaText.show();
+                schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
 
@@ -1776,37 +1858,51 @@ public class DatabaseForm extends AbstractForm {
                 // }
             } else if (template == EDatabaseConnTemplate.VERTICA || template == EDatabaseConnTemplate.INFORMIX) {
                 // add for bug 0009553 10531
+                schemaText.show();
                 schemaText.setEditable(true);
                 addContextParams(EDBParamName.Schema, true);
             } else if (template == EDatabaseConnTemplate.GENERAL_JDBC) {
                 if (generalJdbcUrlText.getText().contains("sqlserver")) {//$NON-NLS-1$
+                    jDBCschemaText.show();
                     jDBCschemaText.setEditable(true);
                 } else {
                     jDBCschemaText.hide();
                 }
                 addContextParams(EDBParamName.Schema, true);
-            } else {
-                // schemaText.hide();
-                addContextParams(EDBParamName.Schema, false);
             }
 
             if (s.contains(EDatabaseConnVar.HOST.getVariable())) {
                 if (!EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
+                    serverText.show();
                     serverText.setEditable(visible);
                     addContextParams(EDBParamName.Server, visible);
                 }
-
+            } else {
+                serverText.hide();
+                addContextParams(EDBParamName.Server, false);
             }
             if (s.contains(EDatabaseConnVar.PORT.getVariable())) {
+                portText.show();
                 portText.setEditable(visible);
                 addContextParams(EDBParamName.Port, visible);
+            } else {
+                portText.hide();
+                addContextParams(EDBParamName.Port, false);
             }
             if (s.contains(EDatabaseConnVar.SID.getVariable()) || s.contains(EDatabaseConnVar.SERVICE_NAME.getVariable())) {
                 if (!EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText())) {
+                    sidOrDatabaseText.show();
                     sidOrDatabaseText.setEditable(visible);
                     addContextParams(sidOrDatabase, visible);
+                } else {
+                    sidOrDatabaseText.hide();
+                    addContextParams(sidOrDatabase, false);
                 }
-
+            } else {
+                if (template.getDbType() != EDatabaseTypeName.JAVADB_EMBEDED) {
+                    sidOrDatabaseText.hide();
+                    addContextParams(sidOrDatabase, false);
+                }
             }
             if (s.contains(EDatabaseConnVar.FILENAME.getVariable())) {
                 fileField.show();
@@ -1815,8 +1911,12 @@ public class DatabaseForm extends AbstractForm {
                 boolean isSqlLite = false;
                 if (template.getDbType() == EDatabaseTypeName.SQLITE) {
                     isSqlLite = true;
+                    usernameText.hide();
+                    passwordText.hide();
                 } else {
                     isSqlLite = false;
+                    usernameText.show();
+                    passwordText.show();
                 }
                 usernameText.setEditable(!isSqlLite);
                 passwordText.setEditable(!isSqlLite);
@@ -1825,6 +1925,19 @@ public class DatabaseForm extends AbstractForm {
             } else {
                 fileField.hide();
                 addContextParams(EDBParamName.File, false);
+                // if (template.getDbType() != EDatabaseTypeName.SYBASEASE && template.getDbType() !=
+                // EDatabaseTypeName.TERADATA) {
+                // usernameText.hide();
+                // passwordText.hide();
+                // addContextParams(EDBParamName.Login, false);
+                // addContextParams(EDBParamName.Password, false);
+                // } else {
+                usernameText.show();
+                passwordText.show();
+                addContextParams(EDBParamName.Login, true);
+                addContextParams(EDBParamName.Password, true);
+                // }
+
             }
             if (s.contains(EDatabaseConnVar.DATASOURCE.getVariable())) {
                 datasourceText.show();
@@ -1855,8 +1968,9 @@ public class DatabaseForm extends AbstractForm {
                 jDBCschemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             } else {
+
                 // schemaText.hide();
-                addContextParams(EDBParamName.Schema, visible);
+                // addContextParams(EDBParamName.Schema, visible);
             }
             if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
                     && !EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText()) && visible) {
@@ -1864,11 +1978,14 @@ public class DatabaseForm extends AbstractForm {
                 additionParamText.setEditable(true);
                 addContextParams(EDBParamName.AdditionalParams, true);
             } else {
-                // additionParamText.hide();
+                additionParamText.hide();
                 addContextParams(EDBParamName.AdditionalParams, false);
             }
         }
+
         compositeDbSettings.layout();
+        typeDbCompositeParent.layout();
+        newParent.layout();
         databaseSettingGroup.layout();
         compositeGroupDbSettings.layout();
     }
