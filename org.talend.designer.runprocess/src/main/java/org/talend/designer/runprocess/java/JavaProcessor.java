@@ -940,11 +940,13 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         Property property = process.getProperty();
         if (neededLibraries == null) {
-            neededLibraries = new HashSet<String>();
-            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-                neededLibraries.add(moduleNeeded.getModuleName());
+            neededLibraries = process.getNeededLibraries(true);
+            if (neededLibraries == null) {
+                neededLibraries = new HashSet<String>();
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
             }
-
         } else { // this will avoid to add all libraries, only the needed
             // libraries will be added
             if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
@@ -1012,8 +1014,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     + (!win32 && exportingJob ? unixRootPath : "") + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
 
             JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
-            for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
-                if (lastMainJob.equals(jobInfo)) {
+            Set<JobInfo> infos = null;
+            if (lastMainJob == null) {
+                infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+            } else {
+                infos = LastGenerationInfo.getInstance().getLastGeneratedjobs();
+            }
+            for (JobInfo jobInfo : infos) {
+                if (lastMainJob != null && lastMainJob.equals(jobInfo)) {
                     continue;
                 }
                 if (jobInfo.getJobVersion() != null) {

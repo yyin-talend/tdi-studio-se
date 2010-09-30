@@ -110,7 +110,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
 
-        Set<String> neededLibraries = new HashSet<String>();
+        Set<String> neededLibraries = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
@@ -119,11 +119,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IProcess jobProcess = null;
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+                neededLibraries = new HashSet<String>();
                 jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
                         statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
                         isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
+            } else {
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                        processItem.getProperty().getVersion(), neededLibraries);
+                LastGenerationInfo.getInstance().setLastMainJob(null);
             }
 
             List<URL> resources = new ArrayList<URL>();
@@ -265,7 +270,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
 
-        Set<String> neededLibraries = new HashSet<String>();
+        Set<String> neededLibraries = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
@@ -274,11 +279,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IProcess jobProcess = null;
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+                neededLibraries = new HashSet<String>();
                 jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
                         statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
                         isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
+            } else {
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                        processItem.getProperty().getVersion(), neededLibraries);
+                LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
             List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
