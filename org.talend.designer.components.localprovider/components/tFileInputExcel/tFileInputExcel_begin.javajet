@@ -161,8 +161,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         end_line_<%= cid %> -= footer_input_<%= cid %>;
         int limit_<%= cid %> = <%if(("").equals(limit.trim())){%>-1<%}else{%><%=limit%><%}%>;
         int start_column_<%= cid %> = <%if(("").equals(firstColumn.trim())){%>0<%}else{%><%=firstColumn%>-1<%}%>;
-        int end_column_<%= cid %> = <%if(lastColumn==null || ("").equals(lastColumn.trim())){%>sheetList_<%= cid %>.get(0).getColumns()<%}else{%><%=lastColumn%><%}%>;
-
+        int end_column_<%= cid %> = sheetList_<%= cid %>.get(0).getColumns();
+        <%if(lastColumn!=null && !("").equals(lastColumn.trim())){%>
+        Integer lastColumn_<%=cid %> = <%=lastColumn%>;
+        if(lastColumn_<%=cid %>!=null){
+        	end_column_<%= cid %> = lastColumn_<%=cid %>.intValue();
+        }
+        <%}%>
         jxl.Cell[] row_<%= cid %> = null;
         jxl.Sheet sheet_<%= cid %> = sheetList_<%= cid %>.get(0);
         int rowCount_<%= cid %> = 0;
@@ -509,7 +514,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         end_line_<%= cid %> -= footer_input_<%= cid %>;
         int limit_<%= cid %> = <%if(("").equals(limit.trim())){%>-1<%}else{%><%=limit%><%}%>;
         int start_column_<%= cid %> = <%if(("").equals(firstColumn.trim())){%>0<%}else{%><%=firstColumn%>-1<%}%>;
-        int end_column_<%= cid %> = <%if(lastColumn==null || ("").equals(lastColumn.trim())){%>-1<%}else{%><%=lastColumn%><%}%>;
+        int end_column_<%= cid %> = -1;
+        <%if(lastColumn!=null && !("").equals(lastColumn.trim())){%>       
+        Integer lastColumn_<%=cid %> = <%=lastColumn%>;
+        if(lastColumn_<%=cid %>!=null){
+        	end_column_<%= cid %> = lastColumn_<%=cid %>.intValue();
+        }        
+        <%}%>;
         
         org.apache.poi.xssf.usermodel.XSSFRow row_<%= cid %> = null;
         org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%= cid %> = sheetList_<%= cid %>.get(0);
