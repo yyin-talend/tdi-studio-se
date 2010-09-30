@@ -34,12 +34,12 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -83,9 +83,9 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
@@ -295,7 +295,7 @@ class ImportItemWizardPage extends WizardPage {
     private TreeViewer createTreeViewer(Composite listComposite) {
         filteredCheckboxTree = new FilteredCheckboxTree(listComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
 
-        TreeViewer viewer = filteredCheckboxTree.getViewer();
+        CheckboxTreeViewer viewer = filteredCheckboxTree.getViewer();
 
         viewer.setContentProvider(new ITreeContentProvider() {
 
@@ -355,14 +355,14 @@ class ImportItemWizardPage extends WizardPage {
         });
         viewer.setSorter(TreeBuilder.createSorter());
         viewer.setInput(this);
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        viewer.addCheckStateListener(new ICheckStateListener() {
 
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
             }
         });
         return viewer;
-
     }
 
     private void createSelectionButtons(Composite listComposite) {
@@ -836,12 +836,6 @@ class ImportItemWizardPage extends WizardPage {
         Set checkedElements = new HashSet();
         for (Object obj : filteredCheckboxTree.getCheckedLeafNodes()) {
             checkedElements.add(obj);
-        }
-        // add this if user does not use filter
-        for (Object obj : itemsList.getCheckedElements()) {
-            if (obj instanceof ItemRecord) {
-                checkedElements.add(obj);
-            }
         }
         // sort the item
         List<ItemRecord> list = new ArrayList<ItemRecord>(checkedElements);
