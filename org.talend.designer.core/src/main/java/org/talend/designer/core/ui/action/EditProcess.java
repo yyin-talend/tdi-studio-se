@@ -88,61 +88,57 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
         Property property = (Property) node.getObject().getProperty();
         ProcessItem processItem = null;
 
-        ItemCacheManager.clearCache();
-        Assert.isTrue(property.getItem() instanceof ProcessItem);
+        if (property != null) {
+            ItemCacheManager.clearCache();
+            Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        // Property updatedProperty = null;
-        // try {
-        // updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-        // new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
-        // } catch (PersistenceException e) {
-        // ExceptionHandler.process(e);
-        // }
+            processItem = (ProcessItem) property.getItem();
 
-        processItem = (ProcessItem) property.getItem();
+            IWorkbenchPage page = getActivePage();
 
-        IWorkbenchPage page = getActivePage();
+            try {
+                final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
+                checkUnLoadedNodeForProcess(fileEditorInput);
 
-        try {
-            final ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true, true);
-            checkUnLoadedNodeForProcess(fileEditorInput);
+                IEditorPart editorPart = page.findEditor(fileEditorInput);
 
-            IEditorPart editorPart = page.findEditor(fileEditorInput);
-
-            if (editorPart == null) {
-                fileEditorInput.setView(getViewPart());
-                fileEditorInput.setRepositoryNode(node);
-                editorPart = page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */
-                // List<AbstractProcessProvider> findAllProcessProviders =
-                // AbstractProcessProvider.findAllProcessProviders();
-                // boolean isImport = false;
-                // for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
-                // if (abstractProcessProvider != null) {
-                // boolean update = abstractProcessProvider.updateProcessContexts((Process) fileEditorInput
-                // .getLoadedProcess());
-                // if (update) {
-                // isImport = true;
-                // }
-                // }
-                // }
-                // if (isImport) {
-                // openEditor.getTalendEditor().getCommandStack().execute(new Command() {
-                // });
-                // }
-            } else {
-                ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
-                page.activate(editorPart);
+                if (editorPart == null) {
+                    fileEditorInput.setView(getViewPart());
+                    fileEditorInput.setRepositoryNode(node);
+                    editorPart = page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
+                    /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */
+                    // List<AbstractProcessProvider> findAllProcessProviders =
+                    // AbstractProcessProvider.findAllProcessProviders();
+                    // boolean isImport = false;
+                    // for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
+                    // if (abstractProcessProvider != null) {
+                    // boolean update = abstractProcessProvider.updateProcessContexts((Process) fileEditorInput
+                    // .getLoadedProcess());
+                    // if (update) {
+                    // isImport = true;
+                    // }
+                    // }
+                    // }
+                    // if (isImport) {
+                    // openEditor.getTalendEditor().getCommandStack().execute(new Command() {
+                    // });
+                    // }
+                } else {
+                    ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
+                    page.activate(editorPart);
+                }
+                // see the bug 6585,qli comment.
+                if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                    ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
+                }
+                refresh(obj);
+            } catch (PartInitException e) {
+                MessageBoxExceptionHandler.process(e);
+            } catch (PersistenceException e) {
+                MessageBoxExceptionHandler.process(e);
             }
-            // see the bug 6585,qli comment.
-            if (editorPart instanceof AbstractMultiPageTalendEditor) {
-                ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
-            }
-            refresh(obj);
-        } catch (PartInitException e) {
-            MessageBoxExceptionHandler.process(e);
-        } catch (PersistenceException e) {
-            MessageBoxExceptionHandler.process(e);
+        } else {
+            getViewPart().refresh(ERepositoryObjectType.PROCESS);
         }
     }
 
