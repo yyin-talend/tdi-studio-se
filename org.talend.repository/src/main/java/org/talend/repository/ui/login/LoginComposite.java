@@ -219,6 +219,8 @@ public class LoginComposite extends Composite {
 
     IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
 
+    private ConnectionBean beforeConnBean;
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -267,7 +269,6 @@ public class LoginComposite extends Composite {
         readConnectionData();
         fillContents();
         addListeners();
-        parent.getShell().pack();
         if (inuse) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
@@ -341,7 +342,7 @@ public class LoginComposite extends Composite {
                 formBody.layout();
                 formBody.pack();
             }
-
+            getShell().pack();
         }
     }
 
@@ -1083,8 +1084,16 @@ public class LoginComposite extends Composite {
             connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                 public void selectionChanged(SelectionChangedEvent event) {
-                    user.setText(getConnection().getUser());
-                    passwordText.setText(getConnection().getPassword());
+                    final ConnectionBean connection = getConnection();
+                    if (connection == null) {
+                        return;
+                    }
+                    if (beforeConnBean != null && connection.equals(beforeConnBean)) {
+                        return;
+                    }
+                    beforeConnBean = connection;
+                    user.setText(connection.getUser());
+                    passwordText.setText(connection.getPassword());
                     updateServerFields();
                     // updateButtons();
                     updateVisible();
@@ -1100,7 +1109,6 @@ public class LoginComposite extends Composite {
                         ExceptionHandler.process(e);
                     }
                     displayPasswordComposite();
-                    getShell().pack();
                 }
             });
         }
