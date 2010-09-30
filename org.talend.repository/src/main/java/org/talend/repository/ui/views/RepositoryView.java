@@ -1005,7 +1005,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                     factory.initialize();
                     final Project currentProject = ProjectManager.getInstance().getCurrentProject();
-                    factory.reloadProject(currentProject);
+                    // factory.reloadProject(currentProject);
                 } catch (Exception e) {
                     throw new InvocationTargetException(e);
                 }
