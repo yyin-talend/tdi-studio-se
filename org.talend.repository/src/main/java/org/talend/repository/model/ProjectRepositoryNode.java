@@ -29,6 +29,7 @@ import org.talend.commons.utils.data.container.Container;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
@@ -1042,6 +1043,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private void addNode(RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode,
             IRepositoryViewObject repositoryObject) {
 
+        boolean isAvaliableInTOS = true; // this flag filter the databaseconnections which didn't supported by TOS but
+        // TOP
+        if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
+            isAvaliableInTOS = EDatabaseTypeName.getTypeFromDbType(metadataConnection.getDatabaseType(), false) == null ? false
+                    : true;
+        }
+
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
 
         node.setProperties(EProperties.CONTENT_TYPE, type);
@@ -1063,11 +1073,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     }
                 }
             }
-
-            parent.getChildren().add(node);
+            if (isAvaliableInTOS) {
+                parent.getChildren().add(node);
+            }
         }
 
-        if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
+        if (type == ERepositoryObjectType.METADATA_CONNECTIONS && isAvaliableInTOS) {
             DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
                     .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);

@@ -392,6 +392,7 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
         Catalog c = null;
         List<Schema> schemas = new ArrayList<Schema>();
         String user = this.connection.getUsername();
+        String defaultname = this.connection.getName();
         String dbsid = this.connection.getSID();
         String dbuischema = this.connection.getUiSchema();
         if (schema != null && catalog != null) {
@@ -412,6 +413,11 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                 }
                 if (schema.equals(EDatabaseSchemaOrCatalogMapping.Login)) {
                     s = SchemaHelper.createSchema(user);
+                    s.getDataManager().add(this.connection);
+                    ConnectionHelper.addSchema(s, this.connection);
+                }
+                if (schema.equals(EDatabaseSchemaOrCatalogMapping.Default_Name)) { // for databases like access
+                    s = SchemaHelper.createSchema(defaultname);
                     s.getDataManager().add(this.connection);
                     ConnectionHelper.addSchema(s, this.connection);
                 }

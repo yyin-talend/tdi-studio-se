@@ -376,6 +376,7 @@ public final class DBConnectionContextUtils {
         cloneConn.setVersion(dbConn.getVersion());
         cloneConn.setReadOnly(dbConn.isReadOnly());
         cloneConn.setDriverClass(className);
+        cloneConn.setName(dbConn.getName());
         if (dbConn.isSetSQLMode()) {
             cloneConn.setSQLMode(dbConn.isSQLMode());
         } else {
