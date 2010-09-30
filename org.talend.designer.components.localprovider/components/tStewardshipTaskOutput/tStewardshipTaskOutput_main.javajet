@@ -64,9 +64,9 @@ class DataUtil{
 	}
     public String getValueExpression(String connName,String columnName){
     	if(colTalendTypeMap.get(columnName) == JavaTypesManager.DATE){
-    		return "FormatterUtils.format_Date("+connName+"."+columnName+","+colPatternMap.get(columnName)+")";
+    		return "("+connName+"."+columnName+"!=null)?FormatterUtils.format_Date("+connName+"."+columnName+","+colPatternMap.get(columnName)+"):null";
     	}else{
-    		return "String.valueOf("+connName+"."+columnName+")";
+    		return "("+connName+"."+columnName+"!=null)?String.valueOf("+connName+"."+columnName+"):null";
     	}
 	}
 	public String getColType(String columnName){
@@ -112,7 +112,7 @@ if(<%=conn.getName() %>.<%=recordType%>){
 		for(Map<String, String> extraInfo:extraInfos){
 %>
     if(<%=conn.getName() %>.<%=extraInfo.get("INFO")%>!=null && !"".equals(<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>)){
-    	record_<%=cid%>.addExtraInfo("<%=extraInfo.get("INFO")%>",<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>,<%=extraInfo.get("SCOPE")%>);
+    	record_<%=cid%>.addExtraInfo("<%=extraInfo.get("INFO")%>",<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>,<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("SCOPE"))%>);
     }
 <%
 		}
