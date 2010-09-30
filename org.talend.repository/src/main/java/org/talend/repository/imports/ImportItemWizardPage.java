@@ -381,6 +381,7 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 itemsList.setCheckedElements(selectedItems.toArray());
+                filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
             }
         });
@@ -394,6 +395,7 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 itemsList.setCheckedElements(new Object[0]);
+                filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
             }
         });
@@ -836,6 +838,12 @@ class ImportItemWizardPage extends WizardPage {
         Set checkedElements = new HashSet();
         for (Object obj : filteredCheckboxTree.getCheckedLeafNodes()) {
             checkedElements.add(obj);
+        }
+        // add this if user does not use filter
+        for (Object obj : itemsList.getCheckedElements()) {
+            if (obj instanceof ItemRecord) {
+                checkedElements.add(obj);
+            }
         }
         // sort the item
         List<ItemRecord> list = new ArrayList<ItemRecord>(checkedElements);
