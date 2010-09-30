@@ -354,6 +354,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.setTemplate(source.isTemplate());
                 tmpNode.setTemplate(source.isTemplate());
+                tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
                 tmpNode.addInput(this);
                 IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
                 if (tmpParam != null) {
