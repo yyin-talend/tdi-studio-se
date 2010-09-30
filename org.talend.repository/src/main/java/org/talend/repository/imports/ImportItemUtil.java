@@ -648,7 +648,9 @@ public class ImportItemUtil {
                         InputStream is = manager.getStream(itemRecord.getPath().removeFileExtension()
                                 .addFileExtension(FileConstants.ITEM_EXTENSION));
                         try {
-                            URI relativePlateformDestUri = EcoreUtil.getURI(((ConnectionItem) tmpItem).getConnection());
+                            URI propertyResourceURI = EcoreUtil.getURI(((ConnectionItem) tmpItem).getProperty());
+                            URI relativePlateformDestUri = propertyResourceURI.trimFileExtension().appendFileExtension(
+                                    FileConstants.ITEM_EXTENSION);
                             URL fileURL = FileLocator.toFileURL(new java.net.URL(
                                     "platform:/resource" + relativePlateformDestUri.toPlatformString(true))); //$NON-NLS-1$
                             OutputStream os = new FileOutputStream(fileURL.getFile());
