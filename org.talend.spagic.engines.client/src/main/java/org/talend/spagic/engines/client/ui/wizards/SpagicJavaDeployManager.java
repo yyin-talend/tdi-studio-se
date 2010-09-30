@@ -66,8 +66,9 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), jobProcess, processItem,
-                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
+                    ExportChoice.setParameterValues), jobProcess, processItem, escapeSpace(contextName), escapeSpace(launcher),
+                    statisticPort, tracePort, codeOptions));
 
             addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i]);
 
@@ -127,10 +128,10 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> allJobScripts = new ArrayList<URL>();
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                    isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
-                    isOptionChoosed(exportChoice, ExportChoice.needContext));
+            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), isOptionChoosed(
+                    exportChoice, ExportChoice.needJobScript)));
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, isOptionChoosed(
+                    exportChoice, ExportChoice.needContext));
         }
 
         return allJobScripts;
@@ -171,9 +172,9 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
             p.put("JobClassName", getCorrespondingProjectName(null) //$NON-NLS-1$
-                            + "." //$NON-NLS-1$
-                            + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
-                                    .getProperty().getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
+                    + "." //$NON-NLS-1$
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                            .getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription())); //$NON-NLS-1$
             p.put("rowNumber", Integer.toString(nbLine)); //$NON-NLS-1$
             p.put("host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$

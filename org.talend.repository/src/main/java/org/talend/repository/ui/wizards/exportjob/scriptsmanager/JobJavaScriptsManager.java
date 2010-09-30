@@ -121,8 +121,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 neededLibraries = new HashSet<String>();
                 jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES, isOptionChoosed(
+                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
@@ -204,8 +204,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
             String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
             String selectedJobVersion, List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), jobProcess, processItem,
-                escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
+                ExportChoice.setParameterValues), jobProcess, processItem, escapeSpace(contextName), escapeSpace(launcher),
+                statisticPort, tracePort, codeOptions));
 
         addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
@@ -281,8 +282,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 neededLibraries = new HashSet<String>();
                 jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES, isOptionChoosed(
+                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
@@ -462,8 +463,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
-                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
+                    .toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
@@ -670,8 +671,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                         isOptionChoosed(exportChoice, ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(),
-                        isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
+                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(exportChoice,
+                        ExportChoice.needDependencies), resource);
             }
         }
 

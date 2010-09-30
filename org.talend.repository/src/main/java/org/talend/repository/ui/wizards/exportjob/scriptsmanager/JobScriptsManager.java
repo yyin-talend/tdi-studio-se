@@ -230,8 +230,8 @@ public abstract class JobScriptsManager {
      * @param codeOptions TODO
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, IProcess process, ProcessItem processItem, String contextName,
-            String environment, int statisticPort, int tracePort, String... codeOptions) {
+    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, IProcess process, ProcessItem processItem,
+            String contextName, String environment, int statisticPort, int tracePort, String... codeOptions) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
@@ -246,6 +246,15 @@ public abstract class JobScriptsManager {
             windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort, codeOptions);
             unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort, codeOptions);
         }
+        if (setParameterValues) {
+            String contextParameterValues = getSettingContextParametersValue();
+            if (windowsCmd.contains(CMDFORWIN) && windowsCmd.indexOf(CMDFORWIN) > 2) {
+                windowsCmd = windowsCmd.substring(0, windowsCmd.indexOf(CMDFORWIN) - 1) + contextParameterValues + CMDFORWIN;
+            }
+            if (unixCmd.contains(CMDFORUNIX) && unixCmd.indexOf(CMDFORUNIX) > 2) {
+                unixCmd = unixCmd.substring(0, unixCmd.indexOf(CMDFORUNIX) - 1) + contextParameterValues + CMDFORUNIX;
+            }
+        }
 
         String tmpFold = getTmpFolder();
 
@@ -259,6 +268,26 @@ public abstract class JobScriptsManager {
         }
 
         return list;
+    }
+
+    private String getSettingContextParametersValue() {
+        String contextParameterValues = "";//$NON-NLS-1$
+        List<ContextParameterType> jobContextValues = getContextEditableResultValuesList();
+        for (int i = 0; i < jobContextValues.size(); i++) {
+            ContextParameterType contextParameterType = jobContextValues.get(i);
+            String name = contextParameterType.getName();
+            String value = contextParameterType.getValue();
+            // name = TalendTextUtils.removeQuotes(name);
+            // value = TalendTextUtils.removeQuotes(value);
+            if (value == null) {
+                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+            } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
+                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            }
+        }
+        contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
+
+        return contextParameterValues;
     }
 
     /**
@@ -286,23 +315,8 @@ public abstract class JobScriptsManager {
                 statisticPort, tracePort, codeOptions);
         String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
                 statisticPort, tracePort, codeOptions);
-        String contextParameter = CTX_PARAMETER_ARG;
-        String contextParameterValues = "";//$NON-NLS-1$
         if (setParameterValues) {
-            List<ContextParameterType> jobContextValues = getContextEditableResultValuesList();
-            for (int i = 0; i < jobContextValues.size(); i++) {
-                ContextParameterType contextParameterType = jobContextValues.get(i);
-                String name = contextParameterType.getName();
-                String value = contextParameterType.getValue();
-                // name = TalendTextUtils.removeQuotes(name);
-                // value = TalendTextUtils.removeQuotes(value);
-                if (value == null) {
-                    contextParameterValues += " " + contextParameter + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
-                } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
-                    contextParameterValues += " " + contextParameter + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                }
-            }
-            contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
+            String contextParameterValues = getSettingContextParametersValue();
             if (windowsCmd.contains(CMDFORWIN) && windowsCmd.indexOf(CMDFORWIN) > 2) {
                 windowsCmd = windowsCmd.substring(0, windowsCmd.indexOf(CMDFORWIN) - 1) + contextParameterValues + CMDFORWIN;
             }
@@ -681,8 +695,8 @@ public abstract class JobScriptsManager {
         if (!needDependencies) {
             return;
         }
-        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
-                Arrays.asList(new Item[] { processItem }), false);
+        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(Arrays
+                .asList(new Item[] { processItem }), false);
 
         for (IRepositoryViewObject object : allDependencies) {
             Item item = object.getProperty().getItem();
@@ -702,10 +716,10 @@ public abstract class JobScriptsManager {
                 checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
-                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                        .append(itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
-                        .append(itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
+                        itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
+                        itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
                                 + FileConstants.PROPERTIES_EXTENSION);
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();
