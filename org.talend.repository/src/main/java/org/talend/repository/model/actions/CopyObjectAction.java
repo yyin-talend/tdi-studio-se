@@ -186,7 +186,10 @@ public class CopyObjectAction {
             // qli modified to fix the bug 5400 and 6185.
             if (newItem instanceof RoutineItem) {
                 synDuplicatedRoutine((RoutineItem) newItem);
-            }// end
+            }
+            if (newItem instanceof ProcessItem) {
+                RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+            }
             factory.save(newItem);
         } catch (Exception e) {
             ExceptionHandler.process(e);
