@@ -117,6 +117,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -1001,7 +1002,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 timer.start();
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
-                    ProxyRepositoryFactory.getInstance().initialize();
+                    final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    factory.initialize();
+                    final Project currentProject = ProjectManager.getInstance().getCurrentProject();
+                    factory.reloadProject(currentProject);
                 } catch (Exception e) {
                     throw new InvocationTargetException(e);
                 }
