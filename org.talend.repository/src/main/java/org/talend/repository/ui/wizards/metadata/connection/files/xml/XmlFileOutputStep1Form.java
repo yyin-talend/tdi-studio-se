@@ -459,7 +459,9 @@ public class XmlFileOutputStep1Form extends AbstractXmlFileStepForm {
 
                 // if (getConnection().getFileContent() == null || getConnection().getFileContent().length <= 0 &&
                 // !isModifing) {
-                setFileContent(file);
+                if (!file.getPath().endsWith(".xml")) {
+                    setFileContent(file);
+                }
                 // }
                 String str;
                 try {
