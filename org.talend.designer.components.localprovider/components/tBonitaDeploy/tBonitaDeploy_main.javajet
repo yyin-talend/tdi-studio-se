@@ -25,9 +25,9 @@ imports="
 	boolean useLoggingFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOGGING_FILE__"));
 	String loggingFile = ElementParameterParser.getValue(node, "__LOGGING_FILE__");
 %>
-	System.setProperty("org.ow2.bonita.environment", <%=useBonitaEnvironmentFile? bonitaEnvironmentFile :bonitaRuntimePath + "+\"/runtime/conf/bonita-environment.xml\""%> );
-	System.setProperty("java.security.auth.login.config", <%=useJassFile? jassFile :bonitaRuntimePath + "+\"/runtime/conf/jaas-standard.cfg\""%> );
-	System.setProperty("java.util.logging.config.file", new java.io.File(<%=useLoggingFile? loggingFile :bonitaRuntimePath + "+\"/runtime/conf/logging.properties\""%>).toURI().toURL().toString());
+	System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%>);
+	System.setProperty("java.security.auth.login.config", <%=jassFile%> );
+	System.setProperty("java.util.logging.config.file", new java.io.File(<%=loggingFile%>).toURI().toURL().toString());
 	
 	
 	org.ow2.bonita.facade.ManagementAPI managementAPI_<%=cid%> = org.ow2.bonita.util.AccessorUtil.getAPIAccessor().getManagementAPI();

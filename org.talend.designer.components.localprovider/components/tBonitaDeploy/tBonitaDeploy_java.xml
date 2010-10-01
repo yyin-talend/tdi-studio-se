@@ -34,72 +34,36 @@
   </CONNECTORS>
 
   <PARAMETERS>
-  
-  	<PARAMETER
-      NAME="BONITA_RUNTIME_PATH"
-      FIELD="DIRECTORY"
-      NUM_ROW="10"
-      REQUIRED="true"
-      GROUP="CONFIGURATION"
-    >
-    </PARAMETER>
 
 	<!--config bonita-environment.xml file  -->
-    <PARAMETER 
-      NAME="USE_BONITA_ENVIRONMENT_FILE" 
-      FIELD="CHECK" 
-      NUM_ROW="20"
-      GROUP="CONFIGURATION"
-     >
-		<DEFAULT>false</DEFAULT>
-     </PARAMETER> 
 	<PARAMETER
       NAME="BONITA_ENVIRONMENT_FILE"
       FIELD="FILE"
       NUM_ROW="20"
       REQUIRED="true"
       GROUP="CONFIGURATION"
-      SHOW_IF="USE_BONITA_ENVIRONMENT_FILE == 'true'"
     >
     	<DEFAULT>"bonita-environment.xml"</DEFAULT>
     </PARAMETER>
     
 	<!--config jaas-standard.cfg file  -->
-    <PARAMETER 
-      NAME="USE_JASS_STANDARD_FILE" 
-      FIELD="CHECK" 
-      NUM_ROW="25"
-      GROUP="CONFIGURATION"
-     >
-		<DEFAULT>false</DEFAULT>
-     </PARAMETER> 
 	<PARAMETER
       NAME="JASS_STANDARD_FILE"
       FIELD="FILE"
       NUM_ROW="25"
       REQUIRED="true"
       GROUP="CONFIGURATION"
-      SHOW_IF="USE_JASS_STANDARD_FILE == 'true'"
     >
     	<DEFAULT>"jaas-standard.cfg"</DEFAULT>
     </PARAMETER>
     
 	<!--config logging.properties file  -->
-    <PARAMETER 
-      NAME="USE_LOGGING_FILE" 
-      FIELD="CHECK" 
-      NUM_ROW="30"
-      GROUP="CONFIGURATION"
-     >
-		<DEFAULT>false</DEFAULT>
-     </PARAMETER> 
 	<PARAMETER
       NAME="LOGGING_FILE"
       FIELD="FILE"
       NUM_ROW="30"
       REQUIRED="true"
       GROUP="CONFIGURATION"
-      SHOW_IF="USE_LOGGING_FILE == 'true'"
     >
     	<DEFAULT>"logging.properties"</DEFAULT>
     </PARAMETER>

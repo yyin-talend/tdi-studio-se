@@ -20,6 +20,11 @@ imports="
 	String processID = ElementParameterParser.getValue(node, "__PROCESS_ID__");
 	String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+
+	String use_process_id = ElementParameterParser.getValue(node, "__USE_PROCESS_ID");
+
+	String process_name = ElementParameterParser.getValue(node, "__PROCESS_NAME__");
+	String process_version = ElementParameterParser.getValue(node, "__PROCESS_VERSION__");
 	
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 	
@@ -30,9 +35,9 @@ imports="
 	boolean useLoggingFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOGGING_FILE__"));
 	String loggingFile = ElementParameterParser.getValue(node, "__LOGGING_FILE__");
 %>
-	System.setProperty("org.ow2.bonita.environment", <%=useBonitaEnvironmentFile? bonitaEnvironmentFile :bonitaRuntimePath + "+\"/runtime/conf/bonita-environment.xml\""%> );
-	System.setProperty("java.security.auth.login.config", <%=useJassFile? jassFile :bonitaRuntimePath + "+\"/runtime/conf/jaas-standard.cfg\""%> );
-	System.setProperty("java.util.logging.config.file", new java.io.File(<%=useLoggingFile? loggingFile :bonitaRuntimePath + "+\"/runtime/conf/logging.properties\""%>).toURI().toURL().toString());
+	System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%> );
+	System.setProperty("java.security.auth.login.config", <%=jassFile%> );
+	System.setProperty("java.util.logging.config.file", new java.io.File(<%=loggingFile%>).toURI().toURL().toString());
 	
 	
 	org.ow2.bonita.facade.RuntimeAPI runtimeAPI_<%=cid%> = org.ow2.bonita.util.AccessorUtil.getAPIAccessor().getRuntimeAPI();
@@ -46,7 +51,17 @@ imports="
 			
 		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext("Bonita", new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
 		loginContext_<%=cid%>.login();
-		processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=processID%>);
+<%
+		if("true".equals(use_process_id)) {
+%>
+			processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=processID%>);
+<%
+		} else {
+%>
+			processID_<%=cid%> = new org.ow2.bonita.facade.uuid.ProcessDefinitionUUID(<%=process_name%>, <%=process_version%>);
+<%
+		}
+%>
 	} catch (javax.security.auth.login.LoginException le_<%=cid%>) {//just login exception
 <%
 	if (dieOnError) {
