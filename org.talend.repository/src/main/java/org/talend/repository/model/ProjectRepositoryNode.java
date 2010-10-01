@@ -504,7 +504,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataNode.getChildren().add(metadataMDMConnectionNode);
         }
         if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
-            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this, Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
+            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
+                    Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
                     ECoreImage.METADATA_RULES_ICON);
             baseRulesNode.setProperties(EProperties.CONTENT_TYPE, null);
             metadataNode.getChildren().add(baseRulesNode);
@@ -737,6 +738,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 Folder folder = new Folder(item.getProperty(), itemType);
                 RepositoryNode folderNode = null;
                 for (RepositoryNode existingFolder : foldersList) {
+                    if (existingFolder.getContentType() == null) {
+                        // this can appear temporary when another user has deleted a folder
+                        break;
+                    }
                     if (existingFolder.getContentType().equals(folder.getType())
                             && existingFolder.getProperties(EProperties.LABEL).equals(folder.getLabel())) {
                         folderNode = existingFolder;
