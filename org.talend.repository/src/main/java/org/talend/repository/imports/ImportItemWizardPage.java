@@ -64,6 +64,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
@@ -121,7 +122,7 @@ class ImportItemWizardPage extends WizardPage {
 
     private List<ItemRecord> selectedItems = new ArrayList<ItemRecord>();;
 
-    private CheckboxTreeViewer itemsList;
+    private CheckboxTreeViewer checkTreeViewer;
 
     private String previouslyBrowsedArchive = ""; //$NON-NLS-1$
 
@@ -129,7 +130,7 @@ class ImportItemWizardPage extends WizardPage {
 
     private static final String[] FILE_IMPORT_MASK = { "*.jar;*.zip;*.tar;*.tar.gz;*.tgz", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private Collection<ItemRecord> items = new ArrayList<ItemRecord>();
+    // private Collection<ItemRecord> items = new ArrayList<ItemRecord>();
 
     private Label itemListInfo;
 
@@ -287,7 +288,7 @@ class ImportItemWizardPage extends WizardPage {
         gridData.widthHint = 600;
         listComposite.setLayoutData(gridData);
 
-        itemsList = (CheckboxTreeViewer) createTreeViewer(listComposite);
+        checkTreeViewer = (CheckboxTreeViewer) createTreeViewer(listComposite);
 
         createSelectionButtons(listComposite);
 
@@ -381,7 +382,7 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                itemsList.setCheckedElements(selectedItems.toArray());
+                checkTreeViewer.setSubtreeChecked(checkTreeViewer.getTree().getTopItem().getData(), true);
                 filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
             }
@@ -395,7 +396,7 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                itemsList.setCheckedElements(new Object[0]);
+                checkTreeViewer.setCheckedElements(new Object[0]);
                 filteredCheckboxTree.calculateCheckedLeafNodes();
                 updateFinishStatus();
             }
@@ -661,14 +662,14 @@ class ImportItemWizardPage extends WizardPage {
 
         if (path == null || path.length() == 0) {
             selectedItems = new ArrayList<ItemRecord>();
-            itemsList.refresh(true);
-            itemsList.setCheckedElements(selectedItems.toArray());
+            checkTreeViewer.refresh(true);
+            // get the top item to check if tree is empty, if not then uncheck everything
+            TreeItem topItem = checkTreeViewer.getTree().getTopItem();
+            if (topItem != null) {
+                checkTreeViewer.setSubtreeChecked(topItem.getData(), false);
+            } // else not root element, tree is already empty
             checkValidItems();
             return;
-        }
-
-        if (items != null) {
-            items.clear();
         }
 
         final boolean dirSelected = this.itemFromDirectoryRadio.getSelection();
@@ -730,7 +731,7 @@ class ImportItemWizardPage extends WizardPage {
      */
     private void populateItems() {
         selectedItems.clear();
-        items.clear();
+        final Collection<ItemRecord> items = new ArrayList<ItemRecord>();
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -757,9 +758,11 @@ class ImportItemWizardPage extends WizardPage {
 
         selectedItems.addAll(items);
 
-        itemsList.refresh(true);
-        itemsList.expandAll();
+        checkTreeViewer.refresh(true);
+        checkTreeViewer.expandAll();
+        filteredCheckboxTree.resetCheckedElements();
         checkValidItems();
+        updateFinishStatus();
         // see feature 0004170: Unselect all items to import
         // itemsList.setCheckedElements(checkValidItems());
     }
@@ -841,7 +844,7 @@ class ImportItemWizardPage extends WizardPage {
             checkedElements.add(obj);
         }
         // add this if user does not use filter
-        for (Object obj : itemsList.getCheckedElements()) {
+        for (Object obj : checkTreeViewer.getCheckedElements()) {
             if (obj instanceof ItemRecord) {
                 checkedElements.add(obj);
             }
@@ -906,13 +909,11 @@ class ImportItemWizardPage extends WizardPage {
             curManager.closeResource();
 
         selectedItems = null;
-        items.clear();
         return true;
     }
 
     public boolean performCancel() {
         selectedItems = null;
-        items.clear();
         repositoryUtil.clearAllData();
         return true;
     }
@@ -943,22 +944,23 @@ class ImportItemWizardPage extends WizardPage {
      * @param checkedElements element to be checked
      */
     private void updateErrorMessage(List<ItemRecord> checkedElements) {
-        String errorMessage = checkErrorFor2ItemsWithSameId(checkedElements);
+        String errorMessage = checkErrorFor2ItemsWithSameIdAndVersion(checkedElements);
         setErrorMessage(errorMessage);
     }
 
     /**
-     * This check that 2 items in the list do not have the same Id. if that is so the return an error message else
-     * return null.
+     * This check that 2 items in the list do not have the same Id and the same version. if that is so the return an
+     * error message else return null.
      * 
      * @param checkedElementsn the element to be checked
      * @return an error message or null if no error.
      */
-    private String checkErrorFor2ItemsWithSameId(List<ItemRecord> checkedElements) {
+    private String checkErrorFor2ItemsWithSameIdAndVersion(List<ItemRecord> checkedElements) {
         String errorMessage = null;
         HashMap<String, ItemRecord> duplicateCheckMap = new HashMap<String, ItemRecord>();
         for (ItemRecord itRecord : checkedElements) {
-            ItemRecord otherRecord = duplicateCheckMap.put(itRecord.getProperty().getId(), itRecord);
+            ItemRecord otherRecord = duplicateCheckMap.put(itRecord.getProperty().getId() + itRecord.getProperty().getVersion(),
+                    itRecord);
             if (otherRecord != null) {
                 errorMessage = Messages.getString("ImportItemWizardPage.0", itRecord.getPath(), otherRecord.getPath()); //$NON-NLS-1$
             }// else keep going
