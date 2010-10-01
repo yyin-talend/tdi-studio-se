@@ -67,19 +67,6 @@ import org.talend.repository.utils.ProjectHelper;
  */
 public class CreateSandboxProjectDialog extends TitleAreaDialog {
 
-    /**
-     * must be same as tac pattern.
-     */
-    // RepositoryConstants.MAIL_PATTERN
-    private static final String MAIL_PATTERN = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$"; //$NON-NLS-1$
-
-    private static final String FIRSTNAME_PATTERN = "^[a-zA-Zà-ÿ _\\-]*$"; //$NON-NLS-1$
-
-    private static final String LASTNAME_PATTERN = "^[a-zA-Z0-9 _-]+$"; //$NON-NLS-1$
-
-    /**
-     * 
-     */
     private Group projectGroup;
 
     private LabelledText urlText;
@@ -316,7 +303,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.URLEmptyMessage")); //$NON-NLS-1$
         } else if (!this.enableSandboxProject) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.needCheckMessages")); //$NON-NLS-1$
-        } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(MAIL_PATTERN, userLoginText.getText()))) {
+        } else if ((userLoginText.getText().length() == 0 || !Pattern.matches(RepositoryConstants.MAIL_PATTERN, userLoginText
+                .getText()))) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userLoginValidMessage")); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, projectLabel)
                 || NewProjectWizardPage.isKeywords(projectLabel.toLowerCase())
@@ -330,12 +318,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.userPasswordEmptyMessage")); //$NON-NLS-1$
         } else if (userFirstNameText.getText().trim().length() == 0) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.FirstNameEmptyMessages")); //$NON-NLS-1$
-        } else if (Pattern.matches(FIRSTNAME_PATTERN, userFirstNameText.getText())) {
-            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.FirstNameInvalidMessages")); //$NON-NLS-1$
         } else if (userLastNameText.getText().trim().length() == 0) {
             setErrorMessage(Messages.getString("CreateSandboxProjectDialog.LastNameEmptyMessages")); //$NON-NLS-1$
-        } else if (Pattern.matches(LASTNAME_PATTERN, userLastNameText.getText())) {
-            setErrorMessage(Messages.getString("CreateSandboxProjectDialog.LastNameInvalidMessages")); //$NON-NLS-1$
         } else {
             setErrorMessage(null);
         }
