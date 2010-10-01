@@ -30,6 +30,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
@@ -127,6 +128,7 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -642,7 +644,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             IFigure targetFigure = part.getFigure();
             translateAbsolateToRelative(targetFigure, draw2dPosition);
-
+            String lastUniqname = "";
             // creates every node
             for (Iterator<TempStore> iter = list.iterator(); iter.hasNext();) {
                 TempStore store = iter.next();
@@ -696,11 +698,53 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 draw2dPosition.y += TalendEditor.GRID_SIZE;
 
                 node.checkNode();
-
+                lastUniqname = node.getUniqueName();
             }
-
+            setselecte(part, lastUniqname);
         }
 
+    }
+
+    private void setselecte(AbstractEditPart part, String lastUniqname) {
+        List<NodePart> parts = getAllNodePart(part);
+        for (NodePart nodePart : parts) {
+            if (nodePart.getModel() instanceof Node) {
+                Node node = (Node) nodePart.getModel();
+                // for (String uniqname : uniquteNames) {
+                if (node.getUniqueName().equals(lastUniqname)) {
+                    nodePart.setDrop(true);
+                    nodePart.setSelected(EditPart.SELECTED);
+                } else {
+                    nodePart.setSelected(EditPart.SELECTED_NONE);
+                }
+
+                // }
+            }
+        }
+    }
+
+    private List<NodePart> getAllNodePart(AbstractEditPart part) {
+        List<NodePart> partList = new ArrayList<NodePart>();
+        if (part.getChildren() != null && part.getChildren().size() > 0) {
+            for (int i = 0; i < part.getChildren().size(); i++) {
+                if (part.getChildren().get(i) instanceof AbstractEditPart) {
+                    AbstractEditPart child = (AbstractEditPart) part.getChildren().get(i);
+                    if (child.getChildren() != null && child.getChildren().size() > 0) {
+                        partList.addAll(getAllNodePart(child));
+                    } else {
+                        if (child instanceof NodePart) {
+                            partList.add((NodePart) child);
+                        }
+                    }
+                }
+            }
+            // partList.add
+        } else {
+            if (part instanceof NodePart) {
+                partList.add((NodePart) part);
+            }
+        }
+        return partList;
     }
 
     /**

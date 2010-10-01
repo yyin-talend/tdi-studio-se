@@ -93,6 +93,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
     protected DirectEditManager manager;
 
+    private boolean isDrop;
+
     /*
      * (non-Javadoc)
      * 
@@ -152,6 +154,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
                     ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
                     compSettings.cleanDisplay();
+                } else if (isDrop()) {
+                    if (value == SELECTED || value == SELECTED_PRIMARY) {
+                        ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                        compSettings.setElement((Node) getModel());
+                        if (((Node) getModel()).getComponent() instanceof DummyComponent) {
+                            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
+                                    "Component is not loadded");
+                            return;
+                        }
+
+                        CodeView.refreshCodeView((Node) getModel());
+                    }
                 }
 
             }
@@ -651,6 +665,24 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             trash.add(connections.get(i));
         for (i = 0; i < trash.size(); i++)
             removeTargetConnection((ConnectionEditPart) trash.get(i));
+    }
+
+    /**
+     * Getter for isDrop.
+     * 
+     * @return the isDrop
+     */
+    public boolean isDrop() {
+        return this.isDrop;
+    }
+
+    /**
+     * Sets the isDrop.
+     * 
+     * @param isDrop the isDrop to set
+     */
+    public void setDrop(boolean isDrop) {
+        this.isDrop = isDrop;
     }
 
 }
