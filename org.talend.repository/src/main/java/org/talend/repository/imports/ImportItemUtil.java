@@ -400,7 +400,7 @@ public class ImportItemUtil {
                 factory.saveProject(ProjectManager.getInstance().getCurrentProject());
             }
         };
-
+        repositoryWorkUnit.setAvoidUnloadResources(true);
         ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
 
         monitor.done();
