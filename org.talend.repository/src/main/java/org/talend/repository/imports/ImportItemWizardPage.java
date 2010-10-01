@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -926,11 +927,43 @@ class ImportItemWizardPage extends WizardPage {
     }
 
     private void updateFinishStatus() {
-        if (getCheckedElements().isEmpty()) {
+        List<ItemRecord> checkedElements = getCheckedElements();
+        updateErrorMessage(checkedElements);
+        if (checkedElements.isEmpty() || getErrorMessage() != null) {
             this.setPageComplete(false);
         } else {
             this.setPageComplete(true);
         }
+    }
+
+    /**
+     * Checks for consistency in selected elements and report an error message. in case of error or null the message
+     * error.
+     * 
+     * @param checkedElements element to be checked
+     */
+    private void updateErrorMessage(List<ItemRecord> checkedElements) {
+        String errorMessage = checkErrorFor2ItemsWithSameId(checkedElements);
+        setErrorMessage(errorMessage);
+    }
+
+    /**
+     * This check that 2 items in the list do not have the same Id. if that is so the return an error message else
+     * return null.
+     * 
+     * @param checkedElementsn the element to be checked
+     * @return an error message or null if no error.
+     */
+    private String checkErrorFor2ItemsWithSameId(List<ItemRecord> checkedElements) {
+        String errorMessage = null;
+        HashMap<String, ItemRecord> duplicateCheckMap = new HashMap<String, ItemRecord>();
+        for (ItemRecord itRecord : checkedElements) {
+            ItemRecord otherRecord = duplicateCheckMap.put(itRecord.getProperty().getId(), itRecord);
+            if (otherRecord != null) {
+                errorMessage = Messages.getString("ImportItemWizardPage.0", itRecord.getPath(), otherRecord.getPath()); //$NON-NLS-1$
+            }// else keep going
+        }
+        return errorMessage;
     }
 
     /*
@@ -940,7 +973,7 @@ class ImportItemWizardPage extends WizardPage {
      */
     @Override
     public boolean isPageComplete() {
-        if (selectedItems.isEmpty()) {
+        if (selectedItems.isEmpty() || getErrorMessage() != null) {
             return false;
         }
         return super.isPageComplete();
