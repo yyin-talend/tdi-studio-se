@@ -8,7 +8,8 @@
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
-    <FAMILY>Talend MDM</FAMILY> 
+    <FAMILY>Talend MDM</FAMILY>
+	<FAMILY>Data Quality</FAMILY>
   </FAMILIES>  
   <DOCUMENTATION> 
     <URL/> 
