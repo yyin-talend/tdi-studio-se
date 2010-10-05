@@ -325,6 +325,14 @@
 		>
 			<DEFAULT>"target_table.id >= 100"</DEFAULT>
 		</PARAMETER>
+		<PARAMETER
+		  NAME="NOTE_WHERE_UPDATE"
+		  FIELD="LABEL"
+		  NUM_ROW="80">
+		  <DEFAULT> (Doesn't work with Oracle 9i)</DEFAULT>
+		</PARAMETER>
+
+		  
 		
 		
 		<PARAMETER
@@ -392,6 +400,12 @@
 		  SHOW_IF="(USE_INSERT == 'true') AND (SPECIFY_INSERT_WHERE_CLAUSE == 'true')"
 		>
 			<DEFAULT>"source_table.id >= 100"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER
+		  NAME="NOTE_WHERE_UPDATE"
+		  FIELD="LABEL"
+		  NUM_ROW="130">
+		  <DEFAULT> (Doesn't work with Oracle 9i)</DEFAULT>
 		</PARAMETER>
 		
 		
