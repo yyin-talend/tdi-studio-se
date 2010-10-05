@@ -133,7 +133,7 @@ public final class ConnectionContextHelper {
                 }
             }
         } catch (PersistenceException e) {
-            // 
+            //
         }
         connection.setContextMode(false);
         connection.setContextId(null);
@@ -141,14 +141,14 @@ public final class ConnectionContextHelper {
     }
 
     public static void openInConetxtModeDialog() {
-        MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages
-                .getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
+        MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                Messages.getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
                 Messages.getString("ConnectionContextHelper.InConextMessages")); //$NON-NLS-1$
     }
 
     public static void openOutConetxtModeDialog() {
-        MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages
-                .getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
+        MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                Messages.getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
                 Messages.getString("ConnectionContextHelper.OutConextMessages")); //$NON-NLS-1$
     }
 
@@ -373,7 +373,7 @@ public final class ConnectionContextHelper {
                 }
             }
         } catch (PersistenceException e) {
-            // 
+            //
         }
 
         StructuredSelection selection = new StructuredSelection();
@@ -556,8 +556,8 @@ public final class ConnectionContextHelper {
                     ContextItem contextItem = ContextUtils.getContextItemById2(connItem.getConnection().getContextId());
                     if (contextItem != null) {
                         // add needed vars into job
-                        Set<String> addedVars = checkAndAddContextVariables(contextItem, varsMap.get(id), process
-                                .getContextManager(), false);
+                        Set<String> addedVars = checkAndAddContextVariables(contextItem, varsMap.get(id),
+                                process.getContextManager(), false);
                         if (addedVars != null && !addedVars.isEmpty()) {
                             String source = UpdateRepositoryUtils.getRepositorySourceName(connItem);
                             addedVarsMap.put(source, addedVars);
@@ -756,8 +756,8 @@ public final class ConnectionContextHelper {
         Set<String> addedVars = new HashSet<String>();
         for (IContext context : contextManager.getListContext()) {
 
-            ContextType type = ContextUtils.getContextTypeByName(contextItem.getContext(), context.getName(), contextItem
-                    .getDefaultContext());
+            ContextType type = ContextUtils.getContextTypeByName(contextItem.getContext(), context.getName(),
+                    contextItem.getDefaultContext());
             if (type != null) {
                 for (String var : neededVars) {
                     if (context.getContextParameter(var) != null) {
@@ -901,8 +901,14 @@ public final class ConnectionContextHelper {
                 selectedContext = contextItem.getDefaultContext();
             } else if (selectedContext == null) {
                 if (contextItem.getContext().size() > 1) {
-                    ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem, canCancel);
-                    setsDialog.open();
+                    final ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem, canCancel);
+                    Display.getDefault().syncExec(new Runnable() {// launch the dialog box in the UI thread beacause the
+                                                                  // method may be called from other threads.
+
+                                public void run() {
+                                    setsDialog.open();
+                                }
+                            });
                     selectedContext = setsDialog.getSelectedContext();
                 } else {
                     selectedContext = contextItem.getDefaultContext();
