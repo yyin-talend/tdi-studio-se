@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tVerticaOutputBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tVerticaOutputBulkExec
 <a name="wp2718255"> </a><h2 class="pHeading2">
 tVerticaOutputBulkExec Properties 
 </h2>
-<a name="wp2718561"> </a><p class="pBodyRelative">
+<a name="wp2718561"> </a><p class="pIndented1">
+The <b class="cBold">tVerticaOutputBulk</b> and <b class="cBold">tVerticaBulkExec</b> components are generally used together as parts of a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in the <b class="cBold">tVerticaOutputBulkExec</b> component.
+</p>
+<a name="wp3575697"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2718263table2718258">
@@ -78,7 +81,7 @@ As a dedicated component, it allows gains in performance during Insert operation
 </div>
 </td>
     <td><a name="wp2722615"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,12 +106,25 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2722629"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3601996"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718332"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3598145"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3598147"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB Version</em>
+</div>
+</td>
+    <td><a name="wp3598149"> </a><div class="pCellBody">
+Select the version of Vertica you are using from the list.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718332"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -117,11 +133,11 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp2722632"> </a><div class="pCellBody">
-Database server IP address
+Database server IP address.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718341"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718341"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -134,7 +150,7 @@ Listening port number of DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718350"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718350"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -147,7 +163,7 @@ Name of the database
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718359"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718359"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -160,7 +176,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718371"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718371"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -173,7 +189,7 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718380"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718380"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -186,7 +202,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718404"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718404"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -199,7 +215,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718416"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718416"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -208,11 +224,11 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2722762"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718431"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718431"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -221,11 +237,11 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2722776"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718446"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718446"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -234,11 +250,11 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2722797"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718461"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718461"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -251,7 +267,7 @@ Select this check box to add the new rows at the end of the file
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718473"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718473"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
@@ -264,7 +280,7 @@ Select this check box to store the data in a physical storage area, in order to 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2756262"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2756262"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -277,7 +293,7 @@ The Job automatically stops if no row has been loaded.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718488"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718488"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -290,7 +306,7 @@ Character, string or regular expression to separate fields.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718498"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718498"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -303,7 +319,7 @@ String displayed to indicate that the value is null.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718506"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718506"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -316,12 +332,12 @@ Select this check box to include the column header to the file.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718516"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718516"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp2718522"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2722844"> </a><div class="pCellBody">
@@ -329,7 +345,7 @@ Select the encoding from the list or select <b class="cBold">Custom</b> and defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718531"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718531"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -342,7 +358,7 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718545"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718545"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -351,7 +367,7 @@ This component is mainly used when no particular transformation is required on t
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2718554"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2718554"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

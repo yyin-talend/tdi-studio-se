@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:38:42">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:44">
     <title>Scénario&#160;: Insérer des données dans des tables mère/fille</title>
   </head>
 
@@ -39,11 +39,11 @@ Le Job suivant est dédié à des utilisateurs avancés de base de données qui souha
 </ul></div>
 </ul></div>
 <a name="wp2313995"> </a><p class="pIndented1">
-Dans <b class="cBold">Talend Integration Suite</b>, le Job est constitué de sept composants, <b class="cBold">tMysqlConnection</b> et <b class="cBold">tMysqlCommit</b> inclus.
+Dans <b class="cBold">Talend Open Studio</b>, le Job est constitué de sept composants, <b class="cBold">tMysqlConnection</b> et <b class="cBold">tMysqlCommit</b> inclus.
 </p>
 <a name="wp2314006"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlConnection1.png" id="wp2314003" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlConnection1.png" id="wp2314003" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -53,13 +53,13 @@ Dans <b class="cBold">Talend Integration Suite</b>, le Job est constitué de sept
 <a name="wp2314049"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tMap</b> et séparez le flux vers deux composants de sortie <b class="cBold">tMysqlOutput</b>. Utilisez des connexions de type <b class="cBold">Row</b> pour chacune de ces connexions représentant un flux de données principal.</li></div>
 <a name="wp2314062"> </a><div class="pSmartList2"><li>Définissez les propriétés du composant <b class="cBold">tFileList</b>, notamment le répertoire dans lequel sont stockés les fichiers.</li></div>
 <a name="wp2314069"> </a><div class="pSmartList2"><li>Ajoutez le composant <b class="cBold">tMysqlConnection</b> et connectez-le au composant de départ de ce Job, (dans cet exemple, le composant <b class="cBold">tFileList</b>) à l&#39;aide d&#39;une connexion <b class="cBold">OnComponentOk</b> afin de définir l&#39;ordre d&#39;exécution.</li></div>
-<a name="wp2314085"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tMysqlConnection</b>, définissez manuellement les informations de connexion ou récupérez-les dans le <span style="font-weight: bold">Repository</span> si vous les avez préalablement stockées dans le dossier <b class="cBold">DB connection</b> du répertoire <b class="cBold">Metadata</b>. Pour plus d&#39;information concernant les Métadonnées, consultez <em class="cEmphasis">Définition des schémas de métadonnées</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. </li></div>
+<a name="wp2314085"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tMysqlConnection</b>, définissez manuellement les informations de connexion ou récupérez-les dans le <span style="font-weight: bold">Repository</span> si vous les avez préalablement stockées dans le dossier <b class="cBold">DB connection</b> du répertoire <b class="cBold">Metadata</b>. Pour plus d&#39;information concernant les Métadonnées, consultez <em class="cEmphasis">Centraliser les métadonnées</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. </li></div>
 <a name="wp2314107"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, appuyez sur la touche <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables. Définissez le champ <b class="cBold">File Name</b> avec la variable globale&#160;: <em class="cEmphasis">tFileList_1.CURRENT_FILEPATH</em> </li></div>
 </ul></div>
 </ul></div>
 <a name="wp2314125"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlConnection2.png" id="wp2314122" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlConnection2.png" id="wp2314122" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -74,7 +74,7 @@ Dans <b class="cBold">Talend Integration Suite</b>, le Job est constitué de sept
 </ul></div>
 <a name="wp2314198"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlConnection3.png" id="wp2314195" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlConnection3.png" id="wp2314195" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -87,7 +87,7 @@ Dans <b class="cBold">Talend Integration Suite</b>, le Job est constitué de sept
 </ul></div>
 <a name="wp2314251"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlConnection4.png" id="wp2314248" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlConnection4.png" id="wp2314248" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -109,10 +109,10 @@ Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter
 </p>
 <a name="wp2314383"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlConnection5.png" id="wp2314380" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlConnection5.png" id="wp2314380" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2314395"> </a><p class="pIndented1">
+<a name="wp3616674"> </a><p class="pIndented1">
 L&#39;<em class="cEmphasis">id</em> de la table parent a été réutilisé pour alimenter la colonne <em class="cEmphasis">id_baby</em>.
 </p>
     </blockquote>

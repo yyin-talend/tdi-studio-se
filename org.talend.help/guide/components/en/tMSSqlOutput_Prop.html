@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>MSSqlOutput</title>
   </head>
 
@@ -30,7 +30,12 @@ MSSqlOutput
 <div align="left"><img src="../Images/tMSSqlOutput_icon32_white.png" id="wp1406333" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1448798"> </a><h2 class="pHeading2">
+<a name="wp3620726"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3620723" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />The Dynamic Schema feature is only functional in <b class="cBold">Talend Integration Suite Studio</b>.<br />
+</div>
+<a name="wp3617592"> </a><h2 class="pHeading2">
 tMSSqlOutput properties
 </h2>
 <a name="wp1378844"> </a><p class="pBodyRelative">
@@ -47,7 +52,7 @@ Databases/MS SQL server
 </div>
 </td>
     <td><a name="wp1378431"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-10-229-201.jpg" height="59" width="112" id="wp1378426" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-05-235-0240.jpg" height="59" width="112" id="wp1378426" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -78,7 +83,7 @@ Databases/MS SQL server
 </div>
 </td>
     <td><a name="wp1378489"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +108,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp1378517"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3599940"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -135,7 +140,7 @@ Select this check box and click the relevant <b class="cBold">tMSSqlConnection <
 <a name="wp3450612"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3450609" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
 </p>
 </td>
 </tr>
@@ -259,6 +264,11 @@ On the data of the table defined, you can perform:<br /><b class="cBold">Insert<
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2753635" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 It is necessary to specify at least one column as a primary key on which the <b class="cBold">Update</b> and <b class="cBold">Delete</b> operations are based. You can do that by clicking <b class="cBold">Edit Schema</b> and selecting the check box(es) next to the column(s) you want to set as primary key(s). For an advanced use, click the <b class="cBold">Advanced settings</b> view where you can simultaneously define primary keys for the <b class="cBold">Update</b> and <b class="cBold">Delete</b> operations. To do that: Select the <b class="cBold">Use field options</b> check box and then in the <b class="cBold">Key in update column</b>, select the check boxes next to the column names you want to use as a base for the Update operation. Do the same in the <b class="cBold">Key in delete column</b> for the Delete operation.
 </div>
+<a name="wp3622817"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-235-0244.jpg" height="47" width="47" align="left" id="wp3622753" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The dynamic schema feature can be used in the following modes: <b class="cBold">Insert</b>; <b class="cBold">Update</b>; <b class="cBold">Insert or update</b>; <b class="cBold">Update or insert</b>; <b class="cBold">Delete</b>.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1378672"> </a><div class="pCellBody">
@@ -270,8 +280,13 @@ It is necessary to specify at least one column as a primary key on which the <b 
 </div>
 </td>
     <td><a name="wp1378686"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. <br />
 </div>
+<a name="wp3623811"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-235-0245.jpg" height="47" width="47" align="left" id="wp3603335" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component offers the advantage of the dynamic schema feature. This allows you to retrieve unknown columns from source files or to copy batches of columns from a source without mapping each column individually. For further information about dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the<b class="cBold"> Talend Integration Suite Studio</b> User Guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1378690"> </a><div class="pCellBody">
@@ -283,7 +298,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2655094"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -296,7 +311,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2656506"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -331,7 +346,7 @@ Specify additional connection properties for the DB connection you are creating.
 </div>
 </td>
     <td><a name="wp2173894"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2173897"> </a><div class="pCellBody">
@@ -487,21 +502,26 @@ When selected, enables you to define the number of lines in each processed batch
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2174047"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3579702"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp3550508"> </a><div class="pCellHeading">
+    <td><a name="wp3579708"> </a><div class="pCellHeading">
 <em class="cEmphasis">Enable parallel execution</em>
 </div>
 </td>
-    <td><a name="wp3524361"> </a><div class="pCellBody">
-Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">Parallelizing data flows</em>of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+    <td><a name="wp3579712"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, by treating multiple data flows simultaneously. <br />In the <b class="cBold">Number of parallel executions</b> field, either:<br /> - Enter the number of parallel executions desired.<br /> - Press <b class="cBold">Ctrl + Space</b> and select the appropriate context variable from the list.<br /><br />For further information, see <em class="cEmphasis">How to parallelize data flows</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
-<a name="wp3550557"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<a name="wp3579743"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3550542" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-The <b class="cBold">Action on table</b> field is not available with the parallelization function. Therefore, you must use a <b class="cBold">tCreateTable</b> component if you want to create a table.<br />
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3579736" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+The <b class="cBold">Action on table</b> field is not available with the parallelization function. Therefore, you must use a <b class="cBold">tCreateTable</b> component if you want to create a table.
+</div>
+<a name="wp3582068"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3582065" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+When parallel execution is enabled, it is not possible to use global variables to retrieve return values in a SubJob.
 </div>
 </td>
 </tr>
@@ -510,7 +530,7 @@ The <b class="cBold">Action on table</b> field is not available with the paralle
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3013064"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all of the SQL queries possible.<br />This component must be used as an output component. It allows you to carry out actions on a table or on the data of a table in a MSSql database. It also allows you to create a reject flow using a <b class="cBold">Row &gt; Rejects</b> link to filter data in error.  For an example of <b class="cBold">tMySqlOutput</b> in use, see  <a href="tMysqlOutput_Scenario.html#wp2939075"><em class="cEmphasis">Scenario&#160;3: Retrieve data in error with a Reject link</em></a>
+This component offers the flexibility benefit of the DB query and covers all of the SQL queries possible.<br />This component must be used as an output component. It allows you to carry out actions on a table or on the data of a table in a MSSql database. It also allows you to create a reject flow using a <b class="cBold">Row &gt; Rejects</b> link to filter data in error. For an example of <b class="cBold">tMySqlOutput</b> in use, see <a href="tMysqlOutput_Scenario.html#wp2939075"><em class="cEmphasis">Scenario&#160;3: Retrieve data in error with a Reject link</em></a>
 </div>
 </td>
 </tr>

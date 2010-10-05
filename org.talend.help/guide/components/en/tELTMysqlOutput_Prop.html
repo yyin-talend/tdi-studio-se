@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:21">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:34">
     <title>tELTMysqlOutput</title>
   </head>
 
@@ -50,7 +50,7 @@ ELT
 </div>
 </td>
     <td><a name="wp2967793"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-11-26-010.jpg" height="59" width="112" id="wp2967789" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-06-26-010.jpg" height="59" width="112" id="wp2967789" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -82,28 +82,15 @@ In Java, use tCreateTable as substitute for this function.
 </div>
 </td>
     <td><a name="wp2967828"> </a><div class="pCellHeading">
-<em class="cEmphasis">Action on table</em>
-</div>
-</td>
-    <td><a name="wp2967830"> </a><div class="pCellBody">
-On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation carried out<br /><b class="cBold">Drop and create the table</b>: The table is removed and created again<br /><b class="cBold">Create a table</b>: The table doesn&#39;t exist and gets created. If the table exists, an error is generated and the Job is stopped.<br /><b class="cBold">Create table if doesn&#39;t exist</b>: Create the table if needed and carries out the action on data anyway.<br /><b class="cBold">Clear a table</b>: The table content is deleted
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2967847"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2967852"> </a><div class="pCellHeading">
 <em class="cEmphasis">Action on data</em>
 </div>
 </td>
-    <td><a name="wp2967854"> </a><div class="pCellBody">
-On the data of the table defined, you can perform the following operation:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, Job stops.<br />Note that in Mysql ELT, only Insert operation is available.
+    <td><a name="wp2967830"> </a><div class="pCellBody">
+On the data of the table defined, you can perform the following operation:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, Job stops.<br />Note that in Mysql ELT, only the Insert operation is available.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2967859"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2967859"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -116,7 +103,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2967871"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2967871"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -125,11 +112,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2967878"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2967886"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2967886"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -138,20 +125,33 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2967893"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2967901"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3451397"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2967906"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp3451400"> </a><div class="pCellBody">
+<em class="cEmphasis">Default Table Name</em>
 </div>
 </td>
-    <td><a name="wp2967908"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+    <td><a name="wp3451403"> </a><div class="pCellBody">
+Enter the default table name, between inverted commas.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3451381"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3451384"> </a><div class="pCellBody">
+<em class="cEmphasis">Use different table name</em>
+</div>
+</td>
+    <td><a name="wp3451387"> </a><div class="pCellBody">
+Select this check box to define a different output table name, between double quotation marks, in the <b class="cBold">Table name</b> field which appears.
 </div>
 </td>
 </tr>

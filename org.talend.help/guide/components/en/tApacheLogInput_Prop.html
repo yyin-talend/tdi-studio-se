@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:31">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:40">
     <title>tApacheLogInput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components12-02.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tApacheLogInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components07-02.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tApacheLogInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -47,7 +47,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp1553440"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-12-03-007.jpg" height="59" width="112" id="wp1553436" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-07-03-007.jpg" height="59" width="112" id="wp1553436" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -78,7 +78,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp1553471"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +103,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp1553489"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The fields to follow are pre defined using fetched data.
+    <td><a name="wp3477156"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -130,7 +130,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2650740"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You can create the schema and store it locally for this component. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You can create the schema and store it locally for this component. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -143,7 +143,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2651013"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -156,7 +156,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2651113"> </a><div class="pCellBody">
-Name of the file and/or the variable to be processed. <br /><br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name of the file and/or the variable to be processed. <br /><br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -204,7 +204,7 @@ Select this check box to gather the processing metadata at the Job level as well
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2951626"> </a><div class="pCellBody">
-<b class="cBold">tApacheLogInput</b><b class="cBold"> </b>is for use as an entry componant. It allows you to create a flow of XML data using a <b class="cBold">Row &gt; Main </b>link. You can also create a rejection flow using a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <a href="tExtractXMLField_Scenario.html#wp2755292"><em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file</em></a>.
+<b class="cBold">tApacheLogInput</b><b class="cBold"> </b>can be used with other components or as a standalone component. It allows you to create a data flow using a <b class="cBold">Row &gt; Main </b>connection, or to create a reject flow to filter specified data using a <b class="cBold">Row &gt; Reject</b> connection. For an example of how to use these two links, see <a href="tExtractXMLField_Scenario.html#wp2755292"><em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file</em></a>.
 </div>
 </td>
 </tr>
@@ -241,7 +241,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components12-02.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tApacheLogInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components07-02.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tApacheLogInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

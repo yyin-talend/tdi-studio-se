@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:20">
+    <meta name="LASTUPDATED" content="10/04/10 19:25:50">
     <title>Scenario: Doing a fuzzy match on two columns and outputting the main and rejected data</title>
   </head>
 
@@ -32,7 +32,7 @@ Scenario: Doing a fuzzy match on two columns and outputting the main and rejecte
 This java scenario describes a five-component Job aiming at: first checking the edit distance between the <em class="cEmphasis">IdClient</em> column of an input file against the data of the reference input file, and second checking all emails by their pronunciation in the <em class="cEmphasis">Email</em> column against the data of the reference input file. The outputs of these two matching types are written in two separate files.
 </p>
 <a name="wp3490902"> </a><p class="pIndented1">
-In this scenario, we have already stored the input schemas of the input and reference files in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">Dropping components from the Metadata node</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+In this scenario, we have already stored the input schemas of the input and reference files in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">How to drop components from the Metadata node</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -88,7 +88,7 @@ In this scenario, we have already stored the input schemas of the input and refe
 <a name="wp3491223"> </a><p class="pBodyRelative">
 <br />
 <img src="../Images/bulb_small.png" align="left" id="wp3491220" border="0" hspace="0" vspace="0"/><br />
-You can create and store context variables for the minimum and maximum distances in order to start from a low max number to match rows and go up to higher max number to match more possible rows. You can press <b class="cBold">Ctrl+Space</b> to access the variable list and select these new context variables. For more information about context variables, see <em class="cEmphasis">Defining Contexts and variables</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+You can create and store context variables for the minimum and maximum distances in order to start from a low max number to match rows and go up to higher max number to match more possible rows. You can press <b class="cBold">Ctrl+Space</b> to access the variable list and select these new context variables. For more information about context variables, see <em class="cEmphasis">How to centralize contexts and variables</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </p>
 <a name="wp3491250"> </a><div class="pSmartList2"><li>Set the matching type for the second column to be checked, <em class="cEmphasis">Metaphone</em> in this example. There is no minimum nor maximum distance to set because this matching method is based on phonetic discrepancies between the input main and reference data.</li></div>
 <a name="wp3491259"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Inner join (with reject output)</b> check box to define one of the outputs as inner join reject table.</li></div>

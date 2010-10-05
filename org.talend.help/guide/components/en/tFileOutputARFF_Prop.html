@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:31">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:40">
     <title>tFileOutputARFF</title>
   </head>
 
@@ -103,8 +103,8 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 &#160;
 </div>
 </td>
-    <td><a name="wp2795502"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are filled in automatically  using fetched data
+    <td><a name="wp3477350"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -130,7 +130,7 @@ Click this icon to open a connection wizard and store the Excel file connection 
 </div>
 </td>
     <td><a name="wp2795534"> </a><div class="pCellBody">
-Name or path to the output file and/or the variable to be used. <br /><br />Related topic: <em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name or path to the output file and/or the variable to be used. <br /><br />Related topic: <em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -143,7 +143,7 @@ Name or path to the output file and/or the variable to be used. <br /><br />Rela
 </div>
 </td>
     <td><a name="wp2793777"> </a><div class="pCellBody">
-Displays the schema you defined in the <b class="cBold">[Edit schema</b> dialog box..<br /><b class="cBold">Column</b>: Name of the column.<br /><b class="cBold">Type</b>: Data type.<br /><b class="cBold">Pattern</b>: Enter the data model (pattern), if necessary.
+Displays the schema you defined in the <b class="cBold">[Edit schema</b> dialog box.<br /><b class="cBold">Column</b>: Name of the column.<br /><b class="cBold">Type</b>: Data type.<br /><b class="cBold">Pattern</b>: Enter the data model (pattern), if necessary.
 </div>
 </td>
 </tr>
@@ -195,7 +195,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2795604"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You can create the schema and store it locally for this component. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You can create the schema and store it locally for this component. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2795638"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -257,6 +257,32 @@ Select this check box to gather the job processing metadata at a job level as we
 </td>
     <td colspan="2" rowspan="1"><a name="wp2947001"> </a><div class="pCellBody">
 Use this component along with a <b class="cBold">Row</b> link to collect data from another component and to re-write the data to an ARFF file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3468600"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3468602"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3468604"> </a><div class="pCellBody">
+The Global variables can be used as parameters in most of the fields found in the component properties view. To view these variables, place the cursor in the field and press <b class="cBold">Ctrl + Space</b>. Double click the variable to populate the field. The main global variable associated with <b class="cBold">tFileOutputARFF</b> is:<br /><br /><em class="cEmphasis">Number of lines</em>: Indicates the number of lines processed. This is available as an <b class="cBold">After</b> variable
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3468646"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3468648"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3468650"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main.<br /><b class="cBold">Trigger</b>: On Subjob Ok; On Subjob Error; Run if.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Reject; Iterate.<br /><b class="cBold">Trigger</b>: On Subjob Ok; On Subjob Error; Run if; On Component Ok; On Component Error; Synchronize; Parallelize.<br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>

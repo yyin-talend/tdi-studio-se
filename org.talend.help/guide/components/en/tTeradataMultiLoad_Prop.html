@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tTeradataMultiLoad</title>
   </head>
 
@@ -78,7 +78,7 @@ Databases/Teradata
 </div>
 </td>
     <td><a name="wp2947489"> </a><div class="pCellBody">
-Either Built-in or Repository
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -103,8 +103,8 @@ Either Built-in or Repository
 &#160;
 </div>
 </td>
-    <td><a name="wp2947517"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3601769"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -169,7 +169,7 @@ Name of the table to be written. Note that only one table can be written at a ti
 </div>
 </td>
     <td><a name="wp2947599"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 </td>
 </tr>
@@ -182,7 +182,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2947613"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -195,7 +195,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2947638"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -282,8 +282,60 @@ Browse your directory and select the destination of the file where the error mes
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2947769"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3552981"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3552988"> </a><div class="pCellHeading">
+<em class="cEmphasis">Define Log table</em>
+</div>
+</td>
+    <td><a name="wp3552991"> </a><div class="pCellBody">
+This check box is selected to define a log table you want to use in place of the default one that is the database table you defined in <b class="cBold">Basic settings</b>. The syntax required to define the log table is <em class="cEmphasis">databasename.logtablename</em>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3553003"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3553010"> </a><div class="pCellHeading">
+<em class="cEmphasis">BEGIN LOAD</em>
+</div>
+</td>
+    <td><a name="wp3553013"> </a><div class="pCellBody">
+This field allows you to define your BEGIN LOAD command to initiate or restart a load task. You can specify the number of sessions to use and any other parameters needed to execute the task.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3553017"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3553024"> </a><div class="pCellHeading">
+<em class="cEmphasis">Return mload error</em>
+</div>
+</td>
+    <td><a name="wp3553027"> </a><div class="pCellBody">
+Select this check box to specify the exit code number to indicate the point at which an error message should display in the console.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3640893"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3640896"> </a><div class="pCellHeading">
+<em class="cEmphasis">Define character set</em>
+</div>
+</td>
+    <td><a name="wp3640899"> </a><div class="pCellBody">
+Specify the character encoding you need use for your system
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2947769"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp2947780"> </a><div class="pCellHeading">
@@ -300,7 +352,7 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2947794"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+This component offers the flexibility of the DB query and covers all possible SQL queries.
 </div>
 </td>
 </tr>

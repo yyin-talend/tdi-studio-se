@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:31">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:40">
     <title>tCreateTemporaryFile </title>
   </head>
 
@@ -47,7 +47,7 @@ File/Management
 </div>
 </td>
     <td><a name="wp1608550"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-12-05-008.jpg" height="59" width="112" id="wp1608546" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-07-05-008.jpg" height="59" width="112" id="wp1608546" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -65,7 +65,7 @@ File/Management
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1608572"> </a><div class="pCellBody">
-<b class="cBold">tCreateTemporaryFile </b>helps to create a temporary file and puts it in a defined directory. This component allows either to keep the temporary file or to delete it after job execution.
+<b class="cBold">tCreateTemporaryFile </b>helps to create a temporary file and puts it in a defined directory. This component allows you to either keep the temporary file or delete it after job execution.
 </div>
 </td>
 </tr>
@@ -82,7 +82,20 @@ Select this check box to delete the temporary file after job execution.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1608714"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3443813"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3443819"> </a><div class="pCellBody">
+<em class="cEmphasis">Use default temporary system directory</em>
+</div>
+</td>
+    <td><a name="wp3443823"> </a><div class="pCellBody">
+Select this check box to create the file in the system&#39;s default temporary directory.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1608714"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -91,11 +104,11 @@ Directory
 </div>
 </td>
     <td><a name="wp1608720"> </a><div class="pCellBody">
-Enter the path to the directory where temporary files are stored.
+Select this check box to create the temporary file .
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1608704"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1608704"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -108,7 +121,7 @@ Enter a name to the temporary file respecting the template.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1608694"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1608694"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -121,12 +134,47 @@ Enter the filename extension to indicate the file format you want to give to the
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1608609"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1608609"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1608611"> </a><div class="pCellBody">
 <b class="cBold">tCreateTemporaryFile</b> provides the possibility to manage temporary files so that the memory can be freed for other ends and thus optimizes system performance.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3469006"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3469009"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3469012"> </a><div class="pCellBody">
+<b class="cBold">Filepath</b>:  Retrieves the path to where the file was created. This is available as an <b class="cBold">After</b> variable.<br />    Returns a string.<br /><br />For further information about variables, see <em class="cEmphasis">How to use variables in a Job</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3469099"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3469102"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3469105"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Trigger</b>: On Subjob Ok; On Subjob Error; Run if; On Component Ok; On Component Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Iterate.<br /><b class="cBold">Trigger</b>: Run if; On Subjob Ok; On Subjob Error; On component Ok; On Component Error; Synchronize; Parallelize. <br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3471216"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3471219"> </a><div class="pCellBody">
+n/a
 </div>
 </td>
 </tr>

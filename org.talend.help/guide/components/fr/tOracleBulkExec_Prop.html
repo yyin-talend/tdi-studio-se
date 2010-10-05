@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:38:42">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:44">
     <title>tOracleBulkExec</title>
   </head>
 
@@ -27,13 +27,16 @@ tOracleBulkExec
 </h2>
 <a name="wp2319076"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../images/tOracleBulkExec_icon32_white.png" id="wp2319072" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="../Images/tOracleBulkExec_icon32_white.png" id="wp2319072" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2319083"> </a><h2 class="pHeading2">
 Propriétés du tOracleBulkExec
 </h2>
-<a name="wp2319262"> </a><p class="pBodyRelative">
+<a name="wp3575074"> </a><p class="pIndented1">
+Les composants <b class="cBold">tOracleOutputBulk</b> et <b class="cBold">tOracleBulkExec</b> sont généralement utilisés ensemble pour d&#39;une part générer en sortie le fichier qui sera d&#39;autre part utilisé comme paramètre dans l&#39;exécution de la requête SQL énoncée. Cette exécution en deux étapes est unifiée dans le composant <b class="cBold">tOracleOutputBulkExec</b>, détaillé dans une section séparée. L&#39;intérêt de proposer deux composants séparés réside dans le fait que cela permet de procéder à des transformations avant le changement des données dans la base de données.
+</p>
+<a name="wp3575082"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2725189table2319086">
@@ -47,7 +50,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp2725200"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../images/Components-08-294-186.jpg" height="59" width="112" id="wp2725196" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-05-302-0226.jpg" height="59" width="112" id="wp2725196" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -121,11 +124,11 @@ Cochez cette case lorsque vous utilisez un composant <b class="cBold">tOracleCon
 </div>
 <a name="wp3467323"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/bulb_small.png" align="left" id="wp3467320" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3467320" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
 </p>
 <a name="wp3467348"> </a><div class="pCellBody">
-Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afin de paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -209,7 +212,7 @@ Nom du schéma.
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2725327"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2725325" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2725325" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Perl uniquement
 </div>
 </td>
@@ -222,7 +225,7 @@ Nom du service ou SID de la base de données Oracle.
 </div>
 <a name="wp2725342"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/Components-08-294-189.jpg" height="47" width="47" align="left" id="wp2725339" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-302-0229.jpg" height="47" width="47" align="left" id="wp2725339" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Dans les projets Java, les informations de connexion doivent être complètes.
 </p>
 </td>
@@ -275,7 +278,7 @@ Vous pouvez effectuer l&#39;une des opérations suivantes sur les données de la t
 </div>
 </td>
     <td><a name="wp2725400"> </a><div class="pCellBody">
-Nom du fichier à traiter.<br />Voir également&#160;:<em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
+Nom du fichier à traiter.<br />Voir également&#160;:<em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -292,7 +295,7 @@ Vous pouvez effectuer les opérations suivantes sur les données de la table sélec
 </div>
 <a name="wp2734114"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2734111" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2734111" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Il est nécessaire de spécifier au minimum une clé de recherche sur laquelle baser les opérations d&#39;Update. Il est possible de définir les colonnes qui agiront comme clé de recherche à partir du schéma, pour une utilisation de base, ou à partir des options avancées (Advanced settings) pour une utilisation optimisée de ces opérations.
 </div>
 </td>
@@ -484,7 +487,7 @@ Cochez cette case pour modifier les conventions d&#39;appellation utilisées pour
 </div>
 </td>
     <td><a name="wp2725674"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2725676"> </a><div class="pCellBody">
@@ -533,7 +536,7 @@ Cochez cette case pour collecter les données de log au niveau du composant.
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2726011"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2726009" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2726009" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Perl uniquement
 </div>
 </td>
@@ -548,7 +551,7 @@ Caractère, chaîne ou expression régulière séparant les champs.
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2726026"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2726024" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2726024" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Perl uniquement
 </div>
 </td>
@@ -563,7 +566,7 @@ Caractères entourant les données.
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2726041"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2726039" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2726039" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Perl uniquement
 </div>
 </td>

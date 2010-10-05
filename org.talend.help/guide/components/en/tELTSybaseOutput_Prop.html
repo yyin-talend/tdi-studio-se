@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:21">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:34">
     <title>tELTSybaseOutput</title>
   </head>
 
@@ -82,28 +82,15 @@ In Java, use tCreate Table as substitute for this function.
 </div>
 </td>
     <td><a name="wp2970165"> </a><div class="pCellHeading">
-<em class="cEmphasis">Action on table</em>
-</div>
-</td>
-    <td><a name="wp2970167"> </a><div class="pCellBody">
-On the table defined, you can perform one of the following operations:<br /><span style="font-weight: bold">None</span>: No operation carried out<br /><span style="font-weight: bold">Drop and create the table</span>: The table is removed and created again<br /><span style="font-weight: bold">Create a table</span>: The table doesn&#39;t exist and gets created. If the table exists, an error is generated and the Job is stopped.<br /><span style="font-weight: bold">Create table if doesn&#39;t exist</span>: Create the table if needed and carries out the action on data anyway.<br /><span style="font-weight: bold">Clear a table</span>: The table content is deleted
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970169"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2970174"> </a><div class="pCellHeading">
 <em class="cEmphasis">Action on data</em>
 </div>
 </td>
-    <td><a name="wp2970176"> </a><div class="pCellBody">
-On the data of the table defined, you can perform the following operation:<br /><span style="font-weight: bold">Insert</span>: Add new entries to the table. If duplicates are found, the Job stops.<br /><span style="font-weight: bold">Update</span>: updates entries in the table.
+    <td><a name="wp2970167"> </a><div class="pCellBody">
+On the data of the table defined, you can perform the following operation:<br /><span style="font-weight: bold">Insert</span>: Add new entries to the table. If duplicates are found, the Job stops.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970178"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970178"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -116,7 +103,7 @@ A schema is a row description, i.e., it defines the number and nature of the fie
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970193"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970193"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -125,11 +112,11 @@ A schema is a row description, i.e., it defines the number and nature of the fie
 </div>
 </td>
     <td><a name="wp2970200"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic:: <em class="cEmphasis">Setting a built-in schema</em><span style="font-weight: bold">, </span>in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic:: <em class="cEmphasis">How to set a built-in schema</em><span style="font-weight: bold">, </span>in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970211"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970211"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -138,11 +125,11 @@ A schema is a row description, i.e., it defines the number and nature of the fie
 </div>
 </td>
     <td><a name="wp2970218"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository.  Hence, it can be re-used for other projects and Jobs. Related topic: <em class="cEmphasis">Setting a built-in schema</em>, in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository.  Hence, it can be re-used for other projects and Jobs. Related topic: <em class="cEmphasis">How to set a built-in schema</em>, in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970229"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970229"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -151,11 +138,11 @@ A schema is a row description, i.e., it defines the number and nature of the fie
 </div>
 </td>
     <td><a name="wp2970236"> </a><div class="pCellBody">
-Enter a default name for the table.
+Enter a default name for the table, between double quotation marks.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970238"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970238"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -164,7 +151,20 @@ Enter a default name for the table.
 </div>
 </td>
     <td><a name="wp2970245"> </a><div class="pCellBody">
-Enter a default name for the Sybase schema.
+Enter a default name for the Sybase schema, between double quotation marks.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3451787"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3451793"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use different table name</em>
+</div>
+</td>
+    <td><a name="wp3451797"> </a><div class="pCellBody">
+Select this check box to enter a different output table name, between double quotation marks, in the <b class="cBold">Table name</b> field which appears.
 </div>
 </td>
 </tr>

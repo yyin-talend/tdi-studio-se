@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:37:53">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:23">
     <title>Scénario&#160;: Effectuer une correspondance floue entre deux colonnes et écrire en sortie les valeurs de correspondance,  de correspondance possible, et de non correspondance </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tBlockedFuzzyJoin_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components07-06.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tBlockedFuzzyJoin_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components04-06.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -41,14 +41,14 @@ Ce scénario Java décrit un Job comprenant six composants, ayant pour but de&#160
 Les sorties de ces deux types de correspondances sont écrites dans trois fichiers de sortie&#160;: le premier pour les valeurs de correspondances, le deuxième pour les valeurs de correspondances possibles, et le troisième pour les valeurs qui n&#39;ont pas de correspondances dans le fichier de référence.
 </p>
 <a name="wp3476278"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée principal et de référence, dans le Repository. Pour plus d&#39;informations à propos du stockage des métadonnées dans le Repository, consultez <em class="cEmphasis">Configurer un schéma File Excel</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite</b>.
+Dans ce scénario, vous avez déjà stocké les schémas d&#39;entrée principal et de référence, dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations à propos du stockage des métadonnées dans le <b class="cBold">Repository</b>, consultez <em class="cEmphasis">Configurer un schéma File Excel</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
 </p>
 <a name="wp3476310"> </a><p class="pIndented1">
 Le fichier d&#39;entrée contient quatre colonnes&#160;: <em class="cEmphasis">grp</em>, <em class="cEmphasis">gender</em>, <em class="cEmphasis">firstname</em>, et <em class="cEmphasis">count</em>. Les données dans ce fichier d&#39;entrée sont parfois en doublons, contiennent des noms écrits différemment, ou mal orthographiés, ou différentes informations sur un même client.
 </p>
 <a name="wp3476320"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMergeRow.png" id="wp3476316" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMergeRow.png" id="wp3476316" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -60,7 +60,7 @@ Le fichier d&#39;entrée contient quatre colonnes&#160;: <em class="cEmphasis">gr
 </ul></div>
 <a name="wp3476380"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin.png" id="wp3476376" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin.png" id="wp3476376" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -72,7 +72,7 @@ Le fichier d&#39;entrée contient quatre colonnes&#160;: <em class="cEmphasis">gr
 </ul></div>
 <a name="wp3476448"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin1.png" id="wp3476444" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin1.png" id="wp3476444" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3476453"> </a><p class="pIndented1">
@@ -80,7 +80,7 @@ La capture d&#39;écran ci-dessous montre les propriétés du fichier d&#39;entrée 
 </p>
 <a name="wp3476462"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin2.png" id="wp3476458" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin2.png" id="wp3476458" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3476470"> </a><p class="pIndented1">
@@ -93,7 +93,7 @@ Les champs des propriétés des deux composants <b class="cBold">tFileInputExcel</
 </ul></div>
 <a name="wp3476505"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin3.png" id="wp3476501" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin3.png" id="wp3476501" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -102,11 +102,11 @@ Les champs des propriétés des deux composants <b class="cBold">tFileInputExcel</
 </ul></div>
 </ul></div>
 <a name="wp3476522"> </a><p class="pIndented1">
-Dans cet exemple, nous souhaitons passer les quatre colonnes d&#39;entrée aux composants de sortie, en plus de la nouvelle colonne <em class="cEmphasis">ref_firstname</em>.
+Dans cet exemple, l&#39;objectif est de passer les quatre colonnes d&#39;entrée aux composants de sortie, en plus de la nouvelle colonne <em class="cEmphasis">ref_firstname</em>.
 </p>
 <a name="wp3476536"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin4.png" id="wp3476532" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin4.png" id="wp3476532" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -116,13 +116,13 @@ Dans cet exemple, nous souhaitons passer les quatre colonnes d&#39;entrée aux co
 <a name="wp3476573"> </a><div class="pSmartList2"><li>Sélectionnez les colonnes d&#39;entrée et de sortie sur lesquelles vous souhaitez effectuer la correspondance floue dans les listes <b class="cBold">Input key attribute</b> et <b class="cBold">Lookup key attribute</b>, respectivement <em class="cEmphasis">grp</em> et <em class="cEmphasis">firstname</em> dans cet exemple.</li></div>
 <a name="wp3476598"> </a><div class="pSmartList2"><li>Cliquez dans la première cellule de la colonne <b class="cBold">Matching type</b>, et sélectionnez dans la liste la méthode à utiliser pour vérifier les données entrantes par rapport aux données de référence, <em class="cEmphasis">Exact match </em>dans cet exemple. Il n&#39;y a ni distance minimale ni distance maximale à définir.</li></div>
 <a name="wp3476611"> </a><div class="pSmartList2"><li>Paramétrez le type de correspondance pour la seconde colonne, <em class="cEmphasis">Levenshtein</em> dans cet exemple.</li></div>
-<a name="wp3476616"> </a><div class="pSmartList2"><li>Définissez ensuite les distances minimale et maximale. Dans cette méthode, la distance est le nombre de changements de caractères (insertion, suppression ou substitution) devant être effectués pour que l&#39;entrée corresponde entièrement à la référence. Dans cet exemple, nous voulons que la distance minimale soit de 0 et que la distance maximale soit de 2. Cela aura pour conséquence d&#39;écrire toutes les entrées de la colonne <em class="cEmphasis">firstname</em> correspondant exactement, ou celles ayant au maximum deux changements de caractères à effectuer.</li></div>
+<a name="wp3476616"> </a><div class="pSmartList2"><li>Définissez ensuite les distances minimale et maximale. Dans cette méthode, la distance est le nombre de changements de caractères (insertion, suppression ou substitution) devant être effectués pour que l&#39;entrée corresponde entièrement à la référence. Dans cet exemple, l&#39;objectif est de faire en sorte que la distance minimale soit de 0 et que la distance maximale soit de 2. Cela aura pour conséquence d&#39;écrire toutes les entrées de la colonne <em class="cEmphasis">firstname</em> correspondant exactement, ou celles ayant au maximum deux changements de caractères à effectuer.</li></div>
 <a name="wp3476632"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier composant <b class="cBold">tLogRow</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3476644"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3476640" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3476640" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -140,7 +140,7 @@ La capture d&#39;écran ci-dessous illustre les extractions des trois tables de s
 </p>
 <a name="wp3476706"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Components-07-05-065.jpg" height="563" width="583" id="wp3476698" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Components-04-05-072.jpg" height="563" width="583" id="wp3476698" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
     </blockquote>
@@ -162,7 +162,7 @@ La capture d&#39;écran ci-dessous illustre les extractions des trois tables de s
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tBlockedFuzzyJoin_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components07-06.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tBlockedFuzzyJoin_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components04-06.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

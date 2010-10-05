@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:37:53">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:23">
     <title>Scénario&#160;: Lire des adresses e-mail d&#39;une table d&#39;une base de données, et extraire les lignes invalides</title>
   </head>
 
@@ -29,18 +29,18 @@
 Scénario&#160;: Lire des adresses e-mail d&#39;une table d&#39;une base de données, et extraire les lignes invalides
 </h2>
 <a name="wp3482070"> </a><p class="pIndented1">
-Ce scénario Java est un Job à deux composants créé dans <b class="cBold">Talend Integration Suite</b>. Dans ce Job, le <b class="cBold">tMySQLInvalidRows</b> lit la colonne des adresses e-mail d&#39;une table d&#39;une base de données MySQL, vérifie la valeur de la colonne des e-mails, par rapport aux modèles de <b class="cBold">Talend Data Quality</b> donnés, et extrait les lignes invalides, puis les affiche dans la console.
+Ce scénario Java est un Job à deux composants créé dans <b class="cBold">Talend Open Studio</b>. Dans ce Job, le <b class="cBold">tMySQLInvalidRows</b> lit la colonne des adresses e-mail d&#39;une table d&#39;une base de données MySQL, vérifie la valeur de la colonne des e-mails, par rapport aux modèles de <b class="cBold">Talend Data Quality</b> donnés, et extrait les lignes invalides, puis les affiche dans la console.
 </p>
 <a name="wp3482082"> </a><p class="pIndented1">
-Ci-dessous est la table de la base de données que nous utilisons dans l&#39;exemple, la colonne <em class="cEmphasis">Email</em> contient des données invalides qui doivent être corrigées.
+Ci-dessous est la table de la base de données que vous utilisez dans l&#39;exemple, la colonne <em class="cEmphasis">Email</em> contient des données invalides qui doivent être corrigées.
 </p>
 <a name="wp3482096"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlInvalidRows.png" id="wp3482092" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlInvalidRows.png" id="wp3482092" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3482100"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas de la table d&#39;entrée dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations sur le stockage des schémas de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Integration Suite</b> (en anglais).
+Dans ce scénario, vous avez déjà stocké les schémas de la table d&#39;entrée dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations sur le stockage des schémas de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Open Studio</b> (en anglais).
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -49,7 +49,7 @@ Dans ce scénario, nous avons déjà stocké les schémas de la table d&#39;entrée da
 </ul></div>
 <a name="wp3482150"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlInvalidRows2.png" id="wp3482146" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlInvalidRows2.png" id="wp3482146" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -61,7 +61,7 @@ Dans ce scénario, nous avons déjà stocké les schémas de la table d&#39;entrée da
 </ul></div>
 <a name="wp3482214"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlInvalidRows1.png" id="wp3482210" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlInvalidRows1.png" id="wp3482210" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -71,7 +71,7 @@ Dans ce scénario, nous avons déjà stocké les schémas de la table d&#39;entrée da
 </ul></div>
 <a name="wp3482240"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlInvalidRows3.png" id="wp3482236" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlInvalidRows3.png" id="wp3482236" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3482244"> </a><p class="pIndented1">
@@ -83,7 +83,7 @@ Tous les champs relatifs à la connexion sont automatiquement renseignés. Si vous
 <a name="wp3482283"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Patterns list</b>, sélectionnez le modèle de base de données <b class="cBold">Talend Data Quality</b> par rapport auquel vous voulez vérifier la colonne <em class="cEmphasis">Email</em>, <em class="cEmphasis">Email Address</em> dans cet exemple.</li></div>
 <a name="wp3482306"> </a><p class="pBodyRelative">
 <br />
-<img src="../images/bulb_small.png" align="left" id="wp3482299" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3482299" border="0" hspace="0" vspace="0"/><br />
 Si vous cochez la case <b class="cBold">Custom pattern</b>, vous pouvez personnaliser l&#39;expression régluière par rapport à laquelle vos données seront vérifiées.
 </p>
 <a name="wp3482322"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tLogRow</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés comme nécessaire.</li></div>
@@ -92,7 +92,7 @@ Si vous cochez la case <b class="cBold">Custom pattern</b>, vous pouvez personna
 </ul></div>
 <a name="wp3482342"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tMysqlInvalidRows4.png" id="wp3482338" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tMysqlInvalidRows4.png" id="wp3482338" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3482354"> </a><p class="pIndented1">

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:38:42">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:44">
     <title>tPostgresPlusBulkExec</title>
   </head>
 
@@ -27,13 +27,16 @@ tPostgresPlusBulkExec
 </h2>
 <a name="wp2862854"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../images/tPostgresPlusBulkExec_icon32_white.png" id="wp2862847" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="../Images/tPostgresPlusBulkExec_icon32_white.png" id="wp2862847" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2862864"> </a><h2 class="pHeading2">
 Propriétés du tPostgresPlusBulkExec 
 </h2>
-<a name="wp2863347"> </a><p class="pBodyRelative">
+<a name="wp3575787"> </a><p class="pIndented1">
+Les composants <b class="cBold">tPostgresPlusOutputBulk</b> et <b class="cBold">tPostgresPlusBulkExec</b> sont généralement utilisés ensemble pour d&#39;une part générer en sortie le fichier qui sera d&#39;autre part utilisé comme paramètre dans l&#39;exécution de la requête SQL énoncée. Cette exécution en deux étapes est unifiée dans le composant <b class="cBold">tPostgresPlusOutputBulkExec</b>, détaillé dans une section séparée. L&#39;intérêt de proposer deux composants séparés réside dans le fait que cela permet de procéder à des transformations avant le changement des données dans la base de données.
+</p>
+<a name="wp3575795"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2863779table2862868">
@@ -47,7 +50,7 @@ Databases/PostgresPlus
 </div>
 </td>
     <td><a name="wp2863789"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../images/java_icongg.png" id="wp2863786" border="0" hspace="0" vspace="0"/>
+<img src="../Images/java_icon.png" id="wp2863786" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -121,11 +124,11 @@ Cochez cette case et sélectionnez le composant <b class="cBold">tPostgresqlConne
 </div>
 <a name="wp3467962"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/bulb_small.png" align="left" id="wp3467959" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3467959" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
 </p>
 <a name="wp3467987"> </a><div class="pCellBody">
-Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afin de paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -229,7 +232,7 @@ Vous pouvez effectuer l&#39;une des opérations suivantes sur les données de la t
 </div>
 </td>
     <td><a name="wp2863954"> </a><div class="pCellBody">
-Nom du fichier à traiter.<br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
+Nom du fichier à traiter.<br />Voir également&#160;: <em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -255,7 +258,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2863987"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>
@@ -268,7 +271,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2864002"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et il est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Integration Suite</b>. 
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et il est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Open Studio</b>. 
 </div>
 </td>
 </tr>

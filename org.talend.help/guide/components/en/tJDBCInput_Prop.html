@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tJDBCInput</title>
   </head>
 
@@ -30,7 +30,12 @@ tJDBCInput
 <div align="left"><img src="../Images/tJDBCInput_icon32_white.png" id="wp1441453" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1448599"> </a><h2 class="pHeading2">
+<a name="wp3620085"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3620082" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />The Dynamic Schema feature is only functional in <b class="cBold">Talend Integration Suite Studio</b>.<br />
+</div>
+<a name="wp3620093"> </a><h2 class="pHeading2">
 tJDBCInput properties
 </h2>
 <a name="wp1441061"> </a><p class="pBodyRelative">
@@ -78,7 +83,7 @@ Databases/JDBC
 </div>
 </td>
     <td><a name="wp2220013"> </a><div class="pCellBody">
-Either Built-in or Repository
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -103,8 +108,8 @@ Either Built-in or Repository
 &#160;
 </div>
 </td>
-    <td><a name="wp2220041"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3599595"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -161,7 +166,7 @@ Type in the database location path
 </div>
 </td>
     <td><a name="wp1440864"> </a><div class="pCellBody">
-Select the driver JAR on the list or click the three button to add a new JAR to the list.
+Click the plus button under the table to add  lines of the count of your need for the purpose of loading several JARs. Then on each line, click the three dot button to open the <b class="cBold">Select Module</b> wizard from which you can select a driver JAR of your interest for each line.
 </div>
 </td>
 </tr>
@@ -199,9 +204,14 @@ DB user authentication data.
 <em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp1440974"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+    <td><a name="wp3602868"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or stored remotely in the Repository.<br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />
 </div>
+<a name="wp3625000"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-193-0432.jpg" height="47" width="47" align="left" id="wp3602879" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component offers the advantage of the dynamic schema feature. This allows  you to retrieve unknown columns from source files or to copy batches of columns from a source without mapping each column individually. For further information about dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440978"> </a><div class="pCellBody">
@@ -213,7 +223,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2654937"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -226,7 +236,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2656328"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -239,7 +249,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1441284"> </a><div class="pCellBody">
-Type in the name of the table
+Type in the name of the table.
 </div>
 </td>
 </tr>
@@ -254,6 +264,11 @@ Type in the name of the table
     <td><a name="wp1441028"> </a><div class="pCellBody">
 Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
 </div>
+<a name="wp3625837"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3625834" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+If using the dynamic schema feature, the SELECT query must include the <b class="cBold">*</b> wildcard, to retrieve all of the columns from the table selected.
+</div>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2169121"> </a><div class="pCellBody">
@@ -261,7 +276,7 @@ Enter your DB query  paying particularly attention to properly sequence the fiel
 </div>
 </td>
     <td><a name="wp2169128"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2169131"> </a><div class="pCellBody">
@@ -326,7 +341,7 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1441053"> </a><div class="pCellBody">
-This component covers all possibilities of  SQL queries onto any JDBC connected database.
+This component covers all possible SQL queries for any database using a JDBC connection.
 </div>
 </td>
 </tr>

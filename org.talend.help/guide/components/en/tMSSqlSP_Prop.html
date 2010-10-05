@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tMSSqlSP</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components10-239.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components05-245.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -78,7 +78,7 @@ Databases/MSSql
 </div>
 </td>
     <td><a name="wp1471661"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +103,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp1471689"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3600030"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -122,7 +122,7 @@ Select this check box and click the relevant <b class="cBold">tMSSqlConnection <
 <a name="wp3450733"> </a><p class="pBodyRelative">
 </p>
 <div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3450730" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
-When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
 </p>
 </td>
 </tr>
@@ -200,7 +200,7 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1471781"> </a><div class="pCellBody">
-In SP principle, the schema is an input parameter.<br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+In SP principle, the schema is an input parameter.<br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository.
 </div>
 </td>
 </tr>
@@ -213,7 +213,7 @@ In SP principle, the schema is an input parameter.<br />A schema is a row descri
 </div>
 </td>
     <td><a name="wp2655164"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -226,7 +226,7 @@ In SP principle, the schema is an input parameter.<br />A schema is a row descri
 </div>
 </td>
     <td><a name="wp2656571"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -265,7 +265,7 @@ Select this check box, if only a value is to be returned. <br />Select on the li
 </div>
 </td>
     <td><a name="wp1525660"> </a><div class="pCellBody">
-Click the Plus button and select the various <b class="cBold">Schema Columns</b> that will be required by the procedures. Note that the SP schema can hold more columns than there are paramaters used in the procedure.<br />Select the <b class="cBold">Type</b> of parameter:<br /><b class="cBold">IN</b>: Input parameter<br /><b class="cBold">OUT</b>: Output parameter/return value<br /><b class="cBold">IN OUT</b>: Input  parameters is to be returned as value, likely after modification through the procedure (function).<br /><b class="cBold">RECORDSET</b>: Input parameters is to be returned as a set of values, rather than single value.
+Click the Plus button and select the various <b class="cBold">Schema Columns</b> that will be required by the procedures. Note that the SP schema can hold more columns than there are paramaters used in the procedure.<br />Select the <b class="cBold">Type</b> of parameter:<br /><b class="cBold">IN</b>: Input parameter<br /><b class="cBold">OUT</b>: Output parameter/return value<br /><b class="cBold">IN OUT</b>: Input parameters is to be returned as value, likely after modification through the procedure (function).<br /><b class="cBold">RECORDSET</b>: Input parameters is to be returned as a set of values, rather than single value.
 </div>
 <a name="wp2768499"> </a><p class="pBodyRelative">
 </p>
@@ -292,7 +292,7 @@ Specify additional connection properties for the DB connection you are creating.
 </div>
 </td>
     <td><a name="wp2732946"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2732978"> </a><div class="pCellBody">
@@ -355,7 +355,7 @@ The Stored Procedures syntax should match the Database syntax.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="Components10-239.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="Components05-245.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlSP_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

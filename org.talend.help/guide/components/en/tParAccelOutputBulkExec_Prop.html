@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tParAccelOutputBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tParAccelOutputBulkExec
 <a name="wp2954124"> </a><h2 class="pHeading2">
 tParAccelOutputBulkExec Properties
 </h2>
-<a name="wp2954700"> </a><p class="pBodyRelative">
+<a name="wp2954700"> </a><p class="pIndented1">
+The <b class="cBold">tParAccelOutputBulk</b> and <b class="cBold">tParAccelBulkExec</b> components are generally used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in <b class="cBold">tParAccelOutputBulkExec</b>.
+</p>
+<a name="wp3573701"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2954153table2954145">
@@ -78,7 +81,7 @@ Databases/ParAccel
 </div>
 </td>
     <td><a name="wp2954225"> </a><div class="pCellBody">
-Either Built-in or Repository
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ Either Built-in or Repository
 &#160;
 </div>
 </td>
-    <td><a name="wp2954253"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3600840"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -130,7 +133,7 @@ Database server IP address.
 </div>
 </td>
     <td><a name="wp2954299"> </a><div class="pCellBody">
-Listening port number of DB server.
+Listening port number of the DB server.
 </div>
 </td>
 </tr>
@@ -208,7 +211,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
     <td><a name="wp2954415"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 </td>
 </tr>
@@ -221,7 +224,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2954429"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -234,7 +237,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2954454"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -247,7 +250,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2955680"> </a><div class="pCellBody">
-&#160;
+Select the copy mode you want to use from either:<br /><b class="cBold">Basic</b>: Standard mode, without optimisation.<br /><b class="cBold">Parallel</b>: Allows you to use several internal ParAccel APIs in order to optimise loading speed.
 </div>
 </td>
 </tr>
@@ -273,7 +276,7 @@ Name and path of the file to be processed.
 </div>
 </td>
     <td><a name="wp2954511"> </a><div class="pCellBody">
-Select in the list the file type.
+Select the file type from the list.
 </div>
 </td>
 </tr>
@@ -325,7 +328,7 @@ Select this check box to add the new rows at the end of the file.
 </div>
 </td>
     <td><a name="wp2954525"> </a><div class="pCellBody">
-&#160;
+The ID is already present in the file to be loaded or will be set by the database.
 </div>
 </td>
 </tr>
@@ -338,7 +341,7 @@ Select this check box to add the new rows at the end of the file.
 </div>
 </td>
     <td><a name="wp2955884"> </a><div class="pCellBody">
-&#160;
+Select this check box to remove quotation marks from the file to be loaded.
 </div>
 </td>
 </tr>
@@ -377,7 +380,7 @@ Type in the date format to be used.
 </div>
 </td>
     <td><a name="wp2954605"> </a><div class="pCellBody">
-&#160;
+Enter the date and hour format to be used.
 </div>
 </td>
 </tr>
@@ -390,7 +393,7 @@ Type in the date format to be used.
 </div>
 </td>
     <td><a name="wp2954619"> </a><div class="pCellBody">
-&#160;
+Enter the specific, customized ParAccel option that you want to use.
 </div>
 </td>
 </tr>
@@ -403,7 +406,7 @@ Type in the date format to be used.
 </div>
 </td>
     <td><a name="wp2954633"> </a><div class="pCellBody">
-&#160;
+Browse to or enter the access path to the log file in your directory.
 </div>
 </td>
 </tr>
@@ -438,7 +441,7 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2954676"> </a><div class="pCellBody">
-This component covers all possibilities of SQL queries onto a database. It allows you to do actions on a table or the data in a table in a ParAccel database. It enables you to create a reject flow, with a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link filtering the data in error. For a usage example, see <a href="tMysqlOutput_Scenario.html#wp2939075"><em class="cEmphasis">Scenario&#160;3: Retrieve data in error with a Reject link</em></a> from component <b class="cBold">tMysqlOutput</b>.
+This component covers all possible SQL database queries. It allows you to carry out actions on a table or on the data of a table in a ParAccel database. It enables you to create a reject flow, with a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link filtering the data in error. For a usage example, see <a href="tMysqlOutput_Scenario.html#wp2939075"><em class="cEmphasis">Scenario&#160;3: Retrieve data in error with a Reject link</em></a> from component <b class="cBold">tMysqlOutput</b>.
 </div>
 </td>
 </tr>

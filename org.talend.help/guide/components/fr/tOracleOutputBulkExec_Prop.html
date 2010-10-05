@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:38:42">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:44">
     <title>tOracleOutputBulkExec</title>
   </head>
 
@@ -27,13 +27,16 @@ tOracleOutputBulkExec
 </h2>
 <a name="wp2321169"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../images/tOracleOutputBulkExec_icon32_white.png" id="wp2321165" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="../Images/tOracleOutputBulkExec_icon32_white.png" id="wp2321165" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2321176"> </a><h2 class="pHeading2">
 Propriétés du tOracleOutputBulkExec
 </h2>
-<a name="wp2321368"> </a><p class="pBodyRelative">
+<a name="wp3575127"> </a><p class="pIndented1">
+Les composants <b class="cBold">tOracleOutputBulk</b> et <b class="cBold">tOracleBulkExec</b> sont généralement utilisés ensemble comme deux parties d&#39;un processus en deux étapes. Dans la première étape, un fichier de sortie est généré. Dans la deuxième étape, ce fichier est utilisé lors de l&#39;opération d&#39;INSERT afin de populer une base de données. Cette exécution en deux étapes est unifiée dans le composant <b class="cBold">tOracleOutputBulkExec</b>.
+</p>
+<a name="wp3575135"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2721929table2321179">
@@ -47,7 +50,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp2721939"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../images/java_icongg.png" id="wp2721936" border="0" hspace="0" vspace="0"/>
+<img src="../Images/java_icon.png" id="wp2721936" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -121,11 +124,11 @@ Cochez cette case lorsque vous utilisez le composant <b class="cBold">tOracleCon
 </div>
 <a name="wp3467560"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/bulb_small.png" align="left" id="wp3467557" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3467557" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
 </p>
 <a name="wp3467585"> </a><div class="pCellBody">
-Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afin de paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
 </div>
 </td>
 </tr>
@@ -255,7 +258,7 @@ Vous pouvez effectuer l&#39;une des opérations suivantes sur les données de la t
 </div>
 </td>
     <td><a name="wp2722119"> </a><div class="pCellBody">
-Nom du fichier à traiter.<br />Voir également&#160;:<em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Integration Suite</b>.
+Nom du fichier à traiter.<br />Voir également&#160;:<em class="cEmphasis">Définir les variables à partir de la vue Component</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -298,7 +301,7 @@ Vous pouvez effectuer les opérations suivantes sur les données de la table sélec
 </div>
 <a name="wp2734171"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/warning_small.png" align="left" id="wp2734168" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2734168" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 Il est nécessaire de spécifier au minimum une clé de recherche sur laquelle baser les opérations d&#39;Update. Il est possible de définir les colonnes qui agiront comme clé de recherche à partir du schéma, pour une utilisation de base, ou à partir des options avancées (Advanced settings) pour une utilisation optimisée de ces opérations.
 </div>
 </td>
@@ -325,7 +328,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2722357"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Integration Suite</b>.
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -338,7 +341,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2722382"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -516,7 +519,7 @@ Cochez cette case pour modifier les conventions d&#39;appellation utilisées pour
 </div>
 </td>
     <td><a name="wp2723195"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2723198"> </a><div class="pCellBody">

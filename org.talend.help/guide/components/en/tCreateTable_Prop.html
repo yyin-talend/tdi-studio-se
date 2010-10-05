@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tCreateTable</title>
   </head>
 
@@ -106,8 +106,8 @@ Either <b class="cBold">Built-in </b>or <b class="cBold">Repository</b>.
 &#160;
 </div>
 </td>
-    <td><a name="wp2653959"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where properties are stored. The fields that follow are pre-filled in using fetched data.
+    <td><a name="wp3598508"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -138,7 +138,7 @@ The component properties may differ slightly according to the database type sele
 </div>
 </td>
     <td><a name="wp2652577"> </a><div class="pCellBody">
-Select the action to be carried out on the database among:<br /><b class="cBold">Create table</b>: when you know already that the table doesn&#39;t exist.<br /><b class="cBold">Create table when not exists</b>: when you don&#39;t know whether the table is already created or not<br /><b class="cBold">Drop and create table</b>: when you know that the table exists already and needs to be replaced.
+Select the action to be carried out on the database among:<br /><b class="cBold">Create table</b>: when you know already that the table doesn&#39;t exist.<br /><b class="cBold">Create table if not exists</b>: when you don&#39;t know whether the table is already created or not<br /><b class="cBold">Drop table if exits and create</b>: when you know that the table exists already and needs to be replaced.
 </div>
 </td>
 </tr>
@@ -195,7 +195,7 @@ Drop-down list of available drivers.
 </div>
 </td>
     <td><a name="wp2739065"> </a><div class="pCellBody">
-Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ Name and path of the file to be processed. <br />Related topic:<em class="cEmpha
 </div>
 </td>
     <td><a name="wp2738967"> </a><div class="pCellBody">
-Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -221,7 +221,7 @@ Name and path of the file to be processed. <br />Related topic:<em class="cEmpha
 </div>
 </td>
     <td><a name="wp2739029"> </a><div class="pCellBody">
-Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -234,7 +234,7 @@ Name and path of the file to be processed. <br />Related topic:<em class="cEmpha
 </div>
 </td>
     <td><a name="wp2738681"> </a><div class="pCellBody">
-Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name and path of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -290,7 +290,20 @@ Select the database version in use.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652633"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3552695"> </a><div class="pCellBody">
+<b class="cBold">Teradata</b>
+</div>
+</td>
+    <td><a name="wp3552698"> </a><div class="pCellHeading">
+<em class="cEmphasis">Create</em>
+</div>
+</td>
+    <td><a name="wp3552701"> </a><div class="pCellBody">
+Select the table type from the drop-down list. The type may be:<br />- <b class="cBold">SET TABLE</b>: tables which do not allow to duplicate.<br />- <b class="cBold">MULTI SET TABLE</b>: tables allowing duplicate rows
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652633"> </a><div class="pCellBody">
 <b class="cBold">All database types except Access, JavaDb, SQLite and ODBC</b>
 </div>
 </td>
@@ -303,7 +316,7 @@ Database server IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738826"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738826"> </a><div class="pCellBody">
 <b class="cBold">All database types except Access, Firebird, HSQLDb, SQLite and ODBC</b>
 </div>
 </td>
@@ -316,7 +329,7 @@ Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738831"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738831"> </a><div class="pCellBody">
 <b class="cBold">JavaDb</b>
 </div>
 </td>
@@ -329,7 +342,7 @@ Browse to your database root.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738846"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738846"> </a><div class="pCellBody">
 <b class="cBold">All database types except Access, AS400, Firebird, Interbase, JavaDb, SQLite and ODBC</b>
 </div>
 </td>
@@ -342,7 +355,7 @@ Listening port number of the DB server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738851"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738851"> </a><div class="pCellBody">
 <b class="cBold">HSQLDb</b>
 </div>
 </td>
@@ -355,7 +368,7 @@ Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738872"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738872"> </a><div class="pCellBody">
 <b class="cBold">Informix</b>
 </div>
 </td>
@@ -368,7 +381,7 @@ Name of the database server.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2738890"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2738890"> </a><div class="pCellBody">
 <b class="cBold">ODBC</b>
 </div>
 </td>
@@ -381,7 +394,7 @@ Name of the database.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652657"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652657"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -394,7 +407,7 @@ DB user authentication data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652669"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652669"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -407,7 +420,7 @@ Type in between quotes a name for the newly created table.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652678"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652678"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -416,7 +429,7 @@ Type in between quotes a name for the newly created table.
 </div>
 </td>
     <td><a name="wp2739226"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 <a name="wp2739239"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 7pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
@@ -425,7 +438,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652698"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652698"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -434,11 +447,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2654474"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652714"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652714"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -447,11 +460,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2655889"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various Jobs and projects. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various Jobs and projects. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2654023"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2654023"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
@@ -464,7 +477,7 @@ Select the encoding from the list or select <b class="cBold">Custom</b> and defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652730"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652730"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -477,7 +490,7 @@ Select this check box to gather the job processing metadata at a Job level as we
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2739284"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2739284"> </a><div class="pCellBody">
 <b class="cBold">AS400/&#160;MSSQL Server</b>
 </div>
 </td>
@@ -490,12 +503,12 @@ Specify additional connection properties for the DB connection you are creating.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2652754"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2652754"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp2652756"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries. More scenarios are available for specific DB Input components
+This component offers the flexibility of the DB query and covers all possible SQL queries. More scenarios are available for specific DB Input components
 </div>
 </td>
 </tr>

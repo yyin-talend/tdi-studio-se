@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tGreenplumBulkExec</title>
   </head>
 
@@ -34,7 +34,7 @@ tGreenplumBulkExec
 tGreenplumBulkExec Properties
 </h2>
 <a name="wp3233401"> </a><p class="pBodyRelative">
-<b class="cBold">tGreenplumOutputBulk</b> and <b class="cBold">tGreenplumlBulkExec</b> components are generally used together, to generate the output file which will be used as a parameter in the SQL query execution. This execution in two steps is unified in the <b class="cBold">tGreenplumOutputBulkExec</b> component, which details are given in a different section. The point of offering  two separated components is to enable you to do transformations before changing data in the database.
+The <b class="cBold">tGreenplumOutputBulk</b> and <b class="cBold">tGreenplumBulkExec</b> components are used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT statement used to feed a database. These two steps are fused together in the <b class="cBold">tGreenplumOutputBulkExec</b> component, detailed in a separate section. The advantage using a two step process is that it makes it possible to transform data before it is loaded in the database.
 </p>
 <a name="wp3233750"> </a><p class="pBodyRelative">
 </p>
@@ -81,7 +81,7 @@ Databases/Greenplum
 </div>
 </td>
     <td><a name="wp3233462"> </a><div class="pCellBody">
-Either Built-in or Repository
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -106,8 +106,8 @@ Either Built-in or Repository
 &#160;
 </div>
 </td>
-    <td><a name="wp3233480"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3598895"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -242,7 +242,7 @@ Path and name of the file to be processed.
 </div>
 </td>
     <td><a name="wp3233597"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 </td>
 </tr>
@@ -255,7 +255,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3233606"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -268,7 +268,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3233624"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>

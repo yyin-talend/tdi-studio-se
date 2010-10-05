@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tLDAPInput</title>
   </head>
 
@@ -30,7 +30,12 @@ tLDAPInput
 <div align="left"><img src="../Images/tLDAPInput.png" id="wp3370425" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp3370442"> </a><h2 class="pHeading2">
+<a name="wp3620288"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3620285" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />The Dynamic Schema feature is only functional in <b class="cBold">Talend Integration Suite Studio</b>.<br />
+</div>
+<a name="wp3620296"> </a><h2 class="pHeading2">
 tLDAPInput Properties
 </h2>
 <a name="wp3370932"> </a><p class="pBodyRelative">
@@ -78,7 +83,7 @@ Databases/LDAP
 </div>
 </td>
     <td><a name="wp3370526"> </a><div class="pCellBody">
-Either Built-in or Repository
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -103,8 +108,8 @@ Either Built-in or Repository
 &#160;
 </div>
 </td>
-    <td><a name="wp3370554"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. When selected, the fields to follow are pre-filled in using fetched data.
+    <td><a name="wp3599675"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -130,7 +135,7 @@ Click this icon to open a database connection wizard and store the database conn
 </div>
 </td>
     <td><a name="wp3370601"> </a><div class="pCellBody">
-LDAP Directory server IP address
+LDAP Directory server IP address.
 </div>
 </td>
 </tr>
@@ -155,9 +160,14 @@ Listening port number of server.
 <em class="cEmphasis">Base DN</em>
 </div>
 </td>
-    <td><a name="wp3370629"> </a><div class="pCellBody">
-Path to user&#39;s authorised tree leaf.
+    <td><a name="wp3581429"> </a><div class="pCellBody">
+Path to the user&#39;s authorised tree leaf.
 </div>
+<a name="wp3581461"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3581443" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+To retrieve the full DN information, enter a field named <em class="cEmphasis">DN</em> in the schema, in either upper case or lower case. 
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3370633"> </a><div class="pCellBody">
@@ -169,7 +179,7 @@ Path to user&#39;s authorised tree leaf.
 </div>
 </td>
     <td><a name="wp3370643"> </a><div class="pCellBody">
-Select the protocol type on the list.<br /><b class="cBold">LDAP</b> : no encryption is used<br /><b class="cBold">LDAPS</b>: secured LDAP. When this option is chosen, the <b class="cBold">Advanced CA</b> check box appears. Once selected, the advanced mode allows you to specify the directory and the keystore password of the certificate file for storing a specific CA. However, you can still deactivate this certificate validation by selecting the <b class="cBold">Trust all certs</b> check box.<br /><b class="cBold">TLS</b>: certificate is used  When this option is chosen, the <b class="cBold">Advanced CA</b> check box appears and is used the same way as that of the <b class="cBold">LDAPS</b> type.
+Select the protocol type on the list.<br /><b class="cBold">LDAP</b> : no encryption is used<br /><b class="cBold">LDAPS</b>: secured LDAP. When this option is chosen, the <b class="cBold">Advanced CA</b> check box appears. Once selected, the advanced mode allows you to specify the directory and the keystore password of the certificate file for storing a specific CA. However, you can still deactivate this certificate validation by selecting the <b class="cBold">Trust all certs</b> check box.<br /><b class="cBold">TLS</b>: certificate is used When this option is chosen, the <b class="cBold">Advanced CA</b> check box appears and is used the same way as that of the <b class="cBold">LDAPS</b> type.
 </div>
 </td>
 </tr>
@@ -182,7 +192,7 @@ Select the protocol type on the list.<br /><b class="cBold">LDAP</b> : no encryp
 </div>
 </td>
     <td><a name="wp3370693"> </a><div class="pCellBody">
-Select the <b class="cBold">Authentication</b> check box if  LDAP login is required. Note that the login must match the LDAP syntax requirement to be valid. e.g.: &quot;cn=Directory Manager&quot;.
+Select the <b class="cBold">Authentication</b> check box if LDAP login is required. Note that the login must match the LDAP syntax requirement to be valid. e.g.: &quot;cn=Directory Manager&quot;.
 </div>
 </td>
 </tr>
@@ -260,7 +270,7 @@ Fill in a limit number of records to be read If needed.
 </div>
 </td>
     <td><a name="wp3370809"> </a><div class="pCellBody">
-Fill in  a timeout period for the directory. access 
+Fill in a timeout period for the directory. access 
 </div>
 </td>
 </tr>
@@ -299,8 +309,13 @@ This check box is selected by default. Clear the check box to skip the row on er
 </div>
 </td>
     <td><a name="wp3370855"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. <br />
 </div>
+<a name="wp3625030"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-207-0599.jpg" height="47" width="47" align="left" id="wp3604178" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component offers the advantage of the dynamic schema feature. This allows you to retrieve unknown columns from source files or to copy batches of columns from a source without mapping each column individually. For further information about dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3370859"> </a><div class="pCellBody">
@@ -312,7 +327,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3370869"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -325,7 +340,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3370894"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -334,7 +349,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3370916"> </a><div class="pCellBody">
-This component covers all possibilities of LDAP queries. <br />Note: Press <b class="cBold">Ctrl + Space bar</b> to access the global variable list, including the <b class="cBold">GetResultName</b> variable to retrieve automatically the relevant Base 
+This component covers all possible LDAP queries. <br />Note: Press <b class="cBold">Ctrl + Space bar</b> to access the global variable list, including the <b class="cBold">GetResultName</b> variable to retrieve automatically the relevant Base. 
 </div>
 </td>
 </tr>

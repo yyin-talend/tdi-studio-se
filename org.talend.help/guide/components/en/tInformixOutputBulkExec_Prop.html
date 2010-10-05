@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tInformixOutputBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tInformixOutputBulkExec
 <a name="wp3177986"> </a><h2 class="pHeading2">
 tInformixOutputBulkExec properties
 </h2>
-<a name="wp3178484"> </a><p class="pBodyRelative">
+<a name="wp3576499"> </a><p class="pBodyRelative">
+<b class="cBold">tInformixOutputBulk</b> and <b class="cBold">tInformixBulkExec</b> are generally used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in the <b class="cBold">tInformixOutputBulk</b><b class="cBold">Exec </b>component.
+</p>
+<a name="wp3571904"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp3177994table3177989">
@@ -78,7 +81,7 @@ Databases/Informix
 </div>
 </td>
     <td><a name="wp3178045"> </a><div class="pCellBody">
-Built-in ou Repository.
+<b class="cBold">Built-in</b> ou <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ No properties stored centrally
 &#160;
 </div>
 </td>
-    <td><a name="wp3178995"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. When selected, the fields to follow are pre-filled in using fetched data
+    <td><a name="wp3599270"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -252,7 +255,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
     <td><a name="wp3178217"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the <b class="cBold">Repository</b>.
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the <b class="cBold">Repository</b>.
 </div>
 </td>
 </tr>
@@ -265,7 +268,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3179169"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <span style="font-weight: bold">Setting a built-in schema</span> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <span style="font-weight: bold">How to set a built-in schema</span> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -278,7 +281,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp3179213"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
 </div>
 </td>
 </tr>
@@ -304,7 +307,7 @@ Indicate the access path to your Informix directory.
 </div>
 </td>
     <td><a name="wp3178276"> </a><div class="pCellBody">
-Name of the file to be processed.<br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name of the file to be processed.<br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -456,7 +459,7 @@ Select this box in order to customize the memory size used to store the data tem
 </div>
 </td>
     <td><a name="wp3178434"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp3178437"> </a><div class="pCellBody">

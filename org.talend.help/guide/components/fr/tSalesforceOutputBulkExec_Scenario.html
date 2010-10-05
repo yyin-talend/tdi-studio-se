@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:37:04">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:12">
     <title>Scénario&#160;: Insérer des données de masse dans votre Salesforce.com</title>
   </head>
 
@@ -33,7 +33,7 @@ Ce scénario décrit un Job à quatre composants qui charge des données en masse da
 </p>
 <a name="wp2967202"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulkExec1.png" id="wp2967199" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec1.png" id="wp2967199" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2967205"> </a><p class="pIndented1">
@@ -52,19 +52,19 @@ Afin de créer et exécuter le Job, procédez comme suit&#160;:
 </ul></div>
 <a name="wp2967284"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulk1.png" id="wp2967281" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk1.png" id="wp2967281" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2967295"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Property Type</b>, sélectionnez <b class="cBold">Repository</b> si vous avez déjà stocké votre connexion au serveur Salesforce dans le noeud <b class="cBold">Metadata</b> de la vue <b class="cBold">Repository</b>. Les propriétés sont automatiquement renseignées. Si vous n&#39;avez pas défini la connexion au serveur localement dans le Repository, remplissezl es champs manuellement, après avoir sélectionné <b class="cBold">Built-in</b> dans la liste <b class="cBold">Property Type</b>.<br />Pour plus d&#39;informations concernant les métadonnées, consultez le chapitre <em class="cEmphasis">Gestion des métadonnées</em>.</li></div>
-<a name="wp2967323"> </a><div class="pSmartList2"><li>A côté du champ <b class="cBold">File name/Stream</b>, cliquez sur le bouton <img src="../images/DotButton.png" id="wp2967320" border="0" hspace="0" vspace="0"/> afin de sélectionner votre fichier d&#39;entrée, par exemple <em class="cEmphasis">sforcebulk.txt</em>.</li></div>
+<a name="wp2967323"> </a><div class="pSmartList2"><li>A côté du champ <b class="cBold">File name/Stream</b>, cliquez sur le bouton <img src="../Images/DotButton.png" id="wp2967320" border="0" hspace="0" vspace="0"/> afin de sélectionner votre fichier d&#39;entrée, par exemple <em class="cEmphasis">sforcebulk.txt</em>.</li></div>
 <a name="wp2967339"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Repository</b>, puis cliquez sur le bouton <b class="cBold">[...]</b> pour ouvrir une boîte de dialogue dans laquelle vous pourrez sélectionner le schéma à utiliser pour ce composant. Si vous n&#39;avez pas défini votre schéma localement dans les métadonnées, sélectionnez <b class="cBold">Built-in</b> dans la liste <b class="cBold">Schema</b>, puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b>, afin d&#39;ouvrir une boîte de dialogue où vous pourrez définir le schéma manuellement. dans ce scénario, le schéma se compose de quatre colonnes&#160;: <em class="cEmphasis">Name</em>, <em class="cEmphasis">ParentId</em>, <em class="cEmphasis">Phone</em> et <em class="cEmphasis">Fax</em>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2967372"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulk_schema.png" id="wp2967369" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk_schema.png" id="wp2967369" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -75,7 +75,7 @@ Afin de créer et exécuter le Job, procédez comme suit&#160;:
 </ul></div>
 <a name="wp2967402"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulkExec2.png" id="wp2967399" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec2.png" id="wp2967399" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -85,7 +85,7 @@ Afin de créer et exécuter le Job, procédez comme suit&#160;:
 <a name="wp2967427"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Bulk file path</b>, parcourez votre répertoire jusqu&#39;à l&#39;emplacement où vous stockez les données <em class="cEmphasis">.csv</em> devant être traitées.</li></div>
 <a name="wp2967438"> </a><p class="pBodyRelative">
 <br />
-<img src="../images/bulb_small.png" align="left" id="wp2967436" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp2967436" border="0" hspace="0" vspace="0"/><br />
 <br />Le fichier de masse à traiter doit être au format<em class="cEmphasis"> .csv</em>.
 </p>
 <a name="wp2967453"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Action</b>, sélectionnez l&#39;action à effectuer sur les données de masse, <b class="cBold">insert</b> dans cet exemple.</li></div>
@@ -96,7 +96,7 @@ Afin de créer et exécuter le Job, procédez comme suit&#160;:
 </ul></div>
 <a name="wp2967507"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulk4.png" id="wp2967504" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulk4.png" id="wp2967504" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -112,7 +112,7 @@ Dans la console de la vue <b class="cBold">Run</b>, vous pouvez vérifier les rés
 </p>
 <a name="wp2967552"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tSalesforceOutputBulkExec3.png" id="wp2967549" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tSalesforceOutputBulkExec3.png" id="wp2967549" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp2967559"> </a><p class="pIndented1">

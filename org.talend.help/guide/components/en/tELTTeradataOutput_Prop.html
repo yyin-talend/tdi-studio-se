@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:21">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:34">
     <title>tELTTeradataOutput</title>
   </head>
 
@@ -82,28 +82,15 @@ In Java, use tCreate Table as substitute for this function.
 </div>
 </td>
     <td><a name="wp2970879"> </a><div class="pCellHeading">
-<em class="cEmphasis">Action on table</em>
-</div>
-</td>
-    <td><a name="wp2970881"> </a><div class="pCellBody">
-On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation carried out<br /><b class="cBold">Drop and create the table</b>: The table is removed and created again<br /><b class="cBold">Create a table</b>: The table doesn&#39;t exist and gets created. If the table exists, an error is generated and the Job is stopped.<br /><b class="cBold">Create table if doesn&#39;t exist</b>: Create the table if needed and carries out the action on data anyway.<br /><b class="cBold">Clear a table</b>: The table content is deleted
-</div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970898"> </a><div class="pCellBody">
-&#160;
-</div>
-</td>
-    <td><a name="wp2970903"> </a><div class="pCellHeading">
 <em class="cEmphasis">Action on data</em>
 </div>
 </td>
-    <td><a name="wp2970905"> </a><div class="pCellBody">
+    <td><a name="wp2970881"> </a><div class="pCellBody">
 On the data of the table defined, you can perform the following operation:<br /><b class="cBold">Insert</b>: Add new entries to the table. If duplicates are found, Job stops.<br />Note that in Teradata ELT, only Insert operation is available.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970910"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970910"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -116,7 +103,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970922"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970922"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -125,11 +112,11 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2970929"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2970937"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970937"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -138,20 +125,33 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2970944"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2970952"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3451918"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2970957"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding</em>
+    <td><a name="wp3451925"> </a><div class="pCellHeading">
+<em class="cEmphasis">Default Table Name</em>
 </div>
 </td>
-    <td><a name="wp2970959"> </a><div class="pCellBody">
-Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+    <td><a name="wp3451928"> </a><div class="pCellBody">
+Enter a default name for the table, between double quotation marks.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3451932"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3451938"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use different table name</em>
+</div>
+</td>
+    <td><a name="wp3451942"> </a><div class="pCellBody">
+Select this check box to enter a different output table name, between double quotation marks, in the <b class="cBold">Table name</b> field which appears.
 </div>
 </td>
 </tr>

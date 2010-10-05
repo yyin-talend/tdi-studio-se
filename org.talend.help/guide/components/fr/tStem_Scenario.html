@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:37:53">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:23">
     <title>Scénario&#160;: Extraire les radicaux de mots anglais d&#39;une colonne spécifique </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tStem_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tThresholdViolationAlert_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tStem_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSurviveFields_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -35,10 +35,10 @@ Ce scénario décrit un Job ayant six composants, effectuant une normalisation lin
 Le but de ce Job est de créer une sorte de dictionnaire des radicaux des mots anglais listés dans la colonne <em class="cEmphasis">translation</em>. Ce dictionnaire peut être utilisé plus tard, afin de vérifier les nouveaux mots à ajouter à la table sélectionnée. Les radicaux anglais extraits sont écrits dans un fichier de sortie, avec le nombre de leurs occurrences dans la colonne <em class="cEmphasis">translation</em>. 
 </p>
 <a name="wp3489986"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas d&#39;entrée principaux dans le Repository. Pour plus d&#39;informations concernant le stockage de métadonnées de schéma dans le Repository, consultez <em class="cEmphasis">Configurer une connexion DB</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite</b>.
+Dans ce scénario, vous avez déjà stocké les schémas d&#39;entrée principaux dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations concernant le stockage de métadonnées de schéma dans le <b class="cBold">Repository</b>, consultez <em class="cEmphasis">Configurer une connexion DB</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
 </p>
 <a name="wp3490014"> </a><p class="pIndented1">
-La table d&#39;entrée principale contient huit colonnes&#160;: <em class="cEmphasis">id_key</em>, <em class="cEmphasis">id_lang</em>, <em class="cEmphasis">translation</em>, <em class="cEmphasis">id_status</em>,<em class="cEmphasis"> id_user_trans</em>, <em class="cEmphasis">id_user_validate</em>, <em class="cEmphasis">id_editor</em> et <em class="cEmphasis">date</em>. Nous voulons extraire le radical des mots de la colonne <em class="cEmphasis">translation</em>.
+La table d&#39;entrée principale contient huit colonnes&#160;: <em class="cEmphasis">id_key</em>, <em class="cEmphasis">id_lang</em>, <em class="cEmphasis">translation</em>, <em class="cEmphasis">id_status</em>,<em class="cEmphasis"> id_user_trans</em>, <em class="cEmphasis">id_user_validate</em>, <em class="cEmphasis">id_editor</em> et <em class="cEmphasis">date</em>. Vous voulez extraire le radical des mots de la colonne <em class="cEmphasis">translation</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -47,18 +47,18 @@ La table d&#39;entrée principale contient huit colonnes&#160;: <em class="cEmpha
 </ul></div>
 <a name="wp3490077"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching.png" id="wp3490073" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching.png" id="wp3490073" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3490092"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de déposer le composant <b class="cBold">tMysqlInput</b> dans l&#39;espace de modélisation graphique.<br />La table d&#39;entrée utilisée dans ce scénario est appelée <em class="cEmphasis">translation</em>. Elle se compose de plusieurs colonnes, notamment la colonne <em class="cEmphasis">translation</em> qui contient les mots anglais dont nous voulons extraire les radicaux.</li></div>
+<a name="wp3490092"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de déposer le composant <b class="cBold">tMysqlInput</b> dans l&#39;espace de modélisation graphique.<br />La table d&#39;entrée utilisée dans ce scénario est appelée <em class="cEmphasis">translation</em>. Elle se compose de plusieurs colonnes, notamment la colonne <em class="cEmphasis">translation</em> qui contient les mots anglais dont vous voulez extraire les radicaux.</li></div>
 <a name="wp3490109"> </a><div class="pSmartList2"><li>Glissez un <b class="cBold">tNormalize</b>, un <b class="cBold">tFilterRow</b>, un <b class="cBold">tStem</b>, un <b class="cBold">tAggregateRow</b>, et un <b class="cBold">tFileOutputExcel</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3490128"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem.png" id="wp3490124" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem.png" id="wp3490124" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -69,7 +69,7 @@ La table d&#39;entrée principale contient huit colonnes&#160;: <em class="cEmpha
 </ul></div>
 <a name="wp3490171"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem1.png" id="wp3490167" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem1.png" id="wp3490167" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3490179"> </a><p class="pIndented1">
@@ -77,13 +77,13 @@ Les champs des propriétés du <b class="cBold">tMysqlInput </b>sont automatiqueme
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3490203"> </a><div class="pSmartList2"><li>Si nécessaire, modifiez la requête, dans la case <b class="cBold">Query</b>.<br />Dans cet exemple, nous ne voulons travailler qu&#39;avec les mots anglais, c&#39;est pour cela que l&#39;<code class="cCode">id_lang</code> est paramétré sur <code class="cCode">1</code>.</li></div>
+<a name="wp3490203"> </a><div class="pSmartList2"><li>Si nécessaire, modifiez la requête, dans la case <b class="cBold">Query</b>.<br />Dans cet exemple, l&#39;objectif est de ne travailler qu&#39;avec les mots anglais, c&#39;est pour cela que l&#39;<code class="cCode">id_lang</code> est paramétré sur <code class="cCode">1</code>.</li></div>
 <a name="wp3490224"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tNormalize</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3490235"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem2.png" id="wp3490231" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem2.png" id="wp3490231" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -96,19 +96,19 @@ Les champs des propriétés du <b class="cBold">tMysqlInput </b>sont automatiqueme
 </ul></div>
 <a name="wp3490300"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem3.png" id="wp3490296" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem3.png" id="wp3490296" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp3490307"> </a><div class="pSmartList2"><li>Sélectionnez l&#39;opérateur logique que vous souhaitez utiliser afin de combiner le filtrage simple et le mode avancé.</li></div>
-<a name="wp3490320"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Conditions</b>, cliquez sur le bouton <b class="cBold">[+]</b>, afin d&#39;ajouter une ou plusieurs condition(s) au flux de sortie. Ensuite, dans la colonne correspondante&#160;:<br />-sélectionnez la colonne d&#39;entrée sur laquelle vous souhaitez effectuer des opérations,<br />-sélectionnez dans la liste la fonction dont vous avez besoin,<br />-sélectionnez l&#39;opérateur pour lier la colonne d&#39;entrée et la valeur,<br />-saisissez entre guillemets les valeurs à filtrer.<br />Dans cet exemple, nous souhaitons filtrer tous les mots de la colonne <em class="cEmphasis">translation</em> ayant moins de trois lettres.</li></div>
+<a name="wp3490320"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Conditions</b>, cliquez sur le bouton <b class="cBold">[+]</b>, afin d&#39;ajouter une ou plusieurs condition(s) au flux de sortie. Ensuite, dans la colonne correspondante&#160;:<br />-sélectionnez la colonne d&#39;entrée sur laquelle vous souhaitez effectuer des opérations,<br />-sélectionnez dans la liste la fonction dont vous avez besoin,<br />-sélectionnez l&#39;opérateur pour lier la colonne d&#39;entrée et la valeur,<br />-saisissez entre guillemets les valeurs à filtrer.<br />Dans cet exemple, l&#39;objectif est de filtrer tous les mots de la colonne <em class="cEmphasis">translation</em> ayant moins de trois lettres.</li></div>
 <a name="wp3490337"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tStem</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3490348"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem4.png" id="wp3490344" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem4.png" id="wp3490344" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -120,7 +120,7 @@ Les champs des propriétés du <b class="cBold">tMysqlInput </b>sont automatiqueme
 </ul></div>
 <a name="wp3490404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem5.png" id="wp3490400" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem5.png" id="wp3490400" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -130,26 +130,26 @@ Les champs des propriétés du <b class="cBold">tMysqlInput </b>sont automatiqueme
 </ul></div>
 <a name="wp3490430"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem6.png" id="wp3490426" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem6.png" id="wp3490426" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3490441"> </a><div class="pSmartList2"><li>Dans le flux de sortie, à droite de la boîte de dialogue, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter autant de colonnes que nécessaire.<br />Dans cet exemple, nous souhaitons avoir deux colonnes de sortie, la colonne <em class="cEmphasis">translation</em>, et une nouvelle colonne de sortie appelée <em class="cEmphasis">count</em>.</li></div>
+<a name="wp3490441"> </a><div class="pSmartList2"><li>Dans le flux de sortie, à droite de la boîte de dialogue, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter autant de colonnes que nécessaire.<br />Dans cet exemple, l&#39;objectif est d&#39;avoir deux colonnes de sortie, la colonne <em class="cEmphasis">translation</em>, et une nouvelle colonne de sortie appelée <em class="cEmphasis">count</em>.</li></div>
 <a name="wp3490459"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de fermer la boîte de dialogue et procéder à l&#39;étape suivante.</li></div>
 <a name="wp3490475"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Basic settings</b> du <b class="cBold">tAggregateRow</b>, dans la zone <b class="cBold">Group by</b>, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter autant de lignes que nécessaire. Vous pouvez définir les valeurs de groupement.</li></div>
 <a name="wp3490488"> </a><div class="pSmartList2"><li>Cliquez dans la ligne <b class="cBold">Output column</b> afin de sélectionner la colonne de sortie qui contiendra les données agrégées, la colonne <em class="cEmphasis">translation</em> dans cet exemple.</li></div>
 <a name="wp3490501"> </a><div class="pSmartList2"><li>Cliquez dans la ligne <b class="cBold">Input column position</b> et sélectionnez la colonne d&#39;entrée à partir de laquelle vous souhaitez collecter les valeurs à agréger, la colonne <em class="cEmphasis">translation</em> dans cet exemple.</li></div>
 <a name="wp3490518"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Operations</b>, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter des lignes pour les colonnes qui contiendront les données agrégées. Vous pouvez définir les valeurs de calcul.</li></div>
 <a name="wp3490527"> </a><div class="pSmartList2"><li>Cliquez dans la ligne <b class="cBold">Output column </b>et sélectionnez la colonne de destination dans la liste, lea colonne <em class="cEmphasis">translation</em> dans cet exemple.</li></div>
-<a name="wp3490540"> </a><div class="pSmartList2"><li>Cliquez dans la ligne de la colonne <b class="cBold">Function</b>, et sélectionnez une des opérations listées.<br />Dans cet exemple, nous voulons compter le nombre de radicaux à lister une fois dans la colonne de sortie.</li></div>
+<a name="wp3490540"> </a><div class="pSmartList2"><li>Cliquez dans la ligne de la colonne <b class="cBold">Function</b>, et sélectionnez une des opérations listées.<br />Dans cet exemple, l&#39;objectif est de compter le nombre de radicaux à lister une fois dans la colonne de sortie.</li></div>
 <a name="wp3490549"> </a><div class="pSmartList2"><li>Cliquez dans la ligne <b class="cBold">Input column position</b> et sélectionnez la colonne d&#39;entrée à partir de laquelle vous souhaitez collecter les valeurs à agréger, la colonne <em class="cEmphasis">id_key</em> dans cet exemple.</li></div>
 <a name="wp3490566"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFileOutputExcel</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses propriétés.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3490577"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem7.png" id="wp3490573" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem7.png" id="wp3490573" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -166,7 +166,7 @@ La capture d&#39;écran ci-dessous illustre l&#39;extraction du fichier de sortie
 </p>
 <a name="wp3490624"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tStem8.png" id="wp3490618" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tStem8.png" id="wp3490618" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
     </blockquote>
@@ -188,7 +188,7 @@ La capture d&#39;écran ci-dessous illustre l&#39;extraction du fichier de sortie
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tStem_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tThresholdViolationAlert_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tStem_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSurviveFields_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

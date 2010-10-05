@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>Scenario 1: Adding a new column and altering data in a DB table</title>
   </head>
 
@@ -159,7 +159,7 @@ The new <em class="cEmphasis">One_month_later</em> column replaces the <em class
 
 </div>
 <a name="wp2751544"> </a><p class="pIndented1">
-Related topic: <a href="tDBOutput_Prop.html#wp1447242"><em class="cEmphasis">tDBOutput properties</em></a>.
+Related topic: <a href="tDBOutput_Prop.html#wp3627243"><em class="cEmphasis">tDBOutput properties</em></a>.
 </p>
 <a name="wp2751550"> </a><h2 class="pHeading2">
 Scenario 2: Updating data in a database table
@@ -181,7 +181,7 @@ This Java scenario describes a two-component Job that updates data in a MySQL ta
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2751598"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
-<a name="wp2751611"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b>  if you have already stored the metadata of the delimited file in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the metadata of the delimited file. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
+<a name="wp2751611"> </a><div class="pSmartList2"><li>From the <b class="cBold">Property Type</b> list, select <b class="cBold">Repository</b> if you have already stored the metadata of the delimited file in the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b> tree view. Otherwise, select <b class="cBold">Built-In</b> to define manually the metadata of the delimited file. <br />For more information about storing metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp2751635"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -265,12 +265,12 @@ This scenario describes a four-component Job that carries out migration from a c
 <a name="wp2939098"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b>, select the customer file metadata that you want to migrate and drop it onto the workspace. In the <b class="cBold">[Components]</b> dialog box, select <b class="cBold">tFileInputDelimited</b> and click <b class="cBold">OK</b>. The component properties will be filled in automatically.</li></div>
 <a name="wp2939111"> </a><div class="pSmartList2"><li>If you have not stored the information about your customer file under the <b class="cBold">Metadata</b> node in the <b class="cBold">Repository</b>. Drop a <b class="cBold">tFileInputDelimited</b> component from the family <b class="cBold">File</b>&#160;&gt;&#160;<b class="cBold">Input</b>, in the <b class="cBold">Palette</b>, and fill in its properties manually in the <b class="cBold">Component</b> tab.</li></div>
 <a name="wp2939145"> </a><div class="pSmartList2"><li>From the <b class="cBold">Palette</b>, drop a <b class="cBold">tMap</b> from the <b class="cBold">Processing</b> family onto the workspace.</li></div>
-<a name="wp2939152"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b>, expand the <b class="cBold">Metadata</b> node, followed by the <b class="cBold">Db Connections</b> node and select the connection required to migrate your data to the appropriate database. Drop it onto the workspace. In the <b class="cBold">[Components]</b> dialog box, select  <b class="cBold">tMysqlOutput</b> and click <b class="cBold">OK</b>. The database connection properties will be automatically filled in.</li></div>
-<a name="wp2939165"> </a><div class="pSmartList2"><li>If you have not stored the database connection details under the <b class="cBold">Db Connections</b> node in the <b class="cBold">Repository</b>, drop a <b class="cBold">tMysqlOutput</b> from the <b class="cBold">Databases</b> family in the <b class="cBold">Palette</b> and fill in  its properties manually in the <b class="cBold">Component </b>tab. </li></div>
+<a name="wp2939152"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b>, expand the <b class="cBold">Metadata</b> node, followed by the <b class="cBold">Db Connections</b> node and select the connection required to migrate your data to the appropriate database. Drop it onto the workspace. In the <b class="cBold">[Components]</b> dialog box, select <b class="cBold">tMysqlOutput</b> and click <b class="cBold">OK</b>. The database connection properties will be automatically filled in.</li></div>
+<a name="wp2939165"> </a><div class="pSmartList2"><li>If you have not stored the database connection details under the <b class="cBold">Db Connections</b> node in the <b class="cBold">Repository</b>, drop a <b class="cBold">tMysqlOutput</b> from the <b class="cBold">Databases</b> family in the <b class="cBold">Palette</b> and fill in its properties manually in the <b class="cBold">Component </b>tab. </li></div>
 </ul></div>
 </ul></div>
 <a name="wp2939193"> </a><p class="pIndented1">
-For more information, see <em class="cEmphasis">Setting a built-in schema</em> and <em class="cEmphasis">Setting a Repository schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide.</b> 
+For more information, see <em class="cEmphasis">How to set a built-in schema</em> and <em class="cEmphasis">How to set a repository schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide.</b> 
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -374,6 +374,164 @@ The schema is as follows:
 </div>
 <a name="wp2939598"> </a><p class="pIndented1">
 The data in error are sent to the delimited file, as well as the error type met. Here, we have: <b class="cBold">Data truncation</b>.
+</p>
+<a name="wp3605213"> </a><h2 class="pHeading2">
+Scenario 4: Writing dynamic columns from a source file to a MySQL database
+</h2>
+<a name="wp3605216"> </a><p class="pIndented1">
+In this scenario we will read dynamic columns from a source file, map them and then write them to a table in a <b class="cBold">MySQL</b> database. By defining a dynamic column alongside known column names, we can retrieve all of the columns from the source file, including the unknown columns.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605234"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputDelimited</b>, a <b class="cBold">tMap</b> and a <b class="cBold">tMysqlLOutput</b> component onto the workspace.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605243"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_connections.png" id="wp3605240" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605258"> </a><div class="pSmartList2"><li>Link <b class="cBold">tFileInputDelimited</b> to <b class="cBold">tMap</b> using a <b class="cBold">Row &gt; Main</b> connection.</li></div>
+<a name="wp3605271"> </a><div class="pSmartList2"><li>Link <b class="cBold">tMap</b> to <b class="cBold">tMysqlOutput</b> using a <b class="cBold">Row &gt; *New Output* (Main)</b> connection.</li></div>
+<a name="wp3605280"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFileInputDelimited</b> to open its <b class="cBold">Basic Settings</b> view in the <b class="cBold">Component</b> tab.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605292"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tFileInputDelimited_BasicSettings.png" id="wp3605289" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3605302"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3605296" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />The dynamic schema feature is only supported in <b class="cBold">Built-In</b> mode.<br />
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605315"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built-In</b> from the <b class="cBold">Property Type</b> list.</li></div>
+<a name="wp3605322"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...]</b> button next to the <b class="cBold">File name/Stream</b> field and browse to the input file.</li></div>
+<a name="wp3605328"> </a><div class="pSmartList2"><li>Enter the characters you want to use as separators next to the <b class="cBold">Row Separator</b> and <b class="cBold">Field Separator</b> fields.</li></div>
+<a name="wp3605338"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit Schema</b> to define the source file schema.<br />The <b class="cBold">Edit Schema</b> dialog box opens.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605350"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tFileInputDelimited_Edit_Schema.png" id="wp3605347" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605368"> </a><div class="pSmartList2"><li>Add as many rows as required or delete rows using the <img src="../Images/plus_button.png" id="wp3605358" border="0" hspace="0" vspace="0"/> and <img src="../Images/delete_button.png" id="wp3605364" border="0" hspace="0" vspace="0"/> buttons.</li></div>
+<a name="wp3605384"> </a><div class="pSmartList2"><li>Modify the order of the columns using the <img src="../Images/downward_arrow.png" id="wp3605374" border="0" hspace="0" vspace="0"/> and <img src="../Images/upward_arrow.png" id="wp3605380" border="0" hspace="0" vspace="0"/> buttons.</li></div>
+<a name="wp3605391"> </a><div class="pSmartList2"><li>Under <b class="cBold">Column</b>, enter the names of each known column on separate rows. </li></div>
+<a name="wp3605398"> </a><div class="pSmartList2"><li>In the last row, under <b class="cBold">Column</b>, enter a name for the dynamic column.</li></div>
+<a name="wp3605404"> </a><div class="pSmartList2"><li>Under <b class="cBold">Type</b>, click the field to define the type of data in the corresponding column.<br />Click the arrow to select the correct data type.</li></div>
+<a name="wp3605418"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_small.png" align="left" id="wp3605410" border="0" hspace="0" vspace="0"/><br />
+<br />Under <b class="cBold">Type</b>, the dynamic column type must be set as <b class="cBold">Dynamic</b>.<br />
+</p>
+<a name="wp3616003"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/Components-05-267-0936.jpg" height="50" width="50" align="left" id="wp3616000" border="0" hspace="0" vspace="0"/><br />
+<br />The dynamic column must be defined in the last row of the schema.<br />
+</p>
+<a name="wp3616007"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box when you have finished defining the source schema.</li></div>
+<a name="wp3605442"> </a><div class="pSmartList2"><li>Click <b class="cBold">tMap</b> to open its <b class="cBold">Basic Settings</b> view in the <b class="cBold">Component</b> tab. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605449"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tMap_Basic_Settings.png" id="wp3605446" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605462"> </a><div class="pSmartList2"><li>Click <b class="cBold">[...]</b> next to <b class="cBold">Map Editor</b> to map the columns from the source file.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605469"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tMap_Edit1.png" id="wp3605466" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605477"> </a><div class="pSmartList2"><li>On the toolbar on top of the <b class="cBold">Output Panel</b> on the top right of the window, click the <img src="../Images/plus_button.png" id="wp3605481" border="0" hspace="0" vspace="0"/> button.<br />The <b class="cBold">Add an Output</b> schema dialog box appears.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605495"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_Add_An_Output.png" id="wp3605492" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605504"> </a><div class="pSmartList2"><li>Next to <b class="cBold">New output</b>, enter a name for the output schema.</li></div>
+<a name="wp3605511"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3605517"> </a><div class="pSmartList2"><li>Using the <b class="cBold">Ctrl + click</b> technique, highlight all off the column names in the input schema on the left and drop them onto the output schema.<br />The columns dropped on the output columns retain their original values and they are automatically mapped on a one to one basis.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605526"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tMap_Edit2.png" id="wp3605523" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605534"> </a><div class="pSmartList2"><li>In the output schema, click the relevant row under <b class="cBold">Expression</b> if you want to use the <b class="cBold">Expression Builder</b> to set advanced parameters for the corresponding column in the output.</li></div>
+<a name="wp3605547"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...] </b>button which appears to open the <b class="cBold">Expression Builder</b> and set the parameters as required.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605557"> </a><p class="pIndented1">
+For further information about using the <b class="cBold">Expression Builder</b>, see <em class="cEmphasis">How to write code using the Expression Builder</em>.
+</p>
+<a name="wp3605565"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3605563" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The dynamic column must be mapped on a one to one basis and cannot undergo any transformations. It cannot be used in a filter expression or in a variables section. It cannot be renamed in the output table and cannot be used as a join condition.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605578"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3605592"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tMysqlOutput</b> to set its <b class="cBold">Basic Settings</b> in the <b class="cBold">Component</b> tab.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605599"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_tMysqlOutput_Basic_Properties.png" id="wp3605596" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3605611"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built-in</b> as the <b class="cBold">Property Type</b>.</li></div>
+<a name="wp3605618"> </a><div class="pSmartList2"><li>Select the <b class="cBold">DB Version</b> from the corresponding list.</li></div>
+<a name="wp3605625"> </a><div class="pSmartList2"><li>Next to <b class="cBold">Host</b>, enter the database server IP address.</li></div>
+<a name="wp3605632"> </a><div class="pSmartList2"><li>Next to <b class="cBold">Port</b>, enter the listening port number of the database server.</li></div>
+<a name="wp3605642"> </a><div class="pSmartList2"><li>Enter your authentication data in the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields.</li></div>
+<a name="wp3605649"> </a><div class="pSmartList2"><li>Next to <b class="cBold">Action on table</b>, select the required action.</li></div>
+<a name="wp3605656"> </a><div class="pSmartList2"><li>Next to <b class="cBold">Action on data</b>, select the required action.</li></div>
+<a name="wp3605668"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Schema type</b> as<b class="cBold"> Built-in</b> and click <b class="cBold">Edit schema</b> to modify the schema if required.</li></div>
+<a name="wp3605712"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.<br />The table is written to the MySQL database along with the data and the column names of the previously unknown columns:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3605721"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/dynamic_schema_mysql_database.png" id="wp3605718" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3605730"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3605725" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The Job can also be run in the <b class="cBold">Traces Debug</b> mode, which allows you to view the rows as they are written to the output file, in the workspace.<br />
+</p>
+<a name="wp3612685"> </a><p class="pIndented1">
+For further information about defining and mapping dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</p>
+<a name="wp3613095"> </a><p class="pIndented1">
+For an example of how to write dynamic columns to an output file, see <a href="tMysqlInput_Scenario.html#wp3608406"><em class="cEmphasis">Scenario: Writing dynamic columns from a MySQL database to an output file</em></a>.
 </p>
     </blockquote>
     <hr>

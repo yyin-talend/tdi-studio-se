@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tHSQLDbRow</title>
   </head>
 
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1397687"> </a><h2 class="pHeading1">
+<a name="wp3629662"> </a><h2 class="pHeading1">
 tHSQLDbRow
 </h2>
 <a name="wp1401091"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -78,7 +78,7 @@ Depending on the nature of the query and the database, <b class="cBold">tHSQLDbR
 </div>
 </td>
     <td><a name="wp1397787"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +103,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp1397815"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3599140"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -186,6 +186,37 @@ DB user authentication data.
 </div>
 </td>
 </tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3638489"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3638496"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB path</em>
+</div>
+</td>
+    <td><a name="wp3638499"> </a><div class="pCellBody">
+Specify the directory to the database you want to connect to. This field is available only to the <b class="cBold">HSQLDb In Process Persistent</b> running mode.<br />
+</div>
+<a name="wp3638512"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-125-0369.jpg" height="47" width="47" align="left" id="wp3638508" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+By default, if the database you specify in this field does not exist, it will be created automatically. If you want to change this default setting, modify the connection parameter set in the <b class="cBold">Additional JDBC parameter</b> field in the <b class="cBold">Advanced settings</b> view
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3638525"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3638532"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3638535"> </a><div class="pCellBody">
+Enter the database name that you want to connect to. This field is available only to the <b class="cBold">HSQLDb In Process Persistent</b> running mode and the <b class="cBold">HSQLDb In Memory</b> running mode.
+</div>
+</td>
+</tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1397879"> </a><div class="pCellBody">
 &#160;
 </div>
@@ -195,7 +226,7 @@ DB user authentication data.
 </div>
 </td>
     <td><a name="wp1397893"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 </td>
 </tr>
@@ -208,7 +239,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2654714"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -221,7 +252,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2656117"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -234,7 +265,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp1397943"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -290,8 +321,21 @@ This check box is selected by default. Clear the check box to skip the row on er
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214533"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3638573"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3638579"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp3638583"> </a><div class="pCellBody">
+Specify additional connection properties for the DB connection you are creating. When the runding mode is <b class="cBold">HSQLDb In Process Persistent </b>, this additional property is set as <code class="cCode">ifexists=true</code> by default, meaning that the database will be automatically created when needed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214533"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp2214539"> </a><div class="pCellHeading">
@@ -303,12 +347,12 @@ Select this check box to insert the result of the query into a COLUMN of the cur
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214547"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214547"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp2214554"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2214561"> </a><div class="pCellBody">
@@ -316,7 +360,7 @@ Select the encoding from the list or select <b class="cBold">Custom</b> and defi
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214565"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214565"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -329,7 +373,7 @@ Number of rows to be completed before committing batches of rows together into t
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2214579"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2214579"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -342,12 +386,38 @@ Select this check box to collect log data at the component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1398031"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1398031"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1398034"> </a><div class="pCellBody">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+This component offers the flexibility of the DB query and covers all possible SQL queries.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3638658"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3638661"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3638668"> </a><div class="pCellBody">
+<b class="cBold">Query</b>: Indicates the query to be processed. This is available as a <b class="cBold">Flow</b> variable.<br />    Returns a string <br />For further information about variables, see <em class="cEmphasis">How to use variables in a Job</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3638613"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3638616"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3638619"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main; Reject; Iterate<br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error; On Subjob Ok; On Subjob Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Iterate <br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error; On Subjob Ok; On Subjob Error.<br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>

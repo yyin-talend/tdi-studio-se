@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:43:01">
+    <meta name="LASTUPDATED" content="10/04/10 19:31:38">
     <title>tSSH</title>
   </head>
 
@@ -47,7 +47,7 @@ System
 </div>
 </td>
     <td><a name="wp1446573"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-18-6-05.jpg" height="59" width="112" id="wp1446569" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-14-6-05.jpg" height="59" width="112" id="wp1446569" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -69,8 +69,47 @@ Allows to establish a communication with distant server and return securely sens
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446596"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3459671"> </a><div class="pCellBody">
 <b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3459585"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3459592"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema </b>to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the preceding component in the Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3459604"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459607"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459614"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3459629"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459632"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459639"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446596"> </a><div class="pCellBody">
+&#160;
 </div>
 </td>
     <td><a name="wp1446601"> </a><div class="pCellHeading">
@@ -82,7 +121,7 @@ IP address
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446605"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446605"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -95,7 +134,7 @@ Listening port number
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446614"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446614"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -108,33 +147,72 @@ User authentication information
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446620"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446620"> </a><div class="pCellHeading">
+<em class="cEmphasis">Authentication method</em>
 </div>
 </td>
     <td><a name="wp1446624"> </a><div class="pCellHeading">
-<em class="cEmphasis">Public Key</em>/<em class="cEmphasis">Password</em>
+<em class="cEmphasis">Public Key</em>/<em class="cEmphasis">Key Passphrase</em>/<em class="cEmphasis">Private Key</em>
 </div>
 </td>
     <td><a name="wp1446630"> </a><div class="pCellBody">
-Select the relevant option.<br />In case of Public Key, make sure the key is added to the agent or that no passphrase is required. 
+Select the relevant option.<br />In case of <b class="cBold">Public Key</b>, type in the passphrase, if required, in the<b class="cBold"> Key Passphrase</b> field and then in the <b class="cBold">Private key</b> field, type in the private key or click the three dot button next to the <b class="cBold">Private key</b> field to browse to it. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446632"> </a><div class="pCellBody">
-&#160;
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3459748"> </a><div class="pCellHeading">
+<em class="cEmphasis">Authentication method</em>
 </div>
 </td>
     <td><a name="wp1446634"> </a><div class="pCellHeading">
-<em class="cEmphasis">Password/Private Key</em>
+<em class="cEmphasis">Password/Password</em>
 </div>
 </td>
     <td><a name="wp1446639"> </a><div class="pCellBody">
-<b class="cBold">Password</b>: Type in the password required.<br /><b class="cBold">Private key</b>: browse to the relevant key location. 
+Select the relevant option.<br />In case of <b class="cBold">Password</b>,type in the required password  in the <b class="cBold">Password</b> field.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446644"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3459793"> </a><div class="pCellHeading">
+<em class="cEmphasis">Authentication method</em>
+</div>
+</td>
+    <td><a name="wp3459770"> </a><div class="pCellHeading">
+<em class="cEmphasis">Keyboard Interactive/Password</em>
+</div>
+</td>
+    <td><a name="wp3459773"> </a><div class="pCellBody">
+Select the relevant option.<br />In case of <b class="cBold">Keyboard Interactive</b>, type in the required password in the <b class="cBold">Password</b> field.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3459814"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459817"> </a><div class="pCellHeading">
+<em class="cEmphasis">Pseudo terminal</em>
+</div>
+</td>
+    <td><a name="wp3459820"> </a><div class="pCellBody">
+Select this check box to call the interactive shell that performs the terminal operations.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3459837"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459840"> </a><div class="pCellHeading">
+<em class="cEmphasis">Command separator</em>
+</div>
+</td>
+    <td><a name="wp3459843"> </a><div class="pCellBody">
+Type in the command separator required. Once the <b class="cBold">Pseudo terminal</b> check box is selected, this field becomes unavailable.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3459759"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
@@ -143,7 +221,7 @@ Select the relevant option.<br />In case of Public Key, make sure the key is add
 </div>
 </td>
     <td><a name="wp1446651"> </a><div class="pCellBody">
-Type in the command for the relevant information to be returned from the remote computer. 
+Type in the command for the relevant information to be returned from the remote computer. When you select the <b class="cBold">Pseudo terminal</b> check box, this table becomes a terminal emulator and each row in this table is a single command.
 </div>
 </td>
 </tr>
@@ -160,6 +238,32 @@ Define the timeout time period. A timeout message will be generated if the actua
 </div>
 </td>
 </tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3459892"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459895"> </a><div class="pCellHeading">
+<em class="cEmphasis">Standard Output</em>
+</div>
+</td>
+    <td><a name="wp3459898"> </a><div class="pCellBody">
+Select the destination to which the standard output is returned.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3459882"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3459885"> </a><div class="pCellHeading">
+<em class="cEmphasis">Error Output</em>
+</div>
+</td>
+    <td><a name="wp3459888"> </a><div class="pCellBody">
+Select the destination to which the error output is returned.
+</div>
+</td>
+</tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446680"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
@@ -169,7 +273,20 @@ This component can be used as standalone component.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1446689"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3460229"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3460231"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3460233"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main<br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error; On Subjob Ok; On Subjob Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Iterate<br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error; On Subjob Ok; On Subjob Error. <br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1446689"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>

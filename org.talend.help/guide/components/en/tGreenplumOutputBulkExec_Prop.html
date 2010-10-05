@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tGreenplumOutputBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tGreenplumOutputBulkExec
 <a name="wp2962773"> </a><h2 class="pHeading2">
 tGreenplumOutputBulkExec properties
 </h2>
-<a name="wp2963317"> </a><p class="pBodyRelative">
+<a name="wp2963317"> </a><p class="pIndented1">
+The <b class="cBold">tGreenplumOutputBulk</b> and <b class="cBold">tGreenplumBulkExec</b> components are used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in the <b class="cBold">tGreenplumOutputBulkExec</b> component.
+</p>
+<a name="wp3569141"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2962785table2962777">
@@ -78,7 +81,7 @@ As a dedicated component, it allows gains in performance during Insert operation
 </div>
 </td>
     <td><a name="wp2962871"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2962899"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3599002"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -117,7 +120,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp2962931"> </a><div class="pCellBody">
-Database server IP address
+Database server IP address.
 </div>
 </td>
 </tr>
@@ -221,7 +224,7 @@ Name of the file to be processed.
 </div>
 </td>
     <td><a name="wp2963061"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository.
 </div>
 </td>
 </tr>
@@ -234,7 +237,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2963075"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -247,7 +250,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2963100"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>

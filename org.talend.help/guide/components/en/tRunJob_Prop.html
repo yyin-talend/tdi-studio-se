@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:43:01">
+    <meta name="LASTUPDATED" content="10/04/10 19:31:38">
     <title>tRunJob</title>
   </head>
 
@@ -47,7 +47,7 @@ System
 </div>
 </td>
     <td><a name="wp2753199"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-18-2-01.jpg" height="59" width="112" id="wp2753195" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-14-2-01.jpg" height="59" width="112" id="wp2753195" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -91,7 +91,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2753250"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -104,7 +104,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2753265"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
 </div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ Select this check box to get all the context variables from the parent Job. Dese
 </div>
 </td>
     <td><a name="wp2757090"> </a><div class="pCellBody">
-You can change the selected context parameters. Click the plus button to add the parameters as defined in the Context of the child Job. For more information on context parameters, see <em class="cEmphasis">Context settings</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+You can change the selected context parameters. Click the plus button to add the parameters as defined in the Context of the child Job. For more information on context parameters, see <em class="cEmphasis">Context settings</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -244,6 +244,32 @@ Select this check box to gather the processing metadata at the Job level as well
 </td>
     <td colspan="2" rowspan="1"><a name="wp2753353"> </a><div class="pCellBody">
 This component can be used as a standalone Job or can help clarifying complex Job by avoiding having too many sub-jobs all together in one Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3455804"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3455807"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3455834"> </a><div class="pCellBody">
+<b class="cBold">Child return code</b>: Indicates the Java return code of the child Job. This is available as an <b class="cBold">After</b> variable.<br />    Returns an integer: <br />        - if no errors &gt; the code value is 0. <br />        - if errors &gt; an exception message shows.<br /><br /><b class="cBold">Child exception stack trace</b>: Returns a Java stack trace from a child job. This is available as an <b class="cBold">After</b> variable. <br />    Returns a string.<br /><br />For further information about variables, see <em class="cEmphasis">How to use variables in a Job</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3458461"> </a><div class="pCellBody">
+<b class="cBold">a</b>
+</div>
+</td>
+    <td><a name="wp3458464"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3458467"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main.<br /><b class="cBold">Trigger</b>: On Subjob Ok; On Subjob Error; Run if; On Component Ok; On Component Error<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Reject; Iterate.<br /><b class="cBold">Trigger</b>: On Subjob Ok; On Subjob Error; Run if; On Component Ok; On Component Error; Synchronize; Parallelize.<br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
 </div>
 </td>
 </tr>

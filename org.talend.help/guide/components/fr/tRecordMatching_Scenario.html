@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:37:53">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:23">
     <title>Scénario&#160;: Correspondance d&#39;entrées utilisant les algorithmes Q-grams et Levenshtein</title>
   </head>
 
@@ -41,10 +41,10 @@ Ce scénario Java décrit un Job à six composants ayant pour but de&#160;:
 Les sorties de ces deux types de correspondances sont écrites dans trois fichiers de sortie&#160;: le premier pour les valeurs de correspondance, le deuxième pour les valeurs de correspondance possible, et le troisième pour les valeurs n&#39;ayant aucune correspondance dans le fichier de référence. 
 </p>
 <a name="wp3488578"> </a><p class="pIndented1">
-Dans ce scénario, nous avons déjà stocké les schémas principaux et de référence dans le Repository. Pour plus d&#39;informations concernant le stockage des métadonnées de schémas dans le Repository, consultez <em class="cEmphasis">Configurer une connexion DB</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite</b>.
+Dans ce scénario, vous avez déjà stocké les schémas principaux et de référence dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations concernant le stockage des métadonnées de schémas dans le <b class="cBold">Repository</b>, consultez <em class="cEmphasis">Configurer une connexion DB</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
 </p>
 <a name="wp3488614"> </a><p class="pIndented1">
-La table d&#39;entrée principale contient sept colonnes&#160;: <em class="cEmphasis">code</em>, <em class="cEmphasis">name</em>, <em class="cEmphasis">address</em>, <em class="cEmphasis">zipcode</em>, <em class="cEmphasis">city</em>, <em class="cEmphasis">email</em> et <em class="cEmphasis">col7</em>. Nous souhaitons effectuer une correspondance floue sur deux colonnes&#160;: <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em>.
+La table d&#39;entrée principale contient sept colonnes&#160;: <em class="cEmphasis">code</em>, <em class="cEmphasis">name</em>, <em class="cEmphasis">address</em>, <em class="cEmphasis">zipcode</em>, <em class="cEmphasis">city</em>, <em class="cEmphasis">email</em> et <em class="cEmphasis">col7</em>. Vous allez effectuer une correspondance floue sur deux colonnes&#160;: <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em>.
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
@@ -53,19 +53,19 @@ La table d&#39;entrée principale contient sept colonnes&#160;: <em class="cEmpha
 </ul></div>
 <a name="wp3488665"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching.png" id="wp3488661" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching.png" id="wp3488661" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp3488680"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de déposer un composant <b class="cBold">tMysqlInput</b> dans l&#39;espace de modélisation graphique. La table d&#39;entrée utilisée dans ce scénario est appelée <em class="cEmphasis">person</em>. Elle contient plusieurs colonnes, y compris les deux colonnes <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em> sur lesquelles nous voulons effectuer la correspondance floue.</li></div>
+<a name="wp3488680"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de déposer un composant <b class="cBold">tMysqlInput</b> dans l&#39;espace de modélisation graphique. La table d&#39;entrée utilisée dans ce scénario est appelée <em class="cEmphasis">person</em>. Elle contient plusieurs colonnes, y compris les deux colonnes <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em> sur lesquelles vous voulez effectuer la correspondance floue.</li></div>
 <a name="wp3488697"> </a><div class="pSmartList2"><li>Répétez l&#39;opération pour la seconde table d&#39;entrée que vous souhaitez utiliser comme référence, <em class="cEmphasis">customer </em>dans ce scénario.</li></div>
 <a name="wp3488710"> </a><div class="pSmartList2"><li>Déposez un composant <b class="cBold">tRecordMatching</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique, ainsi que trois <b class="cBold">tLogRow</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp3488725"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching1.png" id="wp3488721" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching1.png" id="wp3488721" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -77,7 +77,7 @@ La table d&#39;entrée principale contient sept colonnes&#160;: <em class="cEmpha
 </ul></div>
 <a name="wp3488801"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching2.png" id="wp3488797" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching2.png" id="wp3488797" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3488810"> </a><p class="pIndented1">
@@ -85,7 +85,7 @@ La capture d&#39;écran ci-dessous montre les propriétés de la table d&#39;entrée
 </p>
 <a name="wp3488819"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching3.png" id="wp3488815" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching3.png" id="wp3488815" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3488827"> </a><p class="pIndented1">
@@ -98,7 +98,7 @@ Les champs des propriétés des deux composants <b class="cBold">tMysqlInput</b> s
 </ul></div>
 <a name="wp3488866"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching4.png" id="wp3488862" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching4.png" id="wp3488862" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -108,15 +108,15 @@ Les champs des propriétés des deux composants <b class="cBold">tMysqlInput</b> s
 </ul></div>
 <a name="wp3488888"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tRecordMatching5.png" id="wp3488884" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tRecordMatching5.png" id="wp3488884" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3488896"> </a><p class="pIndented1">
-Dans cet exemple, nous souhaitons passer au composant <b class="cBold">tRecordMatching</b> les colonnes <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em> du premier composant <b class="cBold">tMysqlInput</b>, ainsi que les colonnes <em class="cEmphasis">ref_name</em> et <em class="cEmphasis">ref_</em><em class="cEmphasis">email</em> du second composant <b class="cBold">tMysqlInput</b>.
+Dans cet exemple, l&#39;objectif est de passer au composant <b class="cBold">tRecordMatching</b> les colonnes <em class="cEmphasis">name</em> et <em class="cEmphasis">email</em> du premier composant <b class="cBold">tMysqlInput</b>, ainsi que les colonnes <em class="cEmphasis">ref_name</em> et <em class="cEmphasis">ref_</em><em class="cEmphasis">email</em> du second composant <b class="cBold">tMysqlInput</b>.
 </p>
 <a name="wp3488941"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../images/bulb_small.png" align="left" id="wp3488930" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3488930" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Les colonnes <em class="cEmphasis">MATCHING_DISTANCE</em> et <em class="cEmphasis">MATCHING_WEIGHT</em> du schéma de sortie sont définies par défaut.
 </p>
 <a name="wp3488958"> </a><p class="pIndented1">
@@ -134,7 +134,7 @@ La colonne <em class="cEmphasis">MATCHING_DISTANCE</em> affichera une distance p
 <a name="wp3489051"> </a><div class="pSmartList2"><li>Définissez le type de correspondance de la seconde colonne, <b class="cBold">Levenshtein</b> dans cet exemple.</li></div>
 <a name="wp3489061"> </a><p class="pBodyRelative">
 <br />
-<img src="../images/bulb_small.png" align="left" id="wp3489058" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp3489058" border="0" hspace="0" vspace="0"/><br />
 Les valeurs minimale et maximale de correspondance possible sont définies dans la vue <b class="cBold">Advanced settings</b>. Vous pouvez modifier les valeurs par défaut.
 </p>
 <a name="wp3489077"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Confidence Weight</b>, définissez un poids pour chacune des colonnes utilisées comme attributs de clé.</li></div>
@@ -143,7 +143,7 @@ Les valeurs minimale et maximale de correspondance possible sont définies dans l
 </ul></div>
 <a name="wp3489101"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3489097" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3489097" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -161,7 +161,7 @@ La capture d&#39;écran ci-dessous illustre les extractions des trois tables de s
 </p>
 <a name="wp3489162"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Components-07-54-197.jpg" height="681" width="1050" id="wp3489155" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Components-04-58-230.jpg" height="681" width="1050" id="wp3489155" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp3489166"> </a><p class="pIndented1">

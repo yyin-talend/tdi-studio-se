@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:42:46">
+    <meta name="LASTUPDATED" content="10/04/10 19:31:29">
     <title>tConvertType </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAggregateSortedRow_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tConvertType_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tBRMS_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tConvertType_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1615261"> </a><h2 class="pHeading1">
+<a name="wp3626003"> </a><h2 class="pHeading1">
 tConvertType 
 </h2>
 <a name="wp1615271"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -74,7 +74,7 @@ Helps to automatically convert one <b class="cBold">Talend </b>java type to anot
 </div>
 </td>
     <td><a name="wp1615355"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1615362"> </a><div class="pCellBody">
@@ -91,7 +91,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2514596"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You create and store the schema locally for only the current component. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You create and store the schema locally for only the current component. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -104,7 +104,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2514877"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository, and thus you can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository, and thus you can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -121,7 +121,46 @@ This check box is selected by default. It performs an automatic java type conver
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1615510"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2948099"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2948102"> </a><div class="pCellHeading">
+<em class="cEmphasis">Manual Cast</em>
+</div>
+</td>
+    <td><a name="wp2948105"> </a><div class="pCellBody">
+This mode is not visible if the<b class="cBold"> Auto Cast </b>check box is selected. It allows you to precise manually the columns where a java type conversion is needed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2948136"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2948139"> </a><div class="pCellHeading">
+<em class="cEmphasis">Set empty values to Null before converting</em>
+</div>
+</td>
+    <td><a name="wp2948142"> </a><div class="pCellBody">
+This check box is selected to set the empty values of String or Object type to null for the input data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2948190"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp2948193"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp2948196"> </a><div class="pCellBody">
+This check box is selected to kill the Job when an error occurs.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1615510"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
@@ -130,7 +169,7 @@ This component cannot be used as a start component as it requires an input flow 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1615532"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1615532"> </a><div class="pCellBody">
 <b class="cBold">Limitation</b>
 </div>
 </td>
@@ -163,7 +202,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tAggregateSortedRow_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tConvertType_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tBRMS_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tConvertType_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

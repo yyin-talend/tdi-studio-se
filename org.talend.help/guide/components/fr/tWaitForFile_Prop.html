@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:50:11">
+    <meta name="LASTUPDATED" content="10/04/10 20:05:17">
     <title>tWaitForFile</title>
   </head>
 
@@ -27,7 +27,7 @@ tWaitForFile
 </h2>
 <a name="wp1574977"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="left"><img src="../images/tWaitForFile_icon32_white.png" id="wp1574973" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="left"><img src="../Images/tWaitForFile_icon32_white.png" id="wp1574973" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1574984"> </a><h2 class="pHeading2">
@@ -47,7 +47,7 @@ Orchestration
 </div>
 </td>
     <td><a name="wp2935579"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../images/Components-14-24-03.jpg" height="59" width="112" id="wp2935575" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-12-26-03.jpg" height="59" width="112" id="wp2935575" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2935726"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite</b>.
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -221,7 +221,7 @@ Un schéma est une description de lignes, i.e., il définit le nombre de champs qu
 </div>
 </td>
     <td><a name="wp2935744"> </a><div class="pCellBody">
-<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Integration Suite</b>.
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisable dans divers projets et Job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur </b>de <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>
@@ -244,6 +244,32 @@ Cochez cette case pour empêcher l&#39;exécution du Job si votre fichier est ouve
 </td>
     <td colspan="2" rowspan="1"><a name="wp2935769"> </a><div class="pCellBody">
 Ce composant est un composant de début (ou de déclenchement) pour le sous-Job exécuté en fonction de la condition établie. Ainsi, ce composant doit être connecté à un sous-job via un lien Iterate.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3467550"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3467553"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3467564"> </a><div class="pCellBody">
+<b class="cBold">Current</b> <b class="cBold">iteration</b>&#160;: indique le nombre d&#39;itérations. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne un entier.<br /><br /><b class="cBold">Present File</b>&#160;: indique le nom du fichier courant dans l&#39;itération ayant activé le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br /><b class="cBold">Deleted File</b>&#160;: indique le nom et le chemin d&#39;accès du fichier supprimé qui a activé le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br /><b class="cBold">Created File Name</b>&#160;: indique le nom et le chemin d&#39;accès du fichier nouvellement créé ayant activé le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br /><b class="cBold">Updated File</b>&#160;: indique le nom et le chemin d&#39;accès du fichier mis à jour, activant ainsi le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br /><b class="cBold">File Name</b>&#160;: indique le nom d&#39;un fichier créé, supprimé ou mis à jour, activant ainsi le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br /><b class="cBold">Not Updated File Name</b>&#160;: indique les noms des fichiers n&#39;ayant pas été mis à jour, activant ainsi le déclenchement. Disponible comme variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br />Pour plus d&#39;informations concernant les variables, consultez&#160;<em class="cEmphasis">Utiliser les variables dans un Job, page 130</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3467583"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3467586"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3467589"> </a><div class="pCellBody">
+Liens de sortie (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row</b>&#160;: Main, Iterate.<br /><b class="cBold">Trigger</b>&#160;: OnSubjobOk, Run if, OnComponentOk, OnComponentError.<br /><br />Liens d&#39;entrée (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row</b>&#160;: Iterate.<br /><b class="cBold">Trigger</b>&#160;: OnSubjobOk, Run if, OnComponentOk, OnComponentError, Synchronize, Parallelize. <br /><br />Pour plus d&#39;informations concernant les liens, consultez&#160;<em class="cEmphasis">Types de connexion</em>, dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Open Studio</b>.
 </div>
 </td>
 </tr>

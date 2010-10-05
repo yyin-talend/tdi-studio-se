@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tOracleBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tOracleBulkExec
 <a name="wp2727770"> </a><h2 class="pHeading2">
 tOracleBulkExec properties
 </h2>
-<a name="wp2728303"> </a><p class="pBodyRelative">
+<a name="wp3573048"> </a><p class="pIndented1">
+The <b class="cBold">tOracleOutputBulk</b> and <b class="cBold">tOracleBulkExec</b> components are used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in the <b class="cBold">tOracleOutputBulkExec</b> component, detailed in a separate section. The advantage of using two separate steps is that the data can be transformed before it is loaded in the database.
+</p>
+<a name="wp3573028"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2727778table2727773">
@@ -47,7 +50,7 @@ Databases/Oracle
 </div>
 </td>
     <td><a name="wp2727789"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-10-292-080.jpg" height="59" width="112" id="wp2727785" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-05-300-0092.jpg" height="59" width="112" id="wp2727785" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -78,7 +81,7 @@ As a dedicated component, it allows gains in performance during operations perfo
 </div>
 </td>
     <td><a name="wp2727822"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2727840"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3600477"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -272,7 +275,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
     <td><a name="wp2727985"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<br /><br />Name of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -298,7 +301,7 @@ On the data of the table defined, you can perform:<br /><b class="cBold">Insert<
 </div>
 </td>
     <td><a name="wp2728027"> </a><div class="pCellBody">
-In Stored Procedure principle, the schema is an input parameter.<br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository.
+In Stored Procedure principle, the schema is an input parameter.<br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or stored remotely in the Repository.
 </div>
 </td>
 </tr>
@@ -476,7 +479,7 @@ Select this check box to modify the territory conventions used for day and weeks
 </div>
 </td>
     <td><a name="wp2728208"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2728210"> </a><div class="pCellBody">

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tSybaseBulkExec</title>
   </head>
 
@@ -33,7 +33,10 @@ tSybaseBulkExec
 <a name="wp1617074"> </a><h2 class="pHeading2">
 tSybaseBulkExec Properties
 </h2>
-<a name="wp1617243"> </a><p class="pBodyRelative">
+<a name="wp1617243"> </a><p class="pIndented1">
+The <b class="cBold">tSybaseOutputBulk</b> and <b class="cBold">tSybaseBulkExec</b> components are generally used together as parts of a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT operation used to feed a database. These two steps are fused together in the <b class="cBold">tSybaseOutputBulkExec</b> component, detailed in a separate section. The advantage of using two separate components is that the data can be transformed before it is loaded in the database.
+</p>
+<a name="wp3574995"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
 <table border="1" id="wp2488569table1617077">
@@ -47,7 +50,7 @@ Databases
 </div>
 </td>
     <td><a name="wp2488580"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-10-407-041.jpg" height="59" width="112" id="wp2488576" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-05-415-0046.jpg" height="59" width="112" id="wp2488576" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
 &#160;
 </div>
 </td>
-    <td><a name="wp2488634"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that come after are pre-filled in using the fetched data.
+    <td><a name="wp3601399"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -252,7 +255,7 @@ On the table defined, you can perform one of the following operations:<br /><b c
 </div>
 </td>
     <td><a name="wp2657901"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -265,7 +268,7 @@ Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defi
 </div>
 </td>
     <td><a name="wp2488739"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or stored remotely in the Repository. 
 </div>
 </td>
 </tr>
@@ -278,7 +281,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2655615"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -291,7 +294,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </div>
 </td>
     <td><a name="wp2656990"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: You have already created and stored the schema in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -352,7 +355,7 @@ Number of head lines to be ignored in the beginning of a file.
 </div>
 </td>
     <td><a name="wp2488824"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2488826"> </a><div class="pCellBody">

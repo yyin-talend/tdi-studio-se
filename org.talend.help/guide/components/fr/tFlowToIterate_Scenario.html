@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:50:11">
+    <meta name="LASTUPDATED" content="10/04/10 20:05:17">
     <title>Scénario&#160;: Transformer un flux de données en liste</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFlowToIterate_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInfiniteLoop_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFlowToIterate_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tForeach_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -39,7 +39,7 @@ Le scénario suivant décrit un Job permettant de lire une liste de fichiers à par
 </ul></div>
 <a name="wp1655630"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate1.png" id="wp1655626" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate1.png" id="wp1655626" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -49,14 +49,14 @@ Le scénario suivant décrit un Job permettant de lire une liste de fichiers à par
 <a name="wp1655663"> </a><div class="pSmartList2"><li> Dans la vue <b class="cBold">Basic settings</b>, cliquez sur le bouton <b class="cBold">[...]</b> situé à côté du champ <b class="cBold">File Name</b> pour déterminer le chemin d&#39;accès au fichier d&#39;entrée. </li></div>
 <a name="wp1655677"> </a><p class="pBodyRelative">
 <br />
-<img src="../images/bulb_small.png" align="left" id="wp1655674" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp1655674" border="0" hspace="0" vspace="0"/><br />
 <br />Le champ <b class="cBold">File Name</b> est obligatoire.
 </p>
 </ul></div>
 </ul></div>
 <a name="wp1655691"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate2.png" id="wp1655687" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate2.png" id="wp1655687" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <a name="wp1655699"> </a><p class="pIndented1">
@@ -64,13 +64,13 @@ Le fichier d&#39;entrée utilisé dans ce scénario s&#39;appelle <em class="cEmpha
 </p>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp1663045"> </a><div class="pSmartList2"><li>Renseignez les autres champs en fonction de votre fichier. Pour plus d&#39;informations sur le tFileInputDelimited, consultez les <a href="tFileInputDelimited_Prop.html#wp2820687"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>. Dans ce scénario, l&#39;en-tête, le pied de page et le nombre limite de lignes à traiter ne sont pas définis. Donc, laissez les champs <b class="cBold">Header</b> (en-tête) et <b class="cBold">Footer</b> (pied de page) et <b class="cBold">Limit</b> par défaut.</li></div>
+<a name="wp1663045"> </a><div class="pSmartList2"><li>Renseignez les autres champs en fonction de votre fichier. Pour plus d&#39;informations sur le tFileInputDelimited, consultez les <a href="tFileInputDelimited_Prop.html#wp3480892"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>. Dans ce scénario, l&#39;en-tête, le pied de page et le nombre limite de lignes à traiter ne sont pas définis. Donc, laissez les champs <b class="cBold">Header</b> (en-tête) et <b class="cBold">Footer</b> (pied de page) et <b class="cBold">Limit</b> par défaut.</li></div>
 <a name="wp1655744"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema </b>pour décrire la structure des données du fichier d&#39;entrée. Dans ce scénario, le schéma comporte une seule colonne appelée <em class="cEmphasis">FileName.</em></li></div>
 </ul></div>
 </ul></div>
 <a name="wp1655759"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate7.png" id="wp1655755" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate7.png" id="wp1655755" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -81,7 +81,7 @@ Le fichier d&#39;entrée utilisé dans ce scénario s&#39;appelle <em class="cEmpha
 </ul></div>
 <a name="wp1655794"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate3.png" id="wp1655790" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate3.png" id="wp1655790" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -91,7 +91,7 @@ Le fichier d&#39;entrée utilisé dans ce scénario s&#39;appelle <em class="cEmpha
 <a name="wp1655821"> </a><div class="pSmartList2"><li>Cliquez dans la cellule de la colonne <b class="cBold">key</b> pour modifier le nom de la variable selon vos désirs. </li></div>
 <a name="wp1655837"> </a><p class="pBodyRelative">
 <br />
-<img src="../images/bulb_small.png" align="left" id="wp1655826" border="0" hspace="0" vspace="0"/><br />
+<img src="../Images/bulb_small.png" align="left" id="wp1655826" border="0" hspace="0" vspace="0"/><br />
 Vous pouvez appuyer sur <b class="cBold">Ctrl+Espace </b>à partir de la cellule de la colonne <b class="cBold">key </b>pour accéder à la liste des variables globales et des variables utilisateur. 
 </p>
 <a name="wp1655850"> </a><div class="pSmartList2"><li>Dans l&#39;espace graphique, sélectionnez le second composant <b class="cBold">tFileInputDelimited</b>.</li></div>
@@ -100,20 +100,20 @@ Vous pouvez appuyer sur <b class="cBold">Ctrl+Espace </b>à partir de la cellule 
 </ul></div>
 <a name="wp1655869"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate4.png" id="wp1655865" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate4.png" id="wp1655865" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp1657323"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">File Name</b>, renseignez le nom du fichier en utilisant la variable appropriée. Vous devez utiliser la syntaxe correspondant au langage employé (Perl ou Java). En Perl, la syntaxe exacte est <em class="cEmphasis">.$_globals{tFlowToIterate}{`Name_of_File}.</em> En Java, la syntaxe correcte est <em class="cEmphasis">+globalMap.get(&quot;file&quot;)</em>.</li></div>
-<a name="wp1657315"> </a><div class="pSmartList2"><li>Remplissez les autres champs selon vos besoins. Pour plus d&#39;informations, consultez les <a href="tFileInputDelimited_Prop.html#wp2820687"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>.</li></div>
+<a name="wp1657315"> </a><div class="pSmartList2"><li>Remplissez les autres champs selon vos besoins. Pour plus d&#39;informations, consultez les <a href="tFileInputDelimited_Prop.html#wp3480892"><em class="cEmphasis">Propriétés du tFileInputDelimited</em></a>.</li></div>
 <a name="wp1655907"> </a><div class="pSmartList2"><li>Dans l&#39;espace graphique, sélectionnez le dernier composant, le <b class="cBold">tLogRow</b>.</li></div>
 <a name="wp1655921"> </a><div class="pSmartList2"><li>Cliquez sur la vue <b class="cBold">Component</b> pour définir la configuration de base (<b class="cBold">Basic settings</b>) du <b class="cBold">tLogRow</b>.</li></div>
 </ul></div>
 </ul></div>
 <a name="wp1655930"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate6.png" id="wp1655926" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate6.png" id="wp1655926" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -124,10 +124,10 @@ Vous pouvez appuyer sur <b class="cBold">Ctrl+Espace </b>à partir de la cellule 
 </ul></div>
 <a name="wp1655961"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tFlowToIterate5.png" id="wp1655957" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tFlowToIterate5.png" id="wp1655957" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp1655970"> </a><p class="pIndented1">
+<a name="wp3468676"> </a><p class="pIndented1">
 La console affiche, pour chaque ligne, le nom du client, son e-mail et son adresse, précédés du nom de la colonne du schéma. 
 </p>
     </blockquote>
@@ -149,7 +149,7 @@ La console affiche, pour chaque ligne, le nom du client, son e-mail et son adres
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a accesskey="4" href="tFlowToIterate_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInfiniteLoop_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+<a accesskey="4" href="tFlowToIterate_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tForeach_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

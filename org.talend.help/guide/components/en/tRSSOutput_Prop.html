@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:42:03">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:55">
     <title>tRSSOutput</title>
   </head>
 
@@ -47,7 +47,7 @@ Internet
 </div>
 </td>
     <td><a name="wp1551442"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-13-41-002.jpg" height="59" width="112" id="wp1551437" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-09-41-002.jpg" height="59" width="112" id="wp1551437" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Internet
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1550832"> </a><div class="pCellBody">
-<b class="cBold">TRSSOutput</b> writes RSS_Feed XML files.
+<b class="cBold">tRSSOutput</b> writes RSS_Feed or Atom_Feed XML files.
 </div>
 </td>
 </tr>
@@ -65,7 +65,7 @@ Internet
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1550850"> </a><div class="pCellBody">
-<b class="cBold">tRSSOutput</b> makes it possible to create XML files that hold RSS feeds.
+<b class="cBold">tRSSOutput</b> makes it possible to create XML files that hold RSS or Atom feeds.
 </div>
 </td>
 </tr>
@@ -78,7 +78,7 @@ Internet
 </div>
 </td>
     <td><a name="wp2378216"> </a><div class="pCellBody">
-Name or path to the output XML file. Related topic: <em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+Name or path to the output XML file. Related topic: <em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -87,7 +87,7 @@ Name or path to the output XML file. Related topic: <em class="cEmphasis">Defini
 </div>
 </td>
     <td><a name="wp1550882"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp1550885"> </a><div class="pCellBody">
@@ -108,12 +108,25 @@ Select this check box to add the new rows to the end of the file.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1550915"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3595863"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3595866"> </a><div class="pCellHeading">
+<em class="cEmphasis">Mode</em>
+</div>
+</td>
+    <td><a name="wp3595869"> </a><div class="pCellBody">
+Select between <b class="cBold">RSS</b> or <b class="cBold">ATOM</b> according to the feed you want to generate.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1550915"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
     <td><a name="wp1550922"> </a><div class="pCellHeading">
-<span style="font-weight: normal">Channel</span>
+<em class="cEmphasis">Channel (in RSS mode)</em>
 </div>
 </td>
     <td><a name="wp2841114"> </a><p class="pBodyRelative">
@@ -122,7 +135,20 @@ Select this check box to add the new rows to the end of the file.
 The information to be typed in here concerns your entire input data, site etc, rather than a particular item.
 </p>
 <a name="wp2840947"> </a><div class="pCellBody">
-<b class="cBold">Title</b>: Enter a meaningful title.<br /><b class="cBold">Description</b>: Enter a description that you think will describe your content.<br /><b class="cBold">Publication date</b>: Enter the relevant date.<br /><b class="cBold">Link</b>: Enter the relevant UR.
+<b class="cBold">Title</b>: Enter a meaningful title.<br /><b class="cBold">Description</b>: Enter a description that you think will describe your content.<br /><b class="cBold">Publication date</b>: Enter the relevant date.<br /><b class="cBold">Link</b>: Enter the relevant URL.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3595913"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3595916"> </a><div class="pCellHeading">
+<em class="cEmphasis">Feed (in ATOM mode)</em>
+</div>
+</td>
+    <td><a name="wp3595919"> </a><div class="pCellBody">
+<b class="cBold">Title</b>: Enter a meaningful title.<br /><b class="cBold">Link</b>: Enter the relevant URL.<br /><b class="cBold">Id</b>: Enter the valid URL corresponding to the <b class="cBold">Link</b>. <br /><b class="cBold">Update date</b>: Enter the relevant date .<br /><b class="cBold">Author name</b>: Enter the relevant name.
 </div>
 </td>
 </tr>
@@ -135,7 +161,7 @@ The information to be typed in here concerns your entire input data, site etc, r
 </div>
 </td>
     <td><a name="wp2841143"> </a><div class="pCellBody">
-Click the three-dot button below the table to add new lines and enter the information relative to the RSS flow metadata:<br /><b class="cBold">Element Name</b>: name of the metadata. <br /><b class="cBold">Element Value</b>: content of the metadata. 
+Click the [+] button below the table to add new lines and enter the information relative to the RSS flow metadata:<br /><b class="cBold">Element Name</b>: name of the metadata. <br /><b class="cBold">Element Value</b>: content of the metadata. 
 </div>
 </td>
 </tr>
@@ -144,7 +170,7 @@ Click the three-dot button below the table to add new lines and enter the inform
 </div>
 </td>
     <td><a name="wp1589814"> </a><div class="pCellHeading">
-<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
     <td><a name="wp1589818"> </a><div class="pCellBody">

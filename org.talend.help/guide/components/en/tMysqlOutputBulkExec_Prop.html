@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:37">
+    <meta name="LASTUPDATED" content="10/04/10 19:26:00">
     <title>tMysqlOutputBulkExec</title>
   </head>
 
@@ -33,6 +33,9 @@ tMysqlOutputBulkExec
 <a name="wp2974103"> </a><h2 class="pHeading2">
 tMysqlOutputBulkExec properties
 </h2>
+<a name="wp3572735"> </a><p class="pIndented1">
+The <b class="cBold">tMysqlOutputBulk</b> and <b class="cBold">tMysqlBulkExec</b> components are used together in a two step process. In the first step, an output file is generated. In the second step, this file is used in the INSERT statement used to feed a database. These two steps are fused together in the <b class="cBold">tMysqlOutputBulkExec</b> component.
+</p>
 <a name="wp2974468"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
@@ -47,7 +50,7 @@ Databases/MySQL
 </div>
 </td>
     <td><a name="wp2974122"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-10-264-105.jpg" height="59" width="112" id="wp2974118" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-05-270-0120.jpg" height="59" width="112" id="wp2974118" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -78,7 +81,7 @@ As a dedicated component, it improves performance during Insert operations to a 
 </div>
 </td>
     <td><a name="wp2974152"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -103,8 +106,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2974170"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the repository file where Properties are stored. The fields that follow are filled automatically using the fetched data.
+    <td><a name="wp3600248"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -201,7 +204,7 @@ Name of the table to be written.
 </div>
 <a name="wp2982696"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-10-264-107.jpg" height="47" width="47" align="left" id="wp2982689" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-270-0122.jpg" height="47" width="47" align="left" id="wp2982689" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 Note that only one table can be written at a time and that the table must already exist for the insert operation to succeed
 </p>
 </td>
@@ -215,7 +218,7 @@ Note that only one table can be written at a time and that the table must alread
 </div>
 </td>
     <td><a name="wp2974266"> </a><div class="pCellBody">
-Name of the file to be processed. <br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>
 </div>
 </td>
 </tr>
@@ -241,7 +244,7 @@ Select the check box for this option to append new rows to the end of the file.
 </div>
 </td>
     <td><a name="wp2974293"> </a><div class="pCellBody">
-A schema is a description of rows.  It defines the number of fields which are treated and passed on to the following component. The schema is either local (Built-in) or remote, in the <b class="cBold">Repository</b>.
+A schema is a description of rows. It defines the number of fields which are treated and passed on to the following component. The schema is either built-in or stored remotely in the Repository.
 </div>
 </td>
 </tr>
@@ -267,7 +270,7 @@ Specify additional connection properties for the DB connection you are creating.
 </div>
 </td>
     <td><a name="wp2974317"> </a><div class="pCellBody">
-String (ex: &quot;\n&quot;on Unix)  to distinguish rows.
+String (ex: &quot;\n&quot;on Unix) to distinguish rows.
 </div>
 </td>
 </tr>
@@ -367,7 +370,7 @@ This check box is selected by default. It allows you to take account of NULL val
 </div>
 </td>
     <td><a name="wp2974399"> </a><div class="pCellHeading">
-<em class="cEmphasis">Encoding Type</em>
+<em class="cEmphasis">Encoding</em>
 </div>
 </td>
     <td><a name="wp2974404"> </a><div class="pCellBody">
@@ -397,7 +400,7 @@ Select this check box to collect the log data at the component level.
 </div>
 </td>
     <td><a name="wp3524434"> </a><div class="pCellBody">
-Select this check box to work with several data flows simultaneously. This allows you to process the data more quicky.<br />For further information, see <em class="cEmphasis">Parallelizing data flows</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+Select this check box to work with several data flows simultaneously. This allows you to process the data more quicky.<br />For further information, see <em class="cEmphasis">How to parallelize data flows</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
 </div>
 <a name="wp3550630"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>

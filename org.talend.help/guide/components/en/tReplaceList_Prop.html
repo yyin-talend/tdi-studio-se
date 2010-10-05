@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:38:20">
+    <meta name="LASTUPDATED" content="10/04/10 19:25:50">
     <title>tReplaceList</title>
   </head>
 
@@ -22,7 +22,7 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp3501662"> </a><h2 class="pHeading1">
+<a name="wp3540951"> </a><h2 class="pHeading1">
 tReplaceList
 </h2>
 <a name="wp3012152"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
@@ -47,7 +47,7 @@ Data Quality
 </div>
 </td>
     <td><a name="wp3012178"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-09-55-003.jpg" height="57" width="109" id="wp3012174" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-04-59-010.jpg" height="57" width="109" id="wp3012174" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -56,7 +56,7 @@ Data Quality
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3012185"> </a><div class="pCellBody">
-Carries out a Search &amp; Replace operation in the input columns defined based on an external lookup.
+Carries out a Search and Replace operation in the input columns defined based on an external lookup.
 </div>
 </td>
 </tr>
@@ -77,8 +77,13 @@ Helps to cleanse all files before further processing.
 <em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp3012211"> </a><div class="pCellBody">
+    <td><a name="wp3523581"> </a><div class="pCellBody">
 A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Two read-only columns, Value and Match are added to the output schema automatically. 
+</div>
+<a name="wp3523731"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3523705" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+The data Type defined in the schemas must be consistent, ie., an integer can only be replaced by another integer using an integer as a look up field. Values of one type cannot be replaced by values of another type.
 </div>
 </td>
 </tr>
@@ -91,7 +96,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp3012220"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -104,7 +109,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp3012238"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -163,7 +168,7 @@ Select the columns of the main flow where the replacement is to be carried out.
 </div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp3012311"> </a><div class="pCellBody">
-This component is not startable as it requires an input flow. And it requires an output component.
+<b class="cBold">tReplaceList</b> is an intermediary component. It requires an input flow and an output component.
 </div>
 </td>
 </tr>

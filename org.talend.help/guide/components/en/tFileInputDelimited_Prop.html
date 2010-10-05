@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:41:31">
+    <meta name="LASTUPDATED" content="10/04/10 19:30:40">
     <title>tFileInputDelimited  </title>
   </head>
 
@@ -30,7 +30,12 @@ tFileInputDelimited
 <div align="left"><img src="../Images/tFileInputDelimited.png" id="wp2946046" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2946059"> </a><h2 class="pHeading2">
+<a name="wp3478758"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3478755" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<br />The Dynamic Schema feature is only functional in <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+<a name="wp3478746"> </a><h2 class="pHeading2">
 tFileInputDelimited properties
 </h2>
 <a name="wp2946367"> </a><p class="pBodyRelative">
@@ -47,7 +52,7 @@ File/Input
 </div>
 </td>
     <td><a name="wp2946078"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-12-19-026.jpg" height="59" width="112" id="wp2946074" border="0" hspace="0" vspace="0"/>
+<img src="../Images/Components-07-19-028.jpg" height="59" width="112" id="wp2946074" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
@@ -77,7 +82,7 @@ Opens a file and reads it row by row to split them up into fields then sends fie
 </div>
 </td>
     <td><a name="wp2946112"> </a><div class="pCellBody">
-Either Built-in or Repository. 
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
 </div>
 </td>
 </tr>
@@ -102,8 +107,8 @@ Either Built-in or Repository.
 &#160;
 </div>
 </td>
-    <td><a name="wp2946130"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+    <td><a name="wp3477207"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where the properties are stored. The fields that follow are completed automatically using the data retrieved.
 </div>
 </td>
 </tr>
@@ -116,7 +121,7 @@ Either Built-in or Repository.
 </div>
 </td>
     <td><a name="wp2946139"> </a><div class="pCellBody">
-<b class="cBold">File name</b>: Name and path of the file to be processed. <br /><b class="cBold">Stream: </b>The data flow to be processed. The data must be added to the flow in order to be fetched by the <b class="cBold">tFileInputDelimited </b>via the <em class="cEmphasis">INPUT_STREAM</em> variable in the auto-completion list (<b class="cBold">Ctrl+Space</b>)<br /><br />Related topic:<em class="cEmphasis">Defining variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
+<b class="cBold">File name</b>: Name and path of the file to be processed. <br /><b class="cBold">Stream: </b>The data flow to be processed. The data must be added to the flow in order to be fetched by the <b class="cBold">tFileInputDelimited </b>via the <em class="cEmphasis">INPUT_STREAM</em> variable in the auto-completion list (<b class="cBold">Ctrl+Space</b>)<br /><br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
 </div>
 </td>
 </tr>
@@ -168,8 +173,13 @@ Select this check box to include CSV specific parameters such as <b class="cBold
 </div>
 </td>
     <td><a name="wp2946190"> </a><div class="pCellBody">
-Number of rows to be skipped in the beginning of file
+Number of rows to be skipped in the beginning of file.<br />
 </div>
+<a name="wp3478367"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-07-19-029.jpg" height="47" width="47" align="left" id="wp3478363" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When using the dynamic schema feature, set the header as 0 or 1 to use the first line of the file as the header in the output dynamic table. For further information about dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2946192"> </a><div class="pCellBody">
@@ -206,9 +216,14 @@ Maximum number of rows to be processed. If Limit = 0, no row is read or processe
 <em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp2946220"> </a><div class="pCellBody">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
+    <td><a name="wp3478145"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.<br />
 </div>
+<a name="wp3478165"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-07-19-030.jpg" height="47" width="47" align="left" id="wp3478162" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component offers the advantage of the dynamic schema feature. This allows  you to retrieve unknown columns from source files or to copy batches of columns from a source without mapping each column individually. For further information about dynamic schemas, see  <em class="cEmphasis">Dynamic schema</em> in the<b class="cBold"> Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2946228"> </a><div class="pCellBody">
@@ -220,7 +235,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2946235"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
@@ -233,7 +248,7 @@ A schema is a row description, i.e., it defines the number of fields that will b
 </div>
 </td>
     <td><a name="wp2946253"> </a><div class="pCellBody">
-<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">Setting a Repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>

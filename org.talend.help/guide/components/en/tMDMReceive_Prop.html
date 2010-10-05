@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 16:43:05">
+    <meta name="LASTUPDATED" content="10/04/10 19:31:39">
     <title>tMDMReceive</title>
   </head>
 
@@ -30,177 +30,185 @@ tMDMReceive
 <div align="left"><img src="../Images/tMDMReceive_icon32.png" id="wp2958762" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
-<a name="wp2958772"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-</div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp2958770" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<br />This component is available in the <b class="cBold">Palette</b> , but you will only be able to use it if you have <b class="cBold">Talend MDM</b>.
-</div>
 <a name="wp2958786"> </a><h2 class="pHeading2">
 tMDMReceive properties
 </h2>
 <a name="wp2958974"> </a><p class="pBodyRelative">
 </p>
 <div align="center">
-<table border="1" id="wp2958797table2958789">
+<table border="1" id="wp3540971table2958789">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958797"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3540971"> </a><div class="pCellBody">
 <b class="cBold">Component family</b>
 </div>
 </td>
-    <td><a name="wp2958799"> </a><div class="pCellBody">
+    <td><a name="wp3540973"> </a><div class="pCellBody">
 Talend MDM
 </div>
 </td>
-    <td><a name="wp2958808"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
-<img src="../Images/Components-05-08-06.jpg" height="59" width="112" id="wp2958804" border="0" hspace="0" vspace="0"/>
+    <td><a name="wp3540981"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongg.png" id="wp3540978" border="0" hspace="0" vspace="0"/>
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958813"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3540986"> </a><div class="pCellBody">
 <b class="cBold">Function</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2958818"> </a><div class="pCellBody">
-<b class="cBold">tMDMReceive</b> generates as many lines and columns as you want using the context variables.
+    <td colspan="2" rowspan="1"><a name="wp3540991"> </a><div class="pCellBody">
+<b class="cBold">tMDMReceive</b> receives an MDM record in XML from MDM triggers or MDM processes.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958825"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3540998"> </a><div class="pCellBody">
 <b class="cBold">Purpose</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2958827"> </a><div class="pCellBody">
-This component retrieves a context parameter holding MDM XML data and transforms it into a flat schema.
+    <td colspan="2" rowspan="1"><a name="wp3541000"> </a><div class="pCellBody">
+This component decodes a context parameter holding MDM XML data and transforms it into a flat schema.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958834"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541007"> </a><div class="pCellBody">
 <b class="cBold">Basic Settings</b>
 </div>
 </td>
-    <td><a name="wp2958841"> </a><div class="pCellHeading">
+    <td><a name="wp3541014"> </a><div class="pCellHeading">
 <em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
 </div>
 </td>
-    <td><a name="wp2958844"> </a><div class="pCellBody">
+    <td><a name="wp3541017"> </a><div class="pCellBody">
 A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to modify the schema.
 </div>
-<a name="wp2958853"> </a><p class="pBodyRelative">
+<a name="wp3541026"> </a><p class="pBodyRelative">
 </p>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp2958851" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3541024" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
 If you modify the schema, it automatically becomes built-in.
 </p>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958856"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3541029"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958858"> </a><div class="pCellBody">
+    <td><a name="wp3541031"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958863"> </a><div class="pCellBody">
-<b class="cBold">Built-in</b>: The schema will be created and stored for this component only. Related Topic: <em class="cEmphasis">Setting a built-in schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+    <td><a name="wp3541036"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored for this component only. Related Topic: <em class="cEmphasis">How to set a built-in schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958874"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541047"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958876"> </a><div class="pCellBody">
+    <td><a name="wp3541049"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958881"> </a><div class="pCellBody">
-<b class="cBold">Repository:</b> The schema already exists and is stored in the repository. You can reuse it in various projects and jobs. Related Topic: <em class="cEmphasis">Setting a Repository schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
+    <td><a name="wp3541054"> </a><div class="pCellBody">
+<b class="cBold">Repository:</b> The schema already exists and is stored in the repository. You can reuse it in various projects and jobs. Related Topic: <em class="cEmphasis">How to set a repository schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958892"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3541065"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958897"> </a><div class="pCellHeading">
+    <td><a name="wp3541070"> </a><div class="pCellHeading">
 <em class="cEmphasis">XML Record</em>
 </div>
 </td>
-    <td><a name="wp2958899"> </a><div class="pCellBody">
-Enter the context parameter allowing to retrieve the last changes made to the MDM server. For more information about creating and using a context parameter, see <em class="cEmphasis">Defining Contexts and variables</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
+    <td><a name="wp3541072"> </a><div class="pCellBody">
+Enter the context parameter allowing to retrieve the last changes made to the MDM server. For more information about creating and using a context parameter, see <em class="cEmphasis">How to centralize contexts and variables</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958910"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541083"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958912"> </a><div class="pCellBody">
+    <td><a name="wp3541085"> </a><div class="pCellBody">
+<em class="cEmphasis">XPath Prefix</em>
+</div>
+</td>
+    <td><a name="wp3541087"> </a><div class="pCellBody">
+Select from the list the looping xpath expression which is a concatenation of the prefix + looping xpath.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3541089"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3541091"> </a><div class="pCellBody">
 <em class="cEmphasis">Loop XPath query</em>
 </div>
 </td>
-    <td><a name="wp2958914"> </a><div class="pCellBody">
+    <td><a name="wp3541093"> </a><div class="pCellBody">
 Set the XML structure node on which the loop is based.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958916"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541095"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958918"> </a><div class="pCellBody">
+    <td><a name="wp3541097"> </a><div class="pCellBody">
 <em class="cEmphasis">Mapping</em>
 </div>
 </td>
-    <td><a name="wp2958926"> </a><div class="pCellBody">
+    <td><a name="wp3541105"> </a><div class="pCellBody">
 <b class="cBold">Column</b>: reflects the schema as defined in the <b class="cBold">Edit schema</b> editor.<br /><b class="cBold">XPath query</b>: Type in the name of the fields to extract from the input XML structure.<br /><b class="cBold">Get Nodes</b>: Select this check box to retrieve the XML node together with the data.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958934"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3541113"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958939"> </a><div class="pCellHeading">
+    <td><a name="wp3541118"> </a><div class="pCellHeading">
 <em class="cEmphasis">Limit</em>
 </div>
 </td>
-    <td><a name="wp2958941"> </a><div class="pCellBody">
+    <td><a name="wp3541120"> </a><div class="pCellBody">
 Maximum number of rows to be processed. If Limit = 0, no row is read or processed.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958943"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541122"> </a><div class="pCellBody">
 &#160;
 </div>
 </td>
-    <td><a name="wp2958948"> </a><div class="pCellHeading">
+    <td><a name="wp3541127"> </a><div class="pCellHeading">
 <em class="cEmphasis">Die on error</em>
 </div>
 </td>
-    <td><a name="wp2958950"> </a><div class="pCellBody">
+    <td><a name="wp3541129"> </a><div class="pCellBody">
 This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can retrieve the rows on error via a <b class="cBold">Row</b>&#160;&gt; <b class="cBold">Reject</b> link.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp2958955"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3541140"> </a><div class="pCellBody">
 <b class="cBold">Advanced settings</b>
 </div>
 </td>
-    <td><a name="wp2958960"> </a><div class="pCellHeading">
+    <td><a name="wp3541145"> </a><div class="pCellHeading">
 <em class="cEmphasis">tStatCatcher Statistics</em>
 </div>
 </td>
-    <td><a name="wp2958962"> </a><div class="pCellBody">
+    <td><a name="wp3541147"> </a><div class="pCellBody">
 Select this check box to gather the processing metadata at the Job level as well as at each component level.
 </div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp2958967"> </a><div class="pCellBody">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3541152"> </a><div class="pCellBody">
 <b class="cBold">Usage</b>
 </div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp2958969"> </a><div class="pCellBody">
+    <td colspan="2" rowspan="1"><a name="wp3541154"> </a><div class="pCellBody">
 Use this component as a start component. It needs an output flow.
 </div>
 </td>

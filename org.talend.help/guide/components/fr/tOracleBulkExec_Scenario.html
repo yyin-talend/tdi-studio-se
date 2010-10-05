@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Dynamic HTML">
-    <meta name="LASTUPDATED" content="06/02/10 15:38:42">
+    <meta name="LASTUPDATED" content="10/04/10 20:00:44">
     <title>Scénario&#160;: Supprimer et insérer des données dans une base Oracle</title>
   </head>
 
@@ -33,7 +33,7 @@ Ce scénario décrit comment supprimer le contenu d&#39;une base de données Oracle
 </p>
 <a name="wp2319285"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tOracleBulkExec1.png" id="wp2319282" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleBulkExec1.png" id="wp2319282" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -46,13 +46,13 @@ Ce scénario décrit comment supprimer le contenu d&#39;une base de données Oracle
 </ul></div>
 <a name="wp2319338"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tOracleBulkExec2.png" id="wp2319335" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleBulkExec2.png" id="wp2319335" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
 <a name="wp2319346"> </a><div class="pSmartList2"><li>Paramétrez le schéma, s&#39;il n&#39;est pas conservé dans le <b class="cBold">Repository</b>. Dans cet exemple, le schéma est comme suit&#160;: <em class="cEmphasis">ID_Contract</em>, <em class="cEmphasis">ID_Client</em>, <em class="cEmphasis">Contract_type</em>, <em class="cEmphasis">Contract_Value</em>.</li></div>
-<a name="wp2319371"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Encoding Type</b>, sélectionnez l&#39;option <b class="cBold">Custom</b> et définissez <em class="cEmphasis">AL32UTF8</em> comme encodage.</li></div>
+<a name="wp2319371"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Encoding</b>, sélectionnez l&#39;option <b class="cBold">Custom</b> et définissez <em class="cEmphasis">AL32UTF8</em> comme encodage.</li></div>
 <a name="wp2319381"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileOutputDelimited</b>, paramétrez ses propriétés, notamment les champs <b class="cBold">File Name</b>, <b class="cBold">Row separator</b> et <b class="cBold">Fields separator</b> avec respectivement le chemin d&#39;accès et le nom du fichier, le séparateur de lignes et de champs.</li></div>
 <a name="wp2319397"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Encoding</b>, saisissez le même encodage que celui saisi dans les propriétés du composant <b class="cBold">tOracleInput</b>.</li></div>
 <a name="wp2723798"> </a><div class="pSmartList2"><li>Double-cliquez ensuite sur le composant <b class="cBold">tOracleBulkExec</b> pour définir les propriétés d&#39;alimentation de la base de données.</li></div>
@@ -60,7 +60,7 @@ Ce scénario décrit comment supprimer le contenu d&#39;une base de données Oracle
 </ul></div>
 <a name="wp2723807"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tOracleBulkExec3.png" id="wp2723804" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleBulkExec3.png" id="wp2723804" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
@@ -74,13 +74,13 @@ Ce scénario décrit comment supprimer le contenu d&#39;une base de données Oracle
 </ul></div>
 <a name="wp2726587"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 </div>
-<div align="center"><img src="../images/Use_Case_tOracleBulkExec4.png" id="wp2724119" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<div align="center"><img src="../Images/Use_Case_tOracleBulkExec4.png" id="wp2724119" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
 </div>
 <div class="pSmartList1"><ul class="pSmartList1">
 <div class="pSmartList2"><ul class="pSmartList2">
-<a name="wp2724913"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use an existing control file </b>si vous avez stocké les informations relatives à l&#39;état de la base de données dans un fichier de contrôle (.ctl). Sinon, renseignez si nécessaire les champs suivants manuellement&#160;: <b class="cBold">Record format</b>, <b class="cBold">Specify .ctl file&#39;s INTO TABLE clause manually</b>, <b class="cBold">Field terminated by</b>, <b class="cBold">Use field enclosure</b>, <b class="cBold">Use schema&#39;s Date Pattern to load Date field</b>, <b class="cBold">Specify field condition</b>, <b class="cBold">Preserve blanks</b>, <b class="cBold">Trailing null columns</b>, <b class="cBold">Load options</b>, <b class="cBold">NLS Language</b> et <b class="cBold">Set Parameter NLS_TERRITORY</b> en fonction de votre base de données.</li></div>
-<a name="wp2724573"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Encoding</b>, paramétrez l&#39;encodage comme dans les étapes précédentes.</li></div>
+<a name="wp3581848"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use an existing control file </b>si vous avez stocké les informations relatives à l&#39;état de la base de données dans un fichier de contrôle (.ctl). Sinon, renseignez si nécessaire les champs suivants manuellement&#160;: <b class="cBold">Record format</b>, <b class="cBold">Specify .ctl file&#39;s INTO TABLE clause manually</b>, <b class="cBold">Field terminated by</b>, <b class="cBold">Use field enclosure</b>, <b class="cBold">Use schema&#39;s Date Pattern to load Date field</b>, <b class="cBold">Specify field condition</b>, <b class="cBold">Preserve blanks</b>, <b class="cBold">Trailing null columns</b>, <b class="cBold">Load options</b>, <b class="cBold">NLS Language</b> et <b class="cBold">Set Parameter NLS_TERRITORY</b> en fonction de votre base de données.</li></div>
+<a name="wp3581889"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Encoding Type</b>, paramétrez l&#39;encodage comme dans les étapes précédentes.</li></div>
 <a name="wp2724250"> </a><div class="pSmartList2"><li>Et dans le champ <b class="cBold">Output</b>, sélectionnez l&#39;option <b class="cBold">to console</b>, ainsi la sortie standard de la base sera affichée dans la console.</li></div>
 </ul></div>
 </ul></div>
