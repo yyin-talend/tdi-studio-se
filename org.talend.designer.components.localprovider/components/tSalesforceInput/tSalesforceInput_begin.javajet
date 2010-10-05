@@ -86,6 +86,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%			
 			boolean bIsManualQuery = ("true").equals(ElementParameterParser.getValue(node, "__MANUAL_QUERY__"));
 			String sql = "";
+			String condition = null;
 			
 			if (bIsManualQuery){
 
@@ -96,7 +97,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				
 				String modulename = ElementParameterParser.getValue(node, "__MODULENAME__").trim();
 				String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE__").trim();
-				String condition = ElementParameterParser.getValue(node, "__CONDITION__").trim();
+				condition = ElementParameterParser.getValue(node, "__CONDITION__").trim();
 
 				StringBuilder sb = new StringBuilder("\"select ");
 
@@ -106,9 +107,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 				sb.deleteCharAt(sb.lastIndexOf(","));
 				sb.append(" from ").append((("CustomModule").equals(modulename)) ? customModulename.replaceAll("\"","") : modulename);
-				if (condition !=null && condition.length() > 3){
-					sb.append(" where ").append(condition.substring(1, condition.length() - 1));
-				}
 				sb.append("\"");
 				
 				sql = sb.toString();
@@ -124,7 +122,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				qo_<%=cid %>.setBatchSize(new Integer(<%=batchSize%>));
 				binding_<%=cid %>.setHeader(sfMgr_<%=cid%>.getSforceService().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
 				
-				qr_<%=cid %> = binding_<%=cid %>.query(<%=sql %>);
+				StringBuilder sql = new StringBuilder(<%=sql%>);
+<%
+				if(!("".equals(condition))) {
+%>
+					String condition = <%=condition %>;
+					if (condition !=null && !("".equals(condition))){
+						sql.append(" where ").append(condition);
+					}
+<%
+				}
+%>
+				qr_<%=cid %> = binding_<%=cid %>.query(sql.toString());
 				
 				org.talend.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
 				org.talend.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;

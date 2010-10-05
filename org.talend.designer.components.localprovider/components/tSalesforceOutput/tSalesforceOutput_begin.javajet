@@ -33,8 +33,13 @@ imports="
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         <%if(useExistingConn){%>
 		sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
-		<%}else{%>
-		sforceManagement_<%=cid %>.setTimeout(<%=timeout%>);
+		<%}else{
+		if(!("".equals(timeout))) {
+		%>
+			sforceManagement_<%=cid %>.setTimeout(<%=timeout%>);
+		<%
+		}
+		%>
         sforceManagement_<%=cid%>.setNeedCompression(<%=needCompression%>);
         boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
         if(!result_<%=cid%>){

@@ -75,4 +75,6 @@ public interface SforceManagement {
     public Map<String, String> readResult(Object[] os) throws Exception;
 
     public void setTimeout(int timeout);
+	
+	public void setTimeout(String timeout);
 }

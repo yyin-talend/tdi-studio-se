@@ -957,4 +957,14 @@ public class SforceManagementImpl implements SforceManagement {
         }
         return null;
     }
+	
+	public void setTimeout(String timeout) {
+		try {
+			if(timeout!=null)
+				setTimeout(Integer.parseInt(timeout));
+		} catch (NumberFormatException e) {
+			// do nothing
+		}
+		
+	}
 }
