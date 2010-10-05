@@ -21,8 +21,8 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
 import org.talend.sqlbuilder.dbstructure.nodes.DatabaseNode;
@@ -57,9 +57,10 @@ public class SessionTreeNodeManager {
      * Converts the DatabaseConnection to SessionTreeNode, and stores the SessionTreeNode.
      * 
      * @param repositoryNode RepositoryNode
+     * @param selectedContext
      * @return SessionTreeNode
      */
-    public SessionTreeNode getSessionTreeNode(RepositoryNode repositoryNode) throws Exception {
+    public SessionTreeNode getSessionTreeNode(RepositoryNode repositoryNode, String selectedContext) throws Exception {
         // Gets the root RepositoryNode
         RepositoryNode root = getRoot(repositoryNode);
         // Gets the DatabaseConnection
@@ -82,7 +83,7 @@ public class SessionTreeNodeManager {
             return sessionTreeNode;
         }
         // If the node is not existent,creates one and cache it.
-        sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(connection, root);
+        sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(connection, root, selectedContext);
         map.put(connection, sessionTreeNode);
         return sessionTreeNode;
     }
@@ -92,11 +93,12 @@ public class SessionTreeNodeManager {
      * sql editor,result viewer and the detail viewer.
      * 
      * @param repositoryNode RepositoryNode
+     * @param selectedContext
      * @return INode
      */
-    public INode convert2INode(RepositoryNode repositoryNode) throws Exception {
+    public INode convert2INode(RepositoryNode repositoryNode, String selectedContext) throws Exception {
         // Creates the SessionTreeNode.
-        SessionTreeNode sessionTreeNode = getSessionTreeNode(repositoryNode);
+        SessionTreeNode sessionTreeNode = getSessionTreeNode(repositoryNode, selectedContext);
         RepositoryNodeType nodeType = getRepositoryType(repositoryNode);
         if (nodeType.equals(RepositoryNodeType.DATABASE)) {
             // processes the database
@@ -128,7 +130,7 @@ public class SessionTreeNodeManager {
             // Processes the column.
             // Gets the repositoryNode's parent,should be the repositoryNode of table infomation.
             repositoryNode = repositoryNode.getParent();
-            return convert2INode(repositoryNode);
+            return convert2INode(repositoryNode, selectedContext);
         }
         return null;
     }

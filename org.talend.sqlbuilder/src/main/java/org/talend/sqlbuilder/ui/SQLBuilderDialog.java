@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -56,20 +57,24 @@ import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
-import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -124,6 +129,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
 
     SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+
+    private String selectedContext = null;
 
     /**
      * Internal progress monitor implementation.
@@ -223,9 +230,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         SqlBuilderPlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
 
-    public SQLBuilderDialog(Shell parentShell, RepositoryNode node) {
+    public SQLBuilderDialog(Shell parentShell, RepositoryNode node, String selectedContext) {
         super(parentShell);
         this.node = node;
+        this.selectedContext = selectedContext;
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL);
         parentShell.setImage(ImageUtil.getImage("Images.title")); //$NON-NLS-1$
         SqlBuilderPlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
@@ -276,7 +284,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         }
 
         // RefreshDetailCompositeAction refreshAction =
-        new RefreshDetailCompositeAction(structureComposite.getTreeViewer());
+        new RefreshDetailCompositeAction(structureComposite.getTreeViewer(), this.getShell());
 
         return container;
 
@@ -436,7 +444,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     private void shutDownDb(DatabaseConnection databaseConnection) {
         IMetadataConnection iMetadataConnection = null;
-        iMetadataConnection = ConvertionHelper.convert(databaseConnection);
+        iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
         String dbType = iMetadataConnection.getDbType();
         if ((dbType.equals("JavaDB Embeded") || dbType.equals("General JDBC") || dbType.equals("HSQLDB In-Process"))) {
             String username = iMetadataConnection.getUsername();
@@ -636,13 +644,16 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     public class RefreshDetailCompositeAction extends SelectionProviderAction {
 
+        private Shell shell;
+
         /**
          * qianbing RefreshDetailCompositeAction constructor comment.
          * 
          * @param provider
          */
-        public RefreshDetailCompositeAction(ISelectionProvider provider) {
+        public RefreshDetailCompositeAction(ISelectionProvider provider, Shell shell) {
             super(provider, "Refresh DetailComposite"); //$NON-NLS-1$
+            this.shell = shell;
         }
 
         /*
@@ -653,34 +664,53 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
          * )
          */
         public void selectionChanged(final IStructuredSelection selection) {
+            if (!selection.isEmpty() && selectedContext == null) {
+                RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+                if (repositoryNode.getObject() != null) {
+                    Item item = repositoryNode.getObject().getProperty().getItem();
+                    if (item instanceof DatabaseConnectionItem) {
+                        org.talend.core.model.metadata.builder.connection.Connection connection = ((DatabaseConnectionItem) item)
+                                .getConnection();
+                        if (connection.isContextMode()) {
+                            ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
+                            if (contextItem != null && connection.isContextMode()) {
+
+                                ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem, false);
+                                setsDialog.open();
+                                selectedContext = setsDialog.getSelectedContext();
+                            }
+                        }
+                    }
+                }
+            }
             IRunnableWithProgress progress = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     try {
-                        INode node = null;
-                        String msg = null;
-                        if (!selection.isEmpty()) {
-                            try {
-                                final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
-                                if (SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
-                                    return;
-                                }
-                                node = nodeManager.convert2INode(repositoryNode);
-                            } catch (Exception e) {
-                                msg = e.getMessage();
-                                SqlBuilderPlugin.log(msg, e);
-                            }
-                            final INode argNode = node;
-                            final String argMsg = msg;
-                            Display.getDefault().asyncExec(new Runnable() {
+                        Display.getDefault().asyncExec(new Runnable() {
 
-                                public void run() {
+                            public void run() {
+                                INode node = null;
+                                String msg = null;
+                                if (!selection.isEmpty()) {
+                                    try {
+                                        final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+                                        if (SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+                                            return;
+                                        }
+                                        node = nodeManager.convert2INode(repositoryNode, selectedContext);
+                                    } catch (Exception e) {
+                                        msg = e.getMessage();
+                                        SqlBuilderPlugin.log(msg, e);
+                                    }
+                                    final INode argNode = node;
+                                    final String argMsg = msg;
                                     dbDetailsComposite.setSelectedNode(argNode, argMsg);
                                 }
-                            });
-                        }
+                            }
+                        });
                     } finally {
                         monitor.done();
                     }
@@ -734,6 +764,15 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#getSelectedContext()
+     */
+    public String getSelectedContext() {
+        return this.selectedContext;
     }
 
 }

@@ -121,9 +121,9 @@ public class ExecSQLAction extends AbstractEditorAction {
                 Display.getDefault().asyncExec(new Runnable() {
 
                     public void run() {
-                        boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0], Messages
-                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages //$NON-NLS-1$
-                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message")); //$NON-NLS-1$
+                        boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0],
+                                Messages.getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages //$NON-NLS-1$
+                                        .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message")); //$NON-NLS-1$
                         if (okToExecute) {
                             ExecSQLAction.this.run(largeResults);
                         }
@@ -148,7 +148,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         SessionTreeNode runNode = null;
 
         try {
-            runNode = nodeManager.getSessionTreeNode(node);
+            runNode = nodeManager.getSessionTreeNode(node, editor.getDialog().getSelectedContext());
         } catch (Exception e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);

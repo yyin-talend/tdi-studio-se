@@ -53,18 +53,18 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.relational.TdColumn;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
-import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -384,10 +384,10 @@ public class SQLBuilderRepositoryNodeManager {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
+    public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode, String selectedContext) {
         DatabaseConnectionItem item = getItem(getRoot(oldNode));
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
+        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection, false, selectedContext);
         try {
             modifyOldRepositoryNode(connection, iMetadataConnection, oldNode);
         } catch (Exception e) {
@@ -477,8 +477,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         if (tableFromDB != null) {
             List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB
-                    .getSourceName()));
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    tableFromDB.getSourceName()));
             modifyOldOneColumnFromDB(columnsFromDB, metadataColumn);
         }
     }
@@ -496,8 +496,8 @@ public class SQLBuilderRepositoryNodeManager {
         for (MetadataTable tableFromDB : tablesFromDB) {
             // /Get MetadataColumn from DB
             List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB
-                    .getSourceName()));
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    tableFromDB.getSourceName()));
             for (MetadataTable tableFromEMF : tablesFromEMF) {
                 // /Get MetadataColumn From EMF
                 List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
@@ -574,8 +574,8 @@ public class SQLBuilderRepositoryNodeManager {
                 ExtractMetaDataUtils.isReconnect = false;
                 for (MetadataTable table : tablesFromDB) {
                     List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-                    columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, table
-                            .getSourceName()));
+                    columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                            table.getSourceName()));
                     table.getColumns().clear();
                     for (MetadataColumn column : columnsFromDB) {
                         column.setLabel(""); //$NON-NLS-1$
@@ -754,10 +754,10 @@ public class SQLBuilderRepositoryNodeManager {
      * @return dbMetaData DatabaseMetaData .
      */
     public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
-                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
-                .getDbVersionString());
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+                iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
+                iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
+                iMetadataConnection.getDbVersionString());
         String dbType = iMetadataConnection.getDbType();
         DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType);
         return dbMetaData;
@@ -997,8 +997,8 @@ public class SQLBuilderRepositoryNodeManager {
             MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
             table.setSourceName(db.getSourceName());
             table.setLabel(""); //$NON-NLS-1$
-            List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, table
-                    .getSourceName());
+            List<TdColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    table.getSourceName());
             for (MetadataColumn column : columns) {
                 MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
                 column1.setOriginalField(column.getOriginalField());

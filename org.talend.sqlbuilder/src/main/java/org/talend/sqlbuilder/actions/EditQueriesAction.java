@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
@@ -34,6 +37,7 @@ import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -61,29 +65,44 @@ public class EditQueriesAction extends AContextualAction {
             repositoryNode = (RepositoryNode) selection.getFirstElement();
         }
 
+        DatabaseConnectionItem dbConnectionItem = null;
+
         ConnectionParameters connParameters = new ConnectionParameters();
         if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            dbConnectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
             connParameters.setRepositoryName(repositoryNode.getObject().getLabel());
             connParameters.setRepositoryId(repositoryNode.getObject().getId());
             connParameters.setQuery(""); //$NON-NLS-1$
         } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) repositoryNode.getObject();
-            DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
-            connParameters.setRepositoryName(parent.getProperty().getLabel());
-            connParameters.setRepositoryId(parent.getProperty().getId());
+            dbConnectionItem = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
+            connParameters.setRepositoryName(dbConnectionItem.getProperty().getLabel());
+            connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-            DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
-            connParameters.setRepositoryName(connectionItem.getProperty().getLabel());
-            connParameters.setRepositoryId(connectionItem.getProperty().getId());
+            dbConnectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
+            connParameters.setRepositoryName(dbConnectionItem.getProperty().getLabel());
+            connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
             connParameters.setMetadataTable((MetadataTableRepositoryObject) repositoryNode.getObject());
             connParameters.setQuery(""); //$NON-NLS-1$
         }
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
-        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode);
+
+        Connection connection = dbConnectionItem.getConnection();
+        String selectedContext = null;
+        if (connection.isContextMode()) {
+            ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
+            if (contextItem != null && connection.isContextMode()) {
+
+                ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(null, contextItem, false);
+                setsDialog.open();
+                selectedContext = setsDialog.getSelectedContext();
+            }
+        }
+        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode, selectedContext);
 
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);

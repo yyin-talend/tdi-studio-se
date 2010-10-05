@@ -299,7 +299,7 @@ public final class DBConnectionContextUtils {
      * perhaps, if connection is in context mode, will open dialog to choose context sets.
      */
     public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
-        return cloneOriginalValueConnection(dbConn, false);
+        return cloneOriginalValueConnection(dbConn, false, null);
     }
 
     /**
@@ -307,12 +307,16 @@ public final class DBConnectionContextUtils {
      * ggu Comment method "cloneOriginalValueConnection".
      * 
      * only clone the properties of connection.
+     * 
+     * @param selectedContext
      */
-    public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext) {
+    public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
+            String selectedContext) {
         if (dbConn == null) {
             return null;
         }
-        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn, defaultContext);
+        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(null, dbConn, selectedContext,
+                defaultContext);
         DatabaseConnection cloneConn = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         // get values
         String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());

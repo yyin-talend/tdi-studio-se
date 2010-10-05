@@ -318,8 +318,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             if (isModified()) {
                 Boolean iskeep = null;
                 if (connParam.isNeedTakePrompt()) {
-                    iskeep = MessageDialog.openQuestion(new Shell(), Messages
-                            .getString("MultiPageSqlBuilderEditor.AddComment.Title"), //$NON-NLS-1$
+                    iskeep = MessageDialog.openQuestion(new Shell(),
+                            Messages.getString("MultiPageSqlBuilderEditor.AddComment.Title"), //$NON-NLS-1$
                             Messages.getString("MultiPageSqlBuilderEditor.AddComment.Info")); //$NON-NLS-1$
                 }
                 connParam.setNeedTakePrompt(true);

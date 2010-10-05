@@ -53,9 +53,9 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.DeleteQueryAction;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
@@ -535,7 +535,7 @@ public class DBStructureComposite extends Composite {
         if (root == null) {
             List<RepositoryNode> dnodes = repositoryNodeManager.getAllDisplayedConnection();
             for (RepositoryNode node : dnodes) {
-                doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+                doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node, builderDialog.getSelectedContext()));
             }
         } else {
             List<IRepositoryNode> repositoryNodes = root.getChildren();
@@ -543,7 +543,8 @@ public class DBStructureComposite extends Composite {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                     refreshChildren((RepositoryNode) node);
                 } else {
-                    doRefresh(repositoryNodeManager.getRepositoryNodeFromDB((RepositoryNode) node));
+                    doRefresh(repositoryNodeManager.getRepositoryNodeFromDB((RepositoryNode) node,
+                            builderDialog.getSelectedContext()));
                 }
             }
         }
@@ -631,7 +632,7 @@ public class DBStructureComposite extends Composite {
                         if ("".equals(node.getObject().getLabel())) { //$NON-NLS-1$
                             continue;
                         }
-                        node = repositoryNodeManager.getRepositoryNodeFromDB(node);
+                        node = repositoryNodeManager.getRepositoryNodeFromDB(node, builderDialog.getSelectedContext());
                         doRefresh(node);
                     }
                     return null;

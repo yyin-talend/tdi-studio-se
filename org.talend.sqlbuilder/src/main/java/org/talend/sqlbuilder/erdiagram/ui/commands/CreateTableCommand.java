@@ -77,7 +77,8 @@ public class CreateTableCommand extends Command {
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 try {
-                    fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables());
+                    fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables(),
+                            erDiagram.getErDiagramComposite().getDialog().getSelectedContext());
                 } finally {
                     monitor.done();
                 }

@@ -394,5 +394,4 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
-
 }

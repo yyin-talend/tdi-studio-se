@@ -299,8 +299,8 @@ public class RepositoryService implements IRepositoryService {
             runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
 
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
-            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
-                    new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+            CorePlugin.getDefault().getDesignerCoreService()
+                    .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
 
         }
 
@@ -609,7 +609,12 @@ public class RepositoryService implements IRepositoryService {
     }
 
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext) {
-        return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext);
+        return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, null);
+    }
+
+    public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
+            String selectedContext) {
+        return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, selectedContext);
     }
 
     public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) {
@@ -766,8 +771,8 @@ public class RepositoryService implements IRepositoryService {
                                     String document = ModelElementHelper.getFirstDocument(function).getReference();
                                     if (document != null && !"".equals(document)) { //$NON-NLS-1$
 
-                                        internalNodeHTMLMap.put(node.getUniqueName(), document.substring(document
-                                                .indexOf("<font"), document.indexOf("</body>"))); //$NON-NLS-1$ //$NON-NLS-2$
+                                        internalNodeHTMLMap.put(node.getUniqueName(),
+                                                document.substring(document.indexOf("<font"), document.indexOf("</body>"))); //$NON-NLS-1$ //$NON-NLS-2$
                                     }
                                 }
 

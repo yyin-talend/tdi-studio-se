@@ -193,7 +193,8 @@ public class ErDiagramComposite extends SashForm {
                                 .getTables(getNodes(), selectedColumns);
 
                         erDiagram.setMetadataTables(tables);
-                        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
+                        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables,
+                                erDiagram.getErDiagramComposite().getDialog().getSelectedContext());
                         for (MetadataTable metadataTable : tables) {
                             Table table = new Table();
                             table.setMetadataTable(metadataTable, selectedColumns);
@@ -274,8 +275,8 @@ public class ErDiagramComposite extends SashForm {
                                         Matcher matcher = pattern.matcher(columnContent);
                                         EDatabaseTypeName dbType = EDatabaseTypeName.getTypeFromDbType(getCurrentDbType());
                                         // modify for bug 12092
-                                        boolean sqlKeyword = KeywordsValidator.isSqlKeyword(column.getElementName(), dbType
-                                                .getProduct());
+                                        boolean sqlKeyword = KeywordsValidator.isSqlKeyword(column.getElementName(),
+                                                dbType.getProduct());
 
                                         if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
                                             columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),

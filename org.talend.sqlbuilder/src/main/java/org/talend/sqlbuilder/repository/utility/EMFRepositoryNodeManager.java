@@ -44,9 +44,9 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
@@ -173,7 +173,7 @@ public final class EMFRepositoryNodeManager {
         }
     }
 
-    public List<String[]> getPKFromTables(List<MetadataTable> tables) {
+    public List<String[]> getPKFromTables(List<MetadataTable> tables, String selectedContext) {
         List<String[]> fks = new ArrayList<String[]>();
         String fk = ""; //$NON-NLS-1$
         String pk = ""; //$NON-NLS-1$
@@ -181,7 +181,7 @@ public final class EMFRepositoryNodeManager {
         if (root != null) {
             try {
                 iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                        .getConnection());
+                        .getConnection(), false, selectedContext);
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (final Exception e) {
                 final String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$

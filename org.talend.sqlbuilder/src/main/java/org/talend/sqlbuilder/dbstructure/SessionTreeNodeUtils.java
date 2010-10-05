@@ -86,17 +86,17 @@ public class SessionTreeNodeUtils {
         disposeConnections();
     }
 
-    public static SessionTreeNode getSessionTreeNode(DatabaseConnection dbconnection, RepositoryNode repositoryNode)
-            throws Exception {
+    public static SessionTreeNode getSessionTreeNode(DatabaseConnection dbconnection, RepositoryNode repositoryNode,
+            String selectedContext) throws Exception {
         // hyWang add for bug 0007014
         IMetadataConnection iMetadataConnection = null;
-        iMetadataConnection = ConvertionHelper.convert(dbconnection);
+        iMetadataConnection = ConvertionHelper.convert(dbconnection, false, selectedContext);
         String url = dbconnection.getURL();
         if (url == null || url.equals("")) {
             url = iMetadataConnection.getUrl();
         }
 
-        SQLConnection connection = createSQLConnection(dbconnection);
+        SQLConnection connection = createSQLConnection(dbconnection, selectedContext);
         ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
                 .getPassword(),
         // fix bug for 7014,added by hyWang
@@ -104,8 +104,8 @@ public class SessionTreeNodeUtils {
                         : dbconnection.getDatasourceName()) : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, dbconnection
-                .getPassword(), repositoryNode);
+        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
+                dbconnection.getPassword(), repositoryNode);
         return session;
     }
 
@@ -151,12 +151,12 @@ public class SessionTreeNodeUtils {
         return sqlConnection;
     }
 
-    private static SQLConnection createSQLConnection(DatabaseConnection con) throws Exception {
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con);
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
-                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
-                .getDbVersionString());
+    private static SQLConnection createSQLConnection(DatabaseConnection con, String selectedContext) throws Exception {
+        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con, false, selectedContext);
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+                iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
+                iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
+                iMetadataConnection.getDbVersionString());
         SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }

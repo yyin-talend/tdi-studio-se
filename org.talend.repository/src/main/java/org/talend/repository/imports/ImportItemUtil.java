@@ -310,7 +310,7 @@ public class ImportItemUtil {
                 }
             }
         } catch (Exception e) {
-            // ignore
+            log.error("Error when checking item :" + itemRecord.getPath(), e);
         }
 
         return result;

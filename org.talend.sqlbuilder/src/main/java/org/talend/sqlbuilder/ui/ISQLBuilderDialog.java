@@ -53,4 +53,6 @@ public interface ISQLBuilderDialog {
     public IProgressMonitor getProgressMonitor();
 
     public void notifySQLBuilder(IRepositoryViewObject o);
+
+    public String getSelectedContext();
 }

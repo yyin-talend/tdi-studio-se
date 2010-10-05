@@ -488,5 +488,4 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
         super.adaptWidgetToReadOnly();
         colorText.setEditable(!isReadOnly());
     }
-
 }
