@@ -14,22 +14,25 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.TableHelper;
+import org.talend.cwm.helper.ViewHelper;
 import org.talend.cwm.relational.RelationalFactory;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.cwm.relational.TdSqlDataType;
 import org.talend.cwm.relational.TdTable;
+import org.talend.cwm.relational.TdView;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * DOC hywang class global comment. All the databaseConnection need have name because the shareing of metadata between
@@ -37,13 +40,10 @@ import orgomg.cwm.objectmodel.core.ModelElement;
  */
 public class FillParametersForDatabaseConnectionMigrationTask extends AbstractItemMigrationTask {
 
-    private static String sqlDataTypeDefaultName = "VARCHAR";
-
-    private static int sqlDataTypeDefaultJavaType = 12;
-
-    private static long sqlDataTypeDefaultPrecision = 10;
-
-    private static long sqlDataTypeDefaultPrecisionRadix = 10;
+    /**
+     * Name the java.sql.Types.NULL type
+     */
+    private static final String NULL_SQL_TYPE_NAME = "NULL"; //$NON-NLS-1$
 
     private IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -68,24 +68,35 @@ public class FillParametersForDatabaseConnectionMigrationTask extends AbstractIt
 
     private void fillParametersForColumns(EList<orgomg.cwm.objectmodel.core.Package> pkgs) {
         for (orgomg.cwm.objectmodel.core.Package pkg : pkgs) {
-            EList<ModelElement> allTables = pkg.getOwnedElement();
-            for (ModelElement mo : allTables) {
-                if (mo instanceof TdTable) {
-                    TdTable ttable = (TdTable) mo;
-                    for (MetadataColumn col : ttable.getColumns()) {
-                        if (col instanceof TdColumn) {
-                            TdColumn tcol = (TdColumn) col;
-                            TdSqlDataType sqlDataType = RelationalFactory.eINSTANCE.createTdSqlDataType();
-                            sqlDataType.setName(sqlDataTypeDefaultName);
-                            sqlDataType.setJavaDataType(sqlDataTypeDefaultJavaType);
-                            sqlDataType.setNumericPrecision(sqlDataTypeDefaultPrecision);
-                            sqlDataType.setNumericPrecisionRadix(sqlDataTypeDefaultPrecisionRadix);
-                            tcol.setSqlDataType(sqlDataType);
-                        }
-                    }
-
-                }
+            // handle tables
+            List<TdTable> tables = PackageHelper.getTables(pkg);
+            for (TdTable table : tables) {
+                fillParamaters(TableHelper.getColumns(table));
             }
+            // handle views
+            List<TdView> views = PackageHelper.getViews(pkg);
+            for (TdView view : views) {
+                fillParamaters(ViewHelper.getColumns(view));
+            }
+        }
+    }
+
+    /**
+     * DOC sgandon Comment method "fillParamaters".
+     * 
+     * @param tcol
+     */
+    private void fillParamaters(List<TdColumn> allColumns) {
+        for (TdColumn tdCol : allColumns) {
+            TdSqlDataType sqlDataType = RelationalFactory.eINSTANCE.createTdSqlDataType();
+            // it is impossible to find out what is the java data type from the type name
+            // because every jdbc constructor may implement their own types
+            // see http://download.oracle.com/javase/1.3/docs/guide/jdbc/getstart/mapping.html#table1
+            // so we set it to NULL type and 0.
+            // TOP may test it and retreive it from the DB when necessary.
+            sqlDataType.setName(NULL_SQL_TYPE_NAME);
+            sqlDataType.setJavaDataType(java.sql.Types.NULL);
+            tdCol.setSqlDataType(sqlDataType);
         }
     }
 
