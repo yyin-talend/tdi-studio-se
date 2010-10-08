@@ -21,7 +21,7 @@ imports="
 	String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 
-	String use_process_id = ElementParameterParser.getValue(node, "__USE_PROCESS_ID");
+	String use_process_id = ElementParameterParser.getValue(node, "__USE_PROCESS_ID__");
 
 	String process_name = ElementParameterParser.getValue(node, "__PROCESS_NAME__");
 	String process_version = ElementParameterParser.getValue(node, "__PROCESS_VERSION__");
