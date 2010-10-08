@@ -39,8 +39,6 @@ public abstract class AbstractCreateAction extends AContextualAction {
 
     private String[] existingNames;
 
-    protected RepositoryNode repositoryNode;
-
     /**
      * DOC tguiu AbstractCreateAction constructor comment.
      */
