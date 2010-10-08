@@ -374,13 +374,41 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 %>
 					<%=conn.getName()%>.<%=column.getLabel()%> = <%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.getBytes(<%=encoding%>);
 <%
-					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) {
+						if(column.isNullable()){
+%>
+					if(("").equals(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.trim())){
+						<%=conn.getName()%>.<%=column.getLabel() %> = null;
+					}else{
+<%
+						}
 %>
 					<%=conn.getName()%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(ParserUtils.parseTo_Number(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.trim(), <%=thousandsSeparator%>, <%=decimalSeparator%>));
 <%
+						if(column.isNullable()){
+%>
+					}
+<%
+						}
+%>
+<%
 					} else if (JavaTypesManager.isNumberType(javaType, column.isNullable())) {
+						if(column.isNullable()){
+%>
+					if(("").equals(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.trim())){
+						<%=conn.getName()%>.<%=column.getLabel() %> = null;
+					}else{
+<%
+						}
 %>
 					<%=conn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%=typeToGenerate%>(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.trim());
+<%
+						if(column.isNullable()){
+%>
+					}
+<%
+						}
+%>
 <%
 					} else { 
 %>
