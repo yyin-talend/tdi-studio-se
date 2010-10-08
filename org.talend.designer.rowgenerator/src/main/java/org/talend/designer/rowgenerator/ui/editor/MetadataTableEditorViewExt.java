@@ -348,10 +348,13 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         if (table.getItems().length > 0) {
             TableItem item = table.getItems()[next];
             next++;
+            final int itemCount = getTable().getItemCount();
             for (int i = 1; i < table.getColumnCount(); i++) {
-                MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
-                ext.setPreview(item.getText(i));
-                ext.setChanged(false);
+                if (itemCount > i - 1) {
+                    MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
+                    ext.setPreview(item.getText(i));
+                    ext.setChanged(false);
+                }
             }
             getTableViewerCreator().getTableViewer().refresh();
         }
@@ -710,7 +713,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     private Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        for (Function fun : functionManager.getFunctionByName(talendType)) {           
+        for (Function fun : functionManager.getFunctionByName(talendType)) {
             // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
             String name = fun.getName();
             if (value.contains(name)) {
