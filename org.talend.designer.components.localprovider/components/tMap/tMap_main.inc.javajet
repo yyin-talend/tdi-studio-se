@@ -836,13 +836,13 @@
 								}
 								%>
 		  				
-	  								<%
-	  								if(externalTable.isInnerJoin()) {
-	  								%>
+	  								//<%
+	  								//if(externalTable.isInnerJoin()) {
+	  								//%>
 			  							<%= rejectedInnerJoin %> = true;
-	  								<%
-  									}
-  									%>
+	  								//<%
+  									//}
+  									//%>
 						
 									<%if(isMultipleResultMode) { // T 56 %>
 	
@@ -1448,7 +1448,7 @@ if(!isVirtualOut) { // T_TM_M_320
         }
 
         // write conditions for inner join reject
-        if (lastValidOutputTableName != null && hasValidLookupTables && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
+        if (lastValidOutputTableName != null && hasValidLookupTables && lstSizeOutputs > 0) {
             sb.append(cr + "if(");
             sb.append("!" + rejectedInnerJoin);
             sb.append(" ) {");
@@ -1520,7 +1520,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	            // write filters conditions and code to execute
 	            if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
 	                    && oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter
-	                    || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin || checkingSyntax) {
+	                    || currentIsRejectInnerJoin || checkingSyntax) {
 
 	                boolean closeFilterOrRejectBracket = false;
 	                if (currentIsReject || currentIsRejectInnerJoin) {
@@ -1528,7 +1528,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	                } else {
 	                    sb.append(cr + cr + "// # Output table : '" + outputTableName + "'");
 	                }
-	                if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+	                if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin) {
 	                    sb.append(cr + "// # Filter conditions ");
 	
 	                    String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
@@ -1541,14 +1541,14 @@ if(!isVirtualOut) { // T_TM_M_320
 	
 	                    String rejectedTests = null;
 	                    if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin
-	                            && atLeastOneInputTableWithInnerJoin) {
+	                            ) {
 	                        rejectedTests = rejected + " || " + rejectedInnerJoin;
 	                        if (hasFilters || hasExpressionFilter) {
 	                            rejectedTests = "(" + rejectedTests + ")";
 	                        }
 	                    } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
 	                        rejectedTests = rejected;
-	                    } else if (currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+	                    } else if (currentIsRejectInnerJoin) {
 	                        rejectedTests = rejectedInnerJoin;
 	                    }
 	                    if (hasFilters && !hasExpressionFilter || hasExpressionFilter) {
@@ -1586,7 +1586,7 @@ if(!isVirtualOut) { // T_TM_M_320
 						sb.append(cr);
 					}
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
-	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
+	                         || checkingSyntax)) {
 	                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
 	                        String outputColumnName = outputTableEntry.getName();
 	                        IMetadataColumn metadataColumnFromConn = null;
