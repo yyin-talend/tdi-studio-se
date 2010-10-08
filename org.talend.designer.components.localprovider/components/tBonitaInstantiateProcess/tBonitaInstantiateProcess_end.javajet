@@ -24,7 +24,7 @@ try {
 <%
 	if (dieOnError) {
 %>
-		throw le_<%=cid%>;	
+		throw lee_<%=cid%>;	
 <%
 	} else {
 %>

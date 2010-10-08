@@ -43,7 +43,7 @@
       REQUIRED="true"
       GROUP="CONFIGURATION"
     >
-    	<DEFAULT>"bonita-environment.xml"</DEFAULT>
+    	<DEFAULT>"runtime/conf/bonita-environment.xml"</DEFAULT>
     </PARAMETER>
     
 	<!--config jaas-standard.cfg file  -->
@@ -54,7 +54,7 @@
       REQUIRED="true"
       GROUP="CONFIGURATION"
     >
-    	<DEFAULT>"jaas-standard.cfg"</DEFAULT>
+    	<DEFAULT>"runtime/conf/jaas-standard.cfg"</DEFAULT>
     </PARAMETER>
     
 	<!--config logging.properties file  -->
@@ -65,7 +65,7 @@
       REQUIRED="true"
       GROUP="CONFIGURATION"
     >
-    	<DEFAULT>"logging.properties"</DEFAULT>
+    	<DEFAULT>"runtime/conf/logging.properties"</DEFAULT>
     </PARAMETER>
     
 	<PARAMETER
