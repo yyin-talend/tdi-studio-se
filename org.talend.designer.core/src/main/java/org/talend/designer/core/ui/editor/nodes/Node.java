@@ -75,6 +75,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -1511,7 +1512,7 @@ public class Node extends Element implements INode {
     public void setErrorInfoChange(final String id, Object value) {
         if (id.equals("ERRORINFO")) { //$NON-NLS-1$
             firePropertyChange(UPDATE_STATUS, null, null);
-        } else if (id.equals("COMPAREINFO")) {
+        } else if (id.equals("COMPAREINFO")) { //$NON-NLS-1$
             firePropertyChange(UPDATE_STATUS, null, null);
         }
     }
@@ -2058,20 +2059,20 @@ public class Node extends Element implements INode {
                     if (tableValues != null
                             && "tFileOutputMSXML".equalsIgnoreCase(component.getName()) && param.getName().equals("LOOP")) { //$NON-NLS-1$ //$NON-NLS-2$
                         checkFileOutputMSXML(param, tableValues);
-                    } else if (tableValues != null && "tAdvancedFileOutputXML".equalsIgnoreCase(component.getName())
-                            && param.getName().equals("LOOP") && tableValues.size() != 0) {
+                    } else if (tableValues != null && "tAdvancedFileOutputXML".equalsIgnoreCase(component.getName()) //$NON-NLS-1$
+                            && param.getName().equals("LOOP") && tableValues.size() != 0) { //$NON-NLS-1$
                         // for bug 10108
-                        if (((Boolean) this.getElementParameter("MERGE").getValue()) == true) {
+                        if (((Boolean) this.getElementParameter("MERGE").getValue()) == true) { //$NON-NLS-1$
                             List<Map<String, String>> listGroup = (List<Map<String, String>>) externalNode.getElementParameter(
-                                    "GROUP").getValue();
+                                    "GROUP").getValue(); //$NON-NLS-1$
                             List<Map<String, String>> listLoop = (List<Map<String, String>>) externalNode.getElementParameter(
-                                    "LOOP").getValue();
+                                    "LOOP").getValue(); //$NON-NLS-1$
                             if (listGroup.size() == 0 || listLoop.size() == 0) {
-                                String errorMessage = Messages.getString("Node.needLoopAndGroup", param.getDisplayName());
+                                String errorMessage = Messages.getString("Node.needLoopAndGroup", param.getDisplayName()); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
-                    } else if ("tELTJDBCMap".equals(component.getName())) {
+                    } else if ("tELTJDBCMap".equals(component.getName())) { //$NON-NLS-1$
                         // don't check this here.
                     } else {
                         if (tableValues == null || tableValues.size() == 0) {
@@ -2393,7 +2394,7 @@ public class Node extends Element implements INode {
 
             if (isHL7Output()) {
                 if (getIncomingConnections(EConnectionType.FLOW_MERGE).size() <= 0) {
-                    String errorMessage = "Do not have merge link";
+                    String errorMessage = Messages.getString("Node.hl7HaveNoMergeLink"); //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 } else {
                     List<Map<String, String>> maps = (List<Map<String, String>>) ElementParameterParser.getObjectValue(this,
@@ -2407,10 +2408,10 @@ public class Node extends Element implements INode {
                         String schemaName = null;
                         for (Map<String, String> map : maps) {
                             if (map.containsValue(rowName)) {
-                                if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
-                                    schemaName = map.get("SCHEMA");
-                                    int first = schemaName.indexOf("_");
-                                    int second = schemaName.lastIndexOf("_");
+                                if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) { //$NON-NLS-1$ //$NON-NLS-2$
+                                    schemaName = map.get("SCHEMA"); //$NON-NLS-1$
+                                    int first = schemaName.indexOf("_"); //$NON-NLS-1$
+                                    int second = schemaName.lastIndexOf("_"); //$NON-NLS-1$
                                     if (first > 0 && first < second) {
                                         schemaName = schemaName.substring(first + 1, second);
                                         break;
@@ -2421,7 +2422,7 @@ public class Node extends Element implements INode {
                         for (IMetadataTable nodeTable : tables) {
                             if (schemaName != null && nodeTable.getLabel() != null && nodeTable.getLabel().equals(schemaName)) {
                                 if (!metadataTable.sameMetadataAs(nodeTable, IMetadataColumn.OPTIONS_NONE)) {
-                                    String errorMessage = "MetadataTable is not synchronized";
+                                    String errorMessage = Messages.getString("Node.schemaNotSynchronized"); //$NON-NLS-1$
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                                 }
                             }
@@ -2573,6 +2574,10 @@ public class Node extends Element implements INode {
                 }
             }
         }
+        ICoreTisService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
+            service = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
+        }
 
         // test in case several Dynamic type has been set or if Dynamic is not the last type in schema
         if (mainConnector != null && !noSchema && canEditSchema) {
@@ -2583,7 +2588,7 @@ public class Node extends Element implements INode {
                     int indexOfDynamicField = 0;
                     int lastNotCustom = 0;
                     for (IMetadataColumn col : meta.getListColumns()) {
-                        if (col.getTalendType().equals("id_Dynamic")) {
+                        if (col.getTalendType().equals("id_Dynamic")) { //$NON-NLS-1$
                             nbDynamic++;
                             indexOfDynamicField = meta.getListColumns().indexOf(col);
                         }
@@ -2592,12 +2597,22 @@ public class Node extends Element implements INode {
                         }
                     }
                     if (nbDynamic > 1) {
-                        String errorMessage = "There should be only one Dynamic type in one schema";
+                        String errorMessage = Messages.getString("Node.onlyOneDynamicPerSchema"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     if (nbDynamic > 0 && (indexOfDynamicField != lastNotCustom)) {
-                        String errorMessage = "Dynamic type should always be the last one in a schema";
+                        String errorMessage = Messages.getString("Node.dynamicShouldBeLastType"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                    if (nbDynamic > 0 && service == null) {
+                        String errorMessage = Messages.getString("Node.dynamicNotSupported"); //$NON-NLS-1$
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                    if (nbDynamic > 0 && service != null) {
+                        if (!service.isSupportDynamicType(this.getComponent().getName())) {
+                            String errorMessage = Messages.getString("Node.componentDoesntSupportDynamic"); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             }
@@ -2873,7 +2888,7 @@ public class Node extends Element implements INode {
     public String toString() {
         StringBuffer buff = new StringBuffer();
         buff.append(getUniqueName() + " - "); //$NON-NLS-1$
-        buff.append(" status(start=" + isStart() + ", subProcessStart=" + isSubProcessStart() + ")");
+        buff.append(" status(start=" + isStart() + ", subProcessStart=" + isSubProcessStart() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         buff.append(Messages.getString("Node.input")); //$NON-NLS-1$
         for (int i = 0; i < inputs.size(); i++) {
             buff.append(inputs.get(i).getName());
@@ -2922,7 +2937,7 @@ public class Node extends Element implements INode {
     }
 
     public boolean isHL7Output() {
-        return getComponent().getName().equals("tHL7Output");
+        return getComponent().getName().equals("tHL7Output"); //$NON-NLS-1$
     }
 
     /*
