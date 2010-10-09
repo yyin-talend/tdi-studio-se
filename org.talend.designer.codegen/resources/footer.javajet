@@ -245,7 +245,11 @@
 			    } else if(typeToGenerate.equals("BigDecimal"))
             {
          %>
-         context.<%=ctxParam.getName()%>= new <%=typeToGenerate%>(context.getProperty("<%=ctxParam.getName()%>"));
+         try{
+         	context.<%=ctxParam.getName()%>= new <%=typeToGenerate%>(context.getProperty("<%=ctxParam.getName()%>"));
+		 }catch(NumberFormatException e){
+		    context.<%=ctxParam.getName()%>=null;
+		 }
          <%
             }
 			     else
