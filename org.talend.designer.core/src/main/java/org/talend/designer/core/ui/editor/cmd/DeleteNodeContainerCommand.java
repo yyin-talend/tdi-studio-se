@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
@@ -36,6 +38,8 @@ public class DeleteNodeContainerCommand extends Command {
     private Process process;
 
     private List<Node> nodeList;
+
+    private List<String> joinTableNames = new ArrayList<String>();
 
     public DeleteNodeContainerCommand(Process process, List<Node> nodeList) {
         this.process = process;
@@ -97,6 +101,15 @@ public class DeleteNodeContainerCommand extends Command {
                     String metaName = meta.getTableName();
                     process.removeUniqueConnectionName(metaName);
                 }
+                // for tmap remove join table names
+                final List<String> names = CorePlugin.getDefault().getMapperService().getJoinTableNames(node.getExternalData());
+                if (!names.isEmpty()) {
+                    joinTableNames.addAll(names);
+                    for (String name : joinTableNames) {
+                        process.removeUniqueConnectionName(name);
+                    }
+                }
+
             }
         }
 
@@ -164,6 +177,11 @@ public class DeleteNodeContainerCommand extends Command {
                 for (IMetadataTable meta : node.getMetadataList()) {
                     String metaName = meta.getTableName();
                     process.addUniqueConnectionName(metaName);
+                }
+
+                // tmap join table
+                for (String name : joinTableNames) {
+                    process.addUniqueConnectionName(name);
                 }
             }
         }

@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -425,6 +426,8 @@ public class NodesPasteCommand extends Command {
                         String oldName = metaTable.getTableName();
                         String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
                         externalNode.renameOutputConnection(oldName, newName);
+                        CorePlugin.getDefault().getMapperService().renameJoinTable(process, externalNode.getExternalData(),
+                                createdNames);
                     }
                 }
             }
