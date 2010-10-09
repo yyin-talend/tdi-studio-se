@@ -29,6 +29,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.EImage;
@@ -36,15 +37,18 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -65,8 +69,6 @@ public class DuplicateAction extends AContextualAction {
     private RepositoryNode sourceNode = null;
 
     private IStructuredSelection selection = null;
-
-    private static final String JOB_INIT_VERSION = "0.1"; //$NON-NLS-1$
 
     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -391,7 +393,7 @@ public class DuplicateAction extends AContextualAction {
                         boolean needSys = true;
                         for (IRepositoryViewObject object : selectedVersionItems) {
                             Item selectedItem = object.getProperty().getItem();
-                            Item copy = factory.copy(selectedItem, path);
+                            final Item copy = factory.copy(selectedItem, path);
                             if (isfirst) {
                                 id = copy.getProperty().getId();
                                 label = copy.getProperty().getLabel();
@@ -406,7 +408,17 @@ public class DuplicateAction extends AContextualAction {
                                     needSys = false;
                                 }
                             }
-                            factory.save(copy);
+
+                            factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getText(), this) {
+
+                                @Override
+                                protected void run() throws LoginException, PersistenceException {
+                                    if (copy instanceof ProcessItem) {
+                                        RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
+                                    }
+                                    factory.save(copy);
+                                }
+                            });
                         }
                     }
                 }
@@ -416,18 +428,30 @@ public class DuplicateAction extends AContextualAction {
         }
     }
 
-    private void duplicateSingleVersionItem(Item item, IPath path, String newName) {
-        try {
-            Item newItem = factory.copy(item, path, true);
-            newItem.getProperty().setLabel(newName);
-            // qli modified to fix the bug 5400 and 6185.
-            if (newItem instanceof RoutineItem) {
-                synDuplicatedRoutine((RoutineItem) newItem);
-            }// end
-            factory.save(newItem);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+    private void duplicateSingleVersionItem(final Item item, final IPath path, final String newName) {
+
+        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getText(), this) {
+
+            @Override
+            protected void run() throws LoginException, PersistenceException {
+                try {
+                    final Item newItem = factory.copy(item, path, true);
+                    newItem.getProperty().setLabel(newName);
+                    // qli modified to fix the bug 5400 and 6185.
+                    if (newItem instanceof RoutineItem) {
+                        synDuplicatedRoutine((RoutineItem) newItem);
+                    }// end
+
+                    if (newItem instanceof ProcessItem) {
+                        RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+                    }
+                    factory.save(newItem);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        });
+
     }
 
     private String getLastestVersion(Set<IRepositoryViewObject> set) {

@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -32,6 +34,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -154,7 +157,7 @@ public class CopyObjectAction {
                     boolean needSys = true;
                     for (IRepositoryViewObject object : selectedVersionItems) {
                         Item selectedItem = object.getProperty().getItem();
-                        Item copy = factory.copy(selectedItem, path);
+                        final Item copy = factory.copy(selectedItem, path);
                         if (isfirst) {
                             id = copy.getProperty().getId();
                             label = copy.getProperty().getLabel();
@@ -169,10 +172,16 @@ public class CopyObjectAction {
                                 needSys = false;
                             }
                         }
-                        if (copy instanceof ProcessItem) {
-                            RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
-                        }
-                        factory.save(copy);
+                        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
+
+                                    @Override
+                                    protected void run() throws LoginException, PersistenceException {
+                                        if (copy instanceof ProcessItem) {
+                                            RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
+                                        }
+                                        factory.save(copy);
+                                    }
+                                });
                     }
                 }
             }
@@ -180,20 +189,26 @@ public class CopyObjectAction {
 
     }
 
-    private void copySingleVersionItem(Item item, IPath path) {
-        try {
-            Item newItem = factory.copy(item, path, true);
-            // qli modified to fix the bug 5400 and 6185.
-            if (newItem instanceof RoutineItem) {
-                synDuplicatedRoutine((RoutineItem) newItem);
-            }
-            if (newItem instanceof ProcessItem) {
-                RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
-            }
-            factory.save(newItem);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+    private void copySingleVersionItem(final Item item, final IPath path) {
+        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
+
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
+                        try {
+                            Item newItem = factory.copy(item, path, true);
+                            // qli modified to fix the bug 5400 and 6185.
+                            if (newItem instanceof RoutineItem) {
+                                synDuplicatedRoutine((RoutineItem) newItem);
+                            }
+                            if (newItem instanceof ProcessItem) {
+                                RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+                            }
+                            factory.save(newItem);
+                        } catch (Exception e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+                });
     }
 
     private String getLastestVersion(Set<IRepositoryViewObject> set) {
