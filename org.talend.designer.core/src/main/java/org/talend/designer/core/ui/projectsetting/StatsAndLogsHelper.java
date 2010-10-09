@@ -12,13 +12,19 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.param.ERepositoryCategoryType;
@@ -29,6 +35,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.StatAndLogsSettings;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -40,6 +47,7 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
@@ -406,6 +414,68 @@ public class StatsAndLogsHelper extends Utils {
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'ACCESS' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
+        // jdbc url
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.URL.getName());
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.URL.getName())));
+        param.setDisplayName(EParameterName.URL.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(53);
+        param.setRepositoryValue("URL"); //$NON-NLS-1$
+        param
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        paramList.add(param);
+
+        // jdbc child param
+        List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeeded();
+        Set<String> moduleNameList = new TreeSet<String>();
+        Set<String> moduleValueList = new TreeSet<String>();
+        for (ModuleNeeded module : moduleNeededList) {
+            String moduleName = module.getModuleName();
+            moduleNameList.add(moduleName);
+            moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
+        }
+        Comparator<String> comprarator = new IgnoreCaseComparator();
+        String[] moduleNameArray = moduleNameList.toArray(new String[0]);
+        String[] moduleValueArray = moduleValueList.toArray(new String[0]);
+        Arrays.sort(moduleNameArray, comprarator);
+        Arrays.sort(moduleValueArray, comprarator);
+        ElementParameter childParam = new ElementParameter(elem);
+        childParam.setName("JAR_NAME");
+        childParam.setDisplayName("JAR_NAME");
+        childParam.setField(EParameterFieldType.MODULE_LIST);
+        childParam.setListItemsDisplayName(moduleNameArray);
+        childParam.setListItemsValue(moduleValueArray);
+        // driver jar for jdbc
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.DRIVER_JAR.getName());
+        param.setDisplayName(EParameterName.DRIVER_JAR.getDisplayName());
+        param.setField(EParameterFieldType.TABLE);
+        param.setListItemsDisplayCodeName(new String[] { "JAR_NAME" });
+        param.setListItemsDisplayName(new String[] { "Jar Name" });
+        param.setListItemsValue(new ElementParameter[] { childParam });
+        param.setValue(new ArrayList<Map<String, Object>>());
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(54);
+        param.setRepositoryValue("DRIVER_JAR"); //$NON-NLS-1$
+        param
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        paramList.add(param);
+
+        // class name for jdbc
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.DRIVER_CLASS.getName());
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DRIVER_CLASS.getName())));
+        param.setDisplayName(EParameterName.DRIVER_CLASS.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(57);
+        param.setRepositoryValue("DRIVER_CLASS"); //$NON-NLS-1$
+        param
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        paramList.add(param);
+
         // host
         param = new ElementParameter(elem);
         param.setName(EParameterName.HOST.getName());
@@ -416,7 +486,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(53);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // port
@@ -429,7 +499,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(53);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // dbName
@@ -442,7 +512,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI')"); //$NON-NLS-1$
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // local service name
@@ -554,6 +624,13 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(59);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
+    }
+
+    private final static class IgnoreCaseComparator implements Comparator<String> {
+
+        public int compare(String o1, String o2) {
+            return o1.compareToIgnoreCase(o2);
+        }
     }
 
     private static void statsAndLogsParametersFinalPart(Element elem) {
