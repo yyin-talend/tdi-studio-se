@@ -1060,8 +1060,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         Set<String> allRoutinesId = new HashSet<String>();
         for (ExportFileResource resource : process) {
             if (resource.getItem() instanceof ProcessItem) {
-                allRoutinesId.addAll(LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
-                        resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion()));
+                Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
+                        resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
+                if (routinesNeededForJob != null) {
+                    allRoutinesId.addAll(routinesNeededForJob);
+                }
             }
 
         }
@@ -1082,7 +1085,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
             if (!isSystem) {
                 try {
-                    toReturn.add(factory.getLastVersion(id));
+                    IRepositoryViewObject routine = factory.getLastVersion(id);
+                    if (routine != null) {
+                        toReturn.add(routine);
+                    } else {
+                        throw new PersistenceException("routine (id or name)[" + id + "] not found");
+                    }
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                 }
