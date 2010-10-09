@@ -497,8 +497,8 @@ public class DeleteAction extends AContextualAction {
                                     if (object2 instanceof NodeType) {
                                         NodeType nodeType = (NodeType) object2;
                                         nodeType.getElementParameter();
-                                        boolean equals = nodeType.getComponentName().equals(label)
-                                                && nodeType.getComponentVersion().equals(version);
+                                        boolean equals = nodeType.getComponentName().equals(label);
+                                        // && nodeType.getComponentVersion().equals(version);for bug 14212
                                         if (equals) {
                                             String path = item2.getState().getPath();
 
@@ -524,9 +524,8 @@ public class DeleteAction extends AContextualAction {
                         }
                         for (IProcess openedProcess : deleteActionCache.getOpenedProcessList()) {
                             for (INode node : openedProcess.getGraphicalNodes()) {
-                                boolean equals = node.getComponent().getName().equals(label)
-                                        && node.getComponent().getVersion().equals(version);
-
+                                boolean equals = node.getComponent().getName().equals(label);
+                                // && node.getComponent().getVersion().equals(version);for bug 14212
                                 boolean isDelete = factory.getStatus(openedProcess) == ERepositoryStatus.DELETED;
                                 boolean isJob = true;
                                 Property property2 = openedProcess.getProperty();
