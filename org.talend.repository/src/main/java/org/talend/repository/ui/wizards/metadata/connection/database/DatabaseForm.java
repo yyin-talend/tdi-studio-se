@@ -1846,7 +1846,7 @@ public class DatabaseForm extends AbstractForm {
                 s = template.getUrlTemplate(version);
             }
             urlConnectionStringText.setEditable(!visible);
-            schemaText.hide();
+            // schemaText.hide();
             if (template == EDatabaseConnTemplate.MSSQL) {
                 schemaText.show();
                 schemaText.setEditable(true);
@@ -1869,6 +1869,10 @@ public class DatabaseForm extends AbstractForm {
                     jDBCschemaText.hide();
                 }
                 addContextParams(EDBParamName.Schema, true);
+            } else {
+                schemaText.hide();
+
+                addContextParams(EDBParamName.Schema, false);
             }
 
             if (s.contains(EDatabaseConnVar.HOST.getVariable())) {
