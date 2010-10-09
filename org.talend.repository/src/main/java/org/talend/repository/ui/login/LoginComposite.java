@@ -1293,6 +1293,9 @@ public class LoginComposite extends Composite {
         } catch (PersistenceException e1) {
             ExceptionHandler.process(e1);
         }
+        if (getConnection() != null) { // reset the context, because there are some changes in create sandbox dialog
+            setRepositoryContextInContext();
+        }
     }
 
     /**
