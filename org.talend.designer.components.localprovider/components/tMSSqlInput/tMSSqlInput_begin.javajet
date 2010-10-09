@@ -24,6 +24,10 @@ imports="
 	    	cid = node.getUniqueName();
 %>
 			org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%> = org.talend.designer.components.util.mssql.MSSqlUtilFactory.getMSSqlGenerateTimestampUtil();
+			
+			java.util.List<String> talendToDBList_<%=cid %> = new java.util.ArrayList();
+			String[] talendToDBArray_<%=cid %>  = new String[]{"FLOAT","NUMERIC","NUMERIC IDENTITY","DECIMAL","DECIMAL IDENTITY","REAL"}; 
+			java.util.Collections.addAll(talendToDBList_<%=cid %>, talendToDBArray_<%=cid %>); 
 <%
 	    }
 		public void afterUseExistConnection(INode node) {
@@ -80,9 +84,6 @@ imports="
 %>
             tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
             if(tmpContent_<%=cid%> != null) {
-            	java.util.List<String> talendToDBList_<%=cid %> = new java.util.ArrayList();
-            	talendToDBList_<%=cid %> .addAll(MetadataTalendType.getTalendToDBList("mssql_id","id_Double"));
-            	talendToDBList_<%=cid %> .addAll(MetadataTalendType.getTalendToDBList("mssql_id","id_Float"));
             	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%=currentColNo%>).toUpperCase(java.util.Locale.ENGLISH))) {
             		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(Double.valueOf(tmpContent_<%=cid%>));
             	} else {
