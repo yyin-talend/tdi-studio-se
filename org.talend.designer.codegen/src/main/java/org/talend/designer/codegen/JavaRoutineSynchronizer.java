@@ -100,6 +100,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         FileOutputStream fos = null;
         try {
             IFile file = getRoutineFile(routineItem);
+            long modificationItemDate = routineItem.getProperty().getModificationDate().getTime();
+            long modificationFileDate = file.getModificationStamp();
+            if (modificationItemDate <= modificationFileDate) {
+                return;
+            }
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
