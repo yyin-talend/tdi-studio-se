@@ -1847,6 +1847,7 @@ public class DatabaseForm extends AbstractForm {
             }
             urlConnectionStringText.setEditable(!visible);
             // schemaText.hide();
+            boolean schemaTextIsShow = true;
             if (template == EDatabaseConnTemplate.MSSQL) {
                 schemaText.show();
                 schemaText.setEditable(true);
@@ -1870,9 +1871,9 @@ public class DatabaseForm extends AbstractForm {
                 }
                 addContextParams(EDBParamName.Schema, true);
             } else {
-                schemaText.hide();
-
-                addContextParams(EDBParamName.Schema, false);
+                // schemaText.hide();
+                schemaTextIsShow = false;
+                // addContextParams(EDBParamName.Schema, false);
             }
 
             if (s.contains(EDatabaseConnVar.HOST.getVariable())) {
@@ -1972,9 +1973,10 @@ public class DatabaseForm extends AbstractForm {
                 jDBCschemaText.setEditable(visible);
                 addContextParams(EDBParamName.Schema, visible);
             } else {
-
-                // schemaText.hide();
-                // addContextParams(EDBParamName.Schema, visible);
+                if (!schemaTextIsShow) {
+                    schemaText.hide();
+                    addContextParams(EDBParamName.Schema, false);
+                }
             }
             if (EDatabaseConnTemplate.isAddtionParamsNeeded(getConnection().getDatabaseType())
                     && !EDatabaseConnTemplate.GENERAL_JDBC.getDBTypeName().equals(dbTypeCombo.getText()) && visible) {
