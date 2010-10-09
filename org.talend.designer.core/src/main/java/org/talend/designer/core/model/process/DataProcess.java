@@ -1077,8 +1077,10 @@ public class DataProcess {
             return;
         }
 
+        // String[] fsNodeNeedReplace = new String[] {
+        //                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         String[] fsNodeNeedReplace = new String[] {
-                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
         Node currentComponent = (Node) graphicalNode;
         AbstractNode dataNode;
@@ -1134,10 +1136,14 @@ public class DataProcess {
                 fsNode.setActivate(currentComponent.isActivate());
                 fsNode.setStart(currentComponent.isStart());
                 fsNode.setDesignSubjobStartNode(currentComponent.getDesignSubjobStartNode());
+
                 IMetadataTable newMetadata = currentComponent.getMetadataList().get(0).clone();
                 newMetadata.setTableName(currentComponent.getUniqueName());
                 fsNode.getMetadataList().remove(0);
-                fsNode.getMetadataList().add(newMetadata);
+                // bug15885, for tFSJoin to support FS Combain link,
+                // fsNode.getMetadataList().add(newMetadata);
+                fsNode.getMetadataList().addAll(currentComponent.getMetadataList());
+
                 fsNode.setSubProcessStart(currentComponent.isSubProcessStart() || needCreateTFSNode);
                 fsNode.setProcess(currentComponent.getProcess());
                 List<IConnection> outgoingConnections = new ArrayList<IConnection>();
