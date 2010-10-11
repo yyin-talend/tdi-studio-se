@@ -1028,6 +1028,60 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (root.getChildren().size() == 1) {
                     viewer.setExpandedState(root.getChildren().get(0), true);
                 }
+                timer.stop();
+                // timer.print();
+            }
+        };
+
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+            return;
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+            return;
+        }
+    }
+
+    public void refreshView() {
+        /*
+         * fix bug 4040. Sometimes Display.getCurrent.getActiveShell() get null result we not expect.
+         */
+        // Shell shell = Display.getCurrent().getActiveShell();
+        Shell shell = getSite().getShell();
+
+        if (shell == null) {
+            return;
+        }
+
+        ProgressDialog progressDialog = new ProgressDialog(shell, 1000) {
+
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
+                timer.start();
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                try {
+                    final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    factory.initialize();
+                    final Project currentProject = ProjectManager.getInstance().getCurrentProject();
+                    // factory.reloadProject(currentProject);
+                } catch (Exception e) {
+                    throw new InvocationTargetException(e);
+                }
+
+                root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+                viewer.refresh();
+
+                // unsetting the selection will prevent the propertyView from displaying dirty data
+                viewer.setSelection(new TreeSelection());
+
+                if (root.getChildren().size() == 1) {
+                    viewer.setExpandedState(root.getChildren().get(0), true);
+                }
                 // PTODO
                 if (PluginChecker.isJobLetPluginLoaded()) {
                     IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault()

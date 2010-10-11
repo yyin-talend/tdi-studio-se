@@ -43,7 +43,7 @@ public class RefreshAction extends Action {
 
     public void run() {
         ProjectRepositoryNode.refProjectBool = true;
-        view.refresh();
+        view.refreshView();
         ProjectRepositoryNode.refProjectBool = false;
         // qli modified to fix the bug 6659.
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
