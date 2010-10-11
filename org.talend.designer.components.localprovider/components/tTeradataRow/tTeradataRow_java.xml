@@ -246,6 +246,14 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+	<PARAMETER 
+  		NAME="NOTE" 
+  		FIELD="LABEL" 
+  		NUM_ROW="10"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"  
+		>
+		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+	</PARAMETER>
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>

@@ -228,9 +228,17 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>1000000</DEFAULT>
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>  
-  
+  	<PARAMETER 
+  		NAME="NOTE" 
+  		FIELD="LABEL" 
+  		NUM_ROW="6"
+		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+		>
+		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+	</PARAMETER>
+	
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -301,7 +309,15 @@
 	  >
 	  <DEFAULT>10000</DEFAULT>
 	</PARAMETER>            
-
+  	<PARAMETER 
+  		NAME="NOTE" 
+  		FIELD="LABEL" 
+  		NUM_ROW="20"
+		SHOW_IF="((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) AND (USE_BATCH_SIZE == 'true') "	  
+		>
+		<DEFAULT>Note : this value must &lt; 16383</DEFAULT>
+	</PARAMETER>
+	
 	<PARAMETER 
 		NAME="SUPPORT_NULL_WHERE" 
 		FIELD="CHECK"
