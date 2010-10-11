@@ -108,7 +108,7 @@ try{
 	    	}
 	    	
 	    	//do rename
-	    	if(map<%=cid %>.get(key<%=cid %>) != ""){
+	    	if(map<%=cid %>.get(key<%=cid %>) != "" && key<%=cid %> != map<%=cid %>.get(key<%=cid %>)){
 		    	try{
 		   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
