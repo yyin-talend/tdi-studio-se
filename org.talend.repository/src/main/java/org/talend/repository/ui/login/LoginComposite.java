@@ -1348,7 +1348,7 @@ public class LoginComposite extends Composite {
             projectViewer.getControl().setEnabled(false);
             openProjectBtn.setEnabled(false);
             if (fillProjectsBtn != null) {
-                fillProjectsBtn.setEnabled(false);
+                fillProjectsBtn.setEnabled(true);
             }
             if (branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(false);
@@ -1394,7 +1394,7 @@ public class LoginComposite extends Composite {
 
             openProjectBtn.setEnabled(enabled);
             if (fillProjectsBtn != null) {
-                fillProjectsBtn.setEnabled(enabled);
+                fillProjectsBtn.setEnabled(true);
             }
             if (PluginChecker.isTIS() && branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(true);
