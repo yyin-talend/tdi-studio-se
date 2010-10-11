@@ -97,10 +97,14 @@ import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.tooltip.AbstractTreeTooltip;
 import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
@@ -114,6 +118,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.IUpdateManager;
+import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.update.UpdateResult;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
@@ -1019,6 +1028,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (root.getChildren().size() == 1) {
                     viewer.setExpandedState(root.getChildren().get(0), true);
                 }
+                // PTODO
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                            .getService(IJobletProviderService.class);
+                    if (jobletService != null) {
+                        jobletService.loadComponentsFromProviders();
+                    }
+                }
                 timer.stop();
                 // timer.print();
             }
@@ -1033,6 +1050,20 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             MessageBoxExceptionHandler.process(e);
             return;
         }
+        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+                RepositoryUpdateManager.getEditors());
+        List<UpdateResult> updateAllResults = new ArrayList<UpdateResult>();
+        IUpdateManager manager = null;
+        for (IProcess proc : openedProcessList) {
+            if (proc instanceof IProcess2) {
+                // UpdateJobletUtils.updateRelationship();
+                manager = ((IProcess2) proc).getUpdateManager();
+                List<UpdateResult> updateResults = manager.getUpdatesNeeded(EUpdateItemType.RELOAD);
+                updateAllResults.addAll(updateResults);
+            }
+        }
+        if (manager != null)
+            manager.executeUpdates(updateAllResults);
     }
 
     /*

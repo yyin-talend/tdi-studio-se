@@ -146,4 +146,8 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
         fillConnectionList.addAll(this.OtherConnectionList);
         return fillConnectionList;
     }
+
+    public Node getMergeNode() {
+        return this.multipleOutputNode;
+    }
 }

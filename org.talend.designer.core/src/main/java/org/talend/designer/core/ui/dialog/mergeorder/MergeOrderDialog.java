@@ -180,7 +180,10 @@ public class MergeOrderDialog extends Dialog {
         Button moveDown = new Button(buttonComposite, SWT.PUSH);
         moveDown.setToolTipText(Messages.getString("MergeOrderDialog.MoveDown")); //$NON-NLS-1$
         moveDown.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
-
+        if (getMergeNode() != null && getMergeNode().isReadOnly()) {
+            moveUp.setEnabled(false);
+            moveDown.setEnabled(false);
+        }
         final int nbConn = getConnectionQty();
 
         moveDown.addListener(SWT.Selection, new Listener() {
@@ -224,6 +227,10 @@ public class MergeOrderDialog extends Dialog {
      */
     public List<Connection> getConnectionList() {
         return connectionList;
+    }
+
+    public Node getMergeNode() {
+        return this.mergeNode;
     }
 
 }
