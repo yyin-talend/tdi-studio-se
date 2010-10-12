@@ -30,6 +30,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -127,7 +128,7 @@ public abstract class RepositoryWizard extends Wizard {
     public void setRepositoryObject(IRepositoryViewObject repositoryViewObject) {
         // RepositoryViewObject is dynamic, here we prefer have a RepositoryObject with a fixed property.
         this.repositoryObject = new RepositoryObject(repositoryViewObject.getProperty());
-        calculateRepositoryObjectEditable();
+        calculateRepositoryObjectEditable(repositoryViewObject);
     }
 
     /**
@@ -145,11 +146,14 @@ public abstract class RepositoryWizard extends Wizard {
      * 
      * @return
      */
-    private void calculateRepositoryObjectEditable() {
+    private void calculateRepositoryObjectEditable(IRepositoryViewObject repositoryViewObject) {
         if (repositoryObject != null && !forceReadOnly) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             repositoryObjectEditable = factory.isEditableAndLockIfPossible(repositoryObject);
-            RepositoryManager.refresh(repositoryObject.getType());
+
+            final IRepositoryNode repositoryNode = repositoryViewObject.getRepositoryNode();
+            RepositoryManager.getRepositoryView().expand(repositoryNode);
+            RepositoryManager.getRepositoryView().getViewer().refresh(repositoryObject.getType());
         }
     }
 
