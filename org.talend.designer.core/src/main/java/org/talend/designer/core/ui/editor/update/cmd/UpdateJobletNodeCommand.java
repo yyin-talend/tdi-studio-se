@@ -125,7 +125,7 @@ public class UpdateJobletNodeCommand extends Command {
         }
 
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if (node.getComponent().getName().equals(newName) || node.getConnectionName().equals(oldName)) {
+            if (node.getComponent().getName().equals(oldName) || node.getConnectionName().equals(oldName)) {
                 reloadNode(node, newComponent);
             }
         }
