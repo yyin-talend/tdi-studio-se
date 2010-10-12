@@ -196,7 +196,7 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
                         bufferMarkLimit = (int) v10P;
                     }
                     System.out
-                            .println("Buffer marked at index (1-Lookup) " + bufferMarkLimit + ", to avoid a heap space memory error try to increase the JVM Xmx parameter."); //$NON-NLS-1$
+                            .println("Warning: to avoid a Memory heap space error the buffer of the lookup has been limited to a size of " + bufferMarkLimit + " , try to reduce the advanced parameter \"Max buffer size\" (~100000 or at least less than " + bufferMarkLimit + "), then if needed try to increase the JVM Xmx parameter."); //$NON-NLS-1$
                     bufferIsMarked = true;
                 }
             }
