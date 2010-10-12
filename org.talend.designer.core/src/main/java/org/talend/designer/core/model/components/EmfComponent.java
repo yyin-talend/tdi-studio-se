@@ -1061,7 +1061,8 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
             newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
+            newParam
+                    .setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
                     ENCODING_TYPE_CUSTOM });
             newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
@@ -2122,8 +2123,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
                 List<String> list = getInstallURL(importType);
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
-                        importType.isREQUIRED(), list);
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
+                        .isREQUIRED(), list);
                 moduleNames.add(importType.getMODULE());
                 componentImportNeeds.setShow(importType.isSHOW());
                 componentImportNeedsList.add(componentImportNeeds);
@@ -2447,6 +2448,18 @@ public class EmfComponent implements IComponent {
                 if (connType.getMAXOUTPUT() == 0) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    public boolean isMultiSchemaOutput() {
+        EList listConnType = compType.getCONNECTORS().getCONNECTOR();
+        for (int i = 0; i < listConnType.size(); i++) {
+            CONNECTORType connType = (CONNECTORType) listConnType.get(i);
+            EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
+            if (currentType == EConnectionType.FLOW_MAIN) {
+                return connType.isMULTISCHEMA();
             }
         }
         return false;
