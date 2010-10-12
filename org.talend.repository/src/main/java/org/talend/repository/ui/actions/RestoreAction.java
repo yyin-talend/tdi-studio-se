@@ -46,6 +46,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
+import org.talend.repository.utils.AbstractResourceChangesService;
+import org.talend.repository.utils.ResourceChangesServiceRegister;
 
 /**
  * Action used to restore obects that had been logically deleted.<br/>
@@ -108,6 +110,14 @@ public class RestoreAction extends AContextualAction {
                         }
                     }
                 }
+                // MOD qiongli 2010-10-11,bug 15674
+                AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
+                        .getResourceChangeService(AbstractResourceChangesService.class);
+                Item item = node.getObject().getProperty().getItem();
+                if (item instanceof ConnectionItem && resChangeService != null) {
+                    resChangeService.handleRestore(item.getProperty());
+                }
+                // ~
 
             }
             if (nodeType == ERepositoryObjectType.JOBLET) {
