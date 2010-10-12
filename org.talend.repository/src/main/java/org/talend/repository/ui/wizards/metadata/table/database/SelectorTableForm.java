@@ -724,21 +724,21 @@ public class SelectorTableForm extends AbstractForm {
      */
     protected void deleteTable(TableItem tableItem) {
 
-        if (itemTableName != null && !itemTableName.isEmpty()) {
-            // fill the combo
-            Collection tables = new ArrayList();
-            Iterator<MetadataTable> iterate = ConnectionHelper.getTables(getConnection()).iterator();
-            while (iterate.hasNext()) {
-                MetadataTable metadata = iterate.next();
-                if (metadata != null && metadata.getLabel().equals(tableItem.getText(0))) {
-                    tables.add(metadata);
-                }
-            }
-            Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class); // hywang
-            if (c != null) {
-                c.getOwnedElement().removeAll(tables);
+        // if (itemTableName != null && !itemTableName.isEmpty()) {
+        // fill the combo
+        Collection tables = new ArrayList();
+        Iterator<MetadataTable> iterate = ConnectionHelper.getTables(getConnection()).iterator();
+        while (iterate.hasNext()) {
+            MetadataTable metadata = iterate.next();
+            if (metadata != null && metadata.getLabel().equals(tableItem.getText(0))) {
+                tables.add(metadata);
             }
         }
+        Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class); // hywang
+        if (c != null) {
+            c.getOwnedElement().removeAll(tables);
+        }
+        // }
     }
 
     /**
