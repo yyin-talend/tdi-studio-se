@@ -731,9 +731,9 @@ public class DatabaseTableForm extends AbstractForm {
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
-                                SelectorTableForm.openInfoDialogInUIThread(getShell(),
-                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                                .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
+                                SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
+                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                        .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
                             }
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
@@ -768,8 +768,8 @@ public class DatabaseTableForm extends AbstractForm {
                                         if (!isReadOnly()) {
                                             msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                                         }
-                                        SelectorTableForm.openInfoDialogInUIThread(getShell(),
-                                                Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
+                                        SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
+                                                .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
                                     }
                                 }
                             });
@@ -920,10 +920,10 @@ public class DatabaseTableForm extends AbstractForm {
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.invalidChar", table.getLabel())); //$NON-NLS-1$
                 return false;
             }
-            if (table.getColumns().size() == 0) {
-                updateStatus(IStatus.ERROR, Messages.getString("FileStep3.itemAlert") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                return false;
-            }
+            // if (table.getColumns().size() == 0) {// this one has been removed,see bug 0016029
+            //                updateStatus(IStatus.ERROR, Messages.getString("FileStep3.itemAlert") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            // return false;
+            // }
         }
         return true;
     }
