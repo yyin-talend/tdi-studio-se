@@ -367,10 +367,10 @@ class FirebirdManager extends Manager {
         return "firebird_id";
     }
     protected String getLProtectedChar() {
-        return "\\\"";
+        return "";
     }
     protected String getRProtectedChar() {
-        return "\\\"";
+        return "";
     }
      public String getConnection() {
         StringBuilder javaCode = new StringBuilder();
