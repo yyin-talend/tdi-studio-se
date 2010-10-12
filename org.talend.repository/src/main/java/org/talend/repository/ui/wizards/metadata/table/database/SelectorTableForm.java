@@ -63,7 +63,6 @@ import org.talend.commons.utils.threading.TalendCustomThreadPoolExecutor;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTool;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -153,6 +152,8 @@ public class SelectorTableForm extends AbstractForm {
     // store column number for each table name
     private Map<String, Integer> tableColumnNums = new HashMap<String, Integer>();
 
+    private DatabaseConnection temConnection;
+
     /**
      * TableForm Constructor to use by RCP Wizard.
      * 
@@ -171,7 +172,8 @@ public class SelectorTableForm extends AbstractForm {
         setupForm();
     }
 
-    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, SelectorTableWizardPage page, boolean forTemplate) {
+    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, SelectorTableWizardPage page, boolean forTemplate,
+            DatabaseConnection temConnection) {
         super(parent, SWT.NONE);
         managerConnection = new ManagerConnection();
         this.connectionItem = connectionItem;
@@ -179,6 +181,7 @@ public class SelectorTableForm extends AbstractForm {
         this.parentWizardPage = page;
         this.tableInfoParameters = page.getTableInfoParameters();
         this.forTemplate = forTemplate;
+        this.temConnection = temConnection;
         if (forTemplate && ConnectionHelper.getTables(getConnection()).size() <= 0) {
             page.setPageComplete(false);
         }
@@ -731,8 +734,7 @@ public class SelectorTableForm extends AbstractForm {
                     tables.add(metadata);
                 }
             }
-            Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), (Connection) getConnection(),
-                    Catalog.class); // hywang
+            Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class); // hywang
             if (c != null) {
                 c.getOwnedElement().removeAll(tables);
             }
@@ -948,7 +950,7 @@ public class SelectorTableForm extends AbstractForm {
                         break;
                     }
                 }
-                addTableForCurrentCatalogOrSchema(catalog, schema);
+                addTableForTemCatalogOrSchema(catalog, schema);
                 // getConnection().getTables().add(metadataTable);hywang
             }
             // }
@@ -993,7 +995,7 @@ public class SelectorTableForm extends AbstractForm {
                     && (threadExecutor.getActiveCount() == 0 || countSuccess == countPending));
         }
 
-        private void addTableForCurrentCatalogOrSchema(String dbsid, String schema) {
+        private void addTableForTemCatalogOrSchema(String dbsid, String schema) {
             boolean hasSchemaInCatalog = false;
             Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, getConnection(), Catalog.class);
             Schema s = (Schema) ConnectionHelper.getPackage(schema, getConnection(), Schema.class);
@@ -1225,12 +1227,15 @@ public class SelectorTableForm extends AbstractForm {
     }
 
     protected DatabaseConnection getConnection() {
-        if (forTemplate) {
-            return (DatabaseConnection) templateConntion.getConnection();
+        if (temConnection != null) {
+            return temConnection;
         } else {
-            return (DatabaseConnection) connectionItem.getConnection();
+            if (forTemplate) {
+                return (DatabaseConnection) templateConntion.getConnection();
+            } else {
+                return (DatabaseConnection) connectionItem.getConnection();
+            }
         }
-
     }
 
     public Table getTable() {

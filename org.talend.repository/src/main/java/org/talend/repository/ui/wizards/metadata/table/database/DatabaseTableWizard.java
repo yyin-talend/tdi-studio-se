@@ -13,10 +13,13 @@
 package org.talend.repository.ui.wizards.metadata.table.database;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -26,18 +29,21 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import orgomg.cwm.objectmodel.core.Package;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -54,6 +60,8 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
     private DatabaseTableFilterWizardPage tableFilterWizardPage;
 
     private final ConnectionItem connectionItem;
+
+    private DatabaseConnection temConnection;
 
     private boolean skipStep;
 
@@ -92,6 +100,7 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
             oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
+            cloneBaseDataBaseConnection((DatabaseConnection) connectionItem.getConnection());
         }
     }
 
@@ -113,10 +122,10 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
         TableInfoParameters tableInfoParameters = new TableInfoParameters();
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, isRepositoryObjectEditable(), tableInfoParameters,
-                metadataConnection);
+                metadataConnection, temConnection);
 
         tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, isRepositoryObjectEditable(),
-                metadataConnection);
+                metadataConnection, temConnection);
         tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters, this.connectionItem);
         if (creation && !skipStep) {
 
@@ -156,7 +165,12 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
     @Override
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
-            //
+            // temConnection will be set to model when finish
+            DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
+            EList<Package> dataPackage = temConnection.getDataPackage();
+            Collection<Package> copyDataPackage = EcoreUtil.copyAll(dataPackage);
+            ConnectionHelper.addPackages(copyDataPackage, connection);
+            temConnection = null;
             RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
             saveMetaData();
@@ -202,7 +216,17 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
     @Override
     public boolean performCancel() {
         selectorWizardPage.performCancel();
+        temConnection = null;
         return super.performCancel();
     }
 
+    /**
+     * clone a new DB connection
+     */
+    private void cloneBaseDataBaseConnection(DatabaseConnection connection) {
+        temConnection = (DatabaseConnection) EcoreUtil.copy(connection);
+        EList<Package> dataPackage = connection.getDataPackage();
+        Collection<Package> newDataPackage = EcoreUtil.copyAll(dataPackage);
+        ConnectionHelper.addPackages(newDataPackage, temConnection);
+    }
 }

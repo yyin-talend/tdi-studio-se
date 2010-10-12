@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -36,6 +37,8 @@ public class DatabaseTableWizardPage extends WizardPage {
 
     private IMetadataConnection metadataConnection;
 
+    private DatabaseConnection temConnection;
+
     /**
      * DatabaseWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -45,12 +48,13 @@ public class DatabaseTableWizardPage extends WizardPage {
      * @param ISelection
      */
     public DatabaseTableWizardPage(ManagerConnection managerConnection, ConnectionItem connectionItem,
-            boolean isRepositoryObjectEditable, IMetadataConnection metadataConnection) {
+            boolean isRepositoryObjectEditable, IMetadataConnection metadataConnection, DatabaseConnection temConnection) {
         super("wizardPage"); //$NON-NLS-1$
         this.managerConnection = managerConnection;
         this.connectionItem = connectionItem;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.metadataConnection = metadataConnection;
+        this.temConnection = temConnection;
     }
 
     /**
@@ -60,7 +64,7 @@ public class DatabaseTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new DatabaseTableForm(parent, connectionItem, managerConnection, this);
+        tableForm = new DatabaseTableForm(parent, connectionItem, managerConnection, this, temConnection);
         tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 

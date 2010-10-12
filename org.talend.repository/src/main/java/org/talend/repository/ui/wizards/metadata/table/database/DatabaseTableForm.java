@@ -187,6 +187,8 @@ public class DatabaseTableForm extends AbstractForm {
 
     private String editSchemaTableName;
 
+    private DatabaseConnection temConnection;
+
     /**
      * TableForm Constructor to use by RCP Wizard.
      * 
@@ -198,11 +200,12 @@ public class DatabaseTableForm extends AbstractForm {
      * @param managerConnection2
      */
     public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, ManagerConnection managerConnection,
-            IWizardPage page) {
+            IWizardPage page, DatabaseConnection temConnection) {
         super(parent, SWT.NONE);
         this.managerConnection = managerConnection;
         this.connectionItem = connectionItem;
         this.parentWizardPage = page;
+        this.temConnection = temConnection;
         setupForm();
     }
 
@@ -211,6 +214,7 @@ public class DatabaseTableForm extends AbstractForm {
      * 
      * @param connection
      * @param metadataTable
+     * 
      */
     private void initExistingNames() {
         String[] exisNames;
@@ -469,7 +473,7 @@ public class DatabaseTableForm extends AbstractForm {
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
         tableEditorView.setShowDbTypeColumn(true, true, false);
         tableEditorView.setShowDbColumnName(true, false);
-        final DatabaseConnection databaseConnection = (DatabaseConnection) connectionItem.getConnection();
+        final DatabaseConnection databaseConnection = getConnection();
         String trueDbmsID = DatabaseConnectionParameterUtil.getTrueParamValue(databaseConnection, databaseConnection.getDbmsId());// hywang
         // 9846
         tableEditorView.setCurrentDbms(trueDbmsID);
@@ -1127,7 +1131,11 @@ public class DatabaseTableForm extends AbstractForm {
     }
 
     protected DatabaseConnection getConnection() {
-        return (DatabaseConnection) connectionItem.getConnection();
+        if (temConnection != null) {
+            return temConnection;
+        } else {
+            return (DatabaseConnection) connectionItem.getConnection();
+        }
     }
 
     /**

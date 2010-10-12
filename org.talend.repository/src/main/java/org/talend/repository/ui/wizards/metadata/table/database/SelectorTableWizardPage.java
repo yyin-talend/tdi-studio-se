@@ -52,6 +52,8 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
 
     private boolean isCreateTemplate = false;
 
+    private DatabaseConnection temConnection;
+
     /**
      * SelectorTableWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -61,12 +63,13 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
      * @param ISelection
      */
     public SelectorTableWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection) {
+            TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection, DatabaseConnection temConnection) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
         this.metadataConnection = metadataConnection;
+        this.temConnection = temConnection;
     }
 
     public SelectorTableWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
@@ -119,9 +122,9 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
             if (c != null) { // hywang
                 c.getOwnedElement().clear();
             }
-            tableForm = new SelectorTableForm(container, templateConnection, this, isCreateTemplate);
+            tableForm = new SelectorTableForm(container, templateConnection, this, isCreateTemplate, temConnection);
         } else {
-            tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate);
+            tableForm = new SelectorTableForm(container, connectionItem, this, isCreateTemplate, temConnection);
         }
 
         tableForm.setLayoutData(data);
