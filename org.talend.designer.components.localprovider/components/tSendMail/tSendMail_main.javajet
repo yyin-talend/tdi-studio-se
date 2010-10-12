@@ -147,9 +147,10 @@ try {
   mbpText_<%=cid %>.setText(message_<%=cid %>,<%=encoding %>, "<%=mimesubtype %>");
   mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
   
+  javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = null;
+  
   for (int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++){
     String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
-    javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
     javax.activation.FileDataSource fds_<%=cid %> = null;
     java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
     <%if (!checkAttachementOnSend) {%>
@@ -163,12 +164,14 @@ try {
       for(java.io.File subFile_<%=cid%> : subFiles_<%=cid%>){
         if (subFile_<%=cid%>.isFile()){
           fds_<%=cid %> = new javax.activation.FileDataSource(subFile_<%=cid%>.getAbsolutePath());
+          mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
           mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
           mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
           mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
         }
       }
     }else{
+      mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
       fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
       mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>)); 
       mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
