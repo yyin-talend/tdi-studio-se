@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -89,6 +90,11 @@ public class EmptyRecycleBinAction extends AContextualAction {
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e);
             }
+        }
+        try {
+            factory.saveProject(ProjectManager.getInstance().getCurrentProject());
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
         RepositoryManager.refresh(ERepositoryObjectType.JOB_SCRIPT);
         RepositoryManager.getRepositoryView().refresh();
@@ -166,11 +172,11 @@ public class EmptyRecycleBinAction extends AContextualAction {
                     for (IRepositoryNode curNode : currentNode.getChildren()) {
                         deleteElements(factory, (RepositoryNode) curNode);
                     }
-                    factory.deleteFolder(currentNode.getContentType(), new Path(currentNode.getObject().getProperty().getItem()
-                            .getState().getPath()
-                            + "/" + currentNode.getObject().getProperty().getLabel()));
+                    factory.deleteFolder(ProjectManager.getInstance().getCurrentProject(), currentNode.getContentType(),
+                            new Path(currentNode.getObject().getProperty().getItem().getState().getPath() + "/"
+                                    + currentNode.getObject().getProperty().getLabel()), true);
                 } else {
-                    factory.deleteObjectPhysical(objToDelete);
+                    factory.deleteObjectPhysical(ProjectManager.getInstance().getCurrentProject(), objToDelete, null, true);
                 }
             }
         }

@@ -69,8 +69,8 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                     URI itemResourceURI = getItemResourceURI(itemURI);
                     Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
                     if (migratedResource != null) {
-                        OutputStream outputStream = item.eResource().getResourceSet().getURIConverter()
-                                .createOutputStream(itemResourceURI, XML_SAVE_OTIONS);
+                        OutputStream outputStream = item.eResource().getResourceSet().getURIConverter().createOutputStream(
+                                itemResourceURI, XML_SAVE_OTIONS);
                         try {
                             migratedResource.save(outputStream, XML_SAVE_OTIONS);
                         } finally {
