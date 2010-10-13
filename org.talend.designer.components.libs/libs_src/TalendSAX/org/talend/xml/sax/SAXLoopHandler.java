@@ -176,8 +176,8 @@ public class SAXLoopHandler extends DefaultHandler {
                             String attribute = attributes.getValue(column.substring(index + 1));
                             if (attribute != null && false == currentRowHaveValue[i]) {
                                 currentRow[i] = attribute;
-                                currentRowHaveValue[i] = true;
                             }
+                            currentRowHaveValue[i] = true;
                         }
                     } else {
 
@@ -288,7 +288,7 @@ public class SAXLoopHandler extends DefaultHandler {
             // }
             // System.out.println();
             currentRow[currentRow.length - 1] = Integer.toString(subLoopCount);
-            if (isNotNull(currentRow, currentRow.length - 1)) {
+            if (isNotNull(currentRow, currentRowHaveValue, currentRow.length - 1)) {
                 entry.getRows().add(currentRow);
                 // ===========add for bug7632==========================
                 if (this.entry.getOriginalLoopPath() != null) {
@@ -300,10 +300,10 @@ public class SAXLoopHandler extends DefaultHandler {
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
 
-    private boolean isNotNull(Object[] os, int length) {
+    private boolean isNotNull(String[] os, boolean[] bs, int length) {
 
         for (int i = 0; i < length; i++) {
-            if (os[i] != null) {
+            if (os[i] != null || bs[i]==true) {
                 return true;
             }
         }
