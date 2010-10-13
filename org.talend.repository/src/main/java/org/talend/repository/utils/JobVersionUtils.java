@@ -50,7 +50,7 @@ public class JobVersionUtils {
         List<String> versionList = new ArrayList<String>();
         try {
             List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                    repositoryNode.getRoot().getProject(), repositoryNode.getId());
+                    repositoryNode.getRoot().getProject(), repositoryNode.getId(), false);
             for (IRepositoryViewObject repositoryObject : allVersion) {
                 versionList.add(repositoryObject.getVersion());
             }

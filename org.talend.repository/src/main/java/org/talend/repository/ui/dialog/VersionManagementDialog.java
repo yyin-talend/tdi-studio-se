@@ -311,7 +311,7 @@ public class VersionManagementDialog extends Dialog {
                 Property property = node.getObject().getProperty();
                 Item item = property.getItem();
                 if (item != null && filterRepositoryNode(node)) { // must be item
-                    ItemVersionObject object = new ItemVersionObject(node, property.getVersion());
+                    ItemVersionObject object = new ItemVersionObject(property, node, property.getVersion());
                     objects.add(object);
                 }
             }

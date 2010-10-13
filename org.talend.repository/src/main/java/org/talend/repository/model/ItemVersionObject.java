@@ -14,21 +14,25 @@ package org.talend.repository.model;
 
 import org.eclipse.jdt.internal.core.util.Util;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
  */
 public class ItemVersionObject {
 
-    private RepositoryNode node;
+    private Property property;
+
+    private RepositoryNode repositoryNode;
 
     private String oldVersion;
 
     private String newVersion;
 
-    public ItemVersionObject(RepositoryNode node, String oldVersion) {
+    public ItemVersionObject(Property property, RepositoryNode repositoryNode, String oldVersion) {
         super();
-        this.node = node;
+        this.repositoryNode = repositoryNode;
+        this.property = property;
         this.oldVersion = oldVersion;
         this.newVersion = oldVersion; // init
     }
@@ -42,11 +46,11 @@ public class ItemVersionObject {
     }
 
     public Item getItem() {
-        return this.node.getObject().getProperty().getItem();
+        return this.property.getItem();
     }
 
     public RepositoryNode getRepositoryNode() {
-        return this.node;
+        return this.repositoryNode;
     }
 
     public String getOldVersion() {
@@ -66,7 +70,8 @@ public class ItemVersionObject {
         }
         if (obj instanceof ItemVersionObject) {
             ItemVersionObject tObj = (ItemVersionObject) obj;
-            if (tObj.getRepositoryNode() == getRepositoryNode() && tObj.getOldVersion().equals(getOldVersion())) {
+            if (tObj.getRepositoryNode().getId().equals(getRepositoryNode().getId())
+                    && tObj.getOldVersion().equals(getOldVersion())) {
                 return true;
             }
         }

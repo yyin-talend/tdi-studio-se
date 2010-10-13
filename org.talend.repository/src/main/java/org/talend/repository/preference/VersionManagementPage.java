@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.IImage;
@@ -75,6 +76,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -164,6 +166,10 @@ public class VersionManagementPage extends ProjectSettingPage {
     private List<ItemVersionObject> versionObjects = new ArrayList<ItemVersionObject>();
 
     private List<ItemVersionObject> checkedObjects = new ArrayList<ItemVersionObject>();
+
+    private IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+    private RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
 
     /**
      * repository tree viewer.
@@ -321,7 +327,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                 Property property = node.getObject().getProperty();
                 Item item = property.getItem();
                 if (item != null && filterRepositoryNode(node)) { // must be item
-                    ItemVersionObject object = new ItemVersionObject(node, property.getVersion());
+                    ItemVersionObject object = new ItemVersionObject(property, node, property.getVersion());
                     objects.add(object);
                 }
             }
@@ -564,6 +570,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                                     ItemVersionObject relat = obj2;
                                     if (!tableList.contains(relat)) {
                                         tableList.add(relat);
+                                        checkAllVerSionLatest(tableList, relat);
                                     }
                                     break;
                                 }
@@ -586,8 +593,7 @@ public class VersionManagementPage extends ProjectSettingPage {
     private void versionLatest() {
         List<ItemVersionObject> tableList = new ArrayList<ItemVersionObject>();
         tableList.addAll(getModifiedVersionItems());
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+
         for (ItemVersionObject object : getModifiedVersionItems()) {
             if (object.getRepositoryNode() != null) {
                 List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode()
@@ -601,6 +607,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                                     ItemVersionObject relat = obj2;
                                     if (!tableList.contains(relat)) {
                                         tableList.add(relat);
+                                        checkAllVerSionLatest(tableList, relat);
                                     }
                                     break;
                                 }
@@ -617,6 +624,37 @@ public class VersionManagementPage extends ProjectSettingPage {
         getModifiedVersionItems().addAll(tableList);
         refreshTableItems();
         refreshCheckedTreeView();
+    }
+
+    private void checkAllVerSionLatest(List<ItemVersionObject> tableList, ItemVersionObject object) {
+        // List<ItemVersionObject> tableList = new ArrayList<ItemVersionObject>();
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+        // for (ItemVersionObject object : getModifiedVersionItems()) {
+        if (object.getRepositoryNode() != null) {
+            List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
+                    object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+            for (RelationshipItemBuilder.Relation relation : relations) {
+                try {
+                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                    if (obj != null) {
+                        for (ItemVersionObject obj2 : versionObjects) {
+                            if (obj2.getItem() == obj.getProperty().getItem()) {
+                                ItemVersionObject relat = obj2;
+                                if (!tableList.contains(relat)) {
+                                    tableList.add(relat);
+                                    checkAllVerSionLatest(tableList, relat);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                } catch (PersistenceException et) {
+                    ExceptionHandler.process(et);
+                }
+            }
+        }
+        // }
     }
 
     private void selectSubjob() {
@@ -645,6 +683,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                                     ItemVersionObject relat = obj2;
                                     if (!tableList.contains(relat)) {
                                         tableList.add(relat);
+                                        checkAllVerSionLatest(tableList, relat);
                                     }
                                     break;
                                 }
@@ -950,51 +989,71 @@ public class VersionManagementPage extends ProjectSettingPage {
     private void updateItemsVersion() {
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
-                Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
-                RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-                for (ItemVersionObject object : getModifiedVersionItems()) {
-                    IRepositoryViewObject repositoryObject = object.getRepositoryNode().getObject();
-                    if (repositoryObject != null && repositoryObject.getProperty() != null) {
-                        if (!object.getNewVersion().equals(repositoryObject.getVersion())) {
-                            final Item item = object.getItem();
-                            item.getProperty().setVersion(object.getNewVersion());
-                            List<IRepositoryNode> list = object.getRepositoryNode().getChildren();
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(project, "Update items version") {
 
-                            types.add(object.getRepositoryNode().getObjectType());
-
-                            try {
-                                // for bug 12853 ,version management doesn't work for joblet because eResource is null
-                                IRepositoryViewObject obj = null;
-                                if (item.getProperty().eResource() == null) {
-                                    ItemState state = item.getState();
-                                    if (state != null && state.getPath() != null) {
-                                        obj = FACTORY.getLastVersion(project, item.getProperty().getId(), state.getPath(), object
-                                                .getRepositoryNode().getObjectType());
-                                    } else {
-                                        obj = FACTORY.getLastVersion(project, item.getProperty().getId());
-                                    }
-                                }
-                                if (obj != null) {
-                                    // obj.setVersion(object.getNewVersion());
-                                    FACTORY.save(project, obj.getProperty());
-                                } else {
-                                    String id = item.getProperty().getId();
-                                    FACTORY.save(project, item.getProperty());
-                                    if (versionLatest.getSelection()) {
-                                        builder.updateItemVersion(item, object.getOldVersion(), id);
-                                    }
-                                    builder.addOrUpdateItem(item);
-                                }
-                            } catch (PersistenceException e) {
-                                ExceptionHandler.process(e);
-                            }
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
+                        monitor.beginTask("Update items version", getModifiedVersionItems().size()); //$NON-NLS-1$
+                        Map<String, String> versions = new HashMap<String, String>();
+                        for (int i = 0; i < getModifiedVersionItems().size(); i++) {
+                            ItemVersionObject object = getModifiedVersionItems().get(i);
+                            versions.put(object.getItem().getProperty().getId(), object.getOldVersion());
                         }
+                        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+                        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+                        for (ItemVersionObject object : getModifiedVersionItems()) {
+                            IRepositoryViewObject repositoryObject = object.getRepositoryNode().getObject();
+                            if (repositoryObject != null && repositoryObject.getProperty() != null) {
+                                if (!object.getNewVersion().equals(repositoryObject.getVersion())) {
+                                    final Item item = object.getItem();
+                                    item.getProperty().setVersion(object.getNewVersion());
+                                    monitor.subTask(item.getProperty().getLabel());
+
+                                    types.add(object.getRepositoryNode().getObjectType());
+
+                                    try {
+                                        // for bug 12853 ,version management doesn't work for joblet because eResource
+                                        // is null
+                                        IRepositoryViewObject obj = null;
+                                        if (item.getProperty().eResource() == null) {
+                                            ItemState state = item.getState();
+                                            if (state != null && state.getPath() != null) {
+                                                obj = FACTORY.getLastVersion(project, item.getProperty().getId(),
+                                                        state.getPath(), object.getRepositoryNode().getObjectType());
+                                            } else {
+                                                obj = FACTORY.getLastVersion(project, item.getProperty().getId());
+                                            }
+                                        }
+                                        if (obj != null) {
+                                            // obj.setVersion(object.getNewVersion());
+                                            FACTORY.save(project, obj.getProperty());
+                                            builder.addOrUpdateItem(obj.getProperty().getItem(), true);
+                                        } else {
+                                            String id = item.getProperty().getId();
+                                            FACTORY.save(project, item.getProperty());
+                                            if (versionLatest.getSelection()) {
+                                                builder.updateItemVersion(item, object.getOldVersion(), id, versions, true);
+                                            }
+                                            builder.addOrUpdateItem(item, true);
+                                        }
+                                    } catch (PersistenceException e) {
+                                        ExceptionHandler.process(e);
+                                    }
+                                }
+                            }
+                            monitor.worked(1);
+                        }
+                        try {
+                            FACTORY.saveProject(project);
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        RepositoryManager.refresh(types);
                     }
-                    monitor.worked(100);
-                }
-                RepositoryManager.refresh(types);
+                };
+                rwu.setAvoidUnloadResources(true);
+                rwu.executeRun();
                 monitor.done();
             }
         };

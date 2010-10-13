@@ -108,7 +108,7 @@ public class EditPropertiesAction extends AContextualAction {
             try {
                 object = ProxyRepositoryFactory.getInstance().getSpecificVersion(
                         new Project(ProjectManager.getInstance().getProject(object.getProperty().getItem())),
-                        object.getProperty().getId(), getNeededVersion());
+                        object.getProperty().getId(), getNeededVersion(), false);
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
@@ -132,8 +132,8 @@ public class EditPropertiesAction extends AContextualAction {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
             }
             // refresh ...
-            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView(IJobSettingsView.ID);
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
@@ -213,8 +213,8 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(),
-                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), Messages
+                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 

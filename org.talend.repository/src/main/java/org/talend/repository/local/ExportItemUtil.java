@@ -208,7 +208,7 @@ public class ExportItemUtil {
             org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(pManager
                     .getProject(item));
             List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
-                    item.getProperty().getId());
+                    item.getProperty().getId(), false);
             for (IRepositoryViewObject repositoryObject : allVersion) {
                 Item anyVersionItem = repositoryObject.getProperty().getItem();
                 if (!anyVersionItem.equals(item)) {
