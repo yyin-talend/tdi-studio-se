@@ -12,7 +12,6 @@ imports="
 	String cid = node.getUniqueName();
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String javaDbDriver   = "org.sqlite.JDBC";
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");

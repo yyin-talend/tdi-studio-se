@@ -236,6 +236,7 @@
       FIELD="TEXT"
       NUM_ROW="9"
       REQUIRED="true"
+      SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>

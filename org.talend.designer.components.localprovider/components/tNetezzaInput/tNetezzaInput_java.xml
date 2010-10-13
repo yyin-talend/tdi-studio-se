@@ -172,6 +172,7 @@
       NUM_ROW="10"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>

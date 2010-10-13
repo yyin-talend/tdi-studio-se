@@ -17,7 +17,6 @@ imports="
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = "0";//ElementParameterParser.getValue(node, "__COMMIT_EVERY__");//hive jdbc not support setAutoCommit
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");

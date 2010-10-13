@@ -125,6 +125,7 @@
       FIELD="ENCODING_TYPE"
       NUM_ROW="50"
       REQUIRED="true"
+      SHOW="false"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>

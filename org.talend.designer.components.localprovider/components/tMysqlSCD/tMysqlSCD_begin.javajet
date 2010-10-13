@@ -46,7 +46,6 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
-    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
     boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));

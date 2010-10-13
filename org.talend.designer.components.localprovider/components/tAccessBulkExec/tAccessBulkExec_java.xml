@@ -172,6 +172,7 @@
       FIELD="ENCODING_TYPE"
       NUM_ROW="10"
       REQUIRED="true"
+      SHOW="false"
     >
       <DEFAULT>"UTF-8"</DEFAULT>
     </PARAMETER>

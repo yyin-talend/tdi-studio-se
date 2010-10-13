@@ -66,7 +66,6 @@ imports="
     String dbname = null;
     String dbuser = null;
     String dbpwd = null;
-    String encoding = null;
     boolean useExistingConn = false;
     String dbproperties = null;
     if(previousNode != null) {
@@ -75,7 +74,6 @@ imports="
         dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
         dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
         dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
-        encoding = ElementParameterParser.getValue(previousNode, "__ENCODING__");
         useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         dbproperties = ElementParameterParser.getValue(previousNode, "__PROPERTIES__");
     }

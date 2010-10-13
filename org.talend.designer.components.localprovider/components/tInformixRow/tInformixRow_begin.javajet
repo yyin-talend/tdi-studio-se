@@ -18,7 +18,6 @@ imports="
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean useTransaction = ("true").equals(ElementParameterParser.getValue(node,"__USE_TRANSACTION__"));
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");

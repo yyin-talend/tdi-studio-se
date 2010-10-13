@@ -21,7 +21,6 @@ imports="
 	
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 			
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");

@@ -17,7 +17,6 @@ imports="
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String javaDbDriver   = "org.firebirdsql.jdbc.FBDriver";  
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
