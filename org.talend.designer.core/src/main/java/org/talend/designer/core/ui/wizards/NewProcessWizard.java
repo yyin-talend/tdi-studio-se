@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
@@ -35,6 +36,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -110,9 +112,14 @@ public class NewProcessWizard extends Wizard {
             process.getRoutinesDependencies().addAll(dependenciesInPreference);
 
             processItem.setProcess(process);
-            RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
-            repositoryFactory.create(processItem, mainPage.getDestinationPath());
+            repositoryFactory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
 
+                @Override
+                protected void run() throws LoginException, PersistenceException {
+                    repositoryFactory.create(processItem, mainPage.getDestinationPath());
+                    RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
+                }
+            });
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
