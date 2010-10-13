@@ -165,7 +165,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         public void workUnitFinished() {
             revisionChanged = true;
             if (display != null) {
-                display.syncExec(new Runnable() {
+                display.asyncExec(new Runnable() {
 
                     public void run() {
                         setName();
