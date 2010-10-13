@@ -141,7 +141,7 @@ public class HL7Parse {
                 hl7Manager.getUiManager().getHl7UI().getContentProvider().getAllSegmentsForMessage().clear();
                 hl7Manager.getUiManager().getHl7UI().getMessageViewer().setInput(messageList.toArray());
                 hl7Manager.getUiManager().getHl7UI().getHeader().setMsgIsChange(true);
-                hl7Manager.getUiManager().getHl7UI().initSchemaCombo();
+                hl7Manager.getUiManager().getHl7UI().initSchemaCombo(null);
                 hl7Manager.getUiManager().getHl7UI().getMetadataEditor().removeAll();
                 hl7Manager.getUiManager().getHl7UI().redrawLinkers();
             } catch (IOException ex) {

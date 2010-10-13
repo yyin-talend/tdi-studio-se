@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -127,14 +128,28 @@ public class HL7MultiSchemaUI extends HL7UI {
         return metatable;
     }
 
-    public void initSchemaCombo() {
+    public void initSchemaCombo(List<IMetadataTable> tables) {
         List<SegmentModel> segments = this.contentProvider.getAllSegmentsForMessage();
         metaTableViewer.setInput(segments);
         if (!isRepository) {
             initMappingMap(segments);
         }
         final Combo combo = metaTableViewer.getCombo();
-        combo.select(0);
+        if (tables == null || tables.size() > 1) {
+            combo.select(0);
+        } else {
+            IMetadataTable table = tables.get(0);
+            String label = table.getLabel();
+            int index = 0;
+            for (int i = 0; i < segments.size(); i++) {
+                String name = segments.get(i).getSeg().getName();
+                if (label.equals(name)) {
+                    index = i;
+                    break;
+                }
+            }
+            combo.select(index);
+        }
         updateCurrentMetadataTable();
 
     }

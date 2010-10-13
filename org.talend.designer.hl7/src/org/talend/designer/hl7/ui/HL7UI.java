@@ -158,7 +158,7 @@ public class HL7UI {
         linker.setManager(hl7Manager);
         initMessageTree();
         new FooterComposite(mainComposite, SWT.NONE, hl7Manager);
-        initSchemaCombo();
+        initSchemaCombo(externalNode.getMetadataList());
         initTableViewer();
         initlinkers();
 
@@ -287,7 +287,7 @@ public class HL7UI {
         }
     }
 
-    public void initSchemaCombo() {
+    public void initSchemaCombo(List<IMetadataTable> tables) {
 
     }
 
