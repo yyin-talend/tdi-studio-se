@@ -1151,6 +1151,9 @@ public class DataProcess {
                 fsNode.setIncomingConnections(incomingConnections);
                 fsNode.setOutgoingConnections(outgoingConnections);
                 addDataNode(fsNode);
+            } else {
+                // bug15885, add metadatas of connector
+                fsNode.getMetadataList().addAll(currentComponent.getMetadataList());
             }
             if (progressBar != null && originalGraphicNode != null) {
                 progressBar.getIncludedNodesInProgress().add(originalGraphicNode);
