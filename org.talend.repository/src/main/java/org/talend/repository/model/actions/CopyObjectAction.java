@@ -172,16 +172,18 @@ public class CopyObjectAction {
                                 needSys = false;
                             }
                         }
-                        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
+                        RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
 
-                                    @Override
-                                    protected void run() throws LoginException, PersistenceException {
-                                        if (copy instanceof ProcessItem) {
-                                            RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
-                                        }
-                                        factory.save(copy);
-                                    }
-                                });
+                            @Override
+                            protected void run() throws LoginException, PersistenceException {
+                                if (copy instanceof ProcessItem) {
+                                    RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) copy);
+                                }
+                                factory.save(copy);
+                            }
+                        };
+                        workUnit.setAvoidUnloadResources(true);
+                        factory.executeRepositoryWorkUnit(workUnit);
                     }
                 }
             }
@@ -190,25 +192,28 @@ public class CopyObjectAction {
     }
 
     private void copySingleVersionItem(final Item item, final IPath path) {
-        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
+        final RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>("", this) {//$NON-NLS-1$
 
-                    @Override
-                    protected void run() throws LoginException, PersistenceException {
-                        try {
-                            Item newItem = factory.copy(item, path, true);
-                            // qli modified to fix the bug 5400 and 6185.
-                            if (newItem instanceof RoutineItem) {
-                                synDuplicatedRoutine((RoutineItem) newItem);
-                            }
-                            if (newItem instanceof ProcessItem) {
-                                RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
-                            }
-                            factory.save(newItem);
-                        } catch (Exception e) {
-                            ExceptionHandler.process(e);
-                        }
+            @Override
+            protected void run() throws LoginException, PersistenceException {
+                try {
+                    Item newItem = factory.copy(item, path, true);
+                    // qli modified to fix the bug 5400 and 6185.
+                    if (newItem instanceof RoutineItem) {
+                        synDuplicatedRoutine((RoutineItem) newItem);
                     }
-                });
+                    if (newItem instanceof ProcessItem) {
+                        RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+                    }
+                    factory.save(newItem);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        };
+
+        workUnit.setAvoidUnloadResources(true);
+        factory.executeRepositoryWorkUnit(workUnit);
     }
 
     private String getLastestVersion(Set<IRepositoryViewObject> set) {

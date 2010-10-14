@@ -159,6 +159,7 @@ public class ExportItemUtil {
                     IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
                     for (File file : toExport.keySet()) {
                         IPath path = toExport.get(file);
+                        // exporter.write(file.getAbsolutePath(), destination.toString());
                         exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                     }
                 } else {

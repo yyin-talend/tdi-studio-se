@@ -112,14 +112,16 @@ public class NewProcessWizard extends Wizard {
             process.getRoutinesDependencies().addAll(dependenciesInPreference);
 
             processItem.setProcess(process);
-            repositoryFactory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
+            RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
 
                 @Override
                 protected void run() throws LoginException, PersistenceException {
                     repositoryFactory.create(processItem, mainPage.getDestinationPath());
                     RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
                 }
-            });
+            };
+            workUnit.setAvoidUnloadResources(true);
+            repositoryFactory.executeRepositoryWorkUnit(workUnit);
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$

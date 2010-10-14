@@ -409,7 +409,7 @@ public class DuplicateAction extends AContextualAction {
                                 }
                             }
 
-                            factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getText(), this) {
+                            final RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>(this.getText(), this) {
 
                                 @Override
                                 protected void run() throws LoginException, PersistenceException {
@@ -418,7 +418,9 @@ public class DuplicateAction extends AContextualAction {
                                     }
                                     factory.save(copy);
                                 }
-                            });
+                            };
+                            workUnit.setAvoidUnloadResources(true);
+                            factory.executeRepositoryWorkUnit(workUnit);
                         }
                     }
                 }
