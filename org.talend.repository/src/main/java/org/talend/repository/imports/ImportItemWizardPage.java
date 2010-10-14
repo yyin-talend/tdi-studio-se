@@ -85,9 +85,9 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
@@ -382,9 +382,12 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                checkTreeViewer.setSubtreeChecked(checkTreeViewer.getTree().getTopItem().getData(), true);
-                filteredCheckboxTree.calculateCheckedLeafNodes();
-                updateFinishStatus();
+                TreeItem topItem = checkTreeViewer.getTree().getTopItem();
+                if (topItem != null) {
+                    checkTreeViewer.setSubtreeChecked(topItem.getData(), true);
+                    filteredCheckboxTree.calculateCheckedLeafNodes();
+                    updateFinishStatus();
+                }
             }
         });
         Dialog.applyDialogFont(selectAll);
