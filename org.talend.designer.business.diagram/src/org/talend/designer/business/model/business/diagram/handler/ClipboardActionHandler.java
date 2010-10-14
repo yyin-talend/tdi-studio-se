@@ -56,6 +56,10 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
 
     private static IDiagramWorkbenchPart older;
 
+    // this variable is only for copy, because: GmfPastCommand.GmfPastCommand(), the parameter: addNew = this.isCut |
+    // inEditors, so this varible orginalCopyFrom only affects the inEditors
+    private static IDiagramWorkbenchPart orginalCopyFrom;
+
     private static Map cutItemIds;
 
     // save source process items list for cut and in case of pasting in editors
@@ -79,6 +83,7 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             transfer(cntxt.getSelection());
             isCut = false;
             older = workbenchPart;
+            orginalCopyFrom = workbenchPart;
             clonedSourceProcessItemsList = new ArrayList<BusinessItem>(((BusinessProcess) ((Diagram) diagramEditPart.getModel())
                     .getElement()).getBusinessItems());
         } else if (actionId.equals(GlobalActionId.CUT) && cntxt.getSelection() != null) {
@@ -127,8 +132,13 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
                 boolean inEditors = false;
                 if (older != workbenchPart) {
                     inEditors = true;
-                    older = workbenchPart;
+                } else if (!this.isCut && orginalCopyFrom != workbenchPart) {
+                    // bug 16065 fixed, by xtan. to resolve the copy(A)/parse(B)/parse(B)/parse(B)... problem.
+                    inEditors = true;
                 }
+
+                // always keep the last one as the current selection.
+                older = workbenchPart;
 
                 GmfPastCommand pastBusiness = new GmfPastCommand((BusinessProcess) ((Diagram) diagramEditPart.getModel())
                         .getElement(), list, diagramEditPart, this.cutItemIds, this.isCut | inEditors);
