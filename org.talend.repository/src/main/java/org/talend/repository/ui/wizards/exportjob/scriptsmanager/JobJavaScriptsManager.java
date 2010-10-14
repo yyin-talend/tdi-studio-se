@@ -41,6 +41,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -730,13 +731,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String path = librariesService.getLibrariesPath();
         // Gets all the jar files
         File file = new File(path);
-        File[] files = file.listFiles(new FilenameFilter() {
-
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
-                        || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
-            }
-        });
+        File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
         if (neededLibraries == null) {
