@@ -1073,7 +1073,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataSAPConnectionNode());
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
-            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
             container.add(contentProvider.getMetadataConNode());
@@ -1113,7 +1113,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     refContainer.add(refProject.getMetadataSAPConnectionNode());
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
-                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
                     refContainer.add(refProject.getMetadataConNode());
@@ -1158,7 +1158,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataSAPConnectionNode());
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC));
-                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES));
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
                         refContainer.add(refProject.getMetadataConNode());
