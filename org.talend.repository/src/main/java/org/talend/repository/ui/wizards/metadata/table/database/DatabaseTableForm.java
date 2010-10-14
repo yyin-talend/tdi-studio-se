@@ -199,13 +199,14 @@ public class DatabaseTableForm extends AbstractForm {
      * @param page
      * @param managerConnection2
      */
-    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, ManagerConnection managerConnection,
-            IWizardPage page, DatabaseConnection temConnection) {
+    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            ManagerConnection managerConnection, IWizardPage page, DatabaseConnection temConnection) {
         super(parent, SWT.NONE);
         this.managerConnection = managerConnection;
         this.connectionItem = connectionItem;
         this.parentWizardPage = page;
         this.temConnection = temConnection;
+        this.metadataTable = metadataTable;
         setupForm();
     }
 

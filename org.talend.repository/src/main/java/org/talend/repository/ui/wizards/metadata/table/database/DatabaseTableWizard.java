@@ -73,6 +73,8 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
 
     private List<IMetadataTable> oldMetadataTable;
 
+    private MetadataTable selectedMetadataTable;
+
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
      * 
@@ -96,6 +98,7 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         setRepositoryObject(object);
         isRepositoryObjectEditable();
         initLockStrategy();
+        this.selectedMetadataTable = metadataTable;
         this.connectionItem = (ConnectionItem) object.getProperty().getItem();
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
@@ -124,8 +127,8 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, isRepositoryObjectEditable(), tableInfoParameters,
                 metadataConnection, temConnection);
 
-        tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, isRepositoryObjectEditable(),
-                metadataConnection, temConnection);
+        tableWizardpage = new DatabaseTableWizardPage(selectedMetadataTable, managerConnection, connectionItem,
+                isRepositoryObjectEditable(), metadataConnection, temConnection);
         tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters, this.connectionItem);
         if (creation && !skipStep) {
 
