@@ -121,8 +121,8 @@ if(<%=conn.getName() %>.<%=recordType%>){
 	if(extraInfos.size()>0){
 		for(Map<String, String> extraInfo:extraInfos){
 %>
-    if(<%=conn.getName() %>.<%=extraInfo.get("INFO")%>!=null && !"".equals(<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>)){
-    	record_<%=cid%>.addExtraInfo("<%=extraInfo.get("INFO")%>",<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("INFO"))%>,<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("SCOPE"))%>);
+    if(<%=extraInfo.get("TITLE")%>!=null && !"".equals(<%=extraInfo.get("TITLE")%>)){
+    	record_<%=cid%>.addExtraInfo(<%=extraInfo.get("TITLE")%>,<%=extraInfo.get("INFO")%>,<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("SCOPE"))%>);
     }
 <%
 		}
