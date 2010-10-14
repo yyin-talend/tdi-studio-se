@@ -103,6 +103,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
             }
         }
+        RepositoryManager.getRepositoryView().refresh();
         RepositoryNode metadataNode = repositoryNode.getParent();
         if (metadataNode != null) {
             // Force focus to the repositoryView and open Metadata and DbConnection nodes

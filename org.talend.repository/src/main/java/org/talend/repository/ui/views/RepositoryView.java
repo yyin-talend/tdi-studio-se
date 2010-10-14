@@ -1292,10 +1292,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        if (part == this) {
-            CopyAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
-            PasteAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
-            DeleteAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
+        if (part == this && selection instanceof TreeSelection) {
+            CopyAction.getInstance().init(getViewer(), (IStructuredSelection) selection);
+            PasteAction.getInstance().init(getViewer(), (IStructuredSelection) selection);
+            DeleteAction.getInstance().init(getViewer(), (IStructuredSelection) selection);
         }
     }
 
