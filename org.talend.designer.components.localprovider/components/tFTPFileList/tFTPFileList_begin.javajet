@@ -118,7 +118,9 @@ if(useProxy){
 	    
 	    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
 	    session_<%=cid%>.connect();
-
+		com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
+		channel_<%=cid%>.connect();
+		com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
 <%
 	}else{
 %>		
