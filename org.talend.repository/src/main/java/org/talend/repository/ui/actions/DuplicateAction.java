@@ -432,7 +432,7 @@ public class DuplicateAction extends AContextualAction {
 
     private void duplicateSingleVersionItem(final Item item, final IPath path, final String newName) {
 
-        factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>(this.getText(), this) {
+        RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(this.getText(), this) {
 
             @Override
             protected void run() throws LoginException, PersistenceException {
@@ -452,7 +452,9 @@ public class DuplicateAction extends AContextualAction {
                     ExceptionHandler.process(e);
                 }
             }
-        });
+        };
+        rwu.setAvoidUnloadResources(true);
+        factory.executeRepositoryWorkUnit(rwu);
 
     }
 
