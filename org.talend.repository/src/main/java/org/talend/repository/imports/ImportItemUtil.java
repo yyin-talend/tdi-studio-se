@@ -868,7 +868,11 @@ public class ImportItemUtil {
                                 itemRecord.getProperty().setAuthor(user);
                             }
                         } else {
-                            itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
+                            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
+                            if (itemType != ERepositoryObjectType.TDQ_ELEMENT
+                                    && itemType.getParent() != ERepositoryObjectType.TDQ_ELEMENT) {
+                                itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
+                            }
                         }
                     }
                 }
