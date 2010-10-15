@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ConnectionItem;
@@ -80,12 +82,16 @@ import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -106,8 +112,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode metadataNode;
 
     private RepositoryNode refProject;
-
-    private RepositoryNode baseRulesNode;
 
     private boolean mergeRefProject;
 
@@ -506,9 +510,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataNode.getChildren().add(metadataMDMConnectionNode);
         }
         if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
-            baseRulesNode = new StableRepositoryNode(this, Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
+            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this, Messages
+                    .getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
                     ECoreImage.METADATA_RULES_ICON);
-            baseRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
+            baseRulesNode.setProperties(EProperties.CONTENT_TYPE, null);
             metadataNode.getChildren().add(baseRulesNode);
 
             if (PluginChecker.isBRMSPluginLoaded()) {
@@ -1056,6 +1061,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getItem()).getConnection();
             isAvaliableInTOS = EDatabaseTypeName.getTypeFromDbType(metadataConnection.getDatabaseType(), false) == null ? false
                     : true;
+
         }
 
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
@@ -1257,7 +1263,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(synonymsNode);
 
-            Iterator metadataTables = ConnectionHelper.getTables(metadataConnection).iterator();
+            DatabaseConnection dbconn = (DatabaseConnection) metadataConnection;
+            /* only refresh and show tables in current schema or catalog,see bug 0015769 */
+            Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = refreshTablesFromSpecifiedDataPackage(dbconn);
+
+            Iterator metadataTables = allTables.iterator();
+
+            // Iterator metadataTables = ConnectionHelper.getTables(metadataConnection).iterator();
             while (metadataTables.hasNext()) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataTables
                         .next();
@@ -1342,6 +1354,81 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             tables.addAll(tableset);
             createTables(recBinNode, node, repObj, tables, ERepositoryObjectType.METADATA_CON_TABLE);
         }
+    }
+
+    private Set<org.talend.core.model.metadata.builder.connection.MetadataTable> refreshTablesFromSpecifiedDataPackage(
+            DatabaseConnection dbconn) {
+        String schema = dbconn.getUiSchema();
+        String catalog = dbconn.getSID();
+        String databaseType = dbconn.getDatabaseType();
+        EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
+        EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
+        EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
+        if (curCatalog != null && curSchema != null) {
+            switch (curCatalog) {
+            case Login:
+                catalog = dbconn.getUsername();
+                break;
+            case None:
+                catalog = "";
+                break;
+            }
+            switch (curSchema) {
+            case Login:
+                schema = dbconn.getUsername();
+                break;
+            case Schema:
+                schema = dbconn.getUiSchema();
+                break;
+            case None:
+                schema = "";
+                break;
+            case Default_Name:
+                schema = dbconn.getName(); // label for default name for
+                // access or such kind of
+                // non-catalogs databases
+                break;
+            }
+        }
+        return getTablesFromCurrentCatalogOrSchema(catalog, schema, dbconn);
+    }
+
+    private Set<org.talend.core.model.metadata.builder.connection.MetadataTable> getTablesFromCurrentCatalogOrSchema(
+            String dbsid, String schema, DatabaseConnection dbconn) {
+        Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = new HashSet<org.talend.core.model.metadata.builder.connection.MetadataTable>();
+        boolean hasSchemaInCatalog = false;
+        Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, dbconn, Catalog.class);
+        Schema s = (Schema) ConnectionHelper.getPackage(schema, dbconn, Schema.class);
+        List<Schema> subschemas = new ArrayList<Schema>();
+        if (c != null) {
+            subschemas = CatalogHelper.getSchemas(c);
+            hasSchemaInCatalog = subschemas.size() > 0;
+        }
+        if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
+            PackageHelper.getAllTables(c, allTables);
+            // PackageHelper.addMetadataTable(dbtable, c);
+
+        } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
+            PackageHelper.getAllTables(s, allTables);
+            // PackageHelper.addMetadataTable(dbtable, s);
+        } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
+            subschemas = CatalogHelper.getSchemas(c);
+            hasSchemaInCatalog = subschemas.size() > 0;
+            if (subschemas.size() > 0) {
+                for (Schema current : subschemas) {
+                    if (current.getName().equals(schema)) {
+                        s = current;
+                        break;
+                    }
+                }
+                PackageHelper.getAllTables(s, allTables);
+                // PackageHelper.addMetadataTable(dbtable, s);
+            }
+        } else {
+            // get all tables from connection
+            allTables = ConnectionHelper.getTables(dbconn);
+        }
+        return allTables;
     }
 
     /**
@@ -1801,8 +1888,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataHL7ConnectionNode;
         case METADATA_FILE_FTP:
             return this.metadataFTPConnectionNode;
-        case METADATA_RULES_MANAGEMENT:
-            return this.baseRulesNode;
         case METADATA_FILE_BRMS:
             return this.metadataBRMSConnectionNode;
         case METADATA_MDMCONNECTION:
