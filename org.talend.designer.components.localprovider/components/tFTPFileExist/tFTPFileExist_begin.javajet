@@ -112,7 +112,7 @@ if(useProxy){
 <%
 	}
 %>
-
+	c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
 <%}else{%>
 		com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 		
