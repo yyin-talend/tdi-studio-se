@@ -171,10 +171,6 @@ public class LoginComposite extends Composite {
 
     private String lastWarnings;
 
-    private Composite differentWorkSpace;
-
-    // private CLabel warningLabel;
-
     private Button restartBut;
 
     private List<ConnectionBean> storedConnections = null;
@@ -1134,6 +1130,12 @@ public class LoginComposite extends Composite {
                         populateProjectList();
                         validateProject();
                     }
+                    try {
+                        setStatusArea();
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    }
+                    setRepositoryContextInContext();
                 }
             });
 
@@ -1286,7 +1288,6 @@ public class LoginComposite extends Composite {
             perReader.saveConnections(this.storedConnections);
 
             fillContents();
-            updateVisible();
         }
         try {
             setStatusArea();
