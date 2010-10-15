@@ -842,9 +842,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
-                if (param != null && param.getDisplayName() != null && param.getDisplayName().equals("On Databases")) {
-                    System.out.println("aaa");
-                }
                 if (param != null) {
                     if (pType.isSetContextMode()) {
                         param.setContextMode(pType.isContextMode());
