@@ -98,7 +98,11 @@ if(!sftp && !ftps){ // *** ftp *** //
     session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
     session_<%=cid%>.connect();
     
-    globalMap.put("conn_<%=cid%>",session_<%=cid%>);
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect();
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    
+    globalMap.put("conn_<%=cid%>",c_<%=cid%>);
 <%
 }else{  // *** ftps *** //
 %>

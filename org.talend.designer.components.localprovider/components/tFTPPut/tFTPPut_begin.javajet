@@ -104,7 +104,7 @@ if(sftp){
 	if(("true").equals(useExistingConn)){
 		String conn= "conn_" + connection;
 %>
-		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
+		com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
 <%
 	}else{
 %>		
@@ -129,10 +129,7 @@ if(sftp){
     
     // becasue there is not the same method in JSch class as FTPClient class, define a list here
     java.util.List<String> msg_<%=cid%> = new java.util.ArrayList<String>();
-    
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel_<%=cid%>.connect(); 
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
+
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
     com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor_<%=cid%>();

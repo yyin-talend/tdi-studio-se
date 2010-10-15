@@ -106,15 +106,11 @@ if(sftp){
 <%
 	}else{
 %>		
-		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
+		com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
 <%
 	}
 %>
     
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel_<%=cid%>.connect();
-    
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
     java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	

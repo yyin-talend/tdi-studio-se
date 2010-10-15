@@ -214,7 +214,7 @@ if(sftp){ // *** sftp *** //
 	if(("true").equals(useExistingConn)){
 		String conn= "conn_" + connection;
 %>
-		com.jcraft.jsch.Session session_<%=cid%> = (com.jcraft.jsch.Session)globalMap.get("<%=conn %>");
+		com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
 <%
 	}else{
 %>		
@@ -236,9 +236,6 @@ if(sftp){ // *** sftp *** //
 <%
 	}
 %>
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel_<%=cid%>.connect(); 
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
     
     com.jcraft.jsch.SftpProgressMonitor monitor_<%=cid%> = new MyProgressMonitor_<%=cid%>();
