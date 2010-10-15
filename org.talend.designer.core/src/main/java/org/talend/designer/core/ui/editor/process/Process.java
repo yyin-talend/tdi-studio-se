@@ -119,6 +119,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -841,6 +842,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
+                if (param != null && param.getDisplayName() != null && param.getDisplayName().equals("On Databases")) {
+                    System.out.println("aaa");
+                }
                 if (param != null) {
                     if (pType.isSetContextMode()) {
                         param.setContextMode(pType.isContextMode());
@@ -1240,6 +1244,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkStartNodes();
         // (bug 5365)
         checkNodeTableParameters();
+        // bug 16351
+        checkProjectsettingParameters();
         // bug 6158
         this.updateManager.retrieveRefInformation();
     }
@@ -1332,6 +1338,23 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (node.isExternalNode()) {
                 node.getExternalNode().initialize();
             }
+        }
+    }
+
+    private void checkProjectsettingParameters() {
+        boolean statsLog = (Boolean) this.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
+                .getValue();
+        if (statsLog) {
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
+                    EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), statsLog);
+            command.execute();
+        }
+        boolean implicit = (Boolean) this.getElementParameter(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName())
+                .getValue();
+        if (implicit) {
+            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
+                    EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), implicit);
+            command.execute();
         }
     }
 
