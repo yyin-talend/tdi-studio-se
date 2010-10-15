@@ -814,8 +814,13 @@ public class DatabaseTableForm extends AbstractForm {
                 metadataTable = TableHelper.findByLabel(getConnection(), schemaLabel);
                 // initExistingNames();
                 TableInfoParameters tableInfoParameters = new TableInfoParameters();
-                List<String> filterTableNames = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
-                        tableInfoParameters);
+                List<String> filterTableNames;
+                try {
+                    filterTableNames = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
+                            tableInfoParameters);
+                } catch (Exception e1) {
+                    filterTableNames = new ArrayList<String>();
+                }
                 if (filterTableNames != null && !filterTableNames.isEmpty()) {
                     int visiblecount = filterTableNames.size();
                     if (visiblecount > LabelledCombo.MAX_VISIBLE_ITEM_COUNT) {
