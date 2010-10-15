@@ -156,11 +156,11 @@ public class ExportItemUtil {
                     toExport = exportItems(exportedItems, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
-                    IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
+                    // IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
                     for (File file : toExport.keySet()) {
                         IPath path = toExport.get(file);
-                        // exporter.write(file.getAbsolutePath(), destination.toString());
-                        exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
+                        // exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
+                        exporter.write(file.getAbsolutePath(), path.toString());
                     }
                 } else {
                     toExport = exportItems(exportedItems, destination, true, progressMonitor);
@@ -309,10 +309,11 @@ public class ExportItemUtil {
                     String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
 
                     for (int j = 0; j < jarNameList.size(); j++) {
-                        String filePath = destinationDirectory.toString() + "/" + getNeedProjectPath() + "/lib/" //$NON-NLS-1$ //$NON-NLS-2$
-                                + jarNameList.get(j);
-                        copyJarToDestination(path + "/" + jarNameList.get(j), filePath); //$NON-NLS-1$
-                        toExport.put(new File(filePath), new Path("/" + getNeedProjectPath() + "/lib/" + jarNameList.get(j))); //$NON-NLS-1$ //$NON-NLS-2$
+                        String jarName = (String) jarNameList.get(j);
+                        IPath jarPath = new Path(getNeedProjectPath()).append("lib").append(jarName);//$NON-NLS-1$ 
+                        String filePath = new Path(destinationDirectory.toString()).append(jarPath.toString()).toString();
+                        copyJarToDestination(new Path(path).append(jarName).toString(), filePath);
+                        toExport.put(new File(filePath), jarPath);
                     }
                 }
                 progressMonitor.worked(1);
