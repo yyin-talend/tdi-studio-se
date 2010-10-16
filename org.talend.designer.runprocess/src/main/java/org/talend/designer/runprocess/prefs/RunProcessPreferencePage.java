@@ -31,6 +31,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.ui.ProcessManager;
 
 /**
  * 
@@ -102,6 +103,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     private Group vmGroup;
 
     private Composite parent;
+
+    private ProcessManager manager;
 
     // private FontFieldEditor consoleFontField = null;
 
@@ -303,6 +306,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
                 .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
                 argumentsComposite);
         addField(argumentsViewer);
+        manager = ProcessManager.getInstance();
     }
 
     protected void createSpacer(Composite composite, int columnSpan) {
@@ -337,6 +341,10 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         RunProcessPlugin.getDefault().savePluginPreferences();
         IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
         service.refreshView();
+        manager.setClearBeforeExec(onClearbeforeField.getBooleanValue());
+        manager.setExecTime(onExecTimeField.getBooleanValue());
+        manager.setStat(onStatisticsField.getBooleanValue());
+        manager.setSaveJobBeforeRun(onSavebeforeField.getBooleanValue());
         return ok;
     }
 
@@ -370,6 +378,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     protected void performDefaults() {
         RunProcessPlugin.getDefault().getPreferenceStore().setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
+        manager.setClearBeforeExec(true);
         super.performDefaults();
         // consoleFontField.loadDefault();
     }
