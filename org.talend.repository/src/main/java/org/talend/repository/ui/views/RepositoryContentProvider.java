@@ -243,6 +243,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return root.getMetadataSalesforceSchemaNode();
     }
 
+    public RepositoryNode getMetadataBRMSConnectionNode() {
+        return root.getMetadataBRMSConnectionNode();
+    }
+
     public String[] gatherMetdataChildrens() {
         if (getMetadataNode() == null) {
             return null;

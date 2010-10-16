@@ -1077,7 +1077,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
             container.add(contentProvider.getMetadataConNode());
-
+            container.add(contentProvider.getMetadataBRMSConnectionNode());
         }
         addReferencedProjectNodes(contentProvider, container);
         RepositoryNode node = new RepositoryNode(null, null, null);

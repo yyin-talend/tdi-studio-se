@@ -1788,7 +1788,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataFTPConnectionNode;
     }
 
-    public IRepositoryNode getMetadataBRMSConnectionNode() {
+    public RepositoryNode getMetadataBRMSConnectionNode() {
         return this.metadataBRMSConnectionNode;
     }
 
