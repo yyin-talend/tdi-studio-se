@@ -48,8 +48,10 @@ public class AddOneOptionAndReverseTheValueOnFSComponents extends AbstractJobMig
         }
         try {
 
+            //            String[] arrFSComponentsName = new String[] { "tFSAggregate", "tFSCheck", "tFSCode", "tFSFilterColumns", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            //                    "tFSFilterRows", "tFSTransform", "tFSUnique" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String[] arrFSComponentsName = new String[] { "tFSAggregate", "tFSCheck", "tFSCode", "tFSFilterColumns", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                    "tFSFilterRows", "tFSTransform", "tFSUnique" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    "tFSFilterRows", "tFSTransform", "tFSUnique", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             for (String fsComponentsName : arrFSComponentsName) {
                 IComponentFilter filter = new NameComponentFilter(fsComponentsName);
