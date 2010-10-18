@@ -229,11 +229,6 @@
 	int skipFooter_<%=cid %>  = <%=footer%>;
 	int limit_<%=cid%> = <%=limit%>;
 	
-	String rowSeparator_<%=cid %> = <%=rowSeparator %>
-	if(rowSeparator_<%=cid %>.length()< 1){
-		throw new Exception("Row Separator must include at least one character");
-	}
-	
 	if (skipFooter_<%=cid %> > 0) {
 		java.io.BufferedReader temp_in_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%= filename %>), <%= encoding %>));
 		org.talend.fileprocess.delimited.RowParser temp_reader_<%=cid%> = new org.talend.fileprocess.delimited.RowParser(temp_in_<%=cid%>, <%=rowSeparator %>, <%=skipEmptyRows %>);
