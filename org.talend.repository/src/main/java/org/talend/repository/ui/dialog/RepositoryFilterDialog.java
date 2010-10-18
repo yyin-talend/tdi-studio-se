@@ -397,6 +397,8 @@ public class RepositoryFilterDialog extends Dialog {
                     checkboxTreeViewer.setChecked(root.getMetadataEbcdicConnectionNode(), false);
                 } else if (ERepositoryObjectType.METADATA_FILE_RULES.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getMetadataRulesNode(), false);
+                } else if (ERepositoryObjectType.METADATA_FILE_BRMS.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataBRMSConnectionNode(), false);
                 } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getMetadataWSDLSchemaNode(), false);
                 } else if (ERepositoryObjectType.DOCUMENTATION.name().equals(split[1])) {
@@ -582,6 +584,10 @@ public class RepositoryFilterDialog extends Dialog {
                 && node.getId() != "-1") {
             uniqueSymbol = uniqueSymbol + node.getContentType().name() + SEPARATOR + node.getProperties(EProperties.LABEL);
         } else {
+            if (node.getContentType() == null) {
+                System.out.println(node.getLabel());
+            }
+
             uniqueSymbol = uniqueSymbol + node.getContentType().name();
             if (node instanceof ProjectRepositoryNode) {
                 uniqueSymbol = uniqueSymbol + SEPARATOR + "ROOT";//$NON-NLS-1$

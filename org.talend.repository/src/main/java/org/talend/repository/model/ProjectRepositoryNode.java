@@ -513,7 +513,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             StableRepositoryNode baseRulesNode = new StableRepositoryNode(this, Messages
                     .getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
                     ECoreImage.METADATA_RULES_ICON);
-            baseRulesNode.setProperties(EProperties.CONTENT_TYPE, null);
+            baseRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
             metadataNode.getChildren().add(baseRulesNode);
 
             if (PluginChecker.isBRMSPluginLoaded()) {
