@@ -131,7 +131,7 @@ try{
     IMetadataTable inputMetadataTable = inConn.getMetadataTable();
     for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
         if(outputCol.getLabel().equals(field)){
-//MODIFICATION JR
+//========= Bug 15631 =========
 //allow to keep copy of original field continue;
         }
         boolean isOirginalColumn = false;
