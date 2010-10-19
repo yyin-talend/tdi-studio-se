@@ -24,6 +24,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -174,6 +175,7 @@ public class ActiveProcessTracker implements IPartListener {
                 Problems.removeJob(process);
                 IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
                 service.removeProcess(process);
+                CodeView.refreshCodeView(null);
 
                 if (currentProcess == process) {
                     Contexts.setTitle(""); //$NON-NLS-1$

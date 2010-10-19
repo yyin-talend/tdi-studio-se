@@ -233,6 +233,9 @@ public class CodeView extends ViewPart {
             nodeCodeView = codeView;
             codeView = CODE_END;
             refresh();
+        } else if (element == null) {
+            selectedNode = null;
+            generatingNode = null;
         }
     }
 

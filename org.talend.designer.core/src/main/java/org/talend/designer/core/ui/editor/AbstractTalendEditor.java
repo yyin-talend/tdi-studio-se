@@ -98,7 +98,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -121,6 +120,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.utils.Timer;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
@@ -1149,14 +1149,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         int width = contentLayer.getSize().width;
         int height = contentLayer.getSize().height;
 
-        Transform transform = new Transform(null);
-        org.eclipse.swt.graphics.Point newSize = ImageUtils.AdjustSize(new org.eclipse.swt.graphics.Point(width, height),
-                new org.eclipse.swt.graphics.Point(800, 600));
-        if (newSize.x < width) { // changed
-            final float p = (float) newSize.x / width;
-            transform.scale(p, p);
-        }
-        Image img = new Image(null, newSize.x, newSize.y);
+        Image img = new Image(null, width, height);
         GC gc = new GC(img);
         Graphics graphics = new SWTGraphics(gc);
         Point point = contentLayer.getBounds().getTopLeft();
@@ -1167,20 +1160,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         contentLayer.paint(graphics);
         graphics.dispose();
         gc.dispose();
-        // add by hshen
-        ImageDescriptor imagedes = ImageDescriptor.createFromImage(img);
-        process.setScreenshot(imagedes);
-        // IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        // String outlinePicturePath = getOutlinePicturePath();
-        // ImageLoader il = new ImageLoader();
-        // il.data = new ImageData[] { img.getImageData() };
-        //        IPath filePath = service.getPathFileName(outlinePicturePath, ""); //$NON-NLS-1$
-        // String outlineFileName = process.getName();
-        // String outlineFileVersion = process.getVersion();
-        //        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + "_old.png"); //$NON-NLS-1$ //$NON-NLS-2$
-        // filePath.toFile().deleteOnExit();
-        // il.save(filePath.toPortableString(), SWT.IMAGE_PNG);
-        // ImageUtils.save(img, "e:/aa", 5);
+        process.setScreenshot(ImageUtils.saveImageToData(img));
         img.dispose();
 
         // service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);

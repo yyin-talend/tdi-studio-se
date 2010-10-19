@@ -45,7 +45,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
@@ -215,7 +214,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     protected IUpdateManager updateManager;
 
-    protected ImageDescriptor screenshot = null;
+    protected byte[] screenshot = null;
 
     private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
 
@@ -1051,8 +1050,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
          * Save the contexts informations
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
-        byte[] saveImageToData = ImageUtils.saveImageToData(getScreenshot());
-        processType.setScreenshot(saveImageToData);
+        processType.setScreenshot(getScreenshot());
+        setScreenshot(null); // once be saved, set the screenshot to null to free memory
         contextManager.saveToEmf(processType.getContext());
         return processType;
     }
@@ -2979,12 +2978,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     }
 
-    public ImageDescriptor getScreenshot() {
+    public byte[] getScreenshot() {
         return this.screenshot;
     }
 
-    public void setScreenshot(ImageDescriptor imagedes) {
-        this.screenshot = imagedes;
+    public void setScreenshot(byte[] imagedata) {
+        this.screenshot = imagedata;
     }
 
     /*
