@@ -207,6 +207,13 @@ public class DatabaseTableForm extends AbstractForm {
         this.parentWizardPage = page;
         this.temConnection = temConnection;
         this.metadataTable = metadataTable;
+        final Set<MetadataTable> tables = ConnectionHelper.getTables(temConnection);
+        for (MetadataTable t : tables) {
+            if (t.getLabel().equals(metadataTable.getLabel())) {
+                this.metadataTable = t;
+                break;
+            }
+        }
         setupForm();
     }
 
