@@ -181,7 +181,8 @@ public class UpdateJobletNodeCommand extends Command {
         parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
 
         List<? extends INodeConnector> listConnectors = node.getListConnector();
-        List<? extends INodeConnector> newConnectors = newComponent.createConnectors(new Node(newComponent));
+        List<? extends INodeConnector> newConnectors = newComponent.createConnectors(new Node(newComponent, (Process) node
+                .getProcess()));
         for (INodeConnector connector : newConnectors) {
             for (INodeConnector oldConnector : listConnectors) {
                 if (connector.getName().equals(oldConnector.getName())) {
