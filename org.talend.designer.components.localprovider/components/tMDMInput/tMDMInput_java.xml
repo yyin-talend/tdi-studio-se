@@ -97,7 +97,7 @@
 	    	<DEFAULT>Add all the key values below for the item</DEFAULT>
 	    </PARAMETER>
 	    
-	    <PARAMETER NAME="IDS" FIELD="TABLE" NUM_ROW="60" SHOW_IF="USE_ITEMS=='false'">
+	    <PARAMETER NAME="IDS" FIELD="TABLE" NUM_ROW="60" REQUIRED="true" SHOW_IF="USE_ITEMS=='false'">
 	    	<ITEMS>
 	    		<ITEM NAME="IDVALUE" FIELD="TEXT" />
 	    	</ITEMS>
