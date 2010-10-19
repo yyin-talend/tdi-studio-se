@@ -255,6 +255,11 @@ public class ImportItemUtil {
                 }
             }
 
+            if (isSystem) {
+                itemRecord.addError(Messages.getString("RepositoryUtil.isSystem"));
+                return result;
+            }
+
             if (nameAvailable) {
                 if (idAvailable) {
                     if (!isSystem) {

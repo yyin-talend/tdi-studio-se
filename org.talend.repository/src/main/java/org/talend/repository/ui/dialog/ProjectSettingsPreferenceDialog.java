@@ -36,11 +36,13 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.actions.ExportProjectSettings;
@@ -108,25 +110,16 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     }
 
     private void commiteProjectSettings() {
-        Project currentProject = ProjectManager.getInstance().getCurrentProject();
-        String projectLabel = currentProject.getTechnicalLabel();
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+        // excute a workUnit to do svn commite
+        RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit(ProjectManager.getInstance().getCurrentProject(), "") {
 
-        if (PluginChecker.isTIS()) {
-            if (PluginChecker.isSVNProviderPluginLoaded() && !currentProject.isLocal()) {
-                ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
-                        ISVNProviderService.class);
-                try {
-                    boolean isSvnProject = service.isSVNProject(currentProject);
-                    if (isSvnProject) {
-                        service.svnEclipseHandlerCommit(eclipseProject, currentProject);
-                    }
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                }
+            public void run() throws PersistenceException {
+                // do nothing
             }
-        }
+        };
+        repositoryWorkUnit.setAvoidUnloadResources(true);
+        CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().executeRepositoryWorkUnit(repositoryWorkUnit);
+
     }
 
     private void importPressed() {
