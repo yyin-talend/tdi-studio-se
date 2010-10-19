@@ -985,12 +985,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return viewer;
     }
 
+    public void refresh() {
+        this.refresh(true);
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
-    public void refresh() {
+    public void refresh(final boolean needInitialize) {
         /*
          * fix bug 4040. Sometimes Display.getCurrent.getActiveShell() get null result we not expect.
          */
@@ -1009,16 +1013,15 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
                 timer.start();
-                monitorWrap = new EventLoopProgressMonitor(monitor);
-                try {
-                    final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    factory.initialize();
-                    final Project currentProject = ProjectManager.getInstance().getCurrentProject();
-                    // factory.reloadProject(currentProject);
-                } catch (Exception e) {
-                    throw new InvocationTargetException(e);
+                if (needInitialize) {
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
+                    try {
+                        final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        factory.initialize();
+                    } catch (Exception e) {
+                        throw new InvocationTargetException(e);
+                    }
                 }
-
                 root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
                 viewer.refresh();
 

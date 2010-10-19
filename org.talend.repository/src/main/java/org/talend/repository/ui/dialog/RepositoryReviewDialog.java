@@ -106,6 +106,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
+    private boolean needInitialize = true;
+
     /**
      * DOC bqian RepositoryReviewDialog constructor comment.
      * 
@@ -165,7 +167,8 @@ public class RepositoryReviewDialog extends Dialog {
         }
     }
 
-    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType, boolean hidenTypeSelection) {
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType,
+            boolean hidenTypeSelection, boolean needInitialize) {
         super(parentShell);
         setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
         this.type = type;
@@ -174,6 +177,7 @@ public class RepositoryReviewDialog extends Dialog {
          * 
          * borrow the repositoryType to set the current process id here.
          */
+        this.needInitialize = needInitialize;
         this.repositoryType = repositoryType;
         this.hidenTypeSelection = hidenTypeSelection;
         typeProcessor = createTypeProcessor();
@@ -280,7 +284,7 @@ public class RepositoryReviewDialog extends Dialog {
             repositoryView.addFilter(dbSupportFilter);
         }
         ProjectRepositoryNode.refProjectBool = false;
-        repositoryView.refresh();
+        repositoryView.refresh(needInitialize);
         ProjectRepositoryNode.refProjectBool = true;
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
@@ -517,6 +521,13 @@ class FakeRepositoryView extends RepositoryView {
     @Override
     public void refresh() {
         super.refresh();
+        // getViewer().setInput(this.getViewSite());
+        getViewer().setInput(getInput());
+    }
+
+    @Override
+    public void refresh(boolean needInitialize) {
+        super.refresh(needInitialize);
         // getViewer().setInput(this.getViewSite());
         getViewer().setInput(getInput());
     }
