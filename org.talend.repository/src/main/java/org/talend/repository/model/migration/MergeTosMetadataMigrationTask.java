@@ -12,17 +12,22 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -30,16 +35,25 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.m2m.atl.core.ATLCoreException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.cwm.helper.CatalogHelper;
+import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SwitchHelpers;
 import org.talend.model.migration.TosMetadataMigrationFrom400to410;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.utils.URIHelper;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.RelationalFactory;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * DOC hywang class global comment. Detailled comment
@@ -52,10 +66,9 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
 
     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
 
-    static final HashMap XML_SAVE_OTIONS = new HashMap(2);
+    static final HashMap<String, Object> XML_SAVE_OTIONS = new HashMap<String, Object>(2);
     static {
         XML_SAVE_OTIONS.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
-        XML_SAVE_OTIONS.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
     }
 
     public ResourceSet resourceSet = new ResourceSetImpl();
@@ -69,16 +82,86 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                     URI itemResourceURI = getItemResourceURI(itemURI);
                     Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
                     if (migratedResource != null) {
-                        OutputStream outputStream = item.eResource().getResourceSet().getURIConverter().createOutputStream(
-                                itemResourceURI, XML_SAVE_OTIONS);
+                        // check for DB connection caus we need to setup Schema and Catalog properly
+                        EObject content = migratedResource.getContents().get(0);
+                        if (content != null && "DatabaseConnection".equals(content.eClass().getName())) {
+                            // resource is dynamic EMF so convert it to static model by serialising it and reloading it
+                            ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+                            try {
+
+                                // serialize into memory
+                                try {
+                                    migratedResource.save(tempStream, XML_SAVE_OTIONS);
+                                } finally {
+                                    tempStream.close();
+                                }
+                                // create a resource to laod the inmemory resource that should be a static EMF model
+                                migratedResource = resourceSet.createResource(URI.createURI("http://dummy_static.metadata")); //$NON-NLS-1$
+                                migratedResource.load(new ByteArrayInputStream(tempStream.toByteArray()), XML_SAVE_OTIONS);
+                                // check that DBConnection is firdt element
+                                DatabaseConnection databaseConnection = SwitchHelpers.DATABASECONNECTION_SWITCH
+                                        .doSwitch(migratedResource.getContents().get(0));
+                                // do not check for null caus DB connection is already check above
+                                String databaseType = databaseConnection.getDatabaseType();
+                                EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
+                                EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
+                                EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
+                                // all the DB connection are migrated with a Schema by default
+                                if (!curCatalog.equals(EDatabaseSchemaOrCatalogMapping.None)) {
+                                    List<Schema> schemas = ConnectionHelper.getSchema(databaseConnection);
+                                    if (!curSchema.equals(EDatabaseSchemaOrCatalogMapping.None)) {
+                                        // we need to place the current schemas into a catalogs
+                                        ConnectionHelper.removeSchemas(schemas, databaseConnection);
+                                        for (Schema schema : schemas) {
+                                            // compute the name of the schema and the catalogs
+                                            String schemaName = computeSchemaName(schema, databaseConnection, curSchema);
+                                            String catalogName = computeCatalogName(databaseConnection, curCatalog);
+                                            schema.setName(schemaName);
+                                            Catalog catalog = RelationalFactory.eINSTANCE.createCatalog();
+                                            // catalogs are not in a contained reference
+                                            migratedResource.getContents().add(catalog);
+                                            catalog.setName(catalogName);
+                                            // add the schema to the catalog and the the catalog to the connection
+                                            CatalogHelper.addSchemas(Collections.singleton(schema), catalog);
+                                            ConnectionHelper.addCatalog(catalog, databaseConnection);
+                                        }
+                                    } else {
+                                        // we need to replace the Schemas with a Catalogs
+                                        for (Schema schema : schemas) {
+                                            // compute the name the catalog
+                                            String catalogName = computeCatalogName(databaseConnection, curCatalog);
+                                            // use owned elements to get everything regardless of tables or views or
+                                            // else
+                                            Catalog catalog = RelationalFactory.eINSTANCE.createCatalog();
+                                            // catalogs are not in a contained reference
+                                            migratedResource.getContents().add(catalog);
+                                            catalog.setName(catalogName);
+                                            catalog.getOwnedElement().addAll(schema.getOwnedElement());
+                                            ConnectionHelper.addCatalog(catalog, databaseConnection);
+                                            ConnectionHelper.removeSchemas(Collections.singleton(schema), databaseConnection);
+                                        }
+
+                                    }
+                                }// else no catalog so we keep the schema as is
+                            } catch (Exception e) {
+                                // we have an exception finalising the migration but we trap it caus we still try to
+                                // save it
+                                log.error("Cannot complete merge metadata migration on file:" + itemResourceURI.toString(), e);
+                                ExceptionHandler.process(e);
+                            } finally {
+                                tempStream.close();
+                            }
+                        } // else not a DB connection so persist
+                        OutputStream outputStream = item.eResource().getResourceSet().getURIConverter()
+                                .createOutputStream(itemResourceURI, XML_SAVE_OTIONS);
                         try {
                             migratedResource.save(outputStream, XML_SAVE_OTIONS);
                         } finally {
                             outputStream.close();
                         }
                     }
+                    return ExecutionResult.SUCCESS_WITH_ALERT;
                 }
-                return ExecutionResult.SUCCESS_WITH_ALERT;
             } catch (ATLCoreException e) {
                 log.error(e);
                 ExceptionHandler.process(e);
@@ -87,9 +170,70 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 log.error(e);
                 ExceptionHandler.process(e);
                 return ExecutionResult.SUCCESS_NO_ALERT;
+            } finally {
+                resourceSet.getResources().clear();
             }
         }
         return ExecutionResult.NOTHING_TO_DO;
+    }
+
+    /**
+     * compute the schema name.
+     * 
+     * @param schema the schema to compute the name from
+     * @param databaseConnection the DB connection caus some of the name are issued from the DB connection
+     * @param curSchema, the type of name for the schema
+     * @return string corresponding to the naming convention of schemaNameType
+     */
+    private String computeSchemaName(Schema schema, DatabaseConnection connection, EDatabaseSchemaOrCatalogMapping schemaNameType) {
+        String result = ""; //$NON-NLS-1$
+        switch (schemaNameType) {
+        case Login:
+            result = connection.getUsername();
+            break;
+        case Schema:
+            result = schema.getName();
+            break;
+        case Sid:
+            result = connection.getSID();
+            break;
+        case Default_Name:
+            result = connection.getName();
+            break;
+        case None:
+            // return an empty string
+            break;
+        default:// return an empty string
+            break;
+        }
+        return result;
+    }
+
+    /**
+     * compute the catalog name.
+     * 
+     * @param databaseConnection the DB connection caus some of the name are issued from the DB connection
+     * @param catalogNameType, the type of name for the catalog
+     * @return the string corresponding to the naming convention of catalogNameType
+     */
+    private String computeCatalogName(DatabaseConnection connection, EDatabaseSchemaOrCatalogMapping catalogNameType) {
+        String result = ""; //$NON-NLS-1$
+        switch (catalogNameType) {
+        case Login:
+            result = connection.getUsername();
+            break;
+        case Sid:
+            result = connection.getSID();
+            break;
+        case Default_Name:
+            result = connection.getName();
+            break;
+        case Schema:
+        case None:
+        default:// return an empty string
+            break;
+        }
+        return result;
     }
 
     private URI getItemURI(Item item) {
