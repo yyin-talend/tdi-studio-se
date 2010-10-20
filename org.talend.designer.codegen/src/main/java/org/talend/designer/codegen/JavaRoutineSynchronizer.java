@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -100,10 +101,14 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         FileOutputStream fos = null;
         try {
             IFile file = getRoutineFile(routineItem);
-            long modificationItemDate = routineItem.getProperty().getModificationDate().getTime();
-            long modificationFileDate = file.getModificationStamp();
-            if (modificationItemDate <= modificationFileDate) {
-                return;
+            if (routineItem.getProperty().getModificationDate() != null) {
+                long modificationItemDate = routineItem.getProperty().getModificationDate().getTime();
+                long modificationFileDate = file.getModificationStamp();
+                if (modificationItemDate <= modificationFileDate) {
+                    return;
+                }
+            } else {
+                routineItem.getProperty().setModificationDate(new Date());
             }
 
             if (copyToTemp) {
