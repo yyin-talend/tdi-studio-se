@@ -1421,7 +1421,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         break;
                     }
                 }
-                PackageHelper.getAllTables(s, allTables);
+                /**
+                 * if dont specifc a schema because of getUiSchema() is null,show all by default,or it will cause bug
+                 * 0016578
+                 */
+                if (s == null || "".equals(s)) {
+                    allTables = ConnectionHelper.getTables(dbconn);
+                } else {
+                    PackageHelper.getAllTables(s, allTables);
+                }
                 // PackageHelper.addMetadataTable(dbtable, s);
             }
         } else {
