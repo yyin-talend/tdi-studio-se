@@ -66,9 +66,14 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
 
     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
 
-    static final HashMap<String, Object> XML_SAVE_OTIONS = new HashMap<String, Object>(2);
+    static final HashMap<String, Object> XML_SAVE_OTIONS_1_0 = new HashMap<String, Object>(2);
+
+    static final HashMap<String, Object> XML_SAVE_OTIONS_1_1 = new HashMap<String, Object>(2);
     static {
-        XML_SAVE_OTIONS.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
+        XML_SAVE_OTIONS_1_0.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
+        XML_SAVE_OTIONS_1_0.put(XMLResource.OPTION_XML_VERSION, "1.0"); //$NON-NLS-1$
+        XML_SAVE_OTIONS_1_1.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
+        XML_SAVE_OTIONS_1_1.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
     }
 
     public ResourceSet resourceSet = new ResourceSetImpl();
@@ -81,6 +86,7 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                 if (itemURI != null) {
                     URI itemResourceURI = getItemResourceURI(itemURI);
                     Resource migratedResource = metadata400to410.migrate(itemResourceURI.toString(), new NullProgressMonitor());
+                    HashMap<String, Object> xmlSaveOtions = XML_SAVE_OTIONS_1_0;
                     if (migratedResource != null) {
                         // check for DB connection caus we need to setup Schema and Catalog properly
                         EObject content = migratedResource.getContents().get(0);
@@ -88,16 +94,21 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                             // resource is dynamic EMF so convert it to static model by serialising it and reloading it
                             ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
                             try {
-
                                 // serialize into memory
                                 try {
-                                    migratedResource.save(tempStream, XML_SAVE_OTIONS);
+                                    migratedResource.save(tempStream, XML_SAVE_OTIONS_1_0);
+                                } catch (Exception e) {
+                                    // try with version 1.1
+                                    tempStream = new ByteArrayOutputStream();
+                                    xmlSaveOtions = XML_SAVE_OTIONS_1_1;
+                                    migratedResource.save(tempStream, xmlSaveOtions);
                                 } finally {
                                     tempStream.close();
                                 }
                                 // create a resource to laod the inmemory resource that should be a static EMF model
-                                migratedResource = resourceSet.createResource(URI.createURI("http://dummy_static.metadata")); //$NON-NLS-1$
-                                migratedResource.load(new ByteArrayInputStream(tempStream.toByteArray()), XML_SAVE_OTIONS);
+                                migratedResource = resourceSet.createResource(URI
+                                        .createURI("http://talend/dummy_static.metadata")); //$NON-NLS-1$
+                                migratedResource.load(new ByteArrayInputStream(tempStream.toByteArray()), xmlSaveOtions);
                                 // check that DBConnection is firdt element
                                 DatabaseConnection databaseConnection = SwitchHelpers.DATABASECONNECTION_SWITCH
                                         .doSwitch(migratedResource.getContents().get(0));
@@ -153,9 +164,9 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                             }
                         } // else not a DB connection so persist
                         OutputStream outputStream = item.eResource().getResourceSet().getURIConverter()
-                                .createOutputStream(itemResourceURI, XML_SAVE_OTIONS);
+                                .createOutputStream(itemResourceURI, null);
                         try {
-                            migratedResource.save(outputStream, XML_SAVE_OTIONS);
+                            migratedResource.save(outputStream, xmlSaveOtions);
                         } finally {
                             outputStream.close();
                         }
