@@ -88,7 +88,8 @@ if(inConn!=null){
 	for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
 		if(inputCol.getLabel().equals(field)){
 %>
-	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%><%=trim?".trim()":""%>;
+	//String field_<%=cid%> = <%=inConn.getName()%>.<%=field%><%=trim?".trim()":""%>;
+	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
 <%
 			break;
 		}
@@ -114,22 +115,13 @@ try{
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 				isOirginalColumn = true;
 				
-				if(stringType == JavaTypesManager.STRING ){
 %>
-				if(<%=inConn.getName()%>.<%=inputCol.getLabel()%> != null)
-					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%><%=trim?".trim()":""%>;
-				else
-					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
-				<%
-					break;
-				}else {
-				%>
-					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+				<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 <%
-					break;
+				break;
 				}
 		    }
-		}
+		
 		if(!isOirginalColumn){
 			if(!("").equals(rejectConnName)&&rejectConnName.equals(firstConnName)
 				&& (outputCol.getLabel().equals("errorMessage") || outputCol.getLabel().equals("errorCode"))){
@@ -148,7 +140,7 @@ try{
 			if(i==0){
 %>
 	newFields_<%=cid%>.put("<%=tmp.get("COLUMN")%>", TalendString.talendTrim(field_<%=cid %>.substring(0,
-		indexs_<%=cid%>[<%=i%>]>field_<%=cid %>.length()||indexs_<%=cid%>[<%=i%>]<0?field_<%=cid %>.length():indexs_<%=cid%>[<%=i%>]),
+		indexs_<%=cid%>[<%=i%>]>field_<%=cid %>.length()||indexs_<%=cid%>[<%=i%>]<0?field_<%=cid %>.length():indexs_<%=cid%>[<%=i%>])<%=trim?".trim()":""%>,
      			<%=tmp.get("PADDING_CHAR")%>, <%=tmp.get("ALIGN")%>));
 <%
 			}else{
@@ -156,7 +148,7 @@ try{
 	if(<%=i%><indexs_<%=cid%>.length && indexs_<%=cid%>[<%=i-1%>]>=0 && indexs_<%=cid%>[<%=i-1%>]<= field_<%=cid %>.length()){
     	newFields_<%=cid%>.put("<%=tmp.get("COLUMN")%>",
      		TalendString.talendTrim(field_<%=cid %>.substring(indexs_<%=cid%>[<%=i-1%>],
-     			indexs_<%=cid%>[<%=i%>]>field_<%=cid %>.length()||indexs_<%=cid%>[<%=i%>]<0?field_<%=cid %>.length():indexs_<%=cid%>[<%=i%>]),
+     			indexs_<%=cid%>[<%=i%>]>field_<%=cid %>.length()||indexs_<%=cid%>[<%=i%>]<0?field_<%=cid %>.length():indexs_<%=cid%>[<%=i%>])<%=trim?".trim()":""%>,
      			<%=tmp.get("PADDING_CHAR")%>, <%=tmp.get("ALIGN")%>));
  	}
 <%
