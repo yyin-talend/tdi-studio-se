@@ -209,7 +209,7 @@ public class DatabaseTableForm extends AbstractForm {
         this.metadataTable = metadataTable;
         final Set<MetadataTable> tables = ConnectionHelper.getTables(temConnection);
         for (MetadataTable t : tables) {
-            if (t.getLabel().equals(metadataTable.getLabel())) {
+            if (metadataTable != null && t.getLabel().equals(metadataTable.getLabel())) {
                 this.metadataTable = t;
                 break;
             }
