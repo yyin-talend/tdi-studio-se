@@ -351,14 +351,6 @@ public class DeleteAction extends AContextualAction {
         } else {
             IRepositoryViewObject objToDelete = repositoryNode.getObject();
             factory.deleteObjectLogical(objToDelete);
-            // MOD qiongli 2010-10-11,bug 15674
-            Item item = objToDelete.getProperty().getItem();
-            AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
-                    .getResourceChangeService(AbstractResourceChangesService.class);
-            if (item instanceof ConnectionItem && resChangeService != null) {
-                resChangeService.handleLogicalDelete(item.getProperty());
-            }
-            // ~
         }
     }
 
@@ -694,21 +686,11 @@ public class DeleteAction extends AContextualAction {
                                 + "/" + currentJobNode.getObject().getProperty().getLabel()));
                     } else {
                         factory.deleteObjectPhysical(objToDelete);
-                        // MOD qiongli 2010-10-11,bug 15674
-                        if (item instanceof ConnectionItem && resChangeService != null) {
-                            resChangeService.handlePhysicalDelete(item.getProperty());
-                        }
-                        // ~
                         ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
                     }
                 }
             } else {
                 factory.deleteObjectLogical(objToDelete);
-                // MOD qiongli 2010-10-11,bug 15674
-                if (item instanceof ConnectionItem && resChangeService != null) {
-                    resChangeService.handleLogicalDelete(item.getProperty());
-                }
-                // ~
             }
         }
 
