@@ -47,6 +47,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
+import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -183,6 +184,13 @@ public class ExportItemUtil {
             // ADDED sgandon 31/03/2010 bug 12229: remove the resource associated with other versions items from the
             // global resource
             for (Item tobeRemoved : otherVersions) {
+                if (tobeRemoved.getParent() != null && (tobeRemoved.getParent()) instanceof FolderItem) {
+                    // to free memory or parent will still hold the item
+                    ((FolderItem) tobeRemoved.getParent()).getChildren().remove(tobeRemoved);
+                    tobeRemoved.setParent(null);
+                }
+
+                tobeRemoved.setParent(null);
                 Resource eResource = tobeRemoved.eResource();
                 if (eResource.getResourceSet() == null) {
                     // resourceSet not filled in all case
