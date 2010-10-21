@@ -30,6 +30,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -114,6 +115,15 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         DatabaseConnection connection = null;
         IPath pathToSave = null;
+
+        if (repositoryNode.getObject() instanceof RepositoryObject) {
+            try {
+                ((RepositoryObject) repositoryNode.getObject()).setProperty(ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(repositoryNode.getObject().getProperty()));
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
 
         // Define the RepositoryNode, by default Metadata/DbConnection
         RepositoryNode node = repositoryNode;
