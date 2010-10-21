@@ -22,6 +22,7 @@ import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -58,77 +59,119 @@ public class AddWebServiceOutputTableMigrationTask extends AbstractJobMigrationT
         MetadataType metadata;
         ProcessType processType = getProcessType(item);
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-
-        String name = "";
+        String webServiceComponentName = "";
+        NodeType webServiceNode = null;
         for (Object o : processType.getNode()) {
             if (o instanceof NodeType) {
                 NodeType currentNode = (NodeType) o;
                 if ("tWebService".equals(currentNode.getComponentName())) {
+                    webServiceNode = currentNode;
                     if (currentNode.getMetadata().size() == 1) {
                         isUpdate = true;
-                        MetadataType newMetadata = fileFact.createMetadataType();
-                        metadata = ((MetadataType) currentNode.getMetadata().get(0));
-                        name = metadata.getName();
-                        EList<ColumnType> list = metadata.getColumn();
-                        newMetadata.setName("OUTPUT");
-                        newMetadata.setConnector("OUTPUT");
-                        for (int i = 0; i < list.size(); i++) {
-                            ColumnType in = (ColumnType) list.get(i);
-                            ColumnType out = fileFact.createColumnType();
-                            out.setComment(in.getComment());
-                            out.setKey(in.isKey());
-                            out.setNullable(in.isNullable());
-                            if (String.valueOf(in.getLength()).equals("0")) {
-                                out.unsetLength();
-                            } else {
-                                out.setLength(in.getLength());
+                        for (Object e : currentNode.getElementParameter()) {
+                            ElementParameterType p = (ElementParameterType) e;
+                            if ("UNIQUE_NAME".equals(p.getName())) {
+                                webServiceComponentName = p.getValue();
+                                MetadataType newMetadata = (MetadataType) currentNode.getMetadata().get(0);
+                                newMetadata.getColumn().clear();
                             }
-                            out.setName(in.getName());
-                            if (String.valueOf(in.getPrecision()).equals("0")) {
-                                out.unsetPrecision();
-                            } else {
-                                out.setPrecision(in.getPrecision());
-                            }
-                            if (!in.getName().equals(in.getOriginalDbColumnName())) {
-                                out.setOriginalDbColumnName(in.getOriginalDbColumnName());
-                            }
-                            out.setType(in.getType());
-                            out.setSourceType(in.getSourceType());
-                            out.setPattern(in.getPattern());
-                            out.setDefaultValue(in.getDefaultValue());
-                            newMetadata.getColumn().add(out);
                         }
-                        currentNode.getMetadata().add(newMetadata);
                     }
                 }
             }
         }
-
-        for (Object o : processType.getConnection()) {
-            if (o instanceof ConnectionType) {
-                ConnectionType currentConnection = (ConnectionType) o;
-                if (name.equals(currentConnection.getMetaname())) {
-                    currentConnection.setConnectorName("OUTPUT");
-                    currentConnection.setMetaname("OUTPUT");
+        if (isUpdate) {
+            String name = "";
+            String webSourceName = "";
+            String webserviceOutNaame = "";
+            for (Object o : processType.getConnection()) {
+                if (o instanceof ConnectionType) {
+                    ConnectionType currentConnection = (ConnectionType) o;
+                    if ("FLOW".equals(currentConnection.getConnectorName())
+                            && currentConnection.getTarget().equals(webServiceComponentName)) {
+                        webSourceName = currentConnection.getSource();
+                    } else if ("FLOW".equals(currentConnection.getConnectorName())
+                            && currentConnection.getSource().equals(webServiceComponentName)) {
+                        webserviceOutNaame = currentConnection.getTarget();
+                        currentConnection.setConnectorName("OUTPUT");
+                        currentConnection.setMetaname("OUTPUT");
+                    }
+                }
+            }
+            for (Object o : processType.getNode()) {
+                if (o instanceof NodeType) {
+                    NodeType currentNode = (NodeType) o;
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("UNIQUE_NAME".equals(p.getName()) && webSourceName.equals(p.getValue())) {
+                            MetadataType newMetadata = (MetadataType) currentNode.getMetadata().get(0);
+                            metadata = ((MetadataType) webServiceNode.getMetadata().get(0));
+                            EList<ColumnType> list = newMetadata.getColumn();
+                            for (int i = 0; i < list.size(); i++) {
+                                ColumnType in = (ColumnType) list.get(i);
+                                ColumnType out = fileFact.createColumnType();
+                                out.setComment(in.getComment());
+                                out.setKey(in.isKey());
+                                out.setNullable(in.isNullable());
+                                if (String.valueOf(in.getLength()).equals("0")) {
+                                    out.unsetLength();
+                                } else {
+                                    out.setLength(in.getLength());
+                                }
+                                out.setName(in.getName());
+                                if (String.valueOf(in.getPrecision()).equals("0")) {
+                                    out.unsetPrecision();
+                                } else {
+                                    out.setPrecision(in.getPrecision());
+                                }
+                                if (!in.getName().equals(in.getOriginalDbColumnName())) {
+                                    out.setOriginalDbColumnName(in.getOriginalDbColumnName());
+                                }
+                                out.setType(in.getType());
+                                out.setSourceType(in.getSourceType());
+                                out.setPattern(in.getPattern());
+                                out.setDefaultValue(in.getDefaultValue());
+                                metadata.getColumn().add(out);
+                            }
+                        } else if ("UNIQUE_NAME".equals(p.getName()) && webserviceOutNaame.equals(p.getValue())) {
+                            MetadataType newMetadata = fileFact.createMetadataType();
+                            metadata = ((MetadataType) currentNode.getMetadata().get(0));
+                            name = metadata.getName();
+                            EList<ColumnType> list = metadata.getColumn();
+                            newMetadata.setName("OUTPUT");
+                            newMetadata.setConnector("OUTPUT");
+                            for (int i = 0; i < list.size(); i++) {
+                                ColumnType in = (ColumnType) list.get(i);
+                                ColumnType out = fileFact.createColumnType();
+                                out.setComment(in.getComment());
+                                out.setKey(in.isKey());
+                                out.setNullable(in.isNullable());
+                                if (String.valueOf(in.getLength()).equals("0")) {
+                                    out.unsetLength();
+                                } else {
+                                    out.setLength(in.getLength());
+                                }
+                                out.setName(in.getName());
+                                if (String.valueOf(in.getPrecision()).equals("0")) {
+                                    out.unsetPrecision();
+                                } else {
+                                    out.setPrecision(in.getPrecision());
+                                }
+                                if (!in.getName().equals(in.getOriginalDbColumnName())) {
+                                    out.setOriginalDbColumnName(in.getOriginalDbColumnName());
+                                }
+                                out.setType(in.getType());
+                                out.setSourceType(in.getSourceType());
+                                out.setPattern(in.getPattern());
+                                out.setDefaultValue(in.getDefaultValue());
+                                newMetadata.getColumn().add(out);
+                                webServiceNode.getMetadata().add(newMetadata);
+                            }
+                        }
+                    }
                 }
             }
         }
-        // if (processType.getParameters() != null) {
-        // EList elementParameter = processType.getParameters().getElementParameter();
-        // for (int i = 0; i < elementParameter.size(); i++) {
-        // final Object object = elementParameter.get(i);
-        // if (object instanceof ElementParameterTypeImpl) {
-        // ElementParameterTypeImpl parameterType = (ElementParameterTypeImpl) object;
-        // String namet = parameterType.getName();
-        // if ("DB_VERSION".equals(namet)) {
-        // ElementParameterType parameter = fileFact.createElementParameterType();
-        // parameter.setField("TABLE");
-        // parameter.setName("DRIVER_JAR");
-        // elementParameter.add(parameter);
-        // }
-        // }
-        // }
-        // }
 
         if (isUpdate) {
             try {
