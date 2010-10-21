@@ -60,6 +60,7 @@ public class CreateContextAction extends AbstractConextAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        super.init(viewer, selection);
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
@@ -91,6 +92,9 @@ public class CreateContextAction extends AbstractConextAction {
 
     @Override
     protected void doRun() {
+        if (repositoryNode == null) {
+            repositoryNode = getCurrentRepositoryNode();
+        }
         ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, repositoryNode, false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();

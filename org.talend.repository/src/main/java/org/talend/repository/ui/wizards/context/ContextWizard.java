@@ -15,8 +15,6 @@ package org.talend.repository.ui.wizards.context;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -47,10 +45,9 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
@@ -127,7 +124,8 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ContextWizard(IWorkbench workbench, boolean creation, RepositoryNode repositoryNode, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
-        pathToSave = getPath(repositoryNode);
+        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+        pathToSave = service.getRepositoryPath(repositoryNode);
 
         setWindowTitle(""); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
@@ -290,20 +288,6 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection2) {
         this.selection = selection2;
-    }
-
-    private IPath getPath(RepositoryNode repositoryNode) {
-        RepositoryNode node = repositoryNode;
-        if (node == null && selection != null) {
-            node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
-        }
-        IPath path;
-        if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
-            path = RepositoryNodeUtilities.getPath(node);
-            return path;
-        }
-
-        return new Path(""); //$NON-NLS-1$
     }
 
     public ContextItem getContextItem() {
