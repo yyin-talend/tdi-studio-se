@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.context;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -121,12 +122,14 @@ public class ContextWizard extends CheckLastVersionRepositoryWizard implements I
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ContextWizard(IWorkbench workbench, boolean creation, RepositoryNode repositoryNode, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
-        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        pathToSave = service.getRepositoryPath(repositoryNode);
-
+        if (repositoryNode != null) {
+            IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+            pathToSave = service.getRepositoryPath(repositoryNode);
+        } else { // set root
+            pathToSave = new Path(""); //$NON-NLS-1$
+        }
         setWindowTitle(""); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
         setNeedsProgressMonitor(true);
