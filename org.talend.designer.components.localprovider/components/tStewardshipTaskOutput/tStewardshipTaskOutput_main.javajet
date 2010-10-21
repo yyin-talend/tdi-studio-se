@@ -122,7 +122,7 @@ if(<%=conn.getName() %>.<%=recordType%>){
 		for(Map<String, String> extraInfo:extraInfos){
 %>
     if(<%=extraInfo.get("TITLE")%>!=null && !"".equals(<%=extraInfo.get("TITLE")%>)){
-    	record_<%=cid%>.addExtraInfo(<%=extraInfo.get("TITLE")%>,<%=extraInfo.get("INFO")%>,<%=dataUtil.getValueExpression(conn.getName(),extraInfo.get("SCOPE"))%>);
+    	record_<%=cid%>.addExtraInfo(<%=extraInfo.get("TITLE")%>,<%=extraInfo.get("INFO")%>,"<%=extraInfo.get("SCOPE")%>");
     }
 <%
 		}
