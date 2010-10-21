@@ -58,6 +58,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -192,7 +193,8 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion.getProperty()
                         .getItem());
 
-                RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
+                RepositoryNode repositoryNode = new RepositoryNode(
+                        new RepositoryViewObject(repositoryObjectVersion.getProperty()), parentRepositoryNode,
                         ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
                 repositoryNode.setProperties(EProperties.LABEL, repositoryObjectVersion.getLabel());
