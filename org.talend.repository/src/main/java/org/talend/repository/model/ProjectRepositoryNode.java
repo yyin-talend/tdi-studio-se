@@ -510,8 +510,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataNode.getChildren().add(metadataMDMConnectionNode);
         }
         if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
-            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
-                    Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
+            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this, Messages
+                    .getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
                     ECoreImage.METADATA_RULES_ICON);
             baseRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
             metadataNode.getChildren().add(baseRulesNode);
@@ -557,8 +557,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private void getRefProject(Project project, Object parent) {
         for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getReferencedProjects()) {
-            String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields()
-                    .get(IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
+            String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
+                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
             if (refProject.getBranch() == null || parentBranch.equals(refProject.getBranch())) {
                 Project p = refProject.getReferencedProject();
                 List<Project> list = nodeAndProject.get(parent);
@@ -675,7 +675,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 // List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
                 List<RepositoryNode> foldersList = new ArrayList<RepositoryNode>();
                 List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
-                for (FolderItem folder : folderItems) {
+                for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
                     addItemToRecycleBin(recBinNode, folder, foldersList);
                 }
             }
@@ -763,19 +763,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     folderNode.setParent(parentNode);
                 }
 
-                for (Item curItem : (List<Item>) ((FolderItem) item).getChildren()) {
+                for (Item curItem : (List<Item>) new ArrayList(((FolderItem) item).getChildren())) {
                     addItemToRecycleBin(folderNode, curItem, foldersList);
                 }
                 currentParentNode = folderNode;
             } else {
-                for (Item curItem : (List<Item>) ((FolderItem) item).getChildren()) {
+                for (Item curItem : (List<Item>) new ArrayList(((FolderItem) item).getChildren())) {
                     addItemToRecycleBin(parentNode, curItem, foldersList);
                 }
             }
         } else if (item.getState() != null && item.getState().isDeleted()) {
             try {
-                if (item.getProperty().getVersion()
-                        .equals(ProxyRepositoryFactory.getInstance().getLastVersion(item.getProperty().getId()).getVersion())) {
+                if (item.getProperty().getVersion().equals(
+                        ProxyRepositoryFactory.getInstance().getLastVersion(item.getProperty().getId()).getVersion())) {
                     RepositoryNode repNode = new RepositoryNode(new RepositoryViewObject(item.getProperty()), currentParentNode,
                             ENodeType.REPOSITORY_ELEMENT);
                     repNode.setProperties(EProperties.CONTENT_TYPE, itemType);
@@ -1031,8 +1031,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (parent.getType().equals(ENodeType.SYSTEM_FOLDER)) {
             for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
                     .getReferencedProjects()) {
-                String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields()
-                        .get(IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
+                String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields().get(
+                        IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
                 // if not a DB ref project, modified by nma, order 12519
                 if (refProject.getReferencedProject().getUrl() != null
                         && refProject.getReferencedProject().getUrl().startsWith("teneo") //$NON-NLS-1$
@@ -1249,18 +1249,18 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (metadataConnection instanceof DatabaseConnection) {
 
             // 1.Tables:
-            RepositoryNode tablesNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.TableSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode tablesNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.TableSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(tablesNode);
 
             // 2.VIEWS:
-            RepositoryNode viewsNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.ViewSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode viewsNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.ViewSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(viewsNode);
 
             // 3.SYNONYMS:
-            RepositoryNode synonymsNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode synonymsNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(synonymsNode);
 
             DatabaseConnection dbconn = (DatabaseConnection) metadataConnection;
@@ -1304,8 +1304,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // createTables(recBinNode, node, repObj, metadataConnection.getTables());
 
             // 4.Queries:
-            RepositoryNode queriesNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode queriesNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(queriesNode);
             QueriesConnection queriesConnection = (metadataConnection).getQueries();
             if (queriesConnection != null) {
@@ -1322,8 +1322,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
                             ICDCProviderService.class);
                     if (service != null && service.canCreateCDCConnection(connection)) {
-                        RepositoryNode cdcNode = new StableRepositoryNode(node,
-                                Messages.getString("RepositoryContentProvider.repositoryLabel.CDCFoundation"), //$NON-NLS-1$
+                        RepositoryNode cdcNode = new StableRepositoryNode(node, Messages
+                                .getString("RepositoryContentProvider.repositoryLabel.CDCFoundation"), //$NON-NLS-1$
                                 ECoreImage.FOLDER_CLOSE_ICON);
                         node.getChildren().add(cdcNode);
                         service.createCDCTypes(recBinNode, cdcNode, connection.getCdcConns());
@@ -1333,15 +1333,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         } else if (metadataConnection instanceof SAPConnection) {
             // The sap wizard plugin is loaded
             // 1.Tables:
-            RepositoryNode functionNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode functionNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(functionNode);
 
             // add functions
             createSAPFunctionNodes(recBinNode, repObj, metadataConnection, functionNode);
 
-            RepositoryNode iDocNode = new StableRepositoryNode(node,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.sapIDoc"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            RepositoryNode iDocNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.sapIDoc"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(iDocNode);
 
             // add functions
