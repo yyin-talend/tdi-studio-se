@@ -1395,47 +1395,52 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private Set<org.talend.core.model.metadata.builder.connection.MetadataTable> getTablesFromCurrentCatalogOrSchema(
             String dbsid, String schema, DatabaseConnection dbconn) {
-        Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = new HashSet<org.talend.core.model.metadata.builder.connection.MetadataTable>();
-        boolean hasSchemaInCatalog = false;
-        Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, dbconn, Catalog.class);
-        Schema s = (Schema) ConnectionHelper.getPackage(schema, dbconn, Schema.class);
-        List<Schema> subschemas = new ArrayList<Schema>();
-        if (c != null) {
-            subschemas = CatalogHelper.getSchemas(c);
-            hasSchemaInCatalog = subschemas.size() > 0;
-        }
-        if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
-            PackageHelper.getAllTables(c, allTables);
-            // PackageHelper.addMetadataTable(dbtable, c);
 
-        } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
-            PackageHelper.getAllTables(s, allTables);
-            // PackageHelper.addMetadataTable(dbtable, s);
-        } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
-            subschemas = CatalogHelper.getSchemas(c);
-            hasSchemaInCatalog = subschemas.size() > 0;
-            if (subschemas.size() > 0) {
-                for (Schema current : subschemas) {
-                    if (current.getName().equals(schema)) {
-                        s = current;
-                        break;
-                    }
-                }
-                /**
-                 * if dont specifc a schema because of getUiSchema() is null,show all cataogs table by default,or it
-                 * will cause bug 0016578
-                 */
-                if (s == null || "".equals(s)) {
-                    // allTables = ConnectionHelper.getTables(dbconn);
-                    PackageHelper.getAllTables(c, allTables);
-                } else {
-                    PackageHelper.getAllTables(s, allTables);
-                }
-                // PackageHelper.addMetadataTable(dbtable, s);
-            }
-        } else {
-            // get all tables from connection
+        Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = new HashSet<org.talend.core.model.metadata.builder.connection.MetadataTable>();
+        if (dbconn.isContextMode()) {
             allTables = ConnectionHelper.getTables(dbconn);
+        } else {
+            boolean hasSchemaInCatalog = false;
+            Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, dbconn, Catalog.class);
+            Schema s = (Schema) ConnectionHelper.getPackage(schema, dbconn, Schema.class);
+            List<Schema> subschemas = new ArrayList<Schema>();
+            if (c != null) {
+                subschemas = CatalogHelper.getSchemas(c);
+                hasSchemaInCatalog = subschemas.size() > 0;
+            }
+            if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
+                PackageHelper.getAllTables(c, allTables);
+                // PackageHelper.addMetadataTable(dbtable, c);
+
+            } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
+                PackageHelper.getAllTables(s, allTables);
+                // PackageHelper.addMetadataTable(dbtable, s);
+            } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
+                subschemas = CatalogHelper.getSchemas(c);
+                hasSchemaInCatalog = subschemas.size() > 0;
+                if (subschemas.size() > 0) {
+                    for (Schema current : subschemas) {
+                        if (current.getName().equals(schema)) {
+                            s = current;
+                            break;
+                        }
+                    }
+                    /**
+                     * if dont specifc a schema because of getUiSchema() is null,show all cataogs table by default,or it
+                     * will cause bug 0016578
+                     */
+                    if (s == null || "".equals(s)) {
+                        // allTables = ConnectionHelper.getTables(dbconn);
+                        PackageHelper.getAllTables(c, allTables);
+                    } else {
+                        PackageHelper.getAllTables(s, allTables);
+                    }
+                    // PackageHelper.addMetadataTable(dbtable, s);
+                }
+            } else {
+                // get all tables from connection
+                allTables = ConnectionHelper.getTables(dbconn);
+            }
         }
         return allTables;
     }

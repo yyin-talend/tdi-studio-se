@@ -918,9 +918,10 @@ public class SelectorTableForm extends AbstractForm {
                 dbtable.getColumns().add(metadataColumn);
             }
             if (!ConnectionHelper.getTables(getConnection()).contains(dbtable) && !limitTemplateTable(dbtable)) {
+
                 String schema = iMetadataConnection.getSchema();
                 String catalog = iMetadataConnection.getDatabase();
-                String databaseType = getConnection().getDatabaseType();
+                String databaseType = iMetadataConnection.getDbType();
                 EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
                 EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
                 EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
@@ -1021,9 +1022,9 @@ public class SelectorTableForm extends AbstractForm {
                     }
                     PackageHelper.addMetadataTable(dbtable, s);
                 }
-            } else if (c == null && s == null) {
+            } else {
                 // no catalog or schema by default, so create a catalog
-                c = CatalogHelper.createCatalog(getConnection().getSID());
+                c = CatalogHelper.createCatalog(iMetadataConnection.getDatabase());
                 c.getDataManager().add(getConnection());
                 PackageHelper.addMetadataTable(dbtable, c);
                 ConnectionHelper.addCatalog(c, getConnection());
