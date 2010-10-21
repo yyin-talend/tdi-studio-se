@@ -785,10 +785,10 @@ public class ImportItemUtil {
                 routineSynchronizer.syncRoutine(routineItem, true);
                 routineSynchronizer.getFile(routineItem);
             }
-            if (item.getProperty().eResource().isModified()) {
-                ProxyRepositoryFactory.getInstance().save(item, true);
-                item.getProperty().eResource().setModified(false);
-            }
+            // if (item.getProperty().eResource().isModified()) {
+            // ProxyRepositoryFactory.getInstance().save(item, true);
+            // item.getProperty().eResource().setModified(false);
+            // }
             if (item.getProperty().eResource() != null) {
                 ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
             }
