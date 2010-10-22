@@ -74,6 +74,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.SnippetItem;
+import org.talend.core.model.properties.TDQItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
@@ -187,12 +188,16 @@ public class ImportItemUtil {
             Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository) {
         boolean result = false;
         try {
-            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
+            Item item = itemRecord.getItem();
+            if (item instanceof TDQItem) {
+                return false; // hide tdq first
+            }
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
 
             boolean isSqlPattern = (itemType == ERepositoryObjectType.SQLPATTERNS);
             String itemPath = null;
-            if (itemRecord.getItem().getState() != null) {
-                itemPath = itemRecord.getItem().getState().getPath();
+            if (item.getState() != null) {
+                itemPath = item.getState().getPath();
             }
 
             if (!itemsFromRepository.containsKey(itemType)) {
@@ -229,10 +234,10 @@ public class ImportItemUtil {
 
             boolean isSystem = false;
             // we do not import built in routines
-            if (itemRecord.getItem().eClass().equals(PropertiesPackage.eINSTANCE.getRoutineItem())) {
-                RoutineItem routineItem = (RoutineItem) itemRecord.getItem();
-                if (itemRecord.getItem() instanceof RoutineItem) {
-                    RoutineItem rItem = (RoutineItem) itemRecord.getItem();
+            if (item.eClass().equals(PropertiesPackage.eINSTANCE.getRoutineItem())) {
+                RoutineItem routineItem = (RoutineItem) item;
+                if (item instanceof RoutineItem) {
+                    RoutineItem rItem = (RoutineItem) item;
                     Set<String> set = routineExtModulesMap.get(rItem.getProperty().getId());
                     if (set == null) {
                         set = new HashSet<String>();
@@ -249,8 +254,8 @@ public class ImportItemUtil {
             }
 
             // we do not import system sql patterns
-            if (itemRecord.getItem().eClass().equals(PropertiesPackage.eINSTANCE.getSQLPatternItem())) {
-                SQLPatternItem sqlPatternItem = (SQLPatternItem) itemRecord.getItem();
+            if (item.eClass().equals(PropertiesPackage.eINSTANCE.getSQLPatternItem())) {
+                SQLPatternItem sqlPatternItem = (SQLPatternItem) item;
                 if (sqlPatternItem.isSystem()) {
                     isSystem = true;
                 }
