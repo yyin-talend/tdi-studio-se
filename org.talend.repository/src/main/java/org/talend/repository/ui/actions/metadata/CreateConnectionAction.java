@@ -116,7 +116,8 @@ public class CreateConnectionAction extends AbstractCreateAction {
         DatabaseConnection connection = null;
         IPath pathToSave = null;
 
-        if (repositoryNode.getObject() instanceof RepositoryObject) {
+        // 16670
+        if (repositoryNode.getObject() != null && repositoryNode.getObject().getClass().equals(RepositoryObject.class)) {
             try {
                 ((RepositoryObject) repositoryNode.getObject()).setProperty(ProxyRepositoryFactory.getInstance()
                         .getUptodateProperty(repositoryNode.getObject().getProperty()));
