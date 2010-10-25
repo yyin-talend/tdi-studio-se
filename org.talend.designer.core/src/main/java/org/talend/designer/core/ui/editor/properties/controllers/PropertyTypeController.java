@@ -570,7 +570,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 if (!repositoryConnectionItemMap.isEmpty()) {
                     Iterator<ConnectionItem> iterator = repositoryConnectionItemMap.values().iterator();
                     IElementParameter dbTypeParam = null;
-                    if (elem instanceof org.talend.designer.core.ui.editor.process.Process) {
+                    if (elem instanceof org.talend.designer.core.ui.editor.process.Process || elem instanceof StatsAndLogsElement
+                            || elem instanceof ImplicitContextLoadElement) {
                         String[] split = paramName.split(":");
                         String name = "";
                         if (split.length == 2) {
