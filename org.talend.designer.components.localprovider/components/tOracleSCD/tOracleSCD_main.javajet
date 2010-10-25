@@ -401,7 +401,27 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%
                     index++;
                     %>
+                    <%
+                    if (dimensionAttrbites.size() > 1) {
+                    condition = new StringBuilder();
+					String generatedType = dimensionAttrbite.getCurrentColumn().getJavaType();
+	                if(("java.util.Date").equals(generatedType) || ("Object").equals(generatedType) 
+	                	|| ("String").equals(generatedType) || ("BigDecimal").equals(generatedType)
+	                	|| dimensionAttrbite.getCurrentColumn().isNullable()) {
+	                    condition.append("(lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName() + " == null && " + inConnectionName + "." + dimensionAttrbite.getCurrentColumn().getLabelName() + "!= null) || ");
+	                    condition.append("(lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName() + " != null && !lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName() + ".equals(" + inConnectionName + "." + dimensionAttrbite.getCurrentColumn().getLabelName() + "))");
+	                } else {
+	                    condition.append("lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName() + " != " + inConnectionName + "." + dimensionAttrbite.getCurrentColumn().getLabelName());
+	                } 
+                    %>
+					if (<%=condition.toString()%>) {
                     <%=scdManager.genSetStatement("updateForType3_" + cid,  "lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName(), index, dimensionAttrbite.getPrevColumn().getJavaType())%>
+                   	} else {
+                   	<%=scdManager.genSetStatement("updateForType3_" + cid,  "lookUpValue_" + cid + "." + dimensionAttrbite.getPrevColumn().getColumnName(), index, dimensionAttrbite.getPrevColumn().getJavaType())%>
+                   	}
+                   	<%} else {%>
+                   	<%=scdManager.genSetStatement("updateForType3_" + cid,  "lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName(), index, dimensionAttrbite.getPrevColumn().getJavaType())%>
+                   	<%}%>
                     <%
                     index++;
                 }
