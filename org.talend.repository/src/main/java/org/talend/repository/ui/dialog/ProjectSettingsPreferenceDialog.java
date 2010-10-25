@@ -13,13 +13,10 @@
 package org.talend.repository.ui.dialog;
 
 import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -37,17 +34,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
-import org.talend.core.ui.ISVNProviderService;
+import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.Item;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.actions.ExportProjectSettings;
 import org.talend.repository.ui.actions.ImportProjectSettings;
-import org.talend.repository.utils.URIHelper;
 
 /**
  * wchen class global comment. Detailled comment
@@ -224,27 +220,31 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     private void unloadProject() {
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
-        String projectLabel = currentProject.getTechnicalLabel();
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
-
+        final ProxyRepositoryFactory instance = ProxyRepositoryFactory.getInstance();
         if (PluginChecker.isTIS()) {
-            if (PluginChecker.isSVNProviderPluginLoaded() && !currentProject.isLocal()) {
-                ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
-                        ISVNProviderService.class);
-
-                try {
-                    boolean isSvnProject = service.isSVNProject(currentProject);
-                    if (isSvnProject) {
-                        URI uri = URIHelper.convert(eclipseProject.getFullPath().append("talend.project"));
-                        ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider().reloadProject(currentProject);
+            try {
+                if (!instance.isLocalConnectionProvider()) {
+                    instance.getRepositoryFactoryFromProvider().reloadProject(currentProject);
+                    // parent's folders info are transient, so need to set again each start.
+                    for (FolderItem curFolderItem : (List<FolderItem>) currentProject.getEmfProject().getFolders()) {
+                        fillParentsFolderInfos(curFolderItem);
+                        curFolderItem.setParent(currentProject.getEmfProject());
                     }
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
                 }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
         }
 
+    }
+
+    private void fillParentsFolderInfos(FolderItem folderItem) {
+        for (Item curItem : (List<Item>) folderItem.getChildren()) {
+            if (curItem instanceof FolderItem) {
+                fillParentsFolderInfos((FolderItem) curItem);
+            }
+            curItem.setParent(folderItem);
+        }
     }
 
 }
