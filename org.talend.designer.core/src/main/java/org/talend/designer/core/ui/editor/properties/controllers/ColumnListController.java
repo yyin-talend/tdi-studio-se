@@ -577,9 +577,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      */
     private static void setColumnSize(Map<String, Object> newLine, IElement element, String[] codes, IElementParameter param) {
         if (element instanceof INode && ((INode) element).getMetadataList().size() > 0) {
-            if (!param.isShow(((INode) element).getElementParameters()) && param.getName().equals("FORMATS")) {
-                return;
-            }
+            /* FORMATS should be syn whether this parameter is invisible or not */
+            // if (!param.isShow(((INode) element).getElementParameters()) && param.getName().equals("FORMATS")) {
+            // return;
+            // }
             IMetadataTable table = ((INode) element).getMetadataList().get(0);
             String lineName = (String) newLine.get("SCHEMA_COLUMN"); //$NON-NLS-1$
             for (IMetadataColumn column : table.getListColumns()) {
