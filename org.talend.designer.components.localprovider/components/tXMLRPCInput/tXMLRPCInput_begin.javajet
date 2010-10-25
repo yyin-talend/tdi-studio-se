@@ -105,16 +105,14 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 		if (conns.size()>0) {//2
 			IConnection conn = conns.get(0); //the first connection
 			firstConnName = conn.getName();			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//3
-				%>
-<%
-			List<IMetadataColumn> columns=metadata.getListColumns();
-			int columnSize = columns.size();
-			for (int i=0;i<columnSize;i++) {//4
-					IMetadataColumn column=columns.get(i);
-					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
+    			List<IMetadataColumn> columns=metadata.getListColumns();
+    			int columnSize = columns.size();
+    			for (int i=0;i<columnSize;i++) {//4
+    				IMetadataColumn column=columns.get(i);
+    				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 			%>
 			
 			if(<%=i %> < results_<%=cid %>.length && results_<%=cid %>[<%=i %>]!=null){				
@@ -142,22 +140,10 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
 					<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 			}
 <%			
-			} //4
-		}//3
-		if (conns.size()>1) {
-			for (int i=1;i<conns.size();i++) {
-				IConnection conn2 = conns.get(i);
-				if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
-			    	for (IMetadataColumn column: metadata.getListColumns()) {%>
-      			<%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
-				 <%
-				 	}
-				}
-			}
-		}
-	}//2
-	
-}//1
+				} //4
+			}//3
+		}//2
+	}//1
 
 %>
    
