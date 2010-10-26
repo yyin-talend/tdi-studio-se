@@ -91,6 +91,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -260,14 +261,14 @@ public class DatabaseTableForm extends AbstractForm {
      */
     private void initTreeNavigatorNodes() {
 
-        if (metadataTable == null || ConnectionHelper.getTables(getConnection()) != null
-                && ConnectionHelper.getTables(getConnection()).isEmpty()) {
+        List<MetadataTable> tables = ProjectNodeHelper.getTablesFromSpecifiedDataPackageWithOders(getConnection());
+        if (metadataTable == null || tables != null && tables.isEmpty()) {
 
-            if (ConnectionHelper.getTables(getConnection()) != null && !ConnectionHelper.getTables(getConnection()).isEmpty()) {
+            if (tables != null && !tables.isEmpty()) {
                 boolean isAllDeleted = true;
-                for (int i = 0; i < ConnectionHelper.getTables(getConnection()).size(); i++) {
-                    if (!TableHelper.isDeleted((MetadataTable) ConnectionHelper.getTables(getConnection()).toArray()[i])) {
-                        metadataTable = (MetadataTable) ConnectionHelper.getTables(getConnection()).toArray()[i];
+                for (int i = 0; i < tables.size(); i++) {
+                    if (!TableHelper.isDeleted((MetadataTable) tables.toArray()[i])) {
+                        metadataTable = (MetadataTable) tables.toArray()[i];
                         isAllDeleted = false;
                     }
                 }
@@ -281,7 +282,11 @@ public class DatabaseTableForm extends AbstractForm {
 
         tableNavigator.removeAll();
 
-        String[] allTableLabel = TableHelper.getTableNames(getConnection());
+        List<String> tablenames = new ArrayList<String>();
+        for (MetadataTable t : tables) {
+            tablenames.add(t.getLabel());
+        }
+        String[] allTableLabel = tablenames.toArray(new String[0]);
         Arrays.sort(allTableLabel);
 
         for (int i = 0; i < allTableLabel.length; i++) {

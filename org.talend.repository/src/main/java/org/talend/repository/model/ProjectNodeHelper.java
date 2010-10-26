@@ -41,7 +41,7 @@ public class ProjectNodeHelper {
      * value of database connection's SID and UISchema
      */
     /* return all tables from current datapackage with set,so that the result is disorted */
-    public static Set<org.talend.core.model.metadata.builder.connection.MetadataTable> refreshTablesFromSpecifiedDataPackage(
+    public static Set<org.talend.core.model.metadata.builder.connection.MetadataTable> getTablesFromSpecifiedDataPackage(
             DatabaseConnection dbconn) {
         String schema = dbconn.getUiSchema();
         String catalog = dbconn.getSID();
@@ -124,7 +124,7 @@ public class ProjectNodeHelper {
                     // PackageHelper.addMetadataTable(dbtable, s);
                 }
             } else {
-                // show nothing
+                // return nothing
             }
         }
         return allTables;
@@ -135,7 +135,7 @@ public class ProjectNodeHelper {
      * value of database connection's SID and UISchema
      */
     /* return all tables from current datapackage with List,so that the result is order-sorted */
-    public static List<org.talend.core.model.metadata.builder.connection.MetadataTable> refreshTablesFromSpecifiedDataPackageWithOders(
+    public static List<org.talend.core.model.metadata.builder.connection.MetadataTable> getTablesFromSpecifiedDataPackageWithOders(
             DatabaseConnection dbconn) {
         // if the database connection is contextmodel, need to get the original value of every parameter
         String schema = dbconn.getUiSchema();
@@ -219,8 +219,8 @@ public class ProjectNodeHelper {
                     // PackageHelper.addMetadataTable(dbtable, s);
                 }
             } else {
-                // get all tables from connection
-                allTables = ConnectionHelper.getTablesWithOrders(dbconn);
+                // return nothing
+
             }
         }
         return allTables;

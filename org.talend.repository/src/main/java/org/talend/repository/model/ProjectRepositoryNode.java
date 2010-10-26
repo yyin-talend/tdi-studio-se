@@ -1260,7 +1260,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             DatabaseConnection dbconn = (DatabaseConnection) metadataConnection;
             /* only refresh and show tables in current schema or catalog,see bug 0015769 */
             Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = ProjectNodeHelper
-                    .refreshTablesFromSpecifiedDataPackage(dbconn);
+                    .getTablesFromSpecifiedDataPackage(dbconn);
 
             Iterator metadataTables = allTables.iterator();
 
