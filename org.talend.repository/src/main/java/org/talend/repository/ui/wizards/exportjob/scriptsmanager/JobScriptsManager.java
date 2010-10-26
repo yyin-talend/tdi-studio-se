@@ -241,8 +241,10 @@ public abstract class JobScriptsManager {
         String windowsCmd;
         String unixCmd;
         if (process == null) {
-            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processItem, contextName, statisticPort, tracePort, codeOptions);
-            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processItem, contextName, statisticPort, tracePort, codeOptions);
+            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processItem, contextName, needContext, statisticPort,
+                    tracePort, codeOptions);
+            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processItem, contextName, needContext, statisticPort, tracePort,
+                    codeOptions);
         } else {
             windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, needContext, statisticPort, tracePort,
                     codeOptions);
@@ -389,12 +391,12 @@ public abstract class JobScriptsManager {
      * @param codeOptions
      * @return
      */
-    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, int statisticPort,
-            int tracePort, String... codeOptions) {
+    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, boolean needContext,
+            int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort, tracePort,
-                    codeOptions);
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, needContext, statisticPort,
+                    tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
