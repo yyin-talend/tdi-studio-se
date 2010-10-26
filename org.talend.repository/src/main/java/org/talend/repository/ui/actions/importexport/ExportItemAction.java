@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -124,6 +125,10 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
 
     @Override
     protected void doRun() {
+        final TreeViewer repositoryTreeView = CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView();
+        if (repositoryTreeView != null) {
+            repositoryTreeView.getTree().setFocus();
+        }
         ExportItemWizard wizard = new ExportItemWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         wizard.setWindowTitle(EXPORT_ITEM);

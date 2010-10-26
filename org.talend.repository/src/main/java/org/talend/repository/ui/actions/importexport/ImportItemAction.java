@@ -33,10 +33,12 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.ImportItemWizard;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  */
@@ -44,7 +46,10 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
 
     private static final String IMPORT_ITEM = Messages.getString("ImportItemAction.Label"); //$NON-NLS-1$
 
+    private boolean toolbarAction = true;
+
     public void init(TreeViewer viewer, IStructuredSelection selection) {
+        toolbarAction = false;
         boolean canWork = false;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (selection.size() == 1) {
@@ -93,7 +98,12 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
         if (repositoryTreeView != null) {
             repositoryTreeView.getTree().setFocus();
         }
+
         ISelection selection = this.getSelection();
+        if (toolbarAction == true) {
+            IRepositoryView repositoryView = RepositoryView.show();
+            selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+        }
         if (selection instanceof IStructuredSelection) {
             RepositoryNode rNode = null;
             if (((IStructuredSelection) selection).getFirstElement() instanceof RepositoryNode) {
