@@ -143,7 +143,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%}else{%>
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
 	<%}%>
-	
+	<%if(i==sizeColumns-1){%>
+	sb_<%=cid %>.append("-\n");
+	<%}%>
 	needSeparator_<%=cid %> = true;
 	canOutput_<%=cid %> = true;   	
 <%}%>
