@@ -27,13 +27,13 @@ import org.talend.core.model.properties.ProcessItem;
 public class JobPerlScriptsManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager {
 
     @Override
-    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, IProcess jobProcess, ProcessItem process,
-            String contextName, String environment, int statisticPort, int tracePort, String... codeOptions) {
+    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, boolean needContext, IProcess jobProcess,
+            ProcessItem process, String contextName, String environment, int statisticPort, int tracePort, String... codeOptions) {
         String tmpFold = getTmpFolder();
         File fileTemp = new File(tmpFold);
 
-        List<URL> toReturn = super.getLauncher(needLauncher, setParameterValues, jobProcess, process, contextName, environment,
-                statisticPort, tracePort, codeOptions);
+        List<URL> toReturn = super.getLauncher(needLauncher, setParameterValues, needContext, jobProcess, process, contextName,
+                environment, statisticPort, tracePort, codeOptions);
         // File spagobi = new File(tmpFold + "/" + "spagobi.xml");
         try {
             toReturn.add(new GenerateSpagoBIXML(fileTemp, process, contextName).getResult());
@@ -43,5 +43,4 @@ public class JobPerlScriptsManager extends org.talend.repository.ui.wizards.expo
         }
         return toReturn;
     }
-
 }

@@ -230,8 +230,9 @@ public abstract class JobScriptsManager {
      * @param codeOptions TODO
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, IProcess process, ProcessItem processItem,
-            String contextName, String environment, int statisticPort, int tracePort, String... codeOptions) {
+    protected List<URL> getLauncher(boolean needLauncher, boolean setParameterValues, boolean needContext, IProcess process,
+            ProcessItem processItem, String contextName, String environment, int statisticPort, int tracePort,
+            String... codeOptions) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
@@ -243,8 +244,10 @@ public abstract class JobScriptsManager {
             windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processItem, contextName, statisticPort, tracePort, codeOptions);
             unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processItem, contextName, statisticPort, tracePort, codeOptions);
         } else {
-            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort, codeOptions);
-            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort, codeOptions);
+            windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, needContext, statisticPort, tracePort,
+                    codeOptions);
+            unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, needContext, statisticPort, tracePort,
+                    codeOptions);
         }
         if (setParameterValues) {
             String contextParameterValues = getSettingContextParametersValue();
@@ -403,12 +406,12 @@ public abstract class JobScriptsManager {
         return sb.toString();
     }
 
-    protected String getCommandByTalendJob(String targetPlatform, IProcess process, String context, int statisticPort,
-            int tracePort, String... codeOptions) {
+    protected String getCommandByTalendJob(String targetPlatform, IProcess process, String context, boolean needContext,
+            int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities
-                    .getCommandLine(targetPlatform, true, process, context, statisticPort, tracePort, codeOptions);
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, process, context, needContext, statisticPort,
+                    tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }

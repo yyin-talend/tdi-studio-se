@@ -520,7 +520,7 @@ public class PerlProcessor extends Processor {
 
         String[] cmd = getCommandLineByCondition(getDefaultInterpreter(), absCodePath, perlInterpreterLibOption,
                 perlModuleDirectoryOption, true);
-        cmd = addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
+        cmd = addCommmandLineAttch(true, cmd, contextName, statOption, traceOption, codeOptions);
         Processor.logCommandLine(cmd, level);
         try {
             int status = -1;

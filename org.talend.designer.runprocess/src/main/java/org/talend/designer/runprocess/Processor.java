@@ -230,7 +230,8 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @param codeOptions
      * @return
      */
-    public String[] getCommandLine(boolean externalUse, int statOption, int traceOption, String... codeOptions) {
+    public String[] getCommandLine(boolean needContext, boolean externalUse, int statOption, int traceOption,
+            String... codeOptions) {
         setExternalUse(externalUse);
         String[] cmd = null;
         try {
@@ -239,7 +240,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        cmd = addCommmandLineAttch(cmd, context.getName(), statOption, traceOption, codeOptions);
+        cmd = addCommmandLineAttch(needContext, cmd, context.getName(), statOption, traceOption, codeOptions);
 
         // (feature 4258)
         if (Platform.OS_LINUX.equals(getTargetPlatform())) {
@@ -260,8 +261,8 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * @param codeOptions
      * @return
      */
-    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption, int traceOption,
-            String... codeOptions) {
+    protected static String[] addCommmandLineAttch(boolean needContext, String[] commandLine, String contextName, int statOption,
+            int traceOption, String... codeOptions) {
         String[] cmd = commandLine;
         if (codeOptions != null) {
             for (int i = 0; i < codeOptions.length; i++) {
@@ -271,7 +272,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
                 }
             }
         }
-        if (contextName != null) {
+        if (needContext && contextName != null) {
             cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + contextName);
         }
         if (statOption != -1) {
@@ -295,7 +296,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      */
     private Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(false, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(true, false, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {

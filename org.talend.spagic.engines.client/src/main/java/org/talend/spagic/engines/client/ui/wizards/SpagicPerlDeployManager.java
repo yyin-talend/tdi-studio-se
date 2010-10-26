@@ -94,8 +94,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                    ExportChoice.setParameterValues), jobProcess, processItem, escapeSpace(contextName), escapeSpace(launcher),
-                    statisticPort, tracePort, codeOptions));
+                    ExportChoice.setParameterValues), isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess,
+                    processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
             List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));

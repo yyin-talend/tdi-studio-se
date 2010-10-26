@@ -206,8 +206,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
             String selectedJobVersion, List<URL> resources, String... codeOptions) {
         resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                ExportChoice.setParameterValues), jobProcess, processItem, escapeSpace(contextName), escapeSpace(launcher),
-                statisticPort, tracePort, codeOptions));
+                ExportChoice.setParameterValues), isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess,
+                processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
