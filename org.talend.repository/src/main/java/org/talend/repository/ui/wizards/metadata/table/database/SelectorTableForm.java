@@ -76,7 +76,6 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
@@ -84,6 +83,7 @@ import org.talend.cwm.relational.RelationalFactory;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -951,7 +951,7 @@ public class SelectorTableForm extends AbstractForm {
                         break;
                     }
                 }
-                addTableForTemCatalogOrSchema(catalog, schema);
+                ProjectNodeHelper.addTableForTemCatalogOrSchema(catalog, schema, getConnection(), dbtable, iMetadataConnection);
                 // getConnection().getTables().add(metadataTable);hywang
             }
             // }
@@ -996,40 +996,6 @@ public class SelectorTableForm extends AbstractForm {
                     && (threadExecutor.getActiveCount() == 0 || countSuccess == countPending));
         }
 
-        private void addTableForTemCatalogOrSchema(String dbsid, String schema) {
-            boolean hasSchemaInCatalog = false;
-            Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, getConnection(), Catalog.class);
-            Schema s = (Schema) ConnectionHelper.getPackage(schema, getConnection(), Schema.class);
-            List<Schema> subschemas = new ArrayList<Schema>();
-            if (c != null) {
-                subschemas = CatalogHelper.getSchemas(c);
-                hasSchemaInCatalog = subschemas.size() > 0;
-            }
-            if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
-                PackageHelper.addMetadataTable(dbtable, c);
-
-            } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
-                PackageHelper.addMetadataTable(dbtable, s);
-            } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
-                subschemas = CatalogHelper.getSchemas(c);
-                hasSchemaInCatalog = subschemas.size() > 0;
-                if (subschemas.size() > 0) {
-                    for (Schema current : subschemas) {
-                        if (current.getName().equals(schema)) {
-                            s = current;
-                            break;
-                        }
-                    }
-                    PackageHelper.addMetadataTable(dbtable, s);
-                }
-            } else {
-                // no catalog or schema by default, so create a catalog
-                c = CatalogHelper.createCatalog(iMetadataConnection.getDatabase());
-                c.getDataManager().add(getConnection());
-                PackageHelper.addMetadataTable(dbtable, c);
-                ConnectionHelper.addCatalog(c, getConnection());
-            }
-        }
     }
 
     /**

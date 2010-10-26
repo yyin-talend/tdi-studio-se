@@ -307,9 +307,6 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                                 c.setUiSchema(c.getUiSchema().toUpperCase());
                             }
                         }
-                        if (!datapackageExsit(metadataConnection)) {
-                            addCatalogOrSchema(metadataConnection);
-                        }
                         // update
                         RepositoryUpdateManager.updateDBConnection(connectionItem);
                     }
