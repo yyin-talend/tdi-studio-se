@@ -1063,7 +1063,45 @@ public class CLASS {
 		return null;
 			
 		}
+		
+		public String generateCode4TabelExist() {
+		    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+		    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		    StringBuilder code = new StringBuilder();  
+		    code.append("String tableNameForSearch_" + cid + "= " + getTableName4Search(useExistingConnection, connection) + ";\r\n");
+		    if (hasSchema()) {
+    		    code.append("String dbschemaForSearch_" + cid + "= null;\r\n");
+    		    code.append("if(dbschema_" + cid + "== null || dbschema_" + cid + ".trim().length() == 0) {\r\n");
+    		    code.append("dbschemaForSearch_" + cid + "= " + getUserName4Search(useExistingConnection, connection)+ ";\r\n");
+    		    code.append("} else {\r\n");
+    		    code.append("dbschemaForSearch_" + cid + "= " + getShemaName4Search(useExistingConnection, connection)+ ";\r\n");
+    		    code.append("}\r\n");
+		    }
+		    return code.toString();
+		}
+		
+		protected String getTableName4Search(boolean useExistingConnection, String connection) {
+		    return "\""+getLProtectedChar()+ "\" + " + ElementParameterParser.getValue(node,"__TABLE__") +" + \"" + getRProtectedChar() + "\""; 
+		}
+		
+	    protected String getUserName4Search(boolean useExistingConnection, String connection) {
+            return "";   
+	    }
+
+	    /*
+	     * maybe some db need add getLProtectedChar() and getRProtectedChar() to schema name.
+	     * this because of some db default add getLProtectedChar() and getRProtectedChar() to schaem when create table. e.g:db2
+	     * 
+	     * in fact the db add getLProtectedChar() and getRProtectedChar() to scheam when create table that is wrong
+	    */
+        protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+            return "";   
+        }	
         
+        protected boolean hasSchema() {
+            return false;
+        }
+	    
     }
     
     public class AS400Manager extends Manager {
@@ -2077,6 +2115,25 @@ public class CLASS {
             return setStmt.toString();            
         }
         
+        protected String getTableName4Search(boolean useExistingConnection, String connection) {
+            return "\""+getLProtectedChar()+ "\" + ((String)" + ElementParameterParser.getValue(node,"__TABLE__") + ").toUpperCase()" +" + \"" + getRProtectedChar() + "\""; 
+        }
+        
+        protected String getUserName4Search(boolean useExistingConnection, String connection) {
+            if (useExistingConnection) {
+                return "((String)globalMap.get(\"username_" + connection + "\")).toUpperCase()";
+            } else {
+                return "((String)" + ElementParameterParser.getValue(node,"__USER__") + ").toUpperCase()";
+            }    
+        }
+
+        protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+            return "dbschema_" + cid + ".toUpperCase()"; 
+        }   
+        
+        protected boolean hasSchema() {
+            return true;
+        }
     }
     
     public class PostgreManager extends Manager {

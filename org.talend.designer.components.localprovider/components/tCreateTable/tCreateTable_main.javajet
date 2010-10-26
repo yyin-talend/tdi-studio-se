@@ -210,6 +210,48 @@ abstract class  Manager {
     public void setNode(INode node){
     	this.node = node;
     }
+    
+	public String generateCode4TabelExist() {
+	    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	    String connection = getConnectionName();
+	    StringBuilder code = new StringBuilder();  
+	    code.append("String tableNameForSearch_" + cid + "= " + getTableName4Search(useExistingConnection, connection) + ";\r\n");
+	    if (hasSchema()) {
+		    code.append("String dbschemaForSearch_" + cid + "= null;\r\n");
+		    code.append("if(dbSchema_" + cid + "== null || dbSchema_" + cid + ".trim().length() == 0) {\r\n");
+		    code.append("dbschemaForSearch_" + cid + "= " + getUserName4Search(useExistingConnection, connection)+ ";\r\n");
+		    code.append("} else {\r\n");
+		    code.append("dbschemaForSearch_" + cid + "= " + getShemaName4Search(useExistingConnection, connection)+ ";\r\n");
+		    code.append("}\r\n");
+	    }
+	    return code.toString();
+	}
+	
+	protected String getConnectionName() {
+	    return "";
+	}
+	
+	protected String getTableName4Search(boolean useExistingConnection, String connection) {
+	    return "\""+getLProtectedChar()+ "\" + " + ElementParameterParser.getValue(node,"__TABLE__") +" + \"" + getRProtectedChar() + "\""; 
+	}
+	
+    protected String getUserName4Search(boolean useExistingConnection, String connection) {
+        return "";   
+    }
+
+    /*
+     * maybe some db need add getLProtectedChar() and getRProtectedChar() to schema name.
+     * this because of some db default add getLProtectedChar() and getRProtectedChar() to schaem when create table. e.g:db2
+     * 
+     * in fact the db add getLProtectedChar() and getRProtectedChar() to scheam when create table that is wrong
+    */
+    protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+        return "";   
+    }	
+    
+    protected boolean hasSchema() {
+        return false;
+    }
 }
 
 class AS400Manager extends Manager {
@@ -991,6 +1033,29 @@ class OracleManager extends Manager {
         return javaCode.toString();
     }
     
+    protected String getConnectionName() {
+	    return ElementParameterParser.getValue(node,"__CONNECTION_ORACLE__");
+	}
+    
+    protected String getTableName4Search(boolean useExistingConnection, String connection) {
+        return "\""+getLProtectedChar()+ "\" + ((String)" + ElementParameterParser.getValue(node,"__TABLE__") + ").toUpperCase()" +" + \"" + getRProtectedChar() + "\""; 
+    }
+    
+    protected String getUserName4Search(boolean useExistingConnection, String connection) {
+        if (useExistingConnection) {
+            return "((String)globalMap.get(\"username_" + connection + "\")).toUpperCase()";
+        } else {
+            return "((String)" + ElementParameterParser.getValue(node,"__USER__") + ").toUpperCase()";
+        }    
+    }
+
+    protected String getShemaName4Search(boolean useExistingConnection, String connection) {
+        return "dbSchema_" + cid + ".toUpperCase()"; 
+    }   
+    
+    protected boolean hasSchema() {
+        return true;
+    }
 }
 class PostgreManager extends Manager {
     private String host;
@@ -1621,6 +1686,7 @@ if(columnList != null && columnList.size() > 0) {
     String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");    
     ManagerFactory factory = new ManagerFactory();
     Manager manager = factory.createManager(dbType,node);
+    manager.setNode(node);
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
     String cid = node.getUniqueName();    
     %>
@@ -1636,17 +1702,12 @@ if(columnList != null && columnList.size() > 0) {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
             if("DBORACLE".equalsIgnoreCase(dbType)) {
 			%>
+				<%=manager.generateCode4TabelExist()%>
 	            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, tableNameForSearch_<%=cid%>, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
-	            while(rsTable_<%=cid%>.next()) {
-	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
-	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>) 
-	                	&& (schema_<%=cid%>.equalsIgnoreCase(dbSchema_<%=cid%>) || dbSchema_<%=cid%>.trim().length() == 0)) {
-	                    whetherExist_<%=cid%> = true;
-	                    break;
-	                }
+	            if(rsTable_<%=cid%>.next()) {
+	            	whetherExist_<%=cid%> = true;
 	            }     
             <%
             } else {

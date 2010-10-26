@@ -103,9 +103,21 @@ if (!isParallelize) {
 				}
 				isExistStmt_<%=cid%>.close();
 <%
-			} else if (ORACLE.equalsIgnoreCase(dbmsId) || SYBASE.equalsIgnoreCase(dbmsId) || POSTGRESQL.equalsIgnoreCase(dbmsId)
-						|| INFORMIX.equalsIgnoreCase(dbmsId) || DB2.equalsIgnoreCase(dbmsId) ) {
+			} else if (ORACLE.equalsIgnoreCase(dbmsId)) {
 %>   
+				<%=manager.generateCode4TabelExist()%>
+				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, tableNameForSearch_<%=cid%>, new String[]{"TABLE"});
+	            boolean whetherExist_<%=cid%> = false;
+	            if(rsTable_<%=cid%>.next()) {
+	            	whetherExist_<%=cid%> = true;
+	            }
+	            rsTable_<%=cid%>.close();
+	            
+<%
+			} else if ( SYBASE.equalsIgnoreCase(dbmsId) || POSTGRESQL.equalsIgnoreCase(dbmsId)
+						|| INFORMIX.equalsIgnoreCase(dbmsId) || DB2.equalsIgnoreCase(dbmsId) ) {
+%>  	            
 				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
