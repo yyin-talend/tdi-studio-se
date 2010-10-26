@@ -144,8 +144,9 @@ for (int i=0; i<contextParams.size(); i++) {
   String name = contextParam.get("PARAM_NAME_COLUMN");
   String value = contextParam.get("PARAM_VALUE_COLUMN");
   %>
-  paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(<%=value %>));
-  parentContextMap_<%=cid %>.put("<%=name %>", <%=value %>);
+  Object obj_<%=cid%> = <%=value %>;
+  paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
+  parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
 <%}%>
 <%if(printParameter){%>
   System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
