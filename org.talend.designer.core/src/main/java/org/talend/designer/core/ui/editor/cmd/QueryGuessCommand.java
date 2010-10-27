@@ -120,7 +120,21 @@ public class QueryGuessCommand extends Command {
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
-            dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+
+            // DRIVER_JAR:
+            String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString(); //$NON-NLS-N$
+            if (driverJarName != null && driverJarName.startsWith("[") && driverJarName.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+                driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
+                if (driverJarName != null && driverJarName.startsWith("{") && driverJarName.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+                    driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
+                }
+            }
+            if (driverJarName != null && !"".equals(driverJarName)) { //$NON-NLS-N$
+                dbType = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassName, driverJarName);
+            } else {
+                dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);
+            }
+
             DatabaseConnection dbConn = null;
             if (dbType == null) { // handle context mode
                 if (conn != null) {

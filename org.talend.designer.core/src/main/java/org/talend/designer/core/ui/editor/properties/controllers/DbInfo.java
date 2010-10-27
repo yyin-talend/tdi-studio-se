@@ -54,7 +54,7 @@ public class DbInfo {
         generateDriverName();
         genarateDriverJarPath();
         getConnFromNode();
-        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
     }
 
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverJarPath) {
@@ -67,7 +67,7 @@ public class DbInfo {
         generateDriverName();
         getConnFromNode();
         genarateDriverJarPath();
-        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
     }
 
     public String getTrueDBTypeForJDBC() {
@@ -84,7 +84,7 @@ public class DbInfo {
         this.url = url;
         this.driverClassName = driverClassName;
         this.driverJarPath = driverJarPath;
-        this.trueDBTypeForJDBC = getTrueDBType(driverClassName);
+        this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
         getConnFromNode();
     }
 
@@ -200,6 +200,10 @@ public class DbInfo {
         } else {
             driverJarPath = null;
         }
+    }
+
+    private String getTrueDBType(String className, String driverJar) {
+        return ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(className, driverJar);
     }
 
     private String getTrueDBType(String className) {

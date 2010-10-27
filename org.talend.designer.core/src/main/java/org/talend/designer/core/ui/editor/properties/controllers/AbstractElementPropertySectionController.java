@@ -1383,11 +1383,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
         connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
 
-        if (driverClass != null && !"".equals(driverClass)) {
-            if (driverClass.startsWith("\"") && driverClass.endsWith("\"")) {
+        if (driverClass != null && !"".equals(driverClass)) {//$NON-NLS-N$
+            if (driverClass.startsWith("\"") && driverClass.endsWith("\"")) {//$NON-NLS-N$//$NON-NLS-N$
                 driverClass = TalendTextUtils.removeQuotes(driverClass);
             }
-            String dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
+            String dbTypeByClassName = "";//$NON-NLS-N$
+            if (driverJar != null && !"".equals(driverJar)) {//$NON-NLS-N$
+                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClass, driverJar);
+            } else {
+                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
+            }
+
             connParameters.setDbType(dbTypeByClassName);
         }
 
