@@ -862,44 +862,48 @@ public class ImportItemUtil {
         progressMonitor.beginTask("Populate items to import", nbItems); //$NON-NLS-1$
 
         for (IPath path : collector.getPaths()) {
-            if (isPropertyPath(path)) {
-                // IPath itemPath = getItemPath(path);
-                // if (collector.getPaths().contains(itemPath)) { //commet by tdq import
-                ItemRecord itemRecord = computeItemRecord(collector, path);
-                if (itemRecord.getProperty() != null) {
-                    items.add(itemRecord);
+            if (!progressMonitor.isCanceled()) {
+                if (isPropertyPath(path)) {
+                    // IPath itemPath = getItemPath(path);
+                    // if (collector.getPaths().contains(itemPath)) { //commet by tdq import
+                    ItemRecord itemRecord = computeItemRecord(collector, path);
+                    if (itemRecord.getProperty() != null) {
+                        items.add(itemRecord);
 
-                    if (checkItem(itemRecord, overwrite, itemsFromRepository)) {
-                        InternalEObject author = (InternalEObject) itemRecord.getProperty().getAuthor();
-                        URI uri = null;
-                        if (author != null) {
-                            uri = author.eProxyURI();
-                        }
-
-                        IPath projectFilePath = getValidProjectFilePath(collector, path, uri);
-                        if (projectFilePath != null) {
-                            Project project = computeProject(collector, itemRecord, projectFilePath);
-                            if (checkProject(project, itemRecord)) {
-                                treeBuilder.addItem(project, itemRecord);
-
-                                // set item project into record.
-                                itemRecord.setItemProject(project);
-                                // we can try to import item
-                                // and we will try to resolve user
-                                User user = (User) project.eResource().getEObject(uri.fragment());
-                                itemRecord.getProperty().setAuthor(user);
+                        if (checkItem(itemRecord, overwrite, itemsFromRepository)) {
+                            InternalEObject author = (InternalEObject) itemRecord.getProperty().getAuthor();
+                            URI uri = null;
+                            if (author != null) {
+                                uri = author.eProxyURI();
                             }
-                        } else {
-                            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
-                            if (itemType != ERepositoryObjectType.TDQ_ELEMENT
-                                    && itemType.getParent() != ERepositoryObjectType.TDQ_ELEMENT) {
-                                itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
+
+                            IPath projectFilePath = getValidProjectFilePath(collector, path, uri);
+                            if (projectFilePath != null) {
+                                Project project = computeProject(collector, itemRecord, projectFilePath);
+                                if (checkProject(project, itemRecord)) {
+                                    treeBuilder.addItem(project, itemRecord);
+
+                                    // set item project into record.
+                                    itemRecord.setItemProject(project);
+                                    // we can try to import item
+                                    // and we will try to resolve user
+                                    User user = (User) project.eResource().getEObject(uri.fragment());
+                                    itemRecord.getProperty().setAuthor(user);
+                                }
+                            } else {
+                                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
+                                if (itemType != ERepositoryObjectType.TDQ_ELEMENT
+                                        && itemType.getParent() != ERepositoryObjectType.TDQ_ELEMENT) {
+                                    itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
+                                }
                             }
                         }
                     }
+                    // }
+                    progressMonitor.worked(1);
                 }
-                // }
-                progressMonitor.worked(1);
+            } else {
+                break;
             }
         }
 
