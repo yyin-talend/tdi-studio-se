@@ -139,12 +139,13 @@ if(transmitWholeContext){//111111
 
 }//111111
 
+Object obj_<%=cid%> = null;
 for (int i=0; i<contextParams.size(); i++) {
   Map<String, String> contextParam = contextParams.get(i);
   String name = contextParam.get("PARAM_NAME_COLUMN");
   String value = contextParam.get("PARAM_VALUE_COLUMN");
   %>
-  Object obj_<%=cid%> = <%=value %>;
+  obj_<%=cid%> = <%=value %>;
   paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
   parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
 <%}%>
