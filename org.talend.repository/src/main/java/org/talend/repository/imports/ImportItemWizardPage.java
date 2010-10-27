@@ -414,9 +414,9 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (itemFromDirectoryRadio.getSelection()) {
-                    updateItemsList(directoryPathField.getText().trim());
+                    updateItemsList(directoryPathField.getText().trim(), true);
                 } else {
-                    updateItemsList(archivePathField.getText().trim());
+                    updateItemsList(archivePathField.getText().trim(), true);
                 }
             }
         });
@@ -506,7 +506,7 @@ class ImportItemWizardPage extends WizardPage {
                     if (selectedArchive != null) {
                         previouslyBrowsedArchive = selectedArchive;
                         archivePathField.setText(previouslyBrowsedArchive);
-                        updateItemsList(selectedArchive);
+                        updateItemsList(selectedArchive, false);
                     }
 
                 }
@@ -517,7 +517,7 @@ class ImportItemWizardPage extends WizardPage {
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
-                    updateItemsList(directoryPathField.getText().trim());
+                    updateItemsList(directoryPathField.getText().trim(), false);
                 }
             }
 
@@ -527,7 +527,7 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void focusLost(org.eclipse.swt.events.FocusEvent e) {
-                updateItemsList(directoryPathField.getText().trim());
+                updateItemsList(directoryPathField.getText().trim(), false);
             }
 
         });
@@ -537,7 +537,7 @@ class ImportItemWizardPage extends WizardPage {
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
-                    updateItemsList(archivePathField.getText().trim());
+                    updateItemsList(archivePathField.getText().trim(), false);
                 }
             }
         });
@@ -546,7 +546,7 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void focusLost(org.eclipse.swt.events.FocusEvent e) {
-                updateItemsList(archivePathField.getText().trim());
+                updateItemsList(archivePathField.getText().trim(), false);
             }
         });
 
@@ -576,7 +576,7 @@ class ImportItemWizardPage extends WizardPage {
             if (selectExchangeButton != null) {
                 selectExchangeButton.setEnabled(true);
             }
-            updateItemsList(archivePathField.getText());
+            updateItemsList(archivePathField.getText(), false);
             archivePathField.setFocus();
         }
     }
@@ -604,7 +604,7 @@ class ImportItemWizardPage extends WizardPage {
         if (selectedDirectory != null) {
             previouslyBrowsedDirectory = selectedDirectory;
             directoryPathField.setText(previouslyBrowsedDirectory);
-            updateItemsList(selectedDirectory);
+            updateItemsList(selectedDirectory, false);
         }
 
     }
@@ -636,7 +636,7 @@ class ImportItemWizardPage extends WizardPage {
         if (selectedArchive != null) {
             previouslyBrowsedArchive = selectedArchive;
             archivePathField.setText(previouslyBrowsedArchive);
-            updateItemsList(selectedArchive);
+            updateItemsList(selectedArchive, false);
         }
 
     }
@@ -650,17 +650,17 @@ class ImportItemWizardPage extends WizardPage {
             if (selectExchangeButton != null) {
                 selectExchangeButton.setEnabled(false);
             }
-            updateItemsList(directoryPathField.getText());
+            updateItemsList(directoryPathField.getText(), false);
             directoryPathField.setFocus();
         }
     }
 
-    public void updateItemsList(final String path) {
-
-        if (path.equals(lastPath)) {
-            return;
+    public void updateItemsList(final String path, boolean isneedUpdate) {
+        if (!isneedUpdate) {
+            if (path.equals(lastPath)) {
+                return;
+            }
         }
-
         lastPath = path;
 
         if (path == null || path.length() == 0) {
