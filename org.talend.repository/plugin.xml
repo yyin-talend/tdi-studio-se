@@ -1256,6 +1256,14 @@
             name="Set name for database connection">
       </projecttask>
       
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.EncryptDbPasswordforItemFileMigrationTask"
+            description="EncryptDbPasswordforItemFileMigrationTask"
+            id="org.talend.repository.model.migration.EncryptDbPasswordforItemFileMigrationTask"
+            name="Set password encrypt in item file">
+      </projecttask>
+      
    </extension>
    
    <extension
