@@ -356,7 +356,7 @@ public class ImportItemUtil {
 
     @SuppressWarnings("unchecked")
     public List<ItemRecord> importItemRecords(final ResourcesManager manager, final List<ItemRecord> itemRecords,
-            final IProgressMonitor monitor, final boolean overwrite, final IPath destinationPath) {
+            final IProgressMonitor monitor, final boolean overwrite, final IPath destinationPath, final String contentType) {
         hasJoblets = false;
         statAndLogsSettingsReloaded = false;
         implicitSettingsReloaded = false;
@@ -374,7 +374,7 @@ public class ImportItemUtil {
                     if (!monitor.isCanceled()) {
                         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
                         if (itemRecord.isValid()) {
-                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems);
+                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems, contentType);
                             monitor.worked(1);
                         }
                     }
@@ -500,7 +500,7 @@ public class ImportItemUtil {
     }
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
-            final Set<String> overwriteDeletedItems) {
+            final Set<String> overwriteDeletedItems, String contentType) {
         resolveItem(manager, itemRecord);
 
         int num = 0;
@@ -529,7 +529,7 @@ public class ImportItemUtil {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
 
             IPath path = new Path(item.getState().getPath());
-            if (destinationPath != null) {
+            if (destinationPath != null && itemType.name().equals(contentType)) {
                 path = destinationPath.append(path);
             }
 

@@ -877,14 +877,16 @@ class ImportItemWizardPage extends WizardPage {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     IPath destinationPath = null;
+                    String contentType = "";
                     if (rNode != null && rNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
                         destinationPath = RepositoryNodeUtilities.getPath(rNode);
+                        contentType = rNode.getContentType().name();
                     }
 
                     repositoryUtil.setErrors(false);
                     repositoryUtil.clear();
 
-                    repositoryUtil.importItemRecords(manager, itemRecords, monitor, overwrite, destinationPath);
+                    repositoryUtil.importItemRecords(manager, itemRecords, monitor, overwrite, destinationPath, contentType);
                     if (repositoryUtil.hasErrors()) {
                         throw new InvocationTargetException(new PersistenceException("")); //$NON-NLS-1$
                     }
