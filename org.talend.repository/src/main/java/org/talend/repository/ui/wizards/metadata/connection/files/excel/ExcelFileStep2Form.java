@@ -1092,6 +1092,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             if (isContextMode() && getContextModeManager() != null) {
                 filePath = getContextModeManager().getOriginalValue(filePath);
             }
+            // if the don't select all and first element is not the select sheet name, should order.
+            String sheetName = getConnection().getSheetName();
+            ArrayList sheetList = getConnection().getSheetList();
+            if (sheetList.contains(sheetName) && sheetList.size() > 1) {
+                sheetList.remove(sheetName);
+                sheetList.add(0, sheetName);
+            }
             if ((!"".equals(filePath)) && (filePath != null)) { //$NON-NLS-1$
                 saveOriginShcemaColumns();
                 // chopSchemaColumn();
@@ -1111,11 +1118,11 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     /**
      * DOC YeXiaowei Comment method "saveOriginShcemaColumns".
      */
-    private void saveOriginShcemaColumns() {           
+    private void saveOriginShcemaColumns() {
         List<String> columns = getConnection().getSheetColumns();
         originSchemaColumns.clear();
         originSchemaColumns.addAll(columns);
-     
+
     }
 
     /*
