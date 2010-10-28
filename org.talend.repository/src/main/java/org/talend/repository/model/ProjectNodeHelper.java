@@ -297,6 +297,7 @@ public class ProjectNodeHelper {
              * this issue when fixing bug 16636
              */
             ProjectNodeHelper.addCatalogOrSchema(iMetadataConnection, connection);
+            addTableForTemCatalogOrSchema(dbsid, schema, connection, dbtable, iMetadataConnection);
         }
     }
 
