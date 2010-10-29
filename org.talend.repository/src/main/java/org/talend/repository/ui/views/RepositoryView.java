@@ -986,7 +986,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void refresh() {
-        this.refresh(true);
+        this.refresh(false);
     }
 
     /*
