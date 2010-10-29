@@ -251,13 +251,75 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
         java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
     <%
+    }else if("SINGLE_INSERT".equals(dataAction)){
+    %>
+    	
+    class BufferLine_<%=cid%> {
+        <% 
+        for(Column column : stmtStructure) {
+            if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                %>
+                <%=typeToGenerate%> <%=column.getName()%>;                
+                <%
+            }
+        }            
+        %>   
+    
+        public BufferLine_<%=cid%>(
+        <% 
+        int count = 0;
+        for(Column column : stmtStructure) {
+            if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                if(count != 0) {
+                    %>
+                    ,
+                    <%
+                }
+                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                %>
+                <%=typeToGenerate%> <%=column.getName()%>
+                <%
+                count++;                        
+            }
+        }            
+        %> 
+        ){
+            <% 
+            for(Column column : stmtStructure) {
+                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                    %>
+                    this.<%=column.getName()%> = <%=column.getName()%>;              
+                    <%   
+                }
+            }            
+            %>   	                
+        }
     }
+    
+    java.util.List<BufferLine_<%=cid%>> sInsertColValueList<%=cid%> = new java.util.ArrayList();
+    BufferLine_<%=cid%> sInsertColValue<%=cid%> = null; 
+    
+    StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
+    for(int i=0;i < <%=batchSize%>;i++){
+         extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+         if (i!=<%=batchSize%>-1) extendInsertValueStmt_<%=cid%>.append(",");
+    }
+   
+	String insert_<%=cid%> = "INSERT INTO "+<%=table%>+" (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+	
+	java.sql.PreparedStatement pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+      
+    String insertColName<%=cid%> = "<%=insertColName.toString()%>";
+    String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>"; 
+    int rowCount<%=cid%> = 0;
+<%}
     if(isEnableDebug) {
         %>
         StringBuffer query_<%=cid%> = null;
        	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
-    }
+    	}
 	} //end isDynamic
     
     if (useExistingConnection) {
@@ -266,8 +328,6 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
  	boolean isShareIdentity_<%=cid%> = globalMap.get("shareIdentitySetting_<%=connection%>") != null && (Boolean)globalMap.get("shareIdentitySetting_<%=connection%>") == true;
  <%
  	}
- 	
- 	
     if(("true").equals(identityInsert) ) {
         %>
         java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
