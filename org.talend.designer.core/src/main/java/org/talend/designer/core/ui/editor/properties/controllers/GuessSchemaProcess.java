@@ -76,7 +76,7 @@ public class GuessSchemaProcess {
 
     private IPath temppath;
 
-    private String currentProcessEncoding = "ISO-8859-15"; //$NON-NLS-1$
+    private String currentProcessEncoding = "GBK"; //$NON-NLS-1$
 
     private IContext selectContext;
 
@@ -175,7 +175,7 @@ public class GuessSchemaProcess {
         String codeStart, codeMain, codeEnd;
         temppath = (Path) buildTempCSVFilename();
         // Should also replace "/r". NMa.
-        memoSQL = memoSQL.replace("\r", " ");
+        memoSQL = memoSQL.replace("\r", " ");// ISO-8859-15
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
                 + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -188,7 +188,7 @@ public class GuessSchemaProcess {
                 + "                    new java.io.BufferedWriter(new java.io.OutputStreamWriter(\r\n" //$NON-NLS-1$
                 + "                            new java.io.FileOutputStream(\r\n" //$NON-NLS-1$
                 + "                                    fileName, false),\r\n" //$NON-NLS-1$
-                + "                            \"ISO-8859-15\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "                            \"GBK\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "csvWriter.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
                 + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n" + "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
