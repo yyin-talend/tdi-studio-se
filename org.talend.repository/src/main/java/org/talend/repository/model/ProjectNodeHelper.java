@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
+import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
 
@@ -374,6 +376,43 @@ public class ProjectNodeHelper {
                 CatalogHelper.addSchemas(schemas, c);
                 c.getDataManager().add(dbconn);
                 ConnectionHelper.addCatalog(c, dbconn);
+            }
+        }
+    }
+
+    /* method is used to remove table from database */
+    public static void removeTables(String tableLabel, orgomg.cwm.objectmodel.core.Package subpack, DatabaseConnection connection) {
+        if (subpack == null) {
+            for (orgomg.cwm.objectmodel.core.Package pk : connection.getDataPackage()) {
+                Iterator<ModelElement> iterator = pk.getOwnedElement().iterator();
+                while (iterator.hasNext()) {
+                    Object o = iterator.next();
+                    if (o instanceof MetadataTable) {
+                        MetadataTable table = (MetadataTable) o;
+                        if (table.getLabel() != null && table.getLabel().equals(tableLabel)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                    if (o instanceof orgomg.cwm.objectmodel.core.Package) {
+                        subpack = (orgomg.cwm.objectmodel.core.Package) o;
+                        removeTables(tableLabel, subpack, connection);
+                    }
+
+                }
+            }
+        } else {
+            Iterator<ModelElement> iterator = subpack.getOwnedElement().iterator();
+            while (iterator.hasNext()) {
+                Object o = iterator.next();
+                if (o instanceof MetadataTable) {
+                    MetadataTable table = (MetadataTable) o;
+                    if (table.getLabel() != null && table.getLabel().equals(tableLabel)) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+
             }
         }
     }

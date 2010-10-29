@@ -80,9 +80,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
-import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
-import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.designer.core.IDesignerCoreService;
@@ -97,7 +95,6 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
-import orgomg.cwm.resource.relational.Catalog;
 
 /**
  * @author ocarbone
@@ -610,13 +607,7 @@ public class DatabaseTableForm extends AbstractForm {
                         if (openConfirm) {
                             for (TableItem item : selection) {
                                 if (tableNavigator.indexOf(item) != -1) {
-                                    Iterator iterator = ConnectionHelper.getTables(getConnection()).iterator();
-                                    while (iterator.hasNext()) {
-                                        MetadataTable table = (MetadataTable) iterator.next();
-                                        if (table.getLabel() != null && table.getLabel().equals(item.getText())) {
-                                            iterator.remove();
-                                        }
-                                    }
+                                    ProjectNodeHelper.removeTables(item.getText(), null, getConnection());
                                     tableNavigator.remove(tableNavigator.indexOf(item));
                                     if (tableNavigator.getItemCount() > 1) {
                                         tableNavigator.setSelection(tableNavigator.getItem(tableNavigator.getItemCount() - 1));
@@ -661,15 +652,8 @@ public class DatabaseTableForm extends AbstractForm {
         // Create a new metadata and Add it on the connection
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        Catalog c = (Catalog) ConnectionHelper.getPackage((getConnection().getSID()), getConnection(), Catalog.class);
-        if (c != null) {
-            PackageHelper.addMetadataTable(metadataTable, c);
-        } else {
-            c = CatalogHelper.createCatalog(getConnection().getSID());
-            c.getDataManager().add(getConnection());
-            PackageHelper.addMetadataTable(metadataTable, c);
-            ConnectionHelper.addCatalog(c, getConnection());
-        }
+        /* see 0016785 need to add the table to connection rather than the Set */
+        ProjectNodeHelper.addTableForSpecifiedDataPackage(getConnection(), metadataTable);
         metadataTable.setId(factory.getNextId());
 
         // initExistingNames();
