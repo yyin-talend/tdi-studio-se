@@ -523,6 +523,7 @@ public class CLASS {
             if(isSpecifyIdentityKey) {
                 for(Column column : stmtStructure) {
                     if(column.getColumnName().equals(identityKey)) {
+                        if ("INT IDENTITY".equals(column.column.getType())) break;
                         column.setAutoIncrement(true);
                         column.setStartValue(startValue);
                         column.setStep(step);
