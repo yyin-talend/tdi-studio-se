@@ -145,9 +145,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%}%>
 	needSeparator_<%=cid %> = true;
 	canOutput_<%=cid %> = true;   	
-<%}%>
-
-<%
+<%}
+  if(i==sizeColumns - 1){
+%>
+sb_<%=cid %>.append("-\n");
+<%}
 }// here end the if modify
 %>
 <% if ("add".equals(changetype) || "none".equals(changetype)) {   
@@ -192,7 +194,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <% 
 }//here end the last for, the List "columns"
 %>						
-		sb_<%=cid %>.append("-\n\n");		
+		sb_<%=cid %>.append('\n');		
 		
 	if(canOutput_<%=cid %>){		
 		pw_<%=cid %>.write(sb_<%=cid %>.toString());
