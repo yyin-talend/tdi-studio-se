@@ -29,7 +29,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.routines.RoutineEditorInput;
-import org.talend.repository.ui.wizards.sqlpattern.NewSqlpatternWizardPage;
+import org.talend.repository.ui.wizards.routines.NewRoutineWizardPage;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -40,7 +40,7 @@ import org.talend.repository.ui.wizards.sqlpattern.NewSqlpatternWizardPage;
 public class SaveAsRoutineWizard extends Wizard {
 
     /** Main page. */
-    private NewSqlpatternWizardPage mainPage;
+    private NewRoutineWizardPage mainPage;
 
     /** Created project. */
     private RoutineItem routineItem;
@@ -90,7 +90,8 @@ public class SaveAsRoutineWizard extends Wizard {
     }
 
     public void addPages() {
-        mainPage = new NewSqlpatternWizardPage(property, path);
+        mainPage = new NewRoutineWizardPage(property, path);
+        mainPage.initializeSaveAs(oldProperty.getLabel(), oldProperty.getVersion(), true);
         // overwrite it.
         mainPage.setTitle("Save As");
         mainPage.setDescription("Save as another new routine.");

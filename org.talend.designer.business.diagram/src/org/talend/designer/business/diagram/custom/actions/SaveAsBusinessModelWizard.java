@@ -98,6 +98,8 @@ public class SaveAsBusinessModelWizard extends Wizard {
 
     public void addPages() {
         mainPage = new SimpleBusinessCreationWizardPage(property, path);
+        mainPage.initializeSaveAs(oldProperty.getLabel(), oldProperty.getVersion(), true);
+
         // overwrite it.
         mainPage.setTitle("Save As");
         mainPage.setDescription("Save as another new business model.");
