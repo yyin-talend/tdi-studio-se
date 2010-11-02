@@ -1832,7 +1832,9 @@ public class CLASS {
                         if(column.isAutoIncrement()) {
                             length = column.getStartValue();
                             precision =  column.getStep();
-                            column.setAutoIncrement(false);
+                            if ("INT IDENTITY".equals(column.column.getType())) {
+                                column.setAutoIncrement(false);
+                            } 
                         }
                         // end bug0016707
                         
