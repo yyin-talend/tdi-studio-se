@@ -79,6 +79,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
     private static final String TITILE = Messages.getString("SelectDeleteProjectDialog.Title"); //$NON-NLS-1$
 
+    private List<Project> projects = new ArrayList<Project>();
+
     /**
      * DOC qwei SelectDeleteProjectDialog constructor comment.
      * 
@@ -215,6 +217,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     }
 
     private List<Project> getProjectItem() {
+        if (!projects.isEmpty()) {
+            return projects;
+        }
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         Project[] projects = null;
         try {
@@ -224,8 +229,11 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         } catch (BusinessException e) {
             ExceptionHandler.process(e);
         }
+        for (Project p : projects) {
+            this.projects.add(p);
+        }
         if (projects != null) {
-            return Arrays.asList(projects);
+            return this.projects;
         }
         return Collections.emptyList();
     }
@@ -342,7 +350,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     @Override
     protected void okPressed() {
         delProjectItem();
+        projects = null;
         super.okPressed();
-
     }
 }
