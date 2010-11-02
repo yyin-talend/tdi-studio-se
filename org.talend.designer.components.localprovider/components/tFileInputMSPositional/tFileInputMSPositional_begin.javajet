@@ -229,7 +229,7 @@
 	int skipFooter_<%=cid %>  = <%=footer%>;
 	int limit_<%=cid%> = <%=limit%>;
 	
-	String rowSeparator_<%=cid %> = <%=rowSeparator %>
+	String rowSeparator_<%=cid %> = <%=rowSeparator %>;
 	if(rowSeparator_<%=cid %>.length()< 1){
 		throw new Exception("Row Separator must include at least one character");
 	}
