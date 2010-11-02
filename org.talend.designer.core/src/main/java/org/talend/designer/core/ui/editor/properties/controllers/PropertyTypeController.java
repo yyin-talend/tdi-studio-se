@@ -686,7 +686,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
             } else if (databaseType.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName())) {
                 databaseType = EDatabaseTypeName.ORACLE_OCI.getXmlName();
             } else if (databaseType.equals(EDatabaseTypeName.MSSQL.getDisplayName())) {
-                databaseType = "SQL_SERVER"; // for component
+                databaseType = EDatabaseTypeName.MSSQL.getXmlName();
             } else {
                 databaseType = EDatabaseTypeName.getTypeFromDbType(databaseType).getProduct();
             }
