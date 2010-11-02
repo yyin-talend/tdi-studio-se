@@ -933,6 +933,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             RepositoryNode folder = null;
 
             String label = container.getLabel();
+            if (label.equals("bin") || label.startsWith(".")) {
+                continue;
+            }
 
             boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
             boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);

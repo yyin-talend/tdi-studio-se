@@ -13,6 +13,8 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -23,10 +25,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
@@ -41,13 +40,13 @@ import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.utils.URIHelper;
+import org.talend.repository.utils.XmiResourceManager;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -113,12 +112,6 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
             if (object == null) {
                 return ExecutionResult.FAILURE; // item not found !?
             }
-            if (item.getParent() instanceof FolderItem) {
-                FolderItem folderItem = (FolderItem) item.getParent();
-                if (!folderItem.getChildren().contains(item)) {
-                    folderItem.getChildren().add(item);
-                }
-            }
             if (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory) {
                 if (!object.getProperty().getItem().getState().isDeleted()) {
                     return ExecutionResult.SUCCESS_NO_ALERT;
@@ -132,23 +125,30 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
                 ERepositoryObjectType repositoryType = ERepositoryObjectType.getItemType(item);
                 EcoreUtil.resolveAll(item);
 
-                List<Resource> resources = new ArrayList<Resource>();
                 Resource propertyResource = item.getProperty().eResource();
                 pathToCheckIfDeleted.put(item.getState().getPath(), repositoryType);
 
-                if (!propertyResource.getURI().toString().contains("/bin/")) {
-                    // check if imported item is in the bin folder or not, if not, no need to move anything.
+                // check if imported item is in the bin folder or not, if not, no need to move anything.
+                if (propertyResource.getURI().segmentCount() > 2) {
+                    String parentFolder = propertyResource.getURI().segment(propertyResource.getURI().segmentCount() - 2);
+                    if (!parentFolder.equals("bin")) {
+                        return ExecutionResult.SUCCESS_NO_ALERT;
+                    }
+                } else {
                     return ExecutionResult.SUCCESS_NO_ALERT;
                 }
 
-                ResourceSet resourceSet = new ResourceSetImpl();
+                XmiResourceManager xrm = new XmiResourceManager();
+                List<Resource> resources = xrm.getAffectedResources(item.getProperty());
+                Collections.sort(resources, new Comparator<Resource>() {
 
-                URI itemResourceURI = propertyResource.getURI().trimFileExtension().appendFileExtension(
-                        FileConstants.ITEM_EXTENSION);
-                Resource itemResource = resourceSet.getResource(itemResourceURI, true);
-                resources.add(itemResource);
-                resources.add(propertyResource);
-
+                    public int compare(Resource o1, Resource o2) {
+                        if (o1.getURI().fileExtension().equals(".properties")) {
+                            return -1;
+                        }
+                        return 1;
+                    }
+                });
                 // restore folder if doesn't exist anymore.
                 String oldPath = item.getState().getPath();
                 IPath path = new Path(oldPath);
@@ -161,8 +161,6 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
                     IPath finalPath = typeRootFolder.getFullPath().append(path).append(originalPath.lastSegment());
                     ResourceUtils.moveResource(URIHelper.getFile(resource.getURI()), finalPath);
                     resource.setURI(URIHelper.convert(finalPath));
-                }
-                for (Resource resource : resources) {
                     EmfHelper.saveResource(resource);
                 }
             }
