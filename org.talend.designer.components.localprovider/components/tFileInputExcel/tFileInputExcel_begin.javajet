@@ -280,7 +280,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 //end%>					
 			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
-				curColNum_<%=cid %>++;
+				curColNum_<%=cid %>=<%=i%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 <%
 //start
@@ -300,7 +300,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					java.util.Date dateGMT_<%=cid %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
 					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getOffset(dateGMT_<%=cid %>.getTime()));
 				}catch(Exception e){
-					throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
+					throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1));
 				}
 			}
 <%
@@ -383,7 +383,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     <%
                 }
                 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " Column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
                 <%=firstConnName %> = null;
                 <%
             } else if(("").equals(rejectConnName)){
@@ -392,7 +392,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals(firstConnName)){%>
-            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " Column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
             <%}
         } 
         %>
@@ -673,7 +673,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>
 			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
-				curColNum_<%=cid %>++;
+				curColNum_<%=cid %>=<%=i%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 								
 <%		
@@ -692,7 +692,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 						}
 					}catch(Exception e){
-						throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
+						throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1));
 					}
 				}
 				
@@ -759,7 +759,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					    }//16
 %>
-					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " Column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
+					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
 					<%=firstConnName %> = null;
 <%
 					} else if(("").equals(rejectConnName)){
@@ -769,7 +769,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					} else if(rejectConnName.equals(firstConnName)){
 %>
-					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " Column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
+					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
 <%
 					}//15
 				}
