@@ -916,11 +916,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     	
     	
     	//////////batch execute by batch size///////
+    	boolean isBatchSize = false;
     	if ("true".equals(useBatchSize)) {
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
                 <%if ((rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                	isBatchSize = true;
                 %>                                                
                 try {
 						pstmt_<%=cid %>.executeBatch();                	
@@ -1022,7 +1024,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                	conn_<%=cid%>.commit();
 		                	
 		                	commitCounter_<%=cid%> = 0;
-		                	
+		                	<%
+		                	if (isBatchSize) { 
+		                	%>
+		                	batchSizeCounter_<%=cid%> = 0;  
+		                	<%
+		                	}
+		                	%>
 		                }catch (java.sql.SQLException e){
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>
