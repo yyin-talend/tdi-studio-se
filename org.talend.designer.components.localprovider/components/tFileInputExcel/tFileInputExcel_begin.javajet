@@ -383,7 +383,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     <%
                 }
                 %>
-                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
+                <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
                 <%=firstConnName %> = null;
                 <%
             } else if(("").equals(rejectConnName)){
@@ -392,7 +392,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=firstConnName %> = null;
                 <%
             } else if(rejectConnName.equals(firstConnName)){%>
-            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
+            	<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
             <%}
         } 
         %>
@@ -759,7 +759,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					    }//16
 %>
-					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
+					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
 					<%=firstConnName %> = null;
 <%
 					} else if(("").equals(rejectConnName)){
@@ -769,7 +769,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					} else if(rejectConnName.equals(firstConnName)){
 %>
-					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (no. " + curColNum_<%=cid %> + ")";
+					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>+ " column: " + curColName_<%=cid %> + " (No. " + curColNum_<%=cid %> + ")";
 <%
 					}//15
 				}
