@@ -164,7 +164,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
-    private TreeViewer viewer;
+    protected TreeViewer viewer;
 
     private RepositoryContentProvider contentProvider = null;
 
@@ -264,8 +264,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             viewer.addTreeListener((ITreeViewerListener) viewer);
         }
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-        contentProvider = new RepositoryContentProvider(this);
-        viewer.setContentProvider(contentProvider);
+        setContentProviderForView();
         viewer.setLabelProvider(new RepositoryLabelProvider(this));
         viewer.setSorter(new RepositoryNameSorter());
         IViewSite viewSite = getViewSite();
@@ -386,6 +385,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         if (root.getChildren().size() == 1) {
             viewer.setExpandedState(root.getChildren().get(0), true);
         }
+    }
+
+    protected void setContentProviderForView() {
+        contentProvider = new RepositoryContentProvider(this);
+        viewer.setContentProvider(contentProvider);
     }
 
     public void createActionComposite(Composite parent) {

@@ -73,10 +73,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -996,6 +996,51 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     /**
+     * DOC hywang ExportViewProvider constructor comment. This provider only using for export wizard page It will hide
+     * the tables nodes of file connection and database connection when export item wizard is open
+     * 
+     * @param view
+     */
+    class ExportViewProvider extends RepositoryContentProvider {
+
+        public ExportViewProvider(IRepositoryView view) {
+            super(view);
+        }
+
+        @Override
+        public Object[] getChildren(Object parent) {
+            RepositoryNode repositoryNode = ((RepositoryNode) parent);
+            if (repositoryNode.getObjectType() != null) {
+                switch (repositoryNode.getObjectType()) {
+                case METADATA_CONNECTIONS:
+                case METADATA_FILE_BRMS:
+                case METADATA_FILE_DELIMITED:
+                case METADATA_FILE_EBCDIC:
+                case METADATA_FILE_EXCEL:
+                case METADATA_FILE_FTP:
+                case METADATA_FILE_HL7:
+                case METADATA_FILE_LDIF:
+                case METADATA_FILE_POSITIONAL:
+                case METADATA_FILE_REGEXP:
+                case METADATA_FILE_XML:
+                    return new Object[0];
+                }
+            }
+
+            if (!repositoryNode.isInitialized()) {
+                if (repositoryNode.getParent() instanceof ProjectRepositoryNode) {
+                    // initialize repository from main project
+                    ((ProjectRepositoryNode) repositoryNode.getParent()).initializeChildren(parent);
+                }
+                repositoryNode.setInitialized(true);
+            }
+
+            return repositoryNode.getChildren().toArray();
+        }
+
+    }
+
+    /**
      * 
      * A repository view with checkbox on the left.
      */
@@ -1003,7 +1048,7 @@ class ExportItemWizardPage extends WizardPage {
 
         @Override
         protected TreeViewer createTreeViewer(Composite parent) {
-            return new CheckboxRepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+             return new CheckboxRepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         }
 
         /*
@@ -1015,6 +1060,12 @@ class ExportItemWizardPage extends WizardPage {
         public void createPartControl(Composite parent) {
             super.createPartControl(parent);
             CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+        }
+
+        @Override
+        protected void setContentProviderForView() {
+            ExportViewProvider contentProvider = new ExportViewProvider(repositoryView);
+            viewer.setContentProvider(contentProvider);
         }
 
         /*
