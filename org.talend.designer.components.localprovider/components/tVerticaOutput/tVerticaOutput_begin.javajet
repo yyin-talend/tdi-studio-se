@@ -50,6 +50,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
 	
+	boolean useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
+	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
@@ -196,7 +198,7 @@ if(columnList != null && columnList.size() > 0) {
         if(("DROP_CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + " cascade");
+            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + <%=(useCascade ? "\" cascade\"" : "\"\"")%>);
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + tableName_<%=cid%>);//
@@ -232,7 +234,7 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(whetherExist_<%=cid%>) {
                     java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + <%=(useCascade ? "\" cascade\"" : "\"\"")%>);
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
@@ -287,7 +289,30 @@ if(columnList != null && columnList.size() > 0) {
         String delete_<%=cid%> = "DELETE  FROM " + tableName_<%=cid%> + " WHERE <%=deleteWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
         <%      
-    }
+    } else if (("COPY").equals(dataAction)) {		
+		boolean abortOnError = "true".equals(ElementParameterParser.getValue(node,"__ABORT_ON_ERROR__"));
+		String rejectMax = ElementParameterParser.getValue(node,"__REJECT_MAX__");
+		String exceptionsPath = ElementParameterParser.getValue(node,"__EXCEPTIONS_PATH__");
+		String rejectsPath = ElementParameterParser.getValue(node,"__REJECTED_DATA__");
+		boolean noCommit = "true".equals(ElementParameterParser.getValue(node,"__NO_COMMIT__"));
+		String exceptionNode = ElementParameterParser.getValue(node,"__EXCEPTIONS_NODE__");
+		String rejectsNode = ElementParameterParser.getValue(node,"__REJECTED_NODE__");	
+		rejectMax = rejectMax == null || "".equals(rejectMax.trim()) ? "" : " REJECTMAX "+rejectMax+" ";
+		exceptionsPath = exceptionsPath == null || "".equals(exceptionsPath.trim()) ? "" : " EXCEPTIONS '\"+"+exceptionsPath+"+\"' ";
+		exceptionNode = exceptionNode == null || "".equals(exceptionNode.trim()) ? "" : " ON "+exceptionNode+" ";
+		rejectsPath = rejectsPath == null || "".equals(rejectsPath.trim()) ? "" : " REJECTED DATA '\"+"+rejectsPath+"+\"' ";
+		rejectsNode = rejectsNode == null || "".equals(rejectsNode.trim()) ? "" : " ON "+rejectsNode+" ";
+		String exceptionString = !"".equals(exceptionsPath) ? exceptionsPath + exceptionNode : "";
+		String rejectString = !"".equals(rejectsPath) ? rejectsPath + rejectsNode : "";
+		String noComm = !noCommit ? "" : " NO COMMIT ";
+		String abort = abortOnError ? " ABORT ON ERROR " : "";
+	    %>
+		StringBuilder stmtBuilder_<%=cid%> = new StringBuilder();
+        java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();	
+        String template_<%=cid%> = "COPY " + tableName_<%=cid%> +" (<%=insertColName.toString()%>)"
+						          + " FROM STDIN UNCOMPRESSED WITH DELIMITER ';' RECORD TERMINATOR '\n' ENCLOSED BY '|' NULL AS '' <%=rejectMax%><%=exceptionString%><%=rejectString%><%=abort%>DIRECT<%=noComm%>";
+		<%
+	}
     if(isEnableDebug) {
         %>
         StringBuffer query_<%=cid%> = null;

@@ -49,9 +49,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<IMetadataColumn> columnList = getColumnList(node);
     
     List< ? extends IConnection> conns = node.getIncomingConnections();
+    IConnection inConn = null;
     if(conns!=null && conns.size()>0){
-        IConnection conn = conns.get(0);
-        incomingConnName = conn.getName();
+        inConn = conns.get(0);
+        incomingConnName = inConn.getName();
     }
         
     String rejectConnName = null;
@@ -696,7 +697,92 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%}%>
             nb_line_<%=cid%>++;
         <%
-        }
+        }else if ("COPY".equals(dataAction)) { 
+		    int counter = 1;
+			for(int i = 0; i < columnList.size(); i++) {
+			IMetadataColumn column = columnList.get(i); 
+			//if(column.isInsertable()) {
+			%>
+				    
+					
+					<%
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                	String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+               	    %>
+               		    stmtBuilder_<%=cid%>.append("|");
+						stmtBuilder_<%=cid%>.append(String.valueOf(<%=inConn.getName() %>.<%=column.getLabel() %>));
+						stmtBuilder_<%=cid%>.append("|"); 
+               	    <%
+               		}else { 
+               	    %>
+               		    if(<%=inConn.getName() %>.<%=column.getLabel() %> == null){
+               		        stmtBuilder_<%=cid%>.append("");
+               		    }else{
+						    stmtBuilder_<%=cid%>.append("|");
+                			        <%					
+                			        if(javaType == JavaTypesManager.STRING ){
+                			            %>
+                			            stmtBuilder_<%=cid%>.append(<%=inConn.getName() %>.<%=column.getLabel() %>.replaceAll("\\|","\\\\|"));
+                			            <%
+                			        }else if(javaType == JavaTypesManager.DATE && pattern != null){
+                			            %>
+                			            stmtBuilder_<%=cid%>.append(FormatterUtils.format_Date(<%=inConn.getName() %>.<%=column.getLabel() %>, <%= pattern %>));
+                			            <%
+                			        }else if(javaType == JavaTypesManager.BYTE_ARRAY){
+                			            %>
+                			            stmtBuilder_<%=cid%>.append(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=inConn.getName() %>.<%=column.getLabel() %>)).toString());
+                			            <%
+                			        } else if(JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        							%>
+                							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+                							stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? inConn.getName() + "." + column.getLabel() : inConn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), null, '.'));					
+											<% } else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT) {%>
+												if (<%=inConn.getName() %>.<%=column.getLabel() %> != null) {
+													BigDecimal decimal_<%=cid%> = new BigDecimal(<%=inConn.getName() %>.<%=column.getLabel() %>);
+													stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? inConn.getName() + "." + column.getLabel() : "decimal_"+cid+".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), null, '.'));					
+												}
+                							<% } else { %>
+                							stmtBuilder_<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConn.getName() %>.<%=column.getLabel() %>), null, '.'));						
+                							<% } %>
+        							<%
+        								} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+										%>
+										stmtBuilder_<%=cid%>.append(String.valueOf(<%=column.getPrecision() == null? inConn.getName() + "." + column.getLabel() : inConn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>));
+										<%
+                			        }else{
+                			            %>
+                			            stmtBuilder_<%=cid%>.append(String.valueOf(<%=inConn.getName() %>.<%=column.getLabel() %>));
+                			            <%
+                			        }
+									
+                			        %>
+									stmtBuilder_<%=cid%>.append("|");
+                			    }
+                			    <%   			
+                			}                    
+					counter++; 
+					%>
+					stmtBuilder_<%=cid%>.append("<%= i == columnList.size() - 1 ? "\\n" : ";"%>");
+			<%
+			  //}
+			}
+			%>
+			<%
+			if(rejectConnName == null ) {%>
+    		
+    		nb_line_<%=cid%>++;
+<%
+    		if ( batchMode && !("").equals(batchSize) && !("0").equals(batchSize)) {
+%>
+    			batchSizeCounter_<%=cid%>++;
+<%
+    		}
+%>    		    		
+<%
+    		}
+            
+		}
         
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
@@ -726,11 +812,31 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
                 %>                                                
                 try {
+						 <%
+						if (!"COPY".equals(dataAction)) {
+						%>
 						pstmt_<%=cid %>.executeBatch();                	
-            	    	<%if (("INSERT").equals(dataAction)) {
+						
+            	    	<%} else {
+						%>
+						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+						if (globalMap.get("<%=cid%>_COPY_STARTED") == null) {
+						    ((com.vertica.PGStatement)stmt_<%=cid%>).startCopyIn(template_<%=cid%>, bais_<%=cid%>);
+						    globalMap.put("<%=cid%>_COPY_STARTED",Boolean.TRUE);
+						} else {
+						    ((com.vertica.PGStatement)stmt_<%=cid%>).addStreamToCopyIn(bais_<%=cid%>);
+						}
+						stmtBuilder_<%=cid%> = null;
+						bais_<%=cid%> = null;
+						stmtBuilder_<%=cid%> = new StringBuilder();
+						<%
+						}
+						%>
+						<%
+						if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%

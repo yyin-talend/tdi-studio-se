@@ -53,7 +53,40 @@ imports="
                 	}%>                	
             	}                                  
                 <%
-                }%>    
+				} else if ("COPY".equals(dataAction)) {
+					boolean abortOnError = "true".equals(ElementParameterParser.getValue(node,"__ABORT_ON_ERROR__"));
+					String rejectMax = ElementParameterParser.getValue(node,"__REJECT_MAX__");
+					String exceptionsPath = ElementParameterParser.getValue(node,"__EXCEPTIONS_PATH__");
+					String rejectsPath = ElementParameterParser.getValue(node,"__REJECTED_DATA__");
+					boolean noCommit = "true".equals(ElementParameterParser.getValue(node,"__NO_COMMIT__"));
+					String exceptionNode = ElementParameterParser.getValue(node,"__EXCEPTIONS_NODE__");
+					String rejectsNode = ElementParameterParser.getValue(node,"__REJECTED_NODE__");	
+					rejectMax = rejectMax == null || "".equals(rejectMax.trim()) ? "" : " REJECTMAX "+rejectMax+" ";
+					exceptionsPath = exceptionsPath == null || "".equals(exceptionsPath.trim()) ? "" : " EXCEPTIONS '"+exceptionsPath+"' ";
+					exceptionNode = exceptionNode == null || "".equals(exceptionNode.trim()) ? "" : " ON "+exceptionNode+" ";
+					rejectsPath = rejectsPath == null || "".equals(rejectsPath.trim()) ? "" : " REJECTED DATA '"+rejectsPath+"' ";
+					rejectsNode = rejectsNode == null || "".equals(rejectsNode.trim()) ? "" : " ON "+rejectsNode+" ";
+					String exceptionString = !"".equals(exceptionsPath) ? exceptionsPath + exceptionNode : "";
+					String rejectString = !"".equals(rejectsPath) ? rejectsPath + rejectsNode : "";
+					String noComm = !noCommit ? "" : " NO COMMIT ";
+					String abort = abortOnError ? " ABORT ON ERROR " : "";
+				%>    
+					if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) {
+					    java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+						if (globalMap.get("<%=cid%>_COPY_STARTED") == null) {
+						    ((com.vertica.PGStatement)stmt_<%=cid%>).startCopyIn(template_<%=cid%>, bais_<%=cid%>);
+						    globalMap.put("<%=cid%>_COPY_STARTED",Boolean.TRUE);
+						} else {
+							((com.vertica.PGStatement)stmt_<%=cid%>).addStreamToCopyIn(bais_<%=cid%>);
+						}
+						stmtBuilder_<%=cid%> = null;
+						bais_<%=cid%> = null;
+					}
+					
+				
+			    <%
+				}
+				%>
     <%if(("INSERT_OR_UPDATE").equals(dataAction)){%>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");              
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   
@@ -68,7 +101,7 @@ imports="
         pstmtUpdate_<%=cid%>.executeUpdate();      
     <%}else{%>   
     	<%   
-    	 if(!useExistingConnection)	{
+    	 if(!useExistingConnection && !"COPY".equals(dataAction))	{
     	 %>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");    
         pstmt_<%=cid%>.executeUpdate();
@@ -109,13 +142,15 @@ imports="
         }        
         <%
     } else {
+       if (!"COPY".equals(dataAction)) {
         %>
-        if(pstmt_<%=cid %> != null) {
-
-            pstmt_<%=cid %>.close();
-            
-        }        
+	        if(pstmt_<%=cid %> != null) {
+	
+	            pstmt_<%=cid %>.close();
+	            
+	        }        
         <%
+		}
     }   
 
     if(!useExistingConnection)
