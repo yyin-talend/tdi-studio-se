@@ -160,8 +160,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 { Locale.JAPANESE.getDisplayLanguage(Locale.JAPANESE), Locale.JAPANESE.getLanguage() },
                 { Locale.ITALIAN.getDisplayLanguage(Locale.ITALIAN), Locale.ITALIAN.getLanguage() }, { "Brasil", "pt_BR" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 { spanish, "es" }, { russian, "ru" }, //$NON-NLS-1$ //$NON-NLS-2$ 
-                { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ 
-                { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ /$NON-NLS-7$ 
+                { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ /$NON-NLS-7$ 
         languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Messages
                 .getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
@@ -221,6 +221,258 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         });
     }
 
+    private void applyBabiliResource(String zipFileName) {
+        String jarFolderPath = System.getProperty("user.dir") + fs + "jarTemp"; //$NON-NLS-1$ //$NON-NLS-2$
+        String zipFolderPath = System.getProperty("user.dir") + fs + "zipTemp"; //$NON-NLS-1$ //$NON-NLS-2$
+        File jarFolderPathFile = new File(jarFolderPath);
+        File zipFolderPathFile = new File(zipFolderPath);
+        if (!jarFolderPathFile.exists()) {
+            jarFolderPathFile.mkdir();
+        }
+        if (!zipFolderPathFile.exists()) {
+            zipFolderPathFile.mkdir();
+        }
+        String pluginPath = System.getProperty("user.dir") + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
+
+        HashMap jarFileMap = new HashMap();
+        File file = new File(pluginPath);
+        if (file.isDirectory()) {
+            String[] fileNameList = file.list();
+            final int length = fileNameList.length;
+            File[] fileList = file.listFiles();
+            final int length2 = fileList.length;
+            for (File f : fileList) {
+                if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
+                    jarFileMap.put("net.sourceforge.sqlexplorer.nl", f); //$NON-NLS-1$
+                }
+                if (f.getName().startsWith("org.talend.designer.components.localprovider")) { //$NON-NLS-1$
+                    jarFileMap.put("org.talend.designer.components.localprovider", f); //$NON-NLS-1$
+                }
+                if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1 //$NON-NLS-1$ //$NON-NLS-2$
+                        && f.getName().indexOf("talend") != -1) { //$NON-NLS-1$
+                    String[] fileNameArr = f.getName().split("_"); //$NON-NLS-1$
+                    jarFileMap.put(fileNameArr[0], f);
+                }
+            }
+        }
+        if (zipFileName.equals("Restore default")) { //$NON-NLS-1$
+            Iterator iter = jarFileMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                Object key = entry.getKey();
+                File currentFileToBak = (File) entry.getValue();
+                if (key.toString().endsWith(".nl") //$NON-NLS-1$
+                        || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                        || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
+                    if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
+                        ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
+                    } else {
+                        FileCopyUtils.copyFolder(currentFileToBak.getAbsolutePath(), jarFolderPath + fs
+                                + currentFileToBak.getName());
+                    }
+                    File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
+                    File[] jarSubFiles = jarFiles.listFiles();
+                    for (File subJarf : jarSubFiles) {
+                        if (subJarf.isFile()) {
+                            if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
+                                String subjarfPath = subJarf.getAbsolutePath().substring(0,
+                                        subJarf.getAbsolutePath().indexOf(".original")); //$NON-NLS-1$
+                                File subjarfPathFile = new File(subjarfPath);
+                                if (subjarfPathFile.exists())
+                                    subjarfPathFile.delete();
+                                subJarf.renameTo(subjarfPathFile);
+                            }
+                        } else {
+                            if (subJarf.getName().equals("components")) { //$NON-NLS-1$
+                                File[] componentFiles = subJarf.listFiles();
+                                for (File componentFile : componentFiles) {
+                                    if (componentFile.isDirectory()) {
+                                        File[] comFiles = componentFile.listFiles();
+                                        if (comFiles != null) {
+                                            for (File com : comFiles) {
+                                                if (com.isFile() && com.getName().endsWith(".original")) { //$NON-NLS-1$
+                                                    String comPath = com.getAbsolutePath().substring(0,
+                                                            com.getAbsolutePath().indexOf(".original")); //$NON-NLS-1$
+                                                    File comPathFile = new File(comPath);
+                                                    if (comPathFile.exists()) {
+                                                        comPathFile.delete();
+                                                    }
+                                                    com.renameTo(comPathFile);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    String writeJarFileName = jarFolderPath + fs + currentFileToBak.getName();
+                    if (currentFileToBak.exists()) {
+                        if (currentFileToBak.isDirectory()) {
+                            try {
+                                org.apache.commons.io.FileUtils.deleteDirectory(currentFileToBak);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            currentFileToBak.delete();
+                        }
+                    }
+                    if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
+                        ZipFileUtils.zip(writeJarFileName, currentFileToBak.getAbsolutePath(), false);
+                    } else {
+                        FileCopyUtils.copyFolder(writeJarFileName, currentFileToBak.getAbsolutePath());
+                    }
+
+                }
+            }
+        } else {
+            ZipFileUtils.unZip(zipFileName, zipFolderPath);
+            File zipFile = new File(zipFolderPath);
+            File[] zipFiles = zipFile.listFiles()[0].listFiles();
+            for (File f : zipFiles) {
+                if (f.getName().endsWith(".nl") //$NON-NLS-1$
+                        || f.getName().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                        || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
+
+                    File writeJarFile = (File) jarFileMap.get(f.getName());
+                    if (writeJarFile == null)
+                        continue;
+                    String jarFilePath = writeJarFile.getAbsolutePath();
+                    // for bug 13620
+                    if (writeJarFile.toString().endsWith(".jar")) {//$NON-NLS-1$
+                        ZipFileUtils.unZip(writeJarFile, jarFolderPath + fs + writeJarFile.getName());
+                    } else {
+                        FileCopyUtils.copyFolder(jarFilePath, jarFolderPath + fs + writeJarFile.getName());
+                    }
+                    File[] zipSubFiles = f.listFiles();
+                    File jarFiles = new File(jarFolderPath + fs + writeJarFile.getName());
+                    File[] jarSubFiles = jarFiles.listFiles();
+                    boolean flag = false;
+                    boolean componentFlag = false;
+                    for (File subJarf : jarSubFiles) {
+                        if (subJarf.isFile()) {
+                            if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
+                                flag = true;
+                                break;
+                            }
+
+                        }// specific bug if .properties for components, since structure of babili resource is different
+                        // with local plugin
+                        else {
+                            if (subJarf.getName().equals("components")) { //$NON-NLS-1$
+                                File[] componentFiles = subJarf.listFiles();
+                                if (componentFiles != null) {
+                                    for (File componentFile : componentFiles) {
+                                        if (componentFile.isDirectory()) {
+                                            File[] comFiles = componentFile.listFiles();
+                                            if (comFiles != null) {
+                                                for (File com : comFiles) {
+                                                    if (com.getName().endsWith(".original")) { //$NON-NLS-1$
+                                                        componentFlag = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (File subf : zipSubFiles) {
+                        boolean subfNotExistBool = true;
+                        for (File subJarf : jarSubFiles) {
+                            if (subJarf.isDirectory() && subJarf.getName().equals("components")) { //$NON-NLS-1$
+                                if (subf.getName().startsWith("t") && subf.getName().endsWith(".properties")) { //$NON-NLS-1$ //$NON-NLS-2$
+                                    File[] componentFiles = subJarf.listFiles();
+                                    for (File componentFile : componentFiles) {
+                                        if (componentFile.getName().equals(
+                                                subf.getName().substring(0, subf.getName().indexOf("_")))) { //$NON-NLS-1$
+                                            File[] comFiles = componentFile.listFiles();
+                                            if (comFiles != null) {
+                                                for (File com : comFiles) {
+                                                    if (subf.getName().equals(com.getName())) {
+                                                        transferFile(subf, com, componentFlag);
+                                                        subfNotExistBool = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (subf.getName().equals(subJarf.getName())) {
+                                    transferFile(subf, subJarf, flag);
+                                    subfNotExistBool = false;
+                                    break;
+                                }
+                            }
+                        }
+                        // if (subfNotExistBool == true) {
+                        // try {
+                        // FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
+                        // FileChannel dstChannel = new FileOutputStream(jarFiles.getAbsolutePath() + fs +
+                        // subf.getName())
+                        // .getChannel();
+                        // dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+                        // srcChannel.close();
+                        // dstChannel.close();
+                        // } catch (IOException e) {
+                        // ExceptionHandler.process(e);
+                        // }
+                        // }
+                    }
+                    String writeJarFileName = jarFolderPath + fs + writeJarFile.getName();
+                    writeJarFile.delete();
+                    if (writeJarFileName.endsWith(".jar")) {//$NON-NLS-1$
+                        ZipFileUtils.zip(writeJarFileName, jarFilePath, false);
+                    } else {
+                        FileCopyUtils.copyFolder(writeJarFileName, jarFilePath);
+                    }
+                }
+            }
+        }
+        updateCompleted = true;
+        try {
+            if (zipFolderPathFile.exists()) {
+                org.apache.commons.io.FileUtils.deleteDirectory(zipFolderPathFile);
+            }
+            if (jarFolderPathFile.exists()) {
+                org.apache.commons.io.FileUtils.deleteDirectory(jarFolderPathFile);
+            }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    private void transferFile(File sourceFile, File targetFile, boolean changed) {
+        String targetPath = targetFile.getAbsolutePath();
+        File newTargetFile = new File(targetPath + ".original"); //$NON-NLS-1$
+        if (!newTargetFile.exists() && changed == false) {
+            targetFile.renameTo(newTargetFile);
+        }
+        transferStream(sourceFile, targetFile);
+    }
+
+    private void transferStream(File sourceFile, File targetFile) {
+        if (!sourceFile.exists()) {
+            return;
+        }
+        try {
+            FileChannel sourceChannel = new FileInputStream(sourceFile.getAbsoluteFile()).getChannel();
+            FileChannel targetChannel = new FileOutputStream(targetFile.getAbsoluteFile()).getChannel();
+            targetChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            sourceChannel.close();
+            targetChannel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * 
      * DOC wzhang Comment method "runProgressMonitorDialog".
@@ -234,150 +486,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
 
             public void run(IProgressMonitor monitor) {
                 try {
-                    String jarFolderPath = System.getProperty("user.dir") + fs + "jarTemp"; //$NON-NLS-1$ //$NON-NLS-2$
-                    String zipFolderPath = System.getProperty("user.dir") + fs + "zipTemp"; //$NON-NLS-1$ //$NON-NLS-2$
-                    File jarFolderPathFile = new File(jarFolderPath);
-                    File zipFolderPathFile = new File(zipFolderPath);
-                    if (!jarFolderPathFile.exists()) {
-                        jarFolderPathFile.mkdir();
-                    }
-                    if (!zipFolderPathFile.exists()) {
-                        zipFolderPathFile.mkdir();
-                    }
-                    String pluginPath = System.getProperty("user.dir") + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
-                    // String pluginPath = "D:" + fs + "plugins"; //$NON-NLS-1$ //$NON-NLS-2$
-
-                    HashMap jarFileMap = new HashMap();
-                    File file = new File(pluginPath);
-                    if (file.isDirectory()) {
-                        String[] fileNameList = file.list();
-                        File[] fileList = file.listFiles();
-                        for (File f : fileList) {
-                            if (f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
-                                jarFileMap.put("net.sourceforge.sqlexplorer.nl", f); //$NON-NLS-1$
-                            }
-                            if (f.getName().startsWith("org.talend.designer.components.localprovider")) { //$NON-NLS-1$
-                                jarFileMap.put("org.talend.designer.components.localprovider", f); //$NON-NLS-1$
-                            }
-                            if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1 //$NON-NLS-1$ //$NON-NLS-2$
-                                    && f.getName().indexOf("talend") != -1) { //$NON-NLS-1$
-                                String[] fileNameArr = f.getName().split("_"); //$NON-NLS-1$
-                                jarFileMap.put(fileNameArr[0], f);
-                            }
-                        }
-                    }
-                    if (zipFileName.equals("Restore default")) { //$NON-NLS-1$
-                        Iterator iter = jarFileMap.entrySet().iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry entry = (Map.Entry) iter.next();
-                            Object key = entry.getKey();
-                            File currentFileToBak = (File) entry.getValue();
-                            if (key.toString().endsWith(".nl") //$NON-NLS-1$
-                                    || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
-                                    || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
-                                if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
-                                    ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
-                                } else {
-                                    FileCopyUtils.copyFolder(currentFileToBak.getAbsolutePath(), jarFolderPath + fs
-                                            + currentFileToBak.getName());
-                                }
-                                File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
-                                File[] jarSubFiles = jarFiles.listFiles();
-                                for (File subJarf : jarSubFiles) {
-                                    if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
-                                        String subjarfPath = subJarf.getAbsolutePath().substring(0,
-                                                subJarf.getAbsolutePath().indexOf(".original")); //$NON-NLS-1$
-                                        File subjarfPathFile = new File(subjarfPath);
-                                        if (subjarfPathFile.exists())
-                                            subjarfPathFile.delete();
-                                        subJarf.renameTo(subjarfPathFile);
-                                    }
-                                }
-                                String writeJarFileName = jarFolderPath + fs + currentFileToBak.getName();
-                                currentFileToBak.delete();
-                                if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
-                                    ZipFileUtils.zip(writeJarFileName, currentFileToBak.getAbsolutePath(), false);
-                                } else {
-                                    FileCopyUtils.copyFolder(writeJarFileName, currentFileToBak.getAbsolutePath());
-                                }
-
-                            }
-                        }
-                    } else {
-                        ZipFileUtils.unZip(zipFileName, zipFolderPath);
-                        File zipFile = new File(zipFolderPath);
-                        File[] zipFiles = zipFile.listFiles()[0].listFiles();
-                        for (File f : zipFiles) {
-                            if (f.getName().endsWith(".nl") //$NON-NLS-1$
-                                    || f.getName().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
-                                    || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
-                                File writeJarFile = (File) jarFileMap.get(f.getName());
-                                if (writeJarFile == null)
-                                    continue;
-                                String jarFilePath = writeJarFile.getAbsolutePath();
-                                // for bug 13620
-                                if (writeJarFile.toString().endsWith(".jar")) {//$NON-NLS-1$
-                                    ZipFileUtils.unZip(writeJarFile, jarFolderPath + fs + writeJarFile.getName());
-                                } else {
-                                    FileCopyUtils.copyFolder(jarFilePath, jarFolderPath + fs + writeJarFile.getName());
-                                }
-                                File[] zipSubFiles = f.listFiles();
-                                File jarFiles = new File(jarFolderPath + fs + writeJarFile.getName());
-                                File[] jarSubFiles = jarFiles.listFiles();
-                                boolean bakBool = false;
-                                for (File subJarf : jarSubFiles) {
-                                    if (subJarf.getName().endsWith(".original")) { //$NON-NLS-1$
-                                        bakBool = true;
-                                    }
-                                }
-                                for (File subf : zipSubFiles) {
-                                    boolean subfNotExistBool = true;
-                                    for (File subJarf : jarSubFiles) {
-                                        if (subf.getName().equals(subJarf.getName())) {
-                                            String subjarfPath = subJarf.getAbsolutePath();
-                                            File newSubJarf = new File(subjarfPath + ".original"); //$NON-NLS-1$
-                                            if (!newSubJarf.exists() && bakBool == false)
-                                                subJarf.renameTo(newSubJarf);
-                                            try {
-                                                FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
-                                                FileChannel dstChannel = new FileOutputStream(subJarf.getAbsolutePath())
-                                                        .getChannel();
-                                                dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-                                                srcChannel.close();
-                                                dstChannel.close();
-                                                subfNotExistBool = false;
-                                                break;
-                                            } catch (IOException e) {
-                                                ExceptionHandler.process(e);
-                                            }
-                                        }
-                                    }
-                                    if (subfNotExistBool == true) {
-                                        try {
-                                            FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
-                                            FileChannel dstChannel = new FileOutputStream(jarFiles.getAbsolutePath() + fs
-                                                    + subf.getName()).getChannel();
-                                            dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-                                            srcChannel.close();
-                                            dstChannel.close();
-                                        } catch (IOException e) {
-                                            ExceptionHandler.process(e);
-                                        }
-                                    }
-                                }
-                                String writeJarFileName = jarFolderPath + fs + writeJarFile.getName();
-                                writeJarFile.delete();
-                                if (writeJarFileName.endsWith(".jar")) {//$NON-NLS-1$
-                                    ZipFileUtils.zip(writeJarFileName, jarFilePath, false);
-                                } else {
-                                    FileCopyUtils.copyFolder(writeJarFileName, jarFilePath);
-                                }
-                            }
-                        }
-                    }
-                    updateCompleted = true;
-                    org.apache.commons.io.FileUtils.deleteDirectory(zipFolderPathFile);
-                    org.apache.commons.io.FileUtils.deleteDirectory(jarFolderPathFile);
+                    monitor.beginTask(Messages.getString("I18nPreferencePage.wait_process"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                    applyBabiliResource(zipFileName);
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 } finally {
