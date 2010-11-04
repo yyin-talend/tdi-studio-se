@@ -17,7 +17,6 @@ imports="
 "
 skeleton="tAdvancedFileOutputXML_java.skeleton"
 %>
-
 <%
 //XMLTool
 class XMLTool{
@@ -102,6 +101,7 @@ class XMLTool{
 class GenerateToolByDom4j{
 	String cid = null;
 	boolean allowEmpty = false;
+	boolean bAddEmptyAttr = false, bAddUnmappedAttr = false;
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	boolean isAppend = false;
@@ -251,16 +251,24 @@ class GenerateToolByDom4j{
 		}
 	}
 	private void addAttribute(String currEleName, XMLNode node){
-		if(node.relatedColumn!=null){
-%>
-		if(<%tool.getValue(node); %>!=null){
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node); %>);
-		}
-<%
-		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
-%>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
-<%
+		if (node.relatedColumn != null){
+        %> 
+		  if (<%tool.getValue(node);%> != null){
+			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", <%tool.getValue(node);%>);
+		  } <% if (bAddEmptyAttr) { %> else {
+		    <%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "");
+          }
+          <%}
+		} else { 
+		  if (node.defaultValue != null && !("").equals(node.defaultValue) ){
+          %>
+		    <%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
+          <%
+		  } else if (bAddUnmappedAttr){
+		  %>
+		    <%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "");
+		  <%
+		  }
 		}
 	}
 	private void addNameSpace(String currEleName, XMLNode node){
@@ -363,6 +371,7 @@ class GenerateExprCmpByDom4j{
 class GenerateToolByNull{
 	String cid = null;
 	boolean allowEmpty = false;
+	boolean bAddEmptyAttr = false, bAddUnmappedAttr = false;
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	
@@ -502,16 +511,24 @@ class GenerateToolByNull{
 		}
 	}
 	private void addAttribute(XMLNode node){
-		if(node.relatedColumn!=null){
-%>
-		if(<%tool.getValue(node); %>!=null){
+		if (node.relatedColumn != null){
+        %>
+		  if (<%tool.getValue(node); %>!=null){
 			buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>)+"\"");
-		}
-<%
-		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
-%>
-		buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
-<%
+		  } <% if (bAddEmptyAttr){%> else{
+		    buf_<%=cid%>.append(" <%=node.path%>=\"\"");
+		  }
+        <%}
+		} else {
+		  if (node.defaultValue != null && !("").equals(node.defaultValue)){
+          %>
+		    buf_<%=cid%>.append(" <%=node.path%>=\""+TalendString.replaceSpecialCharForXML("<%=node.defaultValue %>")+"\"");
+          <%
+		  } else if (bAddUnmappedAttr){
+		  %>
+		    buf_<%=cid%>.append(" <%=node.path%>=\"\"");
+		  <%
+		  }
 		}
 	}
 	private void addNameSpace(XMLNode node){
@@ -570,6 +587,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
+                boolean bAddEmptyAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_EMPTY_ATTRIBUTE__"));
+                boolean bAddUnmappedAttr = "true".equals(ElementParameterParser.getValue(node, "__ADD_UNMAPPED_ATTRIBUTE__"));
+                
                 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
                 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
                 
@@ -641,6 +661,8 @@ if(("Dom4j").equals(mode)){
     if(("true").equals(allowEmpty)){
     	generateToolByDom4j.allowEmpty = true;
     }
+    generateToolByDom4j.bAddEmptyAttr = bAddEmptyAttr;
+    generateToolByDom4j.bAddUnmappedAttr = bAddUnmappedAttr;
     generateToolByDom4j.cid = cid;
     generateToolByDom4j.tool = tool;
     
@@ -829,6 +851,8 @@ else if(("Null").equals(mode)){
     if(("true").equals(allowEmpty)){
     	generateToolByNull.allowEmpty = true;
     }
+    generateToolByNull.bAddEmptyAttr = bAddEmptyAttr;
+    generateToolByNull.bAddUnmappedAttr = bAddUnmappedAttr;
     generateToolByNull.cid = cid;
     generateToolByNull.tool = tool;
     generateToolByNull.isCompact = isCompact;
