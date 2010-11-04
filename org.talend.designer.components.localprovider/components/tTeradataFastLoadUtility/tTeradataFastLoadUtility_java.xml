@@ -88,12 +88,23 @@
       REQUIRED="true"
     >
       <DEFAULT>"mytable"</DEFAULT>
-    </PARAMETER>   
-     
-     <PARAMETER
+    </PARAMETER> 
+      
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -101,7 +112,7 @@
     <PARAMETER
       NAME="SCRIPT_PATH"
       FIELD="DIRECTORY"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>

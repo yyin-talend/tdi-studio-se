@@ -40,6 +40,8 @@ String charset = ElementParameterParser.getValue(node, "__CHARSET__");
 
 String errLimit = ElementParameterParser.getValue(node, "__ERRLIMIT__");
 
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
@@ -67,6 +69,13 @@ StringBuilder script_<%=cid%> = new StringBuilder();
 fw_<%=cid %>.write("SESSIONS 8;\r\n");
 fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";\r\n");
 fw_<%=cid %>.write("LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
+<%
+if(("CLEAR").equals(tableAction)){
+%>
+fw_<%=cid %>.write("DELETE FROM "+ <%=dbname%> + "." + <%=table%> + " ALL;\r\n");
+<%
+}
+%>
 fw_<%=cid %>.write("DEFINE \r\n");
 <%//Layout---------------------------------------------------------------%>
 <%
