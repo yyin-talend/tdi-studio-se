@@ -91,7 +91,11 @@ for (int i = 0; i < commandLine.length; i++) {
 }
 %>
 //for feature:10589
+<%if(useIndependentProcess){%>
+paraList_<%=cid %>.add("--stat_port=" + null);
+<%}else{%>
 paraList_<%=cid %>.add("--stat_port=" + portStats);
+<%}%>
 <%
 if (useIndependentProcess && ProcessorUtilities.isExportConfig()){
 %>
