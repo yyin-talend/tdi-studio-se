@@ -119,6 +119,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return root.getProcessNode();
     }
 
+    public RepositoryNode getJobletNode() {
+        return root.getJobletNode();
+    }
+
     public RepositoryNode getReferenceProjectNode() {
         return root.getReferenceProjectNode();
     }
