@@ -382,11 +382,13 @@ class ImportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TreeItem topItem = checkTreeViewer.getTree().getTopItem();
-                if (topItem != null) {
-                    checkTreeViewer.setSubtreeChecked(topItem.getData(), true);
-                    filteredCheckboxTree.calculateCheckedLeafNodes();
-                    updateFinishStatus();
+                if (checkTreeViewer.getTree().getItemCount() > 0) {
+                    TreeItem topItem = checkTreeViewer.getTree().getItem(0)/* .getTopItem() */;
+                    if (topItem != null) {
+                        checkTreeViewer.setSubtreeChecked(topItem.getData(), true);
+                        filteredCheckboxTree.calculateCheckedLeafNodes();
+                        updateFinishStatus();
+                    }
                 }
             }
         });
