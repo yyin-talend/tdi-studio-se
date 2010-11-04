@@ -109,12 +109,12 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
-import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -1158,7 +1158,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void saveRoutinesDependencies(ProcessType oldProcess, ProcessType newprocess) {
-        newprocess.getRoutinesDependencies().addAll(oldProcess.getRoutinesDependencies());
+        newprocess.getParameters().getRoutinesParameter().addAll(oldProcess.getParameters().getRoutinesParameter());
         loadRoutinesDependencies(newprocess);
     }
 
@@ -1315,16 +1315,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void loadRoutinesDependencies(ProcessType process) {
-        for (Iterator iter = process.getRoutinesDependencies().iterator(); iter.hasNext();) {
-            ItemInforType itemInforType = (ItemInforType) iter.next();
+        for (Iterator iter = process.getParameters().getRoutinesParameter().iterator(); iter.hasNext();) {
+            RoutinesParameterType itemInforType = (RoutinesParameterType) iter.next();
 
             RoutineItemRecord record = new RoutineItemRecord();
-            record.setSystem(itemInforType.isSystem());
-            if (record.isSystem()) {
-                record.setLabel(itemInforType.getIdOrName());
-            } else {
-                record.setId(itemInforType.getIdOrName());
-            }
+            record.setName(itemInforType.getName());
+            record.setLabel(itemInforType.getName());
+            record.setId(itemInforType.getId());
+
             routinesDependencies.add(record);
         }
     }

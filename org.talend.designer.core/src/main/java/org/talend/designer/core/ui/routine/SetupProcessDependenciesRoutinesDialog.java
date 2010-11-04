@@ -49,8 +49,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -90,23 +90,23 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
 
         initModels(currentProject);
         initRefProjects(currentProject);
-
-        List<ItemInforType> routinesDependencies = (List<ItemInforType>) process.getRoutinesDependencies();
-        for (ItemInforType type : routinesDependencies) {
+        List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) process.getParameters()
+                .getRoutinesParameter();
+        for (RoutinesParameterType type : routinesDependencies) {
             RoutineItemRecord record = new RoutineItemRecord();
 
-            record.setSystem(type.isSystem());
+            record.setName(type.getName());
 
-            Property property = findObject(type.getIdOrName(), type.isSystem());
+            Property property = findObject(type.getId(), type.getName());
             if (property != null) {
                 record.setId(property.getId()); // if system, id is not used
                 record.setLabel(property.getLabel());
             } else {
                 record.setHasProblem(true);
-                record.setLabel(type.getIdOrName()); // use the record
+                record.setLabel(type.getName()); // use the record
             }
             if (!record.hasProblem()) { // if lost, willn't display
-                if (type.isSystem()) {
+                if (((RoutineItem) property.getItem()).isBuiltIn()) {
                     systemRoutines.add(record);
                 } else {
                     userRoutines.add(record);
@@ -154,17 +154,17 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         list.add(property);
     }
 
-    private Property findObject(String idOrName, boolean system) {
+    private Property findObject(String idOrName, String name) {
         for (Project p : allRoutineItems.keySet()) {
             List<Property> list = allRoutineItems.get(p);
             if (list != null) {
                 for (Property property : list) {
                     String objIdOrName = property.getId();
-                    if (system) {
-                        objIdOrName = property.getLabel();
-                    }
-                    if (objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem
-                            && ((RoutineItem) property.getItem()).isBuiltIn() == system) {
+                    String objName = property.getLabel();
+                    // objIdOrName = property.getLabel();
+                    if (objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem) {
+                        return property;
+                    } else if (name.equals(objName) && property.getItem() instanceof RoutineItem) {
                         return property;
                     }
                 }
@@ -298,7 +298,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
                         RoutineItemRecord newOne = new RoutineItemRecord();
                         newOne.setId(p.getId());
                         newOne.setLabel(p.getLabel());
-                        newOne.setSystem(system);
+                        newOne.setName(p.getLabel());
                         newOne.setVersion(p.getVersion());
                         currentRecords.add(newOne);
                     }

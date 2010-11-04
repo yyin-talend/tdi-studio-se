@@ -1263,6 +1263,13 @@
             id="org.talend.repository.model.migration.EncryptDbPasswordforItemFileMigrationTask"
             name="Set password encrypt in item file">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask"
+            description="ChangeModelForRoutineParameterMigrationTask"
+            id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask"
+            name="Change Routines Parameter">
+      </projecttask>
       
    </extension>
    

@@ -23,7 +23,7 @@ public class RoutineItemRecord {
 
     private String version;
 
-    private boolean isSystem;
+    private String name;
 
     private boolean hasProblem;
 
@@ -54,12 +54,12 @@ public class RoutineItemRecord {
         this.version = version;
     }
 
-    public boolean isSystem() {
-        return this.isSystem;
+    public String getName() {
+        return this.name;
     }
 
-    public void setSystem(boolean isSystem) {
-        this.isSystem = isSystem;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean hasProblem() {

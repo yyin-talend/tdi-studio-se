@@ -25,13 +25,17 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
- * ggu class global comment. Detailled comment
+ * DOC guanglong.du class global comment. Detailled comment
  */
-public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTask {
+public class ChangeModelForRoutineParameterMigrationTask extends AbstractJobMigrationTask {
 
     public List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
@@ -54,28 +58,45 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
         }
         try {
             ProcessItem item2 = (ProcessItem) item;
+            List<ItemInforType> oldRoutinesDependencies = (List<ItemInforType>) item2.getProcess().getRoutinesDependencies();
+            if (item2.getProcess().getParameters().getRoutinesParameter() == null) {
+                ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+                item2.getProcess().setParameters(parameterType);
+            }
             List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) item2.getProcess().getParameters()
                     .getRoutinesParameter();
 
-            List<RoutinesParameterType> neededRoutineDependencies = new ArrayList<RoutinesParameterType>();
-            neededRoutineDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(true));
-            neededRoutineDependencies.addAll(RoutinesUtil.createJobRoutineDependencies(false));
+            List<IRepositoryViewObject> viewObjects = RoutinesUtil.getCurrentSystemRoutines();
             boolean modified = false;
-
-            for (RoutinesParameterType added : neededRoutineDependencies) {
-                boolean found = false;
-                for (RoutinesParameterType type : routinesDependencies) {
-                    if (added.getId().equals(type.getId()) || added.getName().equals(type.getName())) {
-                        found = true;
-                        break;
+            for (ItemInforType added : oldRoutinesDependencies) {
+                if (added.isSystem()) {
+                    for (int i = 0; i < viewObjects.size(); i++) {
+                        IRepositoryViewObject viewObject = viewObjects.get(i);
+                        if (viewObject.getLabel().equals(added.getIdOrName())) {
+                            RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE
+                                    .createRoutinesParameterType();
+                            routinesParameterType.setId(viewObject.getId());
+                            routinesParameterType.setName(added.getIdOrName());
+                            routinesDependencies.add(routinesParameterType);
+                            modified = true;
+                        }
                     }
+
+                } else {
+                    IRepositoryViewObject userRoutines = RoutinesUtil.getUserRoutines(added.getIdOrName());
+                    if (userRoutines != null) {
+                        RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
+                        routinesParameterType.setId(added.getIdOrName());
+                        routinesParameterType.setName(userRoutines.getLabel());
+                        routinesDependencies.add(routinesParameterType);
+                        modified = true;
+                    }
+
                 }
-                if (!found) {
-                    routinesDependencies.add(added);
-                    modified = true;
-                }
+
             }
             if (modified) {
+                oldRoutinesDependencies.clear();
                 CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(item, true);
                 RelationshipItemBuilder.getInstance().addOrUpdateItem(item, true);
                 return ExecutionResult.SUCCESS_WITH_ALERT;
@@ -89,7 +110,7 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2010, 7, 22, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2010, 11, 04, 12, 0, 0);
         return gc.getTime();
     }
 

@@ -145,17 +145,14 @@ public class ShowRoutineItemsLabelProvider extends LabelProvider implements ICol
                 && ((Property) element).getItem() instanceof RoutineItem) {
             RoutineItem item = (RoutineItem) ((Property) element).getItem();
             for (RoutineItemRecord record : existedRoutinesRecord) {
-                if (item.isBuiltIn() == record.isSystem()) {
-                    if (record.isSystem()) {
-                        if (item.getProperty().getLabel().equals(record.getLabel())) {
-                            return true;
-                        }
-                    } else {
-                        if (item.getProperty().getId().equals(record.getId())) {
-                            return true;
-                        }
+                if (item.getProperty().getLabel().equals(record.getLabel())) {
+                    return true;
+                } else {
+                    if (item.getProperty().getId().equals(record.getId())) {
+                        return true;
                     }
                 }
+
             }
         }
         return false;

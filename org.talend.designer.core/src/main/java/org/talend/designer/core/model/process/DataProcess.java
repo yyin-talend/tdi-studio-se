@@ -412,6 +412,8 @@ public class DataProcess {
         meterNode.setDesignSubjobStartNode(sourceNode.getDesignSubjobStartNode());
         for (IElementParameter param : parameters) {
             IElementParameter meterParam = meterNode.getElementParameter(param.getName());
+            // for bug the same time use monitored and trace
+            ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
             if (meterParam != null) {
                 meterParam.setValue(param.getValue());
             }
@@ -425,6 +427,7 @@ public class DataProcess {
         dataConnec = new DataConnection();
         dataConnec.setActivate(connection.isActivate());
         dataConnec.setLineStyle(connection.getLineStyle());
+
         dataConnec.setTraceConnection(connection.isTraceConnection());
         dataConnec.setTracesCondition(connection.getTracesCondition());
         dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());

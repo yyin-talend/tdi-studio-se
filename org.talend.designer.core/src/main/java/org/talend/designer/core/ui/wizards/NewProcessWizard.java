@@ -33,8 +33,9 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.utils.emf.talendfile.ItemInforType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -106,11 +107,11 @@ public class NewProcessWizard extends Wizard {
             property.setId(repositoryFactory.getNextId());
 
             ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
-
+            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
             // add depended routines.
-            List<ItemInforType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
-            process.getRoutinesDependencies().addAll(dependenciesInPreference);
-
+            List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+            parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
+            process.setParameters(parameterType);
             processItem.setProcess(process);
             RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
 
