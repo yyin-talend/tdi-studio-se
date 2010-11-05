@@ -124,6 +124,7 @@ public class DeleteAction extends AContextualAction {
 
         boolean needToUpdataPalette = false;
         final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        List<RepositoryNode> deletedFolder = new ArrayList<RepositoryNode>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -134,6 +135,10 @@ public class DeleteAction extends AContextualAction {
                     }
 
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                        if (isInDeletedFolder(deletedFolder, node.getParent())) {
+                            continue;
+                        }
+
                         boolean needReturn = deleteElements(factory, deleteActionCache, node);
                         if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET) {
                             needToUpdataPalette = true;
@@ -150,7 +155,7 @@ public class DeleteAction extends AContextualAction {
                                 || node.getContentType() == ERepositoryObjectType.JOBLET) {
                             types.add(ERepositoryObjectType.DOCUMENTATION);
                         }
-
+                        deletedFolder.add(node);
                         deleteFolder(node, factory, deleteActionCache);
                     }
                 } catch (PersistenceException e) {
@@ -187,6 +192,16 @@ public class DeleteAction extends AContextualAction {
             }
         });
 
+    }
+
+    private boolean isInDeletedFolder(List<RepositoryNode> folderList, RepositoryNode node) {
+        for (RepositoryNode folder : folderList) {
+            if (node == folder) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -649,8 +664,8 @@ public class DeleteAction extends AContextualAction {
         Item item = objToDelete.getProperty().getItem();
         AbstractResourceChangesService resChangeService = null;
         if (item instanceof ConnectionItem) {
-            resChangeService = ResourceChangesServiceRegister.getInstance()
-                    .getResourceChangeService(AbstractResourceChangesService.class);
+            resChangeService = ResourceChangesServiceRegister.getInstance().getResourceChangeService(
+                    AbstractResourceChangesService.class);
             if (resChangeService != null) {
                 if (!resChangeService.handleResourceChange(((ConnectionItem) item).getConnection())) {
                     return true;
