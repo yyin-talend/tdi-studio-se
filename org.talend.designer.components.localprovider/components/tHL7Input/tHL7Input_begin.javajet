@@ -147,7 +147,9 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
      */
     public synchronized void close() throws java.io.IOException
     {
-        myReader.close();
+    	if(myReader!=null){
+        	myReader.close();
+        }
     }
 }
 
@@ -221,7 +223,14 @@ parser_<%=cid %>.setValidationContext(noValid_<%=cid %>);
 }
 %>
       //READ DATA
-	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(new java.io.FileInputStream(<%=fileName%>),<%=encoding %>);
+    java.io.InputStream is_<%=cid %> = null;
+    Object file_<%=cid %> = <%=fileName %>;    
+    if(file_<%=cid %> instanceof java.io.InputStream){
+    	is_<%=cid %> = (java.io.InputStream)file_<%=cid %>;
+    }else{
+    	is_<%=cid %> = new java.io.FileInputStream((String)file_<%=cid %>);
+    }
+	TalendHL7Reader_<%=cid %> reader_<%=cid %> = new TalendHL7Reader_<%=cid %>(is_<%=cid %>, <%=encoding %>);
 
 	reader_<%=cid %>.setStartMsgChar(<%=startMsg%>);
 	reader_<%=cid %>.setEndMsgChar(<%=endMsg%>);
