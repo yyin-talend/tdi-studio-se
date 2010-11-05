@@ -13,7 +13,9 @@
 package org.talend.designer.core.model.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -46,41 +48,31 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
 
     private static Process componentProcess = null;
 
-    // public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
-    // DataProcess currDataProcess);
+    private static Map<String, AbstractProcessProvider> providerMap = new HashMap<String, AbstractProcessProvider>();
 
     public static AbstractProcessProvider findProcessProviderFromPID(String pid) {
-        IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
-        for (IConfigurationElement elem : elems) {
-            String attribute = elem.getAttribute(ATTR_PID);
-            if (attribute.equals(pid)) {
+        if (providerMap == null || !providerMap.containsKey(pid)) {
+            findAllProcessProviders();
+        }
+        return providerMap.get(pid);
+    }
+
+    public static List<AbstractProcessProvider> findAllProcessProviders() {
+        if (providerMap.isEmpty()) {
+            IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
+            for (IConfigurationElement elem : elems) {
+                String pid = elem.getAttribute(ATTR_PID);
                 try {
                     AbstractProcessProvider createExecutableExtension = (AbstractProcessProvider) elem
                             .createExecutableExtension(ATTR_CLASS);
-                    return createExecutableExtension;
+                    providerMap.put(pid, createExecutableExtension);
                 } catch (CoreException ex) {
                     // ex.printStackTrace();
                     ExceptionHandler.process(ex);
                 }
             }
         }
-        return null;
-    }
-
-    public static List<AbstractProcessProvider> findAllProcessProviders() {
-        List<AbstractProcessProvider> processProviders = new ArrayList<AbstractProcessProvider>();
-        IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
-        for (IConfigurationElement elem : elems) {
-            try {
-                AbstractProcessProvider createExecutableExtension = (AbstractProcessProvider) elem
-                        .createExecutableExtension(ATTR_CLASS);
-                processProviders.add(createExecutableExtension);
-            } catch (CoreException ex) {
-                // ex.printStackTrace();
-                ExceptionHandler.process(ex);
-            }
-        }
-        return processProviders;
+        return new ArrayList<AbstractProcessProvider>(providerMap.values());
     }
 
     /**
@@ -212,7 +204,8 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * bug 6158
      */
     public abstract Item getJobletItem(INode node);
-	// for feature 13361
+
+    // for feature 13361
     public abstract Item getJobletItem(INode node, String version);
 
     public boolean containNodeInMemoryNotProcess() {
