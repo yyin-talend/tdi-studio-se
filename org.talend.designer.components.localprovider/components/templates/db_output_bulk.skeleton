@@ -2100,6 +2100,11 @@ public class CLASS {
         }
         protected boolean contaionsSpaces(String columnName) {
         	if (columnName != null) {
+        	    //bug0016837 when use Additional column the coulmn name like: " + "columnNmae" + "
+        	    if (columnName.startsWith("\" + ") && columnName.endsWith(" + \"")) {
+        	        return false;
+        	    }
+        	    
         		if (columnName.contains(" ")) {
         			return true;
         		}
