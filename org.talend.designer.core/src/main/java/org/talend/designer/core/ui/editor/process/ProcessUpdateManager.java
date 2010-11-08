@@ -999,11 +999,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
                                             + UpdatesConstants.SEGMENT_LINE + table.getLabel();
 
-                                    if (node.getComponent() != null && "tELTAggregate".equals(node.getComponent().getName())) {//$NON-NLS-1$
-                                        source = connectionItem.getProperty().getId() + UpdatesConstants.SEGMENT_LINE
-                                                + table.getLabel();
-                                    }
-
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);
                                     copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
@@ -1023,6 +1018,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         result = new UpdateCheckResult(node);
                                         result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
                                                 copyOfrepositoryMetadata, source);
+                                        result.setContextModeConnectionItem(connectionItem);
                                     }
                                     builtIn = false;
                                 }

@@ -404,11 +404,15 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (params != null) {
                                         for (IElementParameter param : params) {
                                             ChangeMetadataCommand cmd = null;
-                                            if (node.getComponent() != null
-                                                    && "tELTAggregate".equals(node.getComponent().getName())) {//$NON-NLS-1$
-                                                IElementParameter childParam = param.getChildParameters().get(
-                                                        UpdatesConstants.REPOSITORY_SCHEMA_TYPE);
-                                                if (childParam != null && childParam.getValue().equals(result.getRemark())) {
+
+                                            if (param.getChildParameters() != null
+                                                    && param.getChildParameters().get("REPOSITORY_SCHEMA_TYPE") != null
+                                                    && result.getContextModeConnectionItem() != null) {
+                                                final Object value = param.getChildParameters().get("REPOSITORY_SCHEMA_TYPE")
+                                                        .getValue();
+                                                String idAndName = result.getContextModeConnectionItem().getProperty().getId()
+                                                        + UpdatesConstants.SEGMENT_LINE + newTable.getLabel();
+                                                if (idAndName.equals(value)) {
                                                     cmd = new ChangeMetadataCommand(node, param, null, newTable);
                                                 }
                                             } else {
