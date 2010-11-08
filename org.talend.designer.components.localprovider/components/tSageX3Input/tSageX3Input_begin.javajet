@@ -50,9 +50,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             	String key = keyValue.get("KEY");
             	String value = keyValue.get("VALUE");
 %>
-            if(<%=key%>!=null && !"".equals(<%=key%>) && <%=value%>!=null && !"".equals(<%=value%>)){ 
+
             	keyValues_<%=cid%>.put(<%=key%>,<%=value%>);
-			}
+
 <%
 			}
 			IConnection outgoingConn = outgoingConns.get(0);
