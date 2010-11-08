@@ -39,9 +39,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -314,6 +316,9 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
                                 monitor.worked(50);
                                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
                                 ComponentUtilities.updatePalette();
+                                ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
+                                        .getService(ICodeGeneratorService.class);
+                                service.refreshTemplates();
                                 monitor.worked(100);
                                 monitor.done();
 
