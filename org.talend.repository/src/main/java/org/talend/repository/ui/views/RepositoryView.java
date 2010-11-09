@@ -1190,8 +1190,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (rootNode.getParent() instanceof ProjectRepositoryNode) {
                 ((ProjectRepositoryNode) rootNode.getParent()).clearNodeAndProjectCash();
             }
+            // refresh content of recyclebin
             contentProvider.getChildren(rootNode); // retrieve child
             viewer.refresh(rootNode);
+            // user A and B in svn,if user A delete some jobs,B create job,the recyle bin can't refresh,
+            // so need refresh recyle bin. if empty recyle bin,must delete job documents,don't need refresh recyle bin.
+            // if refresh throw exception.
+            if (!rootNode.getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
+                root.getRecBinNode().setInitialized(false);
+                root.getRecBinNode().getChildren().clear();
+                contentProvider.getChildren(root.getRecBinNode());
+                viewer.refresh(root.getRecBinNode());
+            }
         }
     }
 
