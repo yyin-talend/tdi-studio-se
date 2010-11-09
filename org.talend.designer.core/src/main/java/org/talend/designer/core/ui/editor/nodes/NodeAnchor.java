@@ -24,6 +24,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gmf.runtime.draw2d.ui.geometry.LineSeg;
 import org.eclipse.gmf.runtime.draw2d.ui.geometry.LineSeg.KeyPoint;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.designer.core.ui.editor.connections.Connection;
 
 /**
@@ -31,9 +33,9 @@ import org.talend.designer.core.ui.editor.connections.Connection;
  */
 public class NodeAnchor extends ChopboxAnchor {
 
-    Node source, target = null;
+    IGraphicalNode source, target = null;
 
-    Connection connection = null;
+    IConnection connection = null;
 
     boolean isTargetAnchor = false;
 
@@ -46,20 +48,20 @@ public class NodeAnchor extends ChopboxAnchor {
      * 
      * @param owner
      */
-    public NodeAnchor(NodeFigure owner, Node source, boolean isTargetAnchor) {
+    public NodeAnchor(NodeFigure owner, IGraphicalNode source, boolean isTargetAnchor) {
         super(owner);
         this.source = source;
         this.isTargetAnchor = isTargetAnchor;
     }
 
-    public NodeAnchor(NodeFigure owner, Node source, Node target, boolean isTargetAnchor) {
+    public NodeAnchor(NodeFigure owner, IGraphicalNode source, IGraphicalNode target, boolean isTargetAnchor) {
         super(owner);
         this.source = source;
         this.target = target;
         this.isTargetAnchor = isTargetAnchor;
     }
 
-    public void setTarget(Node target) {
+    public void setTarget(IGraphicalNode target) {
         this.target = target;
     }
 

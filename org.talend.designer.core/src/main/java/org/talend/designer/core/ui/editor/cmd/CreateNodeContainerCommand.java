@@ -18,11 +18,11 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -51,7 +51,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public boolean canExecute() {
-        for (Node currentNode : (List<Node>) process.getGraphicalNodes()) {
+        for (IGraphicalNode currentNode : (List<IGraphicalNode>) process.getGraphicalNodes()) {
             if ((currentNode.getLocation().x == location.x) && (currentNode.getLocation().y == location.y)) {
                 return false;
             }

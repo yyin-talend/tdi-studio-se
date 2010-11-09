@@ -30,14 +30,14 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
 
 /**
@@ -60,7 +60,7 @@ public final class ContextParameterExtractor {
      * @param text Component on wich extractor is installed.
      * @param process Process on wich context parameter is added.
      */
-    public static void installOn(final Control text, final Process process, final String parameterName, final Element elem) {
+    public static void installOn(final Control text, final IProcess2 process, final String parameterName, final IElement elem) {
         text.addKeyListener(new KeyAdapter() {
 
             @SuppressWarnings("unchecked")
@@ -125,7 +125,7 @@ public final class ContextParameterExtractor {
      * @param elem
      * @param replaceCode
      */
-    public static void saveContext(final String parameterName, final Element elem, String replaceCode, Process process) {
+    public static void saveContext(final String parameterName, final IElement elem, String replaceCode, IProcess2 process) {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, parameterName, replaceCode);
         boolean exe = false;
         if (process != null) {

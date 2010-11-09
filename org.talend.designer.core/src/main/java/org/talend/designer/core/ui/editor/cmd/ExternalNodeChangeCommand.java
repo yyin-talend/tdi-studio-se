@@ -294,12 +294,12 @@ public class ExternalNodeChangeCommand extends Command {
 
         for (Connection connection : connectionsToDelete) {
             connection.disconnect();
-            Node prevNode = connection.getSource();
+            INode prevNode = connection.getSource();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
 
-            Node nextNode = connection.getTarget();
+            INode nextNode = connection.getTarget();
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }

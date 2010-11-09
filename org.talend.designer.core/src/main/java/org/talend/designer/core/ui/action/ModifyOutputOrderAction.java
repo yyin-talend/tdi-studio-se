@@ -18,6 +18,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.dialog.mergeorder.ModifyOutputOrderDialog;
 import org.talend.designer.core.ui.editor.cmd.ChangeOutputConnectionOrderCommand;
@@ -34,7 +35,7 @@ public class ModifyOutputOrderAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.ModifyOutputOrderAction"; //$NON-NLS-1$
 
-    private Node multipleOutputNode;
+    private INode multipleOutputNode;
 
     private boolean usedConnType = false;
 
@@ -65,7 +66,7 @@ public class ModifyOutputOrderAction extends SelectionAction {
         }
         Object o = parts.get(0);
         EConnectionType tmpConnType = null;
-        Node node = null;
+        INode node = null;
         if (o instanceof ConnectionPart) {
             ConnectionPart part = (ConnectionPart) o;
             Connection connection = (Connection) part.getModel();

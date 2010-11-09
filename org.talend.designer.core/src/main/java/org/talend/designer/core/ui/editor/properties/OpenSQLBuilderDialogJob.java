@@ -26,7 +26,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueBut
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -60,7 +60,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 
     private Composite composite;
 
-    private Element elem;
+    private IElement elem;
 
     private String propertyName;
 
@@ -78,7 +78,7 @@ public class OpenSQLBuilderDialogJob extends Job {
      * @param commandStack
      * @param controller
      */
-    public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters, Composite composite, Element elem,
+    public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters, Composite composite, IElement elem,
             String propertyName, CommandStack commandStack, AbstractElementPropertySectionController controller) {
         super(Messages.getString("OpenSQLBuilderDialogJob.openSqlbuilderDialog")); //$NON-NLS-1$
         this.connectionParameters = connectionParameters;

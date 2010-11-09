@@ -36,10 +36,10 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PromptDefaultValueDialog.ColumnInfo;
 
@@ -124,8 +124,8 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             @Override
             protected List<Object> getObjectToAdd() {
 
-                Element element = tableEditorModel.getElement();
-                if (element != null && element instanceof Node) {
+                IElement element = tableEditorModel.getElement();
+                if (element != null && element instanceof INode) {
                     IElementParameter param = tableEditorModel.getElemParameter();
 
                     // diplay a dialog for setting default values. see 0005416: When click Add All in a table, add the
@@ -146,7 +146,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                             }
                         }
                     }
-                    Node node = (Node) element;
+                    INode node = (INode) element;
                     if (node.getMetadataList() != null && !node.getMetadataList().isEmpty()) {
                         IMetadataTable metadata = node.getMetadataList().get(0);
                         if (metadata.getListColumns() != null && !metadata.getListColumns().isEmpty()) {

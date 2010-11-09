@@ -27,8 +27,9 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -46,7 +47,7 @@ import org.talend.repository.utils.DatabaseConnectionParameterUtil;
  */
 public class QueryGuessCommand extends Command {
 
-    private final Element node;
+    private final IElement node;
 
     private String propName;
 
@@ -77,7 +78,7 @@ public class QueryGuessCommand extends Command {
      * @param propName
      * @param newOutputMetadataTable
      */
-    public QueryGuessCommand(Element node, IMetadataTable newOutputMetadataTable) {
+    public QueryGuessCommand(IElement node, IMetadataTable newOutputMetadataTable) {
         this.node = node;
         this.newOutputMetadataTable = newOutputMetadataTable;
     }
@@ -90,13 +91,13 @@ public class QueryGuessCommand extends Command {
      * @param schema
      * @param dbType
      */
-    public QueryGuessCommand(Node node2, IMetadataTable metadataTable, String schema, String dbType) {
+    public QueryGuessCommand(INode node2, IMetadataTable metadataTable, String schema, String dbType) {
         this(node2, metadataTable);
         this.schema = schema;
         this.dbType = dbType;
     }
 
-    public QueryGuessCommand(Node node2, IMetadataTable metadataTable, String schema, String dbType, Connection conn) {// 9594
+    public QueryGuessCommand(INode node2, IMetadataTable metadataTable, String schema, String dbType, Connection conn) {// 9594
         this(node2, metadataTable);
         this.schema = schema;
         this.dbType = dbType;

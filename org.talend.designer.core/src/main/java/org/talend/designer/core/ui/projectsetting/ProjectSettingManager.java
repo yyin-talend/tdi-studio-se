@@ -31,6 +31,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.ProcessItem;
@@ -248,7 +249,7 @@ public class ProjectSettingManager extends Utils {
                 + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
         cmd2.setMaps(extraComposite.getRepositoryTableMap());
 
-        AbstractMultiPageTalendEditor part = ((org.talend.designer.core.ui.editor.process.Process) process).getEditor();
+        AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) process).getEditor();
         if (part instanceof AbstractMultiPageTalendEditor) {
             Object adapter = (part).getTalendEditor().getAdapter(CommandStack.class);
             if (adapter != null) {

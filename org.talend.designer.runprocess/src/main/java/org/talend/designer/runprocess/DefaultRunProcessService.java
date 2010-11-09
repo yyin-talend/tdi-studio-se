@@ -24,6 +24,7 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -55,11 +56,11 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#setActiveProcess(org.talend.core.model.process.IProcess)
      */
-    public void setActiveProcess(IProcess activeProcess) {
+    public void setActiveProcess(IProcess2 activeProcess) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess);
     }
 
-    public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
+    public void setActiveProcess(IProcess2 activeProcess, boolean refreshUI) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess, refreshUI);
     }
 

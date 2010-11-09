@@ -22,6 +22,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.CodeView;
@@ -48,11 +49,11 @@ public class ActiveProcessTracker implements IPartListener {
         }
     }
 
-    private static IProcess currentProcess;
+    private static IProcess2 currentProcess;
 
-    private static IProcess lastProcessOpened;
+    private static IProcess2 lastProcessOpened;
 
-    public IProcess getJobFromActivatedEditor(IWorkbenchPart part) {
+    public IProcess2 getJobFromActivatedEditor(IWorkbenchPart part) {
         IWorkbenchPart testedPart = part;
         if (!(part instanceof AbstractMultiPageTalendEditor)) {
             testedPart = part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor();
@@ -62,7 +63,7 @@ public class ActiveProcessTracker implements IPartListener {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) testedPart;
             mpte.setName();
             Contexts.setTitle(mpte.getTitle());
-            IProcess process = mpte.getTalendEditor().getProcess();
+            IProcess2 process = mpte.getTalendEditor().getProcess();
             return process;
         } else {
             // No editor
@@ -103,7 +104,7 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
      */
     public void partBroughtToTop(IWorkbenchPart part) {
-        IProcess process = getJobFromActivatedEditor(part);
+        IProcess2 process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process) {
             currentProcess = process;
             setContextsView(process);
@@ -134,7 +135,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @param process
      */
-    private void addJobInProblemView(IProcess process) {
+    private void addJobInProblemView(IProcess2 process) {
         Problems.addProcess(process);
 
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
@@ -146,7 +147,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @param process
      */
-    private void setContextsView(IProcess process) {
+    private void setContextsView(IProcess2 process) {
 
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         service.setActiveProcess(process, false);
@@ -244,7 +245,7 @@ public class ActiveProcessTracker implements IPartListener {
         } else {
             CorePlugin.getDefault().getDiagramModelService().handleNewEditorAction(part);
         }
-        IProcess process = getJobFromActivatedEditor(part);
+        IProcess2 process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process && lastProcessOpened != process) {
             lastProcessOpened = process;
             addJobInProblemView(process);

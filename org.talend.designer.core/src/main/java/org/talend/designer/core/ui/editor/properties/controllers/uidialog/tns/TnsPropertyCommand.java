@@ -13,7 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers.uidialog.tns;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
@@ -28,9 +28,9 @@ public class TnsPropertyCommand extends Command {
 
     private TnsInfo oldTnsInfo = new TnsInfo();
 
-    private final Element elem;
+    private final IElement elem;
 
-    public TnsPropertyCommand(TnsInfo tnsInfo, Element elem) {
+    public TnsPropertyCommand(TnsInfo tnsInfo, IElement elem) {
         super();
         this.tnsInfo = tnsInfo;
         this.elem = elem;

@@ -42,7 +42,8 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.ui.IJobletProviderService;
@@ -52,8 +53,6 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
-import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * View that will show the code of the current component.
@@ -211,7 +210,7 @@ public class CodeView extends ViewPart {
         viewMainAction.setChecked(true);
     }
 
-    public static void refreshCodeView(Element element) {
+    public static void refreshCodeView(IElement element) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView(CodeView.ID);
         if (view != null) {
@@ -220,16 +219,16 @@ public class CodeView extends ViewPart {
         }
     }
 
-    private void refresh(Element element) {
-        if (element instanceof Node) {
-            selectedNode = (Node) element;
+    private void refresh(IElement element) {
+        if (element instanceof INode) {
+            selectedNode = (INode) element;
             if (nodeCodeView != -1) {
                 codeView = nodeCodeView;
                 nodeCodeView = -1;
             }
             refresh();
-        } else if (element instanceof Connection) {
-            selectedNode = ((Connection) element).getSource();
+        } else if (element instanceof IConnection) {
+            selectedNode = ((IConnection) element).getSource();
             nodeCodeView = codeView;
             codeView = CODE_END;
             refresh();

@@ -39,8 +39,8 @@ import org.talend.core.model.metadata.designerproperties.RepositoryToComponentPr
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -72,7 +72,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private final Map<String, Object> oldValues;
 
-    private final Element elem;
+    private final IElement elem;
 
     private final Connection connection;
 
@@ -106,7 +106,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private IMetadataTable table;
 
-    public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
+    public ChangeValuesFromRepository(IElement elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
         this.value = value;
@@ -128,7 +128,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // }
     }
 
-    public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value, int index,
+    public ChangeValuesFromRepository(IElement elem, Connection connection, String propertyName, String value, int index,
             boolean isNotSim) {
         this.elem = elem;
         this.connection = connection;
@@ -143,7 +143,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
     }
 
-    public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value,
+    public ChangeValuesFromRepository(IElement elem, Connection connection, String propertyName, String value,
             boolean reOpenXSDBool) {
         this.reOpenXSDBool = reOpenXSDBool;
         this.elem = elem;
@@ -162,7 +162,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
     }
 
-    public ChangeValuesFromRepository(Element elem, Connection connection, IMetadataTable table, String propertyName,
+    public ChangeValuesFromRepository(IElement elem, Connection connection, IMetadataTable table, String propertyName,
             String value, boolean reOpenXSDBool) {
         this(elem, connection, propertyName, value, reOpenXSDBool);
         this.table = table;

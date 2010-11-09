@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -35,7 +36,6 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IRepositoryNode;
@@ -176,7 +176,7 @@ public class ImplicitContextLoadHelper {
                 getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
         cmd2.setMaps(extraComposite.getRepositoryTableMap());
 
-        AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
+        AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) element).getEditor();
         if (part instanceof AbstractMultiPageTalendEditor) {
             Object adapter = (part).getTalendEditor().getAdapter(CommandStack.class);
             if (adapter != null) {

@@ -70,11 +70,9 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private boolean isConnected;
 
-    private Node target;
+    private INode target;
 
-    private Node source;
-
-    private Node sourceForUnit;
+    private INode source;
 
     protected String name;
 
@@ -114,24 +112,21 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     // used only for copy / paste (will generate the name) && connection
     // creation
-    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+    public Connection(INode source, INode target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, final boolean monitorConnection) {
-        this.sourceForUnit = source;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only when loading a process && connection creation
-    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+    public Connection(INode source, INode target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, String uniqueName, final boolean monitorConnection) {
-        this.sourceForUnit = source;
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only in ConnectionManager to test if we can connect or not.
-    public Connection(Node source, Node target, EConnectionType lineStyle, final boolean monitorConnection) {
+    public Connection(INode source, INode target, EConnectionType lineStyle, final boolean monitorConnection) {
         this.source = source;
-        this.sourceForUnit = source;
         this.target = target;
         this.lineStyle = lineStyle;
         this.monitorConnection = monitorConnection;
@@ -169,7 +164,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return false;
     }
 
-    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+    private void init(INode source, INode target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, final boolean monitorConnection) {
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             performance = new IterateConnectionPerformance(this);
@@ -352,7 +347,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                 addElementParameter(param);
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
                 Node tmpNode = new Node(component, (Process) source.getProcess());
-                tmpNode.setTemplate(source.isTemplate());
                 tmpNode.setTemplate(source.isTemplate());
                 tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
                 tmpNode.addInput(this);
@@ -567,7 +561,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
-                        && sourceForUnit != null && sourceForUnit.getComponent().getName().equals(sourceForUnit.getLabel())) {
+                        && source != null && source.getComponent().getName().equals(source.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
@@ -733,29 +727,14 @@ public class Connection extends Element implements IConnection, IPerformance {
         return this.traceData;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getTarget()
-     */
-    public Node getTarget() {
+    public INode getTarget() {
         return this.target;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getSource()
-     */
-    public Node getSource() {
+    public INode getSource() {
         return this.source;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getConnectionLabel(java.lang.String)
-     */
     public ConnectionLabel getConnectionLabel() {
         return label;
     }
@@ -863,7 +842,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @param newSource
      * @param newTarget
      */
-    public void reconnect(Node newSource, Node newTarget, EConnectionType newLineStyle) {
+    public void reconnect(INode newSource, INode newTarget, EConnectionType newLineStyle) {
         disconnect();
         this.source = newSource;
         this.target = newTarget;

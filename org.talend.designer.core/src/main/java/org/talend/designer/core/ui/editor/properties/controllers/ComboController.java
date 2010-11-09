@@ -49,7 +49,9 @@ import org.talend.core.ITDQPatternService;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
@@ -371,11 +373,11 @@ public class ComboController extends AbstractElementPropertySectionController {
         }// Ends
 
         QueryGuessCommand cmd = null;
-        Node node = null;
-        if (elem instanceof Node) {
-            node = (Node) elem;
+        INode node = null;
+        if (elem instanceof INode) {
+            node = (INode) elem;
         } else { // else instanceof Connection
-            node = ((org.talend.designer.core.ui.editor.connections.Connection) elem).getSource();
+            node = ((IConnection) elem).getSource();
         }
 
         newRepositoryMetadata = node.getMetadataList().get(0);

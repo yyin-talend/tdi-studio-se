@@ -21,6 +21,7 @@ import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.SAPConnectionUtils;
@@ -38,7 +39,7 @@ public final class SAPParametersUtils {
      * @param param
      * @param sapIDocName
      */
-    public static void getSAPIDocParams(final Element elem, final Connection connection, final IElementParameter param,
+    public static void getSAPIDocParams(final IElement elem, final Connection connection, final IElementParameter param,
             final String sapIDocName) {
 
         if (param.getRepositoryValue() == null) {
@@ -220,7 +221,7 @@ public final class SAPParametersUtils {
      * @param param
      */
     @SuppressWarnings("unchecked")
-    public static void retrieveSAPParams(final Element elem, final Connection connection, final IElementParameter param,
+    public static void retrieveSAPParams(final IElement elem, final Connection connection, final IElementParameter param,
             final String sapFunctionName) {
         if (param.getRepositoryValue() == null) {
             return;

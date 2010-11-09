@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -66,10 +67,12 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.NodeUtil;
@@ -82,6 +85,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeReturn;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -106,7 +110,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  * $Id$
  * 
  */
-public class Node extends Element implements INode {
+public class Node extends Element implements IGraphicalNode {
 
     private static Logger log = Logger.getLogger(Node.class);
 
@@ -179,7 +183,7 @@ public class Node extends Element implements INode {
 
     private String performanceData;
 
-    private Process process = null;
+    private IProcess2 process = null;
 
     private String pluginFullName;
 
@@ -283,7 +287,7 @@ public class Node extends Element implements INode {
         }
     }
 
-    public Node(IComponent component, Process process, boolean insertSet, boolean template) {
+    public Node(IComponent component, IProcess2 process, boolean insertSet, boolean template) {
         this.oldcomponent = component;
         this.insertSet = insertSet;
         this.template = template;
@@ -300,7 +304,7 @@ public class Node extends Element implements INode {
         }
     }
 
-    public Node(IComponent component, Process process) {
+    public Node(IComponent component, IProcess2 process) {
         this.oldcomponent = component;
         this.process = process;
         init(component);
@@ -1090,7 +1094,7 @@ public class Node extends Element implements INode {
                         }
 
                         if (takeSchema) {
-                            connection.getSource().takeSchemaFrom(this, mainConnector.getName());
+                            ((Node) connection.getSource()).takeSchemaFrom(this, mainConnector.getName());
                         }
                     } else if (connection.getSourceNodeConnector().isMultiSchema()) {
                         if (template) {
@@ -1115,7 +1119,7 @@ public class Node extends Element implements INode {
                             }
                         }
                     } else {
-                        connection.getSource().checkAndRefreshNode();
+                        ((Node) connection.getSource()).checkAndRefreshNode();
                         checkAndRefreshNode();
                     }
                 }
@@ -1182,7 +1186,7 @@ public class Node extends Element implements INode {
         if (template) {
             cmdStack = process.getCommandStack();
         } else {
-            AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
+            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) process.getEditor()).getTalendEditor();
             cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         }
 
@@ -1264,12 +1268,12 @@ public class Node extends Element implements INode {
         return this.inputs;
     }
 
-    public void setIncomingConnections(List<Connection> connections) {
+    public void setIncomingConnections(List<? extends IConnection> connections) {
         this.inputs.clear();
         this.inputs.addAll(connections);
     }
 
-    public void setOutgoingConnections(List<Connection> connections) {
+    public void setOutgoingConnections(List<? extends IConnection> connections) {
         this.outputs.clear();
         this.outputs.addAll(connections);
     }
@@ -1482,7 +1486,7 @@ public class Node extends Element implements INode {
 
                     // fix bug 0005678: tRunJob properties are very slow
                     // commnets the following code. do not know why it's added
-                    ((Process) getProcess()).getEditor().updateChildrens();
+                    ((AbstractMultiPageTalendEditor) ((Process) getProcess()).getEditor()).updateChildrens();
                 }
             }
         }
@@ -1751,7 +1755,7 @@ public class Node extends Element implements INode {
         return null;
     }
 
-    public Node.Data getExternalBytesData() {
+    public Object getExternalBytesData() {
         if (externalNode == null) {
             return null;
         }
@@ -1945,7 +1949,7 @@ public class Node extends Element implements INode {
         return mainSubBranchNode;
     }
 
-    public boolean sameProcessAs(Node node, boolean withConditions) {
+    public boolean sameProcessAs(INode node, boolean withConditions) {
         // System.out.println("from:" + this + " -- to:" + node);
 
         Node currentNode = (Node) getSubProcessStartNode(withConditions);
@@ -3324,6 +3328,18 @@ public class Node extends Element implements INode {
             }
         }
         return flag;
+    }
+
+    public Set<INode> fsComponentsInProgressBar() {
+        return this.getNodeProgressBar().getIncludedNodesInProgress();
+    }
+
+    public int getPosX() {
+        return location.x;
+    }
+
+    public int getPosY() {
+        return location.y;
     }
 
 }

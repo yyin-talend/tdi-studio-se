@@ -42,7 +42,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
@@ -235,9 +235,9 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     }
 
-    public static void updateComponentList(Element elem, IElementParameter param) {
-        if (elem instanceof Node) {
-            Node currentNode = (Node) elem;
+    public static void updateComponentList(IElement elem, IElementParameter param) {
+        if (elem instanceof INode) {
+            INode currentNode = (INode) elem;
 
             List<INode> nodeList = null;
 

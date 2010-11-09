@@ -19,8 +19,11 @@ import org.eclipse.gef.commands.Command;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -35,13 +38,13 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class DeleteNodeContainerCommand extends Command {
 
-    private Process process;
+    private IProcess2 process;
 
-    private List<Node> nodeList;
+    private List<INode> nodeList;
 
     private List<String> joinTableNames = new ArrayList<String>();
 
-    public DeleteNodeContainerCommand(Process process, List<Node> nodeList) {
+    public DeleteNodeContainerCommand(IProcess2 process, List<INode> nodeList) {
         this.process = process;
         this.nodeList = nodeList;
         setLabel(Messages.getString("DeleteNodeCommand.Label")); //$NON-NLS-1$
@@ -52,22 +55,22 @@ public class DeleteNodeContainerCommand extends Command {
     public void execute() {
         process.setActivate(false);
 
-        for (Node node : nodeList) {
-            NodeContainer nodeContainer = node.getNodeContainer();
+        for (INode node : nodeList) {
+            NodeContainer nodeContainer = ((Node) node).getNodeContainer();
 
-            this.process.removeNodeContainer(nodeContainer);
-            List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
-            List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
+            ((Process) process).removeNodeContainer(nodeContainer);
+            List<IConnection> inputList = (List<IConnection>) node.getIncomingConnections();
+            List<IConnection> outputList = (List<IConnection>) node.getOutgoingConnections();
             boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
                     | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
-            for (Connection connection : inputList) {
+            for (IConnection connection : inputList) {
                 // see bug 0002633: "rejects" link disappears at times.
                 if (connection != null && connection.getSourceNodeConnector() != null) {
                     connection.getSourceNodeConnector().setCurLinkNbOutput(
                             connection.getSourceNodeConnector().getCurLinkNbOutput() - 1);
                 }
 
-                Node prevNode = connection.getSource();
+                INode prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     // see bug 0004577
                     // INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
@@ -79,8 +82,8 @@ public class DeleteNodeContainerCommand extends Command {
                         process.removeUniqueConnectionName(connection.getUniqueName());
                 }
             }
-            for (Connection connection : outputList) {
-                Node nextNode = connection.getTarget();
+            for (IConnection connection : outputList) {
+                INode nextNode = connection.getTarget();
                 if (!nodeList.contains(nextNode)) {
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() - 1);
@@ -122,10 +125,10 @@ public class DeleteNodeContainerCommand extends Command {
     @SuppressWarnings("unchecked")
     public void undo() {
         process.setActivate(false);
-        for (Node node : nodeList) {
-            NodeContainer nodeContainer = node.getNodeContainer();
+        for (INode node : nodeList) {
+            NodeContainer nodeContainer = ((Node) node).getNodeContainer();
             this.process.addUniqueNodeName(node.getUniqueName());
-            this.process.addNodeContainer(nodeContainer);
+            ((Process) process).addNodeContainer(nodeContainer);
 
             List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
             List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
@@ -138,7 +141,7 @@ public class DeleteNodeContainerCommand extends Command {
                             connection.getSourceNodeConnector().getCurLinkNbOutput() + 1);
                 }
 
-                Node prevNode = connection.getSource();
+                INode prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     prevNode.addOutput(connection);
                     // see bug 0005635: Undo after delete, doesn't set back correctly the number of connections linked.
@@ -155,8 +158,8 @@ public class DeleteNodeContainerCommand extends Command {
                     }
                 }
             }
-            for (Connection connection : outputList) {
-                Node nextNode = connection.getTarget();
+            for (IConnection connection : outputList) {
+                INode nextNode = connection.getTarget();
                 if (!nodeList.contains(nextNode)) {
                     nextNode.addInput(connection);
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());

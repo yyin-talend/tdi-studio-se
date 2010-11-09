@@ -20,7 +20,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -56,7 +56,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
         String jobVersion = configuration.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         // find process from open editor.
-        IProcess process = DesignerUtilities.findProcessFromEditors(jobId, jobVersion);
+        IProcess2 process = DesignerUtilities.findProcessFromEditors(jobId, jobVersion);
         // find process from repository
         if (process == null) {
             process = findProcessFromRepository(jobId, jobVersion);
@@ -67,7 +67,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
             return;
         }
 
-        final IProcess p = process;
+        final IProcess2 p = process;
         // Run job
         Display.getDefault().asyncExec(new Runnable() {
 
@@ -86,13 +86,13 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      * @param jobName
      * @return
      */
-    private IProcess findProcessFromRepository(String jobId, String version) {
+    private IProcess2 findProcessFromRepository(String jobId, String version) {
         try {
             ItemCacheManager.clearCache();
             ProcessItem processItem = ItemCacheManager.getProcessItem(jobId, version);
             if (processItem != null) {
                 ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true, true, true);
-                IProcess process = fileEditorInput.getLoadedProcess();
+                IProcess2 process = fileEditorInput.getLoadedProcess();
                 return process;
             }
         } catch (Exception e) {

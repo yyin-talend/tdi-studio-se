@@ -13,7 +13,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -35,7 +35,7 @@ public class EncodingTypeChangeCommand extends PropertyChangeCommand {
 
     private boolean fromCombo;
 
-    public EncodingTypeChangeCommand(Element elem, String propName, Object propValue, boolean fromCombo) {
+    public EncodingTypeChangeCommand(IElement elem, String propName, Object propValue, boolean fromCombo) {
         super(elem, propName, EmfComponent.ENCODING_TYPE_CUSTOM.equals(propValue) ? elem.getPropertyValue(propName) : propValue);
         newRealValue = (String) propValue;
         IElementParameter curParam = getElement().getElementParameter(getPropName());

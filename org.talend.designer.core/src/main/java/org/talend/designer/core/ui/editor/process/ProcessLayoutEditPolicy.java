@@ -21,6 +21,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
@@ -82,7 +83,8 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
+     * @see
+     * org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
     public Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
@@ -111,7 +113,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
                 if (nc.isReadOnly()) {
                     return null;
                 }
-                Node node = nc.getNode();
+                IGraphicalNode node = nc.getNode();
                 Point nodeLocation = node.getLocation();
                 MoveNodeCommand locationCommand = new MoveNodeCommand(nc.getNode(), nodeLocation.getTranslated(translationNeeded));
                 cc.add(locationCommand);

@@ -1181,7 +1181,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             process = (Process) elem;
         }
         if (process != null) {
-            part = process.getEditor();
+            part = (AbstractMultiPageTalendEditor) process.getEditor();
         }
         FormLayout layout = new FormLayout();
         layout.marginWidth = ITabbedPropertyConstants.HSPACE + 2;

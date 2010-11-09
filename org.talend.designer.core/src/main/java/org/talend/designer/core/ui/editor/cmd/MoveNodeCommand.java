@@ -21,6 +21,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -59,7 +60,7 @@ public class MoveNodeCommand extends Command {
     @Override
     public boolean canExecute() {
         Rectangle movingRect = new Rectangle(newPos, node.getSize());
-        for (Node currentNode : (List<Node>) node.getProcess().getGraphicalNodes()) {
+        for (IGraphicalNode currentNode : (List<IGraphicalNode>) node.getProcess().getGraphicalNodes()) {
             Rectangle currentRect = new Rectangle(currentNode.getLocation(), currentNode.getSize());
             if ((currentRect.intersects(movingRect)) && (!currentSelection.contains(currentNode))) {
                 return false;

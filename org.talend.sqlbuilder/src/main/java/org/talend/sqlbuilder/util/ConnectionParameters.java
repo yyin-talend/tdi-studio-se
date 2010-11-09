@@ -27,7 +27,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -81,7 +81,7 @@ public class ConnectionParameters {
         }
     }
 
-    private Element node;
+    private IElement node;
 
     // set this SqlEditor's Title (tabItem.setText()).
     private String editorTitle;
@@ -657,11 +657,11 @@ public class ConnectionParameters {
      * 
      * @param elem
      */
-    public void setNode(Element elem) {
+    public void setNode(IElement elem) {
         this.node = elem;
     }
 
-    public Element getNode() {
+    public IElement getNode() {
         return this.node;
     }
 

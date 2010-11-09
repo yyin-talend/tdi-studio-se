@@ -57,7 +57,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
  */
 public class ChangeMetadataCommand extends Command {
 
-    private Node node, inputNode;
+    private INode node, inputNode;
 
     protected IMetadataTable currentOutputMetadata, newOutputMetadata, oldOutputMetadata;
 
@@ -91,7 +91,7 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode, IMetadataTable currentInputMetadata,
+    public ChangeMetadataCommand(INode node, IElementParameter schemaParam, INode inputNode, IMetadataTable currentInputMetadata,
             IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
@@ -123,18 +123,18 @@ public class ChangeMetadataCommand extends Command {
         setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
+    public ChangeMetadataCommand(INode node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
             IMetadataTable newOutputMetadata, IElementParameter inputSchemaParam) {
         this.inputSchemaParam = inputSchemaParam;
         init(node, schemaParam, currentOutputMetadata, newOutputMetadata);
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
+    public ChangeMetadataCommand(INode node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
             IMetadataTable newOutputMetadata) {
         init(node, schemaParam, currentOutputMetadata, newOutputMetadata);
     }
 
-    public void init(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
+    public void init(INode node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
             IMetadataTable newOutputMetadata) {
         this.node = node;
         this.schemaParam = schemaParam;

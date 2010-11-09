@@ -30,7 +30,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.IReplaceNodeInProcess;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -46,7 +45,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
 
     private static boolean canCreateNode = true;
 
-    private static Process componentProcess = null;
+    private static IProcess componentProcess = null;
 
     private static Map<String, AbstractProcessProvider> providerMap = new HashMap<String, AbstractProcessProvider>();
 
@@ -92,7 +91,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
     /**
      * DOC qzhang Comment method "openNewProcessEditor".
      */
-    public void openNewProcessEditor(Node node) {
+    public void openNewProcessEditor(INode node) {
         // do nothing.
     }
 
@@ -121,15 +120,15 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * 
      * @return
      */
-    public boolean canDeleteNode(Node no) {
+    public boolean canDeleteNode(INode no) {
         return true;
     }
 
-    public boolean canCopyNode(Node no) {
+    public boolean canCopyNode(INode no) {
         return true;
     }
 
-    public boolean canCutNode(Node no) {
+    public boolean canCutNode(INode no) {
         return true;
     }
 
@@ -140,9 +139,9 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * 
      * @param nodes
      */
-    public abstract List<String> updateProcessContexts(Process process);
+    public abstract List<String> updateProcessContexts(IProcess process);
 
-    public abstract List<String> updateProcessContextsWithoutUI(Process process);
+    public abstract List<String> updateProcessContextsWithoutUI(IProcess process);
 
     /**
      * 
@@ -150,9 +149,9 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * 
      * 
      */
-    public abstract List<UpdateResult> checkJobletNodeSchema(Process process);
+    public abstract List<UpdateResult> checkJobletNodeSchema(IProcess process);
 
-    public abstract boolean hasJobletComponent(Process process);
+    public abstract boolean hasJobletComponent(IProcess process);
 
     public abstract ImageDescriptor getIcons(IProcess process);
 
@@ -163,13 +162,13 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * 
      * @param node
      */
-    public boolean canCreateNode(Node node) {
+    public boolean canCreateNode(INode node) {
         return true;
     }
 
     public abstract List<PaletteEntry> addJobletEntry();
 
-    public boolean isExtensionComponent(Node node) {
+    public boolean isExtensionComponent(INode node) {
         return false;
     }
 
@@ -180,7 +179,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
      * 
      * @return
      */
-    public boolean isJobletInputOrOutputComponent(Node node) {
+    public boolean isJobletInputOrOutputComponent(INode node) {
         return false;
     }
 
@@ -216,7 +215,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
         this.canCreateNode = flag;
     }
 
-    public static Process getComponentProcess() {
+    public static IProcess getComponentProcess() {
         return componentProcess;
     }
 

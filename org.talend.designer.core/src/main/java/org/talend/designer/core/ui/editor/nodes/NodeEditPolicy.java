@@ -19,8 +19,9 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.ui.editor.cmd.DeleteNodeContainerCommand;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Edit policy that will manage the deletion of a node and the changement of status. <br/>
@@ -48,10 +49,10 @@ public class NodeEditPolicy extends ComponentEditPolicy {
         if (((Node) getHost().getModel()).isReadOnly()) {
             return null;
         }
-        List<Node> nodeList = new ArrayList<Node>();
+        List<INode> nodeList = new ArrayList<INode>();
         for (int i = 0; i < request.getEditParts().size(); i++) {
             if (request.getEditParts().get(i) instanceof NodePart) {
-                Node node = ((Node) ((NodePart) request.getEditParts().get(i)).getModel());
+                INode node = ((INode) ((NodePart) request.getEditParts().get(i)).getModel());
                 if (!nodeList.contains(node)) {
                     nodeList.add(node);
                 }
@@ -59,7 +60,7 @@ public class NodeEditPolicy extends ComponentEditPolicy {
         }
         this.getHost().getViewer().deselectAll();
 
-        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) nodeList.get(0).getProcess(),
+        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((IProcess2) nodeList.get(0).getProcess(),
                 nodeList);
         return deleteCommand;
     }

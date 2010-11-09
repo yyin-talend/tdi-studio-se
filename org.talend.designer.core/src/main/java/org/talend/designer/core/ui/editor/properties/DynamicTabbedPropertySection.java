@@ -70,7 +70,10 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -91,7 +94,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.views.properties.DynamicPropertyGenerator;
 import org.talend.repository.model.ERepositoryStatus;
@@ -1047,12 +1049,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if (workbenchPart instanceof AbstractMultiPageTalendEditor) {
             part = (AbstractMultiPageTalendEditor) workbenchPart;
         } else {
-            if (elem instanceof Node) {
-                part = ((Process) ((Node) elem).getProcess()).getEditor();
-            } else if (elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {
-                org.talend.designer.core.ui.editor.connections.Connection conn;
-                conn = (org.talend.designer.core.ui.editor.connections.Connection) elem;
-                part = ((Process) ((Node) conn.getSource()).getProcess()).getEditor();
+            if (elem instanceof INode) {
+                part = (AbstractMultiPageTalendEditor) ((IProcess2) ((INode) elem).getProcess()).getEditor();
+            } else if (elem instanceof IConnection) {
+                IConnection conn;
+                conn = (IConnection) elem;
+                part = (AbstractMultiPageTalendEditor) ((IProcess2) conn.getSource().getProcess()).getEditor();
             } else {
                 part = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .getActiveEditor();

@@ -71,7 +71,6 @@ import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
-import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
@@ -496,15 +495,15 @@ public class DesignerCoreService implements IDesignerCoreService {
      * nrousseau Comment method "removeConnection".
      */
     public void removeConnection(INode node, String schemaName) {
-        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+        for (IConnection connection : (List<IConnection>) node.getOutgoingConnections()) {
             if (connection.getMetaName().equals(schemaName)) {
                 connection.disconnect();
-                Node prevNode = connection.getSource();
+                INode prevNode = connection.getSource();
                 INodeConnector nodeConnectorSource, nodeConnectorTarget;
                 nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
                 nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
 
-                Node nextNode = connection.getTarget();
+                INode nextNode = connection.getTarget();
                 nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
                 nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
                 break;

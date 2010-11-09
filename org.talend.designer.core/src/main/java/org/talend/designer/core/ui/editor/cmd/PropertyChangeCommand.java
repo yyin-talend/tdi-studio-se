@@ -26,10 +26,11 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -57,7 +58,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
  */
 public class PropertyChangeCommand extends Command {
 
-    private final Element elem;
+    private final IElement elem;
 
     private final String propName;
 
@@ -84,7 +85,7 @@ public class PropertyChangeCommand extends Command {
      * @param propName
      * @param propValue
      */
-    public PropertyChangeCommand(Element elem, String propName, Object propValue) {
+    public PropertyChangeCommand(IElement elem, String propName, Object propValue) {
         this.elem = elem;
         this.propName = propName;
         newValue = propValue;
@@ -327,8 +328,8 @@ public class PropertyChangeCommand extends Command {
             CodeView.refreshCodeView(elem);
         }
         //
-        if (elem instanceof Node) {
-            ((Node) elem).checkAndRefreshNode();
+        if (elem instanceof IGraphicalNode) {
+            ((IGraphicalNode) elem).checkAndRefreshNode();
         }
 
         // See feature 3902
@@ -612,7 +613,7 @@ public class PropertyChangeCommand extends Command {
         return this.propName;
     }
 
-    public Element getElement() {
+    public IElement getElement() {
         return this.elem;
     }
 

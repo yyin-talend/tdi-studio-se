@@ -767,7 +767,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         return processContext != null;
     }
 
-    public org.talend.core.model.process.IProcess getProcess() {
+    public org.talend.core.model.process.IProcess2 getProcess() {
         return processContext.getProcess();
     }
 

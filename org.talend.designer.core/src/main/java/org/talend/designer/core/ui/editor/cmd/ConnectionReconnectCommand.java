@@ -22,13 +22,14 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.ConnectionManager;
-import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -40,15 +41,15 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ConnectionReconnectCommand extends Command {
 
-    private Connection connection;
+    private IConnection connection;
 
-    private Node newSource;
+    private INode newSource;
 
-    private Node newTarget;
+    private INode newTarget;
 
-    private Node oldSource;
+    private INode oldSource;
 
-    private Node oldTarget;
+    private INode oldTarget;
 
     private String connectorName;
 
@@ -70,7 +71,7 @@ public class ConnectionReconnectCommand extends Command {
      * 
      * @param connection
      */
-    public ConnectionReconnectCommand(Connection connection) {
+    public ConnectionReconnectCommand(IConnection connection) {
         this.connection = connection;
         this.oldSource = connection.getSource();
         this.oldTarget = connection.getTarget();
@@ -153,7 +154,7 @@ public class ConnectionReconnectCommand extends Command {
         return true;
     }
 
-    private void setSchemaToNotBuiltInNode(Node oldNode, Node newNode, IMetadataTable newSchema) {
+    private void setSchemaToNotBuiltInNode(INode oldNode, INode newNode, IMetadataTable newSchema) {
         if ((newNode.getMetadataList() != null) && newNode.getMetadataList().get(0).getListColumns().size() == 0) {
             // only override if there is no schema defined in the component
             String sourceConnector = oldMetadataTable.getAttachedConnector();

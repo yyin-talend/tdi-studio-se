@@ -56,6 +56,7 @@ import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -161,7 +162,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     } else if (elem instanceof Connection) {
                         process = (Process) ((Connection) elem).getSource().getProcess();
                     }
-                    TalendJavaEditor javaEditor = (TalendJavaEditor) process.getEditor().getCodeEditor();
+                    TalendJavaEditor javaEditor = (TalendJavaEditor) ((AbstractMultiPageTalendEditor) process.getEditor())
+                            .getCodeEditor();
 
                     viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForComponent(b, SWT.BORDER | SWT.MULTI
                             | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);

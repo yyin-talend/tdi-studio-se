@@ -81,8 +81,10 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.Information;
@@ -106,7 +108,6 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -146,7 +147,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected BidiMap hashCurControls;
 
-    protected Element elem;
+    protected IElement elem;
 
     protected AbstractMultiPageTalendEditor part;
 
@@ -311,7 +312,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return ""; //$NON-NLS-1$
     }
 
-    protected String getValueFromRepositoryName(Element elem2, String repositoryName) {
+    protected String getValueFromRepositoryName(IElement elem2, String repositoryName) {
 
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             // for job settings extra.(feature 2710)
@@ -362,7 +363,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param parameterName
      * @return
      */
-    protected String getValueFromRepositoryNameAndParameterName(Element elem2, String repositoryName, String parameterName) {
+    protected String getValueFromRepositoryNameAndParameterName(IElement elem2, String repositoryName, String parameterName) {
 
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             if (!sameExtraParameter(param)) {
@@ -414,7 +415,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return null;
     }
 
-    protected String getParaNameFromRepositoryName(Element elem2, String repositoryName) {
+    protected String getParaNameFromRepositoryName(IElement elem2, String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             // for job settings extra.(feature 2710)
             if (!sameExtraParameter(param)) {
@@ -525,7 +526,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             IElementParameter param = elem.getElementParameter(parameterName);
             if (param != null && !param.isNoContextAssist() && !param.isReadOnly() && !(control instanceof ReconcilerStyledText)) {
 
-                final IProcess process = getProcess(elem, part);
+                final IProcess2 process = (IProcess2) getProcess(elem, part);
 
                 if (elem instanceof INode) {
                     this.extendedProposal = TalendProposalUtils.installOn(control, process, (INode) elem);
@@ -540,16 +541,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                     public void proposalAccepted(IContentProposal proposal) {
                         if (control instanceof Text) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText(),
-                                    (Process) process);
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText(), process);
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText(),
-                                    (Process) process);
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText(), process);
                         }
                     }
                 });
                 // this.checkErrorsHelper.checkErrors(control, false);
-                ContextParameterExtractor.installOn(control, (Process) process, parameterName, elem);
+                ContextParameterExtractor.installOn(control, process, parameterName, elem);
             }
 
             this.undoRedoHelper.register(control);
@@ -694,8 +693,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (flag) {
                 return;
             }
-            if (elem instanceof Node) {
-                Node errorNode = (Node) elem;
+            if (elem instanceof IGraphicalNode) {
+                IGraphicalNode errorNode = (IGraphicalNode) elem;
                 if (errorNode == null) {
                     return;
                 }
@@ -704,7 +703,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     errorNode.setErrorFlag(false);
                     errorNode.setCompareFlag(false);
                     errorNode.setErrorInfo(null);
-                    errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                    ((Node) errorNode).getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                     errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                 }
             }
@@ -833,9 +832,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
 
-        private void showErrorMarkForPerl(Element elem) {
-            if (elem instanceof Node) {
-                Node errorNode = (Node) elem;
+        private void showErrorMarkForPerl(IElement elem) {
+            if (elem instanceof IGraphicalNode) {
+                IGraphicalNode errorNode = (IGraphicalNode) elem;
                 if (errorNode == null) {
                     return;
                 }
@@ -866,7 +865,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             errorNode.setErrorFlag(true);
                             errorNode.setCompareFlag(false);
                             errorNode.setErrorInfo(errorMessage.toString());
-                            errorNode.getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
+                            ((Node) errorNode).getNodeError().updateState("UPDATE_STATUS", true);//$NON-NLS-1$
                             errorNode.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
                         }
                     } else {
@@ -875,7 +874,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             errorNode.setErrorFlag(false);
                             errorNode.setCompareFlag(false);
                             errorNode.setErrorInfo(null);
-                            errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                            ((Node) errorNode).getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                             errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                         }
                     }
@@ -887,7 +886,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         errorNode.setErrorFlag(false);
                         errorNode.setCompareFlag(false);
                         errorNode.setErrorInfo(null);
-                        errorNode.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                        ((Node) errorNode).getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
                         errorNode.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                     }
 
@@ -895,7 +894,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
 
-        private void showErrorMarkForJava(List<Problem> problems, Element elem) {
+        private void showErrorMarkForJava(List<Problem> problems, IElement elem) {
             Node errorNode = null;
             if (elem instanceof Node) {
                 errorNode = (Node) elem;
@@ -1314,7 +1313,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected ConnectionParameters connParameters;
 
-    private void setAllConnectionParameters(String typ, Element element) {
+    private void setAllConnectionParameters(String typ, IElement element) {
         String type = null;
         if (typ != null && !typ.equals("")) { //$NON-NLS-1$
             type = typ;
@@ -1623,7 +1622,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
     }
 
-    private void setConnectionParameterNames(Element element, ConnectionParameters connParameters) {
+    private void setConnectionParameterNames(IElement element, ConnectionParameters connParameters) {
 
         addConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName());
 
@@ -1653,7 +1652,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     }
 
-    private void addConnectionParameter(Element element, ConnectionParameters connParameters, String repositoryName) {
+    private void addConnectionParameter(IElement element, ConnectionParameters connParameters, String repositoryName) {
         final String paraNameFromRepositoryName = getParaNameFromRepositoryName(element, repositoryName);
         if (paraNameFromRepositoryName != null) {
             connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
@@ -1884,12 +1883,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return null;
     }
 
-    protected IProcess getProcess(final Element elem, final AbstractMultiPageTalendEditor part) {
+    protected IProcess getProcess(final IElement elem, final AbstractMultiPageTalendEditor part) {
         IProcess process = null;
         if (part == null) {
             // achen modify to fix 0005991 part is null
-            if (elem instanceof Node) {
-                process = ((Node) elem).getProcess();
+            if (elem instanceof INode) {
+                process = ((INode) elem).getProcess();
             }
         } else {
             process = part.getTalendEditor().getProcess();

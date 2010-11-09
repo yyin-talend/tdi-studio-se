@@ -24,6 +24,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -47,7 +48,7 @@ public class NodeContainer extends Element {
 
     private NodeProgressBar nodeProgressBar;
 
-    protected List<Element> elements = new ArrayList<Element>();
+    protected List<IElement> elements = new ArrayList<IElement>();
 
     private NodePerformance nodePerformance;
 

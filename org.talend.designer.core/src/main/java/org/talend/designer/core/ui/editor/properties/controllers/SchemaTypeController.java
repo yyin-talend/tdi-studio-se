@@ -43,8 +43,8 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
@@ -515,11 +515,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String type = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName(), paramName);
             if (type != null && type.equals(EmfComponent.REPOSITORY)) {
                 // use repository schema, pop up a dialog to ask the user for changing mode
-                Node node;
-                if (elem instanceof Node) {
-                    node = (Node) elem;
+                INode node;
+                if (elem instanceof INode) {
+                    node = (INode) elem;
                 } else { // else instanceof Connection
-                    node = ((Connection) elem).getSource();
+                    node = ((IConnection) elem).getSource();
                 }
                 boolean isReadOnly = node.getProcess().isReadOnly();
                 ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), ESelectionType.SCHEMA, isReadOnly);
@@ -565,11 +565,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
             // this map wil hold the all input connection for the tUnite component
             Map<INode, Map<IMetadataTable, Boolean>> inputInfos = new HashMap<INode, Map<IMetadataTable, Boolean>>();
 
-            Node node;
+            INode node;
             if (elem instanceof Node) {
-                node = (Node) elem;
+                node = (INode) elem;
             } else { // else instanceof Connection
-                node = ((Connection) elem).getSource();
+                node = ((IConnection) elem).getSource();
             }
 
             IMetadataTable inputMetadata = null, inputMetaCopy = null;
@@ -746,7 +746,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
 
                 } else {
-                    Node inputNode = (inputConec.getSource());
+                    INode inputNode = (inputConec.getSource());
                     if (inputMetaCopy.getAttachedConnector() == null) {
                         INodeConnector mainConnector;
                         if (inputNode.isELTComponent()) {
@@ -794,7 +794,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         if (switchParam != null) {
                             switchParam.setValue(Boolean.FALSE);
                         }
-                        Node inputNode = null;
+                        INode inputNode = null;
                         if (inputConec != null) {
                             inputNode = inputConec.getSource();
                         }
@@ -905,7 +905,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         return null;
     }
 
-    private IMetadataTable getMetadataTableFromXml(Node node) {
+    private IMetadataTable getMetadataTableFromXml(INode node) {
         IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
         if (param.getValue() instanceof IMetadataTable) {
             IMetadataTable table = (IMetadataTable) param.getValue();
@@ -1070,11 +1070,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     class RepositoryChangeSchemaBuiltinCommand extends Command {
 
-        private Element elem;
+        private IElement elem;
 
         private String propertyName;
 
-        public RepositoryChangeSchemaBuiltinCommand(Element elem, String propertyName) {
+        public RepositoryChangeSchemaBuiltinCommand(IElement elem, String propertyName) {
             this.elem = elem;
             this.propertyName = propertyName;
             setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$

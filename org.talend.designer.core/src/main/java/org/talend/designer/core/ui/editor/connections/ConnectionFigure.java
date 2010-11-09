@@ -17,8 +17,10 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.utils.image.ColorUtils;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
 
@@ -32,9 +34,9 @@ public class ConnectionFigure extends PolylineConnection {
 
     private IConnectionProperty connectionProperty;
 
-    private Node linkedNode;
+    private INode linkedNode;
 
-    private Connection connection;
+    private IConnection connection;
 
     /**
      * Used for standard connections.
@@ -43,7 +45,7 @@ public class ConnectionFigure extends PolylineConnection {
      * @param connectionProperty
      * @param node
      */
-    public ConnectionFigure(Connection connection, IConnectionProperty connectionProperty, Node node) {
+    public ConnectionFigure(IConnection connection, IConnectionProperty connectionProperty, INode node) {
         linkedNode = node;
         this.connection = connection;
         setTargetDecoration(new PolygonDecoration());
@@ -62,11 +64,11 @@ public class ConnectionFigure extends PolylineConnection {
 
     @Override
     public void paint(Graphics graphics) {
-        if (linkedNode.getNodeContainer().getSubjobContainer() != null
-                && linkedNode.getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
+        if (((Node) linkedNode).getNodeContainer().getSubjobContainer() != null
+                && ((Node) linkedNode).getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
                 && !connection.isSubjobConnection()) {
 
-            Node subjobStartNode = linkedNode.getNodeContainer().getSubjobContainer().getSubjobStartNode();
+            Node subjobStartNode = ((Node) linkedNode).getNodeContainer().getSubjobContainer().getSubjobStartNode();
             // only dependency links will be drawn
             if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
                 return;
@@ -110,7 +112,7 @@ public class ConnectionFigure extends PolylineConnection {
      * 
      * @return the connection
      */
-    public Connection getConnection() {
+    public IConnection getConnection() {
         return this.connection;
     }
 

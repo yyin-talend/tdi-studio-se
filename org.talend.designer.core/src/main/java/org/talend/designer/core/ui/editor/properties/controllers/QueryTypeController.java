@@ -32,8 +32,10 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -115,7 +117,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         return buttonControl;
     }
 
-    private IElementParameter getQueryTextElementParameter(Element elem) {
+    private IElementParameter getQueryTextElementParameter(IElement elem) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getField() == EParameterFieldType.MEMO_SQL) {
                 return param;
@@ -215,11 +217,11 @@ public class QueryTypeController extends AbstractRepositoryController {
         } // Ends
 
         QueryGuessCommand cmd = null;
-        Node node = null;
-        if (elem instanceof Node) {
-            node = (Node) elem;
+        INode node = null;
+        if (elem instanceof INode) {
+            node = (INode) elem;
         } else { // else instanceof Connection
-            node = ((org.talend.designer.core.ui.editor.connections.Connection) elem).getSource();
+            node = ((IConnection) elem).getSource();
         }
 
         List<IMetadataTable> metadataList = node.getMetadataList();

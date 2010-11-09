@@ -1018,7 +1018,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         // }
         // end
         if (process != null) {
-            part = process.getEditor();
+            part = (AbstractMultiPageTalendEditor) process.getEditor();
         }
         FormLayout layout = new FormLayout();
         layout.marginWidth = ITabbedPropertyConstants.HSPACE + 2;

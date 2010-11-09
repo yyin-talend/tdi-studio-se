@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -669,6 +671,61 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      */
     public String getElementName() {
         return getLabel();
+    }
+
+    public void checkStartNodes() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean isDuplicate() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setActivate(boolean activate) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setContextManager(IContextManager contextManager) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setDuplicate(boolean duplicate) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setProcessModified(boolean modified) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public IElementParameter getElementParameterFromField(EParameterFieldType dbtable) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public IElementParameter getElementParameterFromField(EParameterFieldType propertyType, EComponentCategory category) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Object getPropertyValue(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Object getPropertyValue(String name, String paramName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setPropertyValue(String name, Object value) {
+        // TODO Auto-generated method stub
+
     }
 
 }

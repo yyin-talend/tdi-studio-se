@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -47,6 +48,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.IReplaceNodeInProcess;
@@ -59,7 +61,6 @@ import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -81,7 +82,7 @@ public class DataProcess {
 
     private BidiMap buildGraphicalMap = null;
 
-    private List<Node> checkRefList = null;
+    private List<INode> checkRefList = null;
 
     private Map<INode, INode> checkMultipleMap = null;
 
@@ -95,7 +96,7 @@ public class DataProcess {
 
     private final Process process;
 
-    private Process duplicatedProcess;
+    private IProcess duplicatedProcess;
 
     private List<String> shortUniqueNameList = null;
 
@@ -105,7 +106,7 @@ public class DataProcess {
 
     private void initialize() {
         buildCheckMap = new HashMap<INode, INode>();
-        checkRefList = new ArrayList<Node>();
+        checkRefList = new ArrayList<INode>();
         checkMultipleMap = new HashMap<INode, INode>();
         checktUniteMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
@@ -140,7 +141,7 @@ public class DataProcess {
 
     // should only be called by a starting node
     @SuppressWarnings("unchecked")
-    public INode buildDataNodeFromNode(final Node graphicalNode, String prefix) {
+    public INode buildDataNodeFromNode(final INode graphicalNode, String prefix) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
@@ -216,8 +217,8 @@ public class DataProcess {
             IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
-                addvFlowMeterBetween(dataNode, buildDataNodeFromNode((Node) connection.getTarget(), prefix), connection,
-                        graphicalNode.getProcess(), connection.getElementParameters());
+                addvFlowMeterBetween(dataNode, buildDataNodeFromNode(connection.getTarget(), prefix), connection, graphicalNode
+                        .getProcess(), connection.getElementParameters());
             } else {
                 dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
@@ -341,7 +342,7 @@ public class DataProcess {
                     }
                 }
                 copyElementParametersValue(connection, dataConnec);
-                INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
+                INode target = buildDataNodeFromNode(connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();
                 if (incomingConnections == null) {
@@ -366,7 +367,7 @@ public class DataProcess {
         return dataNode;
     }
 
-    public INode buildDataNodeFromNode(final Node graphicalNode) {
+    public INode buildDataNodeFromNode(final INode graphicalNode) {
         return buildDataNodeFromNode(graphicalNode, null);
     }
 
@@ -669,14 +670,14 @@ public class DataProcess {
             } else {
                 // mapper
                 curNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
-                IExternalData externalData = ((Node) graphicalNode).getExternalData();
+                IExternalData externalData = graphicalNode.getExternalData();
                 if (externalData != null) {
                     ((IExternalNode) curNode).setExternalData(externalData);
                 }
                 curNode.setStart(graphicalNode.isStart());
                 curNode.setPluginFullName(graphicalNode.getPluginFullName());
                 curNode.setElementParameters(graphicalNode.getComponent().createElementParameters(curNode));
-                curNode.setListConnector(((Node) graphicalNode).getListConnector());
+                curNode.setListConnector(graphicalNode.getListConnector());
                 copyElementParametersValue(graphicalNode, curNode);
                 curNode.setUniqueName(uniqueName);
                 curNode.setSubProcessStart(graphicalNode.isSubProcessStart());
@@ -864,7 +865,7 @@ public class DataProcess {
     }
 
     @SuppressWarnings("unchecked")
-    public void checkFlowRefLink(final Node graphicalNode) {
+    public void checkFlowRefLink(final INode graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;
         }
@@ -889,7 +890,7 @@ public class DataProcess {
 
                 // retrieve the starts node of each current nodes to add a before link
                 INode subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
-                INode subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode(false);
+                INode subNodeStartSource = connection.getTarget().getSubProcessStartNode(false);
 
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
@@ -1029,9 +1030,7 @@ public class DataProcess {
                     incomingConnections.add(dataConnec);
                 }
             }
-            if (connection.getTarget() instanceof Node) {
-                checkFlowRefLink((Node) connection.getTarget());
-            }
+            checkFlowRefLink(connection.getTarget());
         }
     }
 
@@ -1046,7 +1045,7 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
-        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy() && !graphicalNode.isActivate()) {
+        if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             return;
         }
         AbstractNode dataNode;
@@ -1076,7 +1075,7 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
-        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy() && !graphicalNode.isActivate()) {
+        if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             return;
         }
 
@@ -1085,7 +1084,7 @@ public class DataProcess {
         String[] fsNodeNeedReplace = new String[] {
                 "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
-        Node currentComponent = (Node) graphicalNode;
+        INode currentComponent = graphicalNode;
         AbstractNode dataNode;
 
         dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
@@ -1093,7 +1092,7 @@ public class DataProcess {
         boolean needCreateTFSNode = false;
         boolean loopEnd = dataNode == null
                 || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
-        NodeProgressBar progressBar = null;
+        Set<INode> progressBarList = null;
         DataNode fsNode = null, oldFsNode = null;
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
@@ -1119,16 +1118,16 @@ public class DataProcess {
                 }
                 oldFsNode = fsNode;
             }
-            Node originalGraphicNode = null;
+            INode originalGraphicNode = null;
             if (buildGraphicalMap.getKey(currentComponent) != null) {
-                originalGraphicNode = (Node) buildGraphicalMap.getKey(currentComponent);
+                originalGraphicNode = (INode) buildGraphicalMap.getKey(currentComponent);
             }
 
             // add the fs component if this one is not already added to the list.
             if (fsNode == null || needCreateTFSNode) {
                 if (originalGraphicNode != null) {
-                    progressBar = originalGraphicNode.getNodeProgressBar();
-                    progressBar.getIncludedNodesInProgress().clear();
+                    progressBarList = originalGraphicNode.fsComponentsInProgressBar();
+                    progressBarList.clear();
                 }
                 // Create the new FS component
                 IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME);
@@ -1158,8 +1157,8 @@ public class DataProcess {
                 // bug15885, add metadatas of connector
                 fsNode.getMetadataList().addAll(currentComponent.getMetadataList());
             }
-            if (progressBar != null && originalGraphicNode != null) {
-                progressBar.getIncludedNodesInProgress().add(originalGraphicNode);
+            if (progressBarList != null && originalGraphicNode != null) {
+                progressBarList.add(originalGraphicNode);
             }
 
             copyElementParametersValue(dataNode, fsNode);
@@ -1202,7 +1201,7 @@ public class DataProcess {
 
             if (!flowConnections.isEmpty()) {
                 // initialize with next component for next loop
-                currentComponent = (Node) flowConnections.get(0).getTarget();
+                currentComponent = flowConnections.get(0).getTarget();
                 dataNode = (AbstractNode) buildCheckMap.get(currentComponent);
                 needCreateTFSNode = false;
             }
@@ -1214,7 +1213,7 @@ public class DataProcess {
         }
     }
 
-    public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
+    public void buildFromGraphicalProcess(List<INode> graphicalNodeList) {
         initialize();
         if (graphicalNodeList.size() == 0) {
             return;
@@ -1235,13 +1234,13 @@ public class DataProcess {
 
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                buildDataNodeFromNode((Node) node);
+                buildDataNodeFromNode(node);
             }
         }
 
         // make sure the new tUnite incomingConnections order is the same as the old one. @see
         // Connection.setInputId(int id)
-        for (Node graphicalNode : graphicalNodeList) {
+        for (INode graphicalNode : graphicalNodeList) {
             if (graphicalNode.getComponent().useMerge()) {
                 for (INode dataNode : dataNodeList) {
                     if (graphicalNode.getUniqueName().equals(dataNode.getUniqueName())) {
@@ -1255,12 +1254,12 @@ public class DataProcess {
 
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                checkFlowRefLink((Node) node);
+                checkFlowRefLink(node);
             }
         }
 
         for (INode node : newGraphicalNodeList) {
-            checkUseParallelize((Node) node);
+            checkUseParallelize(node);
         }
 
         // calculate the merge info for every node
@@ -1425,7 +1424,7 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
-        if ((node instanceof Node) && ((Node) node).isDummy() && !node.isActivate()) {
+        if (node.isDummy() && !node.isActivate()) {
             return;
         }
         AbstractNode dataNode;
@@ -1621,7 +1620,7 @@ public class DataProcess {
      * @param node
      */
     @SuppressWarnings("unchecked")
-    private void checkUseParallelize(Node graphicalNode) {
+    private void checkUseParallelize(INode graphicalNode) {
         // check if the component can use Parallelize first
         if (!graphicalNode.getComponent().canParallelize()) {
             return;
@@ -1729,12 +1728,12 @@ public class DataProcess {
     }
 
     @SuppressWarnings("unchecked")
-    public INode buildNodeFromNode(final Node graphicalNode, final Process process) {
+    public INode buildNodeFromNode(final INode graphicalNode, final IProcess process) {
         if (buildGraphicalMap.containsKey(graphicalNode)) {
-            return (Node) buildGraphicalMap.get(graphicalNode);
+            return (INode) buildGraphicalMap.get(graphicalNode);
         }
 
-        Node newGraphicalNode = new Node(graphicalNode.getComponent(), process);
+        Node newGraphicalNode = new Node(graphicalNode.getComponent(), (IProcess2) process);
         newGraphicalNode.setMetadataList(graphicalNode.getMetadataList());
 
         // // for bug 11771
@@ -1745,7 +1744,7 @@ public class DataProcess {
         String componentName = graphicalNode.getComponent().getName();
         if (componentName.equals("tMap")) {
             if (graphicalNode.getExternalData() != null) {
-                Data data = graphicalNode.getExternalBytesData();
+                Data data = (Data) graphicalNode.getExternalBytesData();
                 newGraphicalNode.setData(data.getBytesData(), data.getStringData());
             }
         } else {
@@ -1758,24 +1757,18 @@ public class DataProcess {
         copyElementParametersValue(graphicalNode, newGraphicalNode);
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
-        process.addNodeContainer(new NodeContainer(newGraphicalNode));
+        ((Process) process).addNodeContainer(new NodeContainer(newGraphicalNode));
         buildGraphicalMap.put(graphicalNode, newGraphicalNode);
 
-        // List<Connection> outgoingConnections = new ArrayList<Connection>();
-        // List<Connection> incomingConnections = new ArrayList<Connection>();
-        // newGraphicalNode.setIncomingConnections(incomingConnections);
-        // newGraphicalNode.setOutgoingConnections(outgoingConnections);
-
-        Connection dataConnec;
-        for (Connection connection : (List<Connection>) graphicalNode.getOutgoingConnections()) {
+        IConnection dataConnec;
+        for (IConnection connection : (List<IConnection>) graphicalNode.getOutgoingConnections()) {
             if (!connection.isActivate()) {
                 continue;
             }
             INode target = buildNodeFromNode(connection.getTarget(), process);
 
-            dataConnec = new Connection(newGraphicalNode, (Node) target, connection.getLineStyle(),
-                    connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName(),
-                    connection.isMonitorConnection());
+            dataConnec = new Connection(newGraphicalNode, target, connection.getLineStyle(), connection.getConnectorName(),
+                    connection.getMetaName(), connection.getName(), connection.getUniqueName(), connection.isMonitorConnection());
             // incomingConnections = (List<Connection>) target.getIncomingConnections();
             // if (incomingConnections == null) {
             // incomingConnections = new ArrayList<Connection>();
@@ -1797,7 +1790,7 @@ public class DataProcess {
      * @param graphicalNodeList
      * @return
      */
-    private List<INode> buildCopyOfGraphicalNodeList(List<Node> graphicalNodeList) {
+    private List<INode> buildCopyOfGraphicalNodeList(List<INode> graphicalNodeList) {
         if (graphicalNodeList.size() == 0) {
             return Collections.emptyList();
         }
@@ -1806,9 +1799,11 @@ public class DataProcess {
         duplicatedProcess = new Process(process.getProperty());
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
-        duplicatedProcess.setEditor(process.getEditor());
-        duplicatedProcess.setGeneratingProcess(this);
-        duplicatedProcess.setProcessModified(false);
+        // duplicatedProcess.setEditor(process.getEditor());
+        ((Process) duplicatedProcess).setGeneratingProcess(this);
+        if (duplicatedProcess instanceof IProcess2) {
+            ((IProcess2) duplicatedProcess).setProcessModified(false);
+        }
 
         copyElementParametersValue(graphicalNodeList.get(0).getProcess(), duplicatedProcess);
 
@@ -1816,7 +1811,7 @@ public class DataProcess {
         duplicatedProcess.setContextManager(process.getContextManager());
         for (INode node : graphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                buildNodeFromNode((Node) node, duplicatedProcess);
+                buildNodeFromNode(node, duplicatedProcess);
             }
         }
 
@@ -1824,7 +1819,7 @@ public class DataProcess {
         // Connection.setInputId(int id)
         for (INode oldNode : graphicalNodeList) {
             if (oldNode.getComponent().useMerge()) {
-                INode newNode = (Node) buildGraphicalMap.get(oldNode);
+                INode newNode = (INode) buildGraphicalMap.get(oldNode);
                 adjustMergeOrderForDuplicateNode(oldNode, newNode);
             }
         }
@@ -1832,14 +1827,14 @@ public class DataProcess {
         List<INode> newBuildNodeList = new ArrayList<INode>();
 
         for (INode gnode : graphicalNodeList) {
-            INode newNode = (Node) buildGraphicalMap.get(gnode);
+            INode newNode = (INode) buildGraphicalMap.get(gnode);
             if (newNode != null) {
-                newBuildNodeList.add((Node) newNode);
+                newBuildNodeList.add(newNode);
             }
 
         }
         for (INode node : newBuildNodeList) {
-            if (((Node) node).isExternalNode()) {
+            if (node.isExternalNode()) {
                 node.getExternalNode().initialize();
             }
         }
@@ -1888,7 +1883,7 @@ public class DataProcess {
      * 
      * @return the duplicatedProcess
      */
-    public Process getDuplicatedProcess() {
+    public IProcess getDuplicatedProcess() {
         return this.duplicatedProcess;
     }
 

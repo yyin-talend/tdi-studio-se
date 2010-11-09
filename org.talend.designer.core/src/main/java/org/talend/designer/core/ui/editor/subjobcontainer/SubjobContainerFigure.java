@@ -118,12 +118,10 @@ public class SubjobContainerFigure extends Figure {
         // select the start node.
         if (subjobContainer.isCollapsed()) {
             IProcess2 process = subjobContainer.getProcess();
-            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
-                AbstractMultiPageTalendEditor editor = ((org.talend.designer.core.ui.editor.process.Process) process).getEditor();
-                Node startNode = subjobContainer.getSubjobStartNode();
-                if (startNode != null && editor != null) {
-                    editor.selectNode(startNode);
-                }
+            AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) process.getEditor();
+            Node startNode = subjobContainer.getSubjobStartNode();
+            if (startNode != null && editor != null) {
+                editor.selectNode(startNode);
             }
         }
     }

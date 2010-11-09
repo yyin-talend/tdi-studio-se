@@ -16,6 +16,8 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog;
 import org.talend.designer.core.ui.editor.cmd.ChangeMergeOrderCommand;
@@ -35,7 +37,7 @@ public class ModifyMergeOrderAction extends SelectionAction {
 
     private static final String TEXT_MERGE_ORDER = Messages.getString("ModifyMergeOrderAction.actionText"); //$NON-NLS-1$
 
-    private Node mergeComponent;
+    private INode mergeComponent;
 
     public ModifyMergeOrderAction(IWorkbenchPart part) {
         super(part);
@@ -58,10 +60,10 @@ public class ModifyMergeOrderAction extends SelectionAction {
         }
         Object o = parts.get(0);
 
-        Node node = null;
+        INode node = null;
         if (o instanceof ConnectionPart) {
             ConnectionPart part = (ConnectionPart) o;
-            Connection connection = (Connection) part.getModel();
+            IConnection connection = (IConnection) part.getModel();
             node = connection.getTarget();
         } else if (o instanceof ConnLabelEditPart) {
             ConnectionPart part = (ConnectionPart) ((ConnLabelEditPart) o).getParent();

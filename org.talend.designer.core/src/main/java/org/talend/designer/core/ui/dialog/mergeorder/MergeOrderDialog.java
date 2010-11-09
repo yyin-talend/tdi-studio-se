@@ -36,9 +36,10 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -46,7 +47,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class MergeOrderDialog extends Dialog {
 
-    private Node mergeNode;
+    private INode mergeNode;
 
     private static final int WIDTH = 270;
 
@@ -73,7 +74,7 @@ public class MergeOrderDialog extends Dialog {
         shell.setText(mergeNode.getUniqueName() + Messages.getString("MergeOrderDialog.ModifyMergeOrder")); //$NON-NLS-1$
     }
 
-    protected List<Connection> connectionList;
+    protected List<IConnection> connectionList;
 
     /**
      * yzhang MergeOrderDialog constructor comment.
@@ -88,12 +89,12 @@ public class MergeOrderDialog extends Dialog {
      * 
      * @param parentShell
      */
-    public MergeOrderDialog(Shell parentShell, Node mergeNode) {
+    public MergeOrderDialog(Shell parentShell, INode mergeNode) {
         this(parentShell);
         this.mergeNode = mergeNode;
-        List<Connection> currentList = (List<Connection>) mergeNode.getIncomingConnections();
+        List<IConnection> currentList = (List<IConnection>) mergeNode.getIncomingConnections();
 
-        this.connectionList = new ArrayList<Connection>(currentList);
+        this.connectionList = new ArrayList<IConnection>(currentList);
     }
 
     /*
@@ -225,11 +226,11 @@ public class MergeOrderDialog extends Dialog {
      * 
      * @return the connectionList
      */
-    public List<Connection> getConnectionList() {
+    public List<IConnection> getConnectionList() {
         return connectionList;
     }
 
-    public Node getMergeNode() {
+    public INode getMergeNode() {
         return this.mergeNode;
     }
 

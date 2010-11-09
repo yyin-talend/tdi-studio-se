@@ -44,7 +44,6 @@ import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
 import org.talend.designer.core.model.process.statsandlogs.OracleComponentHelper;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -768,7 +767,7 @@ public class JobSettingsManager {
         return StatsAndLogsManager.isStatsAndLogsActivated(process);
     }
 
-    public static List<DataNode> createStatsAndLogsNodes(Process process) {
+    public static List<DataNode> createStatsAndLogsNodes(IProcess process) {
         return StatsAndLogsManager.getStatsAndLogsNodes(process);
     }
 

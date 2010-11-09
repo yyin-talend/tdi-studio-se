@@ -761,4 +761,29 @@ public class RowGenProcess extends Element implements IProcess {
         // TODO Auto-generated method stub
         return false;
     }
+
+    public void checkStartNodes() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean isDuplicate() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setContextManager(IContextManager contextManager) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setDuplicate(boolean duplicate) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setProcessModified(boolean modified) {
+        // TODO Auto-generated method stub
+
+    }
 }

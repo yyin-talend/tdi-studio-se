@@ -44,8 +44,8 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.ParameterValueUtil;
@@ -273,7 +273,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
     }
 
-    public static void renameConnectionInElement(String oldConnectionName, String newConnectionName, Element elem) {
+    public static void renameConnectionInElement(String oldConnectionName, String newConnectionName, IElement elem) {
         for (IElementParameter curParam : elem.getElementParameters()) {
             if (curParam.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
                 if (oldConnectionName.equals(curParam.getValue())) {
@@ -339,13 +339,13 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     }
 
-    public static void updateConnectionList(Element elem, IElementParameter param) {
+    public static void updateConnectionList(IElement elem, IElementParameter param) {
         IConnection[] connections;
-        Node source = null;
-        if (elem instanceof Node) {
-            source = ((Node) elem);
-        } else if (elem instanceof Connection) {
-            source = ((Connection) elem).getSource();
+        INode source = null;
+        if (elem instanceof INode) {
+            source = ((INode) elem);
+        } else if (elem instanceof IConnection) {
+            source = ((IConnection) elem).getSource();
         } else {
             return;
         }

@@ -51,7 +51,7 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    private static boolean canConnect(Node source, Node target, EConnectionType connType, String connectionName) {
+    private static boolean canConnect(INode source, INode target, EConnectionType connType, String connectionName) {
         if (source.equals(target)) {
             return false;
         }
@@ -234,7 +234,7 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    public static boolean canConnectToSource(Node oldSource, Node newSource, Node target, EConnectionType lineStyle,
+    public static boolean canConnectToSource(INode oldSource, INode newSource, INode target, EConnectionType lineStyle,
             String connectorName, String connectionName) {
         if (newSource.getConnectorFromName(connectorName) == null) {
             // if the new source don't contain the kind of link, then we can't connect the link.
@@ -277,7 +277,7 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType lineStyle,
+    public static boolean canConnectToTarget(INode source, INode oldTarget, INode newTarget, EConnectionType lineStyle,
             String connectorName, String connectionName) {
 
         newlineStyle = lineStyle;
@@ -400,7 +400,7 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    public static boolean canRename(Node source, Node target, EConnectionType connType, String connectionName) {
+    public static boolean canRename(INode source, INode target, EConnectionType connType, String connectionName) {
         boolean canRename = true;
         if (connType.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             if (!(source.getProcess().checkValidConnectionName(connectionName)) || KeywordsValidator.isKeyword(connectionName)
@@ -452,7 +452,7 @@ public class ConnectionManager {
      * @param source
      * @return
      */
-    private static boolean checkCircle(Node source, Node newTarget) {
+    private static boolean checkCircle(INode source, INode newTarget) {
         // get All the source nodes of the source
         List<INode> list = new ArrayList<INode>();
         getAllSourceNode(source, list);

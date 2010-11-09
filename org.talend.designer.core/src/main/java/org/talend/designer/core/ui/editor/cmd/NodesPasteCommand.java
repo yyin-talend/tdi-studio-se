@@ -36,12 +36,15 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -67,7 +70,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class NodesPasteCommand extends Command {
 
-    private Process process;
+    private IProcess2 process;
 
     private List<NodeContainer> nodeContainerList;
 
@@ -77,7 +80,7 @@ public class NodesPasteCommand extends Command {
 
     private List<NodePart> nodeParts;
 
-    private List<Connection> connections;
+    private List<IConnection> connections;
 
     private List<String> createdNames;
 
@@ -124,7 +127,7 @@ public class NodesPasteCommand extends Command {
         return this.isJobletRefactor;
     }
 
-    public NodesPasteCommand(List<NodePart> nodeParts, Process process, Point cursorLocation) {
+    public NodesPasteCommand(List<NodePart> nodeParts, IProcess2 process, Point cursorLocation) {
         this.process = process;
         nodePart = nodeParts.get(0);
         setCursorLocation(cursorLocation);
@@ -184,14 +187,14 @@ public class NodesPasteCommand extends Command {
         for (NodePart copiedNodePart : nodeParts) {
             curLocation = null;
             for (NodePart partToOrder : restToOrder) {
-                Node copiedNode = (Node) partToOrder.getModel();
+                IGraphicalNode copiedNode = (IGraphicalNode) partToOrder.getModel();
                 if (curLocation == null) {
-                    curLocation = copiedNode.getLocation();
+                    curLocation = (Point) copiedNode.getLocation();
                     toAdd = partToOrder;
                 } else {
-                    if (curLocation.y >= copiedNode.getLocation().y) {
-                        if (curLocation.x >= copiedNode.getLocation().x) {
-                            curLocation = copiedNode.getLocation();
+                    if (curLocation.y >= ((Point) copiedNode.getLocation()).y) {
+                        if (curLocation.x >= ((Point) copiedNode.getLocation()).x) {
+                            curLocation = (Point) copiedNode.getLocation();
                             toAdd = partToOrder;
                         }
                     }
@@ -251,8 +254,8 @@ public class NodesPasteCommand extends Command {
     private Point findLocationForNodeInProcess(final Point location, Dimension size) {
         Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
-        for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+        for (IGraphicalNode node : (List<IGraphicalNode>) process.getGraphicalNodes()) {
+            Rectangle currentRect = new Rectangle((Point) node.getLocation(), (Dimension) node.getSize());
             if (currentRect.intersects(copiedRect)) {
                 newLocation.x += size.width;
                 newLocation.y += size.height;
@@ -268,8 +271,8 @@ public class NodesPasteCommand extends Command {
         Point newLocation = new Point(location);
         if (getCursorLocation() == null) {
             for (NodeContainer nodeContainer : nodeContainerList) {
-                Node node = nodeContainer.getNode();
-                Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+                IGraphicalNode node = nodeContainer.getNode();
+                Rectangle currentRect = new Rectangle((Point) node.getLocation(), (Dimension) node.getSize());
                 if (currentRect.intersects(copiedRect)) {
                     newLocation.x += size.width;
                     newLocation.y += size.height;
@@ -287,8 +290,8 @@ public class NodesPasteCommand extends Command {
     }
 
     private Point computeTheDistance(int index, int firstIndex, Point location) {
-        Point firstNodeLocation = ((Node) nodePart.getModel()).getLocation();
-        Point currentNodeLocation = ((Node) nodeParts.get(index).getModel()).getLocation();
+        Point firstNodeLocation = ((IGraphicalNode) nodePart.getModel()).getLocation();
+        Point currentNodeLocation = ((IGraphicalNode) nodeParts.get(index).getModel()).getLocation();
 
         int distanceX = firstNodeLocation.x - currentNodeLocation.x;
         int distanceY = firstNodeLocation.y - currentNodeLocation.y;
@@ -297,7 +300,7 @@ public class NodesPasteCommand extends Command {
         return location;
     }
 
-    private boolean containNodeInProcess(Node copiedNode) {
+    private boolean containNodeInProcess(INode copiedNode) {
         if (copiedNode == null) {
             return false;
         }
@@ -320,16 +323,16 @@ public class NodesPasteCommand extends Command {
         int firstIndex = 0;
         int index = 0;
         nodeContainerList = new ArrayList<NodeContainer>();
-        connections = new ArrayList<Connection>();
+        connections = new ArrayList<IConnection>();
         createdNames = new ArrayList<String>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
         Map<String, String> oldMetaToNewMeta = new HashMap<String, String>();
 
         // see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
-        Map<Node, SubjobContainer> mapping = new HashMap<Node, SubjobContainer>();
+        Map<INode, SubjobContainer> mapping = new HashMap<INode, SubjobContainer>();
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
-            Node copiedNode = (Node) copiedNodePart.getModel();
+            IGraphicalNode copiedNode = (IGraphicalNode) copiedNodePart.getModel();
             if (!containNodeInProcess(copiedNode)) {
                 continue;
             }
@@ -337,7 +340,7 @@ public class NodesPasteCommand extends Command {
             if (component == null) {
                 component = copiedNode.getComponent();
             }
-            Node pastedNode = new Node(component, process);
+            IGraphicalNode pastedNode = new Node(component, process);
             if (isJobletRefactor()) { // keep original for joblet refactor.
                 process.removeUniqueNodeName(pastedNode.getUniqueName());
                 pastedNode.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), copiedNode.getUniqueName());
@@ -348,7 +351,7 @@ public class NodesPasteCommand extends Command {
 
             Point location = null;
             if (getCursorLocation() == null) {
-                location = copiedNode.getLocation();
+                location = (Point) copiedNode.getLocation();
             } else {
                 location = getCursorLocation();
                 index = nodeParts.indexOf(copiedNodePart);
@@ -361,7 +364,8 @@ public class NodesPasteCommand extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNode.setLocation(findLocationForNode(location, copiedNode.getSize(), index, firstIndex, copiedNodePart));
+            pastedNode.setLocation(findLocationForNode(location, (Dimension) copiedNode.getSize(), index, firstIndex,
+                    copiedNodePart));
             pastedNode.setSize(copiedNode.getSize());
 
             INodeConnector mainConnector;
@@ -395,7 +399,7 @@ public class NodesPasteCommand extends Command {
                     IMetadataTable newTable = metaTable.clone();
                     if (copiedNode.isELTComponent()) {
                         newTable.setTableName(createNewConnectionName(metaTable.getTableName(),
-                                Process.DEFAULT_TABLE_CONNECTION_NAME));
+                                IProcess.DEFAULT_TABLE_CONNECTION_NAME));
                     } else {
                         newTable.setTableName(createNewConnectionName(metaTable.getTableName(), null));
                     }
@@ -420,7 +424,7 @@ public class NodesPasteCommand extends Command {
                         } catch (CloneNotSupportedException e) {
                             ExceptionHandler.process(e);
                         }
-                        pastedNode.setExternalData(externalNode.getExternalData());
+                        ((Node) pastedNode).setExternalData(externalNode.getExternalData());
                     }
                     for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
                         String oldName = metaTable.getTableName();
@@ -431,7 +435,7 @@ public class NodesPasteCommand extends Command {
                     }
                 }
             }
-            pastedNode.getNodeLabel().setOffset(new Point(copiedNode.getNodeLabel().getOffset()));
+            ((Node) pastedNode).getNodeLabel().setOffset(new Point(((Node) copiedNode).getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
             if (copiedNode.getElementParametersWithChildrens() != null) {
                 for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
@@ -474,26 +478,26 @@ public class NodesPasteCommand extends Command {
                     }
                 }
             }
-            nodeContainerList.add(new NodeContainer(pastedNode));
+            nodeContainerList.add(new NodeContainer((Node) pastedNode));
         }
-        process.setCopyPasteSubjobMappings(mapping);
+        ((Process) process).setCopyPasteSubjobMappings(mapping);
         Map<String, String> oldToNewConnVarMap = new HashMap<String, String>();
 
         // add the connections
         for (NodePart copiedNodePart : nodeParts) {
-            Node copiedNode = (Node) copiedNodePart.getModel();
-            for (Connection connection : (List<Connection>) copiedNode.getOutgoingConnections()) {
-                Node pastedTargetNode = null, pastedSourceNode = null;
+            INode copiedNode = (INode) copiedNodePart.getModel();
+            for (IConnection connection : (List<IConnection>) copiedNode.getOutgoingConnections()) {
+                INode pastedTargetNode = null, pastedSourceNode = null;
 
                 String nodeSource = oldNameTonewNameMap.get(copiedNode.getUniqueName());
                 for (NodeContainer nodeContainer : nodeContainerList) {
-                    Node node = nodeContainer.getNode();
+                    INode node = nodeContainer.getNode();
                     if (node.getUniqueName().equals(nodeSource)) {
                         pastedSourceNode = node;
                     }
                 }
 
-                Node targetNode = connection.getTarget();
+                INode targetNode = connection.getTarget();
                 // test if the target is in the nodes to paste to add the
                 // connection
                 // if the targeted node is not in the nodes to paste, then the
@@ -501,7 +505,7 @@ public class NodesPasteCommand extends Command {
                 String nodeToConnect = oldNameTonewNameMap.get(targetNode.getUniqueName());
                 if (nodeToConnect != null) {
                     for (NodeContainer nodeContainer : nodeContainerList) {
-                        Node node = nodeContainer.getNode();
+                        INode node = nodeContainer.getNode();
                         if (node.getUniqueName().equals(nodeToConnect)) {
                             pastedTargetNode = node;
                         }
@@ -518,7 +522,7 @@ public class NodesPasteCommand extends Command {
                         if (newNameBuiltIn == null) {
                             IElementParameter formatParam = pastedSourceNode.getElementParameter(EParameterName.CONNECTION_FORMAT
                                     .getName());
-                            String baseName = Process.DEFAULT_ROW_CONNECTION_NAME;
+                            String baseName = IProcess.DEFAULT_ROW_CONNECTION_NAME;
                             if (formatParam != null) {
                                 String value = (String) formatParam.getValue();
                                 if (value != null && !"".equals(value)) { //$NON-NLS-1$
@@ -550,7 +554,7 @@ public class NodesPasteCommand extends Command {
                             metaTableName = pastedSourceNode.getUniqueName(); // connection.getMetaName();
                         }
                     }
-                    Connection pastedConnection;
+                    IConnection pastedConnection;
                     if (!pastedTargetNode.isELTComponent()) {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
                                 connection.getConnectorName(), metaTableName, newConnectionName, connection.isMonitorConnection());
@@ -589,7 +593,8 @@ public class NodesPasteCommand extends Command {
                     // }
                     // }
 
-                    pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
+                    ((Connection) pastedConnection).getConnectionLabel().setOffset(
+                            new Point(((Connection) connection).getConnectionLabel().getOffset()));
                     INodeConnector connector = pastedConnection.getSourceNodeConnector();
                     connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
                     connector = pastedConnection.getTargetNodeConnector();
@@ -647,7 +652,7 @@ public class NodesPasteCommand extends Command {
 
         // check if the new connections use the old components name.
         Map<String, Set<String>> usedDataMapForConnections = new HashMap<String, Set<String>>();
-        for (Connection connection : connections) {
+        for (IConnection connection : connections) {
             String uniqueName = connection.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
                 if (oldName != null && !oldName.equals(oldNameTonewNameMap.get(oldName))
@@ -678,7 +683,7 @@ public class NodesPasteCommand extends Command {
                 }
 
                 // Rename connections
-                for (Connection connection : connections) {
+                for (IConnection connection : connections) {
                     Set<String> oldNameSet = usedDataMapForConnections.get(connection.getUniqueName());
                     if (oldNameSet != null && !oldNameSet.isEmpty()) {
                         for (String oldName : oldNameSet) {
@@ -697,7 +702,7 @@ public class NodesPasteCommand extends Command {
      * @param copiedNode
      * @param pastedNode
      */
-    private void makeCopyNodeAndSubjobMapping(Node copiedNode, Node pastedNode, Map<Node, SubjobContainer> mapping) {
+    private void makeCopyNodeAndSubjobMapping(INode copiedNode, INode pastedNode, Map<INode, SubjobContainer> mapping) {
         for (SubjobContainerPart subjobPart : subjobParts) {
             SubjobContainer subjob = (SubjobContainer) subjobPart.getModel();
             if (subjob != null && subjob.getSubjobStartNode() != null && subjob.getSubjobStartNode().equals(copiedNode)) {
@@ -725,7 +730,7 @@ public class NodesPasteCommand extends Command {
         }
         // creates the different nodes
         for (NodeContainer nodeContainer : nodeContainerList) {
-            process.addNodeContainer(nodeContainer);
+            ((Process) process).addNodeContainer(nodeContainer);
         }
         // check that the created connections exists now, or create them if needed
         for (String newConnectionName : createdNames) {
@@ -785,7 +790,7 @@ public class NodesPasteCommand extends Command {
             for (Connection connection : (List<Connection>) nodeContainer.getNode().getOutgoingConnections()) {
                 process.removeUniqueConnectionName(connection.getName());
             }
-            process.removeNodeContainer(nodeContainer);
+            ((Process) process).removeNodeContainer(nodeContainer);
         }
 
         // check that the created connections are removed, remove them if not

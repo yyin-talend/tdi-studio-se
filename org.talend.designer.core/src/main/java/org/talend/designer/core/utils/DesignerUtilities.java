@@ -86,8 +86,8 @@ public class DesignerUtilities {
      * @param jobName
      * @param jobVersion
      */
-    public static IProcess findProcessFromEditors(final String jobId, final String jobVersion) {
-        final IProcess[] process = new IProcess[1];
+    public static IProcess2 findProcessFromEditors(final String jobId, final String jobVersion) {
+        final IProcess2[] process = new IProcess2[1];
 
         Display.getDefault().syncExec(new Runnable() {
 
@@ -99,7 +99,7 @@ public class DesignerUtilities {
                     IEditorInput input = editor.getEditorInput();
                     if (input instanceof JobEditorInput) {
                         JobEditorInput rInput = (JobEditorInput) input;
-                        IProcess p = rInput.getLoadedProcess();
+                        IProcess2 p = rInput.getLoadedProcess();
                         if (p != null && p.getId().equals(jobId) && p.getVersion().equals(jobVersion)) {
                             process[0] = p;
                             break;

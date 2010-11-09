@@ -86,7 +86,7 @@ public final class UpdateManagerUtils {
 
     public static IComponent getComponent(Process process, final String name) {
         if (name != null) {
-            AbstractMultiPageTalendEditor editor = process.getEditor();
+            AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) process.getEditor();
             if (editor != null) {
                 AbstractTalendEditor talendEditor = editor.getTalendEditor();
                 if (talendEditor != null) {

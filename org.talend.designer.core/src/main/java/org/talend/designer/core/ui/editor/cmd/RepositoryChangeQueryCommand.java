@@ -18,7 +18,7 @@ import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -32,7 +32,7 @@ import org.talend.designer.core.model.components.EmfComponent;
  */
 public class RepositoryChangeQueryCommand extends Command {
 
-    private Element elem;
+    private IElement elem;
 
     private Query query;
 
@@ -47,7 +47,7 @@ public class RepositoryChangeQueryCommand extends Command {
     /**
      * DOC admin ChangeQueryCommand constructor comment.
      */
-    public RepositoryChangeQueryCommand(Element elem, Query query, String propertyName, String value) {
+    public RepositoryChangeQueryCommand(IElement elem, Query query, String propertyName, String value) {
         this.elem = elem;
         this.query = query;
         this.value = value;

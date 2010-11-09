@@ -153,18 +153,7 @@ import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
  */
 public class Process extends Element implements IProcess2, ILastVersionChecker {
 
-    // properties
-    public static final String NEED_UPDATE_JOB = "NEED_UPDATE_JOB"; //$NON-NLS-1$
-
-    public static final String TABLE_ACTION = "TABLE_ACTION"; //$NON-NLS-1$
-
-    public static final String DEFAULT_ROW_CONNECTION_NAME = "row"; //$NON-NLS-1$
-
-    public static final String DEFAULT_TABLE_CONNECTION_NAME = "table"; //$NON-NLS-1$
-
-    public static final String DEFAULT_ITERATE_CONNECTION_NAME = "iterate"; //$NON-NLS-1$
-
-    protected List<Node> nodes = new ArrayList<Node>();
+    protected List<INode> nodes = new ArrayList<INode>();
 
     protected List<Element> elem = new ArrayList<Element>();
 
@@ -499,7 +488,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
         if (isProcessModified()) {
-            List<Node> sortedFlow = sortNodes(nodes);
+            List<INode> sortedFlow = sortNodes(nodes);
             if (sortedFlow.size() != nodes.size()) {
                 sortedFlow = nodes;
             }
@@ -517,28 +506,28 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @param nodes
      * @return
      */
-    private List<Node> sortNodes(List<Node> nodes) {
+    private List<INode> sortNodes(List<INode> nodes) {
 
         if (nodes == null || nodes.size() <= 1) {
             return nodes;
         }
 
-        List<Node> res = new ArrayList<Node>();
+        List<INode> res = new ArrayList<INode>();
 
-        List<List<Node>> mainStart = new ArrayList<List<Node>>();
+        List<List<INode>> mainStart = new ArrayList<List<INode>>();
 
-        List<List<Node>> notMainStart = new ArrayList<List<Node>>();
+        List<List<INode>> notMainStart = new ArrayList<List<INode>>();
 
-        List<Node> starts = new ArrayList<Node>();
+        List<INode> starts = new ArrayList<INode>();
 
-        for (Node node : nodes) {
+        for (INode node : nodes) {
             if (node.isStart() || node.isSubProcessStart()) {
                 starts.add(node);
             }
         }
 
-        for (Node node : starts) {
-            List<Node> branch = new ArrayList<Node>();
+        for (INode node : starts) {
+            List<INode> branch = new ArrayList<INode>();
             branch.add(node);
             findTargetAll(branch, node);
             if (node.isStart() && node.isSubProcessStart()) {
@@ -550,10 +539,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         // Must sort the mainStart first...
-        List<List<Node>> tempStart = new ArrayList<List<Node>>();
+        List<List<INode>> tempStart = new ArrayList<List<INode>>();
         tempStart.addAll(mainStart);
-        for (List<Node> preview : mainStart) {
-            for (List<Node> now : mainStart) {
+        for (List<INode> preview : mainStart) {
+            for (List<INode> now : mainStart) {
                 if (!preview.equals(now) && now.contains(preview.get(0))) {
                     tempStart.remove(preview);
                     tempStart.add(tempStart.indexOf(now) + 1, preview);
@@ -561,18 +550,18 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
         }
 
-        for (List<Node> branch : tempStart) {
-            for (Node n : branch) {
+        for (List<INode> branch : tempStart) {
+            for (INode n : branch) {
                 if (!res.contains(n)) {
                     res.add(n);
                 }
             }
 
-            for (List<Node> ns : notMainStart) {
+            for (List<INode> ns : notMainStart) {
 
-                for (Node node : ns) {
+                for (INode node : ns) {
                     if (branch.contains(node)) {
-                        for (Node nodeadd : ns) {
+                        for (INode nodeadd : ns) {
                             if (!res.contains(nodeadd)) {
                                 res.add(nodeadd);
                             }
@@ -586,7 +575,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return res;
     }
 
-    private void findTargetAll(List<Node> res, Node current) {
+    private void findTargetAll(List<INode> res, INode current) {
 
         List conns = current.getOutgoingConnections();
 
@@ -595,7 +584,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         } else {
             for (Object obj : conns) {
                 IConnection con = (IConnection) obj;
-                Node target = (Node) con.getTarget();
+                INode target = con.getTarget();
                 if (!res.contains(target)) {
                     res.add(target);
                     findTargetAll(res, target);
@@ -1102,7 +1091,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (node.getExternalNode() != null) {
             if (node.getExternalData() != null) {
-                Data data = node.getExternalBytesData();
+                Data data = (Data) node.getExternalBytesData();
                 nType.setBinaryData(data.getBytesData());
                 nType.setStringData(data.getStringData());
             }
@@ -1328,7 +1317,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void initExternalComponents() {
-        for (Node node : nodes) {
+        for (INode node : nodes) {
             if (node.isExternalNode()) {
                 node.getExternalNode().initialize();
             }
@@ -1644,7 +1633,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     public CommandStack getCommandStack() {
         if (getEditor() != null) {
-            Object adapter = getEditor().getTalendEditor().getAdapter(CommandStack.class);
+            Object adapter = ((AbstractMultiPageTalendEditor) getEditor()).getTalendEditor().getAdapter(CommandStack.class);
             return (CommandStack) adapter;
         } else {
             return new CommandStack() {
@@ -1858,7 +1847,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
 
-        for (Node node : nodes) {
+        for (INode node : nodes) {
             node.setReadOnly(readOnly);
             for (IConnection connec : (List<IConnection>) node.getOutgoingConnections()) {
                 connec.setReadOnly(readOnly);
@@ -2247,7 +2236,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     public void checkStartNodes() {
-        for (Node node : nodes) {
+        for (INode node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 if (node.isActivate()) {
                     boolean checkIfCanBeStart = node.checkIfCanBeStart();
@@ -2345,7 +2334,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private void checkProblems() {
         Problems.removeProblemsByProcess(this);
 
-        for (Node node : nodes) {
+        for (INode node : nodes) {
             if (node.isActivate()) {
                 node.checkNode();
             }
@@ -2361,7 +2350,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (isActivate()) {
             Problems.removeProblemsByProcess(this);
 
-            for (Node node : nodes) {
+            for (INode node : nodes) {
                 if (node.isActivate()) {
                     node.checkNode();
                 }
@@ -2637,7 +2626,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @return the editor
      */
-    public AbstractMultiPageTalendEditor getEditor() {
+    public IEditorPart getEditor() {
         if (this.editor instanceof AbstractMultiPageTalendEditor) {
             return this.editor;
         }
@@ -2656,7 +2645,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private boolean needRegenerateCode;
 
-    private Map<Node, SubjobContainer> copySubjobMap;
+    private Map<INode, SubjobContainer> copySubjobMap;
 
     private Boolean lastVersion;
 
@@ -2953,7 +2942,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * 
      * @param mapping
      */
-    public void setCopyPasteSubjobMappings(Map<Node, SubjobContainer> mapping) {
+    public void setCopyPasteSubjobMappings(Map<INode, SubjobContainer> mapping) {
         copySubjobMap = mapping;
     }
 

@@ -99,7 +99,7 @@ public class RunProcessContext {
     private final transient PropertyChangeSupport pcsDelegate;
 
     /** The process. */
-    private final IProcess process;
+    private final IProcess2 process;
 
     /** The selected context to run process with. */
     private IContext selectedContext;
@@ -160,7 +160,7 @@ public class RunProcessContext {
      * 
      * @param process The process.
      */
-    public RunProcessContext(IProcess process) {
+    public RunProcessContext(IProcess2 process) {
         super();
 
         this.process = process;
@@ -199,7 +199,7 @@ public class RunProcessContext {
         }
     }
 
-    public IProcess getProcess() {
+    public IProcess2 getProcess() {
         return process;
     }
 

@@ -67,7 +67,7 @@ public class ProcessContextComposite extends Composite {
     /** Context table viewer. */
     private static TableViewer contextTableViewer;
 
-    private IProcess process;
+    private IProcess2 process;
 
     private IContextListener contextListener;
 
@@ -155,7 +155,7 @@ public class ProcessContextComposite extends Composite {
      * 
      * @param process The process.
      */
-    public void setProcess(final IProcess process) {
+    public void setProcess(final IProcess2 process) {
         // Select the first context
         if (process != null) {
             if (process.equals(this.process)) {

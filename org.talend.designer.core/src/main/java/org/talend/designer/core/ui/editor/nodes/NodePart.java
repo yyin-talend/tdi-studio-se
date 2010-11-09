@@ -56,6 +56,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -398,7 +399,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             }
         }
         Connection conn = (Connection) connection.getModel();
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(), (IGraphicalNode) conn
+                .getTarget(), false);
         anchor.setConnection(conn);
         return anchor;
     }
@@ -418,7 +420,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         Connection conn = (Connection) connection.getModel();
         sourceAnchor = null;
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(), (IGraphicalNode) conn
+                .getTarget(), true);
         anchor.setConnection(conn);
         return anchor;
     }
@@ -589,10 +592,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         for (i = 0; i < modelObjects.size(); i++) {
             model = modelObjects.get(i);
 
-            if (model instanceof Connection) {
-                Node sourcenode = ((Connection) model).getSource();
-                Node targetnode = ((Connection) model).getSource();
-                String connectorName = ((Connection) model).getConnectorName();
+            if (model instanceof IConnection) {
+                INode sourcenode = ((IConnection) model).getSource();
+                INode targetnode = ((IConnection) model).getSource();
+                String connectorName = ((IConnection) model).getConnectorName();
                 if (sourcenode.getConnectorFromName(connectorName) == null
                         && targetnode.getConnectorFromName(connectorName) == null) {
                     return;
@@ -638,10 +641,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
         for (i = 0; i < modelObjects.size(); i++) {
             model = modelObjects.get(i);
-            if (model instanceof Connection) {
-                Node sourcenode = ((Connection) model).getSource();
-                Node targetnode = ((Connection) model).getSource();
-                String connectorName = ((Connection) model).getConnectorName();
+            if (model instanceof IConnection) {
+                INode sourcenode = ((IConnection) model).getSource();
+                INode targetnode = ((IConnection) model).getSource();
+                String connectorName = ((IConnection) model).getConnectorName();
                 if (sourcenode.getConnectorFromName(connectorName) == null
                         && targetnode.getConnectorFromName(connectorName) == null) {
                     return;

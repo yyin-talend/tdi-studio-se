@@ -13,9 +13,9 @@
 package org.talend.designer.rowgenerator.shadow;
 
 import java.util.List;
-import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -27,7 +27,7 @@ import org.talend.core.model.process.INode;
  * $Id: ShadowConnection.java,v 1.1 2007/02/02 06:21:07 pub Exp $
  * 
  */
-public class ShadowConnection implements IConnection {
+public class ShadowConnection extends AbstractConnection implements IConnection {
 
     private INode source;
 
@@ -105,62 +105,8 @@ public class ShadowConnection implements IConnection {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getCondition()
-     */
-    public String getCondition() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElement#getElementParameters()
-     */
-    public List<? extends IElementParameter> getElementParameters() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
-     */
-    public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
-     */
-    public void setTraceData(Map<String, String> traceData) {
-    }
-
-    public boolean isReadOnly() {
-        return false;
-    }
-
-    public void setReadOnly(boolean readOnly) {
-
-    }
-
     public String getUniqueName() {
         return getName();
-    }
-
-    public IElementParameter getElementParameter(String name) {
-        return null;
-    }
-
-    public String getConnectorName() {
-        return null;
-    }
-
-    public int getInputId() {
-        return -1;
     }
 
     public boolean isUseByMetter() {
@@ -169,42 +115,6 @@ public class ShadowConnection implements IConnection {
 
     public List<? extends IElementParameter> getElementParametersWithChildrens() {
         return getElementParameters();
-    }
-
-    public List<String> getEnabledTraceColumns() {
-        return null;
-    }
-
-    public String getTracesCondition() {
-        return null;
-    }
-
-    public boolean isTraceConnection() {
-        return false;
-    }
-
-    public int getOutputId() {
-        return 0;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getTmpNode()
-     */
-    public INode getTmpNode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getTraceData()
-     */
-    public Map<String, String> getTraceData() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /*

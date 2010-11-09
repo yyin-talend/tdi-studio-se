@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.runprocess.IEclipseProcessor;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -51,7 +51,7 @@ import org.talend.designer.runprocess.i18n.Messages;
 public class ProcessDebugDialog extends Dialog {
 
     /** The process to be run in debug mode. */
-    private IProcess process;
+    private IProcess2 process;
 
     private ProcessContextComposite contextComposite;
 
@@ -61,7 +61,7 @@ public class ProcessDebugDialog extends Dialog {
      * @param parentShell Parent shell.
      * @param process The process to be run in debug mode.
      */
-    public ProcessDebugDialog(Shell parentShell, IProcess process) {
+    public ProcessDebugDialog(Shell parentShell, IProcess2 process) {
         super(parentShell);
 
         this.process = process;

@@ -19,11 +19,10 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -32,16 +31,16 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ChangeMergeOrderCommand extends Command {
 
-    private Node mergeNode;
+    private INode mergeNode;
 
-    private List<Connection> connectionInNewOrder;
+    private List<IConnection> connectionInNewOrder;
 
-    private List<Connection> connectionInOldOrder;
+    private List<IConnection> connectionInOldOrder;
 
-    public ChangeMergeOrderCommand(Node mergeNode, List<Connection> inputConnections) {
+    public ChangeMergeOrderCommand(INode mergeNode, List<IConnection> inputConnections) {
         this.mergeNode = mergeNode;
         this.connectionInNewOrder = inputConnections;
-        this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
+        this.connectionInOldOrder = (List<IConnection>) mergeNode.getIncomingConnections();
 
         if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
             throw new IllegalArgumentException("new connection list should have the same size as the old one"); //$NON-NLS-1$

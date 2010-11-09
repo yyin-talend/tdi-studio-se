@@ -98,7 +98,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
 
-        tableEditorModel.setData(elem, param, (Process) getProcess(elem, part));
+        tableEditorModel.setData(elem, param, getProcess(elem, part));
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());

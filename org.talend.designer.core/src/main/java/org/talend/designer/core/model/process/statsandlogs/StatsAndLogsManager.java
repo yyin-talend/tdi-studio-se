@@ -42,7 +42,6 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.DataConnection;
 import org.talend.designer.core.model.process.DataNode;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -96,7 +95,7 @@ public class StatsAndLogsManager {
         return true;
     }
 
-    public static List<DataNode> getStatsAndLogsNodes(Process process) {
+    public static List<DataNode> getStatsAndLogsNodes(IProcess process) {
         List<DataNode> nodeList = new ArrayList<DataNode>();
 
         String dbOutput = null;
@@ -319,7 +318,7 @@ public class StatsAndLogsManager {
         return nodeList;
     }
 
-    private static void useNoConnectionComponentDB(DataNode dataNode, Process process, String connectionUID) {
+    private static void useNoConnectionComponentDB(DataNode dataNode, IProcess process, String connectionUID) {
 
         dataNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                 process.getElementParameter(EParameterName.HOST.getName()).getValue());
@@ -359,7 +358,7 @@ public class StatsAndLogsManager {
 
     }
 
-    private static DataNode addConnection(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
+    private static DataNode addConnection(DataNode connectionNode, IProcess process, String connectionUID, DataNode dataNode,
             List<DataNode> nodeList, DataNode commitNode) {
         IElementParameter param = dataNode.getElementParameter(EParameterName.USE_EXISTING_CONNECTION.getName());
         if (param != null) {
@@ -443,7 +442,7 @@ public class StatsAndLogsManager {
      * 
      * @param process
      */
-    private static String getUrl(Process process) {
+    private static String getUrl(IProcess process) {
         String processDBType = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue();
 
         if (StatsAndLogsConstants.JDBC_OUTPUT.equals(processDBType)) {
@@ -546,8 +545,8 @@ public class StatsAndLogsManager {
         return dataConnec;
     }
 
-    private static void setConnectionParameter(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
-            List<DataNode> nodeList) {
+    private static void setConnectionParameter(DataNode connectionNode, IProcess process, String connectionUID,
+            DataNode dataNode, List<DataNode> nodeList) {
         if (connectionNode.getElementParameter(EParameterName.HOST.getName()) != null) {
             connectionNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                     process.getElementParameter(EParameterName.HOST.getName()).getValue());

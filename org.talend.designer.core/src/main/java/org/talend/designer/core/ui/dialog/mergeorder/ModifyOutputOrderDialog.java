@@ -18,34 +18,35 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * yzhang class global comment. Detailled comment
  */
 public class ModifyOutputOrderDialog extends MergeOrderDialog {
 
-    private Node multipleOutputNode;
+    private INode multipleOutputNode;
 
-    private List<Connection> OtherConnectionList = new ArrayList<Connection>();
+    private List<IConnection> OtherConnectionList = new ArrayList<IConnection>();
 
-    private ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode) {
+    private ModifyOutputOrderDialog(Shell parentShell, INode multipleOutputNode) {
         super(parentShell);
         this.multipleOutputNode = multipleOutputNode;
-        this.connectionList = new ArrayList<Connection>();
+        this.connectionList = new ArrayList<IConnection>();
     }
 
     private EConnectionType connType;
 
-    public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode, EConnectionType connType) {
+    public ModifyOutputOrderDialog(Shell parentShell, INode multipleOutputNode, EConnectionType connType) {
         this(parentShell, multipleOutputNode);
         Assert.isNotNull(connType);
         this.connType = connType;
-        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
-        for (Connection connection : fullList) {
+        List<IConnection> fullList = (List<IConnection>) multipleOutputNode.getOutgoingConnections();
+        for (IConnection connection : fullList) {
             if (connection.getLineStyle() == connType) {
                 connectionList.add(connection);
             } else {
@@ -59,12 +60,12 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
      */
     private Integer connCategory;
 
-    public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode, Integer connCategory) {
+    public ModifyOutputOrderDialog(Shell parentShell, INode multipleOutputNode, Integer connCategory) {
         this(parentShell, multipleOutputNode);
         Assert.isNotNull(connCategory);
         this.connCategory = connCategory;
-        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
-        for (Connection connection : fullList) {
+        List<IConnection> fullList = (List<IConnection>) multipleOutputNode.getOutgoingConnections();
+        for (IConnection connection : fullList) {
             if (connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 connectionList.add(connection);
             } else {
@@ -140,14 +141,14 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
      * @see org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog#getConnectionList()
      */
     @Override
-    public List<Connection> getConnectionList() {
-        List<Connection> fillConnectionList = new ArrayList<Connection>();
+    public List<IConnection> getConnectionList() {
+        List<IConnection> fillConnectionList = new ArrayList<IConnection>();
         fillConnectionList.addAll(this.connectionList);
         fillConnectionList.addAll(this.OtherConnectionList);
         return fillConnectionList;
     }
 
-    public Node getMergeNode() {
+    public INode getMergeNode() {
         return this.multipleOutputNode;
     }
 }

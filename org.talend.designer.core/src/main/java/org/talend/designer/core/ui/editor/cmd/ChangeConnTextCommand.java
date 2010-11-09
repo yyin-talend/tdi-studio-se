@@ -13,12 +13,12 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 
@@ -37,7 +37,7 @@ public class ChangeConnTextCommand extends Command {
     // for elt component
     private String oldMetaName;
 
-    private Connection connection;
+    private IConnection connection;
 
     /**
      * Initialisation of the command with the label of the connection and the new text.
@@ -45,7 +45,7 @@ public class ChangeConnTextCommand extends Command {
      * @param connectionLabel Gef object that contains the label of the connection.
      * @param newName new name of the connection label
      */
-    public ChangeConnTextCommand(Connection connection, String newName) {
+    public ChangeConnTextCommand(IConnection connection, String newName) {
         this.connection = connection;
         if (newName != null) {
             this.newName = newName;

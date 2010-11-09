@@ -13,7 +13,7 @@
 package org.talend.designer.core.utils;
 
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ParameterValueUtil;
 import org.talend.designer.core.model.components.EParameterName;
@@ -24,7 +24,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public final class UpgradeElementHelper {
 
-    public static boolean isUseData(final Element element, final String name) {
+    public static boolean isUseData(final IElement element, final String name) {
         if (element == null || element.getElementParameters() == null) {
             return false;
         }
@@ -39,7 +39,7 @@ public final class UpgradeElementHelper {
         return false;
     }
 
-    public static void renameData(final Element element, final String oldName, final String newName) {
+    public static void renameData(final IElement element, final String oldName, final String newName) {
 
         if (element == null) {
             return;
@@ -84,7 +84,7 @@ public final class UpgradeElementHelper {
      * @param parameter
      * @return
      */
-    private static boolean isJavaRowCodeParameter(final Element node, final IElementParameter parameter) {
+    private static boolean isJavaRowCodeParameter(final IElement node, final IElementParameter parameter) {
         if (node instanceof Node) {
             if (((Node) node).getUniqueName().contains("tJavaRow")) { //$NON-NLS-1$
                 return parameter.getField().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE"); //$NON-NLS-1$

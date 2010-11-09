@@ -26,7 +26,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.SnippetItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.snippets.SnippetManager;
@@ -45,11 +45,11 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
 
     private String propertyName;
 
-    private Element elem;
+    private IElement elem;
 
     private CommandStack commandStack;
 
-    public SnippetDropTargetListener(TextViewer viewer, String propertyName, Element elem, CommandStack commandStack) {
+    public SnippetDropTargetListener(TextViewer viewer, String propertyName, IElement elem, CommandStack commandStack) {
         this.propertyName = propertyName;
         this.viewer = viewer;
         this.elem = elem;

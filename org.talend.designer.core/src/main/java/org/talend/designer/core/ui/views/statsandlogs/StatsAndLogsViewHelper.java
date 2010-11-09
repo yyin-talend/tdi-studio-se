@@ -23,6 +23,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -165,7 +166,7 @@ public class StatsAndLogsViewHelper {
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
                 cmd2.setMaps(dynamicProperty.getRepositoryTableMap());
 
-                AbstractMultiPageTalendEditor part = ((Process) applyTo).getEditor();
+                AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) applyTo).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {
                     Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
                     if (adapter != null) {
@@ -548,7 +549,7 @@ public class StatsAndLogsViewHelper {
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
                 cmd2.setMaps(propertyComposite.getRepositoryTableMap());
 
-                AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
+                AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) element).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {
                     Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
                     if (adapter != null) {

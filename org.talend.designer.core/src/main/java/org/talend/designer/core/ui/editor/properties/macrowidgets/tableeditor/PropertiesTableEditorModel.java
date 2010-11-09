@@ -23,13 +23,13 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 
 /**
@@ -41,11 +41,11 @@ import org.talend.designer.core.ui.editor.properties.controllers.TableController
  */
 public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
-    private Element element;
+    private IElement element;
 
     private IElementParameter elemParameter;
 
-    private Process process;
+    private IProcess process;
 
     private boolean dynamicData;
 
@@ -60,7 +60,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         super(titleName);
     }
 
-    public void setData(Element element, IElementParameter elemParameter, Process process) {
+    public void setData(IElement element, IElementParameter elemParameter, IProcess process) {
         this.element = element;
         this.process = process;
         this.elemParameter = elemParameter;
@@ -89,7 +89,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * 
      * @return the element
      */
-    public Element getElement() {
+    public IElement getElement() {
         return this.element;
     }
 
@@ -143,7 +143,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * 
      * @return the process
      */
-    public Process getProcess() {
+    public IProcess getProcess() {
         return this.process;
     }
 
@@ -180,7 +180,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                 ElementParameter param = (ElementParameter) object;
                 if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                     schemaType = param.getName();
-                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(), Messages.getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
+                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(), Messages
+                            .getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
                             Messages.getString("PropertiesTableEditorModel.popWindow")); //$NON-NLS-1$
                 }
             }

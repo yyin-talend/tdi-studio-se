@@ -30,6 +30,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 import org.talend.designer.core.ui.editor.nodes.NodeFigure;
@@ -164,9 +165,9 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#createFigure()
      */
     protected IFigure createFigure() {
-        ConnectionFigure connection = new ConnectionFigure((Connection) getModel(), ((Connection) getModel())
-                .getSourceNodeConnector().getConnectionProperty(((Connection) getModel()).getLineStyle()),
-                ((Connection) getModel()).getSource());
+        IConnection conn = (IConnection) getModel();
+        ConnectionFigure connection = new ConnectionFigure(conn, conn.getSourceNodeConnector().getConnectionProperty(
+                conn.getLineStyle()), conn.getSource());
 
         if (((Connection) getModel()).isActivate()) {
             ((ConnectionFigure) connection).setAlpha(-1);

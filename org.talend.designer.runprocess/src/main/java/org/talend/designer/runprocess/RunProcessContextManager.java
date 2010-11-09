@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsHelper;
 import org.talend.utils.network.FreePortFinder;
 
@@ -98,11 +99,11 @@ public class RunProcessContextManager {
      * 
      * @param activeContext the activeContext to set
      */
-    public void setActiveProcess(IProcess activeProcess) {
+    public void setActiveProcess(IProcess2 activeProcess) {
         setActiveProcess(activeProcess, true);
     }
 
-    public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
+    public void setActiveProcess(IProcess2 activeProcess, boolean refreshUI) {
         RunProcessContext tempActiveContext = findContext(activeProcess);
         if (tempActiveContext == null && activeProcess != null) {
             tempActiveContext = getRunProcessContext(activeProcess);
@@ -127,7 +128,7 @@ public class RunProcessContextManager {
      * @param activeProcess
      * @return
      */
-    protected RunProcessContext getRunProcessContext(IProcess activeProcess) {
+    protected RunProcessContext getRunProcessContext(IProcess2 activeProcess) {
         return new RunProcessContext(activeProcess);
     }
 

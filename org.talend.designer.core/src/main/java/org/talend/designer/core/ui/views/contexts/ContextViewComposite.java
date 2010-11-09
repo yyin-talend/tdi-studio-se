@@ -25,6 +25,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.ContextComposite;
 import org.talend.designer.core.DesignerPlugin;
@@ -115,7 +116,7 @@ public class ContextViewComposite extends ContextComposite {
         return getProcess() == null ? null : getProcess().getContextManager();
     }
 
-    public IProcess getProcess() {
+    public IProcess2 getProcess() {
         return part == null ? null : part.getTalendEditor().getProcess();
     }
 

@@ -23,6 +23,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
@@ -135,11 +136,11 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#setActiveProcess(org.talend.core.model.process.IProcess)
      */
-    public void setActiveProcess(IProcess activeProcess) {
+    public void setActiveProcess(IProcess2 activeProcess) {
         delegateService.setActiveProcess(activeProcess);
     }
 
-    public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
+    public void setActiveProcess(IProcess2 activeProcess, boolean refreshUI) {
         delegateService.setActiveProcess(activeProcess, refreshUI);
     }
 
