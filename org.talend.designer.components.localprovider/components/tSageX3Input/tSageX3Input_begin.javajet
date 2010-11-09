@@ -37,23 +37,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             String poolAlias = ElementParameterParser.getValue(node, "__POOL_ALIAS__");
             String requestConfig = ElementParameterParser.getValue(node, "__REQUEST_CONFIG__");
             String limit = ElementParameterParser.getValue(node, "__LIMIT_SIZE__");
-            
+            boolean useKeys = ("true").equals(ElementParameterParser.getValue(node,"__USE_KEYS__"));
             String publicName = ElementParameterParser.getValue(node,"__PUBLICATION_NAME__");
 %>
             org.talend.sage.Client client_<%=cid %> = new org.talend.sage.Client();
             client_<%=cid %>.ConnectService(<%=endpoint%>);
             client_<%=cid %>.setContext(<%=language%>,<%=user%>,<%=password%>,<%=poolAlias%>,<%=requestConfig%>);
+
             java.util.Map<String,String> keyValues_<%=cid%> = new java.util.HashMap<String,String>();		          
 <%
-            List<Map<String, String>> keys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");            
-            for(Map<String,String> keyValue:keys){
-            	String key = keyValue.get("KEY");
-            	String value = keyValue.get("VALUE");
+			if(useKeys){	
+                List<Map<String, String>> keys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");            
+                for(Map<String,String> keyValue:keys){
+                	String key = keyValue.get("KEY");
+                	String value = keyValue.get("VALUE");
 %>
-
-            	keyValues_<%=cid%>.put(<%=key%>,<%=value%>);
-
+    
+                	keyValues_<%=cid%>.put(<%=key%>,<%=value%>);
+    
 <%
+    			}
 			}
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
