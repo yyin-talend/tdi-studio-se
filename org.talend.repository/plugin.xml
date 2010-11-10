@@ -1270,6 +1270,13 @@
             id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask"
             name="Change Routines Parameter">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeValueBug14780"
+            description="ChangeValueBug14780"
+            id="org.talend.repository.model.migration.ChangeValueBug14780"
+            name="Change value">
+      </projecttask>
       
    </extension>
    

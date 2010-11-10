@@ -63,6 +63,7 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
   String checkAll = ElementParameterParser.getValue(node, "__CHECK_ALL__");    
   final boolean bIsTrim = "true".equals( ElementParameterParser.getValue(node, "__SUB_STRING__") );    
   final boolean useFasteDateChecker = "true".equals( ElementParameterParser.getValue(node, "__FAST_DATE_CHECK__") );
+  final boolean emptyIsNull = "true".equals(ElementParameterParser.getValue(node, "__EMPTY_IS_NULL__"));
   final boolean allEmptyAreNull = "true".equals(ElementParameterParser.getValue(node, "__ALL_EMPTY_ARE_NULL__"));
 
   class SchemaChecker {
@@ -276,21 +277,35 @@ if (sInConnName != null && listInColumns != null && listInColumns.size() > 0) {
 	  }
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
       if (!isPrimitive){
-      	if(allEmptyAreNull){
+      	if(emptyIsNull && !allEmptyAreNull){ //for the migration task
+      		if(listEmptyAsNull.contains(metadataColumn.getLabel())){
 %>
-	        // validate nullable (empty as null)
-	        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
+		        // validate nullable (empty as null)
+		        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
 <%
-		}else if(listEmptyAsNull.contains(metadataColumn.getLabel())){
+			}else{
 %>
-	        // validate nullable (empty as null)
-	        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
+		        // validate nullable
+		        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
 <%
+			}
 		}else{
+      		if(allEmptyAreNull){
 %>
-	        // validate nullable
-	        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
+		        // validate nullable (empty as null)
+		        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
 <%
+			}else if(listEmptyAsNull.contains(metadataColumn.getLabel())){
+%>
+		        // validate nullable (empty as null)
+		        if ((<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) || ("".equals(<%=_sInConnName%>.<%=metadataColumn.getLabel()%>))) {
+<%
+			}else{
+%>
+		        // validate nullable
+		        if (<%=_sInConnName%>.<%=metadataColumn.getLabel()%> == null) {
+<%
+			}
 		}
 %>
 		ifPassed_<%=cid%> = false;
