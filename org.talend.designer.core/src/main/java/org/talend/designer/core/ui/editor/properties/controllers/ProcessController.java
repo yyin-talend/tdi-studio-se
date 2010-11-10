@@ -628,7 +628,6 @@ public class ProcessController extends AbstractElementPropertySectionController 
             final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
             elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
         }
-        jobNameParam.setLinkedRepositoryItem(item);
         jobNameParam.setLabelFromRepository(label);
         // set default context
         String defalutValue = null;

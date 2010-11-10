@@ -844,12 +844,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 String value = id + " - " + name; //$NON-NLS-1$
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
-                IElementParameter repostoryParam = elem.getElementParameter(fullParamName);
-
-                final Item item = node.getObject().getProperty().getItem();
-                if (repostoryParam != null) {
-                    repostoryParam.setLinkedRepositoryItem(item);
-                }
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 if (elem instanceof Node) {

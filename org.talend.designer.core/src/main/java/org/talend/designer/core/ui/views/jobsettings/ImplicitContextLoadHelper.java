@@ -145,20 +145,6 @@ public class ImplicitContextLoadHelper {
             IElementParameter elementParameter) {
         String propertyType = (String) getPreferenceValue(languagePrefix, EParameterName.PROPERTY_TYPE, String.class);
         String id = (String) getPreferenceValue(languagePrefix, EParameterName.REPOSITORY_PROPERTY_TYPE, String.class);
-        String connectionLabel = PREFERENCE_STORE.getString(languagePrefix
-                + getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE)
-                + ImplicitContextLoadPreferencePage.CONNECTION_ITEM_LABEL);
-
-        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
-        RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
-
-        IElementParameter parameterRepositoryType = elementParameter.getChildParameters().get(
-                EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        if (parameterRepositoryType != null) {
-            parameterRepositoryType.setLinkedRepositoryItem(findConnectionItemByLabel(contentProvider, repositoryNode,
-                    connectionLabel));
-        }
 
         Connection repositoryConnection = null;
         Map<String, ConnectionItem> repositoryConnectionItemMap = extraComposite.getRepositoryConnectionItemMap();
@@ -311,14 +297,7 @@ public class ImplicitContextLoadHelper {
         String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue(); //$NON-NLS-1$
         String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue(); //$NON-NLS-1$
 
-        Item item = elementParameter.getLinkedRepositoryItem();
-        if (item == null || (item != null && !item.getProperty().getId().equals(itemId))) {
-            Map<String, ConnectionItem> itemMap = extraComposite.getRepositoryConnectionItemMap();
-            item = itemMap.get(itemId);
-            if (item == null) {
-                item = UpdateRepositoryUtils.getConnectionItemByItemId(itemId);
-            }
-        }
+        Item item = UpdateRepositoryUtils.getConnectionItemByItemId(itemId);
 
         PREFERENCE_STORE.setValue(languagePrefix + getExtraParameterName(EParameterName.PROPERTY_TYPE), propertyType);
         PREFERENCE_STORE.setValue(languagePrefix + getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE), itemId);

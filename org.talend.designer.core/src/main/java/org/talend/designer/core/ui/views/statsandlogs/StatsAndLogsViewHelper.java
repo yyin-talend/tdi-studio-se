@@ -41,7 +41,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * ftang class global comment. Detailed comment. <br/>
@@ -519,19 +518,6 @@ public class StatsAndLogsViewHelper {
             if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
                 String propertyType = PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName());
                 String id = PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                String connectionLabel = PREFERENCE_STORE.getString(LANGUAGE_PREFIX
-                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName() + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL);
-
-                RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                        .getContentProvider();
-                RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
-
-                IElementParameter parameterRepositoryType = element.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
-                        .getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                if (parameterRepositoryType != null) {
-                    parameterRepositoryType.setLinkedRepositoryItem(findConnectionItem(contentProvider, repositoryNode,
-                            connectionLabel));
-                }
 
                 Connection repositoryConnection = null;
                 Map<String, ConnectionItem> repositoryConnectionItemMap = propertyComposite.getRepositoryConnectionItemMap();
@@ -818,14 +804,7 @@ public class StatsAndLogsViewHelper {
                 String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue(); //$NON-NLS-1$
                 String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue(); //$NON-NLS-1$
 
-                Item item = elementParameter.getLinkedRepositoryItem();
-                if (item == null || (item != null && !item.getProperty().getId().equals(itemId))) {
-                    Map<String, ConnectionItem> itemMap = dynamicProperty.getRepositoryConnectionItemMap();
-                    item = itemMap.get(itemId);
-                    if (item == null) {
-                        item = UpdateRepositoryUtils.getConnectionItemByItemId(itemId);
-                    }
-                }
+                Item item = UpdateRepositoryUtils.getConnectionItemByItemId(itemId);
                 PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName(), propertyType);
                 PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), itemId);
                 if (item != null) {

@@ -633,25 +633,6 @@ public class ElementParameter implements IElementParameter {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.IElementParameter#getLinkedRepositoryItem()
-     */
-    public Item getLinkedRepositoryItem() {
-        return linkedRepositoryItem;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.core.model.process.IElementParameter#setLinkedRepositoryItem(org.talend.core.model.properties.Item)
-     */
-    public void setLinkedRepositoryItem(Item item) {
-        this.linkedRepositoryItem = item;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.core.model.process.IElementParameter#getContextMode()
      */
     public boolean isContextMode() {
@@ -918,7 +899,6 @@ public class ElementParameter implements IElementParameter {
         clone.setFilter(getFilter());
         clone.setGroupDisplayName(getGroupDisplayName());
         clone.setLabelFromRepository(getLabelFromRepository());
-        clone.setLinkedRepositoryItem(getLinkedRepositoryItem());
         clone.setListItemsDisplayCodeName(getListItemsDisplayCodeName());
         clone.setListItemsDisplayName(getListItemsDisplayName());
         clone.setListItemsNotReadOnlyIf(getListItemsNotReadOnlyIf());

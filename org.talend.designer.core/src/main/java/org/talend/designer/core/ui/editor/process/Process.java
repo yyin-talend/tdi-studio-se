@@ -1420,7 +1420,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
             if (processItem != null) {
                 nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
-                processIdParam.setLinkedRepositoryItem(processItem);
             }
         }
         nc.setData(nType.getBinaryData(), nType.getStringData());

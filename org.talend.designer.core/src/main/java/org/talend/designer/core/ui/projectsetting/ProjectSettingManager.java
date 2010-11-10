@@ -54,9 +54,6 @@ import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -216,21 +213,6 @@ public class ProjectSettingManager extends Utils {
                 .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
 
         String id = (String) (ElementParameter2ParameterType.getParameterValue(process, EParameterName.PROPERTY_TYPE.getName()));
-
-        String connectionLabel = (String) (ElementParameter2ParameterType.getParameterValue(process,
-                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-
-        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
-        RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
-        IElementParameter elementParameter = process.getElementParameter(ImplicitContextLoadHelper
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE));
-        IElementParameter parameterRepositoryType = elementParameter.getChildParameters().get(
-                EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        if (parameterRepositoryType != null) {
-            parameterRepositoryType.setLinkedRepositoryItem(ImplicitContextLoadHelper.findConnectionItemByLabel(contentProvider,
-                    repositoryNode, connectionLabel));
-        }
 
         Connection repositoryConnection = null;
         Map<String, ConnectionItem> repositoryConnectionItemMap = extraComposite.getRepositoryConnectionItemMap();

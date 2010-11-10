@@ -39,7 +39,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -115,20 +114,11 @@ public class FileController extends AbstractElementPropertySectionController {
         IElementParameter propertyParam = elem.getElementParameter("PROPERTY:REPOSITORY_PROPERTY_TYPE");
         try {
             if (propertyParam != null && propertyParam.getValue() != null && !"".equals(propertyParam.getValue())) {
-                IElementParameter elementParameterFromField = elem
-                        .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
                 Item linkedRepositoryItem = null;
-                if (elementParameterFromField != null) {
-                    linkedRepositoryItem = elementParameterFromField.getLinkedRepositoryItem();
-                    if (linkedRepositoryItem == null
-                            || !linkedRepositoryItem.getProperty().getId().equals(propertyParam.getValue())) {
-                        IRepositoryViewObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory()
-                                .getLastVersion(propertyParam.getValue().toString());
-                        if (repository != null && repository.getProperty() != null) {
-                            linkedRepositoryItem = repository.getProperty().getItem();
-                            elementParameterFromField.setLinkedRepositoryItem(linkedRepositoryItem);
-                        }
-                    }
+                IRepositoryViewObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                        propertyParam.getValue().toString());
+                if (repository != null && repository.getProperty() != null) {
+                    linkedRepositoryItem = repository.getProperty().getItem();
                 }
                 if (linkedRepositoryItem != null && linkedRepositoryItem instanceof XmlFileConnectionItem) {
                     XmlFileConnectionItem xci = (XmlFileConnectionItem) linkedRepositoryItem;

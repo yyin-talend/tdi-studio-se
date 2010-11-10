@@ -293,9 +293,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 IElementParameter repositoryParam = param.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
-                if (repositoryParam != null) {
-                    repositoryParam.setLinkedRepositoryItem(dialog.getResult().getObject().getProperty().getItem());
-                }
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
                 Connection repositoryConnection = null;
@@ -306,7 +303,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 } else {
                     repositoryConnection = null;
                     if (repositoryParam != null) {
-                        Item item = repositoryParam.getLinkedRepositoryItem();
+                        Item item = dialog.getResult().getObject().getProperty().getItem();
                         if (item instanceof ConnectionItem) {
                             repositoryConnection = ((ConnectionItem) item).getConnection();
                         }

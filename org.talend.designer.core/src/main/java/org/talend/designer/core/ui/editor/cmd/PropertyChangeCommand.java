@@ -152,7 +152,6 @@ public class PropertyChangeCommand extends Command {
             // newValue is the id of the job
             ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
             if (processItem != null) {
-                currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
             }
         }
@@ -185,7 +184,6 @@ public class PropertyChangeCommand extends Command {
                         EParameterName.PROCESS_TYPE_PROCESS.getName());
                 ProcessItem processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) newValue);
                 if (processItem != null) {
-                    processIdParam.setLinkedRepositoryItem(processItem);
                     currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
                 }
             }
@@ -515,7 +513,6 @@ public class PropertyChangeCommand extends Command {
             // oldValue is the id of the job
             ProcessItem processItem = ItemCacheManager.getProcessItem((String) oldValue);
             if (processItem != null) {
-                currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
             }
         }
@@ -566,7 +563,6 @@ public class PropertyChangeCommand extends Command {
             // newValue is the id of the job
             ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
             if (processItem != null) {
-                currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
             }
         }
