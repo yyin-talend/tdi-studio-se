@@ -195,7 +195,7 @@ public class ElementParameter implements IElementParameter {
      * @seeorg.talend.designer.core.model.components.IDesignerElementParameter#setField(org.talend.core.model.designer.
      * EParameterFieldType)
      */
-    public void setField(final EParameterFieldType type) {
+    public void setFieldType(final EParameterFieldType type) {
         field = type;
     }
 
@@ -226,7 +226,7 @@ public class ElementParameter implements IElementParameter {
      * 
      * @see org.talend.designer.core.model.components.IDesignerElementParameter#getField()
      */
-    public EParameterFieldType getField() {
+    public EParameterFieldType getFieldType() {
         return field;
     }
 
@@ -256,7 +256,7 @@ public class ElementParameter implements IElementParameter {
     }
 
     public void setListItemsValue(final Object[] list) {
-        if (this.getField() == EParameterFieldType.TABLE) {
+        if (this.getFieldType() == EParameterFieldType.TABLE) {
             EParameterFieldType.AS400_CHECK.getClass();
         }
         itemsValue = list;
@@ -873,9 +873,8 @@ public class ElementParameter implements IElementParameter {
         this.noContextAssist = enable;
     }
 
-    @Override
-    public IElementParameter clone() throws CloneNotSupportedException {
-        IElementParameter clone = (IElementParameter) super.clone();
+    public IElementParameter getClone() {
+        IElementParameter clone = new ElementParameter(this.element);
 
         final RGB bgc = getBackgroundColor();
         if (bgc != null) {
@@ -895,7 +894,7 @@ public class ElementParameter implements IElementParameter {
         clone.setDisplayName(getDisplayName());
         clone.setDynamicSettings(isDynamicSettings());
         clone.setElement(getElement()); // maybe, need reset it after.
-        clone.setField(getField());
+        clone.setFieldType(getFieldType());
         clone.setFilter(getFilter());
         clone.setGroupDisplayName(getGroupDisplayName());
         clone.setLabelFromRepository(getLabelFromRepository());
@@ -915,8 +914,7 @@ public class ElementParameter implements IElementParameter {
         clone.setNumRow(getNumRow());
         final IElementParameter pParameter = getParentParameter();
         if (pParameter != null) {
-            clone.setParentParameter(pParameter.clone()); // ?
-            // clone.setParentParameter(pParameter);
+            clone.setParentParameter(pParameter.getClone());
         }
         clone.setReadOnly(isReadOnly());
         clone.setReadOnlyIf(getReadOnlyIf());

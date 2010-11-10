@@ -204,10 +204,10 @@ public class UpdateNodeParameterCommand extends Command {
                                 && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
-                                    || param.getField() == EParameterFieldType.MEMO_SQL) {
+                                    || param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                                 continue;
                             }
-                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
+                            if (param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -253,7 +253,7 @@ public class UpdateNodeParameterCommand extends Command {
                                 }
                             }
                             if (objectValue != null) {
-                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                         && repositoryValue.equals(UpdatesConstants.TYPE)) {
                                     boolean found = false;
                                     String[] items = param.getListRepositoryItems();
@@ -265,7 +265,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     }
                                 } else {
                                     // update tFileInputExcel job
-                                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                                    if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                                         String name = param.getName();
                                         if (name.equals("ROOT") || name.equals("LOOP") || name.equals("GROUP")
                                                 && objectValue instanceof List) {
@@ -307,12 +307,12 @@ public class UpdateNodeParameterCommand extends Command {
                                         node.setPropertyValue(param.getName(), objectValue);
                                     }
                                 }
-                            } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
                                 RepositoryToComponentProperty.getTableXMLMappingValue(
                                         (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                         (List<Map<String, Object>>) param.getValue(), node);
-                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
+                            } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) {
                                 objectValue = RepositoryToComponentProperty.getValue(
                                         (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                         "PARAMS", node.getMetadataList().get(0));
@@ -344,7 +344,7 @@ public class UpdateNodeParameterCommand extends Command {
                     String repositoryValue = param.getRepositoryValue();
                     if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
                         if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
-                                || param.getField() == EParameterFieldType.MEMO_SQL) {
+                                || param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                             continue;
                         }
                         param.setRepositoryValueUsed(false);
@@ -574,7 +574,7 @@ public class UpdateNodeParameterCommand extends Command {
                     Query query = (Query) result.getParameter();
                     if (query != null) {
                         for (IElementParameter param : node.getElementParameters()) {
-                            if (param.getField() == EParameterFieldType.MEMO_SQL
+                            if (param.getFieldType() == EParameterFieldType.MEMO_SQL
                                     && UpdatesConstants.QUERY.equals(param.getName())) {
                                 // modefied by hyWang
                                 String value = query.getValue();

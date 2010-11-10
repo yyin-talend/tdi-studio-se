@@ -227,7 +227,8 @@ public class TestComponentsAction extends Action {
                 item.getProperty().setVersion(TestParameter.VERSION);
                 IProcess process = service.getProcessFromProcessItem(item);
                 setDefaultProperties(process, componentPath);
-                IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
+                IProcessor processor = ProcessorUtilities.getProcessor(process, item.getProperty(), process.getContextManager()
+                        .getDefaultContext());
                 try {
                     // generate
                     log.info(TestParameter.GENERATE_START + " : " + file.getName()); //$NON-NLS-1$

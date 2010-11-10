@@ -122,7 +122,7 @@ public class DataProcess {
             if (targetParam != null) {
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
-                if (targetParam.getField() == EParameterFieldType.TABLE) {
+                if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
                     targetParam.setListItemsValue(sourceParam.getListItemsValue());
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
                 }
@@ -130,7 +130,7 @@ public class DataProcess {
                     IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
                     IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
                     targetChildParam.setValue(sourceChildParam.getValue());
-                    if (targetChildParam.getField() == EParameterFieldType.TABLE) {
+                    if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
                         targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         targetChildParam.setListItemsDisplayCodeName(sourceChildParam.getListItemsDisplayCodeName());
                     }
@@ -249,7 +249,7 @@ public class DataProcess {
                 dataConnec.setOutputId(connection.getOutputId());
                 if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
                     IElementParameter param = new ElementParameter(dataConnec);
-                    param.setField(EParameterFieldType.CHECK);
+                    param.setFieldType(EParameterFieldType.CHECK);
                     param.setCategory(EComponentCategory.BASIC);
                     param.setValue(Boolean.FALSE);
                     param.setName("ENABLE_PARALLEL"); //$NON-NLS-1$
@@ -259,7 +259,7 @@ public class DataProcess {
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
 
                     param = new ElementParameter(dataConnec);
-                    param.setField(EParameterFieldType.TEXT);
+                    param.setFieldType(EParameterFieldType.TEXT);
                     param.setCategory(EComponentCategory.BASIC);
                     // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
                     // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
@@ -276,7 +276,7 @@ public class DataProcess {
                     IElementParameter param = new ElementParameter(dataConnec);
                     param.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
                     param.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
-                    param.setField(EParameterFieldType.CHECK);
+                    param.setFieldType(EParameterFieldType.CHECK);
                     param.setValue(Boolean.FALSE);
                     param.setCategory(EComponentCategory.ADVANCED);
                     param.setShow(false);
@@ -293,7 +293,7 @@ public class DataProcess {
                         param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
                         param.setValue(Boolean.FALSE);
                         param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
-                        param.setField(EParameterFieldType.CHECK);
+                        param.setFieldType(EParameterFieldType.CHECK);
                         param.setCategory(EComponentCategory.RESUMING);
                         param.setNumRow(2);
                         param.setShow(true);
@@ -304,7 +304,7 @@ public class DataProcess {
                         IElementParameter param = new ElementParameter(dataConnec);
                         param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
                         param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
-                        param.setField(EParameterFieldType.CHECK);
+                        param.setFieldType(EParameterFieldType.CHECK);
                         param.setCategory(EComponentCategory.BREAKPOINT);
                         param.setNumRow(13);
                         param.setValue(false);
@@ -386,7 +386,7 @@ public class DataProcess {
             IElementParameter param2 = new ElementParameter(dataConnec);
             param2.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
             param2.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
-            param2.setField(EParameterFieldType.CHECK);
+            param2.setFieldType(EParameterFieldType.CHECK);
             param2.setValue(Boolean.TRUE);
             param2.setCategory(EComponentCategory.ADVANCED);
             param2.setShow(false);

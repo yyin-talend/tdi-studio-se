@@ -97,13 +97,13 @@ public class ProcessVersionComposite extends AbstractTabComposite {
      * @param style
      */
     public ProcessVersionComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory,
-            IRepositoryViewObject IRepositoryViewObject) {
-        super(parent, style, factory, IRepositoryViewObject);
+            IRepositoryViewObject object) {
+        super(parent, style, factory, object);
         FormLayout layout = new FormLayout();
         setLayout(layout);
         // add by wzhang for bug 8218
-        if (IRepositoryViewObject instanceof IProcess2) {
-            boolean readOnly = ((IProcess2) IRepositoryViewObject).getProcessor().getProcess().isReadOnly();
+        if (object instanceof IProcess2) {
+            boolean readOnly = ((IProcess2) object).isReadOnly();
             parent.setEnabled(!readOnly);
         }
         FormData thisFormData = new FormData();

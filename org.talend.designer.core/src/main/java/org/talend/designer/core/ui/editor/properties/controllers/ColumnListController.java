@@ -154,11 +154,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         if (param.getDisplayName().startsWith("!!")) { //$NON-NLS-1$
-            if (param.getField() == EParameterFieldType.COLUMN_LIST) {
+            if (param.getFieldType() == EParameterFieldType.COLUMN_LIST) {
                 param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
-            } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+            } else if (param.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST) {
                 param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
-            } else if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+            } else if (param.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setDisplayName(EParameterName.LOOKUP_COLUMN_LIST.getDisplayName());
             }
         }
@@ -365,21 +365,21 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             IElementParameter param = element.getElementParameters().get(i);
             columnList = getColumnList(element, param.getContext());
             columnNameList = columnList.toArray(new String[0]);
-            if (param.getField() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {
+            if (param.getFieldType() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {
                 curColumnNameList = columnNameList;
                 curColumnValueList = columnNameList;
             }
-            if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+            if (param.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST) {
                 curColumnNameList = prevColumnNameList;
                 curColumnValueList = prevColumnNameList;
             }
-            if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+            if (param.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if ((param.getField() == EParameterFieldType.COLUMN_LIST && !isSCDComponent)
-                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                    || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+            if ((param.getFieldType() == EParameterFieldType.COLUMN_LIST && !isSCDComponent)
+                    || param.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                    || param.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
 
@@ -403,34 +403,34 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 syncNodePropertiesColumns(param, columnsChanged, curColumnNameList);
 
             }
-            if (param.getField() == EParameterFieldType.TABLE) {
+            if (param.getFieldType() == EParameterFieldType.TABLE) {
                 Object[] itemsValue = param.getListItemsValue();
                 for (int j = 0; j < itemsValue.length; j++) {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                         columnList = getColumnList(element, tmpParam.getContext());
                         String[] tableColumnNameList = columnList.toArray(new String[0]);
-                        if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST) {
                             curColumnNameList = tableColumnNameList;
                             curColumnValueList = tableColumnNameList;
                         }
-                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof INode) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof INode) {
                             curColumnNameList = prevColumnNameList;
                             curColumnValueList = prevColumnNameList;
                         }
                         // previous columns from a connection is in fact the same as the current columns.
                         // needed for traces with breakpoint, feature:
-                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof IConnection) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST && element instanceof IConnection) {
                             curColumnNameList = tableColumnNameList;
                             curColumnValueList = tableColumnNameList;
                         }
-                        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                             curColumnNameList = refColumnListNames;
                             curColumnValueList = refColumnListValues;
                         }
-                        if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
-                                || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                                || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST
+                                || tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                                || tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                             tmpParam.setListItemsDisplayCodeName(curColumnNameList);
                             tmpParam.setListItemsDisplayName(curColumnNameList);
                             tmpParam.setListItemsValue(curColumnValueList);
@@ -515,7 +515,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     newParam = new ElementParameter(element);
                     newParam.setName(columnName); //$NON-NLS-1$
                     newParam.setDisplayName(""); //$NON-NLS-1$
-                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setFieldType(EParameterFieldType.TEXT);
                     newParam.setValue(""); //$NON-NLS-1$
                     listItemsValue[j] = newParam;
 
@@ -753,7 +753,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         String componentUniqueName = ""; //$NON-NLS-1$
         String preRowLookup = ""; //$NON-NLS-1$
-        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
+        if (tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
             ColumnNameChanged tmpChanged = columnsChanged.get(0);
             if (tmpChanged instanceof ColumnNameChangedExt) {
                 componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + "."; //$NON-NLS-1$
@@ -804,7 +804,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         String componentUniqueName = ""; //$NON-NLS-1$
         String preRowLookup = ""; //$NON-NLS-1$
-        if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
+        if (param.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
             ColumnNameChanged tmpChanged = columnsChanged.get(0);
             if (tmpChanged instanceof ColumnNameChangedExt) {
                 componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + "."; //$NON-NLS-1$
@@ -843,20 +843,20 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
             if (changedNode != curNode) {
                 // if not update current node, only update the prev/lookup column list
-                if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                        || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                if (tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                        || tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                     return true;
                 }
 
             } else {
                 // if update current node, only update the self column list
-                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST) {
                     return true;
                 }
             }
         } else {
             // only update self column list
-            if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+            if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST) {
                 return true;
             }
         }

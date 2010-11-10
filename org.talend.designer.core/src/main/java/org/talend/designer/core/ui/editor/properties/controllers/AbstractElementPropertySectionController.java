@@ -282,7 +282,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
-                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                    if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                         return getRepositoryItemFromRepositoryName(param, repositoryName);
                     }
                     if (param.getValue() instanceof String) {
@@ -324,7 +324,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // }
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
-                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                    if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                         return getRepositoryItemFromRepositoryName(param, repositoryName);
                     }
                     if (param.getValue() instanceof String) {
@@ -1585,7 +1585,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         boolean end = false;
         for (int i = 0; i < list.size() && !end; i++) {
             IElementParameter param = list.get(i);
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+            if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 connParameters.setNodeReadOnly(param.isReadOnly());
                 end = true;
             }

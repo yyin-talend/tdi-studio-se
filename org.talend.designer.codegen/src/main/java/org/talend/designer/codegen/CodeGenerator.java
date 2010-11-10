@@ -109,11 +109,9 @@ public class CodeGenerator implements ICodeGenerator {
             this.process = process;
             this.statistics = statistics;
             this.trace = trace;
-            this.jobName = process.getLabel();
+            this.jobName = process.getName();
             this.jobVersion = ""; //$NON-NLS-1$
-            if (process.getProperty() != null && process.getProperty().getVersion() != null) {
-                this.jobVersion = process.getProperty().getVersion().replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-            } else if (process.getVersion() != null) {
+            if (process.getVersion() != null) {
                 this.jobVersion = process.getVersion().replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 

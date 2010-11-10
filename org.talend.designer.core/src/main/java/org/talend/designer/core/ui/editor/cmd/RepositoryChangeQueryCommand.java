@@ -63,14 +63,14 @@ public class RepositoryChangeQueryCommand extends Command {
         elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         if (propertyName.equals(EParameterName.QUERYSTORE_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                     param.setRepositoryValueUsed(false);
                     param.setReadOnly(false);
                 }
             }
         } else {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                     // modified by hyWang
                     String queryStr = query.getValue();
                     if (!query.isContextMode()) {
@@ -107,7 +107,7 @@ public class RepositoryChangeQueryCommand extends Command {
             }
         } else {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                     elem.setPropertyValue(param.getName(), oldValue);
                     param.setRepositoryValueUsed(false);
                 }

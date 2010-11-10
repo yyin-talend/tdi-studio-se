@@ -119,7 +119,7 @@ public class QueryTypeController extends AbstractRepositoryController {
 
     private IElementParameter getQueryTextElementParameter(IElement elem) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+            if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 return param;
             }
         }

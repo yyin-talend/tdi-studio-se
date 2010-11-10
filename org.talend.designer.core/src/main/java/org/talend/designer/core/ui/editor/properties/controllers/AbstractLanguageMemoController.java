@@ -105,7 +105,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         int nbLines = param.getNbLines();
         final String paramName = param.getName();
 

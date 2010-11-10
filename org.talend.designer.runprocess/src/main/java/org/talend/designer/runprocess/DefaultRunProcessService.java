@@ -25,6 +25,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -105,14 +106,14 @@ public class DefaultRunProcessService implements IRunProcessService {
      * org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
      * boolean)
      */
-    public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
+    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
         switch (language) {
         case PERL:
-            return createPerlProcessor(process, filenameFromLabel);
+            return createPerlProcessor(process, property, filenameFromLabel);
         case JAVA:
-            return createJavaProcessor(process, filenameFromLabel);
+            return createJavaProcessor(process, property, filenameFromLabel);
         default:
-            return createPerlProcessor(process, filenameFromLabel);
+            return createJavaProcessor(process, property, filenameFromLabel);
         }
     }
 
@@ -123,8 +124,8 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @param filenameFromLabel
      * @return
      */
-    protected IProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
-        return new PerlProcessor(process, filenameFromLabel);
+    protected IProcessor createPerlProcessor(IProcess process, Property property, boolean filenameFromLabel) {
+        return new PerlProcessor(process, property, filenameFromLabel);
     }
 
     /**
@@ -134,8 +135,8 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @param filenameFromLabel
      * @return
      */
-    protected IProcessor createJavaProcessor(IProcess process, boolean filenameFromLabel) {
-        return new JavaProcessor(process, filenameFromLabel);
+    protected IProcessor createJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
+        return new JavaProcessor(process, property, filenameFromLabel);
     }
 
     public IPerformanceData createPerformanceData(String data) {

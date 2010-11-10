@@ -171,8 +171,8 @@ public class ElementParameter2ParameterType {
                         } else {
                             value = pType.getValue();
                         }
-                        if (param.getField().equals(EParameterFieldType.CHECK)
-                                || param.getField().equals(EParameterFieldType.RADIO)) {
+                        if (param.getFieldType().equals(EParameterFieldType.CHECK)
+                                || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                             if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                                 Boolean boolean1 = new Boolean(value);
                                 elemParam.setPropertyValue(pTypeName, boolean1);
@@ -184,7 +184,7 @@ public class ElementParameter2ParameterType {
                             // ((Node) elemParam).setDummy(!boolean1);
                             // }
                             // }
-                        } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                        } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                             boolean valueSet = false;
                             if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
                                 if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
@@ -198,7 +198,7 @@ public class ElementParameter2ParameterType {
                             if (!valueSet) {
                                 elemParam.setPropertyValue(pTypeName, value);
                             }
-                        } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                        } else if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             String[] codeList = param.getListItemsDisplayCodeName();
                             Map<String, Object> lineValues = null;
@@ -225,7 +225,7 @@ public class ElementParameter2ParameterType {
                                 }
                             }
                             elemParam.setPropertyValue(pTypeName, tableValues);
-                        } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                        } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
                             // fix for bug 2193
                             boolean setToCustom = false;
                             if (EmfComponent.REPOSITORY
@@ -256,8 +256,8 @@ public class ElementParameter2ParameterType {
                             }
                             elemParam.setPropertyValue(pTypeName, value);
                             // end of fix for bug 2193
-                        } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                            if (param.getRepositoryValue() != null && !param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                        } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                            if (param.getRepositoryValue() != null && !param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
                                 if (repositoryParam != null && EmfComponent.REPOSITORY.equals(repositoryParam.getValue())) {
                                     param.setRepositoryValueUsed(true);
                                 } else {
@@ -335,7 +335,7 @@ public class ElementParameter2ParameterType {
         ElementParameterType pType;
 
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
             return null;
         }
 
@@ -345,10 +345,10 @@ public class ElementParameter2ParameterType {
         } else {
             pType.setName(param.getName());
         }
-        pType.setField(param.getField().getName());
+        pType.setField(param.getFieldType().getName());
         pType.setContextMode(param.isContextMode());
         Object value = param.getValue();
-        if (param.getField().equals(EParameterFieldType.TABLE) && value != null) {
+        if (param.getFieldType().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
@@ -406,9 +406,9 @@ public class ElementParameter2ParameterType {
         IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
         IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
         designerCoreService.switchToCurJobSettingsView();
-        List<IProcess> openedProcess = designerCoreService.getOpenedProcess(reference);
+        List<IProcess2> openedProcess = designerCoreService.getOpenedProcess(reference);
 
-        for (IProcess process : openedProcess) {
+        for (IProcess2 process : openedProcess) {
             if (process instanceof Element) {
                 Element processElem = (Element) process;
                 ElementParameter2ParameterType.loadElementParameters(processElem, parameters, null);

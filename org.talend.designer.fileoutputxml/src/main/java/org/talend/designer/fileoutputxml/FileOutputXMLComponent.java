@@ -271,7 +271,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         boolean result = true;
         for (int i = 0; i < eps.size(); i++) {
             IElementParameter parameter = eps.get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
+            if (parameter.getFieldType() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
                 List<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
                 for (Map<String, String> map : epsl) {
                     Map<String, String> newMap = new HashMap<String, String>();
@@ -321,7 +321,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         }
         for (int i = 0; i < eps.size(); i++) {
             IElementParameter parameter = eps.get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
+            if (parameter.getFieldType() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
                 list = (List<Map<String, String>>) parameter.getValue();
                 break;
             }

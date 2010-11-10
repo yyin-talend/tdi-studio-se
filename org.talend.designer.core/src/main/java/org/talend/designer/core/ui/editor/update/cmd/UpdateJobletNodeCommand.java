@@ -292,7 +292,7 @@ public class UpdateJobletNodeCommand extends Command {
 
                 List<? extends IElementParameter> elementParameters = node.getElementParameters();
                 for (IElementParameter elementParameter : elementParameters) {
-                    if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
+                    if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getFieldType())) {
                         outputElemParams.add(elementParameter);
                     }
                 }
@@ -313,7 +313,7 @@ public class UpdateJobletNodeCommand extends Command {
                     }
                 } else {
                     for (IElementParameter param : node.getElementParameters()) {
-                        if (param.isShow(node.getElementParameters()) && param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.isShow(node.getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                             IMetadataTable table = node.getMetadataFromConnector(param.getContext());
                             IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
                             if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {

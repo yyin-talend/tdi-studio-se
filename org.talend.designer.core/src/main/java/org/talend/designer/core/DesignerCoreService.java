@@ -101,8 +101,8 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
 
-    public List<IProcess> getOpenedProcess(IEditorReference[] reference) {
-        List<IProcess> list = new ArrayList<IProcess>();
+    public List<IProcess2> getOpenedProcess(IEditorReference[] reference) {
+        List<IProcess2> list = new ArrayList<IProcess2>();
         for (IEditorReference er : reference) {
             IEditorPart part = er.getEditor(false);
             if (part instanceof AbstractMultiPageTalendEditor) {
@@ -439,7 +439,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         final List<IElementParameter> repositoryParam = new ArrayList<IElementParameter>();
 
         for (IElementParameter param : node.getElementParameters()) {
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 String value = (String) param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue();
 
                 if (value.equals(EmfComponent.REPOSITORY)) {
@@ -454,7 +454,7 @@ public class DesignerCoreService implements IDesignerCoreService {
                     }
                 }
 
-            } else if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+            } else if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
                 Object value = param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).getValue();
                 if (value.equals(EmfComponent.REPOSITORY)) {
                     IElementParameter property = param.getChildParameters()

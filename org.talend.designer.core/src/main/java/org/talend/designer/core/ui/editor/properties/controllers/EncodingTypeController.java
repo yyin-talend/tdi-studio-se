@@ -91,7 +91,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
 
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getField().equals(EParameterFieldType.ENCODING_TYPE) && paramName.equals(param.getName())) {
+            if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE) && paramName.equals(param.getName())) {
                 IElementParameter comboParam = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
                 for (int j = 0; j < comboParam.getListItemsValue().length; j++) {
                     if (combo.getText().equals(comboParam.getListItemsDisplayName()[j])) {

@@ -25,13 +25,12 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
-import org.talend.core.model.PasswordEncryptUtil;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -80,8 +79,8 @@ public final class UpdateContextReferenceHelper {
         }
 
         IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-        List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
-        for (IProcess process : processes) {
+        List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+        for (IProcess2 process : processes) {
             IContextManager openedContextManager = process.getContextManager();
 
             boolean modified = false; // checked the done again flag.

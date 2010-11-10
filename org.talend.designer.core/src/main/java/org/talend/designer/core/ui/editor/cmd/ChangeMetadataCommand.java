@@ -99,7 +99,7 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -145,7 +145,7 @@ public class ChangeMetadataCommand extends Command {
                 currentConnector = EConnectionType.FLOW_MAIN.getName();
             }
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -249,7 +249,7 @@ public class ChangeMetadataCommand extends Command {
                 boolean end = false;
                 for (int i = 0; i < eps.size() && !end; i++) {
                     IElementParameter parameter = eps.get(i);
-                    if (parameter.getField() == EParameterFieldType.TABLE) {
+                    if (parameter.getFieldType() == EParameterFieldType.TABLE) {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
@@ -547,7 +547,7 @@ public class ChangeMetadataCommand extends Command {
     protected void setXMLMAPPING() {
         if (getConnection() != null) {
             for (IElementParameter parameter : node.getElementParameters()) {
-                if (parameter.getField() == EParameterFieldType.TABLE && parameter.getRepositoryValue() != null
+                if (parameter.getFieldType() == EParameterFieldType.TABLE && parameter.getRepositoryValue() != null
                         && parameter.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                     List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
                     RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata);

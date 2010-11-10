@@ -114,7 +114,7 @@ public class ExpressionTestMain {
      * @param context
      */
     private void startProcess(IProcess p, IContext context) {
-        final IProcessor processor = ProcessorUtilities.getProcessor(p, context);
+        final IProcessor processor = ProcessorUtilities.getProcessor(p, null, context);
         new Thread(new Runnable() {
 
             public void run() {

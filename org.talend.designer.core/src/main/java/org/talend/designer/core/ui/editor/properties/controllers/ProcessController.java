@@ -78,7 +78,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         FormData data;
 
         IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
@@ -582,7 +582,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
      * @param processParam
      */
     private void updateContextList(IElementParameter processParam) {
-        if (processParam == null || processParam.getField() != EParameterFieldType.PROCESS_TYPE) {
+        if (processParam == null || processParam.getFieldType() != EParameterFieldType.PROCESS_TYPE) {
             return;
         }
         // for context type

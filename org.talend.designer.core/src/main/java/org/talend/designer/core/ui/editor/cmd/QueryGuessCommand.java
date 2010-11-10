@@ -209,7 +209,7 @@ public class QueryGuessCommand extends Command {
                 realTableName));
 
         for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+            if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 oldValue = node.getPropertyValue(param.getName());
                 this.propName = param.getName();
                 String sql = null;

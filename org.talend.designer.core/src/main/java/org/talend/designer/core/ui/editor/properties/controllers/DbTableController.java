@@ -142,10 +142,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         FormData data;
 
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         this.curParameter = param;
         Control lastDbControl = null;
         Button openListTable = null;

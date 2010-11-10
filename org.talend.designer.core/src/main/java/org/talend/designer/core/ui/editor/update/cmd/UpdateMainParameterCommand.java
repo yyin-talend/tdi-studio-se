@@ -169,7 +169,7 @@ public class UpdateMainParameterCommand extends Command {
                                                     (org.talend.core.model.metadata.builder.connection.Connection) result
                                                             .getParameter(), repositoryValue, null);
                                             if (objectValue != null) {
-                                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                                if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                                         && repositoryValue.equals(UpdatesConstants.TYPE)) {
                                                     boolean found = false;
                                                     String[] items = param.getListRepositoryItems();

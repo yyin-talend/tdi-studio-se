@@ -629,7 +629,7 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
@@ -658,7 +658,7 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
@@ -687,7 +687,7 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
@@ -721,7 +721,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
         param.setReadOnly(true);
@@ -733,7 +733,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_STATCATCHER_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_STATCATCHER_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
         paramList.add(param);
@@ -742,7 +742,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_LOGCATCHER_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_LOGCATCHER_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
         paramList.add(param);
@@ -751,7 +751,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_METERCATCHER_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_METERCATCHER_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
         paramList.add(param);
@@ -761,7 +761,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_CONSOLE_FLAG.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_CONSOLE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
         param
@@ -781,7 +781,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_FILES_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_FILES_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(10);
         param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -792,7 +792,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.FILE_PATH.getName());
         param.setValue(addQuotes(replaceSlash(preferenceStore.getString(languagePrefix + EParameterName.FILE_PATH.getName()))));
         param.setDisplayName(EParameterName.FILE_PATH.getDisplayName());
-        param.setField(EParameterFieldType.DIRECTORY);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param
                 .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -804,7 +804,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.FILENAME_STATS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_STATS.getName())));
         param.setDisplayName(EParameterName.FILENAME_STATS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_STATCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         param.setRequired(true);
@@ -816,7 +816,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.FILENAME_LOGS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_LOGS.getName())));
         param.setDisplayName(EParameterName.FILENAME_LOGS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_LOGCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         param.setNumRow(13);
@@ -827,7 +827,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.FILENAME_METTER.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_METTER.getName())));
         param.setDisplayName(EParameterName.FILENAME_METTER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         param.setRequired(true);
@@ -839,7 +839,7 @@ public class StatsAndLogsManager {
         encodingParam.setName(EParameterName.ENCODING.getName()); //$NON-NLS-1$
         encodingParam.setDisplayName(EParameterName.ENCODING.getDisplayName());//$NON-NLS-1$
         encodingParam.setCategory(EComponentCategory.STATSANDLOGS);
-        encodingParam.setField(EParameterFieldType.ENCODING_TYPE);
+        encodingParam.setFieldType(EParameterFieldType.ENCODING_TYPE);
         encodingParam
                 .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         encodingParam.setValue(ENCODING_TYPE_ISO_8859_15);
@@ -849,7 +849,7 @@ public class StatsAndLogsManager {
         ElementParameter childPram = new ElementParameter(process);
         childPram.setName(EParameterName.ENCODING_TYPE.getName());
         childPram.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-        childPram.setField(EParameterFieldType.TECHNICAL);
+        childPram.setFieldType(EParameterFieldType.TECHNICAL);
         childPram.setCategory(EComponentCategory.STATSANDLOGS);
         childPram.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
         childPram
@@ -881,7 +881,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.ON_DATABASE_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_DATABASE_FLAG.getDisplayName()); // On Database
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(50);
         param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -892,7 +892,7 @@ public class StatsAndLogsManager {
         parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         parentPropertyType.setValue(""); //$NON-NLS-1$
         parentPropertyType.setCategory(EComponentCategory.STATSANDLOGS);
-        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setFieldType(EParameterFieldType.PROPERTY_TYPE);
         parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(51);
         parentPropertyType
@@ -908,7 +908,7 @@ public class StatsAndLogsManager {
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.PROPERTY_TYPE.getName()));
         param.setNumRow(51);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -923,7 +923,7 @@ public class StatsAndLogsManager {
         param.setListItemsDisplayName(new String[] {});
         param.setListItemsValue(new String[] {});
         param.setNumRow(51);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
@@ -939,7 +939,7 @@ public class StatsAndLogsManager {
         }
         param.setValue(type);
         param.setDisplayName(EParameterName.DB_TYPE.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
         param.setListItemsValue(StatsAndLogsConstants.DB_COMPONENTS[languageType]);
@@ -957,7 +957,7 @@ public class StatsAndLogsManager {
             param = new ElementParameter(process);
             param.setName(EParameterName.DB_VERSION.getName());
             param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.STATSANDLOGS);
             param.setValue(StatsAndLogsConstants.DB_VERSION_DRIVER[1]);
             param.setListItemsDisplayName(StatsAndLogsConstants.DB_VERSION_DISPLAY);
@@ -976,7 +976,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.URL.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.URL.getName())));
         param.setDisplayName(EParameterName.URL.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("URL"); //$NON-NLS-1$
@@ -1001,14 +1001,14 @@ public class StatsAndLogsManager {
         ElementParameter childParam = new ElementParameter(process);
         childParam.setName("JAR_NAME");
         childParam.setDisplayName("JAR_NAME");
-        childParam.setField(EParameterFieldType.MODULE_LIST);
+        childParam.setFieldType(EParameterFieldType.MODULE_LIST);
         childParam.setListItemsDisplayName(moduleNameArray);
         childParam.setListItemsValue(moduleValueArray);
         // driver jar for jdbc
         param = new ElementParameter(process);
         param.setName(EParameterName.DRIVER_JAR.getName());
         param.setDisplayName(EParameterName.DRIVER_JAR.getDisplayName());
-        param.setField(EParameterFieldType.TABLE);
+        param.setFieldType(EParameterFieldType.TABLE);
         param.setListItemsDisplayCodeName(new String[] { "JAR_NAME" });
         param.setListItemsDisplayName(new String[] { "Jar Name" });
         param.setListItemsValue(new ElementParameter[] { childParam });
@@ -1025,7 +1025,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.DRIVER_CLASS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DRIVER_CLASS.getName())));
         param.setDisplayName(EParameterName.DRIVER_CLASS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(57);
         param.setRepositoryValue("DRIVER_CLASS"); //$NON-NLS-1$
@@ -1038,7 +1038,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.HOST.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.HOST.getName())));
         param.setDisplayName(EParameterName.HOST.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
@@ -1051,7 +1051,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.PORT.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.PORT.getName())));
         param.setDisplayName(EParameterName.PORT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
@@ -1064,7 +1064,7 @@ public class StatsAndLogsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.DATASOURCE.getName());
         param.setDisplayName(EParameterName.DATASOURCE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DATASOURCE.getName())));
         param.setNumRow(53);
@@ -1078,7 +1078,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.DBNAME.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DBNAME.getName())));
         param.setDisplayName(EParameterName.DBNAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -1091,7 +1091,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.LOCAL_SERVICE_NAME.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.LOCAL_SERVICE_NAME.getName())));
         param.setDisplayName(EParameterName.LOCAL_SERVICE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -1104,7 +1104,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.PROPERTIES.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.PROPERTIES.getName())));
         param.setDisplayName(EParameterName.PROPERTIES.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
@@ -1117,7 +1117,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.SCHEMA_DB.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.SCHEMA_DB.getName())));
         param.setDisplayName(EParameterName.SCHEMA_DB.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
@@ -1130,7 +1130,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.USER.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.USER.getName())));
         param.setDisplayName(EParameterName.USER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
         param.setRequired(true);
@@ -1144,7 +1144,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.PASS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.PASS.getName())));
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
         param.setRequired(true);
@@ -1157,7 +1157,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.DBFILE.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DBFILE.getName())));
         param.setDisplayName(EParameterName.DBFILE.getDisplayName());
-        param.setField(EParameterFieldType.FILE);
+        param.setFieldType(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(56);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
@@ -1169,7 +1169,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_STATS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_STATS.getName())));
         param.setDisplayName(EParameterName.TABLE_STATS.getDisplayName());
-        param.setField(EParameterFieldType.DBTABLE);
+        param.setFieldType(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(57);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_STATCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -1180,7 +1180,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_LOGS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_LOGS.getName())));
         param.setDisplayName(EParameterName.TABLE_LOGS.getDisplayName());
-        param.setField(EParameterFieldType.DBTABLE);
+        param.setFieldType(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(58);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_LOGCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -1191,7 +1191,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_METER.getName()); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METER.getName())));
         param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
-        param.setField(EParameterFieldType.DBTABLE);
+        param.setFieldType(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(59);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
@@ -1221,7 +1221,7 @@ public class StatsAndLogsManager {
         param.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.CATCH_RUNTIME_ERRORS.getName()));
         param.setDisplayName(EParameterName.CATCH_RUNTIME_ERRORS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
         param
@@ -1233,7 +1233,7 @@ public class StatsAndLogsManager {
         param.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.CATCH_USER_ERRORS.getName()));
         param.setDisplayName(EParameterName.CATCH_USER_ERRORS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
         param.setShowIf("((CATCH_USER_ERRORS == 'true' or CATCH_USER_ERRORS == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
@@ -1244,7 +1244,7 @@ public class StatsAndLogsManager {
         param.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.CATCH_USER_WARNING.getName()));
         param.setDisplayName(EParameterName.CATCH_USER_WARNING.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
         param.setShowIf("((CATCH_USER_WARNING == 'true' or CATCH_USER_WARNING == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
@@ -1256,7 +1256,7 @@ public class StatsAndLogsManager {
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.CATCH_REALTIME_STATS.getName()));
         param.setDisplayName(EParameterName.CATCH_REALTIME_STATS.getDisplayName() + " (" //$NON-NLS-1$
                 + EParameterName.TSTATCATCHER_STATS.getDisplayName() + ")"); //$NON-NLS-1$
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(91);
         param

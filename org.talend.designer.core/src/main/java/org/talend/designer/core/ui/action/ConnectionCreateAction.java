@@ -256,7 +256,7 @@ public class ConnectionCreateAction extends SelectionAction {
         Node node = (Node) nodePart.getModel();
         String removeQuotes = null;
         IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-        if (node.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (node.isELTComponent() && elementParam != null && elementParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
@@ -284,7 +284,7 @@ public class ConnectionCreateAction extends SelectionAction {
         Node node = (Node) nodePart.getModel();
         String schemaNameRemoveQuotes = null;
         IElementParameter elementParam = node.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
-        if (node.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (node.isELTComponent() && elementParam != null && elementParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);

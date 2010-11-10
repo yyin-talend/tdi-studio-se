@@ -212,7 +212,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         if (param.getDisplayName().startsWith("!!")) { //$NON-NLS-1$
-            if (param.getField() == EParameterFieldType.MODULE_LIST) {
+            if (param.getFieldType() == EParameterFieldType.MODULE_LIST) {
                 param.setDisplayName(EParameterName.MODULE_LIST.getDisplayName());
             }
         }
@@ -336,15 +336,15 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
-            if (param.getField() == EParameterFieldType.MODULE_LIST) {
+            if (param.getFieldType() == EParameterFieldType.MODULE_LIST) {
                 param.setListItemsDisplayName(moduleNameArray);
                 param.setListItemsValue(moduleValueArray);
-            } else if (param.getField() == EParameterFieldType.TABLE) {
+            } else if (param.getFieldType() == EParameterFieldType.TABLE) {
                 Object[] listItemsValue = param.getListItemsValue();
                 if (listItemsValue != null) {
                     for (Object o : listItemsValue) {
                         if (o instanceof IElementParameter
-                                && ((IElementParameter) o).getField() == EParameterFieldType.MODULE_LIST) {
+                                && ((IElementParameter) o).getFieldType() == EParameterFieldType.MODULE_LIST) {
                             ((IElementParameter) o).setListItemsDisplayName(moduleNameArray);
                             ((IElementParameter) o).setListItemsValue(moduleValueArray);
                         }

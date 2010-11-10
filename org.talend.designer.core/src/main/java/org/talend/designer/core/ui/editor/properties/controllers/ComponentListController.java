@@ -203,16 +203,16 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     public static void renameComponentUniqueName(String oldConnectionName, String newConnectionName, List<Node> nodesToUpdate) {
         for (Node curNode : nodesToUpdate) {
             for (IElementParameter curParam : curNode.getElementParameters()) {
-                if (curParam.getField().equals(EParameterFieldType.COMPONENT_LIST)) {
+                if (curParam.getFieldType().equals(EParameterFieldType.COMPONENT_LIST)) {
                     if (oldConnectionName.equals(curParam.getValue())) {
                         curParam.setValue(newConnectionName);
                     }
-                } else if (curParam.getField().equals(EParameterFieldType.TABLE)) {
+                } else if (curParam.getFieldType().equals(EParameterFieldType.TABLE)) {
                     final Object[] itemsValue = curParam.getListItemsValue();
                     for (int i = 0; i < itemsValue.length; i++) {
                         if (itemsValue[i] instanceof IElementParameter) {
                             IElementParameter param = (IElementParameter) itemsValue[i];
-                            if (param.getField().equals(EParameterFieldType.COMPONENT_LIST)) {
+                            if (param.getFieldType().equals(EParameterFieldType.COMPONENT_LIST)) {
                                 List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                                 for (Map<String, Object> curLine : tableValues) {
                                     Object value = curLine.get(param.getName());

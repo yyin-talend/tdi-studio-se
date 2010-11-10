@@ -22,6 +22,8 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
@@ -33,6 +35,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
+import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
  * ggu class global comment. Detailled comment
@@ -262,12 +265,15 @@ public class UpdateCheckResult extends UpdateResult {
     public String getJobInfor() {
         if (getJob() != null) {
             String jobInfor = null;
-            if (getJob() instanceof IProcess) {
-                jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((IProcess) getJob()).getProperty());
-            }
-            if (getJob() instanceof org.talend.core.model.properties.Item) {
+            if (getJob() instanceof IProcess2) {
+                jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((IProcess2) getJob()).getProperty());
+            } else if (getJob() instanceof org.talend.core.model.properties.Item) {
                 jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((org.talend.core.model.properties.Item) getJob())
                         .getProperty());
+            } else if (getJob() instanceof IProcess) {
+                ProcessItem item = ItemCacheManager.getProcessItem(((IProcess) getJob()).getId(), ((IProcess) getJob())
+                        .getVersion());
+                jobInfor = RepositoryUpdateManager.getUpdateJobInfor(item.getProperty());
             }
             String others = null;
             if (getItemProcess() != null) { // update item

@@ -297,7 +297,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
         param.setReadOnly(true);
@@ -310,7 +310,7 @@ public class ProjectSettingManager extends Utils {
         param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.IMPLICIT_TCONTEXTLOAD)));
         param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
@@ -322,7 +322,7 @@ public class ProjectSettingManager extends Utils {
         param.setValue(Boolean.TRUE);
         param.setGroupDisplayName(EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getDisplayName());
         param.setDisplayName(EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
@@ -334,7 +334,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
         param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.FROM_FILE_FLAG)));
         param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(4);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
@@ -346,7 +346,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
         param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.FROM_DATABASE_FLAG)));
         param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(5);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
@@ -375,7 +375,7 @@ public class ProjectSettingManager extends Utils {
         param.setValue(addQuotes(replaceSlash(preferenceStore
                 .getString(getPreferenceName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE)))));
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getDisplayName());
-        param.setField(EParameterFieldType.FILE);
+        param.setFieldType(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(31);
@@ -392,7 +392,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(EParameterName.FIELDSEPARATOR.getName());
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.FIELDSEPARATOR))));
         param.setDisplayName(EParameterName.FIELDSEPARATOR.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(32);
@@ -420,7 +420,7 @@ public class ProjectSettingManager extends Utils {
         parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         parentPropertyType.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
         parentPropertyType.setCategory(EComponentCategory.EXTRA);
-        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setFieldType(EParameterFieldType.PROPERTY_TYPE);
         parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(41);
         parentPropertyType.setShowIf(dbCondition);
@@ -435,7 +435,7 @@ public class ProjectSettingManager extends Utils {
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param.setNumRow(41);
         param.setShowIf(dbCondition);
@@ -453,7 +453,7 @@ public class ProjectSettingManager extends Utils {
                 // CONNECTION_ITEM_LABEL
                 )); //$NON-NLS-1$
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setShow(false);
         param.setRequired(true);
         param.setNumRow(41);
@@ -466,7 +466,7 @@ public class ProjectSettingManager extends Utils {
         param = new ElementParameter(elem);
         param.setName(dbTypeName);
         param.setDisplayName(EParameterName.DB_TYPE.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
         param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
         param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
@@ -486,7 +486,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(dbVersionName);
         param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_VERSION)));
         param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
         param.setListItemsDisplayName(StatsAndLogsConstants.DB_VERSION_DISPLAY);
         param.setListItemsValue(StatsAndLogsConstants.DB_VERSION_DRIVER);
@@ -505,7 +505,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.HOST)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.HOST.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
@@ -520,7 +520,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PORT)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PORT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
@@ -535,7 +535,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBNAME)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBNAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -550,7 +550,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.LOCAL_SERVICE_NAME.getName()));
         param.setValue(StatsAndLogsManager.addQuotes(""));
         param.setDisplayName(EParameterName.LOCAL_SERVICE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -566,7 +566,7 @@ public class ProjectSettingManager extends Utils {
             param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName()));
             param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTIES)))); //$NON-NLS-1$
             param.setDisplayName(EParameterName.PROPERTIES.getDisplayName());
-            param.setField(EParameterFieldType.TEXT);
+            param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(44);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
@@ -583,7 +583,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.SCHEMA_DB)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SCHEMA_DB.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
@@ -599,7 +599,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.USER)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.USER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setRequired(true);
@@ -614,7 +614,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PASS)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setRequired(true);
@@ -628,7 +628,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBFILE.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBFILE))));
         param.setDisplayName(EParameterName.DBFILE.getDisplayName());
-        param.setField(EParameterFieldType.FILE);
+        param.setFieldType(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(46);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
@@ -642,7 +642,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBTABLE)))); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBTABLE.getDisplayName());
-        param.setField(EParameterFieldType.DBTABLE);
+        param.setFieldType(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(47);
         param.setShowIf(dbCondition);
@@ -654,7 +654,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
         param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.QUERY_CONDITION))));
         param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(48);
         param.setShowIf(dbCondition);
@@ -678,7 +678,7 @@ public class ProjectSettingManager extends Utils {
             param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.LOAD_NEW_VARIABLE)));
             param.setListItemsDisplayName(itemValues);
             param.setListItemsValue(itemValues);
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(80);
             param.setShowIf(CONTEXTLOAD_CONDITION);
@@ -691,7 +691,7 @@ public class ProjectSettingManager extends Utils {
             param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.NOT_LOAD_OLD_VARIABLE)));
             param.setListItemsDisplayName(itemValues);
             param.setListItemsValue(itemValues);
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(81);
             param.setShowIf(CONTEXTLOAD_CONDITION);
@@ -703,7 +703,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(EParameterName.PRINT_OPERATIONS.getName());
         param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.PRINT_OPERATIONS)));
         param.setDisplayName(EParameterName.PRINT_OPERATIONS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(82);
         param.setRequired(true);
@@ -717,7 +717,7 @@ public class ProjectSettingManager extends Utils {
             param.setName(EParameterName.DISABLE_ERROR.getName());
             param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_ERROR)));
             param.setDisplayName(EParameterName.DISABLE_ERROR.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);
@@ -731,7 +731,7 @@ public class ProjectSettingManager extends Utils {
         param.setName(EParameterName.DISABLE_WARNINGS.getName());
         param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_WARNINGS)));
         param.setDisplayName(EParameterName.DISABLE_WARNINGS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(83);
         param.setRequired(true);
@@ -745,7 +745,7 @@ public class ProjectSettingManager extends Utils {
             param.setName(EParameterName.DISABLE_INFO.getName());
             param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_INFO)));
             param.setDisplayName(EParameterName.DISABLE_INFO.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);

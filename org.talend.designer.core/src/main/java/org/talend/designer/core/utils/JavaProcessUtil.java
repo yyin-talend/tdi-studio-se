@@ -46,10 +46,10 @@ public class JavaProcessUtil {
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
         if (withChildrens) {
             ProcessItem processItem = null;
-            if (process.getProperty().getVersion() != null) {
-                processItem = ItemCacheManager.getProcessItem(process.getProperty().getId(), process.getProperty().getVersion());
+            if (process.getVersion() != null) {
+                processItem = ItemCacheManager.getProcessItem(process.getId(), process.getVersion());
             } else {
-                processItem = ItemCacheManager.getProcessItem(process.getProperty().getId());
+                processItem = ItemCacheManager.getProcessItem(process.getId());
             }
             if (processItem != null) {
                 searchItems.add(processItem);
@@ -90,7 +90,7 @@ public class JavaProcessUtil {
         }
 
         IElementParameter elementParameter = process.getElementParameter(EParameterName.DRIVER_JAR.getName());
-        if (elementParameter != null && elementParameter.getField() == EParameterFieldType.TABLE) {
+        if (elementParameter != null && elementParameter.getFieldType() == EParameterFieldType.TABLE) {
             getModulsInTable(process, elementParameter, neededLibraries);
         }
 
@@ -103,16 +103,16 @@ public class JavaProcessUtil {
                 }
             }
             for (IElementParameter curParam : node.getElementParameters()) {
-                if (curParam.getField() == null) {
+                if (curParam.getFieldType() == null) {
                     continue; // field can be null in some really specific cases, like for example when preview from
                     // wizard.
                 }
-                if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
+                if (curParam.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
                     if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
                         // is not empty.
                         neededLibraries.add(getModuleValue(process, (String) curParam.getValue()));
                     }
-                } else if (curParam.getField() == EParameterFieldType.TABLE) {
+                } else if (curParam.getFieldType() == EParameterFieldType.TABLE) {
                     getModulsInTable(process, curParam, neededLibraries);
                 }
 
@@ -172,7 +172,7 @@ public class JavaProcessUtil {
             if (listItemsValue != null && listItemsValue.length > 0 && listItemsValue[0] instanceof IElementParameter) {
                 for (Object o : listItemsValue) {
                     IElementParameter param = (IElementParameter) o;
-                    if (param.getField() == EParameterFieldType.MODULE_LIST) {
+                    if (param.getFieldType() == EParameterFieldType.MODULE_LIST) {
                         for (Map<String, Object> line : values) {
                             String moduleName = (String) line.get(param.getName());
                             if (moduleName != null && !"".equals(moduleName)) {

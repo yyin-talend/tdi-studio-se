@@ -605,7 +605,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         inputReadOnlyNode = true;
                     } else {
                         for (IElementParameter curParam : connec.getSource().getElementParameters()) {
-                            if (curParam.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                            if (curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
                                 if (curParam.isReadOnly()) {
                                     inputReadOnlyParam = true;
                                 }

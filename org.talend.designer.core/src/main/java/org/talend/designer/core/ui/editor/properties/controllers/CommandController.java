@@ -85,7 +85,7 @@ public class CommandController extends AbstractElementPropertySectionController 
     public Control createControl(Composite subComposite, final IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         FormData data;
         // button
         final Button btnCmd = getWidgetFactory().createButton(subComposite, null, SWT.PUSH);

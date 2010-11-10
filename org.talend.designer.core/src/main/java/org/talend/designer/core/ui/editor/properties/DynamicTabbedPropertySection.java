@@ -452,7 +452,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter repositorySchemaType = param.getChildParameters().get(
                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 repositorySchemaType.setListItemsDisplayName(repositoryTableNameList);
@@ -695,8 +695,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             boolean needRedraw = false;
             for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
                 if (elementParameter.getCategory().equals(section)
-                        && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
-                        && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)) {
+                        && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_TYPE)
+                        && (elementParameter.getFieldType() != EParameterFieldType.QUERYSTORE_TYPE)) {
                     // if the component must be displayed, then check if the
                     // control exists or not.
                     boolean show = elementParameter.isShow(elem.getElementParameters());
@@ -763,9 +763,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                    if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
                         if (curParam.isShow(listParam)) {
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -793,7 +793,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
                     if (curParam.getNumRow() == curRow && curParam.isShow(listParam)
-                            && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                            && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         nbInRow++;
                     }
                 }
@@ -803,14 +803,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -824,7 +824,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                                     lastControl);
                             lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
                             if ((DynamicTabbedPropertySection.DEBUG_TIME) && !getCurrentComponent().equals("Job")) { //$NON-NLS-1$
-                                System.out.println("DTP;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                System.out.println("DTP;create:" + curParam.getFieldType().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
                                         + ";" + lastTime); //$NON-NLS-1$
                             }
 
@@ -866,13 +866,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -994,7 +994,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getField(),
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getFieldType(),
                             this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
@@ -1276,7 +1276,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if (repositoryQueryStoreMap.containsKey(propertyValue)) {
             Query query = repositoryQueryStoreMap.get(propertyValue);
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                     elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
                     param.setRepositoryValueUsed(true);
                 }

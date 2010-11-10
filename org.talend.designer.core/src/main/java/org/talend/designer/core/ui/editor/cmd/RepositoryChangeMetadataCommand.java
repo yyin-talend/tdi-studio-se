@@ -68,7 +68,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
-                if (parameter.getField() == EParameterFieldType.TABLE) {
+                if (parameter.getFieldType() == EParameterFieldType.TABLE) {
                     if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
                         parameter.setValue(new ArrayList<Map<String, Object>>());
                     }
@@ -109,7 +109,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                             if (param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                                 continue;
                             }
-                            if (param.getField().equals(EParameterFieldType.TABLE)
+                            if (param.getFieldType().equals(EParameterFieldType.TABLE)
                                     && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                                 List<Map<String, Object>> table = (List<Map<String, Object>>) node.getPropertyValue(param
                                         .getName());

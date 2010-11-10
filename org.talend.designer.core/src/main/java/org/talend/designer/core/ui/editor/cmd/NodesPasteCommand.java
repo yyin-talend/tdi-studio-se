@@ -441,7 +441,7 @@ public class NodesPasteCommand extends Command {
                 for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
                     if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
                         IElementParameter elementParameter = pastedNode.getElementParameter(param.getName());
-                        if (param.getField() == EParameterFieldType.TABLE) {
+                        if (param.getFieldType() == EParameterFieldType.TABLE) {
                             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
                             ArrayList newValues = new ArrayList();
                             for (Map<String, Object> map : tableValues) {

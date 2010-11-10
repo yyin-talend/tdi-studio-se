@@ -220,7 +220,7 @@ public final class Expression {
                     IElementParameter testedParameter = param;
                     Object value = null;
                     boolean found = false;
-                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                    if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
                         Map<String, Object> currentRow = tableValues.get(currentParam.getCurrentRow());
                         if (currentRow.containsKey(varNames[1])) {
@@ -250,7 +250,7 @@ public final class Expression {
                                     if (currentParam.getElement() instanceof INode) {
                                         node = (INode) currentParam.getElement();
 
-                                        switch (testedParameter.getField()) {
+                                        switch (testedParameter.getFieldType()) {
                                         case COLUMN_LIST:
                                             baseTable = node.getMetadataList().get(0);
                                             break;
@@ -314,10 +314,10 @@ public final class Expression {
                                 }
                             }
                         }
-                    } else if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
-                            || param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                            || param.getField().equals(EParameterFieldType.QUERYSTORE_TYPE)
-                            || param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                    } else if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
 
                         boolean child = false;
                         Map<String, IElementParameter> childParameters = param.getChildParameters();

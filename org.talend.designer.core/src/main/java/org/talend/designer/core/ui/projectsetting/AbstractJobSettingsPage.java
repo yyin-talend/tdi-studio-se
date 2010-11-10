@@ -46,7 +46,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -86,7 +86,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
     private WidgetFactory widgetFactory = new WidgetFactory();
 
-    private List<IProcess> openedProcessList = new ArrayList<IProcess>();
+    private List<IProcess2> openedProcessList = new ArrayList<IProcess2>();
 
     private List<IRepositoryViewObject> checkedNodeObject = new ArrayList<IRepositoryViewObject>();
 
@@ -338,7 +338,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         }
     }
 
-    protected org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess> list, IRepositoryViewObject object) {
+    protected org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess2> list, IRepositoryViewObject object) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(object.getId())) {
                 return (org.talend.designer.core.ui.editor.process.Process) list.get(i);
@@ -350,8 +350,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
     protected boolean isOpenProcess(IRepositoryViewObject object) {
         Property property = object.getProperty();
         if (property.getItem() instanceof ProcessItem) {
-            for (IProcess process : openedProcessList) {
-                if (process.getId().equals(property.getId()) && process.getLabel().equals(property.getLabel())
+            for (IProcess2 process : openedProcessList) {
+                if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
                         && process.getVersion().equals(property.getVersion())) {
                     return true;
                 }
@@ -385,7 +385,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
 
         }
 
-        List<IProcess> allOpenedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(getEditors());
+        List<IProcess2> allOpenedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(getEditors());
         if (allOpenedProcessList != null) {
             for (int i = 0; i < allOpenedProcessList.size(); i++) {
                 if (checkedObjects.contains(allOpenedProcessList.get(i).getProperty().getId())) {

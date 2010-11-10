@@ -344,7 +344,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         boolean end = false;
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE) {
+            if (parameter.getFieldType() == EParameterFieldType.TABLE) {
                 map = (List<Map<String, Object>>) parameter.getValue();
                 end = true;
             }
@@ -408,7 +408,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         for (int i = 0; i < eps.size(); i++) {
             IElementParameter parameter = eps.get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE) {
+            if (parameter.getFieldType() == EParameterFieldType.TABLE) {
                 List<Map<String, Object>> tableValues = epsl;
                 ArrayList newValues = new ArrayList();
                 for (Map<String, Object> map : tableValues) {

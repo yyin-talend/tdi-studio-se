@@ -49,6 +49,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -91,7 +92,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-    final List<IProcess> opendProcess = UpdateManagerUtils.getOpenedProcess();
+    final List<IProcess2> opendProcess = UpdateManagerUtils.getOpenedProcess();
 
     // implicit context tree
     private CheckboxRepositoryTreeViewer viewer;
@@ -362,7 +363,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         Property property = node.getObject().getProperty();
         if (property.getItem() instanceof ProcessItem) {
             for (IProcess process : opendProcess) {
-                if (process.getId().equals(property.getId()) && process.getLabel().equals(property.getLabel())
+                if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
                         && process.getVersion().equals(property.getVersion())) {
                     return true;
                 }
@@ -639,7 +640,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         }
     }
 
-    private org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess> list, RepositoryNode p) {
+    private org.talend.designer.core.ui.editor.process.Process getProcess(List<IProcess2> list, RepositoryNode p) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(p.getId())) {
                 return (org.talend.designer.core.ui.editor.process.Process) list.get(i);

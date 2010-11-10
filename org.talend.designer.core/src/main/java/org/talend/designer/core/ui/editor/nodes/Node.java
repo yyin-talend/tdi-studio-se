@@ -356,7 +356,7 @@ public class Node extends Element implements IGraphicalNode {
         // if (hasMetadata) {
         boolean hasSchemaType = false;
         for (IElementParameter param : getElementParameters()) {
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IMetadataTable table = new MetadataTable();
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
@@ -403,10 +403,10 @@ public class Node extends Element implements IGraphicalNode {
 
             for (int i = 0; i < getElementParameters().size(); i++) {
                 IElementParameter param = getElementParameters().get(i);
-                if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                         && param.getContext().equals(table.getAttachedConnector())) {
                     if (param.getValue() instanceof IMetadataTable) {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
@@ -994,7 +994,7 @@ public class Node extends Element implements IGraphicalNode {
                 boolean repositoryMode = false;
                 IMetadataTable mainTargetTable = this.getMetadataFromConnector(mainConnector.getName());
                 for (IElementParameter param : getElementParameters()) {
-                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
+                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE))
                             && (param.getContext().equals(mainConnector.getName()))) {
                         IElementParameter schemaTypeParam = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                         if (schemaTypeParam.getValue().equals(EmfComponent.REPOSITORY)) {
@@ -1017,7 +1017,7 @@ public class Node extends Element implements IGraphicalNode {
                 IElementParameter inputSchemaParam = null;
 
                 for (IElementParameter param : conn.getSource().getElementParameters()) {
-                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) && (param.getContext().equals(inputConnector))) {
+                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) && (param.getContext().equals(inputConnector))) {
                         inputSchemaParam = param;
                         break;
                     }
@@ -1110,7 +1110,7 @@ public class Node extends Element implements IGraphicalNode {
                             MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
                             if (connection.getTarget().isELTComponent()) {
                                 IElementParameter elemParam = connection.getTarget().getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-                                if (elemParam != null && elemParam.getField().equals(EParameterFieldType.TEXT)) {
+                                if (elemParam != null && elemParam.getFieldType().equals(EParameterFieldType.TEXT)) {
                                     String removeQuotes = TalendTextUtils.removeQuotes(elemParam.getValue().toString());
                                     if (!removeQuotes.equals("") && "Default".equals(connection.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
                                         connection.setName(removeQuotes);
@@ -1133,7 +1133,7 @@ public class Node extends Element implements IGraphicalNode {
 
     public IElementParameter getSchemaParameterFromConnector(String connector) {
         for (IElementParameter param : getElementParameters()) {
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(connector)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(connector)) {
                 return param;
             }
         }
@@ -1491,7 +1491,7 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
-        if (parameter.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+        if (parameter.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
             for (IMetadataTable table : getMetadataList()) {
                 table.setDbms((String) value);
             }
@@ -2057,7 +2057,7 @@ public class Node extends Element implements IGraphicalNode {
             }
             // if the parameter is required but empty, an error will be added
             if (param.isRequired() && !param.isShow(getElementParameters()) && this.externalNode != null) {
-                if (param.getField().equals(EParameterFieldType.TABLE)) {
+                if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
                     if (tableValues != null
@@ -2099,7 +2099,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
                 if (!isShow) {
-                    EParameterFieldType fieldType = param.getField();
+                    EParameterFieldType fieldType = param.getFieldType();
                     switch (fieldType) {
                     case CLOSED_LIST:
                         if (param.getName().equals("DATA_ACTION")) {//$NON-NLS-1$
@@ -2119,7 +2119,7 @@ public class Node extends Element implements IGraphicalNode {
 
             }
             if (param.isRequired() && param.isShow(getElementParameters())) {
-                EParameterFieldType fieldType = param.getField();
+                EParameterFieldType fieldType = param.getFieldType();
                 String value;
                 List multiSchemaDelimetedSeparaor = new ArrayList();
                 switch (fieldType) {
@@ -2521,7 +2521,7 @@ public class Node extends Element implements IGraphicalNode {
         boolean canEditSchema = false;
         boolean noSchema = false;
         for (IElementParameter param : this.getElementParameters()) {
-            if (param.isShow(getElementParameters()) && param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.isShow(getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 canEditSchema = true;
                 break;
             }
@@ -2686,7 +2686,7 @@ public class Node extends Element implements IGraphicalNode {
                 // for each schema in the component, check if for the connector there is the option INPUT_LINK_SELECTION
                 // if there is, check that the schema of the link selection is the same
                 for (IElementParameter param : this.getElementParameters()) {
-                    if (param.isShow(getElementParameters()) && param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    if (param.isShow(getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         IMetadataTable table = getMetadataFromConnector(param.getContext());
                         IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
                         if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
@@ -2880,7 +2880,7 @@ public class Node extends Element implements IGraphicalNode {
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter param = listParam.get(i);
             if (param.isShow(listParam)) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                     canModifySchema = true;
                 }
             }
@@ -3125,7 +3125,7 @@ public class Node extends Element implements IGraphicalNode {
                 IElementParameter targetParam = getElementParameter(sourceParam.getName());
                 if (targetParam != null) {
                     setPropertyValue(sourceParam.getName(), sourceParam.getValue());
-                    if (targetParam.getField() == EParameterFieldType.TABLE) {
+                    if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
                         targetParam.setListItemsValue(sourceParam.getListItemsValue());
                     }
                     for (String name : targetParam.getChildParameters().keySet()) {
@@ -3135,7 +3135,7 @@ public class Node extends Element implements IGraphicalNode {
                             continue;
                         }
                         setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue()); //$NON-NLS-1$
-                        if (targetChildParam.getField() == EParameterFieldType.TABLE) {
+                        if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         }
                     }

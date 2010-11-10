@@ -133,7 +133,7 @@ public class RowGenProcessMain {
         // }
 
         // generate context files.
-        IProcessor contextProcessor = ProcessorUtilities.getProcessor(proc);
+        IProcessor contextProcessor = ProcessorUtilities.getProcessor(proc, null);
         contextProcessor.setContext(proc.getContextManager().getDefaultContext());
         try {
             contextProcessor.generateContextCode();
@@ -141,7 +141,7 @@ public class RowGenProcessMain {
             ExceptionHandler.process(pe);
         }
 
-        IProcessor processor = ProcessorUtilities.getProcessor(proc, proc.getContextManager().getDefaultContext());
+        IProcessor processor = ProcessorUtilities.getProcessor(proc, null, proc.getContextManager().getDefaultContext());
         try {
             return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
         } catch (Exception e) {

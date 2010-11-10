@@ -103,7 +103,6 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
@@ -1111,17 +1110,15 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             MessageBoxExceptionHandler.process(e);
             return;
         }
-        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
                 RepositoryUpdateManager.getEditors());
         List<UpdateResult> updateAllResults = new ArrayList<UpdateResult>();
         IUpdateManager manager = null;
-        for (IProcess proc : openedProcessList) {
-            if (proc instanceof IProcess2) {
-                // UpdateJobletUtils.updateRelationship();
-                manager = ((IProcess2) proc).getUpdateManager();
-                List<UpdateResult> updateResults = manager.getUpdatesNeeded(EUpdateItemType.RELOAD);
-                updateAllResults.addAll(updateResults);
-            }
+        for (IProcess2 proc : openedProcessList) {
+            // UpdateJobletUtils.updateRelationship();
+            manager = proc.getUpdateManager();
+            List<UpdateResult> updateResults = manager.getUpdatesNeeded(EUpdateItemType.RELOAD);
+            updateAllResults.addAll(updateResults);
         }
         if (manager != null)
             manager.executeUpdates(updateAllResults);

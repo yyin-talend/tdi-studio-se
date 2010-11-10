@@ -171,7 +171,7 @@ public class OutputTable extends AbstractInOutTable {
 
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : target.getElementParameters()) {
-                        if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                        if (param.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
                             if (param.isReadOnly()) {
                                 hasReadOnlyMetadataColumns = true;
                                 break;

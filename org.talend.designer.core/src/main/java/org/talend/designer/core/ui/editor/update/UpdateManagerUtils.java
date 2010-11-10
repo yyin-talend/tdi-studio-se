@@ -36,7 +36,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -156,10 +155,10 @@ public final class UpdateManagerUtils {
         return UpdatesConstants.SPACE + UpdatesConstants.LEFT_BRACKETS + value + UpdatesConstants.RIGHT_BRACKETS;
     }
 
-    public static List<IProcess> getOpenedProcess() {
+    public static List<IProcess2> getOpenedProcess() {
         IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
         if (reference != null) {
-            List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+            List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
             if (processes != null) {
                 return processes;
             }
@@ -466,13 +465,11 @@ public final class UpdateManagerUtils {
     }
 
     private static void upadateJobletReferenceInfor() {
-        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
                 RepositoryUpdateManager.getEditors());
 
-        for (IProcess proc : openedProcessList) {
-            if (proc instanceof IProcess2) {
-                ((IProcess2) proc).getUpdateManager().retrieveRefInformation();
-            }
+        for (IProcess2 proc : openedProcessList) {
+            proc.getUpdateManager().retrieveRefInformation();
         }
     }
 

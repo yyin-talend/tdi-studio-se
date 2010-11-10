@@ -103,7 +103,7 @@ public class PropertyChangeCommand extends Command {
         IElementParameter currentParam = elem.getElementParameter(propName);
         propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
         for (IElementParameter param : elem.getElementParameters()) {
-            if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
+            if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
                     && param.getCategory().equals(currentParam.getCategory())) {
                 propertyTypeName = param.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(); //$NON-NLS-1$
                 break;
@@ -122,7 +122,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (currentParam.isRepositoryValueUsed()) {
-            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
+            if (currentParam.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 Object queryStoreValue = elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
                 if (!EmfComponent.BUILTIN.equals(queryStoreValue) || !EmfComponent.TNS_FILE.equals(queryStoreValue)) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
@@ -221,9 +221,9 @@ public class PropertyChangeCommand extends Command {
             DesignerUtilities.setSchemaDB(elementParameter2, newValue);
         }
         if (!toUpdate
-                && (currentParam.getField().equals(EParameterFieldType.RADIO)
-                        || currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
-                        || currentParam.getField().equals(EParameterFieldType.CHECK) || currentParam.getField().equals(
+                && (currentParam.getFieldType().equals(EParameterFieldType.RADIO)
+                        || currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                        || currentParam.getFieldType().equals(EParameterFieldType.CHECK) || currentParam.getFieldType().equals(
                         EParameterFieldType.AS400_CHECK))) {
             toUpdate = false;
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
@@ -243,7 +243,7 @@ public class PropertyChangeCommand extends Command {
                         }
                     }
                 }
-                if (testedParam.getField() == EParameterFieldType.TABLE) {
+                if (testedParam.getFieldType() == EParameterFieldType.TABLE) {
                     String[] tmpShowIfs = testedParam.getListItemsShowIf();
                     if (tmpShowIfs != null) {
                         for (String show : tmpShowIfs) {
@@ -261,7 +261,7 @@ public class PropertyChangeCommand extends Command {
                         }
                     }
                 }
-                if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                     if (testedParam.getListItemsShowIf() != null) {
                         for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
                             showIf = testedParam.getListItemsShowIf()[j];
@@ -401,14 +401,14 @@ public class PropertyChangeCommand extends Command {
             oldElementValues.put(testedParam, testedParam.getValue());
 
             // if the field is not a schema type, then use standard "set value".
-            if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (!testedParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 String oldMapping = ""; //$NON-NLS-1$
-                if (!testedParam.getField().equals(EParameterFieldType.CHECK)
-                        && !testedParam.getField().equals(EParameterFieldType.RADIO)) {
+                if (!testedParam.getFieldType().equals(EParameterFieldType.CHECK)
+                        && !testedParam.getFieldType().equals(EParameterFieldType.RADIO)) {
                     oldMapping = (String) testedParam.getValue();
                 }
                 testedParam.setValueToDefault(elem.getElementParameters());
-                if (testedParam.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                if (testedParam.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     String newMapping = (String) testedParam.getValue();
                     if (!oldMapping.equals(newMapping)) {
                         Node node = (Node) elem;
@@ -495,7 +495,7 @@ public class PropertyChangeCommand extends Command {
     public void undo() {
         IElementParameter currentParam = elem.getElementParameter(propName);
         if (repositoryValueWasUsed) {
-            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
+            if (currentParam.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
             } else {
                 elem.setPropertyValue(propertyTypeName, EmfComponent.REPOSITORY);
@@ -542,7 +542,7 @@ public class PropertyChangeCommand extends Command {
     public void redo() {
         IElementParameter currentParam = elem.getElementParameter(propName);
         if (repositoryValueWasUsed) {
-            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
+            if (currentParam.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             } else {
                 elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
@@ -567,7 +567,7 @@ public class PropertyChangeCommand extends Command {
             }
         }
 
-        if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+        if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
                 IElementParameter param = elem.getElementParameters().get(i);
                 if (param.getDefaultValues().size() > 0) {

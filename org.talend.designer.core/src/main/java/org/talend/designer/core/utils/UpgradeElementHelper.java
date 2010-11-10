@@ -71,7 +71,7 @@ public final class UpgradeElementHelper {
      * @return
      */
     private static boolean isSQLQueryParameter(final IElementParameter parameter) {
-        return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY"); //$NON-NLS-1$
+        return parameter.getFieldType().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY"); //$NON-NLS-1$
     }
 
     /**
@@ -87,7 +87,7 @@ public final class UpgradeElementHelper {
     private static boolean isJavaRowCodeParameter(final IElement node, final IElementParameter parameter) {
         if (node instanceof Node) {
             if (((Node) node).getUniqueName().contains("tJavaRow")) { //$NON-NLS-1$
-                return parameter.getField().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE"); //$NON-NLS-1$
+                return parameter.getFieldType().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE"); //$NON-NLS-1$
             }
         }
         return false;

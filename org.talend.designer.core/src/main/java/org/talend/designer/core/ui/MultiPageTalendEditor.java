@@ -23,7 +23,7 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -119,7 +119,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         }
         super.setName();
         String label = getEditorInput().getName();
-        IProcess process2 = this.getProcess();
+        IProcess2 process2 = this.getProcess();
         String jobVersion = process2.getVersion();
         // if (getActivePage() == 1) {
         ISVNProviderService service = null;

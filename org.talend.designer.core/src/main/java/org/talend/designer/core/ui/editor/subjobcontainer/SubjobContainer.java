@@ -66,7 +66,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.COLLAPSED.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.COLLAPSED.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(1);
         param.setReadOnly(false);
@@ -78,7 +78,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.SHOW_SUBJOB_TITLE.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.SHOW_SUBJOB_TITLE.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(2);
         param.setReadOnly(false);
@@ -91,7 +91,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.UNIQUE_NAME.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setNumRow(2);
         param.setReadOnly(false);
@@ -104,7 +104,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.SUBJOB_TITLE.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(3);
         param.setReadOnly(false);
@@ -116,7 +116,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
         param.setValue(null); // default subjob color
         param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
+        param.setFieldType(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         param.setReadOnly(false);
@@ -128,7 +128,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.SUBJOB_COLOR.getName());
         param.setValue(null); // default subjob color
         param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
+        param.setFieldType(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         param.setReadOnly(false);
@@ -140,7 +140,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setReadOnly(true);
@@ -152,7 +152,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setName(EParameterName.SUBJOB_DISPLAYED.getName());
         param.setValue(Boolean.TRUE);
         param.setDisplayName(EParameterName.SUBJOB_DISPLAYED.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setRequired(false);

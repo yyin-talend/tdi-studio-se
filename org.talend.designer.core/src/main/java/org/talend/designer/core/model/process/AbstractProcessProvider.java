@@ -26,6 +26,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.update.UpdateResult;
@@ -153,7 +154,7 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
 
     public abstract boolean hasJobletComponent(IProcess process);
 
-    public abstract ImageDescriptor getIcons(IProcess process);
+    public abstract ImageDescriptor getIcons(IProcess2 process);
 
     public abstract void setIcons(IProcess process, ImageDescriptor image);
 

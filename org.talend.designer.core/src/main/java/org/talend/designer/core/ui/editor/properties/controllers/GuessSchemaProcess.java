@@ -143,7 +143,7 @@ public class GuessSchemaProcess {
             JavaProcessUtil.findMoreLibraries(neededLibraries, param, true); // add by hywang
             // for bug 8350
             // add for tJDBCInput component
-            if (param.getField().equals(EParameterFieldType.MODULE_LIST)) {
+            if (param.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
                 if (!"".equals(param.getValue())) { //$NON-NLS-1$
                     // if the parameter is not empty.
                     String moduleValue = (String) param.getValue();
@@ -254,7 +254,7 @@ public class GuessSchemaProcess {
 
     public CsvArray run() throws ProcessorException {
         buildProcess();
-        IProcessor processor = ProcessorUtilities.getProcessor(process);
+        IProcessor processor = ProcessorUtilities.getProcessor(process, null);
         processor.setContext(selectContext);
         File previousFile = temppath.toFile();
         if (previousFile.exists()) {

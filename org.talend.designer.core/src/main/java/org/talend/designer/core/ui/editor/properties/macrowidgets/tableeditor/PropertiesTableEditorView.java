@@ -188,7 +188,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 column.setMinimumWidth(100);
                 column.setWeight(20);
 
-                switch (currentParam.getField()) {
+                switch (currentParam.getFieldType()) {
                 case CONTEXT_PARAM_NAME_LIST:
                 case CLOSED_LIST:
                 case LOOKUP_COLUMN_LIST:
@@ -482,7 +482,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         }
                         if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
-                            switch (tmpParam.getField()) {
+                            switch (tmpParam.getFieldType()) {
                             case CONTEXT_PARAM_NAME_LIST:
                             case CLOSED_LIST:
                             case COMPONENT_LIST:
@@ -569,7 +569,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             }
                         }
 
-                        switch (tmpParam.getField()) {
+                        switch (tmpParam.getFieldType()) {
                         case CONTEXT_PARAM_NAME_LIST:
                         case CLOSED_LIST:
                         case COLUMN_LIST:
@@ -646,7 +646,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
             for (Object item : mainParam.getListItemsValue()) {
                 if (item instanceof IElementParameter) {
                     IElementParameter curParam = (IElementParameter) item;
-                    switch (curParam.getField()) {
+                    switch (curParam.getFieldType()) {
                     case CLOSED_LIST:
                         String[] itemsToDisplay = getItemsToDisplay(element, curParam, rowNumber);
                         Object currentValue = currentLine.get(curParam.getName());

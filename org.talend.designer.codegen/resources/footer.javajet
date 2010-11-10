@@ -32,7 +32,7 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
-    String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
+    String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
     
     boolean exist_tParallelize = false;
     List<? extends INode> tParallelizeList = process.getNodesOfType("tParallelize");

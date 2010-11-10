@@ -103,7 +103,7 @@ public class ConnectionCreateCommand extends Command {
 
         // check if the source got the ELT Table parameter, if yes, take the name by default
         IElementParameter elementParam = source.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-        if (source.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (source.isELTComponent() && elementParam != null && elementParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
@@ -115,7 +115,7 @@ public class ConnectionCreateCommand extends Command {
 
         // check if the target got the ELT Table parameter, if yes, take the name by default
         elementParam = target.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-        if (target.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (target.isELTComponent() && elementParam != null && elementParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
@@ -180,8 +180,8 @@ public class ConnectionCreateCommand extends Command {
         IElementParameter elementTableParam = source.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
         IElementParameter elementSchemaParam = source.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
         String schemaName = null;
-        if (source.isELTComponent() && elementTableParam != null && elementTableParam.getField().equals(EParameterFieldType.TEXT)) {
-            if (elementSchemaParam != null && elementSchemaParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (source.isELTComponent() && elementTableParam != null && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
+            if (elementSchemaParam != null && elementSchemaParam.getFieldType().equals(EParameterFieldType.TEXT)) {
                 schemaName = elementSchemaParam.getValue().toString();
                 String name2 = elementTableParam.getValue().toString();
                 if (schemaName != null && name2 != null) {
@@ -203,7 +203,7 @@ public class ConnectionCreateCommand extends Command {
 
         // check if the target got the ELT Table parameter, if yes, take the name by default
         elementTableParam = target.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-        if (target.isELTComponent() && elementTableParam != null && elementTableParam.getField().equals(EParameterFieldType.TEXT)) {
+        if (target.isELTComponent() && elementTableParam != null && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementTableParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);

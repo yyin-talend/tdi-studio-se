@@ -204,7 +204,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
 
             for (IElementParameter curParam : node.getElementParameters()) {
-                if (curParam.getField().equals(EParameterFieldType.MEMO_SQL)) {
+                if (curParam.getFieldType().equals(EParameterFieldType.MEMO_SQL)) {
                     if (curParam.getDefaultValues().size() > 0) {
                     }
                 }
@@ -234,7 +234,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyName.split(":")[0]); //$NON-NLS-1$
                 if (paramFlag == extraFlag) {
                     // for memo sql
-                    if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                    if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                         IElementParameter querystoreParam = elem.getElementParameterFromField(
                                 EParameterFieldType.QUERYSTORE_TYPE, param.getCategory());
                         if (querystoreParam != null) {
@@ -284,7 +284,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                        if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                             String dbVersion = "";
                             if (connection instanceof DatabaseConnection) {
                                 dbVersion = ((DatabaseConnection) connection).getDbVersionString();
@@ -338,7 +338,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                             setDbVersion(elementParameter, dbVersion);
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
-                        } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                        } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                 && param.getRepositoryValue().equals("FRAMEWORK_TYPE")) { //$NON-NLS-1$
                             String[] list = param.getListItemsDisplayName();
                             for (int i = 0; i < list.length; i++) {
@@ -402,7 +402,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue("VERSION_2007", versionCheckFor2007); //$NON-NLS-N$
                                 }
                             }
-                            if (param.getField().equals(EParameterFieldType.FILE)) {
+                            if (param.getFieldType().equals(EParameterFieldType.FILE)) {
                                 if (objectValue != null) {
                                     objectValue = objectValue.toString().replace("\\", "/");
                                 }
@@ -410,7 +410,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                    } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
                             && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
@@ -420,7 +420,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     table, metaTable);
                             param.setRepositoryValueUsed(true);
                         }
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                    } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
                             && param.getRepositoryValue().equals("WSDL_PARAMS") && connection != null) { //$NON-NLS-1$
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                         table.clear();
@@ -472,7 +472,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
         // change AS400 value
         for (IElementParameter curParam : elem.getElementParameters()) {
-            if (curParam.getField().equals(EParameterFieldType.AS400_CHECK)) {
+            if (curParam.getFieldType().equals(EParameterFieldType.AS400_CHECK)) {
                 setOtherProperties();
             }
         }
@@ -565,7 +565,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             } else {
                 if (hasSchema) {
                     for (IElementParameter param : elem.getElementParameters()) {
-                        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                             if (!metadataInput) {
                                 IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
                                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());

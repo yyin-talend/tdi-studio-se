@@ -20,7 +20,6 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -109,12 +108,10 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     private void refreshProblems() {
-        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
                 RepositoryUpdateManager.getEditors());
-        for (IProcess process : openedProcessList) {
-            if (process instanceof IProcess2) {
-                ((IProcess2) process).checkProcess();
-            }
+        for (IProcess2 process : openedProcessList) {
+            process.checkProcess();
         }
     }
 

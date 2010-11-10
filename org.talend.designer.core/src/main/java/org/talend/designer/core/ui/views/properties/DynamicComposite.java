@@ -442,7 +442,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter repositoryType = param.getChildParameters()
                         .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 repositoryType.setListItemsDisplayName(repositoryTableNameList);
@@ -460,7 +460,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                     }
                 }
             }
-            if (param.getField().equals(EParameterFieldType.QUERYSTORE_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)) {
                 IElementParameter repositoryType = param.getChildParameters().get(
                         EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
                 repositoryType.setListItemsDisplayName(repositoryQueryNameList);
@@ -480,7 +480,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                     }
                 }
             }
-            if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
                 IElementParameter repositoryType = param.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                 List<String> nameList = new ArrayList<String>();
@@ -774,9 +774,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter curParam = listParam.get(i);
             if (curParam.getCategory() == section) {
-                if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
                     if (curParam.isShow(listParam)) {
-                        AbstractElementPropertySectionController controller = generator.getController(curParam.getField(), this);
+                        AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(), this);
 
                         if (controller == null) {
                             continue;
@@ -800,7 +800,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
                     if (curParam.getNumRow() == curRow && curParam.isShow(listParam)
-                            && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                            && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         nbInRow++;
                     }
                 }
@@ -811,14 +811,14 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -861,7 +861,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
                             lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
                             if (DynamicTabbedPropertySection.DEBUG_TIME) {
-                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                System.out.println("DC;create:" + curParam.getFieldType().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
                                         + ";" + lastTime); //$NON-NLS-1$
                             }
 
@@ -956,8 +956,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         boolean needRedraw = false;
         for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
             if (elementParameter.getCategory().equals(section)
-                    && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
-                    && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)) {
+                    && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_TYPE)
+                    && (elementParameter.getFieldType() != EParameterFieldType.QUERYSTORE_TYPE)) {
                 // if the component must be displayed, then check if the
                 // control exists or not.
                 boolean show = elementParameter.isShow(elem.getElementParameters());
@@ -998,13 +998,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -1082,7 +1082,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getField(),
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getFieldType(),
                             this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);

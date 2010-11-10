@@ -135,7 +135,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -282,19 +282,19 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
 
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
-            if (param.getField() == EParameterFieldType.DBTYPE_LIST) {
+            if (param.getFieldType() == EParameterFieldType.DBTYPE_LIST) {
                 param.setListItemsDisplayName(columnNameList);
                 param.setListItemsValue(columnNameList);
                 if (columnNameList.length > 0) {
                     param.setDefaultClosedListValue(MetadataTalendType.getDbms(dbmsId).getDefaultDbType());
                 }
             }
-            if (param.getField() == EParameterFieldType.TABLE) {
+            if (param.getFieldType() == EParameterFieldType.TABLE) {
                 Object[] itemsValue = (Object[]) param.getListItemsValue();
                 for (int j = 0; j < itemsValue.length; j++) {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                        if (tmpParam.getField() == EParameterFieldType.DBTYPE_LIST) {
+                        if (tmpParam.getFieldType() == EParameterFieldType.DBTYPE_LIST) {
                             tmpParam.setListItemsDisplayCodeName(columnNameList);
                             tmpParam.setListItemsDisplayName(columnNameList);
                             tmpParam.setListItemsValue(columnNameList);
@@ -315,7 +315,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
         String currentDbms = null;
 
         for (IElementParameter currentParam : node.getElementParameters()) {
-            if (currentParam.getField().equals(EParameterFieldType.MAPPING_TYPE)
+            if (currentParam.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)
                     && currentParam.isShow(node.getElementParameters())) {
                 currentDbms = (String) currentParam.getValue();
                 hasMappingType = true;

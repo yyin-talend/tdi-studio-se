@@ -58,19 +58,19 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
 
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.FALSE);
         paramList.add(newParam);
 

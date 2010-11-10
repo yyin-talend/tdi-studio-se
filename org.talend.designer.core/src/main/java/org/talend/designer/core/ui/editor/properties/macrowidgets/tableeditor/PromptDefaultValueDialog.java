@@ -113,14 +113,14 @@ public class PromptDefaultValueDialog extends Dialog {
             Object defaultValue = param.getValue();
             item.setData(row);
 
-            if (param.getField() == EParameterFieldType.CHECK) {
+            if (param.getFieldType() == EParameterFieldType.CHECK) {
                 // create check box
                 createCheckboxEditor(item, 1, (Boolean) defaultValue);
-            } else if (param.getField() == EParameterFieldType.TEXT) {
+            } else if (param.getFieldType() == EParameterFieldType.TEXT) {
                 // create text input
                 createTextEditor(item, 1, (String) defaultValue);
-            } else if (param.getField() == EParameterFieldType.CLOSED_LIST
-                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+            } else if (param.getFieldType() == EParameterFieldType.CLOSED_LIST
+                    || param.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST) {
                 // create combo
                 int selectIndex = 0;
                 Object[] values = param.getListItemsValue();
@@ -183,7 +183,7 @@ public class PromptDefaultValueDialog extends Dialog {
             TableItem item = editor.getItem();
             ColumnInfo row = (ColumnInfo) item.getData();
 
-            EParameterFieldType field = row.parameter.getField();
+            EParameterFieldType field = row.parameter.getFieldType();
             if (field == EParameterFieldType.CHECK) {
                 Button button = (Button) control;
                 row.defaultValue = button.getSelection();

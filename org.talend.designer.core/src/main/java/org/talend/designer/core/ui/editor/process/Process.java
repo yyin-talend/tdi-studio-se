@@ -133,7 +133,6 @@ import org.talend.designer.core.ui.routine.RoutineItemRecord;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
-import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
@@ -192,8 +191,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private Property property;
 
     private boolean initDone = false;
-
-    private IProcessor processor;
 
     private AbstractMultiPageTalendEditor editor;
 
@@ -300,7 +297,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_FILE_DIR.getName());
         param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.DIRECTORY);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
@@ -312,7 +309,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
         param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.DIRECTORY);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
@@ -324,7 +321,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.JOB_RUN_VM_ARGUMENTS.getName());
         param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.JOB_RUN_VM_ARGUMENTS.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
@@ -337,7 +334,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
         param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setDisplayName(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
@@ -347,7 +344,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.AUTHOR.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.AUTHOR.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -356,7 +353,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.STATUS.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.STATUS.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -365,7 +362,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.NAME.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.NAME.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -374,7 +371,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.VERSION.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -383,7 +380,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.PURPOSE.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.PURPOSE.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -392,7 +389,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.DESCRIPTION.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.DESCRIPTION.getDisplayName());
         param.setShow(false);
         param.setReadOnly(true);
@@ -401,7 +398,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(SCREEN_OFFSET_X);
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
         param.setReadOnly(false);
         addElementParameter(param);
@@ -409,7 +406,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(SCREEN_OFFSET_Y);
         param.setCategory(EComponentCategory.TECHNICAL);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setShow(false);
         param.setReadOnly(false);
         addElementParameter(param);
@@ -417,7 +414,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param = new ElementParameter(this);
         param.setName(EParameterName.SCHEMA_OPTIONS.getName());
         param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.SCHEMA_OPTIONS.getDisplayName());
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(TalendDesignerPrefConstants.SCHEMA_OPTIONS));
@@ -682,20 +679,20 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
         }
 
-        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                || param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
+        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                || param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
                 || param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName())) {
             return;
         }
         if (param.getParentParameter() != null) {
-            if (param.getParentParameter().getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
                 IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
                         EParameterName.PROPERTY_TYPE.getName());
                 if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
                     return;
                 }
             }
-            if (param.getParentParameter().getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
                         EParameterName.SCHEMA_TYPE.getName());
                 if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
@@ -767,12 +764,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         } else {
             pType.setName(param.getName());
         }
-        pType.setField(param.getField().getName());
+        pType.setField(param.getFieldType().getName());
         if (param.isContextMode()) {
             pType.setContextMode(param.isContextMode());
         }
         Object value = param.getValue();
-        if (param.getField().equals(EParameterFieldType.TABLE) && value != null) {
+        if (param.getFieldType().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
@@ -844,7 +841,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // value)
                     }
                     String value = pType.getValue();
-                    if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
+                    if (param.getFieldType().equals(EParameterFieldType.CHECK) || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                             Boolean boolean1 = new Boolean(value);
                             elemParam.setPropertyValue(pType.getName(), boolean1);
@@ -856,7 +853,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // ((Node) elemParam).setDummy(!boolean1);
                         // }
                         // }
-                    } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                    } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
                         boolean valueSet = false;
                         if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
                             if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
@@ -884,7 +881,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                     .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         }
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                    } else if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                         String[] codeList = param.getListItemsDisplayCodeName();
                         Map<String, Object> lineValues = null;
@@ -905,7 +902,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                     if (o instanceof IElementParameter) {
                                         IElementParameter tableParam = (IElementParameter) o;
                                         if (tableParam.getName().equals(elementValue.getElementRef())
-                                                && (tableParam.getField() == EParameterFieldType.CONNECTION_LIST)) {
+                                                && (tableParam.getFieldType() == EParameterFieldType.CONNECTION_LIST)) {
                                             needRemoveQuotes = true;
                                         }
                                     }
@@ -934,7 +931,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         }
 
                         elemParam.setPropertyValue(pType.getName(), tableValues);
-                    } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                    } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
                         // fix for bug 2193
                         boolean setToCustom = false;
                         if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
@@ -958,7 +955,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         }
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
-                    } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
@@ -1241,16 +1238,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             ColumnListController.updateColumnList(node, null);
 
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.TABLE) {
+                if (param.getFieldType() == EParameterFieldType.TABLE) {
                     Object[] itemsValue = param.getListItemsValue();
                     if (itemsValue != null && param.getValue() != null && param.getValue() instanceof List) {
                         List<Map<String, Object>> values = (List<Map<String, Object>>) param.getValue();
                         for (int i = 0; i < itemsValue.length; i++) {
                             if (itemsValue[i] instanceof IElementParameter) {
                                 IElementParameter columnParam = (IElementParameter) itemsValue[i];
-                                if (columnParam.getField() == EParameterFieldType.COLUMN_LIST
-                                        || columnParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                                        || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                                if (columnParam.getFieldType() == EParameterFieldType.COLUMN_LIST
+                                        || columnParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                                        || columnParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                                     for (Map<String, Object> columnMap : values) {
                                         Object column = columnMap.get(columnParam.getName());
                                         if (column == null || "".equals(column)) { //$NON-NLS-1$
@@ -1451,7 +1448,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             return;
         }
         for (IElementParameter parameter : nc.getElementParameters()) {
-            if (EParameterFieldType.TABLE.equals(parameter.getField()) && parameter.isColumnsBasedOnSchema()) {
+            if (EParameterFieldType.TABLE.equals(parameter.getFieldType()) && parameter.isColumnsBasedOnSchema()) {
 
                 String[] listItemsDisplayValue = new String[listColumns.size()];
                 String[] listItemsDisplayCodeValue = new String[listColumns.size()];
@@ -1464,7 +1461,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     newParam = new ElementParameter(nc);
                     newParam.setName(column.getLabel()); //$NON-NLS-1$
                     newParam.setDisplayName(""); //$NON-NLS-1$
-                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setFieldType(EParameterFieldType.TEXT);
                     newParam.setValue(""); //$NON-NLS-1$
                     listItemsValue[i] = newParam;
                 }
@@ -1475,7 +1472,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 for (int j = 0; j < listParamType.size(); j++) {
                     ElementParameterType pType = (ElementParameterType) listParamType.get(j);
                     if (pType != null) {
-                        if (parameter.getField().getName().equals(pType.getField())
+                        if (parameter.getFieldType().getName().equals(pType.getField())
                                 && parameter.getName().equals(pType.getName())) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             String[] codeList = parameter.getListItemsDisplayCodeName();
@@ -1526,7 +1523,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private void updateAllMappingTypes() {
         for (INode node : this.getGraphicalNodes()) {
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     for (IMetadataTable table : node.getMetadataList()) {
                         table.setDbms((String) param.getValue());
                     }
@@ -2587,24 +2584,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         elem.remove(note);
         notes.remove(note);
         fireStructureChange(NEED_UPDATE_JOB, elem);
-    }
-
-    /**
-     * Getter for processor.
-     * 
-     * @return the processor
-     */
-    public IProcessor getProcessor() {
-        return processor;
-    }
-
-    /**
-     * Sets the processor.
-     * 
-     * @param processor the processor to set
-     */
-    public void setProcessor(IProcessor processor) {
-        this.processor = processor;
     }
 
     public Set<String> getNeededLibraries(boolean withChildrens) {

@@ -133,7 +133,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         // add activate parameter
         IElementParameter param = new ElementParameter(this);
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setValue(Boolean.TRUE);
         param.setName(EParameterName.ACTIVATE.getName());
@@ -203,10 +203,10 @@ public class Connection extends Element implements IConnection, IPerformance {
             IElementParameter param = new ElementParameter(this);
             switch (LanguageManager.getCurrentLanguage()) {
             case JAVA:
-                param.setField(EParameterFieldType.MEMO_JAVA);
+                param.setFieldType(EParameterFieldType.MEMO_JAVA);
                 break;
             default:
-                param.setField(EParameterFieldType.MEMO_PERL);
+                param.setFieldType(EParameterFieldType.MEMO_PERL);
             }
             param.setCategory(EComponentCategory.BASIC);
             param.setValue(""); //$NON-NLS-1$
@@ -220,7 +220,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             IElementParameter param = new ElementParameter(this);
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.BASIC);
             param.setValue(Boolean.FALSE);
             param.setName(ENABLE_PARALLEL);
@@ -230,7 +230,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             addElementParameter(param);
 
             param = new ElementParameter(this);
-            param.setField(EParameterFieldType.TEXT);
+            param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.BASIC);
             // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
             // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
@@ -247,7 +247,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         // add activate parameter
         IElementParameter param = new ElementParameter(this);
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setValue(Boolean.TRUE);
         param.setName(EParameterName.ACTIVATE.getName());
@@ -260,7 +260,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setName(EParameterName.UNIQUE_NAME.getName());
         param.setValue(this.getUniqueName()); //$NON-NLS-1$
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setNumRow(1);
         param.setReadOnly(true);
@@ -271,7 +271,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setReadOnly(true);
@@ -300,7 +300,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setValue(Boolean.FALSE);
             param.setGroupDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
             param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.RESUMING);
             param.setGroup(RESUMING_CHECKPOINT);
             param.setNumRow(2);
@@ -311,7 +311,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param = new ElementParameter(this);
             param.setName(EParameterName.RESUMLABEL.getName());
             param.setDisplayName(EParameterName.RESUMLABEL.getDisplayName());
-            param.setField(EParameterFieldType.TEXT);
+            param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.RESUMING);
             param.setGroup(RESUMING_CHECKPOINT);
             param.setValue("");
@@ -323,7 +323,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param = new ElementParameter(this);
             param.setName(EParameterName.FAILURE_INSTRUCTIONS.getName());
             param.setDisplayName(EParameterName.FAILURE_INSTRUCTIONS.getDisplayName());
-            param.setField(EParameterFieldType.MEMO);
+            param.setFieldType(EParameterFieldType.MEMO);
             param.setCategory(EComponentCategory.RESUMING);
             param.setGroup(RESUMING_CHECKPOINT);
             param.setNbLines(5);
@@ -337,7 +337,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param = new ElementParameter(this);
                 param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
                 param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
-                param.setField(EParameterFieldType.CHECK);
+                param.setFieldType(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.BREAKPOINT);
                 param.setNumRow(13);
                 param.setValue(false);
@@ -394,7 +394,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         IElementParameter param = new ElementParameter(this);
         param.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
         param.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setValue(Boolean.TRUE);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(false);
@@ -404,7 +404,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param = new ElementParameter(this);
         param.setName(EParameterName.TRACES_CONNECTION_FILTER.getName());
         param.setDisplayName(EParameterName.TRACES_CONNECTION_FILTER.getDisplayName());
-        param.setField(EParameterFieldType.TABLE);
+        param.setFieldType(EParameterFieldType.TABLE);
         String[] columns = new String[] { IConnection.TRACE_SCHEMA_COLUMN, IConnection.TRACE_SCHEMA_COLUMN_CHECKED,
                 IConnection.TRACE_SCHEMA_COLUMN_CONDITION };
         param.setListItemsDisplayCodeName(columns);
@@ -466,7 +466,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         IElementParameter param = new ElementParameter(this);
         param.setName(EParameterName.MONITOR_CONNECTION.getName());
         param.setDisplayName(EParameterName.MONITOR_CONNECTION.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setValue(monitorConnection);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);

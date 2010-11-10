@@ -100,7 +100,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADERFOOTER_HEADERID.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(2);
         param.setShow(false);
@@ -110,7 +110,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADER_ENABLED.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.HEADER_ENABLED.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(2);
         param.setShow(false);
@@ -120,7 +120,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADER_LIBRARY.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.HEADER_LIBRARY.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(3);
         param.setShow(false);
@@ -130,7 +130,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADER_CODE.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.HEADER_CODE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(4);
         param.setShow(false);
@@ -140,7 +140,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADER_IMPORT.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.HEADER_IMPORT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(4);
         param.setShow(false);
@@ -150,7 +150,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.HEADERFOOTER_FOOTERID.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(2);
         param.setShow(false);
@@ -160,7 +160,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.FOOTER_ENABLED.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.FOOTER_ENABLED.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(5);
         param.setShow(false);
@@ -170,7 +170,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.FOOTER_LIBRARY.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.FOOTER_LIBRARY.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(6);
         param.setShow(false);
@@ -180,7 +180,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.FOOTER_CODE.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.FOOTER_CODE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(7);
         param.setShow(false);
@@ -190,7 +190,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.FOOTER_IMPORT.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.FOOTER_IMPORT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.HEADERFOOTER);
         param.setNumRow(4);
         param.setShow(false);
@@ -222,7 +222,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(2);
         param.setShow(false);
@@ -232,7 +232,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
         param.setShow(false);
@@ -246,7 +246,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.MULTI_THREAD_EXECATION.getName());
         param.setValue(preferenceStore.getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
         param.setDisplayName(EParameterName.MULTI_THREAD_EXECATION.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(2);
         param.setShow(!isJoblet);
@@ -258,7 +258,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.PARALLELIZE_UNIT_SIZE.getName());
             param.setValue("25000"); //$NON-NLS-1$
             param.setDisplayName(EParameterName.PARALLELIZE_UNIT_SIZE.getDisplayName());
-            param.setField(EParameterFieldType.TEXT);
+            param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(2);
             param.setShow(!isJoblet);
@@ -270,7 +270,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.STARTABLE.getName());
             param.setValue(false);
             param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(2);
             paramList.add(param);
@@ -279,7 +279,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.UPDATE_COMPONENTS.getName());
             param.setValue(Boolean.FALSE);
             param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(1);
             param.setReadOnly(true);
@@ -291,7 +291,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.ICONSELECTION.getName());
             param.setValue(""); //$NON-NLS-1$
             param.setDisplayName(EParameterName.ICONSELECTION.getDisplayName());
-            param.setField(EParameterFieldType.ICON_SELECTION);
+            param.setFieldType(EParameterFieldType.ICON_SELECTION);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(3);
             param.setReadOnly(false);
@@ -304,7 +304,7 @@ public class JobSettingsManager {
         param.setValue(false);
         param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName()); //$NON-NLS-1$
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
@@ -316,7 +316,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
         param.setValue(false);
         param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(4);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
@@ -328,7 +328,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
         param.setValue(false);
         param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(5);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
@@ -356,7 +356,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName());
         param.setValue(fileName);
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getDisplayName());
-        param.setField(EParameterFieldType.FILE);
+        param.setFieldType(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(31);
@@ -377,7 +377,7 @@ public class JobSettingsManager {
 
         param.setValue(value);
         param.setDisplayName(EParameterName.FIELDSEPARATOR.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(32);
@@ -412,7 +412,7 @@ public class JobSettingsManager {
         parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         parentPropertyType.setValue(""); //$NON-NLS-1$
         parentPropertyType.setCategory(EComponentCategory.EXTRA);
-        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setFieldType(EParameterFieldType.PROPERTY_TYPE);
         parentPropertyType.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         parentPropertyType.setNumRow(41);
         parentPropertyType.setShowIf(dbCondition);
@@ -427,7 +427,7 @@ public class JobSettingsManager {
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setValue(EmfComponent.BUILTIN);
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
         param.setNumRow(41);
         param.setShowIf(dbCondition);
@@ -443,7 +443,7 @@ public class JobSettingsManager {
         param.setListItemsValue(new String[] {});
         // param.setValue(""); //$NON-NLS-1$
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setShow(false);
         param.setRequired(true);
         param.setNumRow(41);
@@ -456,7 +456,7 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(dbTypeName);
         param.setDisplayName(EParameterName.DB_TYPE.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.EXTRA);
         param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
         param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
@@ -477,7 +477,7 @@ public class JobSettingsManager {
             param.setName(dbVersionName);
             param.setValue(StatsAndLogsConstants.DB_VERSION_DRIVER[1]);
             param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.EXTRA);
             param.setListItemsDisplayName(StatsAndLogsConstants.DB_VERSION_DISPLAY);
             param.setListItemsValue(StatsAndLogsConstants.DB_VERSION_DRIVER);
@@ -497,7 +497,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.HOST.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
@@ -512,7 +512,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PORT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
@@ -527,7 +527,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBNAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -542,7 +542,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.LOCAL_SERVICE_NAME.getName()));
         param.setValue(StatsAndLogsManager.addQuotes(""));
         param.setDisplayName(EParameterName.LOCAL_SERVICE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
@@ -558,7 +558,7 @@ public class JobSettingsManager {
             param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName()));
             param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
             param.setDisplayName(EParameterName.PROPERTIES.getDisplayName());
-            param.setField(EParameterFieldType.TEXT);
+            param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(44);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
@@ -575,7 +575,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SCHEMA_DB.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
@@ -592,7 +592,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.USER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setRequired(true);
@@ -607,7 +607,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.PASS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setRequired(true);
@@ -621,7 +621,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBFILE.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBFILE.getDisplayName());
-        param.setField(EParameterFieldType.FILE);
+        param.setFieldType(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(46);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
@@ -635,7 +635,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName()));
         param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBTABLE.getDisplayName());
-        param.setField(EParameterFieldType.DBTABLE);
+        param.setFieldType(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(47);
         param.setShowIf(dbCondition);
@@ -647,7 +647,7 @@ public class JobSettingsManager {
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
         param.setValue(QUOTE + QUOTE);
         param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(48);
         param.setShowIf(dbCondition);
@@ -671,7 +671,7 @@ public class JobSettingsManager {
             param.setValue(ContextLoadInfo.WARNING.getDisplayName());
             param.setListItemsDisplayName(itemValues);
             param.setListItemsValue(itemValues);
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(80);
             param.setShowIf(CONTEXTLOAD_CONDITION);
@@ -684,7 +684,7 @@ public class JobSettingsManager {
             param.setValue(ContextLoadInfo.WARNING.getDisplayName());
             param.setListItemsDisplayName(itemValues);
             param.setListItemsValue(itemValues);
-            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(81);
             param.setShowIf(CONTEXTLOAD_CONDITION);
@@ -696,7 +696,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.PRINT_OPERATIONS.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.PRINT_OPERATIONS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(82);
         param.setRequired(true);
@@ -710,7 +710,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.DISABLE_ERROR.getName());
             param.setValue(false);
             param.setDisplayName(EParameterName.DISABLE_ERROR.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);
@@ -724,7 +724,7 @@ public class JobSettingsManager {
         param.setName(EParameterName.DISABLE_WARNINGS.getName());
         param.setValue(true);
         param.setDisplayName(EParameterName.DISABLE_WARNINGS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(83);
         param.setRequired(true);
@@ -738,7 +738,7 @@ public class JobSettingsManager {
             param.setName(EParameterName.DISABLE_INFO.getName());
             param.setValue(true);
             param.setDisplayName(EParameterName.DISABLE_INFO.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
+            param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(83);
             param.setRequired(true);
@@ -998,7 +998,7 @@ public class JobSettingsManager {
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         for (int k = 0; k < tmpNode.getElementParameters().size(); k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = null;

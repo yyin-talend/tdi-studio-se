@@ -59,12 +59,14 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -84,15 +86,17 @@ public class PerlProcessor extends Processor {
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
 
+    private Property property;
+
     /**
      * Constructs a new PerlProcessor.
      * 
      * @param process Process to be turned in PERL code.
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
-    public PerlProcessor(IProcess process, boolean filenameFromLabel) {
+    public PerlProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process);
-
+        this.property = property;
         this.process = process;
         this.filenameFromLabel = filenameFromLabel;
     }
@@ -112,11 +116,11 @@ public class PerlProcessor extends Processor {
 
     private void initCodePath(IContext context) throws ProcessorException {
 
-        String projectName = PerlResourcesHelper.getRootProjectName(process.getProperty().getItem());
-        codePath = new Path(PerlResourcesHelper.getJobFileName(projectName,
-                filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId(), process.getVersion())); //$NON-NLS-1$
+        String projectName = PerlResourcesHelper.getRootProjectName(property);
+        codePath = new Path(PerlResourcesHelper.getJobFileName(projectName, filenameFromLabel ? escapeFilename(process.getName())
+                : process.getId(), process.getVersion())); //$NON-NLS-1$
 
-        contextPath = new Path(PerlResourcesHelper.getContextFileName(projectName, filenameFromLabel ? process.getLabel()
+        contextPath = new Path(PerlResourcesHelper.getContextFileName(projectName, filenameFromLabel ? process.getName()
                 : process.getId(), process.getVersion(), context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -132,7 +136,7 @@ public class PerlProcessor extends Processor {
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
                 String perlLib = getLibraryPath();
-                String currentPerlProject = PerlResourcesHelper.getRootProjectName(getProcess().getProperty().getItem());
+                String currentPerlProject = PerlResourcesHelper.getRootProjectName(property);
                 String codeLocation = getCodeLocation();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, codeLocation,
@@ -682,6 +686,13 @@ public class PerlProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
     public void computeLibrariesPath(Set<String> jobModuleList) {
+    }
+
+    public Property getProperty() {
+        if (property == null) {
+            property = ItemCacheManager.getProcessItem(process.getId(), process.getVersion()).getProperty();
+        }
+        return property;
     }
 
 }

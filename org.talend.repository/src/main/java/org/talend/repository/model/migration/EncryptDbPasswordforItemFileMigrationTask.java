@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.PasswordEncryptUtil;
+import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
@@ -53,7 +53,7 @@ public class EncryptDbPasswordforItemFileMigrationTask extends AbstractItemMigra
                         String pass = dbConn.getPassword();
                         String rawPass = dbConn.getRawPassword();
                         if (pass != null && pass.equals(rawPass)) {
-                            PasswordEncryptUtil.encryptPassword(dbConn);
+                            encryptPassword(dbConn);
                             dbConn.getPassword();
                             dbConn.getRawPassword();
                             factory.save(item, true);
@@ -66,6 +66,11 @@ public class EncryptDbPasswordforItemFileMigrationTask extends AbstractItemMigra
             }
         }
         return ExecutionResult.SUCCESS_NO_ALERT;
+    }
+
+    public void encryptPassword(DatabaseConnection dbConn) throws Exception {
+        String password = PasswordEncryptUtil.encryptPassword(dbConn.getRawPassword());
+        dbConn.setPassword(password);
     }
 
     @Override

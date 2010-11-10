@@ -113,6 +113,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -167,6 +168,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     private static final String METHOD_START_COMMENT = "Start of Function:"; //$NON-NLS-1$
 
+    private Property property;
+
     /**
      * Set current status.
      * 
@@ -184,13 +187,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @param process Process to be turned in Java code.
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
-    public JavaProcessor(IProcess process, boolean filenameFromLabel) {
+    public JavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process);
         this.process = process;
-
-        if (process != null && process.getProperty() != null) {
-            if (process.getProperty().getItem() != null && process.getProperty().getItem() instanceof ProcessItem) {
-                final ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
+        this.property = property;
+        
+        if (property != null) {
+            if (property.getItem() != null && property.getItem() instanceof ProcessItem) {
+                final ProcessItem processItem = (ProcessItem) property.getItem();
                 final ProcessType process2 = processItem.getProcess();
                 if (process2 != null) {
                     // resolve the node
@@ -198,6 +202,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 }
             }
         }
+        
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
     }
@@ -234,10 +239,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         // Context.REPOSITORY_CONTEXT_KEY);
         // Project project = repositoryContext.getProject();
 
-        String projectFolderName = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem());
+        String projectFolderName = JavaResourcesHelper.getProjectFolderName(property);
 
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
-        String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+        String fileName = filenameFromLabel ? escapeFilename(process.getName()) : process.getId();
 
         try {
             IPackageFragment projectPackage = getProjectPackage(projectFolderName);
@@ -272,8 +277,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     private String computeMethodSizeIfNeeded(String processCode) {
         // must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
-        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService()
-                .getPreferenceStore("displayMethodSize")); //$NON-NLS-1$
+        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
+                "displayMethodSize")); //$NON-NLS-1$
         if (displayMethodSize) {
             StringBuffer code = new StringBuffer(processCode);
             int fromIndex = 0;
@@ -324,8 +329,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                currentJavaProject = ProjectManager.getInstance().getProject(getProcess().getProperty().getItem())
-                        .getTechnicalLabel();
+                currentJavaProject = ProjectManager.getInstance().getProject(property).getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
@@ -938,7 +942,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         Set<String> neededLibraries = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
                 process.getVersion());
 
-        Property property = process.getProperty();
         if (neededLibraries == null) {
             neededLibraries = process.getNeededLibraries(true);
             if (neededLibraries == null) {
@@ -1015,8 +1018,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
             JobInfo lastMainJob = LastGenerationInfo.getInstance().getLastMainJob();
             Set<JobInfo> infos = null;
-            if (lastMainJob == null) {
-                infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+            if (lastMainJob == null && property != null) {
+                infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
             } else {
                 infos = LastGenerationInfo.getInstance().getLastGeneratedjobs();
             }
@@ -1167,8 +1170,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
-                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
+                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
@@ -1192,8 +1195,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
-                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
+                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
@@ -1215,10 +1218,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } else {
             // see bug 0005559: Import cannot be resolved in routine after
             // opening Job Designer
-            if (process instanceof IProcess2 && process.getProperty() != null
-                    && process.getProperty().getItem() instanceof ProcessItem) {
-                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) process
-                        .getProperty().getItem());
+            if (process instanceof IProcess2 && ((IProcess2) process).getProperty() != null
+                    && ((IProcess2) process).getProperty().getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider
+                        .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty().getItem());
                 for (ModuleNeeded moduleNeeded : modulesNeededs) {
                     listModulesReallyNeeded.add(moduleNeeded.getModuleName());
                 }
@@ -1550,5 +1553,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    public Property getProperty() {
+        if (property == null) {
+            property = ItemCacheManager.getProcessItem(process.getId(), process.getVersion()).getProperty();
+        }
+        return property;
     }
 }

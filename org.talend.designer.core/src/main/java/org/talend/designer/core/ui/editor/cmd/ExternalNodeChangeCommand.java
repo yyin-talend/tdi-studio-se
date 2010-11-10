@@ -235,7 +235,7 @@ public class ExternalNodeChangeCommand extends Command {
 
                         if (connection != null) {
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
-                                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                                         && param.getContext().equals(connection.getConnectorName())) {
                                     schemaParam = param;
                                     break;
@@ -249,7 +249,7 @@ public class ExternalNodeChangeCommand extends Command {
                             }
                         }
                         for (IElementParameter param : ((Node) connection.getSource()).getElementParameters()) {
-                            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                                     && param.getContext().equals(connection.getConnectorName())) {
                                 schemaParam = param;
                                 break;

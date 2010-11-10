@@ -138,7 +138,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                     for (Object object : param.getListItemsValue()) {
                         if (object instanceof IElementParameter) {
                             IElementParameter tableParameter = (IElementParameter) object;
-                            if (tableParameter.getField().equals(EParameterFieldType.COLUMN_LIST)) {
+                            if (tableParameter.getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
                                 paramColumnsName = tableParameter.getName();
                             }
                             if (tableParameter.getContext() != null && tableParameter.getContext().equals("LENGTH")) { //$NON-NLS-1$
@@ -191,7 +191,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 for (int i = 0; i < listItemsValue.length; i++) {
                     if (listItemsValue[i] instanceof IElementParameter) {
                         IElementParameter colParam = (IElementParameter) listItemsValue[i];
-                        if (colParam.getField().equals(EParameterFieldType.COLUMN_LIST)) {
+                        if (colParam.getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
                             continue;
                         }
 

@@ -304,10 +304,10 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
 
         IElement element = param.getElement();
-        if (element instanceof IProcess) {
+        if (element instanceof IProcess2) {
 
             if (findProcessProvider != null) {
-                ImageDescriptor icon = findProcessProvider.getIcons((IProcess) element);
+                ImageDescriptor icon = findProcessProvider.getIcons((IProcess2) element);
                 if (icon != null) {
                     Image image = icon.createImage();
                     addResourceDisposeListener(filePathText, image);

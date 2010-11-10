@@ -93,7 +93,7 @@ public class TableController extends AbstractElementPropertySectionController {
     public Control createControl(final Composite parentComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, int top, final Control lastControlPrm) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         final Composite container = parentComposite;
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
@@ -269,7 +269,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
     @SuppressWarnings("unchecked")
     private void checkAndSetDefaultValue(IElementParameter param) {
-        if (param != null && param.getField() == EParameterFieldType.TABLE) {
+        if (param != null && param.getFieldType() == EParameterFieldType.TABLE) {
             updateColumnList(param);
 
             Object[] itemsValue = param.getListItemsValue();
@@ -278,9 +278,9 @@ public class TableController extends AbstractElementPropertySectionController {
                 for (int i = 0; i < itemsValue.length; i++) {
                     if (itemsValue[i] instanceof IElementParameter) {
                         IElementParameter columnParam = (IElementParameter) itemsValue[i];
-                        if (columnParam.getField() == EParameterFieldType.COLUMN_LIST
-                                || columnParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                                || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                        if (columnParam.getFieldType() == EParameterFieldType.COLUMN_LIST
+                                || columnParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                                || columnParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                             for (Map<String, Object> columnMap : values) {
                                 Object column = columnMap.get(columnParam.getName());
                                 if (column == null || "".equals(column)) { //$NON-NLS-1$
@@ -373,9 +373,9 @@ public class TableController extends AbstractElementPropertySectionController {
             for (int j = 0; j < itemsValue.length; j++) {
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                    if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
-                            || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
-                            || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                    if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST
+                            || tmpParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
+                            || tmpParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                         if ((j + 1) >= colList.size()) {
                             break;
                         }
@@ -424,7 +424,7 @@ public class TableController extends AbstractElementPropertySectionController {
                 }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                    if (tmpParam.getField() == EParameterFieldType.CONNECTION_LIST) {
+                    if (tmpParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
                         String[] contextParameterNames = null;
 
                         ConnectionListController.updateConnectionList(elem, tmpParam);
@@ -480,7 +480,7 @@ public class TableController extends AbstractElementPropertySectionController {
                 }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                    if (tmpParam.getField() == EParameterFieldType.COMPONENT_LIST) {
+                    if (tmpParam.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
                         String[] contextParameterNames = null;
                         ComponentListController.updateComponentList(elem, tmpParam);
                         contextParameterNames = tmpParam.getListItemsDisplayName();
@@ -575,7 +575,7 @@ public class TableController extends AbstractElementPropertySectionController {
                 }
                 if (itemsValue[j] instanceof IElementParameter) {
                     IElementParameter tmpParam = (IElementParameter) itemsValue[j];
-                    if (tmpParam.getField() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
+                    if (tmpParam.getFieldType() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
                         tmpParam.setListItemsDisplayCodeName(contextParameterNames);
                         tmpParam.setListItemsDisplayName(contextParameterNames);
                         tmpParam.setListItemsValue(contextParameterNames);
@@ -638,7 +638,7 @@ public class TableController extends AbstractElementPropertySectionController {
         }
 
         tmpParam = (IElementParameter) itemsValue[0];
-        switch (tmpParam.getField()) {
+        switch (tmpParam.getFieldType()) {
         case CONTEXT_PARAM_NAME_LIST:
         case CLOSED_LIST:
         case COLUMN_LIST:
@@ -664,7 +664,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         for (int i = 1; i < items.length; i++) {
             tmpParam = (IElementParameter) itemsValue[i];
-            switch (tmpParam.getField()) {
+            switch (tmpParam.getFieldType()) {
             case CONTEXT_PARAM_NAME_LIST:
             case CLOSED_LIST:
             case DBTYPE_LIST:
@@ -719,6 +719,6 @@ public class TableController extends AbstractElementPropertySectionController {
 
         tmpParam = (IElementParameter) itemsValue[0];
 
-        return tmpParam.getField() == EParameterFieldType.COLUMN_LIST;
+        return tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST;
     }
 }

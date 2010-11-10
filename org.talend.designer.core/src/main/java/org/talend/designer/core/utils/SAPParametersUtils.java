@@ -48,7 +48,7 @@ public final class SAPParametersUtils {
         if (connection != null && sapIDocName != null) {
             SAPConnection sapConnection = (SAPConnection) connection;
             SAPIDocUnit iDocUnit = SAPConnectionUtils.findExistIDocUnit(sapConnection, sapIDocName);
-            if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(TalendTextUtils.addQuotes(iDocUnit.getGatewayService()));
                     param.setRepositoryValueUsed(true);
@@ -58,7 +58,7 @@ public final class SAPParametersUtils {
                     param.setReadOnly(false);
                 }
             }
-            if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(TalendTextUtils.addQuotes(iDocUnit.getProgramId()));
                     param.setRepositoryValueUsed(true);
@@ -68,7 +68,7 @@ public final class SAPParametersUtils {
                     param.setReadOnly(false);
                 }
             }
-            if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(iDocUnit.isUseXmlOutput());
                     param.setRepositoryValueUsed(true);
@@ -78,7 +78,7 @@ public final class SAPParametersUtils {
                     param.setReadOnly(false);
                 }
             }
-            if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(TalendTextUtils.addQuotes(iDocUnit.getXmlFile()));
                     param.setRepositoryValueUsed(true);
@@ -88,7 +88,7 @@ public final class SAPParametersUtils {
                     param.setReadOnly(false);
                 }
             }
-            if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(iDocUnit.isUseHtmlOutput());
                     param.setRepositoryValueUsed(true);
@@ -98,7 +98,7 @@ public final class SAPParametersUtils {
                     param.setReadOnly(false);
                 }
             }
-            if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
+            if (param.getFieldType().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
                 if (iDocUnit != null) {
                     param.setValue(TalendTextUtils.addQuotes(iDocUnit.getHtmlFile()));
                     param.setRepositoryValueUsed(true);
@@ -139,7 +139,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("GATEWAYSERVICE")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(TalendTextUtils.addQuotes(iDocUnit.getGatewayService()));
                 param.setRepositoryValueUsed(true);
@@ -149,7 +149,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("PROGRAMID")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(TalendTextUtils.addQuotes(iDocUnit.getProgramId()));
                 param.setRepositoryValueUsed(true);
@@ -159,7 +159,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_XML")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(iDocUnit.isUseXmlOutput());
                 param.setRepositoryValueUsed(true);
@@ -169,7 +169,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_XML")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(TalendTextUtils.addQuotes(iDocUnit.getXmlFile()));
                 param.setRepositoryValueUsed(true);
@@ -179,7 +179,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.CHECK) && param.getRepositoryValue().equals("FORMAT_HTML")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(iDocUnit.isUseHtmlOutput());
                 param.setRepositoryValueUsed(true);
@@ -189,7 +189,7 @@ public final class SAPParametersUtils {
                 param.setReadOnly(false);
             }
         }
-        if (param.getField().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.FILE) && param.getRepositoryValue().equals("FILE_IDOC_HTML")) { //$NON-NLS-1$
             if (iDocUnit != null) {
                 param.setValue(TalendTextUtils.addQuotes(iDocUnit.getHtmlFile()));
                 param.setRepositoryValueUsed(true);
@@ -206,10 +206,10 @@ public final class SAPParametersUtils {
         if (param == null) {
             return;
         }
-        if ((param.getField().equals(EParameterFieldType.TEXT) && param.getName().equals("GATEWAYSERVICE")) //$NON-NLS-1$
-                || (param.getField().equals(EParameterFieldType.TEXT) && param.getName().equals("PROGRAMID")) //$NON-NLS-1$
-                || (param.getField().equals(EParameterFieldType.CHECK) && (param.getName().equals("FORMAT_XML"))) || (param.getField().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_XML")) //$NON-NLS-1$ //$NON-NLS-2$
-                || (param.getField().equals(EParameterFieldType.CHECK) && param.getName().equals("FORMAT_HTML")) || (param.getField().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_HTML"))) { //$NON-NLS-1$
+        if ((param.getFieldType().equals(EParameterFieldType.TEXT) && param.getName().equals("GATEWAYSERVICE")) //$NON-NLS-1$
+                || (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getName().equals("PROGRAMID")) //$NON-NLS-1$
+                || (param.getFieldType().equals(EParameterFieldType.CHECK) && (param.getName().equals("FORMAT_XML"))) || (param.getFieldType().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_XML")) //$NON-NLS-1$ //$NON-NLS-2$
+                || (param.getFieldType().equals(EParameterFieldType.CHECK) && param.getName().equals("FORMAT_HTML")) || (param.getFieldType().equals(EParameterFieldType.FILE) && param.getName().equals("FILE_IDOC_HTML"))) { //$NON-NLS-1$
             param.setRepositoryValueUsed(false);
             param.setReadOnly(false);
         }
@@ -226,7 +226,7 @@ public final class SAPParametersUtils {
         if (param.getRepositoryValue() == null) {
             return;
         }
-        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("SAP_FUNCTION")) { //$NON-NLS-1$
+        if (param.getFieldType().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("SAP_FUNCTION")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 param.setValue(TalendTextUtils.addQuotes(sapFunctionName));
                 param.setRepositoryValueUsed(true);
@@ -235,7 +235,7 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("INPUT_PARAMS")) { //$NON-NLS-1$
+        } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("INPUT_PARAMS")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                 RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table, sapFunctionName, true);
@@ -245,7 +245,7 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("OUTPUT_PARAMS")) { //$NON-NLS-1$
+        } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("OUTPUT_PARAMS")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                 RepositoryToComponentProperty
@@ -283,8 +283,8 @@ public final class SAPParametersUtils {
         if (param == null) {
             return;
         }
-        if ((param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_INPUT")) //$NON-NLS-1$
-                || (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_OUTPUT")) //$NON-NLS-1$
+        if ((param.getFieldType().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_INPUT")) //$NON-NLS-1$
+                || (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_OUTPUT")) //$NON-NLS-1$
                 || (param.getName().equals("SAP_ITERATE_OUT_TYPE")) || param.getName().equals("SAP_ITERATE_OUT_TABLENAME") //$NON-NLS-1$ //$NON-NLS-2$
                 || param.getName().equals("SAP_FUNCTION")) { //$NON-NLS-1$
             param.setRepositoryValueUsed(false);

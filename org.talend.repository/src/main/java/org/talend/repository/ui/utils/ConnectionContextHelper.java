@@ -614,7 +614,7 @@ public final class ConnectionContextHelper {
             IElementParameter propertyParam = null;
             for (IElementParameter param : parameters) {
                 if ((category == null || category == param.getCategory())
-                        && param.getField() == EParameterFieldType.PROPERTY_TYPE && param.isShow(parameters)) {
+                        && param.getFieldType() == EParameterFieldType.PROPERTY_TYPE && param.isShow(parameters)) {
                     propertyParam = param;
                     break;
                 }

@@ -315,13 +315,13 @@ public class JobContextLoadComponent implements IComponent {
 
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName());
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(""); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.FIELDSEPARATOR.getName());
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(""); //$NON-NLS-1$
         elemParamList.add(newParam);
 
@@ -331,67 +331,67 @@ public class JobContextLoadComponent implements IComponent {
         //
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.CONNECTION_TYPE.getName())); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("SERVER"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("DSN"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName())); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName())); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.QUERY);
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
     }
@@ -400,37 +400,37 @@ public class JobContextLoadComponent implements IComponent {
 
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName(EParameterName.LOAD_NEW_VARIABLE.getName());
-        newParam.setField(EParameterFieldType.CLOSED_LIST);
+        newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
         newParam.setValue(ContextLoadInfo.WARNING);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.NOT_LOAD_OLD_VARIABLE.getName());
-        newParam.setField(EParameterFieldType.CLOSED_LIST);
+        newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
         newParam.setValue(ContextLoadInfo.WARNING);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.PRINT_OPERATIONS.getName());
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(false);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.DISABLE_ERROR.getName());
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(false);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.DISABLE_INFO.getName());
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(true);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName(EParameterName.DISABLE_WARNINGS.getName());
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(true);
         elemParamList.add(newParam);
     }

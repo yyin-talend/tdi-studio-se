@@ -205,7 +205,7 @@ public class InputTable extends AbstractInOutTable {
 
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : source.getElementParameters()) {
-                        if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                        if (param.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
                             if (param.isReadOnly()) {
                                 hasReadOnlyMetadataColumns = true;
                                 break;

@@ -115,7 +115,7 @@ public class ProcessDebugDialog extends Dialog {
             IRunnableWithProgress worker = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) {
-                    IProcessor processor = ProcessorUtilities.getProcessor(process, context);
+                    IProcessor processor = ProcessorUtilities.getProcessor(process, process.getProperty(), context);
                     monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         // use this function to generate childrens also.

@@ -41,9 +41,9 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
-import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.ProcessItem;
@@ -383,7 +383,7 @@ public class Problems {
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
             if (problem.getJobInfo() != null
-                    && (problem.getJobInfo().getJobName().equals(process.getLabel()) && problem.getJobInfo().getJobVersion()
+                    && (problem.getJobInfo().getJobName().equals(process.getName()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
                 iter.remove();
             }
@@ -700,7 +700,7 @@ public class Problems {
                                     if (problem.getStatus().equals(ProblemStatus.ERROR)) {
                                         if (problem instanceof TalendProblem) {
                                             TalendProblem tProblem = (TalendProblem) problem;
-                                            if (!tProblem.getJavaUnitName().equals(node.getProcess().getLabel())) {
+                                            if (!tProblem.getJavaUnitName().equals(node.getProcess().getName())) {
                                                 continue;
                                             }
                                             if (tProblem.getVersion() != null) {

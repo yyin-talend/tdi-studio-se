@@ -97,7 +97,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         CCombo combo;
 
         Control lastControlUsed = lastControl;
@@ -473,7 +473,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
         fastRepositoryUpdateProperty();
         for (IElementParameter curParam : elem.getElementParameters()) {
-            if (curParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (curParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 String value = (String) curParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue();
                 if (curParam.isShow(elem.getElementParameters())) {
                     if (value.equals(EmfComponent.REPOSITORY)) {

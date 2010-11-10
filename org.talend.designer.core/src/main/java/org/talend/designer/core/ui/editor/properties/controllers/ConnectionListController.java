@@ -275,16 +275,16 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     public static void renameConnectionInElement(String oldConnectionName, String newConnectionName, IElement elem) {
         for (IElementParameter curParam : elem.getElementParameters()) {
-            if (curParam.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+            if (curParam.getFieldType().equals(EParameterFieldType.CONNECTION_LIST)) {
                 if (oldConnectionName.equals(curParam.getValue())) {
                     curParam.setValue(newConnectionName);
                 }
-            } else if (curParam.getField().equals(EParameterFieldType.TABLE)) {
+            } else if (curParam.getFieldType().equals(EParameterFieldType.TABLE)) {
                 final Object[] itemsValue = curParam.getListItemsValue();
                 for (int i = 0; i < itemsValue.length; i++) {
                     if (itemsValue[i] instanceof IElementParameter) {
                         IElementParameter param = (IElementParameter) itemsValue[i];
-                        if (param.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+                        if (param.getFieldType().equals(EParameterFieldType.CONNECTION_LIST)) {
                             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                             for (Map<String, Object> curLine : tableValues) {
                                 Object value = curLine.get(param.getName());
@@ -302,7 +302,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                 }
                             }
                         }
-                        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                             for (Map<String, Object> curLine : tableValues) {
                                 Object value = curLine.get(param.getName());
@@ -331,7 +331,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     public static void updateConnectionList(Process process) {
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             for (IElementParameter param : node.getElementParametersWithChildrens()) {
-                if (param.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+                if (param.getFieldType().equals(EParameterFieldType.CONNECTION_LIST)) {
                     updateConnectionList(node, param);
                 }
             }

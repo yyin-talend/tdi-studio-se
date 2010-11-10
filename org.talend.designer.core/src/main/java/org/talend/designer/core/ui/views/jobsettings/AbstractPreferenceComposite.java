@@ -56,6 +56,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -368,7 +369,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
                             CorePlugin defaultPlugin = CorePlugin.getDefault();
                             IDesignerCoreService designerCoreService = defaultPlugin.getDesignerCoreService();
-                            List<IProcess> openedProcessList = designerCoreService.getOpenedProcess(RepositoryUpdateManager
+                            List<IProcess2> openedProcessList = designerCoreService.getOpenedProcess(RepositoryUpdateManager
                                     .getEditors());
 
                             List<String> activeProcessId = new ArrayList<String>();

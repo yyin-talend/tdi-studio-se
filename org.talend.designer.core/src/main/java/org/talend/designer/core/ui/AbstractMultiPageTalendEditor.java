@@ -81,7 +81,6 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
@@ -517,12 +516,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         process = designerEditor.getProcess();
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
         ((Process) process).setEditor(this);
-        processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
+        processor = ProcessorUtilities.getProcessor(process, process.getProperty(), process.getContextManager()
+                .getDefaultContext());
         if (processor instanceof IJavaBreakpointListener) {
             JDIDebugModel.addJavaBreakpointListener((IJavaBreakpointListener) processor);
         }
 
-        process.setProcessor(processor);
         processor.setProcessorStates(IProcessor.STATES_EDIT);
         if (codeEditor instanceof ISyntaxCheckableEditor) {
             processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
@@ -654,11 +653,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                                         .getProxyRepositoryFactory();
 
                                                 Set<String> curContextVars = getCurrentContextVariables(manager);
-                                                IProcess process2 = getProcess();
+                                                IProcess2 process2 = getProcess();
                                                 String jobId = process2.getProperty().getId();
                                                 IEditorReference[] reference = PlatformUI.getWorkbench()
                                                         .getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-                                                List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                List<IProcess2> processes = CorePlugin.getDefault().getDesignerCoreService()
                                                         .getOpenedProcess(reference);
 
                                                 // gcui:if nameMap is empty it do nothing.
@@ -964,7 +963,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @return the process
      */
-    public IProcess getProcess() {
+    public IProcess2 getProcess() {
         return this.process;
     }
 

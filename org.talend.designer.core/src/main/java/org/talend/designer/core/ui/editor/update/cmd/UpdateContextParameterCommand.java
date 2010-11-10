@@ -31,7 +31,6 @@ import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.update.EUpdateItemType;
@@ -198,7 +197,8 @@ public class UpdateContextParameterCommand extends Command {
                     // tRunJob parameters rename
                     IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                             .getEditorReferences();
-                    List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+                    List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService()
+                            .getOpenedProcess(reference);
                     Map<String, String> renamedMap = new HashMap<String, String>();
                     renamedMap.put(newName, oldName);
 

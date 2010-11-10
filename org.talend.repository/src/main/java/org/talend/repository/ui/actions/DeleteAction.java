@@ -51,7 +51,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
@@ -537,7 +537,7 @@ public class DeleteAction extends AContextualAction {
                                 }
                             }
                         }
-                        for (IProcess openedProcess : deleteActionCache.getOpenedProcessList()) {
+                        for (IProcess2 openedProcess : deleteActionCache.getOpenedProcessList()) {
                             for (INode node : openedProcess.getGraphicalNodes()) {
                                 boolean equals = node.getComponent().getName().equals(label);
                                 // && node.getComponent().getVersion().equals(version);for bug 14212

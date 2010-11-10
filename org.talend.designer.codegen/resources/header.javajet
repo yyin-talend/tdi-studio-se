@@ -43,7 +43,7 @@ if(service instanceof AbstractBrandingService){
  <%=((AbstractBrandingService) service).getJobLicenseHeader(version)%>
 <%
  }
-  String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
+  String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
   String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
 %> 
 package <%= packageName %>;

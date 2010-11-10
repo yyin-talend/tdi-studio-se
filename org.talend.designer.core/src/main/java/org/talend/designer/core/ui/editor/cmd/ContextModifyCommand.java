@@ -14,18 +14,24 @@ package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
+import org.talend.repository.ProjectManager;
 
 /**
  * Command that will modify a context.
@@ -35,6 +41,8 @@ import org.talend.designer.core.ui.views.contexts.ContextsView;
  */
 public class ContextModifyCommand extends Command {
 
+    private String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
+
     IContext oldContext;
 
     IContext currentContext;
@@ -43,29 +51,14 @@ public class ContextModifyCommand extends Command {
 
     IContextManager contextManager;
 
-    private IProcess process;
+    private IProcess2 process;
 
-    public ContextModifyCommand(IProcess process, IContextManager contextManager, IContext oldContext, IContext newContext) {
+    public ContextModifyCommand(IProcess2 process, IContextManager contextManager, IContext oldContext, IContext newContext) {
         this.process = process;
         this.contextManager = contextManager;
         this.oldContext = oldContext;
         this.currentContext = newContext;
         setLabel(Messages.getString("ContextModifyCommand.label")); //$NON-NLS-1$
-    }
-
-    private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // final IPage currentPage = sheet.getCurrentPage();
-        // if (currentPage instanceof TabbedPropertySheetPage) {
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
-        // tabbedPropertySheetPage.refresh();
-        // }
-        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
-        if (view2 instanceof ContextsView) {
-            ((ContextsView) view2).refresh();
-        }
     }
 
     /**
@@ -92,7 +85,7 @@ public class ContextModifyCommand extends Command {
         refreshContextView();
         // Removes the attached context files
         try {
-            CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().removeContextFiles(process, oldContext);
+            removeContextFiles(process, oldContext);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -189,4 +182,38 @@ public class ContextModifyCommand extends Command {
         contextManager.fireContextsChangedEvent();
         refreshContextView();
     }
+
+    private void removeContextFiles(IProcess2 process, IContext context) throws Exception {
+        IResource resource = getContextResource(process, context);
+        if (resource != null) {
+            resource.delete(true, null);
+        }
+    }
+
+    /**
+     * Gets the context file resource according to the project type.
+     * 
+     * @param process
+     * @param context
+     * @return
+     */
+    private IResource getContextResource(IProcess2 process, IContext context) throws Exception {
+        switch (ProjectManager.getInstance().getCurrentProject().getLanguage()) {
+        case JAVA:
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(
+                    JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem())).append(
+                    JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(JOB_CONTEXT_FOLDER)
+                    .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+
+            return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
+        case PERL:
+            String rootProjectName = PerlResourcesHelper.getRootProjectName(process.getProperty().getItem());
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, process.getName(), process
+                    .getVersion(), context.getName());
+
+            return PerlResourcesHelper.getSpecificResourceInPerlProject(new Path(contextFullName));
+        }
+        return null;
+    }
+
 }

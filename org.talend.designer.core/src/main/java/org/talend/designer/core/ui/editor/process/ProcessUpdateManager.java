@@ -56,6 +56,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -393,10 +394,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     private static boolean isOpenedProcess(Process curProcess) {
         IEditorReference[] reference = RepositoryUpdateManager.getEditors();
-        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
-        for (IProcess process : openedProcessList) {
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+        for (IProcess2 process : openedProcessList) {
             Property property = curProcess.getProperty();
-            if (process.getId().equals(property.getId()) && process.getLabel().equals(property.getLabel())
+            if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
                     && process.getVersion().equals(property.getVersion())) {
                 return true;
             }
@@ -1223,7 +1224,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
-                            if (param.getField().equals(EParameterFieldType.FILE) && isXsdPath) {
+                            if (param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -1263,7 +1264,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                             Object value = param.getValue();
                             if (objectValue != null) {
-                                if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
+                                if ((param.getFieldType().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
                                         .equals(param.getRepositoryValue()))) {
                                     boolean found = false;
                                     String[] list = param.getListRepositoryItems();
@@ -1277,7 +1278,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     }
 
                                 } else {
-                                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                                    if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                                         List<Map<String, Object>> oldList = (List<Map<String, Object>>) value;
                                         String name = param.getName();
                                         // update for tAdvancedFileOutputXML wizard
@@ -1375,7 +1376,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     }
 
                                 }
-                            } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
                                 List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
                                         repositoryConnection, node.getMetadataList());
@@ -1442,7 +1443,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     // sameValues = false;
                                     // }
                                 }
-                            } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) { //$NON-NLS-1$
+                            } else if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getName().equals("PARAMS")) { //$NON-NLS-1$
                                 objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, param.getName(), node
                                         .getMetadataList().get(0));
                                 if (value == null) {
@@ -1514,7 +1515,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                 && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getField() != EParameterFieldType.MEMO_SQL) {
+                                && param.getFieldType() != EParameterFieldType.MEMO_SQL) {
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                         }
@@ -1796,9 +1797,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     IProcess process2 = (IProcess) object;
                     // avoid reload self
                     if (!getProcess().getId().equals(process2.getId())) {
-                        List<INode> jobletNodes = findRelatedJobletNode(getProcess(), process2.getLabel(), null);
+                        List<INode> jobletNodes = findRelatedJobletNode(getProcess(), process2.getName(), null);
                         if (jobletNodes != null && !jobletNodes.isEmpty()) {
-                            String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + process2.getLabel();
+                            String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + process2.getName();
                             result = new UpdateCheckResult(jobletNodes);
                             result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, event, source);
                         }

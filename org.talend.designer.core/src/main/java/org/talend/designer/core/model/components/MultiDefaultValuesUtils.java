@@ -77,7 +77,7 @@ public final class MultiDefaultValuesUtils {
         StringBuffer valuesStr = new StringBuffer();
         List<String> defaultValuesList = new ArrayList<String>();
 
-        switch (param.getField()) {
+        switch (param.getFieldType()) {
         case COMMAND:
             defaultValuesList = getCurSystemCommandsList(param);
             break;

@@ -319,7 +319,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     public CsvArray run() throws ProcessorException {
         IProcess talendProcess = buildProcess();
-        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
+        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess, null);
         processor.setProxyParameters(getProxyParameters());
         // try {
         // Delete previous Perl generated file
@@ -361,7 +361,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
         IProcess talendProcess = buildProcess();
 
-        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
+        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess, null);
         processor.setProxyParameters(getProxyParameters());
 
         File previousFile = outPath.toFile();

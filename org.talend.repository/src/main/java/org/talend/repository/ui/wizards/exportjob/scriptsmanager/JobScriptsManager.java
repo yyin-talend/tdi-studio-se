@@ -523,7 +523,7 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
             boolean applyContextToChildren) throws ProcessorException {
-        return ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
+        return ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren).getProcess();
     }
 
     /**
@@ -536,7 +536,8 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, IContext context, String version, boolean statistics, boolean trace,
             boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
-        return ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor);
+        return ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor)
+                .getProcess();
     }
 
     /**
@@ -549,7 +550,8 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
-        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
+        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor)
+                .getProcess();
     }
 
     protected IResource[] sourceResouces = null;

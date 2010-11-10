@@ -54,6 +54,7 @@ import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
@@ -438,7 +439,7 @@ public class RunProcessContext {
             if (monitorPerf) {
                 this.getStatisticsPort();
             }
-            final IProcessor processor = getProcessor(process);
+            final IProcessor processor = getProcessor(process, process.getProperty());
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 
             try {
@@ -582,8 +583,8 @@ public class RunProcessContext {
      * 
      * @return
      */
-    protected IProcessor getProcessor(IProcess process) {
-        return ProcessorUtilities.getProcessor(process);
+    protected IProcessor getProcessor(IProcess process, Property property) {
+        return ProcessorUtilities.getProcessor(process, property);
     }
 
     /**

@@ -27,7 +27,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -78,11 +78,11 @@ public final class DeleteActionCache {
         setProcessList(tmpProcessList);
     }
 
-    private static MultiKeyMap createOpenProcessMap(List<IProcess> openedProcessList) {
+    private static MultiKeyMap createOpenProcessMap(List<IProcess2> openedProcessList) {
         MultiKeyMap map = new MultiKeyMap();
         if (openedProcessList != null) {
-            for (IProcess process : openedProcessList) {
-                map.put(process.getId(), process.getLabel(), process.getVersion(), process);
+            for (IProcess2 process : openedProcessList) {
+                map.put(process.getId(), process.getName(), process.getVersion(), process);
             }
         }
         return map;
@@ -117,17 +117,17 @@ public final class DeleteActionCache {
     /*
      * 
      */
-    private List<IProcess> openedProcessList;
+    private List<IProcess2> openedProcessList;
 
     private MultiKeyMap openProcessMap;
 
     private List<IRepositoryViewObject> processList;
 
-    public List<IProcess> getOpenedProcessList() {
+    public List<IProcess2> getOpenedProcessList() {
         return this.openedProcessList;
     }
 
-    private void setOpenedProcessList(List<IProcess> openedProcessList) {
+    private void setOpenedProcessList(List<IProcess2> openedProcessList) {
         this.openedProcessList = openedProcessList;
     }
 

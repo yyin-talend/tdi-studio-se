@@ -70,7 +70,7 @@ public class JobHierarchy {
         return jobs.toArray(new IProcess2[0]);
     }
 
-    public Collection<IRepositoryViewObject> getContextDependencies(IProcess process) {
+    public Collection<IRepositoryViewObject> getContextDependencies(IProcess2 process) {
         List<Item> items = new ArrayList<Item>(1);
         try {
             process.setProperty(ProxyRepositoryFactory.getInstance().getUptodateProperty(process.getProperty()));
@@ -81,7 +81,7 @@ public class JobHierarchy {
         return ProcessUtils.getProcessDependencies(ERepositoryObjectType.CONTEXT, items);
     }
 
-    public Collection<IRepositoryViewObject> getMetadataDependencies(IProcess process) {
+    public Collection<IRepositoryViewObject> getMetadataDependencies(IProcess2 process) {
         List<Item> items = new ArrayList<Item>(1);
         items.add(process.getProperty().getItem());
         return ProcessUtils.getProcessDependencies(ERepositoryObjectType.METADATA, items);

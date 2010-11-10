@@ -452,7 +452,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
             }
         }
 
-        String jobName = component.getProcess().getLabel();
+        String jobName = component.getProcess().getName();
         IPath path = expressionFolder.getLocation().append(jobName + ".xml"); //$NON-NLS-1$
         return path.toOSString();
     }

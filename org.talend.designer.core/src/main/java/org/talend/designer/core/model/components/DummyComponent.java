@@ -124,7 +124,7 @@ public class DummyComponent implements IComponent {
         param.setName(EParameterName.UNIQUE_NAME.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(1);
         param.setReadOnly(true);
@@ -135,7 +135,7 @@ public class DummyComponent implements IComponent {
         param.setName(EParameterName.STARTABLE.getName());
         param.setValue(true);
         param.setDisplayName("STARTABLE"); //$NON-NLS-1$
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(1);
         param.setReadOnly(true);
@@ -146,7 +146,7 @@ public class DummyComponent implements IComponent {
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.TRUE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setReadOnly(true);

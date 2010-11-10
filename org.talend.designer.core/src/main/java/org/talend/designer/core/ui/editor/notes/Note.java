@@ -60,7 +60,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTE_COLOR.getName());
         param.setValue(noteColor); // default note color
         param.setDisplayName(EParameterName.NOTE_COLOR.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
+        param.setFieldType(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(2);
         param.setReadOnly(false);
@@ -71,7 +71,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_COLOR.getName());
         param.setValue(textColor); // default note color
         param.setDisplayName(EParameterName.NOTETXT_COLOR.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
+        param.setFieldType(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(3);
         param.setReadOnly(false);
@@ -82,7 +82,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_LEFT.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.NOTETXT_LEFT.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -90,7 +90,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_RIGHT.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.NOTETXT_RIGHT.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -98,7 +98,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_CENTER.getName());
         param.setValue(true);
         param.setDisplayName(EParameterName.NOTETXT_CENTER.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -106,7 +106,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTELABEL_CENTER.getName());
         param.setValue(true);
         param.setDisplayName(EParameterName.NOTELABEL_CENTER.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -114,7 +114,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_TOP.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.NOTETXT_TOP.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -122,7 +122,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTETXT_BOTTOM.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.NOTETXT_BOTTOM.getDisplayName());
-        param.setField(EParameterFieldType.RADIO);
+        param.setFieldType(EParameterFieldType.RADIO);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -130,7 +130,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTE_FONT.getName());
         param.setValue("Time New Roman"); //$NON-NLS-1$
         param.setDisplayName(EParameterName.NOTE_FONT.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -139,7 +139,7 @@ public class Note extends Element {
         param.setName(EParameterName.FONT_SIZE.getName());
         param.setValue("10"); //$NON-NLS-1$
         param.setDisplayName(EParameterName.FONT_SIZE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -148,7 +148,7 @@ public class Note extends Element {
         param.setName(EParameterName.FONT_BOLD.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.FONT_BOLD.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -157,7 +157,7 @@ public class Note extends Element {
         param.setName(EParameterName.FONT_ITALIC.getName());
         param.setValue(false);
         param.setDisplayName(EParameterName.FONT_ITALIC.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
+        param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
@@ -166,7 +166,7 @@ public class Note extends Element {
         param.setName(EParameterName.NOTE_LINECOLOR.getName());
         param.setValue(noteLineColor);
         param.setDisplayName(EParameterName.FONT_ITALIC.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
+        param.setFieldType(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);

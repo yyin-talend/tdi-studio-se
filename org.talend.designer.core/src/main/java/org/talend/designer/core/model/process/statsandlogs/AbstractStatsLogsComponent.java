@@ -206,113 +206,113 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         // parameters for db output.
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName("HOST"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         // This parameter is use for Connection Component
         newParam = new ElementParameter(node);
         newParam.setName("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("CONNECTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         // This parameter is use for Oracle component
         newParam = new ElementParameter(node);
         newParam.setName("CONNECTION_TYPE"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setShow(false);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("SERVER"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("DSN"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("PORT"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("DBNAME"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("DB_VERSION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("PROPERTIES"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("SCHEMA_DB"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("USER"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("PASS"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("TABLE"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("TABLE_ACTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue("CREATE_IF_NOT_EXISTS"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("DATA_ACTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue("INSERT"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("COMMIT_EVERY"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue("1"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("USE_SHARED_CONNECTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("SHARED_CONNECTION_NAME"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("USE_TRANSACTION"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("LOCAL_SERVICE_NAME"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
     }
@@ -321,36 +321,36 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         // parameters for file output.
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName("FILENAME"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("ROWSEPARATOR"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(TalendTextUtils.addQuotes("\\n", TalendTextUtils.QUOTATION_MARK)); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("FIELDSEPARATOR"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(TalendTextUtils.addQuotes(";")); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("APPEND"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(Boolean.TRUE);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("INCLUDEHEADER"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setFieldType(EParameterFieldType.CHECK);
         newParam.setValue(Boolean.FALSE);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
         newParam.setName("ENCODING"); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setFieldType(EParameterFieldType.TEXT);
         newParam.setValue(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
         elemParamList.add(newParam);
 

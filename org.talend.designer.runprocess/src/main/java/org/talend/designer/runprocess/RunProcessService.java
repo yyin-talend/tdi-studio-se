@@ -24,6 +24,7 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
@@ -54,8 +55,8 @@ public class RunProcessService implements IRunProcessService {
      * org.talend.designer.runprocess.IRunProcessService#createCodeProcessor(org.talend.core.model.process.IProcess,
      * org.talend.core.language.ECodeLanguage, boolean)
      */
-    public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
-        return delegateService.createCodeProcessor(process, language, filenameFromLabel);
+    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
+        return delegateService.createCodeProcessor(process, property, language, filenameFromLabel);
     }
 
     /*

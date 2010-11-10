@@ -130,7 +130,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         this.curParameter = param;
-        this.paramFieldType = param.getField();
+        this.paramFieldType = param.getFieldType();
         FormData data;
 
         final Button btnCmd = new Button(subComposite, SWT.NONE);

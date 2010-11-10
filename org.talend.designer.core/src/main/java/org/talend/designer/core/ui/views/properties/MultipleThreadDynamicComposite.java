@@ -519,9 +519,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter curParam = listParam.get(i);
             if (curParam.getCategory() == section) {
-                if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
                     if (curParam.isShow(listParam)) {
-                        AbstractElementPropertySectionController controller = generator.getController(curParam.getField(), this);
+                        AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(), this);
 
                         if (controller == null) {
                             continue;
@@ -546,7 +546,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
                     if (curParam.getNumRow() == curRow && curParam.isShow(listParam)
-                            && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                            && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         nbInRow++;
                     }
                 }
@@ -557,13 +557,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName() + " field:" + curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -701,8 +701,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         boolean needRedraw = false;
         for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
             if (elementParameter.getCategory().equals(section)
-                    && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
-                    && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)) {
+                    && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_TYPE)
+                    && (elementParameter.getFieldType() != EParameterFieldType.QUERYSTORE_TYPE)) {
                 // if the component must be displayed, then check if the
                 // control exists or not.
                 boolean show = elementParameter.isShow(elem.getElementParameters());
@@ -743,13 +743,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
-                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                    if (curParam.getNumRow() == curRow && (curParam.getFieldType() != EParameterFieldType.TECHNICAL)) {
                         // System.out.println("test:" + curParam.getName() + "
                         // field:"+curParam.getField());
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
                                     this);
 
                             if (controller == null) {
@@ -874,7 +874,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
                         public void run() {
                             if (generator != null) {
-                                AbstractElementPropertySectionController controller = generator.getController(e.getField(),
+                                AbstractElementPropertySectionController controller = generator.getController(e.getFieldType(),
                                         MultipleThreadDynamicComposite.this);
                                 if (controller != null) {
                                     controller.updateCodeProblems(nodePros);
