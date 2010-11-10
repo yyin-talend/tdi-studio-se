@@ -25,6 +25,7 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 		dbquery = dbquery.replaceAll("\n"," ");
 		dbquery = dbquery.replaceAll("\r"," ");
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");
+boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 String incomingConnName = null;
 
 List<IMetadataColumn> columnList = null;
@@ -180,16 +181,18 @@ whetherReject_<%=cid%> = false;
         }
         <%
     }	
-	
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-    %>
-    if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
-    
-    	conn_<%=cid%>.commit();
-    	
-    	commitCounter_<%=cid%>=0;
-    	
-    }
-    <%
-}
+        ////////////commit every////////////
+        if(!useExistingConnection) {	
+			if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+			    %>
+			    if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
+			    
+			    	conn_<%=cid%>.commit();
+			    	
+			    	commitCounter_<%=cid%>=0;
+			    	
+			    }
+			    <%
+			}
+		}
 %>

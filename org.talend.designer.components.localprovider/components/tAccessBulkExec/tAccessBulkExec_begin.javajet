@@ -36,40 +36,52 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String fileDirectory_<%=cid %> = file_<%=cid %>.substring(0,file_<%=cid %>.lastIndexOf("/"));
 	
 	String tableName_<%=cid%> = <%=table%>;
-
-	java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-	
-	<%if ("Access_2003".equalsIgnoreCase(dbversion)){
-	%>
-		String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+	java.sql.Connection conn_<%=cid%> = null;
 	<%
-	}else if ("Access_2007".equalsIgnoreCase(dbversion)) {
-	%>
-		String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+	if(useExistingConnection) {
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+		%>
+		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
-	}
+	} else {   
+	%>	
+		java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+		
+		<%if ("Access_2003".equalsIgnoreCase(dbversion)){
+		%>
+			String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+		<%
+		}else if ("Access_2007".equalsIgnoreCase(dbversion)) {
+		%>
+			String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
+		<%
+		}
+		%>
+		String userName_<%=cid %> = <%=username%>;
+		String password_<%=cid %> = <%=password%>;  
+	<%
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 	%>
-	String userName_<%=cid %> = <%=username%>;
-	String password_<%=cid %> = <%=password%>;  
-<%
-	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
-%>
-	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
-<%
-	} else {
-%>
-	String atnParams_<%=cid%> = <%=dbproperties%>;
-	atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
-	java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
-	atnParamsPrope_<%=cid%>.put("user",userName_<%=cid %>);
-	atnParamsPrope_<%=cid%>.put("password",password_<%=cid %>);
-	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
-  
-	java.sql.Connection conn_<%=cid%> =  java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
+	<%
+		} else {
+	%>
+		String atnParams_<%=cid%> = <%=dbproperties%>;
+		atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+		java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+		atnParamsPrope_<%=cid%>.put("user",userName_<%=cid %>);
+		atnParamsPrope_<%=cid%>.put("password",password_<%=cid %>);
+		atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+	  
+		conn_<%=cid%> =  java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+	<%
+		}
+	%>
 <%
 	}
 %>
-
 <%
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
@@ -96,5 +108,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 	stmt_<%=cid%>.execute(bulkInsert_<%=cid%>);
 
 	stmt_<%=cid%>.close();
+<%
+	if(!useExistingConnection)
+	{
+%>
 	conn_<%=cid %>.close();
+	<%
+	}
+    %>
 

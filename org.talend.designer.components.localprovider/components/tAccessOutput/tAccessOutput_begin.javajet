@@ -108,9 +108,18 @@ int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=tableName%>;
-
 boolean whetherReject_<%=cid%> = false;
-
+java.sql.Connection conn_<%=cid%> = null;
+<%
+boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+if(useExistingConnection) {
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+	%>
+	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	<%
+} else {   
+    %>	
 java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
 <%if ("Access_2003".equalsIgnoreCase(dbversion)){
@@ -128,7 +137,7 @@ String password_<%=cid %> = <%=password%>;
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
 <%
 	} else {
 %>
@@ -139,11 +148,25 @@ String password_<%=cid %> = <%=password%>;
 	atnParamsPrope_<%=cid%>.put("password",password_<%=cid %>);
 	atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
   
-	java.sql.Connection conn_<%=cid%> =  java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+	conn_<%=cid%> =  java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 	}
 %>
-conn_<%=cid%>.setAutoCommit(false);
+<%
+	}
+%>
+<%
+	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+	    %>
+		conn_<%=cid%>.setAutoCommit(false);	
+	    int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+	    int commitCounter_<%=cid%> = 0;
+
+	    <%
+	}
+	%>
+	
 <%
 if(columnList != null && columnList.size()>0) {     
     if(!("NONE").equals(tableAction)) {        
@@ -242,19 +265,6 @@ if(columnList != null && columnList.size()>0) {
        	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
 	    <%
 	}
-	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-	    %>
-
-	    int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-	    int commitCounter_<%=cid%> = 0;
-
-	    <%
-	}
-	%>
-
-
-<%	
 }
 %>
 

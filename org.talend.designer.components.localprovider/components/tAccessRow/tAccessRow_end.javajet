@@ -12,18 +12,9 @@ imports="
 	String cid = node.getUniqueName();
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-%>
-if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
-
-	conn_<%=cid%>.commit();
 	
-	commitCounter_<%=cid%>=0;
+	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
-}
-<%
-}
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
 	
@@ -38,4 +29,16 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 <%
 	}
 %>
-conn_<%=cid %> .close();
+<%
+	if(!useExistingConnection)
+	{
+        if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+        %>
+        conn_<%=cid%>.commit();
+        <%
+    	}
+    	%>
+    conn_<%=cid%> .close();
+	<%
+	}
+    %>
