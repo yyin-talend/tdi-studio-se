@@ -279,7 +279,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 //
 //end%>					
-			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
+			if(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
 				curColNum_<%=cid %>=<%=i%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 <%
@@ -672,7 +672,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>
-			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
+			if(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() > 0) {
 				curColNum_<%=cid %>=<%=i%> + start_column_<%= cid %> + 1;
 				curColName_<%=cid %> = "<%=column.getLabel() %>";
 								
