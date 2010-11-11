@@ -12,11 +12,6 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,22 +90,6 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      */
     public IExternalData getExternalData() {
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IExternalNode#loadDataIn(java.io.InputStream, java.io.Reader)
-     */
-    public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
-     */
-    public void loadDataOut(OutputStream out, Writer writer) throws IOException {
     }
 
     /*

@@ -302,6 +302,15 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getAbstractDBDataMapTable_TableName() {
+        return (EAttribute)abstractDBDataMapTableEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getAbstaceDBInOutTable() {
         return abstaceDBInOutTableEClass;
     }
@@ -340,15 +349,6 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
      */
     public EAttribute getInputTable_Alias() {
         return (EAttribute)inputTableEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EAttribute getInputTable_TableName() {
-        return (EAttribute)inputTableEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -442,6 +442,7 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
         createEAttribute(abstractDBDataMapTableEClass, ABSTRACT_DB_DATA_MAP_TABLE__MINIMIZED);
         createEAttribute(abstractDBDataMapTableEClass, ABSTRACT_DB_DATA_MAP_TABLE__READONLY);
         createEReference(abstractDBDataMapTableEClass, ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES);
+        createEAttribute(abstractDBDataMapTableEClass, ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME);
 
         abstaceDBInOutTableEClass = createEClass(ABSTACE_DB_IN_OUT_TABLE);
 
@@ -450,7 +451,6 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
         inputTableEClass = createEClass(INPUT_TABLE);
         createEAttribute(inputTableEClass, INPUT_TABLE__JOIN_TYPE);
         createEAttribute(inputTableEClass, INPUT_TABLE__ALIAS);
-        createEAttribute(inputTableEClass, INPUT_TABLE__TABLE_NAME);
 
         outputTableEClass = createEClass(OUTPUT_TABLE);
         createEReference(outputTableEClass, OUTPUT_TABLE__FILTER_ENTRIES);
@@ -516,6 +516,7 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
         initEAttribute(getAbstractDBDataMapTable_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractDBDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractDBDataMapTable_Readonly(), ecorePackage.getEBoolean(), "readonly", null, 0, 1, AbstractDBDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractDBDataMapTable_DBMapperTableEntries(), this.getDBMapperTableEntry(), null, "DBMapperTableEntries", null, 0, -1, AbstractDBDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractDBDataMapTable_TableName(), ecorePackage.getEString(), "tableName", null, 0, 1, AbstractDBDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(abstaceDBInOutTableEClass, AbstaceDBInOutTable.class, "AbstaceDBInOutTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -524,7 +525,6 @@ public class DbmapPackageImpl extends EPackageImpl implements DbmapPackage {
         initEClass(inputTableEClass, InputTable.class, "InputTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getInputTable_JoinType(), ecorePackage.getEString(), "joinType", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputTable_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getInputTable_TableName(), ecorePackage.getEString(), "tableName", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTableEClass, OutputTable.class, "OutputTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getOutputTable_FilterEntries(), this.getFilterEntry(), null, "FilterEntries", null, 0, -1, OutputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

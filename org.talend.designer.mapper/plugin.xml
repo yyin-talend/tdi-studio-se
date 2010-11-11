@@ -19,5 +19,15 @@
             class="org.talend.designer.mapper.model.emf.mapper.MapperPackage"
             genModel="model/mapper.genmodel"/>
    </extension>
+      <extension
+            point="org.talend.core.migrationTask">
+         <projecttask
+               beforeLogon="false"
+               class="org.talend.designer.mapper.migration.TMapSaveToEmfMigrationTask"
+               description="Save tmap external data to emf"
+               id="org.talend.designer.mapper.migration.TMapSaveToEmfMigrationTask"
+               name="TMapSaveToEmfMigrationTask">
+         </projecttask>
+      </extension>
 
 </plugin>

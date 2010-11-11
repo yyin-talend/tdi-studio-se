@@ -27,13 +27,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="readonly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="DBMapperTableEntries" upperBound="-1"
         eType="#//DBMapperTableEntry" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tableName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstaceDBInOutTable" eSuperTypes="#//AbstractDBDataMapTable"/>
   <eClassifiers xsi:type="ecore:EClass" name="VarTable" eSuperTypes="#//AbstractDBDataMapTable"/>
   <eClassifiers xsi:type="ecore:EClass" name="InputTable" eSuperTypes="#//AbstaceDBInOutTable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="joinType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tableName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputTable" eSuperTypes="#//AbstaceDBInOutTable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="FilterEntries" upperBound="-1"

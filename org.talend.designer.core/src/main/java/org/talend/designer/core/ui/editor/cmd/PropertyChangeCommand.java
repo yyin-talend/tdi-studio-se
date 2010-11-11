@@ -628,7 +628,7 @@ public class PropertyChangeCommand extends Command {
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
             if (node.getExternalData() != null) {
-                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalData());
             }
             parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
         }

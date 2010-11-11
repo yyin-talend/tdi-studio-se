@@ -1,10 +1,5 @@
 package org.talend.designer.spss;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -55,12 +50,6 @@ public class spssComponent extends AbstractExternalNode {
     }
 
     public void setExternalData(IExternalData persistentData) {
-    }
-
-    public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
-    }
-
-    public void loadDataOut(OutputStream out, Writer writer) throws IOException {
     }
 
     public void renameInputConnection(String oldName, String newName) {

@@ -227,13 +227,22 @@ public interface DbmapPackage extends EPackage {
     int ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES = 3;
 
     /**
+     * The feature id for the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME = 4;
+
+    /**
      * The number of structural features of the '<em>Abstract DB Data Map Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_DB_DATA_MAP_TABLE_FEATURE_COUNT = 4;
+    int ABSTRACT_DB_DATA_MAP_TABLE_FEATURE_COUNT = 5;
 
     /**
      * The meta object id for the '{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstaceDBInOutTableImpl <em>Abstace DB In Out Table</em>}' class.
@@ -280,6 +289,15 @@ public interface DbmapPackage extends EPackage {
      * @ordered
      */
     int ABSTACE_DB_IN_OUT_TABLE__DB_MAPPER_TABLE_ENTRIES = ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES;
+
+    /**
+     * The feature id for the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTACE_DB_IN_OUT_TABLE__TABLE_NAME = ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME;
 
     /**
      * The number of structural features of the '<em>Abstace DB In Out Table</em>' class.
@@ -337,6 +355,15 @@ public interface DbmapPackage extends EPackage {
     int VAR_TABLE__DB_MAPPER_TABLE_ENTRIES = ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES;
 
     /**
+     * The feature id for the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_TABLE__TABLE_NAME = ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME;
+
+    /**
      * The number of structural features of the '<em>Var Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -392,6 +419,15 @@ public interface DbmapPackage extends EPackage {
     int INPUT_TABLE__DB_MAPPER_TABLE_ENTRIES = ABSTACE_DB_IN_OUT_TABLE__DB_MAPPER_TABLE_ENTRIES;
 
     /**
+     * The feature id for the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_TABLE__TABLE_NAME = ABSTACE_DB_IN_OUT_TABLE__TABLE_NAME;
+
+    /**
      * The feature id for the '<em><b>Join Type</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -410,22 +446,13 @@ public interface DbmapPackage extends EPackage {
     int INPUT_TABLE__ALIAS = ABSTACE_DB_IN_OUT_TABLE_FEATURE_COUNT + 1;
 
     /**
-     * The feature id for the '<em><b>Table Name</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int INPUT_TABLE__TABLE_NAME = ABSTACE_DB_IN_OUT_TABLE_FEATURE_COUNT + 2;
-
-    /**
      * The number of structural features of the '<em>Input Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int INPUT_TABLE_FEATURE_COUNT = ABSTACE_DB_IN_OUT_TABLE_FEATURE_COUNT + 3;
+    int INPUT_TABLE_FEATURE_COUNT = ABSTACE_DB_IN_OUT_TABLE_FEATURE_COUNT + 2;
 
     /**
      * The meta object id for the '{@link org.talend.designer.dbmap.model.emf.dbmap.impl.OutputTableImpl <em>Output Table</em>}' class.
@@ -472,6 +499,15 @@ public interface DbmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TABLE__DB_MAPPER_TABLE_ENTRIES = ABSTACE_DB_IN_OUT_TABLE__DB_MAPPER_TABLE_ENTRIES;
+
+    /**
+     * The feature id for the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TABLE__TABLE_NAME = ABSTACE_DB_IN_OUT_TABLE__TABLE_NAME;
 
     /**
      * The feature id for the '<em><b>Filter Entries</b></em>' containment reference list.
@@ -703,6 +739,17 @@ public interface DbmapPackage extends EPackage {
     EReference getAbstractDBDataMapTable_DBMapperTableEntries();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#getTableName <em>Table Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Table Name</em>'.
+     * @see org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#getTableName()
+     * @see #getAbstractDBDataMapTable()
+     * @generated
+     */
+    EAttribute getAbstractDBDataMapTable_TableName();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.dbmap.model.emf.dbmap.AbstaceDBInOutTable <em>Abstace DB In Out Table</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -753,17 +800,6 @@ public interface DbmapPackage extends EPackage {
      * @generated
      */
     EAttribute getInputTable_Alias();
-
-    /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.dbmap.model.emf.dbmap.InputTable#getTableName <em>Table Name</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Table Name</em>'.
-     * @see org.talend.designer.dbmap.model.emf.dbmap.InputTable#getTableName()
-     * @see #getInputTable()
-     * @generated
-     */
-    EAttribute getInputTable_TableName();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.dbmap.model.emf.dbmap.OutputTable <em>Output Table</em>}'.
@@ -975,6 +1011,14 @@ public interface DbmapPackage extends EPackage {
         EReference ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES = eINSTANCE.getAbstractDBDataMapTable_DBMapperTableEntries();
 
         /**
+         * The meta object literal for the '<em><b>Table Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME = eINSTANCE.getAbstractDBDataMapTable_TableName();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstaceDBInOutTableImpl <em>Abstace DB In Out Table</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1019,14 +1063,6 @@ public interface DbmapPackage extends EPackage {
          * @generated
          */
         EAttribute INPUT_TABLE__ALIAS = eINSTANCE.getInputTable_Alias();
-
-        /**
-         * The meta object literal for the '<em><b>Table Name</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute INPUT_TABLE__TABLE_NAME = eINSTANCE.getInputTable_TableName();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.dbmap.model.emf.dbmap.impl.OutputTableImpl <em>Output Table</em>}' class.

@@ -122,7 +122,6 @@ import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
@@ -1088,9 +1087,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (node.getExternalNode() != null) {
             if (node.getExternalData() != null) {
-                Data data = (Data) node.getExternalBytesData();
-                nType.setBinaryData(data.getBytesData());
-                nType.setStringData(data.getStringData());
+                nType.setNodeData(node.getExternalNode().saveExternalData());
+
+                // if (node.getExternalData() != null) {
+                // Data data = (Data) node.getExternalBytesData();
+                // nType.setBinaryData(data.getBytesData());
+                // nType.setStringData(data.getStringData());
+                // }
             }
         }
         listParamType = nType.getElementParameter();
@@ -1419,7 +1422,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
             }
         }
-        nc.setData(nType.getBinaryData(), nType.getStringData());
+        // nc.setData(nType.getBinaryData(), nType.getStringData());
+        if (nc.getExternalNode() != null && nType.getNodeData() != null) {
+            nc.getExternalNode().buildExternalData(nType.getNodeData());
+            nc.setExternalData(nc.getExternalNode().getExternalData());
+        }
+
         loadSchema(nc, nType);
 
         loadColumnsBasedOnSchema(nc, listParamType);

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#isReadonly <em>Readonly</em>}</li>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#getDBMapperTableEntries <em>DB Mapper Table Entries</em>}</li>
+ *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#getTableName <em>Table Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -123,5 +124,31 @@ public interface AbstractDBDataMapTable extends EObject {
      * @generated
      */
     EList<DBMapperTableEntry> getDBMapperTableEntries();
+
+    /**
+     * Returns the value of the '<em><b>Table Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Table Name</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Table Name</em>' attribute.
+     * @see #setTableName(String)
+     * @see org.talend.designer.dbmap.model.emf.dbmap.DbmapPackage#getAbstractDBDataMapTable_TableName()
+     * @model
+     * @generated
+     */
+    String getTableName();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.dbmap.model.emf.dbmap.AbstractDBDataMapTable#getTableName <em>Table Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Table Name</em>' attribute.
+     * @see #getTableName()
+     * @generated
+     */
+    void setTableName(String value);
 
 } // AbstractDBDataMapTable

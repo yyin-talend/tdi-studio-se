@@ -12,11 +12,6 @@
 // ============================================================================
 package org.talend.designer.hl7;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,14 +72,6 @@ public class HL7InputComponent extends AbstractExternalNode {
     }
 
     public void initialize() {
-
-    }
-
-    public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
-
-    }
-
-    public void loadDataOut(OutputStream out, Writer writer) throws IOException {
 
     }
 

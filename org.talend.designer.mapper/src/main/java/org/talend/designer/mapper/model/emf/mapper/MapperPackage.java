@@ -602,13 +602,40 @@ public interface MapperPackage extends EPackage {
     int INPUT_TABLE__LOOKUP_MODE = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 1;
 
     /**
+     * The feature id for the '<em><b>Global Map Keys Values</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_TABLE__GLOBAL_MAP_KEYS_VALUES = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 2;
+
+    /**
+     * The feature id for the '<em><b>Inner Join</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_TABLE__INNER_JOIN = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 3;
+
+    /**
+     * The feature id for the '<em><b>Persistent</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_TABLE__PERSISTENT = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 4;
+
+    /**
      * The number of structural features of the '<em>Input Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int INPUT_TABLE_FEATURE_COUNT = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 2;
+    int INPUT_TABLE_FEATURE_COUNT = ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT + 5;
 
     /**
      * The meta object id for the '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}' enum.
@@ -943,6 +970,39 @@ public interface MapperPackage extends EPackage {
     EAttribute getInputTable_LookupMode();
 
     /**
+     * Returns the meta object for the containment reference list '{@link org.talend.designer.mapper.model.emf.mapper.InputTable#getGlobalMapKeysValues <em>Global Map Keys Values</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Global Map Keys Values</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.InputTable#getGlobalMapKeysValues()
+     * @see #getInputTable()
+     * @generated
+     */
+    EReference getInputTable_GlobalMapKeysValues();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.mapper.model.emf.mapper.InputTable#isInnerJoin <em>Inner Join</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Inner Join</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.InputTable#isInnerJoin()
+     * @see #getInputTable()
+     * @generated
+     */
+    EAttribute getInputTable_InnerJoin();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.mapper.model.emf.mapper.InputTable#isPersistent <em>Persistent</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Persistent</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.InputTable#isPersistent()
+     * @see #getInputTable()
+     * @generated
+     */
+    EAttribute getInputTable_Persistent();
+
+    /**
      * Returns the meta object for enum '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1229,6 +1289,30 @@ public interface MapperPackage extends EPackage {
          * @generated
          */
         EAttribute INPUT_TABLE__LOOKUP_MODE = eINSTANCE.getInputTable_LookupMode();
+
+        /**
+         * The meta object literal for the '<em><b>Global Map Keys Values</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference INPUT_TABLE__GLOBAL_MAP_KEYS_VALUES = eINSTANCE.getInputTable_GlobalMapKeysValues();
+
+        /**
+         * The meta object literal for the '<em><b>Inner Join</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_TABLE__INNER_JOIN = eINSTANCE.getInputTable_InnerJoin();
+
+        /**
+         * The meta object literal for the '<em><b>Persistent</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_TABLE__PERSISTENT = eINSTANCE.getInputTable_Persistent();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.mapper.model.emf.mapper.SizeState <em>Size State</em>}' enum.

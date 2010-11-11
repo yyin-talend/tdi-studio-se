@@ -11,5 +11,15 @@
             class="org.talend.designer.dbmap.model.emf.dbmap.DbmapPackage"
             genModel="model/dbmap.genmodel"/>
    </extension>
+   <extension
+         point="org.talend.core.migrationTask">
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.designer.dbmap.migration.ELTMapSaveToEmfMigrationTask"
+            description="Save elt map external data to emf"
+            id="org.talend.designer.dbmap.migration.ELTMapSaveToEmfMigrationTask"
+            name="ELTMapSaveToEmfMigrationTask">
+      </projecttask>
+   </extension>
 
 </plugin>

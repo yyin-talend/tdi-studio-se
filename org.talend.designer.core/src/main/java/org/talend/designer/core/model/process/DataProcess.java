@@ -61,7 +61,6 @@ import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -1741,17 +1740,10 @@ public class DataProcess {
         // if (externalData != null) {
         // newGraphicalNode.setExternalData(externalData);
         // }
-        String componentName = graphicalNode.getComponent().getName();
-        if (componentName.equals("tMap")) {
-            if (graphicalNode.getExternalData() != null) {
-                Data data = (Data) graphicalNode.getExternalBytesData();
-                newGraphicalNode.setData(data.getBytesData(), data.getStringData());
-            }
-        } else {
-            IExternalData externalData = graphicalNode.getExternalData();
-            if (externalData != null) {
-                newGraphicalNode.setExternalData(externalData);
-            }
+
+        IExternalData externalData = graphicalNode.getExternalData();
+        if (externalData != null) {
+            newGraphicalNode.setExternalData(externalData);
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);

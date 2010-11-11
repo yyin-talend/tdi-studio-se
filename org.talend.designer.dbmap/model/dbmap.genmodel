@@ -25,13 +25,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//AbstractDBDataMapTable/minimized"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//AbstractDBDataMapTable/readonly"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference dbmap.ecore#//AbstractDBDataMapTable/DBMapperTableEntries"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//AbstractDBDataMapTable/tableName"/>
     </genClasses>
     <genClasses ecoreClass="dbmap.ecore#//AbstaceDBInOutTable"/>
     <genClasses ecoreClass="dbmap.ecore#//VarTable"/>
     <genClasses ecoreClass="dbmap.ecore#//InputTable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//InputTable/joinType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//InputTable/alias"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute dbmap.ecore#//InputTable/tableName"/>
     </genClasses>
     <genClasses ecoreClass="dbmap.ecore#//OutputTable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference dbmap.ecore#//OutputTable/FilterEntries"/>

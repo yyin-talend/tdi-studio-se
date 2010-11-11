@@ -437,6 +437,33 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getInputTable_GlobalMapKeysValues() {
+        return (EReference)inputTableEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getInputTable_InnerJoin() {
+        return (EAttribute)inputTableEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getInputTable_Persistent() {
+        return (EAttribute)inputTableEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EEnum getSizeState() {
         return sizeStateEEnum;
     }
@@ -506,6 +533,9 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         inputTableEClass = createEClass(INPUT_TABLE);
         createEAttribute(inputTableEClass, INPUT_TABLE__MATCHING_MODE);
         createEAttribute(inputTableEClass, INPUT_TABLE__LOOKUP_MODE);
+        createEReference(inputTableEClass, INPUT_TABLE__GLOBAL_MAP_KEYS_VALUES);
+        createEAttribute(inputTableEClass, INPUT_TABLE__INNER_JOIN);
+        createEAttribute(inputTableEClass, INPUT_TABLE__PERSISTENT);
 
         // Create enums
         sizeStateEEnum = createEEnum(SIZE_STATE);
@@ -586,6 +616,9 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         initEClass(inputTableEClass, InputTable.class, "InputTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getInputTable_MatchingMode(), ecorePackage.getEString(), "matchingMode", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputTable_LookupMode(), ecorePackage.getEString(), "lookupMode", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getInputTable_GlobalMapKeysValues(), this.getMapperTableEntry(), null, "globalMapKeysValues", null, 0, -1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputTable_InnerJoin(), ecorePackage.getEBoolean(), "innerJoin", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputTable_Persistent(), ecorePackage.getEBoolean(), "persistent", null, 0, 1, InputTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Initialize enums and add enum literals
         initEEnum(sizeStateEEnum, SizeState.class, "SizeState");

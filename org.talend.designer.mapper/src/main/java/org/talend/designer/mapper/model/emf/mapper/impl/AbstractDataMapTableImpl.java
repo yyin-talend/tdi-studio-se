@@ -27,23 +27,21 @@ import org.talend.designer.mapper.model.emf.mapper.SizeState;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getSizeState <em>Size State
- * </em>}</li>
- * <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getName <em>Name</em>}</li>
- * <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#isMinimized <em>Minimized</em>}</li>
- * <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getMapperTableEntries <em>Mapper
- * Table Entries</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getSizeState <em>Size State</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#isMinimized <em>Minimized</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl#getMapperTableEntries <em>Mapper Table Entries</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public abstract class AbstractDataMapTableImpl extends EObjectImpl implements AbstractDataMapTable {
 
     /**
-     * The default value of the '{@link #getSizeState() <em>Size State</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The default value of the '{@link #getSizeState() <em>Size State</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getSizeState()
      * @generated
      * @ordered
@@ -51,9 +49,9 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
     protected static final SizeState SIZE_STATE_EDEFAULT = SizeState.MINIMIZED;
 
     /**
-     * The cached value of the '{@link #getSizeState() <em>Size State</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #getSizeState() <em>Size State</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getSizeState()
      * @generated
      * @ordered
@@ -81,9 +79,9 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
     protected String name = NAME_EDEFAULT;
 
     /**
-     * The default value of the '{@link #isMinimized() <em>Minimized</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The default value of the '{@link #isMinimized() <em>Minimized</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #isMinimized()
      * @generated
      * @ordered
@@ -91,9 +89,9 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
     protected static final boolean MINIMIZED_EDEFAULT = false;
 
     /**
-     * The cached value of the '{@link #isMinimized() <em>Minimized</em>}' attribute. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #isMinimized() <em>Minimized</em>}' attribute.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #isMinimized()
      * @generated
      * @ordered
@@ -101,9 +99,8 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
     protected boolean minimized = MINIMIZED_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getMapperTableEntries() <em>Mapper Table Entries</em>}' containment reference
-     * list. <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     * The cached value of the '{@link #getMapperTableEntries() <em>Mapper Table Entries</em>}' containment reference list.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @see #getMapperTableEntries()
      * @generated
      * @ordered
@@ -112,7 +109,6 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     protected AbstractDataMapTableImpl() {
@@ -121,7 +117,6 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -131,7 +126,6 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public SizeState getSizeState() {
@@ -140,20 +134,17 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setSizeState(SizeState newSizeState) {
         SizeState oldSizeState = sizeState;
         sizeState = newSizeState == null ? SIZE_STATE_EDEFAULT : newSizeState;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE,
-                    oldSizeState, sizeState));
+            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE, oldSizeState, sizeState));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public String getName() {
@@ -162,7 +153,6 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setName(String newName) {
@@ -174,7 +164,6 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public boolean isMinimized() {
@@ -183,143 +172,132 @@ public abstract class AbstractDataMapTableImpl extends EObjectImpl implements Ab
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public void setMinimized(boolean newMinimized) {
         boolean oldMinimized = minimized;
         minimized = newMinimized;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED, oldMinimized,
-                    minimized));
+            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED, oldMinimized, minimized));
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     public EList<MapperTableEntry> getMapperTableEntries() {
         if (mapperTableEntries == null) {
-            mapperTableEntries = new EObjectContainmentEList<MapperTableEntry>(MapperTableEntry.class, this,
-                    MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES);
+            mapperTableEntries = new EObjectContainmentEList<MapperTableEntry>(MapperTableEntry.class, this, MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES);
         }
         return mapperTableEntries;
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
-            return ((InternalEList<?>) getMapperTableEntries()).basicRemove(otherEnd, msgs);
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
+                return ((InternalEList<?>)getMapperTableEntries()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
-            return getSizeState();
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
-            return getName();
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
-            return isMinimized();
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
-            return getMapperTableEntries();
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
+                return getSizeState();
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
+                return getName();
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
+                return isMinimized();
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
+                return getMapperTableEntries();
         }
         return super.eGet(featureID, resolve, coreType);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
-            setSizeState((SizeState) newValue);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
-            setName((String) newValue);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
-            setMinimized((Boolean) newValue);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
-            getMapperTableEntries().clear();
-            getMapperTableEntries().addAll((Collection<? extends MapperTableEntry>) newValue);
-            return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
+                setSizeState((SizeState)newValue);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
+                setName((String)newValue);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
+                setMinimized((Boolean)newValue);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
+                getMapperTableEntries().clear();
+                getMapperTableEntries().addAll((Collection<? extends MapperTableEntry>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
-            setSizeState(SIZE_STATE_EDEFAULT);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
-            setName(NAME_EDEFAULT);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
-            setMinimized(MINIMIZED_EDEFAULT);
-            return;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
-            getMapperTableEntries().clear();
-            return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
+                setSizeState(SIZE_STATE_EDEFAULT);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
+                setName(NAME_EDEFAULT);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
+                setMinimized(MINIMIZED_EDEFAULT);
+                return;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
+                getMapperTableEntries().clear();
+                return;
         }
         super.eUnset(featureID);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
-            return sizeState != SIZE_STATE_EDEFAULT;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
-            return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
-            return minimized != MINIMIZED_EDEFAULT;
-        case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
-            return mapperTableEntries != null && !mapperTableEntries.isEmpty();
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__SIZE_STATE:
+                return sizeState != SIZE_STATE_EDEFAULT;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__NAME:
+                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MINIMIZED:
+                return minimized != MINIMIZED_EDEFAULT;
+            case MapperPackage.ABSTRACT_DATA_MAP_TABLE__MAPPER_TABLE_ENTRIES:
+                return mapperTableEntries != null && !mapperTableEntries.isEmpty();
         }
         return super.eIsSet(featureID);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
-            return super.toString();
+        if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sizeState: ");

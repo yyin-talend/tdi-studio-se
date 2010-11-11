@@ -37,6 +37,7 @@ import org.talend.designer.dbmap.model.emf.dbmap.DbmapPackage;
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstractDBDataMapTableImpl#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstractDBDataMapTableImpl#isReadonly <em>Readonly</em>}</li>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstractDBDataMapTableImpl#getDBMapperTableEntries <em>DB Mapper Table Entries</em>}</li>
+ *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.AbstractDBDataMapTableImpl#getTableName <em>Table Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,6 +113,26 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
      * @ordered
      */
     protected EList<DBMapperTableEntry> dbMapperTableEntries;
+
+    /**
+     * The default value of the '{@link #getTableName() <em>Table Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTableName()
+     * @generated
+     * @ordered
+     */
+    protected static final String TABLE_NAME_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getTableName() <em>Table Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTableName()
+     * @generated
+     * @ordered
+     */
+    protected String tableName = TABLE_NAME_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -212,6 +233,27 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getTableName() {
+        return tableName;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setTableName(String newTableName) {
+        String oldTableName = tableName;
+        tableName = newTableName;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME, oldTableName, tableName));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -237,6 +279,8 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
                 return isReadonly();
             case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES:
                 return getDBMapperTableEntries();
+            case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME:
+                return getTableName();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -263,6 +307,9 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
                 getDBMapperTableEntries().clear();
                 getDBMapperTableEntries().addAll((Collection<? extends DBMapperTableEntry>)newValue);
                 return;
+            case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME:
+                setTableName((String)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -287,6 +334,9 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
             case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES:
                 getDBMapperTableEntries().clear();
                 return;
+            case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME:
+                setTableName(TABLE_NAME_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -307,6 +357,8 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
                 return readonly != READONLY_EDEFAULT;
             case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__DB_MAPPER_TABLE_ENTRIES:
                 return dbMapperTableEntries != null && !dbMapperTableEntries.isEmpty();
+            case DbmapPackage.ABSTRACT_DB_DATA_MAP_TABLE__TABLE_NAME:
+                return TABLE_NAME_EDEFAULT == null ? tableName != null : !TABLE_NAME_EDEFAULT.equals(tableName);
         }
         return super.eIsSet(featureID);
     }
@@ -327,6 +379,8 @@ public class AbstractDBDataMapTableImpl extends EObjectImpl implements AbstractD
         result.append(minimized);
         result.append(", readonly: ");
         result.append(readonly);
+        result.append(", tableName: ");
+        result.append(tableName);
         result.append(')');
         return result.toString();
     }

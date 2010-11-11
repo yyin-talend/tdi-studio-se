@@ -12,12 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodes;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +30,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -1755,48 +1748,6 @@ public class Node extends Element implements IGraphicalNode {
         return null;
     }
 
-    public Object getExternalBytesData() {
-        if (externalNode == null) {
-            return null;
-        }
-
-        Data data = new Data();
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Writer writer = new StringWriter();
-            externalNode.loadDataOut(out, writer);
-            data.setBytesData(out.toByteArray());
-            data.setStringData(writer.toString());
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-        return data;
-    }
-
-    public void setData(byte[] bytesData, String stringData) {
-        ByteArrayInputStream inputStream = null;
-        StringReader reader = null;
-
-        if (externalNode == null) {
-            return;
-        }
-        if (bytesData != null) {
-            inputStream = new ByteArrayInputStream(bytesData);
-        }
-        if (stringData != null) {
-            reader = new StringReader(stringData);
-        }
-
-        try {
-            externalNode.loadDataIn(inputStream, reader);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        setExternalData(externalNode.getExternalData());
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -2825,55 +2776,6 @@ public class Node extends Element implements IGraphicalNode {
         this.component = component;
     }
 
-    /**
-     * 
-     * DOC amaumont Node class global comment. Detailled comment <br/>
-     * 
-     * $Id$
-     * 
-     */
-    public class Data {
-
-        byte[] bytesData = new byte[0];
-
-        String stringData = null;
-
-        /**
-         * DOC amaumont Data constructor comment.
-         */
-        public Data() {
-            super();
-        }
-
-        /**
-         * DOC amaumont Data constructor comment.
-         * 
-         * @param bytesData
-         * @param stringData
-         */
-        public Data(byte[] bytesData, String stringData) {
-            super();
-            this.bytesData = bytesData;
-            this.stringData = stringData;
-        }
-
-        public byte[] getBytesData() {
-            return this.bytesData;
-        }
-
-        public void setBytesData(byte[] bytesData) {
-            this.bytesData = bytesData;
-        }
-
-        public String getStringData() {
-            return this.stringData;
-        }
-
-        public void setStringData(String stringData) {
-            this.stringData = stringData;
-        }
-    }
-
     public boolean canModifySchema() {
         boolean canModifySchema = false;
         List<? extends IElementParameter> listParam = this.getElementParameters();
@@ -3149,9 +3051,8 @@ public class Node extends Element implements IGraphicalNode {
 
         obj = parameters.get(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA);
         if (obj != null && isExternalNode()) {
-            Data data = (Data) obj;
-            if (data != null) {
-                setData(data.getBytesData(), data.getStringData());
+            if (obj instanceof IExternalData) {
+                getExternalNode().setExternalData((IExternalData) obj);
             }
             getExternalNode().initialize();
         }

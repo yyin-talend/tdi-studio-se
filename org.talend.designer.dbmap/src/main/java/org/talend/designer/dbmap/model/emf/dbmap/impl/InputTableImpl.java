@@ -24,7 +24,6 @@ import org.talend.designer.dbmap.model.emf.dbmap.InputTable;
  * <ul>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.InputTableImpl#getJoinType <em>Join Type</em>}</li>
  *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.InputTableImpl#getAlias <em>Alias</em>}</li>
- *   <li>{@link org.talend.designer.dbmap.model.emf.dbmap.impl.InputTableImpl#getTableName <em>Table Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,26 +69,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
      * @ordered
      */
     protected String alias = ALIAS_EDEFAULT;
-
-    /**
-     * The default value of the '{@link #getTableName() <em>Table Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getTableName()
-     * @generated
-     * @ordered
-     */
-    protected static final String TABLE_NAME_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getTableName() <em>Table Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getTableName()
-     * @generated
-     * @ordered
-     */
-    protected String tableName = TABLE_NAME_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -157,27 +136,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getTableName() {
-        return tableName;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setTableName(String newTableName) {
-        String oldTableName = tableName;
-        tableName = newTableName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, DbmapPackage.INPUT_TABLE__TABLE_NAME, oldTableName, tableName));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -185,8 +143,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
                 return getJoinType();
             case DbmapPackage.INPUT_TABLE__ALIAS:
                 return getAlias();
-            case DbmapPackage.INPUT_TABLE__TABLE_NAME:
-                return getTableName();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -204,9 +160,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
                 return;
             case DbmapPackage.INPUT_TABLE__ALIAS:
                 setAlias((String)newValue);
-                return;
-            case DbmapPackage.INPUT_TABLE__TABLE_NAME:
-                setTableName((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -226,9 +179,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
             case DbmapPackage.INPUT_TABLE__ALIAS:
                 setAlias(ALIAS_EDEFAULT);
                 return;
-            case DbmapPackage.INPUT_TABLE__TABLE_NAME:
-                setTableName(TABLE_NAME_EDEFAULT);
-                return;
         }
         super.eUnset(featureID);
     }
@@ -245,8 +195,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
                 return JOIN_TYPE_EDEFAULT == null ? joinType != null : !JOIN_TYPE_EDEFAULT.equals(joinType);
             case DbmapPackage.INPUT_TABLE__ALIAS:
                 return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
-            case DbmapPackage.INPUT_TABLE__TABLE_NAME:
-                return TABLE_NAME_EDEFAULT == null ? tableName != null : !TABLE_NAME_EDEFAULT.equals(tableName);
         }
         return super.eIsSet(featureID);
     }
@@ -265,8 +213,6 @@ public class InputTableImpl extends AbstaceDBInOutTableImpl implements InputTabl
         result.append(joinType);
         result.append(", alias: ");
         result.append(alias);
-        result.append(", tableName: ");
-        result.append(tableName);
         result.append(')');
         return result.toString();
     }

@@ -12,11 +12,6 @@
 // ============================================================================
 package org.talend.designer.mapper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +25,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
@@ -57,13 +48,22 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
+import org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable;
+import org.talend.designer.mapper.model.emf.mapper.InputTable;
+import org.talend.designer.mapper.model.emf.mapper.MapperData;
+import org.talend.designer.mapper.model.emf.mapper.MapperFactory;
+import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
+import org.talend.designer.mapper.model.emf.mapper.OutputTable;
+import org.talend.designer.mapper.model.emf.mapper.VarTable;
 import org.talend.designer.mapper.model.table.LOOKUP_MODE;
 import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -311,69 +311,155 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
-    public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-
-        if (stringReader != null) {
-            Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
-            unmarshaller.setWhitespacePreserve(true);
-            try {
-                externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
-            } catch (MarshalException e) {
-                ExceptionHandler.process(e);
-            } catch (ValidationException e) {
-                ExceptionHandler.process(e);
-            } finally {
-                if (stringReader != null) {
-                    stringReader.close();
-                }
-            }
-        }
-
-    }
+    // public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
+    //
+    // if (stringReader != null) {
+    // Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
+    // unmarshaller.setWhitespacePreserve(true);
+    // try {
+    // externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
+    // } catch (MarshalException e) {
+    // ExceptionHandler.process(e);
+    // } catch (ValidationException e) {
+    // ExceptionHandler.process(e);
+    // } finally {
+    // if (stringReader != null) {
+    // stringReader.close();
+    // }
+    // }
+    // }
+    //
+    // }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
-    public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
-        // System.out.println("loadDataOut");
+    // public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
+    // // System.out.println("loadDataOut");
+    //
+    // initMapperMain(false);
+    //
+    // mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+    // getMetadataList(), false);
+    // ExternalMapperData data = mapperMain.buildExternalData();
+    // if (mapperMain != null && data != null) {
+    //
+    // try {
+    // Marshaller marshaller = new Marshaller(writer);
+    // marshaller.marshal(externalData);
+    //
+    // } catch (MarshalException e) {
+    // ExceptionHandler.process(e);
+    // } catch (ValidationException e) {
+    // ExceptionHandler.process(e);
+    // } catch (IOException e) {
+    // ExceptionHandler.process(e);
+    // } finally {
+    // if (writer != null) {
+    // writer.close();
+    // }
+    // }
+    //
+    // // ObjectOutputStream objectOut = null;
+    // // try {
+    // // objectOut = new ObjectOutputStream(out);
+    // // objectOut.writeObject(data);
+    // // } catch (IOException e) {
+    // // ExceptionHandler.process(e);
+    // // } finally {
+    // // if (objectOut != null) {
+    // // objectOut.close();
+    // // }
+    // // }
+    // }
+    // }
 
+    public void buildExternalData(AbstractExternalData abstractData) {
+        externalData = new ExternalMapperData();
+        if (abstractData instanceof MapperData) {
+            MapperData mapperData = (MapperData) abstractData;
+            List<ExternalMapperTable> externalTables = new ArrayList<ExternalMapperTable>();
+            // input
+            for (InputTable pTable : mapperData.getInputTables()) {
+                ExternalMapperTable externalTable = new ExternalMapperTable();
+                setExternalTable(externalTable, pTable);
+                externalTable.setLookupMode(pTable.getLookupMode());
+                externalTable.setMatchingMode(pTable.getMatchingMode());
+                externalTable.setInnerJoin(pTable.isInnerJoin());
+                externalTable.setPersistent(pTable.isPersistent());
+                externalTable.setGlobalMapKeysValues(getExternalEntities(pTable.getGlobalMapKeysValues()));
+                externalTables.add(externalTable);
+            }
+            externalData.setInputTables(externalTables);
+            // output
+            externalTables = new ArrayList<ExternalMapperTable>();
+            for (OutputTable pTable : mapperData.getOutputTables()) {
+                ExternalMapperTable externalTable = new ExternalMapperTable();
+                setExternalTable(externalTable, pTable);
+                externalTable.setReject(pTable.isReject());
+                externalTable.setRejectInnerJoin(pTable.isRejectInnerJoin());
+                externalTable.setErrorRejectTable(pTable.isIsErrorRejectTable());
+                externalTable.setIsJoinTableOf(pTable.getIsJoinTableOf());
+                externalTables.add(externalTable);
+            }
+            externalData.setOutputTables(externalTables);
+            // var tables
+            externalTables = new ArrayList<ExternalMapperTable>();
+            for (VarTable varTable : mapperData.getVarTables()) {
+                ExternalMapperTable externalTable = new ExternalMapperTable();
+                externalTable.setSizeState(varTable.getSizeState().getLiteral());
+                externalTable.setMinimized(varTable.isMinimized());
+                externalTable.setName(varTable.getName());
+                externalTable.setMetadataTableEntries(getExternalEntities(varTable.getMapperTableEntries()));
+                externalTables.add(externalTable);
+            }
+            externalData.setVarsTables(externalTables);
+            ExternalMapperUiProperties uiProperties = new ExternalMapperUiProperties();
+            uiProperties.setShellMaximized(mapperData.getUiProperties().isShellMaximized());
+
+        }
+        this.setExternalData(externalData);
+    }
+
+    // set common attribute for input output external table
+    private void setExternalTable(ExternalMapperTable externalTable, AbstractInOutTable pTable) {
+        externalTable.setActivateCondensedTool(pTable.isActivateCondensedTool());
+        externalTable.setActivateExpressionFilter(pTable.isActivateExpressionFilter());
+        externalTable.setExpressionFilter(pTable.getExpressionFilter());
+        externalTable.setSizeState(pTable.getSizeState().getLiteral());
+        externalTable.setMinimized(pTable.isMinimized());
+        externalTable.setName(pTable.getName());
+        externalTable.setMetadataTableEntries(getExternalEntities(pTable.getMapperTableEntries()));
+
+    }
+
+    private List<ExternalMapperTableEntry> getExternalEntities(List<MapperTableEntry> pEntities) {
+        List<ExternalMapperTableEntry> entityList = new ArrayList<ExternalMapperTableEntry>();
+        for (MapperTableEntry pEntity : pEntities) {
+            ExternalMapperTableEntry externalEntity = new ExternalMapperTableEntry();
+            externalEntity.setExpression(pEntity.getExpression());
+            externalEntity.setName(pEntity.getName());
+            externalEntity.setNullable(pEntity.isNullable());
+            externalEntity.setType(pEntity.getType());
+            entityList.add(externalEntity);
+        }
+        return entityList;
+    }
+
+    public AbstractExternalData saveExternalData() {
+        final MapperData emfMapperData = MapperFactory.eINSTANCE.createMapperData();
         initMapperMain(false);
-
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
                 getMetadataList(), false);
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
-
-            try {
-                Marshaller marshaller = new Marshaller(writer);
-                marshaller.marshal(externalData);
-
-            } catch (MarshalException e) {
-                ExceptionHandler.process(e);
-            } catch (ValidationException e) {
-                ExceptionHandler.process(e);
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
-            } finally {
-                if (writer != null) {
-                    writer.close();
-                }
+            if (externalData != null) {
+                MapperHelper.saveDataToEmf(externalData, emfMapperData);
             }
-
-            // ObjectOutputStream objectOut = null;
-            // try {
-            // objectOut = new ObjectOutputStream(out);
-            // objectOut.writeObject(data);
-            // } catch (IOException e) {
-            // ExceptionHandler.process(e);
-            // } finally {
-            // if (objectOut != null) {
-            // objectOut.close();
-            // }
-            // }
         }
+        return emfMapperData;
     }
 
     public void renameInputConnection(String oldConnectionName, String newConnectionName) {

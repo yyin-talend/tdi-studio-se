@@ -12,13 +12,6 @@
 // ============================================================================
 package org.talend.designer.dbmap;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +20,6 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -43,13 +32,21 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 import org.talend.designer.dbmap.language.teradata.TeradataGenerationManager;
+import org.talend.designer.dbmap.model.emf.dbmap.DBMapData;
+import org.talend.designer.dbmap.model.emf.dbmap.DBMapperTableEntry;
+import org.talend.designer.dbmap.model.emf.dbmap.DbmapFactory;
+import org.talend.designer.dbmap.model.emf.dbmap.FilterEntry;
+import org.talend.designer.dbmap.model.emf.dbmap.InputTable;
+import org.talend.designer.dbmap.model.emf.dbmap.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
+import org.talend.designer.dbmap.utils.DBMapHelper;
 import org.talend.designer.dbmap.utils.DataMapExpressionParser;
 import org.talend.designer.dbmap.utils.problems.ProblemsAnalyser;
 
@@ -243,77 +240,142 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
-    public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-        StringBuilder input = null;
-        if (stringReader != null) {
-            Unmarshaller unmarshaller = new Unmarshaller(ExternalDbMapData.class);
-            unmarshaller.setWhitespacePreserve(true);
-            try {
-                BufferedReader r = new BufferedReader(stringReader);
-                input = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    input.append(line);
-                    input.append("\r\n"); //$NON-NLS-0$
-                }
-                // see 13019 ,remove all table-entries node when load job which contains db mapper components from old
-                // version's tos
-                String buf = input.toString().replaceAll("<table-entries .*?>.*?</table-entries>", ""); //$NON-NLS-0$ //$NON-NLS-1$
-                stringReader.close();
-                stringReader = new StringReader(buf);
-                externalData = (ExternalDbMapData) unmarshaller.unmarshal(stringReader);
-            } catch (MarshalException e) {
-                ExceptionHandler.process(e);
-            } catch (ValidationException e) {
-                ExceptionHandler.process(e);
-            } finally {
-                if (stringReader != null) {
-                    stringReader.close();
-                }
-            }
-        }
-    }
+    // public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
+    // StringBuilder input = null;
+    // if (stringReader != null) {
+    // Unmarshaller unmarshaller = new Unmarshaller(ExternalDbMapData.class);
+    // unmarshaller.setWhitespacePreserve(true);
+    // try {
+    // BufferedReader r = new BufferedReader(stringReader);
+    // input = new StringBuilder();
+    // String line;
+    // while ((line = r.readLine()) != null) {
+    // input.append(line);
+    //                    input.append("\r\n"); //$NON-NLS-0$
+    // }
+    // // see 13019 ,remove all table-entries node when load job which contains db mapper components from old
+    // // version's tos
+    //                String buf = input.toString().replaceAll("<table-entries .*?>.*?</table-entries>", ""); //$NON-NLS-0$ //$NON-NLS-1$
+    // stringReader.close();
+    // stringReader = new StringReader(buf);
+    // externalData = (ExternalDbMapData) unmarshaller.unmarshal(stringReader);
+    // } catch (MarshalException e) {
+    // ExceptionHandler.process(e);
+    // } catch (ValidationException e) {
+    // ExceptionHandler.process(e);
+    // } finally {
+    // if (stringReader != null) {
+    // stringReader.close();
+    // }
+    // }
+    // }
+    // }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
-    public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
+    // public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
+    //
+    // initMapperMain();
+    // mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+    // getMetadataList(), false);
+    // ExternalDbMapData data = mapperMain.buildExternalData();
+    // if (mapperMain != null && data != null) {
+    //
+    // try {
+    // Marshaller marshaller = new Marshaller(writer);
+    // marshaller.marshal(externalData);
+    // } catch (MarshalException e) {
+    // ExceptionHandler.process(e);
+    // } catch (ValidationException e) {
+    // ExceptionHandler.process(e);
+    // } catch (IOException e) {
+    // ExceptionHandler.process(e);
+    // } finally {
+    // if (writer != null) {
+    // writer.close();
+    // }
+    // }
+    // }
+    // }
 
+    @Override
+    public void buildExternalData(AbstractExternalData abstractData) {
+        externalData = new ExternalDbMapData();
+        if (abstractData instanceof DBMapData) {
+            DBMapData mapperData = (DBMapData) abstractData;
+            List<ExternalDbMapTable> externalTables = new ArrayList<ExternalDbMapTable>();
+            // input
+            for (InputTable pTable : mapperData.getInputTables()) {
+                ExternalDbMapTable externalTable = new ExternalDbMapTable();
+                externalTable.setName(pTable.getName());
+                externalTable.setMinimized(pTable.isMinimized());
+                externalTable.setAlias(pTable.getAlias());
+                externalTable.setJoinType(pTable.getJoinType());
+                externalTable.setTableName(pTable.getTableName());
+                List<ExternalDbMapEntry> entities = new ArrayList<ExternalDbMapEntry>();
+                for (DBMapperTableEntry pEntity : pTable.getDBMapperTableEntries()) {
+                    ExternalDbMapEntry entity = new ExternalDbMapEntry();
+                    entity.setExpression(pEntity.getExpression());
+                    entity.setJoin(pEntity.isJoin());
+                    entity.setName(pEntity.getName());
+                    entity.setOperator(pEntity.getOperator());
+                    entities.add(entity);
+                }
+                externalTable.setMetadataTableEntries(entities);
+                externalTables.add(externalTable);
+            }
+            externalData.setInputTables(externalTables);
+
+            // output
+            externalTables = new ArrayList<ExternalDbMapTable>();
+            for (OutputTable pTable : mapperData.getOutputTables()) {
+                ExternalDbMapTable externalTable = new ExternalDbMapTable();
+                externalTable.setName(pTable.getName());
+                externalTable.setMinimized(pTable.isMinimized());
+                externalTable.setTableName(pTable.getTableName());
+                List<ExternalDbMapEntry> entities = new ArrayList<ExternalDbMapEntry>();
+                for (DBMapperTableEntry pEntity : pTable.getDBMapperTableEntries()) {
+                    ExternalDbMapEntry entity = new ExternalDbMapEntry();
+                    entity.setExpression(pEntity.getExpression());
+                    entity.setName(pEntity.getName());
+                    entities.add(entity);
+                }
+                externalTable.setMetadataTableEntries(entities);
+                externalTables.add(externalTable);
+                // filters
+                entities = new ArrayList<ExternalDbMapEntry>();
+                for (FilterEntry pFilter : pTable.getFilterEntries()) {
+                    ExternalDbMapEntry entity = new ExternalDbMapEntry();
+                    entity.setExpression(pFilter.getExpression());
+                    entity.setName(pFilter.getName());
+                    entities.add(entity);
+                }
+                externalTable.setCustomConditionsEntries(entities);
+
+            }
+            externalData.setOutputTables(externalTables);
+
+        }
+        this.setExternalData(externalData);
+
+    }
+
+    @Override
+    public AbstractExternalData saveExternalData() {
+        final DBMapData emfMapperData = DbmapFactory.eINSTANCE.createDBMapData();
         initMapperMain();
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
                 getMetadataList(), false);
         ExternalDbMapData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
-
-            try {
-                Marshaller marshaller = new Marshaller(writer);
-                marshaller.marshal(externalData);
-            } catch (MarshalException e) {
-                ExceptionHandler.process(e);
-            } catch (ValidationException e) {
-                ExceptionHandler.process(e);
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
-            } finally {
-                if (writer != null) {
-                    writer.close();
-                }
+            if (externalData != null) {
+                DBMapHelper.saveDataToEmf(emfMapperData, externalData);
             }
-
-            // ObjectOutputStream objectOut = null;
-            // try {
-            // objectOut = new ObjectOutputStream(out);
-            // objectOut.writeObject(data);
-            // } catch (IOException e) {
-            // ExceptionHandler.process(e);
-            // } finally {
-            // if (objectOut != null) {
-            // objectOut.close();
-            // }
-            // }
         }
+        return emfMapperData;
     }
 
     public void renameInputConnection(String oldConnectionName, String newConnectionName) {

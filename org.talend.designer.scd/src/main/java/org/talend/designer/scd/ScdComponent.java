@@ -12,12 +12,6 @@
 // ============================================================================
 package org.talend.designer.scd;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.process.AbstractExternalNode;
@@ -73,26 +67,6 @@ public class ScdComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#initialize()
      */
     public void initialize() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IExternalNode#loadDataIn(java.io.InputStream, java.io.Reader)
-     */
-    public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
-     */
-    public void loadDataOut(OutputStream out, Writer writer) throws IOException {
         // TODO Auto-generated method stub
 
     }
