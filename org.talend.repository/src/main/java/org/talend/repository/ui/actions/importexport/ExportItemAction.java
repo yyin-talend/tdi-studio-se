@@ -30,7 +30,6 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -108,9 +107,9 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                         }
                     }
                 }
-                if (visible && parent != null && parent instanceof BinRepositoryNode) {
-                    visible = false;
-                }
+                // if (visible && parent != null && parent instanceof BinRepositoryNode) {
+                // visible = false;
+                // }
             }
         }
         setEnabled(visible);

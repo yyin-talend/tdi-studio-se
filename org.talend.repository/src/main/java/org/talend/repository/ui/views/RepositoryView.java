@@ -1244,6 +1244,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         List<IRepositoryViewObject> result = new ArrayList<IRepositoryViewObject>();
         addElement(result, type, container);
+        addElement(result, type, root.getRecBinNode());
         return result;
     }
 
@@ -1254,6 +1255,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 return node;
             }
             for (IRepositoryNode repositoryNode : node.getChildren()) {
+
                 RepositoryNode result = findContainer((RepositoryNode) repositoryNode, type);
                 if (result != null) {
                     return result;

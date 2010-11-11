@@ -47,7 +47,7 @@ public class TreeBuilder {
             ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
             ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
             ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-            ERepositoryObjectType.DOCUMENTATION };
+            ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.RECYCLE_BIN };
 
     static Map<ERepositoryObjectType, Integer> typeOrders = new HashMap<ERepositoryObjectType, Integer>();
 
@@ -191,6 +191,10 @@ public class TreeBuilder {
         public void addItem(ItemRecord itemRecord) {
             sorted = false;
             ERepositoryObjectType type = itemRecord.getType();
+            boolean isdelete = itemRecord.getProperty().getItem().getState().isDeleted();
+            if (isdelete) {
+                type = ERepositoryObjectType.RECYCLE_BIN;
+            }
             types.add(type);
             TypeNode folder = typeMap.get(type);
             if (folder == null) {
