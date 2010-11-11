@@ -156,6 +156,7 @@ String password_<%=cid %> = <%=password%>;
 	}
 %>
 <%
+if(!useExistingConnection) {
 	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 	    %>
 		conn_<%=cid%>.setAutoCommit(false);	
@@ -165,6 +166,7 @@ String password_<%=cid %> = <%=password%>;
 
 	    <%
 	}
+}
 	%>
 	
 <%

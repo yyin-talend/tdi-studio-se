@@ -79,15 +79,17 @@ java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 	}
 %>
 <%
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-%>
-
-int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-int commitCounter_<%=cid%> = 0;
-
-conn_<%=cid%>.setAutoCommit(false);
-<%
+if(!useExistingConnection) {
+	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+	%>
+	
+	int commitEvery_<%=cid%> = <%=commitEvery%>;
+	
+	int commitCounter_<%=cid%> = 0;
+	
+	conn_<%=cid%>.setAutoCommit(false);
+	<%
+	}
 }
 %>
 
