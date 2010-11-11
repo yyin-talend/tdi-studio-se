@@ -1,0 +1,114 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataColumn
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<? extends IConnection> inConns = node.getIncomingConnections();
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+String inConnName = null, outConnName = null;
+
+if (outConns != null && outConns.size() > 0){
+  outConnName = outConns.get(0).getName();
+  
+  if (inConns != null && inConns.size() > 0){
+    inConnName = inConns.get(0).getName();
+  }
+}
+
+String sURI = ElementParameterParser.getValue(node, "__URI__");
+String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
+String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FILE__");
+boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
+String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
+List<Map<String, String>> headerParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
+%>
+java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
+java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
+urlConn_<%=cid%>.setRequestMethod("<%=sMethod%>");
+urlConn_<%=cid%>.setDoOutput(true);
+urlConn_<%=cid%>.setDoInput(true);
+urlConn_<%=cid%>.setUseCaches(false);
+
+<%for (Map<String, String> header : headerParams){ // set request properties%>
+  urlConn_<%=cid%>.setRequestProperty(<%=header.get("HEADER_NAME")%>, <%=header.get("HEADER_VALUE")%>);
+<%}%>
+
+urlConn_<%=cid%>.connect();
+<%
+// add parameters from file
+if ("POST".equals(sMethod)){
+  if (sParamFile != null && !"".equals(sParamFile)){
+  %>
+    java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
+    java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
+    int buffer_<%=cid%> = 0;
+    
+    while ((buffer_<%=cid%> = bisParam_<%=cid%>.read()) != -1) {
+      bosParam_<%=cid%>.write(buffer_<%=cid%>);
+      bosParam_<%=cid%>.flush();
+    }
+    bosParam_<%=cid%>.close();
+    bisParam_<%=cid%>.close();
+  <%
+  }
+}
+%>
+byte[] byte_<%=cid%> = null;
+
+if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode())) {
+  java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+  byte_<%=cid%> = new byte[bis_<%=cid%>.available()];
+  bis_<%=cid%>.read(byte_<%=cid%>);
+  
+  <%
+  // output response content to file
+  if (bOutToFile && sOutFilePath != null){
+  %>
+    java.io.OutputStream bosContent_<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=sOutFilePath%>));
+    bosContent_<%=cid%>.write(byte_<%=cid%>);
+    bosContent_<%=cid%>.flush();
+    bosContent_<%=cid%>.close();
+  <%
+  }
+  %>
+  bis_<%=cid%>.close();
+}
+
+<%
+// output data
+if (outConnName != null){
+  List<IMetadataTable> metaTables = node.getMetadataList();
+  
+  if (metaTables != null && metaTables.size() > 0){
+    IMetadataTable metaTable = metaTables.get(0);
+    List<IMetadataColumn> columns = metaTable.getListColumns();
+    
+    for (IMetadataColumn column : columns){
+      String colName = column.getLabel();
+      
+      if ("ResponseContent".equals(colName)){
+      %>
+        <%=outConnName%>.ResponseContent = byte_<%=cid%> == null ? null : new String(byte_<%=cid%>);
+      <%
+      } else {
+      %>
+        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+      <%
+      }
+    }
+  }
+}
+%>
+
