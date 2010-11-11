@@ -133,6 +133,10 @@
 				<ITEM NAME="INSERT_IF_NOT_EXIST" VALUE="INSERT_IF_NOT_EXIST" />
 			</ITEMS>
 		</PARAMETER>
+		
+		<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="71" COLOR="255;0;0" SHOW_IF="(DATA_ACTION == 'SINGLE_INSERT')">
+  			<DEFAULT>NOTE: batch size must be less than or equal to total number of parameter markers divided by number of columns</DEFAULT> 
+  		</PARAMETER>
 
 		<PARAMETER NAME="SPECIFY_IDENTITY_FIELD" FIELD="CHECK" NUM_ROW="71" NOT_SHOW_IF="(TABLE_ACTION == 'NONE') or (TABLE_ACTION == 'CLEAR') or (TABLE_ACTION == 'TRUNCATE')">
 			<DEFAULT>false</DEFAULT>
