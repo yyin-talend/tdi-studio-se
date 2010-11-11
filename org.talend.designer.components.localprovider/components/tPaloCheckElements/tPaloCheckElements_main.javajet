@@ -75,7 +75,7 @@
 			String strDefaultElement = mpElement.get("DEFAULT_ELEMENT");
 			if(!strElementType.equals("ELEMENT_MEASURE")){
 				%>
-				if(lsElements_<%=cid %>[<%=iCount%>].contains(<%=strInputConnectionName%>.<%=strElement%>)){
+				if(!lsElements_<%=cid %>[<%=iCount%>].contains(<%=strInputConnectionName%>.<%=strElement%>)){
 					if(iErrorCounter_<%=cid %>>0) sbErrorText_<%=cid %>.append(",");
 					sbErrorText_<%=cid %>.append(pDIMs_<%=cid %>.getDimension(<%=iCount%>).getName()+":"+<%=strInputConnectionName%>.<%=strElement%>);
 					bRejectRow_<%=cid %> = true;
