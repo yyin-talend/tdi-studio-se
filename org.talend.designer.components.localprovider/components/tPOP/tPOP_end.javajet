@@ -1,45 +1,36 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-		java.util.Map
-	"
+  imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+  "
 %>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-		
-	// component id
-	String cid = node.getUniqueName();
-	boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
-	List<Map<String, String>> filterList = 
-		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
+List<Map<String, String>> filterList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
 
-	if(filterList.size()>0){
+if (filterList.size() > 0) {
 %>
-		}
+  }
 <%
-	}
+}
 %>
+}  
 
-   }  
-
-    if (folder_<%=cid %> != null)    
-<%
-   if (bDeleteFromServer) {
-%>
-     folder_<%=cid %>.close(true); 
-<%
-  } else
-  {
-%> 
+if (folder_<%=cid %> != null) {
+  <%if (bDeleteFromServer) {%>
+    folder_<%=cid %>.close(true); 
+  <%} else {%> 
     folder_<%=cid %>.close(false);
-<%
-  }    
-%>
-	if (store_<%=cid %> != null)
-       store_<%=cid %>.close();
-	
-	globalMap.put("<%=cid %>_NB_EMAIL", nb_email_<%=cid %>);	  
+  <%}%>
+}
+
+if (store_<%=cid %> != null) {
+  store_<%=cid %>.close();
+}
+globalMap.put("<%=cid %>_NB_EMAIL", nb_email_<%=cid %>);  
