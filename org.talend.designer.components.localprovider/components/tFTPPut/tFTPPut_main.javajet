@@ -179,7 +179,7 @@ try{
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName())); 
 							String newName_<%=cid%> = ("".equals(map<%=cid %>.get(key<%=cid %>)))?file_in_localDir.getName():map<%=cid %>.get(key<%=cid %>);
 							<%if(append){%>
-							ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),file_in_localDir.getName(), true);
+							ftp_<%=cid %>.put(tempdir<%=cid %> + "/" + file_in_localDir.getName(),"".equals(newName_<%=cid%>)?file_in_localDir.getName():newName_<%=cid%>, true);
 								 	
 						 	// add uploading status to list which will return back to client.
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
