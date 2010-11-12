@@ -1304,6 +1304,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void loadRoutinesDependencies(ProcessType process) {
+        /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
+        if (process.getParameters() == null) {
+            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+            process.setParameters(parameterType);
+        }
         for (Iterator iter = process.getParameters().getRoutinesParameter().iterator(); iter.hasNext();) {
             RoutinesParameterType itemInforType = (RoutinesParameterType) iter.next();
 
