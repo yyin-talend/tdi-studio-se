@@ -8,7 +8,7 @@
 			select="'abcdefghijklmnopqrstuvwxyz'" />
 		<html>
 			<head>
-				<title>Generated documentation</title>
+				<title><xsl:value-of select="/project/@i18n.compare.generated.documetation" /></title>
 				<style type="text/css">
 					@page { size: letter; } 
 					SPAN.special { font:12pt black; } 
@@ -66,7 +66,7 @@
 					<tr valign="top">
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							PROJECT NAME
+							<xsl:value-of select="/project/@i18n.compare.project.name" />
 						</td>
 						<td align="center" width="25%"
 							class="FONTSTYLE">
@@ -74,7 +74,7 @@
 						</td>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							GENERATION DATE
+							<xsl:value-of select="/project/@i18n.compare.generated.date" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of
@@ -84,7 +84,7 @@
 					<tr>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							AUTHOR
+							<xsl:value-of select="/project/@i18n.compare.author" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of select="/project/@author" />
@@ -100,39 +100,39 @@
 						</td>
 					</tr>
 				</table>
-				<h2 class="FONTSTYLE">Summary</h2>
+				<h2 class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.summary" /></h2>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ProjectDescription">
-							Project Description
+							<xsl:value-of select="/project/@i18n.compare.project.description" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#CurrentJobPreviewPicture">
-							Current Job Preview Picture
+							<xsl:value-of select="/project/@i18n.compare.current.job.preview.picture" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ComparedJobPreviewPicture">
-							Compared Job Preview Picture
+							<xsl:value-of select="/project/@i18n.compare.compare.job.picture" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#JobSettingCompare">
-							Job Setting Compare
+							<xsl:value-of select="/project/@i18n.compare.compare.job.setting.compare" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ComparedComponentList">
-							Compared Component List
+							<xsl:value-of select="/project/@i18n.compare.compare.compared.component.list" />
 						</a>
 					</b>
 				</div>
@@ -142,7 +142,7 @@
 				<!--HR-->
 				<h2 class="FONTSTYLE">
 					<a name="#ProjectDescription">
-						Project Description
+						<xsl:value-of select="/project/@i18n.compare.project.description" />
 					</a>
 				</h2>
 				<br />
@@ -153,27 +153,27 @@
 					<tr>
 						<th align="left" width="30%"
 							class="TABLECOLUMNSTYLE">
-							Properties
+							<xsl:value-of select="/project/@i18n.compare.properties" />
 						</th>
 						<th align="left" class="TABLECOLUMNSTYLE">
-							Values
+							<xsl:value-of select="/project/@i18n.compare.values" />
 						</th>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Name</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.compare.name" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Language</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.compare.language" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@language" />
 						</td>
 					</tr>
 					<tr>
 						<td class="FONTSTYLE" align="left">
-							Description
+							<xsl:value-of select="/project/@i18n.compare.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
 							<pre>
@@ -193,7 +193,7 @@
 				<xsl:if test="string-length($currentJobPreviewPicture/@picture)!=0">
 					<h2 class="FONTSTYLE">
 						<a name="#CurrentJobPreviewPicture">
-							Current Job Preview Picture
+							<xsl:value-of select="/project/@i18n.compare.current.job.preview.picture" />
 						</a>
 					</h2>
 					<br />
@@ -220,7 +220,7 @@
 				<xsl:if test="string-length($comparedJobPreviewPicture/@picture)!=0">
 					<h2 class="FONTSTYLE">
 						<a name="#ComparedJobPreviewPicture">
-							Compared Job Preview Picture
+							<xsl:value-of select="/project/@i18n.compare.compare.job.picture" />
 						</a>
 					</h2>
 					<br />
@@ -247,12 +247,12 @@
 				<!--HR-->
 				<xsl:variable name="jobSetting" select="/project/jobSetting" />
 				<h2 class="FONTSTYLE">
-					<a name="#JobSettingCompare">Job Setting Compare</a>
+					<a name="#JobSettingCompare"><xsl:value-of select="/project/@i18n.compare.compare.job.setting.compare" /></a>
 				</h2>
 				<xsl:variable name="extraList"
 					select="$jobSetting/extra/extraItem/@param" />
 				<xsl:if test="string-length($extraList)!=0">
-				<b class="FONTSTYLE">Extra</b>
+				<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.extra" /></b>
 				<br />
 				<table width="50%" border="1" cellpadding="0"
 						cellspacing="0"
@@ -261,15 +261,15 @@
 						<tr>
 					 	 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Parameter
+							<xsl:value-of select="/project/@i18n.compare.parameter" />
 						 </th>
 						 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Current value
+							<xsl:value-of select="/project/@i18n.compare.current.value" />
 						 </th>
 						 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Old value
+							<xsl:value-of select="/project/@i18n.compare.old.value" />
 						 </th>
 					 </tr>
 					 <xsl:for-each
@@ -292,7 +292,7 @@
 				<xsl:variable name="statsAndLogsList"
 					select="$jobSetting/statsAndLog/statsAndLogItem/@param" />
 				<xsl:if test="string-length($statsAndLogsList)!=0">
-				<b class="FONTSTYLE">Stats &amp; Logs</b>
+				<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.stats.logs" /></b>
 				<br />
 				 <table width="50%" border="1" cellpadding="0"
 						cellspacing="0"
@@ -301,15 +301,15 @@
 						<tr>
 					 	 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Parameter
+							<xsl:value-of select="/project/@i18n.compare.parameter" />
 						 </th>
 						 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Current value
+							<xsl:value-of select="/project/@i18n.compare.current.value" />
 						 </th>
 						 <th width="33%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Old value
+							<xsl:value-of select="/project/@i18n.compare.old.value" />
 						 </th>
 					 </tr>
 					 <xsl:for-each
@@ -335,12 +335,12 @@
 				<!--HR-->
 				<xsl:variable name="component" select="/project/component" />
 				<h2 class="FONTSTYLE">
-					<a name="#ComparedComponentList">Compared Component List</a>
+					<a name="#ComparedComponentList"><xsl:value-of select="/project/@i18n.compare.compare.compared.component.list" /></a>
 				</h2>
 				<xsl:variable name="addComponentList"
 					select="$component/addedComponentList/addedItem/@name" />
 				<xsl:if test="string-length($addComponentList)!=0">
-				 <b class="FONTSTYLE">Added Component</b>
+				 <b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.added.component" /></b>
 				 <br />
 				 <table width="40%" border="1" cellpadding="0"
 					 cellspacing="0"
@@ -352,11 +352,11 @@
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Name
+							<xsl:value-of select="/project/@i18n.compare.component.name" />
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Type
+							<xsl:value-of select="/project/@i18n.compare.component.type" />
 						 </th>
 					 </tr>
 					 <xsl:for-each
@@ -381,7 +381,7 @@
 				<xsl:variable name="deleteComponentList"
 					select="$component/deletedComponentList/deletedItem/@name" />
 				<xsl:if test="string-length($deleteComponentList)!=0">
-				 <b class="FONTSTYLE">Deleted Component</b>
+				 <b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.current.deleted.component" /></b>
 				 <br />
 					<table width="40%" border="1" cellpadding="0"
 					 cellspacing="0"
@@ -393,11 +393,11 @@
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Name
+							<xsl:value-of select="/project/@i18n.compare.component.name" />
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Type
+							<xsl:value-of select="/project/@i18n.compare.component.type" />
 						 </th>
 					 </tr>
 					 <xsl:for-each
@@ -422,7 +422,7 @@
 				 <xsl:variable name="modifyComponentList"
 					select="$component/modifiedComponentList/modifiedItem/@name" />
 				<xsl:if test="string-length($modifyComponentList)!=0">
-				 <b class="FONTSTYLE">Modified Component</b>
+				 <b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.compare.added.modified.component" /></b>
 				 <br />
 					<table width="40%" border="1" cellpadding="0"
 					 cellspacing="0"
@@ -434,11 +434,11 @@
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Name
+							<xsl:value-of select="/project/@i18n.compare.component.name" />
 						 </th>
 						 <th width="45%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Type
+							<xsl:value-of select="/project/@i18n.compare.component.type" />
 						 </th>
 					 </tr>
 					 <xsl:for-each
@@ -470,7 +470,7 @@
 									bordercolor="#111111" summary="">
 									<tr bgcolor="#666666" class="FONTSTYLE">
 										<td class="FONTSTYLE">
-											<b>Modified Component details:</b>
+											<b><xsl:value-of select="/project/@i18n.compare.current.modified.component.list" /></b>
 										</td>
 									</tr>
 							</table>
@@ -482,7 +482,7 @@
 									bordercolor="#111111" summary="">
 									<tr bgcolor="#888888" class="FONTSTYLE">
 										<td class="FONTSTYLE">
-											<b>Component:<xsl:value-of select="@componentName" /></b>
+											<b><xsl:value-of select="/project/@i18n.compare.components" /><xsl:value-of select="@componentName" /></b>
 										</td>
 									</tr>
 								</table>
@@ -504,15 +504,15 @@
 											<tr>
 											 	 <th width="33%" align="left"
 													class="TABLECOLUMNSTYLE">
-													Parameter
+													<xsl:value-of select="/project/@i18n.compare.parameter" />
 												 </th>
 												 <th width="33%" align="left"
 													class="TABLECOLUMNSTYLE">
-													Current value
+													<xsl:value-of select="/project/@i18n.compare.current.value" />
 												 </th>
 												 <th width="33%" align="left"
 													class="TABLECOLUMNSTYLE">
-													Old value
+													<xsl:value-of select="/project/@i18n.compare.old.value" />
 												 </th>
 										   </tr>
 									  <xsl:for-each select="paramItem">
@@ -537,7 +537,7 @@
 							bordercolor="#111111" summary="">
 							<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 								<td class="FONTSTYLE">
-									<b>	Schema:								
+									<b>	<xsl:value-of select="/project/@i18n.compare.schemas" />								
 										<xsl:value-of
 											select="@schemaName" />
 									</b>
@@ -551,15 +551,15 @@
 						   <tr>
 					 	     <th width="33%" align="left"
 							     class="TABLECOLUMNSTYLE">
-							     Parameter
+							      <xsl:value-of select="/project/@i18n.compare.parameter" />
 						     </th>
 						     <th width="33%" align="left"
 							    class="TABLECOLUMNSTYLE">
-							     Current value
+							     <xsl:value-of select="/project/@i18n.compare.current.value" />
 						     </th>
 						     <th width="33%" align="left"
 							    class="TABLECOLUMNSTYLE">
-							     Old value
+							     <xsl:value-of select="/project/@i18n.compare.old.value" />
 						     </th>
 					       </tr>
 					       <xsl:for-each select="schemaItem">

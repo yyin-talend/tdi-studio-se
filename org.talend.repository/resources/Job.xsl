@@ -8,7 +8,7 @@
 			select="'abcdefghijklmnopqrstuvwxyz'" />
 		<html>
 			<head>
-				<title>Generated documentation</title>
+				<title><xsl:value-of select="/project/@i18n.job.generated.documetation" /></title>
 				<style type="text/css">
 					@page { size: letter; } 
 					SPAN.special { font:12pt black; } 
@@ -66,7 +66,7 @@
 					<tr valign="top">
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							PROJECT NAME
+							<xsl:value-of select="/project/@i18n.job.project.name" />
 						</td>
 						<td align="center" width="25%"
 							class="FONTSTYLE">
@@ -74,7 +74,7 @@
 						</td>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							GENERATION DATE
+							<xsl:value-of select="/project/@i18n.job.generated.date" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of
@@ -84,7 +84,7 @@
 					<tr>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							AUTHOR
+							<xsl:value-of select="/project/@i18n.job.author" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of select="/project/job/@author" />
@@ -100,45 +100,45 @@
 						</td>
 					</tr>
 				</table>
-				<h2 class="FONTSTYLE">Summary</h2>
+				<h2 class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.summary" /></h2>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ProjectDescription">
-							Project Description
+						<xsl:value-of select="/project/@i18n.job.project.description" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#JobDescription">Job Description</a>
+						<a href="#JobDescription"><xsl:value-of select="/project/@i18n.job.job.description" /></a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#JobPreviewPicture">
-							Job Preview Picture
+						<xsl:value-of select="/project/@i18n.job.job.preview.picture" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#Job Settings">Job Settings</a>
+						<a href="#Job Settings"><xsl:value-of select="/project/@i18n.job.job.setting" /></a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#Context List">Context List</a>
+						<a href="#Context List"><xsl:value-of select="/project/@i18n.job.context.list" /></a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#ComponentList">Component List</a>
+						<a href="#ComponentList"><xsl:value-of select="/project/@i18n.job.component.list" /></a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ComponentsDescription">
-							Components Description
+						<xsl:value-of select="/project/@i18n.job.components.description" />
 						</a>
 					</b>
 				</div>
@@ -147,7 +147,7 @@
 				<xsl:if test="$code">
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#SourceCode">Source Code</a>
+						<a href="#SourceCode"><xsl:value-of select="/project/@i18n.job.source.code" /></a>
 					</b>
 				</div>
 				</xsl:if>
@@ -157,7 +157,7 @@
 				<!--HR-->
 				<h2 class="FONTSTYLE">
 					<a name="#ProjectDescription">
-						Project Description
+					<xsl:value-of select="/project/@i18n.job.project.description" />
 					</a>
 				</h2>
 				<br />
@@ -168,27 +168,27 @@
 					<tr>
 						<th align="left" width="30%"
 							class="TABLECOLUMNSTYLE">
-							Properties
+							<xsl:value-of select="/project/@i18n.job.properties" />
 						</th>
 						<th align="left" class="TABLECOLUMNSTYLE">
-							Values
+						<xsl:value-of select="/project/@i18n.job.values" />
 						</th>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Name</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.name" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Language</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.language" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@language" />
 						</td>
 					</tr>
 					<tr>
 						<td class="FONTSTYLE" align="left">
-							Description
+						<xsl:value-of select="/project/@i18n.job.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
 							<pre>
@@ -201,7 +201,7 @@
 				<br />
 				<br />
 				<h2 class="FONTSTYLE">
-					<a name="#JobDescription">Job Description</a>
+					<a name="#JobDescription"><xsl:value-of select="/project/@i18n.job.job.description" /></a>
 				</h2>
 				<br />
 				<table border="1" width="90%" cellpadding="0"
@@ -211,45 +211,45 @@
 					<tr>
 						<th align="left" width="30%"
 							class="TABLECOLUMNSTYLE">
-							Properties
+							<xsl:value-of select="/project/@i18n.job.properties" />
 						</th>
 						<th align="left" class="TABLECOLUMNSTYLE">
-							Values
+						<xsl:value-of select="/project/@i18n.job.values" />
 						</th>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Name</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.name" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Author</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.author.min" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@author" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Version</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.version" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@version" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Purpose</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.purpose" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@purpose" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Status</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.status" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@status" />
 						</td>
 					</tr>
 					<tr>
 						<td class="FONTSTYLE" align="left">
-							Description
+						<xsl:value-of select="/project/@i18n.job.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
 								<pre>
@@ -259,14 +259,14 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Creation</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.job.creation" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@creation" />
 						</td>
 					</tr>
 					<tr>
 						<td class="FONTSTYLE" align="left">
-							Modification
+						<xsl:value-of select="/project/@i18n.job.modification" />
 						</td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@modification" />
@@ -281,7 +281,7 @@
 				<xsl:if test="string-length($jobPreviewPicture)!=0">
 					<h2 class="FONTSTYLE">
 						<a name="#JobPreviewPicture">
-							Job Preview Picture
+						<xsl:value-of select="/project/@i18n.job.job.preview.picture" />
 						</a>
 					</h2>
 					<br />
@@ -303,14 +303,14 @@
 				<!-- Job settings -->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#Job settings">Job settings</a>
+					<a name="#Job settings"><xsl:value-of select="/project/@i18n.job.job.setting" /></a>
 				</h2>
 				<table border="0" width="80%" class="FONTSTYLE"
 					cellpadding="0" cellspacing="0" style="border-collapse: collapse"
 					bordercolor="#111111" summary="">
 					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 						<td class="FONTSTYLE">
-							<b>Extra settings</b>
+							<b><xsl:value-of select="/project/@i18n.job.extract.settings" /></b>
 						</td>
 					</tr>
 				</table>
@@ -325,11 +325,11 @@
 					<tr>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Name
+							<xsl:value-of select="/project/@i18n.job.name" />
 						</th>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Value
+							<xsl:value-of select="/project/@i18n.job.value" />
 						</th>
 					</tr>
 					<xsl:for-each select="$extra/jobParameter">
@@ -350,7 +350,7 @@
 					bordercolor="#111111" summary="">
 					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 						<td class="FONTSTYLE">
-							<b>Stats &amp; Logs</b>
+							<b><xsl:value-of select="/project/@i18n.job.stats.logs" /></b>
 						</td>
 					</tr>
 				</table>
@@ -365,11 +365,11 @@
 					<tr>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Name
+							<xsl:value-of select="/project/@i18n.job.name" />
 						</th>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Value
+							<xsl:value-of select="/project/@i18n.job.value" />
 						</th>
 					</tr>
 					<xsl:for-each select="$statsAndLog/jobParameter">
@@ -388,7 +388,7 @@
 				<!-- Context List-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#Context List">Context List</a>
+					<a name="#Context List"><xsl:value-of select="/project/@i18n.job.context.list" /></a>
 				</h2>
 				<xsl:for-each select="$job/contextList/context">
 					<table border="0" width="80%" class="FONTSTYLE"
@@ -397,7 +397,7 @@
 						<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 							<td class="FONTSTYLE">
 								<b>
-									Context :
+									<xsl:value-of select="/project/@i18n.job.context" />
 									<xsl:value-of select="@name" />
 								</b>
 							</td>
@@ -411,27 +411,27 @@
 						<tr>
 							<th width="20%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Name
+								<xsl:value-of select="/project/@i18n.job.name" />
 							</th>
 							<th width="25%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Prompt
+								<xsl:value-of select="/project/@i18n.job.promt" />
 							</th>
 							<th width="20%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Need Prompt?
+								<xsl:value-of select="/project/@i18n.job.need.promt" />
 							</th>
 							<th width="10%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Type
+								<xsl:value-of select="/project/@i18n.job.type" />
 							</th>
 							<th width="15%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Value
+								<xsl:value-of select="/project/@i18n.job.value" />
 							</th>
 							<th width="10%" align="left"
 								class="TABLECOLUMNSTYLE">
-								Source
+								<xsl:value-of select="/project/@i18n.job.source" />
 							</th>
 						</tr>
 						<xsl:for-each
@@ -467,7 +467,7 @@
 				<!-- Component List-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#ComponentList">Component List</a>
+					<a name="#ComponentList"><xsl:value-of select="/project/@i18n.job.component.list" /></a>
 				</h2>
 				<table width="60%" border="1" cellpadding="0"
 					cellspacing="0"
@@ -476,11 +476,11 @@
 					<tr>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Name
+							<xsl:value-of select="/project/@i18n.job.component.name" />
 						</th>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component Type
+							<xsl:value-of select="/project/@i18n.job.component.type" />
 						</th>
 					</tr>
 					<xsl:for-each
@@ -502,7 +502,7 @@
 				<!--HR-->
 				<h2 class="FONTSTYLE">
 					<a name="#ComponentsDescription">
-						Components Description
+					<xsl:value-of select="/project/@i18n.job.components.description" />
 					</a>
 				</h2>
 				<xsl:for-each
@@ -514,7 +514,7 @@
 						<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 							<td class="FONTSTYLE">
 								<b>
-									Component:&#160;&#160;
+									<xsl:value-of select="/project/@i18n.job.component" />&#160;&#160;
 									<xsl:value-of
 										select="componentType" />
 								</b>
@@ -533,7 +533,7 @@
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
 								width="15%">
-								UNIQUE NAME
+								<xsl:value-of select="/project/@i18n.job.unique.name" />
 							</td>
 							<td class="FONTSTYLE" align="center"
 								width="15%">
@@ -541,7 +541,7 @@
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
 								width="15%">
-								INPUT(S)
+								<xsl:value-of select="/project/@i18n.job.input" />
 							</td>
 							<td class="FONTSTYLE" align="center">
 								<xsl:for-each select="input">
@@ -569,14 +569,14 @@
 						<tr>
 							<td align="center"
 								class="TABLECOLUMNSTYLE">
-								LABEL
+								<xsl:value-of select="/project/@i18n.job.label" />
 							</td>
 							<td align="center">
 								<xsl:value-of select="@label" />
 							</td>
 							<td align="center"
 								class="TABLECOLUMNSTYLE">
-								OUTPUT(S)
+								<xsl:value-of select="/project/@i18n.job.output" />
 							</td>
 							<td class="FONTSTYLE" align="center">
 								<xsl:for-each select="output">
@@ -613,7 +613,7 @@
 					</xsl:if>
 					<br />
 					
-					<b class="FONTSTYLE">Component Parameters:</b>
+					<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.component.parameters" /></b>
 					<br />
 					<table class="cols" width="90%" border="1"
 						cellpadding="0" cellspacing="0"
@@ -622,11 +622,11 @@
 						<tr>
 							<th align="left" width="30%"
 								class="TABLECOLUMNSTYLE">
-								Properties
+								<xsl:value-of select="/project/@i18n.job.properties" />
 							</th>
 							<th align="left" width="70%"
 								class="TABLECOLUMNSTYLE">
-								Values
+								<xsl:value-of select="/project/@i18n.job.values" />
 							</th>
 						</tr>
 						<xsl:for-each select="parameters/column">
@@ -645,7 +645,7 @@
 					<br />
 					<xsl:for-each select="schemas/schema">
 						<b class="FONTSTYLE">
-							Schema for
+							<xsl:value-of select="/project/@i18n.job.schema.for" />
 							<xsl:value-of select="@name" />
 							:
 						</b>
@@ -656,31 +656,31 @@
 							<tr class="profont">
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Column
+									<xsl:value-of select="/project/@i18n.job.column" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Key
+									<xsl:value-of select="/project/@i18n.job.key" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Type
+									<xsl:value-of select="/project/@i18n.job.type" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Length
+									<xsl:value-of select="/project/@i18n.job.length" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Precision
+									<xsl:value-of select="/project/@i18n.job.precision" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Nullable
+									<xsl:value-of select="/project/@i18n.job.nullable" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="16%">
-									Comment
+									<xsl:value-of select="/project/@i18n.job.comment" />
 								</th>
 							</tr>
 							<xsl:for-each select="column">
@@ -713,9 +713,9 @@
 						</table>
 					</xsl:for-each>
 					<br />
-					<b class="FONTSTYLE">Original Function Parameters:</b>
+					<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.original.function.parameters" /></b>
 					<br/>
-					<xsl:comment><xsl:value-of select="@uniqueName" />ended</xsl:comment>
+					<xsl:comment><xsl:value-of select="@uniqueName" /><xsl:value-of select="/project/@i18n.job.ended" /></xsl:comment>
 				</xsl:for-each>
 				<xsl:for-each
 					select="$job/externalNodeComponents/component">
@@ -726,7 +726,7 @@
 						<tr bgcolor="#E6E6E6">
 							<td class="FONTSTYLE">
 								<b>
-									Component:&#160;&#160;
+									<xsl:value-of select="/project/@i18n.job.component" />&#160;&#160;
 									<xsl:value-of
 										select="componentType" />
 								</b>
@@ -745,7 +745,7 @@
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
 								width="15%">
-								UNIQUE NAME
+								<xsl:value-of select="/project/@i18n.job.unique.name" />
 							</td>
 							<td class="FONTSTYLE" align="center"
 								width="15%">
@@ -753,7 +753,7 @@
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
 								width="15%">
-								INPUT(S)
+								<xsl:value-of select="/project/@i18n.job.input" />
 							</td>
 							<td class="FONTSTYLE" align="center">
 								<xsl:for-each select="input">
@@ -781,14 +781,14 @@
 						<tr>
 							<td align="center"
 								class="TABLECOLUMNSTYLE">
-								LABEL
+								<xsl:value-of select="/project/@i18n.job.label" />
 							</td>
 							<td align="center">
 								<xsl:value-of select="@label" />
 							</td>
 							<td align="center"
 								class="TABLECOLUMNSTYLE">
-								OUTPUT(S)
+								<xsl:value-of select="/project/@i18n.job.output" />
 							</td>
 							<td class="FONTSTYLE" align="center">
 								<xsl:for-each select="output">
@@ -825,7 +825,7 @@
 					</xsl:if>
 					<br />
 					<xsl:for-each select="parameters">
-					<b class="FONTSTYLE">Component Parameters:</b>
+					<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.component.parameters" /></b>
 					<br />
 					<table width="90%" class="FONTSTYLE" border="1"
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
@@ -833,11 +833,11 @@
 						<tr>
 							<th align="center" width="30%"
 								class="TABLECOLUMNSTYLE">
-								Properties
+								<xsl:value-of select="/project/@i18n.job.properties" />
 							</th>
 							<th align="left" width="70%"
 								class="TABLECOLUMNSTYLE">
-								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values
+								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="/project/@i18n.job.values" />
 							</th>
 						</tr>
 						<xsl:for-each select="parameters/column">
@@ -858,7 +858,7 @@
 					<br />
 					<xsl:for-each select="schemas/schema">
 						<b class="FONTSTYLE">
-							Schema for
+							<xsl:value-of select="/project/@i18n.job.schema.for" />
 							<xsl:value-of select="@name" />
 							:
 						</b>
@@ -869,31 +869,31 @@
 							<tr class="profont">
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Column
+									<xsl:value-of select="/project/@i18n.job.column" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Key
+									<xsl:value-of select="/project/@i18n.job.key" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Type
+									<xsl:value-of select="/project/@i18n.job.type" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Length
+									<xsl:value-of select="/project/@i18n.job.length" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Precision
+									<xsl:value-of select="/project/@i18n.job.precision" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
-									Nullable
+									<xsl:value-of select="/project/@i18n.job.nullable" />
 								</th>
 								<th class="TABLECOLUMNSTYLE"
 									width="16%">
-									Comment
+									<xsl:value-of select="/project/@i18n.job.comment" />
 								</th>
 							</tr>
 							<xsl:for-each select="column">
@@ -926,14 +926,14 @@
 						</table>
 					</xsl:for-each>
 					<br />
-					<xsl:comment><xsl:value-of select="@uniqueName" />ended</xsl:comment>
+					<xsl:comment><xsl:value-of select="@uniqueName" /><xsl:value-of select="/project/@i18n.job.ended" /></xsl:comment>
 					<xsl:text /><!--before: $job/externalNodeComponents/component/@uniqueName -->
 				</xsl:for-each>
 					<!-- Source Code-->
 				<!--HR-->
 				<xsl:if test="$code">
 				<h2 class="FONTSTYLE">
-					<a name="#SourceCode">Source Code</a>
+					<a name="#SourceCode"><xsl:value-of select="/project/@i18n.job.source.code" /></a>
 				</h2>
 				<table width="90%" border="1" cellpadding="0"
 					cellspacing="0"
@@ -942,7 +942,7 @@
 					<tr>
 						<th width="50%" align="center"
 							class="TABLECOLUMNSTYLE">
-							content
+							<xsl:value-of select="/project/@i18n.job.content" />
 						</th>
 					</tr>
 					<tr>

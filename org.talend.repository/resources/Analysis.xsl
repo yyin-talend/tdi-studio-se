@@ -8,7 +8,7 @@
 			select="'abcdefghijklmnopqrstuvwxyz'" />
 		<html>
 			<head>
-				<title>Generated documentation</title>
+				<title><xsl:value-of select="/project/@i18n.analysis.generated.documetation" /></title>
 				<style type="text/css">
 					@page { size: letter; } 
 					SPAN.special { font:12pt black; } 
@@ -66,7 +66,7 @@
 					<tr valign="top">
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							PROJECT NAME
+							<xsl:value-of select="/project/@i18n.analysis.project.name" />
 						</td>
 						<td align="center" width="25%"
 							class="FONTSTYLE">
@@ -74,7 +74,7 @@
 						</td>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							GENERATION DATE
+							<xsl:value-of select="/project/@i18n.analysis.generated.date" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of
@@ -84,7 +84,7 @@
 					<tr>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
-							AUTHOR
+							<xsl:value-of select="/project/@i18n.analysis.author" />
 						</td>
 						<td align="center" width="25%">
 							<xsl:value-of select="/project/@author" />
@@ -100,18 +100,18 @@
 						</td>
 					</tr>
 				</table>
-				<h2 class="FONTSTYLE">Summary</h2>
+				<h2 class="FONTSTYLE"><xsl:value-of select="/project/@i18n.analysis.summary" /></h2>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#ProjectDescription">
-							Project Description
+							<xsl:value-of select="/project/@i18n.analysis.project.description" />
 						</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#AnalysisPreviewPicture">
-							Analysis Preview Picture
+							<xsl:value-of select="/project/@i18n.analysis.analysis.preview.picture" />
 						</a>
 					</b>
 				</div>
@@ -122,7 +122,7 @@
 				<!--HR-->
 				<h2 class="FONTSTYLE">
 					<a name="#ProjectDescription">
-						Project Description
+						<xsl:value-of select="/project/@i18n.analysis.project.description" />
 					</a>
 				</h2>
 				<br />
@@ -133,27 +133,27 @@
 					<tr>
 						<th align="left" width="30%"
 							class="TABLECOLUMNSTYLE">
-							Properties
+							<xsl:value-of select="/project/@i18n.analysis.properties" />
 						</th>
 						<th align="left" class="TABLECOLUMNSTYLE">
-							Values
+							<xsl:value-of select="/project/@i18n.analysis.values" />
 						</th>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Name</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.analysis.name" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">Language</td>
+						<td class="FONTSTYLE" align="left"><xsl:value-of select="/project/@i18n.analysis.language" /></td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@language" />
 						</td>
 					</tr>
 					<tr>
 						<td class="FONTSTYLE" align="left">
-							Description
+							<xsl:value-of select="/project/@i18n.analysis.description" />
 						</td>
 						<td class="FONTSTYLE" align="left">
 							<pre>
@@ -172,7 +172,7 @@
 				<xsl:if test="string-length($analysisPreviewPicture)!=0">
 					<h2 class="FONTSTYLE">
 						<a name="#AnalysisPreviewPicture">
-							Analysis Preview Picture
+							<xsl:value-of select="/project/@i18n.analysis.analysis.preview.picture" />
 						</a>
 					</h2>
 					<br />
