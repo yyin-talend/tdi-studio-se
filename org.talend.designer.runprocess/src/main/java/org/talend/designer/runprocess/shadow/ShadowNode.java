@@ -137,7 +137,7 @@ public abstract class ShadowNode extends AbstractNode {
             MetadataColumn col = new MetadataColumn();
             col.setLabel("row" + i); //$NON-NLS-1$
             col.setTalendType("id_String"); //$NON-NLS-1$
-            col.setType("String"); //$NON-NLS-1$
+            col.setSourceType("String"); //$NON-NLS-1$
             columns.add(col);
         }
         metadata.setListColumns(columns);
