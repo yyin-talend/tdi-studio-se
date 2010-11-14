@@ -32,7 +32,7 @@ public class CLASS {
             columnName = column.getOriginalDbColumnName();
             javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
             talendType = column.getTalendType();
-            dbType = column.getType();
+            dbType = column.getSourceType();
             isNullable = column.isNullable();
             isKey = column.isKey();
         }
@@ -1184,10 +1184,10 @@ public class CLASS {
                 }
                 createTableSQL.append(getLProtectedChar() + columnName + getRProtectedChar() + " ");
                 String dataType = null;
-                if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                if(metadataColumn.getSourceType() == null || metadataColumn.getSourceType().trim().length() == 0) {
                     dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
                 } else {
-                    dataType = metadataColumn.getType();
+                    dataType = metadataColumn.getSourceType();
                 }
                 createTableSQL.append(dataType);
                 Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
