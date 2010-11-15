@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -696,9 +695,7 @@ public class DeleteAction extends AContextualAction {
                         for (IRepositoryNode curNode : currentJobNode.getChildren()) {
                             deleteElements(factory, deleteActionCache, (RepositoryNode) curNode, confirm);
                         }
-                        factory.deleteFolder(currentJobNode.getContentType(), new Path(currentJobNode.getObject().getProperty()
-                                .getItem().getState().getPath()
-                                + "/" + currentJobNode.getObject().getProperty().getLabel()));
+                        factory.deleteFolder(currentJobNode.getContentType(), RepositoryNodeUtilities.getPath(currentJobNode));
                     } else {
                         factory.deleteObjectPhysical(objToDelete);
                         ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
