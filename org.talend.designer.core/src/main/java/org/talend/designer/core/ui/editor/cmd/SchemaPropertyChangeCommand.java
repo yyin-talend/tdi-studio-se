@@ -42,7 +42,7 @@ public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
     @Override
     public void execute() {
         nodeMetadataTable.setListColumns(repositoryMetadataTable.getListColumns());
-        nodeMetadataTable.setDescription(repositoryMetadataTable.getDescription());
+        nodeMetadataTable.setComment(repositoryMetadataTable.getComment());
         super.execute();
         ((Process) node.getProcess()).checkProcess();
     }
@@ -50,7 +50,7 @@ public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
     @Override
     public void undo() {
         nodeMetadataTable.setListColumns(oldNodeMetadataTable.getListColumns());
-        nodeMetadataTable.setDescription(oldNodeMetadataTable.getDescription());
+        nodeMetadataTable.setComment(oldNodeMetadataTable.getComment());
         super.undo();
         ((Process) node.getProcess()).checkProcess();
     }

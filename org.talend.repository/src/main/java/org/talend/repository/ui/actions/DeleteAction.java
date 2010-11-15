@@ -807,7 +807,7 @@ public class DeleteAction extends AContextualAction {
                             visible = false;
                         }
                     } else {
-                        switch (repObj.getType()) {
+                        switch (repObj.getRepositoryObjectType()) {
                         case METADATA_CON_TABLE:
                         case METADATA_CON_QUERY:
                             visible = false;

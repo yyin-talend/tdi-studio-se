@@ -55,7 +55,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.BasicJobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.RoutineItem;
@@ -194,7 +194,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void selectInDesigner(JobInfo jobInfo, String nodeName) {
+    private void selectInDesigner(BasicJobInfo jobInfo, String nodeName) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
@@ -414,7 +414,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             return;
         }
         IRepositoryObject object = (IRepositoryObject) evt.getNewValue();
-        if (object.getType() != ERepositoryObjectType.ROUTINES) {
+        if (object.getRepositoryObjectType() != ERepositoryObjectType.ROUTINES) {
             return;
         }
         if (evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())

@@ -160,7 +160,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             Object o = sel.getFirstElement();
             if ((o instanceof RepositoryNode)) {
                 RepositoryNode node = (RepositoryNode) o;
-                if (node.getObject() != null && node.getObject().getType().equals(ERepositoryObjectType.PROCESS)) {
+                if (node.getObject() != null && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.PROCESS)) {
                     action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getLabel()); //$NON-NLS-1$
                     return;
                 }
@@ -232,7 +232,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             Object o = sel.getFirstElement();
             if ((o instanceof RepositoryNode)) {
                 RepositoryNode node = (RepositoryNode) o;
-                if (node.getObject() != null && node.getObject().getType().equals(ERepositoryObjectType.PROCESS)) {
+                if (node.getObject() != null && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.PROCESS)) {
                     JobLaunchShortcutManager.run(selection);
                     return;
                 }

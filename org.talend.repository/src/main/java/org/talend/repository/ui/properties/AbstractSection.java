@@ -90,7 +90,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
     }
 
     protected ERepositoryObjectType getType() {
-        return repositoryObject.getType();
+        return repositoryObject.getRepositoryObjectType();
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
             return;
         }
         manageLock();
-        ERepositoryObjectType type = repositoryObject.getType();
+        ERepositoryObjectType type = repositoryObject.getRepositoryObjectType();
         showControls(type != ERepositoryObjectType.METADATA_CON_TABLE);
     }
 

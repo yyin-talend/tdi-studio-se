@@ -69,7 +69,7 @@ public class RepositoryHelper {
                 if (class1 != null) {
                     result = (TalendItem) BusinessFactory.eINSTANCE.create(class1);
                     result.setRepository(repository);
-                    if (ERepositoryObjectType.METADATA_CON_TABLE.equals(repositoryObject.getType())) {
+                    if (ERepositoryObjectType.METADATA_CON_TABLE.equals(repositoryObject.getRepositoryObjectType())) {
                         Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
                         Item item = property.getItem();
                         if (item instanceof SAPConnectionItem) {
@@ -81,10 +81,10 @@ public class RepositoryHelper {
                         } else {
                             result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
                         }
-                    } else if (ERepositoryObjectType.METADATA_CON_QUERY.equals(repositoryObject.getType())) {
+                    } else if (ERepositoryObjectType.METADATA_CON_QUERY.equals(repositoryObject.getRepositoryObjectType())) {
                         Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
                         result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
-                    } else if (ERepositoryObjectType.METADATA_SAP_FUNCTION.equals(repositoryObject.getType())) {
+                    } else if (ERepositoryObjectType.METADATA_SAP_FUNCTION.equals(repositoryObject.getRepositoryObjectType())) {
                         Property property = ((SAPFunctionRepositoryObject) repositoryObject).getProperty();
                         result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
                     } else {

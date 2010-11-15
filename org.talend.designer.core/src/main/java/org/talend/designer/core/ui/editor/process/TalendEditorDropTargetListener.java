@@ -103,7 +103,6 @@ import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
@@ -140,6 +139,7 @@ import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
@@ -1006,8 +1006,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
                 IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
 
-                RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-                Query query = (Query) object.getAdapter(Query.class);
+                QueryRepositoryObject object = (QueryRepositoryObject) selectedNode.getObject();
+                Query query = object.getQuery();
                 String value = originalConnectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
                 if (queryParam != null) {
                     RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName()
@@ -1109,8 +1109,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
 
-            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
+            IRepositoryViewObject object = selectedNode.getObject();
+            MetadataTable table = null;
+            if (object instanceof MetadataTableRepositoryObject) {
+                table = ((MetadataTableRepositoryObject) object).getTable();
+            } else if (object instanceof SAPFunctionRepositoryObject) {
+                table = (MetadataTable) ((SAPFunctionRepositoryObject) object).getAdapter(MetadataTable.class);
+            }
             String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
             IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
             IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
@@ -1184,8 +1189,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     private Command getChangeQueryCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
-            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            Query query = (Query) object.getAdapter(Query.class);
+            QueryRepositoryObject object = (QueryRepositoryObject) selectedNode.getObject();
+            Query query = object.getQuery();
             String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
             IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
             if (queryParam != null) {

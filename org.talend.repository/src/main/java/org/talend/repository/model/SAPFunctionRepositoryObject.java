@@ -45,7 +45,6 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
      * 
      * @see org.talend.core.model.repository.RepositoryObject#getAdapter(java.lang .Class)
      */
-    @Override
     public Object getAdapter(Class adapter) {
         if (adapter == org.talend.core.model.metadata.builder.connection.MetadataTable.class) {
             return functionUnit.getMetadataTable();
@@ -63,7 +62,7 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
      * @see org.talend.core.model.repository.IRepositoryObject#getType()
      */
     @Override
-    public ERepositoryObjectType getType() {
+    public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.METADATA_SAP_FUNCTION;
     }
 

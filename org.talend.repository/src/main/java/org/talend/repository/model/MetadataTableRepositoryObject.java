@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
@@ -25,8 +27,11 @@ import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import orgomg.cwm.objectmodel.core.Package;
 
 /**
@@ -38,36 +43,20 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
 
     private org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-    private Property property;
-
     public MetadataTableRepositoryObject(IRepositoryViewObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable table) {
         this.repObj = repObj;
         this.table = table;
     }
 
-    @Override
-    public Object getAdapter(Class adapter) {
-        if (adapter == org.talend.core.model.metadata.builder.connection.MetadataTable.class) {
-            return table;
-        }
-        return null;
-    }
-
-    @Override
     public Property getProperty() {
-        property = repObj.getProperty();
+        Property property = repObj.getProperty();
         // update table
         updataTable(property);
         return property;
     }
 
     // @Override
-    // public void setProperty(Property property) {
-    // repObj.setProperty(property);
-    // }
-
-    @Override
     public String getVersion() {
         return repObj.getVersion();
     }
@@ -108,6 +97,7 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
             }
 
         }
+        Property property = getProperty();
         // remove mdm schema
         if (property == null) {
             return;
@@ -165,6 +155,66 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
             }
 
         }
+    }
+
+    public User getAuthor() {
+        return repObj.getAuthor();
+    }
+
+    public List<IRepositoryViewObject> getChildren() {
+        return repObj.getChildren();
+    }
+
+    public Date getCreationDate() {
+        return repObj.getCreationDate();
+    }
+
+    public String getDescription() {
+        return repObj.getDescription();
+    }
+
+    public ERepositoryStatus getInformationStatus() {
+        return repObj.getInformationStatus();
+    }
+
+    public Date getModificationDate() {
+        return repObj.getModificationDate();
+    }
+
+    public String getPath() {
+        return repObj.getPath();
+    }
+
+    public String getProjectLabel() {
+        return repObj.getProjectLabel();
+    }
+
+    public String getPurpose() {
+        return repObj.getPurpose();
+    }
+
+    public IRepositoryNode getRepositoryNode() {
+        return repObj.getRepositoryNode();
+    }
+
+    public ERepositoryStatus getRepositoryStatus() {
+        return repObj.getRepositoryStatus();
+    }
+
+    public String getStatusCode() {
+        return repObj.getStatusCode();
+    }
+
+    public ERepositoryObjectType getRepositoryObjectType() {
+        return ERepositoryObjectType.METADATA_CON_TABLE;
+    }
+
+    public boolean isDeleted() {
+        return SubItemHelper.isDeleted(table);
+    }
+
+    public void setRepositoryNode(IRepositoryNode node) {
+        repObj.setRepositoryNode(node);
     }
 
 }

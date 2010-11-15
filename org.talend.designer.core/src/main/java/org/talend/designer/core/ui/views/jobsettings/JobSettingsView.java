@@ -431,8 +431,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             if (service != null
                     && service.isProjectInSvnMode()
-                    && (((IRepositoryViewObject) obj).getType() == ERepositoryObjectType.PROCESS || ((IRepositoryViewObject) obj)
-                            .getType() == ERepositoryObjectType.JOBLET))
+                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.PROCESS || ((IRepositoryViewObject) obj)
+                            .getRepositoryObjectType() == ERepositoryObjectType.JOBLET))
                 category.add(EComponentCategory.SVNHISTORY);
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
@@ -517,7 +517,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     IRepositoryViewObject object = retrieveBusiness(activeEditor);
                     if (object != null) {
                         String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
-                        Object type = object.getType();
+                        Object type = object.getRepositoryObjectType();
                         setElement(activeEditor, type + SEPARATOR + title, null);
                     }
                     return;
@@ -531,7 +531,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             IRepositoryViewObject object = retrieveBusiness(activeEditor);
             if (object != null) {
                 String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
-                Object type = object.getType();
+                Object type = object.getRepositoryObjectType();
                 setElement(obj, type + SEPARATOR + title, null);
             }
             return;

@@ -258,7 +258,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * 
      * @see org.talend.core.model.repository.IRepositoryObject#getType()
      */
-    public ERepositoryObjectType getType() {
+    public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.PROCESS;
     }
 

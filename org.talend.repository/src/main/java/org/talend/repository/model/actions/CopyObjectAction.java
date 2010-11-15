@@ -93,13 +93,13 @@ public class CopyObjectAction {
         // }
 
         // Cannot copy system routines:
-        if (objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
+        if (objectToCopy.getRepositoryObjectType() == ERepositoryObjectType.ROUTINES) {
             Property property = objectToCopy.getProperty();
             RoutineItem item = (RoutineItem) property.getItem();
             return !item.isBuiltIn();
         }
         // Cannot copy system sql pattern:
-        if (objectToCopy.getType() == ERepositoryObjectType.SQLPATTERNS) {
+        if (objectToCopy.getRepositoryObjectType() == ERepositoryObjectType.SQLPATTERNS) {
             Property property = objectToCopy.getProperty();
             SQLPatternItem item = (SQLPatternItem) property.getItem();
             return !item.isSystem();
@@ -121,7 +121,8 @@ public class CopyObjectAction {
         // for bug 0005454: Copy paste with keyboard in the repository view doesn't work.
         if (targetNode.getType() == ENodeType.REPOSITORY_ELEMENT || targetNode.getType() == ENodeType.SIMPLE_FOLDER
                 || targetNode.getType() == ENodeType.SYSTEM_FOLDER) {
-            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy.getType();
+            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy
+                    .getRepositoryObjectType();
         }
         return false;
     }

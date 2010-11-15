@@ -33,7 +33,6 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
-import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -742,7 +741,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         // this can appear temporary when another user has deleted a folder
                         break;
                     }
-                    if (existingFolder.getContentType().equals(folder.getType())
+                    if (existingFolder.getContentType().equals(folder.getRepositoryObjectType())
                             && existingFolder.getProperties(EProperties.LABEL).equals(folder.getLabel())) {
                         folderNode = existingFolder;
                         break;
@@ -1446,7 +1445,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode createMetatableNode(RepositoryNode node, IRepositoryViewObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table,
             ERepositoryObjectType repositoryObjectType) {
-        MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
+        MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(repObj, table);
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, repositoryObjectType);
@@ -1464,7 +1463,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     private RepositoryNode createQueryNode(RepositoryNode node, IRepositoryViewObject repObj, Query query) {
         QueryRepositoryObject modelObj = new QueryRepositoryObject(repObj, query);
-        modelObj.setLabel(query.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, query.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_QUERY);

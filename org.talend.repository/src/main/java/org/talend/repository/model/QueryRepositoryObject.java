@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -22,6 +24,8 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 
 /**
@@ -33,37 +37,25 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
 
     private Query query;
 
-    @Override
-    public Object getAdapter(Class adapter) {
-        if (adapter == Query.class) {
-            return query;
-        }
-        return null;
-    }
-
     public QueryRepositoryObject(IRepositoryViewObject repObj, Query table) {
         this.repObj = repObj;
         this.query = table;
     }
 
-    @Override
     public Property getProperty() {
         Property property = repObj.getProperty();
-        updataQuery(property);
+        updateQuery(property);
         return property;
     }
 
-    @Override
     public String getVersion() {
         return repObj.getVersion();
     }
 
-    @Override
     public String getLabel() {
         return query.getLabel();
     }
 
-    @Override
     public String getId() {
         return query.getId();
     }
@@ -80,7 +72,7 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
         query.getQueries().getQuery().remove(query);
     }
 
-    private void updataQuery(Property property) {
+    private void updateQuery(Property property) {
         if (property == null) {
             return;
         }
@@ -102,6 +94,66 @@ public class QueryRepositoryObject extends org.talend.core.model.metadata.Query 
             }
         }
 
+    }
+
+    public User getAuthor() {
+        return repObj.getAuthor();
+    }
+
+    public List<IRepositoryViewObject> getChildren() {
+        return repObj.getChildren();
+    }
+
+    public Date getCreationDate() {
+        return repObj.getCreationDate();
+    }
+
+    public String getDescription() {
+        return repObj.getDescription();
+    }
+
+    public ERepositoryStatus getInformationStatus() {
+        return repObj.getInformationStatus();
+    }
+
+    public Date getModificationDate() {
+        return repObj.getModificationDate();
+    }
+
+    public String getPath() {
+        return repObj.getPath();
+    }
+
+    public String getProjectLabel() {
+        return repObj.getProjectLabel();
+    }
+
+    public String getPurpose() {
+        return repObj.getPurpose();
+    }
+
+    public IRepositoryNode getRepositoryNode() {
+        return repObj.getRepositoryNode();
+    }
+
+    public ERepositoryStatus getRepositoryStatus() {
+        return repObj.getRepositoryStatus();
+    }
+
+    public String getStatusCode() {
+        return repObj.getStatusCode();
+    }
+
+    public ERepositoryObjectType getRepositoryObjectType() {
+        return ERepositoryObjectType.METADATA_CON_QUERY;
+    }
+
+    public boolean isDeleted() {
+        return repObj.isDeleted();
+    }
+
+    public void setRepositoryNode(IRepositoryNode node) {
+        repObj.setRepositoryNode(node);
     }
 
 }

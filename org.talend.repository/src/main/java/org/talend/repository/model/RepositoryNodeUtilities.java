@@ -221,7 +221,7 @@ public class RepositoryNodeUtilities {
                 RepositoryNode node = (RepositoryNode) childNode;
                 if (isRepositoryFolder(node) || node.getType() == ENodeType.REFERENCED_PROJECT) {
                     folderChild.add(node);
-                } else if (node.getId().equals(curNode.getId()) && node.getObjectType() == curNode.getType()) {
+                } else if (node.getId().equals(curNode.getId()) && node.getObjectType() == curNode.getRepositoryObjectType()) {
                     return node;
                 }
 
@@ -262,7 +262,8 @@ public class RepositoryNodeUtilities {
                         folderChild.add(childNode);
                     }
 
-                } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
+                } else if (childNode.getId().equals(curNode.getId())
+                        && childNode.getObjectType() == curNode.getRepositoryObjectType()) {
                     return (RepositoryNode) childNode;
                 }
 
@@ -306,7 +307,7 @@ public class RepositoryNodeUtilities {
             return;
         }
         final ERepositoryObjectType rootContextType = rootNode.getContentType();
-        final ERepositoryObjectType curType = curNode.getType();
+        final ERepositoryObjectType curType = curNode.getRepositoryObjectType();
 
         // for referenced project
         if (rootContextType == ERepositoryObjectType.REFERENCED_PROJECTS || rootNode.getType() == ENodeType.REFERENCED_PROJECT) {
@@ -469,7 +470,7 @@ public class RepositoryNodeUtilities {
         try {
             final RepositoryNode realNode = getRepositoryNode(repositoryID);
             if (realNode.getObject() != null) {
-                if (ERepositoryObjectType.METADATA_SAPCONNECTIONS.equals(realNode.getObject().getType())) {
+                if (ERepositoryObjectType.METADATA_SAPCONNECTIONS.equals(realNode.getObject().getRepositoryObjectType())) {
                     for (IRepositoryNode node : realNode.getChildren()) {
                         if (Messages.getString("RepositoryContentProvider.repositoryLabel.sapFunction").equals(node.getLabel())) { //$NON-NLS-1$
                             for (IRepositoryNode function : node.getChildren()) {
@@ -490,7 +491,7 @@ public class RepositoryNodeUtilities {
 
     private static RepositoryNode getSchemeFromConnection(RepositoryNode connection, String tableName,
             ERepositoryObjectType repType) {
-        ERepositoryObjectType type = connection.getObject().getType();
+        ERepositoryObjectType type = connection.getObject().getRepositoryObjectType();
         if (repType == ERepositoryObjectType.METADATA_CON_QUERY) {
             for (IRepositoryNode node : connection.getChildren()) {
                 if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(node.getLabel())) { //$NON-NLS-1$

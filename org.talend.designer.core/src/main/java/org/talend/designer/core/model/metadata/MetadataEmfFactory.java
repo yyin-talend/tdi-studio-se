@@ -55,7 +55,7 @@ public class MetadataEmfFactory {
         ColumnType colType;
         EList listColType;
 
-        metadataType.setComment(metadataTable.getDescription());
+        metadataType.setComment(metadataTable.getComment());
         metadataType.setName(metadataTable.getTableName());
         metadataType.setLabel(metadataTable.getLabel());
         metadataType.setConnector(metadataTable.getAttachedConnector());
@@ -103,7 +103,7 @@ public class MetadataEmfFactory {
         EList listColType;
         List<IMetadataColumn> listMetadataColumn;
 
-        metadataTable.setDescription(metadataType.getComment());
+        metadataTable.setComment(metadataType.getComment());
         metadataTable.setTableName(metadataType.getName());
         metadataTable.setLabel(metadataType.getLabel());
         if (metadataType.getConnector() != null) {

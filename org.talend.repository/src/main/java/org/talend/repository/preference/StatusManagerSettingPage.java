@@ -721,7 +721,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         // TODO Auto-generated catch block
                     }
                     object.getProperty().setOldStatusCode(statusHelper.getStatusCode(object.getStatusCode()));
-                    ERepositoryObjectType itemType = object.getType();
+                    ERepositoryObjectType itemType = object.getRepositoryObjectType();
                     tableItem.setImage(getItemsImage(CoreImageProvider.getIcon(itemType)));
                     tableItem.setText(object.getLabel());
                     // old version

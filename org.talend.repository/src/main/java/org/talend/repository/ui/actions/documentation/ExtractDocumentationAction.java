@@ -71,7 +71,7 @@ public class ExtractDocumentationAction extends AContextualAction {
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
         if (canWork) {
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION;
+                    && node.getObject().getRepositoryObjectType() == ERepositoryObjectType.DOCUMENTATION;
         }
         RepositoryNode parent = null;
         if (node != null) {

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
 import org.talend.commons.exception.ExceptionHandler;
@@ -1580,6 +1581,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 Set<String> neededVars = ConnectionContextHelper.retrieveContextVar(parameters, connection, category);
                 if (neededVars != null && !neededVars.isEmpty()) {
                     ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
+                    EcoreUtil.resolveAll(contextItem);
                     if (contextItem != null) {
                         // find added variables
                         Set<String> addedVars = ConnectionContextHelper.checkAndAddContextVariables(contextItem, neededVars,

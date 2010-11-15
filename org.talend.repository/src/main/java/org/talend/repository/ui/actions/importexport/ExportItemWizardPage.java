@@ -974,7 +974,7 @@ class ExportItemWizardPage extends WizardPage {
     private void collectNodes(Map<String, Item> items, RepositoryNode repositoryNode) {
         IRepositoryViewObject repositoryObject = repositoryNode.getObject();
         if (repositoryObject != null) {
-            if (repositoryObject.getType().isResourceItem()) {
+            if (repositoryObject.getRepositoryObjectType().isResourceItem()) {
                 Item item = repositoryObject.getProperty().getItem();
                 items.put(item.getProperty().getId(), item);
             }

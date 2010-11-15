@@ -162,7 +162,7 @@ public class ConnectionReconnectCommand extends Command {
             for (INodeConnector connector : newNode.getListConnector()) {
                 if (connector.getBaseSchema().equals(baseConnector)) {
                     IMetadataTable meta = newNode.getMetadataFromConnector(connector.getName());
-                    meta.setDescription(newSchema.getDescription());
+                    meta.setComment(newSchema.getComment());
                     MetadataTool.copyTable(newSchema, meta);
                 }
             }

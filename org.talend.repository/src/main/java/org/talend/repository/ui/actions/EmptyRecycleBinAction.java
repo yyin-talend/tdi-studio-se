@@ -166,8 +166,8 @@ public class EmptyRecycleBinAction extends AContextualAction {
                     page.closeEditor(editors.getEditor(false), false);
                 }
             }
-            if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
-                    && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC) {
+            if (objToDelete.getRepositoryObjectType() != ERepositoryObjectType.JOB_DOC
+                    && objToDelete.getRepositoryObjectType() != ERepositoryObjectType.JOBLET_DOC) {
                 if (currentNode.getType() == ENodeType.SIMPLE_FOLDER) {
                     for (IRepositoryNode curNode : currentNode.getChildren()) {
                         deleteElements(factory, (RepositoryNode) curNode);

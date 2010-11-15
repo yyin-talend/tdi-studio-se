@@ -222,7 +222,7 @@ public class DuplicateAction extends AContextualAction {
         if (itemName.length() == 0) {
             return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameEmptyError"); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.getPattern(((RepositoryNode) selectionInClipboard.toArray()[0])
-                .getObject().getType()), itemName)) {
+                .getObject().getRepositoryObjectType()), itemName)) {
             /*
              * maybe Messages.getString("PropertiesWizardPage.KeywordsError")
              */

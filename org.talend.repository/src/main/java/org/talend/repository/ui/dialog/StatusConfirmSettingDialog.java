@@ -99,7 +99,7 @@ public class StatusConfirmSettingDialog extends Dialog {
             public Image getColumnImage(Object element, int columnIndex) {
                 RepositoryObject object = (RepositoryObject) element;
                 if (columnIndex == 0) {
-                    ERepositoryObjectType itemType = object.getType();
+                    ERepositoryObjectType itemType = object.getRepositoryObjectType();
                     return getItemsImage(CoreImageProvider.getIcon(itemType));
                 }
                 return null;

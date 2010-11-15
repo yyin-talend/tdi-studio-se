@@ -100,7 +100,7 @@ public class ElementHelper {
                             IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
                                     talendItem.getId());
                             if (obj != null) {
-                                ERepositoryObjectType type = obj.getType();
+                                ERepositoryObjectType type = obj.getRepositoryObjectType();
                                 Item item = obj.getProperty().getItem();
                                 if (item instanceof JobletProcessItem) {
                                     JobletProcessItem jobletItem = (JobletProcessItem) item;

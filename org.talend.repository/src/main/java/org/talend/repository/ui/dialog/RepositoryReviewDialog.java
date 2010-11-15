@@ -1235,7 +1235,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                 }
 
                 if (ERepositoryCategoryType.CDC.getName().equals(repositoryType) && (node.getObject() != null)) { //$NON-NLS-1$
-                    if (node.getObject().getType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                    if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
 
@@ -1308,7 +1308,7 @@ class SAPFunctionProcessor implements ITypeProcessor {
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getObject().getType() == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+        if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
             return true;
         }
         return false;

@@ -126,7 +126,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     .getEmfProject();
             String projectLabel = object.getProjectLabel();
 
-            switch (object.getType()) {
+            switch (object.getRepositoryObjectType()) {
             case METADATA_CON_QUERY:
             case SNIPPETS:
             case METADATA_CON_SYNONYM:
@@ -168,7 +168,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     public Image getImage(IRepositoryViewObject object) {
         // Item item = property.getItem();
-        ERepositoryObjectType itemType = object.getType();
+        ERepositoryObjectType itemType = object.getRepositoryObjectType();
         Image img = null;
         if (object instanceof RepositoryViewObject && ((RepositoryViewObject) object).getCustomImage() != null) {
             img = ((RepositoryViewObject) object).getCustomImage();
@@ -245,7 +245,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return ImageProvider.getImage(node.getIcon());
             }
 
-            switch (node.getObject().getType()) {
+            switch (node.getObject().getRepositoryObjectType()) {
             case METADATA_CON_QUERY:
             case SNIPPETS:
             case METADATA_CON_SYNONYM:

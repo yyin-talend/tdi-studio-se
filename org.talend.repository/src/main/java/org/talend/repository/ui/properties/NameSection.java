@@ -99,7 +99,7 @@ public class NameSection extends AbstractSection {
     }
 
     protected IStatus evaluateTextField() {
-        if (getObject().getType() == null) {
+        if (getObject().getRepositoryObjectType() == null) {
             return createOkStatus();
         }
 

@@ -42,20 +42,10 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.repository.RepositoryObject#getAdapter(java.lang .Class)
-     */
-    @Override
-    public Object getAdapter(Class adapter) {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.core.model.repository.IRepositoryObject#getType()
      */
     @Override
-    public ERepositoryObjectType getType() {
+    public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.METADATA_SAP_IDOC;
     }
 

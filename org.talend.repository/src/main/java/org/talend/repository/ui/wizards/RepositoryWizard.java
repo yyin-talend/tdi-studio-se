@@ -111,9 +111,9 @@ public abstract class RepositoryWizard extends Wizard {
             IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
                     .getProxyRepositoryFactory();
             if (state != null && state.getPath() != null) {
-                IRepositoryViewObject lastVersion = repositoryFactory
-                        .getLastVersion(ProjectManager.getInstance().getCurrentProject(), repositoryObject.getProperty().getId(),
-                                state.getPath(), repositoryObject.getType());
+                IRepositoryViewObject lastVersion = repositoryFactory.getLastVersion(ProjectManager.getInstance()
+                        .getCurrentProject(), repositoryObject.getProperty().getId(), state.getPath(), repositoryObject
+                        .getRepositoryObjectType());
                 lastVersion.setRepositoryNode(repositoryObject.getRepositoryNode());
                 repositoryObject = lastVersion;
             }
@@ -153,7 +153,7 @@ public abstract class RepositoryWizard extends Wizard {
 
             final IRepositoryNode repositoryNode = repositoryViewObject.getRepositoryNode();
             RepositoryManager.getRepositoryView().expand(repositoryNode);
-            RepositoryManager.getRepositoryView().getViewer().refresh(repositoryObject.getType());
+            RepositoryManager.getRepositoryView().getViewer().refresh(repositoryObject.getRepositoryObjectType());
         }
     }
 

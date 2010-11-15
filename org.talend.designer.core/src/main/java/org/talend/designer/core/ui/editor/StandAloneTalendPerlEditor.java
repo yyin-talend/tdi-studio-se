@@ -345,7 +345,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
     @Override
     public void doSaveAs() {
-        ERepositoryObjectType type = this.rEditorInput.getRepositoryNode().getObject().getType();
+        ERepositoryObjectType type = this.rEditorInput.getRepositoryNode().getObject().getRepositoryObjectType();
         if (type == ERepositoryObjectType.ROUTINES) {
             SaveAsRoutineAction saveAsAction = new SaveAsRoutineAction(this);
             saveAsAction.run();

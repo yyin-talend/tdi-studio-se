@@ -177,8 +177,8 @@ public class CopyToGenericSchemaHelper {
      * @return
      */
     private static boolean checkIsConnectionTableSchema(IRepositoryViewObject objectToMove) {
-        if (objectToMove != null && objectToMove.getType() != null) {
-            switch (objectToMove.getType()) {
+        if (objectToMove != null && objectToMove.getRepositoryObjectType() != null) {
+            switch (objectToMove.getRepositoryObjectType()) {
             case METADATA_CON_TABLE:
             case METADATA_CON_SYNONYM:
             case METADATA_CON_VIEW:

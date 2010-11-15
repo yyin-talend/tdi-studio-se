@@ -945,7 +945,7 @@ public class SelectorTableForm extends AbstractForm {
                         schema = "";
                         break;
                     case Default_Name:
-                        schema = iMetadataConnection.getCurrentConnection().getName(); // label for default name for
+                        schema = iMetadataConnection.getLabel(); // label for default name for
                         // access or such kind of
                         // non-catalogs databases
                         break;

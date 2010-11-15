@@ -90,7 +90,8 @@ public class PropertiesWizard extends Wizard {
                     if (useLastVersion) {
                         if (state != null && state.getPath() != null) {
                             this.object = (IRepositoryObject) proxyRepositoryFactory.getLastVersion(new Project(ProjectManager
-                                    .getInstance().getProject(item)), property.getId(), state.getPath(), object.getType());
+                                    .getInstance().getProject(item)), property.getId(), state.getPath(), object
+                                    .getRepositoryObjectType());
                             lastVersionFound = this.object.getVersion();
                         } else {
                             this.object = (IRepositoryObject) proxyRepositoryFactory.getLastVersion(new Project(ProjectManager
@@ -101,7 +102,7 @@ public class PropertiesWizard extends Wizard {
                         if (state != null && state.getPath() != null) {
                             this.lastVersionFound = proxyRepositoryFactory.getLastVersion(
                                     new Project(ProjectManager.getInstance().getProject(item)), property.getId(),
-                                    state.getPath(), object.getType()).getVersion();
+                                    state.getPath(), object.getRepositoryObjectType()).getVersion();
                         } else {
                             this.lastVersionFound = proxyRepositoryFactory.getLastVersion(
                                     new Project(ProjectManager.getInstance().getProject(item)), property.getId()).getVersion();
@@ -199,7 +200,7 @@ public class PropertiesWizard extends Wizard {
 
             @Override
             public ERepositoryObjectType getRepositoryObjectType() {
-                return object.getType();
+                return object.getRepositoryObjectType();
             }
         };
         addPage(mainPage);

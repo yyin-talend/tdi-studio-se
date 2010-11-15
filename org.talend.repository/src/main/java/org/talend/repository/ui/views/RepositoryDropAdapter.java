@@ -123,18 +123,19 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                 if (object == null) {
                     return false;
                 }
-                if (object.getType() == ERepositoryObjectType.JOB_DOC || object.getType() == ERepositoryObjectType.JOBLET_DOC) {
+                if (object.getRepositoryObjectType() == ERepositoryObjectType.JOB_DOC
+                        || object.getRepositoryObjectType() == ERepositoryObjectType.JOBLET_DOC) {
                     if (BusinessType.SHAP == CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(target)) {
                         return true;
                     }
                     return false;
-                } else if (object.getType() == ERepositoryObjectType.ROUTINES) {
+                } else if (object.getRepositoryObjectType() == ERepositoryObjectType.ROUTINES) {
                     Property property = object.getProperty();
                     RoutineItem item = (RoutineItem) property.getItem();
                     if (item.isBuiltIn() && target instanceof RepositoryNode) {
                         return false;
                     }
-                } else if (object.getType() == ERepositoryObjectType.SQLPATTERNS) {
+                } else if (object.getRepositoryObjectType() == ERepositoryObjectType.SQLPATTERNS) {
                     Property property = object.getProperty();
                     SQLPatternItem item = (SQLPatternItem) property.getItem();
                     if (item.isSystem() && target instanceof RepositoryNode) {

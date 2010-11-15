@@ -840,7 +840,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // value)
                     }
                     String value = pType.getValue();
-                    if (param.getFieldType().equals(EParameterFieldType.CHECK) || param.getFieldType().equals(EParameterFieldType.RADIO)) {
+                    if (param.getFieldType().equals(EParameterFieldType.CHECK)
+                            || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                             Boolean boolean1 = new Boolean(value);
                             elemParam.setPropertyValue(pType.getName(), boolean1);
@@ -2372,7 +2373,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return "Process:" + getLabel(); //$NON-NLS-1$
     }
 
-    public ERepositoryObjectType getType() {
+    public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.PROCESS;
     }
 
@@ -2567,7 +2568,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         try {
             IRepositoryViewObject repositoryObject = factory.getProcess().getMember(getProject().getMasterJobId());
-            if (repositoryObject.getType() == ERepositoryObjectType.PROCESS) {
+            if (repositoryObject.getRepositoryObjectType() == ERepositoryObjectType.PROCESS) {
                 item = (ProcessItem) repositoryObject.getProperty().getItem();
             }
         } catch (PersistenceException e) {
