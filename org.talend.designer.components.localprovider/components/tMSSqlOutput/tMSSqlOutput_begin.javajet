@@ -88,6 +88,13 @@ String dbschema_<%=cid%> = null;
 String tableName_<%=cid%> = null;
 boolean whetherReject_<%=cid%> = false;
 
+java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
+calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
+long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
+long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+long date_<%=cid %>;
+
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
