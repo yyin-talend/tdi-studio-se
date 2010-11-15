@@ -30,7 +30,7 @@ public class VirtualMetadataColumn extends MetadataColumnExt {
         this.setDefault(""); //$NON-NLS-1$
         this.setLabel("newColumn"); //$NON-NLS-1$
         this.setTalendType("id_String"); //$NON-NLS-1$
-        this.setSourceType(""); //$NON-NLS-1$
+        this.setType(""); //$NON-NLS-1$
         this.setId(String.valueOf(0));
 
         this.setLength(null);

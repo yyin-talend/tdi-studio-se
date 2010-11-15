@@ -546,7 +546,7 @@ public class CLASS {
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].name = ").append("\"").append(
                     column.getLabel()).append("\";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].dbType = ").append("\"").append(
-                    column.getSourceType()).append("\";\n");
+                    column.getType()).append("\";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].isKey = ").append(column.isKey())
                     .append(";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].length = ").append(
@@ -558,7 +558,7 @@ public class CLASS {
             resultBuilder.append(param).append("_NAME_").append(cid).append("[").append(i).append("] = ").append("\"").append(
                     column.getLabel()).append("\";\n");
             resultBuilder.append(param).append("_DBTYPE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
-                    column.getSourceType()).append("\";\n");
+                    column.getType()).append("\";\n");
             resultBuilder.append(param).append("_ISKEY_").append(cid).append("[").append(i).append("] = ").append("\"").append(
                     column.isKey()).append("\";\n");
             resultBuilder.append(param).append("_LENGTH_").append(cid).append("[").append(i).append("] = ").append("\"").append(

@@ -101,7 +101,7 @@ if(columnList != null && columnList.size() > 0) {
     int sizeColumns = columnList.size();
     for (int i = 0; i < sizeColumns; i++) {
         IMetadataColumn column = columnList.get(i);
-        if ("BIT".equalsIgnoreCase(column.getSourceType())) {//bit type
+        if ("BIT".equalsIgnoreCase(column.getType())) {//bit type
         	bitCols.add(column.getOriginalDbColumnName());
         	loadingCols.append("@" + cid +"_"+ column.getOriginalDbColumnName());
         }else {//others type

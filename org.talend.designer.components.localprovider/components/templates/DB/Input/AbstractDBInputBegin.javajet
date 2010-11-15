@@ -120,7 +120,7 @@ imports="
 		                if(whetherTrimAllCol || whetherTrimCol) {
 		                    trimMethod = ".trim()";
 		                }
-		                String columnType = column.getSourceType();
+		                String columnType = column.getType();
 		                 
 		                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 		                String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate); 	

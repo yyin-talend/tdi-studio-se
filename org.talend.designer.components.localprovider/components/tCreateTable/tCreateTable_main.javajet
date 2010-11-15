@@ -85,10 +85,10 @@ abstract class  Manager {
             }
             createTableSQL.append(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()) + " ");
             String dataType = null;
-            if(metadataColumn.getSourceType() == null || metadataColumn.getSourceType().trim().length() == 0) {
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
                 dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
             } else {
-                dataType = metadataColumn.getSourceType();
+                dataType = metadataColumn.getType();
             }
             if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED") ) {
             	createTableSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ; 
@@ -1403,10 +1403,10 @@ class TeradataManager extends Manager {
             }
             createTableSQL.append(getLProtectedChar(metadataColumn.getOriginalDbColumnName()) + metadataColumn.getOriginalDbColumnName() + getRProtectedChar(metadataColumn.getOriginalDbColumnName()) + " ");
             String dataType = null;
-            if(metadataColumn.getSourceType() == null || metadataColumn.getSourceType().trim().length() == 0) {
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
                 dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
             } else {
-                dataType = metadataColumn.getSourceType();
+                dataType = metadataColumn.getType();
             }
             if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED") ) {
             	createTableSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ; 

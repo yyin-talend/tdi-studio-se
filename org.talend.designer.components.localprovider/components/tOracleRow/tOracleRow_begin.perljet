@@ -99,7 +99,7 @@ my %desc_<%=cid %> = (
         {
             name    => '<%=column.getLabel() %>',
             key     => <%=column.isKey() %>,
-            type    => '<%=column.getSourceType() %>',
+            type    => '<%=column.getType() %>',
             len     => <%=column.getLength() %>,
             null    => <%=column.isNullable() %>,
             default => '<%=column.getDefault() %>',

@@ -98,7 +98,7 @@ imports="
 		}
 		//-----------according schema type to generate ResultSet
 		public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
-			String columnType = column.getSourceType();
+			String columnType = column.getType();
 			if(columnType != null && ("CLOB").equals(columnType)) {
 %>
 				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%=currentColNo%>);

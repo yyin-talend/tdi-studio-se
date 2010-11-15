@@ -612,7 +612,7 @@ public class MultiSchemasManager {
             multiColumn.setPrecision(column.getPrecision());
             multiColumn.setReadOnly(column.isReadOnly());
             multiColumn.setTalendType(column.getTalendType());
-            multiColumn.setSourceType(column.getSourceType());
+            multiColumn.setType(column.getType());
 
         }
 

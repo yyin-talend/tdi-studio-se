@@ -40,7 +40,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				IMetadataColumn column = columns.get(i);
     				
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					String dbType = columns.get(i).getSourceType();
+					String dbType = columns.get(i).getType();
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 					if(!isPrimitive) {
 					

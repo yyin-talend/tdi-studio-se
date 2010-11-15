@@ -208,12 +208,12 @@ if(columnList != null && columnList.size() > 0) {
     		String dataType = null;
     		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
     		
-    		String dbType = column.getSourceType() ;
+    		String dbType = column.getType() ;
     		
-            if(column.getSourceType() == null || column.getSourceType().trim().length() == 0) {
+            if(column.getType() == null || column.getType().trim().length() == 0) {
             	dataType = mappingType.getDefaultSelectedDbType(column.getTalendType());
             } else {
-            	dataType = column.getSourceType().toUpperCase();
+            	dataType = column.getType().toUpperCase();
             }
             Integer length = column.getLength() == null ? 0 : column.getLength();
             
@@ -227,7 +227,7 @@ if(columnList != null && columnList.size() > 0) {
     		columns += "\\\"" + ((convertToUppercase)? column.getOriginalDbColumnName().toUpperCase():column.getOriginalDbColumnName()) + "\\\"";
     		
     		
-    		if(("DATE").equals(column.getSourceType()) && ("true").equals(useDatePattern)){//date
+    		if(("DATE").equals(column.getType()) && ("true").equals(useDatePattern)){//date
     			String pattn = column.getPattern();
     			if(pattn != null && pattn.length() > 2){
     			

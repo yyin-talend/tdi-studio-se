@@ -85,7 +85,7 @@ public class MetadataEmfFactory {
                     colType.setOriginalDbColumnName(metaCol.getOriginalDbColumnName());
                 }
                 colType.setType(metaCol.getTalendType());
-                colType.setSourceType(metaCol.getSourceType());
+                colType.setSourceType(metaCol.getType());
                 colType.setPattern(metaCol.getPattern());
                 colType.setDefaultValue(metaCol.getDefault());
                 listColType.add(colType);
@@ -140,7 +140,7 @@ public class MetadataEmfFactory {
                 metaCol.setPrecision(null);
             }
             metaCol.setTalendType(colType.getType());
-            metaCol.setSourceType(colType.getSourceType());
+            metaCol.setType(colType.getSourceType());
             metaCol.setPattern(colType.getPattern());
             metaCol.setDefault(colType.getDefaultValue());
             if (colType.getOriginalDbColumnName() == null) {

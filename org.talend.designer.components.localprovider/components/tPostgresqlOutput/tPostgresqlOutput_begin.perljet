@@ -327,7 +327,7 @@ if ((dataAction.equals("INSERT"))
         }
         keys.add(currentKey);
         parameters.add(currentParameter);
-        if (column.getSourceType().equals("BYTEA")) {
+        if (column.getType().equals("BYTEA")) {
             binaryparam.add(keys.size());
         }
 

@@ -77,7 +77,7 @@ if(columnList != null && columnList.size() > 0) {
 boolean xmlTypeExist = false;
 for(Column column : stmtStructure) {
 	//when use Additional column column.getColumn() == null
-	if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getSourceType())) {
+	if (column.getColumn()!= null && "XMLTYPE".equals(column.getColumn().getType())) {
 		column.setSqlStmt("XMLType(?)");
 		xmlTypeExist = true;
 	}

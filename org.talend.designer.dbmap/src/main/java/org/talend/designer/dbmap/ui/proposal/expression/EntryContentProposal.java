@@ -97,7 +97,7 @@ public class EntryContentProposal implements IContentProposal {
             }
             sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator)
-                    .append(Messages.getString("EntryContentProposal.dbType")).append(format(metadataColumn.getSourceType())); //$NON-NLS-1$
+                    .append(Messages.getString("EntryContentProposal.dbType")).append(format(metadataColumn.getType())); //$NON-NLS-1$
             sb.append(DbLanguageConstants.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
             if (metadataColumn.getLength() != null && metadataColumn.getLength() > 0) {
