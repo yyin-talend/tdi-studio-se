@@ -305,7 +305,7 @@
   </ADVANCED_PARAMETERS>
     <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="paloIX3" MODULE="paloIX3.jar" REQUIRED="true" />
+      <IMPORT NAME="paloIX3" MODULE="palo.jar" REQUIRED="true" />
       <IMPORT NAME="httpclient-4.0.1" MODULE="httpclient-4.0.1.jar" REQUIRED="true" />
       <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" REQUIRED="true" />
       <IMPORT NAME="httpcore-4.0" MODULE="httpcore-4.0.jar" REQUIRED="true" />
