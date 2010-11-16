@@ -168,10 +168,6 @@ public class Node extends Element implements IGraphicalNode {
 
     private IExternalNode externalNode = null;
 
-    // null if no external component defined
-
-    private IExternalData externalData = null;
-
     private NodeContainer nodeContainer;
 
     private String performanceData;
@@ -1010,7 +1006,8 @@ public class Node extends Element implements IGraphicalNode {
                 IElementParameter inputSchemaParam = null;
 
                 for (IElementParameter param : conn.getSource().getElementParameters()) {
-                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) && (param.getContext().equals(inputConnector))) {
+                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE))
+                            && (param.getContext().equals(inputConnector))) {
                         inputSchemaParam = param;
                         break;
                     }
@@ -1565,11 +1562,16 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public IExternalData getExternalData() {
-        return this.externalData;
+        if (externalNode != null) {
+            return externalNode.getExternalData();
+        }
+        return null;
     }
 
     public void setExternalData(final IExternalData persistantData) {
-        this.externalData = persistantData;
+        if (externalNode != null) {
+            this.externalNode.setExternalData(persistantData);
+        }
     }
 
     @Override
