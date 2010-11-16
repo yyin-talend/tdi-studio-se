@@ -142,6 +142,7 @@ if (canGenerate) {
 			String customeType = spArg.get("CUSTOME_TYPE");
 			String argCustom = spArg.get("CUSTOMENAME");
 			
+			String dbType = spArg.get("DBTYPE");
 			// Search Java type of argument, based on schema column
 			String typeToGenerate = null;
 			boolean nullable = false;
@@ -223,9 +224,16 @@ if (canGenerate) {
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=customeType %>,<%=argCustom %>);
 <%
 				}else{
+					if ("AUTOMAPPING".equals(dbType)) {
 %>
-				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+					statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 <%
+					} else {
+%>
+					statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=dbType %>);
+					
+<%
+					}
 	  			}
 			}else if(("RECORDSET").equals(argType)){
 %>

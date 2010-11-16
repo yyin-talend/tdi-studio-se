@@ -216,6 +216,13 @@
             <ITEM NAME="RECORDSET" VALUE="RECORDSET"/>
           </ITEMS>
         </ITEM>
+         <ITEM NAME="DBTYPE" FIELD="CLOSED_LIST" >
+	         <ITEMS DEFAULT="AUTOMAPPING">
+	            <ITEM NAME="AUTOMAPPING" VALUE="AUTOMAPPING"/>
+	            <ITEM NAME="CLOB" VALUE="CLOB"/>
+	            <ITEM NAME="BLOB" VALUE="BLOB"/>
+	          </ITEMS>
+         </ITEM>
         <ITEM NAME="ISCUSTOME" FIELD="CHECK"></ITEM>
         <ITEM NAME="CUSTOME_TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="STRUCT">
