@@ -179,6 +179,10 @@ public class EmfComponent implements IComponent {
 
     private Boolean technical = null;
 
+    private Map<String, String> translatedMap = new HashMap<String, String>();
+
+    private String translatedFamilyName;
+
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
     private static SoftReference<ComponentResourceFactoryImpl> compResFactorySoftRef;
 
@@ -203,8 +207,12 @@ public class EmfComponent implements IComponent {
 
     private String getTranslatedValue(final String nameValue) {
         String returnValue = nameValue;
+        if (translatedMap.containsKey(nameValue)) {
+            return translatedMap.get(nameValue);
+        }
         // modified by wzhang. update translations for components.
         returnValue = Messages.getString(nameValue, this.getName(), getResourceBundle());
+        translatedMap.put(nameValue, returnValue);
         return returnValue;
     }
 
@@ -1205,7 +1213,9 @@ public class EmfComponent implements IComponent {
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
-            param.setGroupDisplayName(getTranslatedValue(xmlParam.getGROUP() + "." + PROP_NAME));//$NON-NLS-1$
+            if (xmlParam.getGROUP() != null) {
+                param.setGroupDisplayName(getTranslatedValue(xmlParam.getGROUP() + "." + PROP_NAME));//$NON-NLS-1$
+            }
             param.setFieldType(type);
             param.setNumRow(xmlParam.getNUMROW());
             if (xmlParam.isSetREADONLY()) {
@@ -1309,7 +1319,8 @@ public class EmfComponent implements IComponent {
                 param.setValue(""); //$NON-NLS-1$
             }
 
-            if (!param.getFieldType().equals(EParameterFieldType.TABLE) && !param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+            if (!param.getFieldType().equals(EParameterFieldType.TABLE)
+                    && !param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                     && !param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
@@ -1317,7 +1328,8 @@ public class EmfComponent implements IComponent {
 
                     if (node.getProcess() != null) {
                         defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType.getValue()));
-                        if (param.getFieldType() == EParameterFieldType.FILE || param.getFieldType() == EParameterFieldType.DIRECTORY) {
+                        if (param.getFieldType() == EParameterFieldType.FILE
+                                || param.getFieldType() == EParameterFieldType.DIRECTORY) {
                             IPath path = Path.fromOSString(defaultValue.getDefaultValue().toString());
                             defaultValue.setDefaultValue(path.toPortableString());
                         }
@@ -1495,7 +1507,8 @@ public class EmfComponent implements IComponent {
                     }
                 }
                 if (!isSet) {
-                    if (param.getFieldType().equals(EParameterFieldType.RADIO) || param.getFieldType().equals(EParameterFieldType.CHECK)
+                    if (param.getFieldType().equals(EParameterFieldType.RADIO)
+                            || param.getFieldType().equals(EParameterFieldType.CHECK)
                             || param.getFieldType().equals(EParameterFieldType.AS400_CHECK)) {
                         int index = this.computeIndex(listParam, param);
                         if (index >= 0) {
@@ -1791,8 +1804,10 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
      */
     public String getTranslatedFamilyName() {
-        String translatedFamilyName = ""; //$NON-NLS-1$
-
+        if (translatedFamilyName != null) {
+            return translatedFamilyName;
+        }
+        translatedFamilyName = "";
         IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
 
         int nbTotal = compType.getFAMILIES().getFAMILY().size();

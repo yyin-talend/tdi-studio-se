@@ -858,7 +858,7 @@ public class Node extends Element implements IGraphicalNode {
     public void updateVisibleData() {
         // if it's a duplicate process, it's a process used only for code generation, so no need to update any graphical
         // data.
-        if (this.process.isDuplicate()) {
+        if (this.process.isDuplicate() || CommonsPlugin.isHeadless()) {
             return;
         }
         String newLabel = label;
