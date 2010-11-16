@@ -93,7 +93,6 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
     private boolean persistent;
 
     public ExternalMapperTable() {
-        System.out.println();
     }
 
     public String getName() {
