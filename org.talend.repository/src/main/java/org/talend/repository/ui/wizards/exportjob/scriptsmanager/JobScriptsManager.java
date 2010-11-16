@@ -48,7 +48,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -367,15 +366,7 @@ public abstract class JobScriptsManager {
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        StringBuffer sb = new StringBuffer();
-        sb.append(""); //$NON-NLS-1$
-        for (String s : cmd) {
-            sb.append(s).append(' ');
-        }
-
-        String commandStr = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.COMMAND_STR);
-        String finalCommand = commandStr.replace(ITalendCorePrefConstants.DEFAULT_COMMAND_STR, sb.toString());
-        return finalCommand;
+        return ProcessorUtilities.generateCmdByTalendJob(cmd);
     }
 
     /**
@@ -400,12 +391,7 @@ public abstract class JobScriptsManager {
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        StringBuffer sb = new StringBuffer();
-        sb.append(""); //$NON-NLS-1$
-        for (String s : cmd) {
-            sb.append(s).append(' ');
-        }
-        return sb.toString();
+        return ProcessorUtilities.generateCmdByTalendJob(cmd);
     }
 
     protected String getCommandByTalendJob(String targetPlatform, IProcess process, String context, boolean needContext,
@@ -417,12 +403,7 @@ public abstract class JobScriptsManager {
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
-        StringBuffer sb = new StringBuffer();
-        sb.append(""); //$NON-NLS-1$
-        for (String s : cmd) {
-            sb.append(s).append(' ');
-        }
-        return sb.toString();
+        return ProcessorUtilities.generateCmdByTalendJob(cmd);
     }
 
     /**
