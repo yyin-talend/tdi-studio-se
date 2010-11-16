@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.action;
 
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.BringForwardCommand;
 
 /**
@@ -21,7 +22,7 @@ public class BringForwardAction extends ZorderAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.BringForwardAction"; //$NON-NLS-1$
 
-    private static final String TEXT = "Bring forward"; //$NON-NLS-1$
+    private static final String TEXT = Messages.getString("BringForwardAction_bring_forward"); //$NON-NLS-1$
 
     public BringForwardAction(IWorkbenchPart part) {
         super(part);

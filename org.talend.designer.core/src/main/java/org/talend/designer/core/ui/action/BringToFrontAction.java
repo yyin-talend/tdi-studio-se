@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.action;
 
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.BringToFrontCommand;
 
 /**
@@ -21,7 +22,7 @@ public class BringToFrontAction extends ZorderAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.BringtoFrontAction"; //$NON-NLS-1$
 
-    private static final String TEXT = "Bring to front"; //$NON-NLS-1$
+    private static final String TEXT = Messages.getString("BringToFrontAction_bring_to_front"); //$NON-NLS-1$
 
     public BringToFrontAction(IWorkbenchPart part) {
         super(part);
