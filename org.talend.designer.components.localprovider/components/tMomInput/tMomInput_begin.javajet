@@ -44,6 +44,9 @@ class="MomInput"
 	boolean getMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__GET_MQMD_FIELDS__"));
 	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
 	
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+    	
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -94,15 +97,23 @@ class="MomInput"
 			System.out.println("Consuming " + (<%="Topic".equals(msgType)%> ? "topic" : "queue") + ": " + <%=from%>);
 			
 			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
-			new org.apache.activemq.ActiveMQConnectionFactory
-			(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+			new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
 <%
 		}
 		
 	/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
 %>		
-			
+<%
+		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
+%>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+<%
+		} else {
+%>
+			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
+<%
+		}
+%>
 			connection_<%=cid %>.start();
 			javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 			javax.jms.Destination des_<%=cid %> = null;
@@ -272,7 +283,15 @@ class="MomInput"
 		properties<%=cid%>.put("channel", <%=channel%>);
 		properties<%=cid%>.put("CCSID", new Integer(1208));
 		properties<%=cid%>.put("transport","MQSeries");
-		
+<%
+		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
+%>
+		properties<%=cid%>.put("userID",<%=dbuser%>);
+		properties<%=cid%>.put("password",<%=dbpwd%>);
+<%
+		}
+%>
+
 		com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
 		com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
 <%
