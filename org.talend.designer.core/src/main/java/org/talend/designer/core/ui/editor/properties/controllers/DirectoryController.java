@@ -135,7 +135,11 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         Text labelText = (Text) dField.getControl();
 
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!param.isReadOnly());
+        if (!elem.isReadOnly()) {
+            labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
+        } else {
+            labelText.setEditable(false);
+        }
         labelText.setData(PARAMETER_NAME, param.getName());
 
         editionControlHelper.register(param.getName(), labelText);
@@ -193,8 +197,9 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {

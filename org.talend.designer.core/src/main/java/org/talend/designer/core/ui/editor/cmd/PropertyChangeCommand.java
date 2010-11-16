@@ -131,9 +131,7 @@ public class PropertyChangeCommand extends Command {
             } else {
                 toUpdate = true;
                 String oldValueString = elem.getPropertyValue(propName).toString();
-                if (((INode) elem).getComponent().getName().equals("tCreateTable") && propName.equals("DBROOTPATH")) {
-                    // do nothing
-                } else if (!oldValueString.endsWith("xsd") && !oldValueString.endsWith("xsd\"")) {
+                if (!oldValueString.endsWith("xsd") && !oldValueString.endsWith("xsd\"")) {
                     elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 }
                 for (IElementParameter param : elem.getElementParameters()) {
