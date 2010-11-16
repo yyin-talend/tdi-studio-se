@@ -248,6 +248,19 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 if (f.getName().startsWith("org.talend.designer.components.localprovider")) { //$NON-NLS-1$
                     jarFileMap.put("org.talend.designer.components.localprovider", f); //$NON-NLS-1$
                 }
+                if (f.getName().startsWith("org.talend.designer.components.tdqprovider")) { //$NON-NLS-1$
+                    jarFileMap.put("org.talend.designer.components.tdqprovider", f); //$NON-NLS-1$
+                }
+                if (f.getName().startsWith("org.talend.designer.components.tismpprovider")) { //$NON-NLS-1$
+                    jarFileMap.put("org.talend.designer.components.tismpprovider", f); //$NON-NLS-1$
+                }
+                if (f.getName().startsWith("org.talend.designer.components.tisprovider")) { //$NON-NLS-1$
+                    jarFileMap.put("org.talend.designer.components.tisprovider", f); //$NON-NLS-1$
+                }
+                if (f.getName().startsWith("org.talend.designer.components.tispeprovider")) { //$NON-NLS-1$
+                    jarFileMap.put("org.talend.designer.components.tispeprovider", f); //$NON-NLS-1$
+                }
+
                 if (f.getName().endsWith(".jar") && f.getName().indexOf("nl") != -1 //$NON-NLS-1$ //$NON-NLS-2$
                         && f.getName().indexOf("talend") != -1) { //$NON-NLS-1$
                     String[] fileNameArr = f.getName().split("_"); //$NON-NLS-1$
@@ -263,6 +276,10 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 File currentFileToBak = (File) entry.getValue();
                 if (key.toString().endsWith(".nl") //$NON-NLS-1$
                         || key.toString().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                        || key.toString().startsWith("org.talend.designer.components.tdqprovider") //$NON-NLS-1$
+                        || key.toString().startsWith("org.talend.designer.components.tismpprovider") //$NON-NLS-1$
+                        || key.toString().startsWith("org.talend.designer.components.tisprovider") //$NON-NLS-1$
+                        || key.toString().startsWith("org.talend.designer.components.tispeprovider") //$NON-NLS-1$
                         || key.toString().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
                     if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
                         ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
@@ -333,6 +350,10 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             for (File f : zipFiles) {
                 if (f.getName().endsWith(".nl") //$NON-NLS-1$
                         || f.getName().startsWith("org.talend.designer.components.localprovider") //$NON-NLS-1$
+                        || f.getName().startsWith("org.talend.designer.components.tdqprovider") //$NON-NLS-1$
+                        || f.getName().startsWith("org.talend.designer.components.tismpprovider") //$NON-NLS-1$
+                        || f.getName().startsWith("org.talend.designer.components.tisprovider") //$NON-NLS-1$
+                        || f.getName().startsWith("org.talend.designer.components.tispeprovider") //$NON-NLS-1$
                         || f.getName().startsWith("net.sourceforge.sqlexplorer.nl")) { //$NON-NLS-1$
 
                     File writeJarFile = (File) jarFileMap.get(f.getName());
