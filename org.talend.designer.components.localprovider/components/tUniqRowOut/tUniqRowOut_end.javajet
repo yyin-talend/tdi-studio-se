@@ -56,13 +56,16 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                 rowStruct_<%=cid %>[] buffer;
 
                 ObjectInputStream ois;
+                
+                java.io.BufferedInputStream bis;
 
                 int count = 0;
 
                 int index = 0;
 
                 public FileRowIterator_<%=cid %>(java.io.File file, int bufferSize) throws IOException {
-                    ois = new java.io.ObjectInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(file)));
+                	bis = new java.io.BufferedInputStream(new java.io.FileInputStream(file));
+                    ois = new java.io.ObjectInputStream(bis);
                     buffer = new rowStruct_<%=cid %>[bufferSize];
                 }
 
@@ -70,7 +73,7 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                     count = 0;
                     index = 0;
                     try {
-                        while (ois.available() > 0 && count < buffer.length) {
+                        while (bis.available() > 0 && count < buffer.length) {
                             buffer[count] = new rowStruct_<%=cid %>();
                             buffer[count].readData(ois);
                             count++;
@@ -82,7 +85,7 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
 
                 public boolean hasNext() {
                     try {
-                        return index < count || ois.available() > 0;
+                        return index < count || bis.available() > 0;
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
