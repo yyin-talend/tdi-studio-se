@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import org.eclipse.gef.ui.palette.PaletteMessages;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.ComponentUtilities;
@@ -26,7 +25,7 @@ public class ShowStandardAction extends Action {
     public static ShowStandardAction showStandard = null;
 
     private ShowStandardAction() {
-        super(PaletteMessages.STANDARD_LABEL);
+        super("&Standard"); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_DISICON));
     }
 

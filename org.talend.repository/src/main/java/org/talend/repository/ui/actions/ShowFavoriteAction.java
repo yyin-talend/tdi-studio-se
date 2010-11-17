@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import org.eclipse.gef.ui.palette.PaletteMessages;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.ComponentUtilities;
@@ -28,7 +27,7 @@ public class ShowFavoriteAction extends Action {
     public static boolean state = true;
 
     private ShowFavoriteAction() {
-        super(PaletteMessages.FAVORITE_LABEL);
+        super("&Favorite"); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_DISICON));
     }
 

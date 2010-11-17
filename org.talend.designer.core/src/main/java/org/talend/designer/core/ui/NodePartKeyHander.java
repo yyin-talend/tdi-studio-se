@@ -15,11 +15,9 @@ package org.talend.designer.core.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
@@ -143,67 +141,6 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
             }
         }
         return nodePartList;
-    }
-
-    @Override
-    public boolean keyPressed(KeyEvent event) {
-        if (event.character == ' ') {
-            processSelect(event);
-            return true;
-        } else if (acceptIntoContainer(event)) {
-            navigateIntoContainer(event);
-            return true;
-        } else if (acceptOutOf(event)) {
-            navigateOut(event);
-            return true;
-        } else if (acceptConnection(event)) {
-            navigateConnections(event);
-            return true;
-        } else if (acceptScroll(event)) {
-            scrollViewer(event);
-            return true;
-        } else if (acceptLeaveConnection(event)) {
-            navigateOutOfConnection(event);
-            return true;
-        } else if (acceptLeaveContents(event)) {
-            navigateIntoContainer(event);
-            return true;
-        }
-        switch (event.keyCode) {
-        case SWT.ARROW_LEFT:
-            if (navigateNextSibling(event, isViewerMirrored() ? PositionConstants.EAST : PositionConstants.WEST))
-                return true;
-            break;
-        case SWT.ARROW_RIGHT:
-            if (navigateNextSibling(event, isViewerMirrored() ? PositionConstants.WEST : PositionConstants.EAST))
-                return true;
-            break;
-        case SWT.ARROW_UP:
-            if (navigateNextSibling(event, PositionConstants.NORTH))
-                return true;
-            break;
-        case SWT.ARROW_DOWN:
-            if (navigateNextSibling(event, PositionConstants.SOUTH))
-                return true;
-            break;
-
-        case SWT.HOME:
-            if (navigateJumpSibling(event, PositionConstants.WEST))
-                return true;
-            break;
-        case SWT.END:
-            if (navigateJumpSibling(event, PositionConstants.EAST))
-                return true;
-            break;
-        case SWT.PAGE_DOWN:
-            if (navigateJumpSibling(event, PositionConstants.SOUTH))
-                return true;
-            break;
-        case SWT.PAGE_UP:
-            if (navigateJumpSibling(event, PositionConstants.NORTH))
-                return true;
-        }
-        return super.keyPressed(event);
     }
 
 }

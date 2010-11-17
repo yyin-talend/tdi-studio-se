@@ -13,8 +13,6 @@
 package org.talend.designer.core.ui.editor.palette;
 
 import org.eclipse.draw2d.FigureCanvas;
-import org.eclipse.draw2d.ITool;
-import org.eclipse.draw2d.IToolViewer;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.ScrollPaneSolver;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -31,23 +29,18 @@ public class TalendFigureCanvas extends FigureCanvas {
 
     protected Control toolControl;
 
-    public TalendFigureCanvas(Composite parent, LightweightSystem lws, IToolViewer toolViewer) {
+    public TalendFigureCanvas(Composite parent, LightweightSystem lws, TalendPaletteViewer toolViewer) {
         this(SWT.DOUBLE_BUFFERED, parent, lws, toolViewer);
     }
 
-    public TalendFigureCanvas(int style, Composite parent, LightweightSystem lws, IToolViewer toolViewer) {
+    public TalendFigureCanvas(int style, Composite parent, LightweightSystem lws, TalendPaletteViewer toolViewer) {
         super(style | DEFAULT_STYLES, parent, lws);
 
-        boolean needTool = true;
-        if (parent instanceof ITool) {
-            needTool = ((ITool) parent).needTool();
-        } else {
-            if (toolViewer != null) {
-                toolControl = toolViewer.creatToolControl(this);
-            }
+        if (toolViewer != null) {
+            toolControl = toolViewer.creatToolControl(this);
         }
 
-        if (needTool && toolControl != null&&toolViewer!=null) {
+        if (toolControl != null && toolViewer != null) {
             org.eclipse.swt.graphics.Point bounds = toolControl.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             if (cashedToolHeight < bounds.y) {
                 cashedToolHeight = bounds.y;
@@ -64,8 +57,8 @@ public class TalendFigureCanvas extends FigureCanvas {
             viewPortY = cashedToolHeight;
         }
         result = ScrollPaneSolver.solve(new Rectangle(getBounds()).setLocation(0, viewPortY), getViewport(),
-                getHorizontalScrollBarVisibility(), getVerticalScrollBarVisibility(), computeTrim(0, 0, 0, 0).width, computeTrim(
-                        0, 0, 0, 0).height);
+                getHorizontalScrollBarVisibility(), getVerticalScrollBarVisibility(), computeTrim(0, 0, 0, 0).width,
+                computeTrim(0, 0, 0, 0).height);
         getLightweightSystem().setIgnoreResize(true);
         try {
             if (getHorizontalBar().getVisible() != result.showH)

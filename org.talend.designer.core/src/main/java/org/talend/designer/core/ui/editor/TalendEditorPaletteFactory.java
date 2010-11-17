@@ -38,6 +38,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.TalendPaletteGroup;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IPaletteFilter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -132,7 +133,9 @@ public final class TalendEditorPaletteFactory {
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
-                    componentsDrawer.setOriginalName(oraFam);
+                    if (componentsDrawer instanceof IPaletteFilter) {
+                        ((IPaletteFilter) componentsDrawer).setOriginalName(oraFam);
+                    }
                 }
 
             }
@@ -333,7 +336,9 @@ public final class TalendEditorPaletteFactory {
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
                     componentsDrawer = createComponentDrawer(ht, family);
-                    componentsDrawer.setOriginalName(oraFam);
+                    if (componentsDrawer instanceof IPaletteFilter) {
+                        ((IPaletteFilter) componentsDrawer).setOriginalName(oraFam);
+                    }
                 }
             }
         }
