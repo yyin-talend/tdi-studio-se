@@ -52,6 +52,7 @@ if (isFunction) {
 	HashMap<String, String> returnValue = new HashMap<String, String>();
 	returnValue.put("COLUMN", returnField);
 	returnValue.put("TYPE", "OUT");
+	returnValue.put("DBTYPE", "AUTOMAPPING");
 	spArgs.add(0, returnValue);
 }
 
