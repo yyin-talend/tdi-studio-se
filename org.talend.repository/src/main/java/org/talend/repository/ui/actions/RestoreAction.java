@@ -99,13 +99,21 @@ public class RestoreAction extends AContextualAction {
                     restoreObjectAction.execute(node, null, path);
                 }
 
+                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                // for bug 17079
+                if (nodeType.equals(ERepositoryObjectType.PROCESS) || nodeType.equals(ERepositoryObjectType.JOBLET)
+                        && node.getObject() != null) {
+                    IRepositoryViewObject docObject = factory.getLastVersion(node.getObject().getId() + "doc"); //$NON-NLS-1$
+                    if (docObject != null) {
+                        factory.restoreObject(docObject, path);
+                    }
+                }
                 if (PluginChecker.isTIS()) {
                     if (node.getObject() != null) {
                         if (ERepositoryObjectType.BUSINESS_PROCESS.equals(node.getObject().getRepositoryObjectType())) {
-                            IRepositoryViewObject svgObjectToMove = ProxyRepositoryFactory.getInstance().getLastVersion(
-                                    "svg_" + node.getObject().getId()); //$NON-NLS-1$
+                            IRepositoryViewObject svgObjectToMove = factory.getLastVersion("svg_" + node.getObject().getId()); //$NON-NLS-1$
                             if (svgObjectToMove != null) {
-                                ProxyRepositoryFactory.getInstance().restoreObject(svgObjectToMove, path);
+                                factory.restoreObject(svgObjectToMove, path);
                             }
                         }
                     }
