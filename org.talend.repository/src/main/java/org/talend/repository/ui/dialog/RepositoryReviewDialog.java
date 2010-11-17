@@ -1473,9 +1473,9 @@ class ContextTypeProcessor implements ITypeProcessor {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 RepositoryNode node = (RepositoryNode) element;
                 if (node.getContentType() == ERepositoryObjectType.CONTEXT) {
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
             }
         };
     }
