@@ -48,11 +48,12 @@ boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS
 if (isFunction) {
 	// Add return value at first position of parameters list
 	String returnField = ElementParameterParser.getValue(node, "__RETURN__");
+	String returnFieldDBType = ElementParameterParser.getValue(node, "__RETURN_BDTYPE__");
 	
 	HashMap<String, String> returnValue = new HashMap<String, String>();
 	returnValue.put("COLUMN", returnField);
 	returnValue.put("TYPE", "OUT");
-	returnValue.put("DBTYPE", "AUTOMAPPING");
+	returnValue.put("DBTYPE", returnFieldDBType);
 	spArgs.add(0, returnValue);
 }
 

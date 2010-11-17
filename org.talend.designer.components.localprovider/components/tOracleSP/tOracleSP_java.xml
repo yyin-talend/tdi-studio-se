@@ -198,6 +198,20 @@
     >
     </PARAMETER>
     
+    <!-- RETURN_BDTYPE must same as SP_ARGS.DBTYPE -->
+	<PARAMETER
+      NAME="RETURN_BDTYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="90"
+      SHOW_IF="IS_FUNCTION == 'true'"
+    >
+    	<ITEMS DEFAULT="AUTOMAPPING">
+	            <ITEM NAME="AUTOMAPPING" VALUE="AUTOMAPPING"/>
+	            <ITEM NAME="CLOB" VALUE="CLOB"/>
+	            <ITEM NAME="BLOB" VALUE="BLOB"/>
+	          </ITEMS>
+    </PARAMETER>
+    
 	<PARAMETER
       NAME="SP_ARGS"
       FIELD="TABLE"
