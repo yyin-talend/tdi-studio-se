@@ -55,9 +55,16 @@ public class SaveAsBusinessModelAction extends Action {
 
             try {
 
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
+                // 1.refresh
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.BUSINESS_PROCESS);
 
                 BusinessProcessItem businessProcessItem = businessModelWizard.getBusinessProcessItem();
+
+                IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(businessProcessItem.getProperty()
+                        .getId(), false);
+
+                // because step1, the fresh will unload the resource(EMF), so, assign a new one...
+                businessProcessItem = (BusinessProcessItem) repositoryNode.getObject().getProperty().getItem();
 
                 IWorkbenchPage page = getActivePage();
 
@@ -67,8 +74,7 @@ public class SaveAsBusinessModelAction extends Action {
                 RepositoryEditorInput newBusinessModelEditorInput = new RepositoryEditorInput(file, businessProcessItem);
 
                 newBusinessModelEditorInput.setView((IRepositoryView) page.findView(IRepositoryView.VIEW_ID));
-                IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(newBusinessModelEditorInput.getItem()
-                        .getProperty().getId(), false);
+
                 newBusinessModelEditorInput.setRepositoryNode(repositoryNode);
 
                 // here really do the normal save as function
