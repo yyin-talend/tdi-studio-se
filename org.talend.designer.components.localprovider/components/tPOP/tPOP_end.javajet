@@ -33,7 +33,6 @@
       System.out.println("one mail fails to retrieve since it was removed");
   <%}%>
   }
-  Thread.sleep(5000);
 }
 
 if (folder_<%=cid %> != null) {
