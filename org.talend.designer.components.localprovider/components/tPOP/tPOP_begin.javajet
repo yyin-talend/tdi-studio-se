@@ -106,76 +106,78 @@ for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; count
     if(nb_email_<%=cid%> >= <%=maxEmails%>) break; 
   <%}%>
   javax.mail.Message message_<%=cid %> = msgs_<%=cid %>[counter_<%=cid %>];
-  boolean isMatch_<%=cid%> = <%=("&&").equals(condition) ? "true" : "false"%>;
-
-  <%
-  for (int i = 0;i < filterList.size(); i++) {
-    String filterItem = filterList.get(i).get("FILTER_TIEM");
-    String filterptn = filterList.get(i).get("PATTERN");
-
-    if ("Subject".equals(filterItem)) {
-    %>
-      java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
-      java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getSubject()==null?"":message_<%=cid %>.getSubject());
-      isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+  
+  try {
+    boolean isMatch_<%=cid%> = <%=("&&").equals(condition) ? "true" : "false"%>;
+  
     <%
-    } else if ("From".equals(filterItem)) {
-    %>
-      java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
-      java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getFrom()[0]==null?"":message_<%=cid %>.getFrom()[0].toString());
-      isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
-    <%
-    } else if ("To".equals(filterItem)) {
-    %>
-      java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
-      java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
-      isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
-    <%
-    } else {
-    %>
-      java.util.Date date_<%=i%>_<%=cid%> = null;
-
-      try {
-        date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy HH:mm:ss");
-      } catch (Exception e){
-        date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy");
+    for (int i = 0;i < filterList.size(); i++) {
+      String filterItem = filterList.get(i).get("FILTER_TIEM");
+      String filterptn = filterList.get(i).get("PATTERN");
+  
+      if ("Subject".equals(filterItem)) {
+      %>
+        java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+        java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getSubject()==null?"":message_<%=cid %>.getSubject());
+        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+      <%
+      } else if ("From".equals(filterItem)) {
+      %>
+        java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+        java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getFrom()[0]==null?"":message_<%=cid %>.getFrom()[0].toString());
+        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+      <%
+      } else if ("To".equals(filterItem)) {
+      %>
+        java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+        java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
+        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+      <%
+      } else {
+      %>
+        java.util.Date date_<%=i%>_<%=cid%> = null;
+  
+        try {
+          date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy HH:mm:ss");
+        } catch (Exception e){
+          date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy");
+        }
+  
+        if (date_<%=i%>_<%=cid%> != null) {
+          isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().<%if ("BeforeDate".equals(filterItem)){%>before<%}else if("AfterDate".equals(filterItem)){%>after<%}%>(date_<%=i%>_<%=cid%>));
+        }
+      <%
       }
-
-      if (date_<%=i%>_<%=cid%> != null) {
-        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().<%if ("BeforeDate".equals(filterItem)){%>before<%}else if("AfterDate".equals(filterItem)){%>after<%}%>(date_<%=i%>_<%=cid%>));
-      }
+    }
+          
+    if (filterList.size()>0){
+    %>
+      if (isMatch_<%=cid%>) {
     <%
     }
-  }
-        
-  if (filterList.size()>0){
-  %>
-    if (isMatch_<%=cid%>) {
-  <%
-  }
+    
+    if (bDeleteFromServer){
+    %> 
+      message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);
+    <%}%>
+    String filename_<%=cid %> = <%=filenamePattern %>;
+    java.util.Enumeration enums_<%=cid %> = message_<%=cid %>.getAllHeaders();
+    java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
+    java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
+    
+    while (enums_<%=cid %>.hasMoreElements()) {
+      javax.mail.Header header_<%=cid %> = (javax.mail.Header) enums_<%=cid %>.nextElement();
+      os_<%=cid %>.write(new StringBuilder(header_<%=cid %>.getName()).append(": ").append(header_<%=cid %>.getValue()).append("\r\n").toString().getBytes());
+    }
+    os_<%=cid %>.write("\r\n".getBytes());
+    java.io.InputStream in_<%=cid %> = message_<%=cid %>.getInputStream();
+    byte[] buffer_<%=cid %> = new byte[1024];
+    int length_<%=cid %> = 0;
   
-  if (bDeleteFromServer){
-  %> 
-    message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);
-  <%}%>
-  String filename_<%=cid %> = <%=filenamePattern %>;
-  java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
-  java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
-  java.util.Enumeration enums_<%=cid %> = message_<%=cid %>.getAllHeaders();
-  
-  while (enums_<%=cid %>.hasMoreElements()) {
-    javax.mail.Header header_<%=cid %> = (javax.mail.Header) enums_<%=cid %>.nextElement();
-    os_<%=cid %>.write(new StringBuilder(header_<%=cid %>.getName()).append(": ").append(header_<%=cid %>.getValue()).append("\r\n").toString().getBytes());
-  }
-  os_<%=cid %>.write("\r\n".getBytes());
-  java.io.InputStream in_<%=cid %> = message_<%=cid %>.getInputStream();
-  byte[] buffer_<%=cid %> = new byte[1024];
-  int length_<%=cid %> = 0;
-
-  while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
-    os_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);
-  }
-  os_<%=cid %>.close();
-  nb_email_<%=cid %>++;
-  globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
-  globalMap.put("<%=cid %>_CURRENT_FILEPATH", file_<%=cid %>.getAbsolutePath());
+    while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
+      os_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);
+    }
+    os_<%=cid %>.close();
+    nb_email_<%=cid %>++;
+    globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
+    globalMap.put("<%=cid %>_CURRENT_FILEPATH", file_<%=cid %>.getAbsolutePath());

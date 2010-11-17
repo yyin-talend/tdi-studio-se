@@ -8,19 +8,33 @@
   "
 %>
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
-List<Map<String, String>> filterList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
-
-if (filterList.size() > 0) {
-%>
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+    boolean bDeleteFromServer = "true".equals(ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__"));
+    List<Map<String, String>> filterList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
+    String protocol = ElementParameterParser.getValue(node, "__PROTOCOL__");
+    
+    if (filterList.size() > 0) {
+    %>
+      }
+    <%
+    }
+  
+  if ("pop3".equals(protocol)) {
+  %>
+  } catch (javax.mail.MessageRemovedException mre) {
+    System.out.println("one mail fails to retrieve since it was removed");
+  <%} else {%>
+  } catch (javax.mail.MessagingException me) {
+    if (!"Cannot load header".equals(me.getMessage()))
+      throw me;
+    else 
+      System.out.println("one mail fails to retrieve since it was removed");
+  <%}%>
   }
-<%
+  Thread.sleep(5000);
 }
-%>
-}  
 
 if (folder_<%=cid %> != null) {
   <%if (bDeleteFromServer) {%>
