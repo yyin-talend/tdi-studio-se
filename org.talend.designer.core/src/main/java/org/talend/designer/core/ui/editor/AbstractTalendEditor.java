@@ -72,9 +72,9 @@ import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
-import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
@@ -120,7 +120,6 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.utils.Timer;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
@@ -775,8 +774,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         try {
             if (input instanceof JobEditorInput) {
                 process = ((JobEditorInput) input).getLoadedProcess();
-                projectName = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(
-                        ((RepositoryEditorInput) input).getItem()).getLabel();
+                projectName = CorePlugin.getDefault().getProxyRepositoryFactory()
+                        .getProject(((RepositoryEditorInput) input).getItem()).getLabel();
             }
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
@@ -1083,7 +1082,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /** * Snap To Geometry ** */
         getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, new Boolean(false/*
-                                                                                                 * getProcess().isSnapToGeometryEnabled
+                                                                                                 * getProcess().
+                                                                                                 * isSnapToGeometryEnabled
                                                                                                  * ()
                                                                                                  */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
@@ -1322,7 +1322,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             sharedKeyHandler.remove(KeyStroke.getPressed(SWT.DEL, 0));
         }
 
-        super.setInput(null);
+        // super.setInput(null);
 
         // getGraphicalViewer().setContents(null);
         // if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
@@ -1622,7 +1622,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         @Override
         public void keyDown(org.eclipse.swt.events.KeyEvent keyEvent, EditPartViewer viewer) {
-            int keyCode = keyEvent.keyCode;// 
+            int keyCode = keyEvent.keyCode;//
 
             if (keyEvent.stateMask == SWT.CTRL
                     && (keyCode == SWT.ARROW_UP || keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_LEFT || keyCode == SWT.ARROW_RIGHT)) {

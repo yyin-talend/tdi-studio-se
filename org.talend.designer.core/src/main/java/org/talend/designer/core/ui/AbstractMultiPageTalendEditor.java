@@ -646,49 +646,47 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                             factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) { //$NON-NLS-1$
 
-                                        @Override
-                                        protected void run() throws LoginException, PersistenceException {
-                                            try {
-                                                IProxyRepositoryFactory factory = CorePlugin.getDefault()
-                                                        .getProxyRepositoryFactory();
+                                @Override
+                                protected void run() throws LoginException, PersistenceException {
+                                    try {
+                                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
 
-                                                Set<String> curContextVars = getCurrentContextVariables(manager);
-                                                IProcess2 process2 = getProcess();
-                                                String jobId = process2.getProperty().getId();
-                                                IEditorReference[] reference = PlatformUI.getWorkbench()
-                                                        .getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-                                                List<IProcess2> processes = CorePlugin.getDefault().getDesignerCoreService()
-                                                        .getOpenedProcess(reference);
+                                        Set<String> curContextVars = getCurrentContextVariables(manager);
+                                        IProcess2 process2 = getProcess();
+                                        String jobId = process2.getProperty().getId();
+                                        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                                .getActivePage().getEditorReferences();
+                                        List<IProcess2> processes = CorePlugin.getDefault().getDesignerCoreService()
+                                                .getOpenedProcess(reference);
 
-                                                // gcui:if nameMap is empty it do nothing.
-                                                if (!nameMap.isEmpty()) {
-                                                    UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(
-                                                            factory, nameMap, jobId, curContextVars);
-                                                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(
-                                                            processes, nameMap, jobId, curContextVars);
-                                                }
-                                                // add for bug 9564
-                                                List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS,
-                                                        true);
-                                                List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
-                                                for (IRepositoryViewObject repositoryObject : all) {
-                                                    Item item = repositoryObject.getProperty().getItem();
-                                                    if (item instanceof ProcessItem) {
-                                                        ProcessItem processItem = (ProcessItem) item;
-                                                        allProcess.add(processItem);
-                                                    }
-                                                }
-                                                UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
-                                                        allProcess, process2);
-
-                                            } catch (PersistenceException e) {
-                                                // e.printStackTrace();
-                                                ExceptionHandler.process(e);
-                                            }
-                                            nameMap.clear();
-                                            manager.setModified(false);
+                                        // gcui:if nameMap is empty it do nothing.
+                                        if (!nameMap.isEmpty()) {
+                                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory,
+                                                    nameMap, jobId, curContextVars);
+                                            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes,
+                                                    nameMap, jobId, curContextVars);
                                         }
-                                    });
+                                        // add for bug 9564
+                                        List<IRepositoryViewObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                                        List<ProcessItem> allProcess = new ArrayList<ProcessItem>();
+                                        for (IRepositoryViewObject repositoryObject : all) {
+                                            Item item = repositoryObject.getProperty().getItem();
+                                            if (item instanceof ProcessItem) {
+                                                ProcessItem processItem = (ProcessItem) item;
+                                                allProcess.add(processItem);
+                                            }
+                                        }
+                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
+                                                allProcess, process2);
+
+                                    } catch (PersistenceException e) {
+                                        // e.printStackTrace();
+                                        ExceptionHandler.process(e);
+                                    }
+                                    nameMap.clear();
+                                    manager.setModified(false);
+                                }
+                            });
 
                         }
 
@@ -945,8 +943,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codePath = processor.getCodePath();
         }
 
-        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                processor.getCodeProject().getFullPath().append(codePath));
+        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot()
+                .getFile(processor.getCodeProject().getFullPath().append(codePath));
         if (!codeFile.exists()) {
             // Create empty one
             try {
@@ -1061,7 +1059,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void dispose() {
         getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
-        setInput(null);
+        /* after the release of eclipse3.6,this parameter can't be null */
+        // setInput(null);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         getSite().getWorkbenchWindow().getPartService().removePartListener(partListener);
 
