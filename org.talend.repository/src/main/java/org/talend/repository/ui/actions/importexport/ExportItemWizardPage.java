@@ -63,20 +63,22 @@ import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -665,87 +667,42 @@ class ExportItemWizardPage extends WizardPage {
 
                 ProcessUtils.clearFakeProcesses();
 
-                // context
+                // dependencies All
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        // process dependent items
-                        Collection<IRepositoryViewObject> repContextObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.CONTEXT, selectedItems);
-                        if (repContextObjects != null) {
-                            repositoryObjects.addAll(repContextObjects);
+                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+                        int i = 0;
+                        for (Item item : selectedItems) {
+                            if (item == null) {
+                                continue;
+                            }
+                            List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty()
+                                    .getId(), item.getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
+                            for (RelationshipItemBuilder.Relation relation : relations) {
+                                try {
+                                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                                    if (obj != null) {
+                                        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
+                                        if (repositoryNode != null) {
+                                            if (!repositoryObjects.contains(obj)) {
+                                                repositoryObjects.add(obj);
+                                                checkAllVerSionLatest(repositoryObjects, obj);
+                                            }
+                                            // break;
+                                        }
+                                    }
+                                } catch (PersistenceException et) {
+                                    ExceptionHandler.process(et);
+                                }
+                            }
+
                         }
-                        // metadata dependent items
-                        Collection<IRepositoryViewObject> repContext = MetadataTool
-                                .getContextDependenciesOfMetadataConnection(selectedItems);
-                        if (repContext != null) {
-                            repositoryObjects.addAll(repContext);
-                        }
+
                     }
                 });
-                monitor.worked(10);
-                // metadata
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        Collection<IRepositoryViewObject> repMetadataObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.METADATA, selectedItems);
-                        if (repMetadataObjects != null) {
-                            repositoryObjects.addAll(repMetadataObjects);
-                        }
-                    }
-                });
-                monitor.worked(20);
-                // child job
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        Collection<IRepositoryViewObject> repChildProcessObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.PROCESS, selectedItems);
-                        if (repChildProcessObjects != null) {
-                            repositoryObjects.addAll(repChildProcessObjects);
-                        }
-                    }
-                });
-                monitor.worked(10);
-
-                // child joblet
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        Collection<IRepositoryViewObject> repJobletObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.JOBLET, selectedItems);
-                        if (repJobletObjects != null) {
-                            repositoryObjects.addAll(repJobletObjects);
-                        }
-                    }
-                });
-                monitor.worked(10);
-                // child sql template
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        Collection<IRepositoryViewObject> repJobletObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.SQLPATTERNS, selectedItems, false);
-                        if (repJobletObjects != null) {
-                            repositoryObjects.addAll(repJobletObjects);
-                        }
-                    }
-                });
-                monitor.worked(10);
-                // child routines
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        Collection<IRepositoryViewObject> repJobletObjects = ProcessUtils.getProcessDependencies(
-                                ERepositoryObjectType.ROUTINES, selectedItems, false);
-                        if (repJobletObjects != null) {
-                            repositoryObjects.addAll(repJobletObjects);
-                        }
-                    }
-                });
-                monitor.worked(10);
-                //
+                monitor.worked(60);
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
@@ -771,7 +728,7 @@ class ExportItemWizardPage extends WizardPage {
                         }
                     }
                 });
-                monitor.worked(20);
+                monitor.worked(90);
                 // selection
                 Display.getDefault().syncExec(new Runnable() {
 
@@ -798,6 +755,28 @@ class ExportItemWizardPage extends WizardPage {
             //
         }
 
+    }
+
+    private void checkAllVerSionLatest(List<IRepositoryViewObject> repositoryObjects, IRepositoryViewObject object) {
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+        if (object.getRepositoryNode() != null) {
+            List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getId(), object.getVersion(),
+                    RelationshipItemBuilder.JOB_RELATION);
+            for (RelationshipItemBuilder.Relation relation : relations) {
+                try {
+                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                    if (obj != null) {
+                        if (!repositoryObjects.contains(obj)) {
+                            repositoryObjects.add(obj);
+                            checkAllVerSionLatest(repositoryObjects, obj);
+                        }
+                    }
+                } catch (PersistenceException et) {
+                    ExceptionHandler.process(et);
+                }
+            }
+        }
     }
 
     private void archiveRadioSelected() {
