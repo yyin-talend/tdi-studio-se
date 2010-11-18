@@ -18,54 +18,53 @@
    </license>
 
    <url>
-      <update label="CORE Talend update site for milestones" url="http://talendforge.org/core/updatesite/testing/"/>
       <discovery label="Talend web site" url="http://www.talend.com"/>
    </url>
 
    <requires>
       <import plugin="org.talend.core"/>
-      <import plugin="org.talend.commons"/>
       <import plugin="org.talend.repository"/>
+      <import plugin="org.talend.model"/>
       <import plugin="org.talend.model.edit"/>
       <import plugin="org.talend.commons.ui"/>
       <import plugin="org.talend.designer.core"/>
-      <import plugin="org.apache.batik.svggen" version="1.6.0" match="equivalent"/>
-      <import plugin="org.apache.batik.ext.awt" version="1.6.0" match="equivalent"/>
+      <import plugin="org.talend.metadata.managment"/>
       <import plugin="org.eclipse.osgi" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.jobs" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.preferences" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.contenttype" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.app" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.swt" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.swt" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.engine" version="1.0.100" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.metadata" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.core" version="1.0.100" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.engine" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.swt" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.jface.databinding" version="1.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.databinding.property" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.databinding.observable" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.compare.core" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.100" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.common" version="2.5.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.views" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.workbench" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.edit" version="2.5.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.common.ui" version="2.5.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.common" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.edit" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.common.ui" version="2.6.0" match="compatible"/>
       <import plugin="org.eclipse.draw2d" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
@@ -89,10 +88,12 @@
       <import plugin="org.eclipse.gmf.runtime.common.ui.action" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.notation" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.common" version="2.5.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.diagram.core" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.gmf.runtime.draw2d.ui.render" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.diagram.ui" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.diagram.ui.printing" version="1.2.0" match="compatible"/>
-      <import plugin="org.eclipse.gmf.runtime.draw2d.ui.render" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.databinding" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.databinding.beans" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.common.ui.printing" version="1.2.0" match="compatible"/>
@@ -108,24 +109,42 @@
       <import plugin="org.eclipse.gmf.runtime.diagram.ui.resources.editor" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.emf.type.core" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.edit" version="2.5.0" match="compatible"/>
+      <import plugin="org.eclipse.draw2d" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.emf.ui.properties" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.draw2d.ui" version="1.2.0" match="compatible"/>
+      <import plugin="org.apache.batik.ext.awt" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.transcoder" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.bridge" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.dom" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.dom.svg" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.svggen" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.util" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.xml" version="1.6.0" match="equivalent"/>
       <import plugin="org.apache.batik.pdf" version="1.6.0" match="equivalent"/>
       <import plugin="org.w3c.dom.svg" version="1.1.0" match="compatible"/>
-      <import plugin="org.apache.batik.util" version="1.6.0" match="equivalent"/>
-      <import plugin="org.eclipse.help" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.forms" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.osgi" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.p2.metadata.repository" version="1.0.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.swt" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.jface" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.repository" version="2.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.databinding.observable" version="1.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.databinding.property" version="1.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.transaction" version="1.2.0" match="compatible"/>
@@ -136,39 +155,33 @@
       <import plugin="org.eclipse.ui.forms" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui.views" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.gef" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="compatible"/>
-      <import plugin="org.apache.batik.bridge" version="1.6.0" match="equivalent"/>
-      <import plugin="org.apache.batik.dom" version="1.6.0" match="equivalent"/>
-      <import plugin="org.apache.batik.dom.svg" version="1.6.0" match="equivalent"/>
-      <import plugin="org.apache.batik.xml" version="1.6.0" match="equivalent"/>
-      <import plugin="org.apache.batik.transcoder" version="1.6.0" match="equivalent"/>
+      <import plugin="org.eclipse.jface" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.ecf" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ecf.filetransfer" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ecf.filetransfer" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.4.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.emf.edit" version="2.3.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore.change" version="2.3.0" match="compatible"/>
       <import plugin="org.eclipse.emf.validation" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
+      <import plugin="javax.xml" version="1.3.4" match="compatible"/>
+      <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
+      <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore" version="2.3.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.util.gui"/>
       <import plugin="org.apache.batik.css"/>
-      <import plugin="org.apache.batik.parser"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="javax.xml" version="1.3.4" match="compatible"/>
-      <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
-      <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
    </requires>
 
    <plugin
@@ -373,20 +386,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.svggen"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.ext.awt"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
          unpack="false"/>
 
    <plugin
@@ -726,48 +725,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik.transcoder"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.bridge"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.dom"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.dom.svg"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.util"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.xml"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.batik.pdf"
          download-size="0"
          install-size="0"
@@ -779,13 +736,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.util.gui"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
          unpack="false"/>
 
    <plugin
@@ -856,20 +806,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.css"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.parser"
-         download-size="0"
-         install-size="0"
-         version="1.6.0.v200805290154"
          unpack="false"/>
 
    <plugin
@@ -993,6 +929,76 @@
 
    <plugin
          id="org.eclipse.core.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.bridge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom.svg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.ext.awt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.parser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.svggen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.transcoder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.util.gui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"

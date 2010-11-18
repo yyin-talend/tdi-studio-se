@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <url>
-      <update label="TOS Talend update site for milestones" url="http://talendforge.org/core/updatesite/testing/"/>
-   </url>
-
    <includes
          id="org.eclipse.rcp"
          version="0.0.0"/>
