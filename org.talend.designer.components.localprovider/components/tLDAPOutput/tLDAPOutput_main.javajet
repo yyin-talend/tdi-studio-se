@@ -74,25 +74,38 @@ imports="
 %>
 							if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
 <%
-								if("java.util.Date".equals(columnType)){
+								if("byte[]".equals(columnType)){
+%>
+									entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+								}else if("java.util.Date".equals(columnType)){
 %>
 									String incomingColumn_<%=cid%> = new SimpleDateFormat(<%=column.getPattern()%>).format(<%=conn.getName() %>.<%=column.getLabel()%>);
+							    	if(incomingColumn_<%=cid%>.trim().indexOf(<%=separatorText%>)>0){
+							    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
+							    		for(String value_<%=cid%> : incomingColumn_<%=cid%>.trim().split(<%=separator%>)){
+							    			attr_<%=cid%>.add(value_<%=cid%>);    		
+							    		}
+							    		entry_<%=cid%>.put(attr_<%=cid%>);
+							    	}else{
+							    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",incomingColumn_<%=cid%>);
+							    	}
 <%
 								}else{
 %>
 									String incomingColumn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>);
+							    	if(incomingColumn_<%=cid%>.trim().indexOf(<%=separatorText%>)>0){
+							    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
+							    		for(String value_<%=cid%> : incomingColumn_<%=cid%>.trim().split(<%=separator%>)){
+							    			attr_<%=cid%>.add(value_<%=cid%>);    		
+							    		}
+							    		entry_<%=cid%>.put(attr_<%=cid%>);
+							    	}else{
+							    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",incomingColumn_<%=cid%>);
+							    	}
 <%
 								}
 %>
-						    	if(incomingColumn_<%=cid%>.trim().indexOf(<%=separatorText%>)>0){
-						    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
-						    		for(String value_<%=cid%> : incomingColumn_<%=cid%>.trim().split(<%=separator%>)){
-						    			attr_<%=cid%>.add(value_<%=cid%>);    		
-						    		}
-						    		entry_<%=cid%>.put(attr_<%=cid%>);
-						    	}else{
-						    		entry_<%=cid%>.put("<%=column.getOriginalDbColumnName()%>",incomingColumn_<%=cid%>);
-						    	}
 						    }
 <%
 						}
