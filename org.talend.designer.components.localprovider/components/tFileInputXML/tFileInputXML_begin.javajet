@@ -551,7 +551,8 @@ try{
 	if(filename_<%=cid %> instanceof java.io.InputStream){
 		doc_<%=cid%> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
 	}else{
-		java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
+		org.xml.sax.InputSource in_<%=cid %>= new org.xml.sax.InputSource(new java.io.FileInputStream(filename_<%=cid %>.toString()));
+		in_<%=cid %>.setEncoding(<%=encoding %>);		
 		doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
 	}
 }catch(Exception e){
