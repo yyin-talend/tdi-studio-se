@@ -269,6 +269,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.draw2d"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.gef"
          download-size="0"
          install-size="0"
@@ -361,13 +368,6 @@
 
    <plugin
          id="org.eclipse.gmf.runtime.draw2d.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.draw2d"
          download-size="0"
          install-size="0"
          version="0.0.0"
