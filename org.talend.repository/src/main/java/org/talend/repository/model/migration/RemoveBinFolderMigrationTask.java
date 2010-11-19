@@ -152,7 +152,7 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
                 // restore folder if doesn't exist anymore.
                 String oldPath = item.getState().getPath();
                 IPath path = new Path(oldPath);
-                factory.createParentFoldersRecursively(getProject(), repositoryType, path);
+                factory.createParentFoldersRecursively(getProject(), repositoryType, path, true);
 
                 IFolder typeRootFolder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(repositoryType),
                         true);
