@@ -1061,6 +1061,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (targetFile.exists()) {
             if (targetFile.canWrite()) {
                 if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
+                    displayErrorDialog("Please enter another destination zip file.");
+                    giveFocusToDestination();
                     return false;
                 }
             } else {
