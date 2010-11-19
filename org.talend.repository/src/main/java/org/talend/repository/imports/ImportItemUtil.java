@@ -50,6 +50,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -81,6 +82,7 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -394,6 +396,13 @@ public class ImportItemUtil {
                         deployJarToDesForArchive(manager, extRoutines);
                     } else {
                         deployJarToDes(manager, extRoutines);
+                    }
+                }
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        service.loadComponentsFromProviders();
                     }
                 }
                 // cannot cancel this part
