@@ -43,7 +43,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             new java.io.File(tempFile_<%=cid%>));
 
     ds_<%=cid%>.setFieldDelimiter(',');
-    ds_<%=cid%>.setRecordDelimiter("\r\n");
+<%
+	System.out.println(System.getProperty("os.name").contains("Windows"));
+	if(System.getProperty("os.name").contains("Windows")){
+%>
+    	ds_<%=cid%>.setRecordDelimiter("\r\n");
+<%
+	}else{
+%>
+    	ds_<%=cid%>.setRecordDelimiter("\n");
+<%
+	}
+%>
     ds_<%=cid%>.setUseFirstRowAsHeader(true);
     net.sf.jasperreports.engine.JasperPrint print_<%=cid%> = net.sf.jasperreports.engine.JasperFillManager.fillReport(
             jasperFile_<%=cid%>, hm_<%=cid%>, ds_<%=cid%>);
