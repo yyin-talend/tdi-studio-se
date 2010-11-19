@@ -102,6 +102,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		breer_<%=cid%>.close();
 		stderr_<%=cid%>.close();
 		
+		sess_<%=cid%>.waitForCondition(ch.ethz.ssh2.ChannelCondition.EXIT_STATUS, 10000);
+		
 		 /* Close this session */
 		
 		sess_<%=cid%>.close();
