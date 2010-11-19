@@ -2,12 +2,12 @@
   imports="
       java.util.List
       java.util.Map
-      java.util.ArrayList       
       org.talend.core.model.metadata.IMetadataColumn
       org.talend.core.model.metadata.IMetadataTable
       org.talend.core.model.process.EConnectionType
       org.talend.core.model.process.ElementParameterParser
       org.talend.core.model.process.IConnection
+      org.talend.core.model.process.IConnectionCategory
       org.talend.core.model.process.INode
       org.talend.designer.codegen.config.CodeGeneratorArgument
       org.talend.core.model.metadata.types.JavaTypesManager
@@ -30,12 +30,18 @@
     inMainCon = connsIn.get(0);
   }   
   IConnection outConn = null;
-  List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
   
   if (outConns == null || outConns.size() == 0 ){
     return "";
   } else{
-    outConn = outConns.get(0);
+  	for(int i=0; i<outConns.size(); i++){
+  		IConnection connTemp = outConns.get(i);
+	    if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	    	outConn = connTemp;
+	    	break;
+	    }
+  	}
   } 
   
   String outconnName = outConn.getName();
