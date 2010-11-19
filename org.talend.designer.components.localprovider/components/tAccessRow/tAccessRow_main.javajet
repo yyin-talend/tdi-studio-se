@@ -55,10 +55,12 @@ for(IConnection conn : outgoingConns) {
     <%=conn.getName() %> = null;            
 <%      }
 }
-if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-    %>
-    commitCounter_<%=cid%>++;
-    <%
+if(!useExistingConnection) {
+	if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
+	    %>
+	    commitCounter_<%=cid%>++;
+	    <%
+	}
 }
 %>
 query_<%=cid %> = <%=dbquery%>;
