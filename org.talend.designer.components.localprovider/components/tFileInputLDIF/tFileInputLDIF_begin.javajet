@@ -30,6 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String addprefixStr = ElementParameterParser.getValue(node, "__ADDPREFIX__");
         boolean addprefix = (addprefixStr!=null&&!("").equals(addprefixStr))?("true").equals(addprefixStr):false;
+        String valueSeperator = ElementParameterParser.getValue(node, "__VALUE_SEPERATOR__");
 %>
 ///////////////////////////////////
         netscape.ldap.util.LDIF ldif_<%=cid %> = new netscape.ldap.util.LDIF(<%=filename %>);
@@ -79,7 +80,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 
                                 while (values_<%=cid %>.hasMoreElements()) {
                                     String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
-                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeperator%> + value_<%=cid %>;
                                 }
                             }
                         }
@@ -114,7 +115,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 
                                 while (values_<%=cid %>.hasMoreElements()) {
                                     String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
-                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeperator%> + value_<%=cid %>;
                                 }
                             }
                         }
@@ -168,7 +169,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 										if(firstLoop_<%=cid %>){
 											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
 										}else{
-											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + <%=valueSeperator%> + value_<%=cid %>;
 										}
 										firstLoop_<%=cid %> = false;										
 									}
