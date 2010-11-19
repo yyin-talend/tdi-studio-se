@@ -125,12 +125,13 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      * (non-Javadoc) Method declared on IWizard.
      */
     public boolean performFinish() {
-        if (mainPage == null) {
-            return false;
-        }
         boolean finish = mainPage.finish();
-        selection = null;
-        mainPage = null;
+        if (!finish && !getShell().isDisposed()) {
+            getShell().close();
+        } else {
+            selection = null;
+            mainPage = null;
+        }
         return finish;
     }
 
