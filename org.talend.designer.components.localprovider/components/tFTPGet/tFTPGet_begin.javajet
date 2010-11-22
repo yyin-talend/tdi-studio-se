@@ -240,10 +240,10 @@ if (sftp) { // *** sftp *** //
     com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
     channel_<%=cid%>.connect();
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%
   }
   %>
-  c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   com.jcraft.jsch.SftpProgressMonitor monitor_<%=cid%> = new MyProgressMonitor_<%=cid%>();
   SFTPGetter_<%=cid%> getter_<%=cid%> = new SFTPGetter_<%=cid%>();
   getter_<%=cid%>.cnlSFTP = c_<%=cid%>;
