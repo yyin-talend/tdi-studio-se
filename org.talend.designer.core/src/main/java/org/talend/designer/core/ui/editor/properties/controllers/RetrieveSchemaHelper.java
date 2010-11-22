@@ -56,11 +56,15 @@ public class RetrieveSchemaHelper {
         IMetadataTable outputMetaCopy = outputMeta.clone(true);
 
         File xmlFile = new File(TalendTextUtils.removeQuotes(node.getElementParameter("PATH_JOBDEF").getValue().toString()));
-        xmlFile.exists();
+        if (!xmlFile.exists())
+            try {
+                xmlFile.createNewFile();
+            } catch (IOException e1) {
+                ExceptionHandler.process(e1);
+            }
         SAXReader saxReader = new SAXReader();
         Document document;
         try {
-            document = saxReader.read(xmlFile);
 
             // get the schema file from server
             AutoApi a = new AutoApi();
@@ -76,6 +80,7 @@ public class RetrieveSchemaHelper {
             a.getJobDefinitionFile(jobDir, jobName, jobDef);
             a.closeConnection();
 
+            document = saxReader.read(xmlFile);
             List inputList = document.selectNodes("//Job//Lines//Line//Steps//Input//Sources//Source//Format//Fields//Field");
             List inputMetaColumnList = new ArrayList<MetadataColumn>();
             for (int i = 0; i < inputList.size(); i++) {
