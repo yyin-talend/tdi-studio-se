@@ -71,10 +71,10 @@ import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -97,6 +97,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
     private static final String COPY_CHILD_COLUMNS = "COPY_CHILD_COLUMNS"; //$NON-NLS-1$
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
+
+    private static final String RETRIEVE_SCHEMA = "Retrieve Schema";
+
+    private static final String TUNISERVBTGENERIC = "tUniservBTGeneric";
 
     protected static final int WIZARD_WIDTH = 800;
 
@@ -230,13 +234,31 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
             }
             if (flowMainInput && !multipleInput && !tableReadOnly) {
-                resetBtn = createAdditionalButton(subComposite, btn, btnSize, param, Messages
-                        .getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
+                resetBtn = createAdditionalButton(
+                        subComposite,
+                        btn,
+                        btnSize,
+                        param,
+                        Messages.getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
                         top);
                 resetBtn.setData(NAME, RESET_COLUMNS);
 
                 lastControlUsed = resetBtn;
 
+            }
+
+            if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) { //$NON-NLS-1$
+                Button newButton = null;
+                if (resetBtn != null) {
+                    newButton = resetBtn;
+                } else {
+                    newButton = btn;
+                }
+                Button retrieveSchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, RETRIEVE_SCHEMA,
+                        RETRIEVE_SCHEMA, top); //$NON-NLS-1$ //$NON-NLS-2$
+                retrieveSchemaButton.setData(NAME, RETRIEVE_SCHEMA);
+
+                lastControlUsed = retrieveSchemaButton;
             }
             // 0004322: tRunJob can import the tBufferOutput schema from the son job
             if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
@@ -247,9 +269,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 } else {
                     newButton = btn;
                 }
-                Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, Messages
-                        .getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
-                        .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
+                Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param,
+                        Messages.getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
+                                .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
 
                 lastControlUsed = copySchemaButton;
@@ -645,7 +667,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
                 columnCopied.setCustom(column.isCustom());
                 columnCopied.setReadOnly(column.isReadOnly());
-                if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName()))
+                if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName())) //$NON-NLS-1$ //$NON-NLS-2$
                         && !outputMetaCopy.sameMetadataAs(originaleMetadataTable, IMetadataColumn.OPTIONS_NONE)) {
                     columnCopied.setReadOnly(false);
                 }
@@ -653,7 +675,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly()
                     || param.isReadOnly(node.getElementParametersWithChildrens()));
-            if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName()))
+            if (("tLogCatcher".equals(node.getComponent().getName()) || "tStatCatcher".equals(node.getComponent().getName())) //$NON-NLS-1$ //$NON-NLS-2$
                     && !outputMetaCopy.sameMetadataAs(originaleMetadataTable, IMetadataColumn.OPTIONS_NONE)) {
                 outputMetaCopy.setReadOnly(false);
             }
@@ -808,6 +830,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
 
             }
+        } else if (inputButton.getData(NAME).equals(RETRIEVE_SCHEMA)) {
+            Node node = (Node) elem;
+            // String propertyName = (String) inputButton.getData(PARAMETER_NAME);
+            final Command cmd = RetrieveSchemaHelper.retrieveSchemasCommand(node);
+            if (switchParam != null) {
+                switchParam.setValue(Boolean.FALSE);
+            }
+            return cmd;
         } else if (inputButton.getData(NAME).equals(RESET_COLUMNS)) {
             Node node = (Node) elem;
 
@@ -940,8 +970,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
             if (node.getMetadataFromConnector(param.getContext()) != null) {
                 isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
             }
-            if (value.equals(EmfComponent.BUILTIN) && isReadOnly && !"tLogCatcher".equals(node.getComponent().getName())
-                    && !"tStatCatcher".equals(node.getComponent().getName())) {
+            if (value.equals(EmfComponent.BUILTIN) && isReadOnly && !"tLogCatcher".equals(node.getComponent().getName()) //$NON-NLS-1$
+                    && !"tStatCatcher".equals(node.getComponent().getName())) { //$NON-NLS-1$
                 boolean hasMetadataInput = false;
                 if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
                         || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
@@ -971,8 +1001,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
                 }
 
-                IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 String schemaSelected = (String) repositorySchemaType.getValue();
                 if (repositoryTableMap.containsKey(schemaSelected)) {
                     repositoryMetadata = repositoryTableMap.get(schemaSelected);
