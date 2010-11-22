@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -19,8 +21,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -40,6 +45,10 @@ public class SalesforceSchemaTableWizard extends CheckLastVersionRepositoryWizar
 
     private MetadataTable metadataTable;
 
+    private Map<String, String> oldTableMap;
+
+    private IMetadataTable oldMetadataTable;
+
     /**
      * Constructor for TableWizard.
      * 
@@ -51,8 +60,12 @@ public class SalesforceSchemaTableWizard extends CheckLastVersionRepositoryWizar
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
-        setNeedsProgressMonitor(true);
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
+            oldMetadataTable = ConvertionHelper.convert(metadataTable);
+        }
 
+        setNeedsProgressMonitor(true);
         isRepositoryObjectEditable();
         initLockStrategy();
     }
@@ -85,6 +98,8 @@ public class SalesforceSchemaTableWizard extends CheckLastVersionRepositoryWizar
      */
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
+            // update
+            RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 factory.save(repositoryObject.getProperty().getItem());

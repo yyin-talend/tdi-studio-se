@@ -36,6 +36,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
@@ -365,6 +366,8 @@ public class SalesforceSchemaWizard extends CheckLastVersionRepositoryWizard imp
                     connectionProperty.setId(nextId);
                     factory.create(connectionItem, salesforceSchemaWizardPage0.getDestinationPath());
                 } else {
+                    // update
+                    RepositoryUpdateManager.updateFileConnection(connectionItem);
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }
