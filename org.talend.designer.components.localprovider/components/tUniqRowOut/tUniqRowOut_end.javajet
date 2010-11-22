@@ -52,18 +52,24 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
 
             // ////////////////////////////////////
             class FileRowIterator_<%=cid %> implements java.util.Iterator<rowStruct_<%=cid %>> {
-
+				
+				boolean isEndOfFile = false;
+				
                 rowStruct_<%=cid %>[] buffer;
 
                 ObjectInputStream ois;
                 
                 java.io.BufferedInputStream bis;
+                
+                rowStruct_<%=cid %> tempRow;
 
                 int count = 0;
 
                 int index = 0;
 
                 public FileRowIterator_<%=cid %>(java.io.File file, int bufferSize) throws IOException {
+                	isEndOfFile = false;
+                	tempRow = null;
                 	bis = new java.io.BufferedInputStream(new java.io.FileInputStream(file));
                     ois = new java.io.ObjectInputStream(bis);
                     buffer = new rowStruct_<%=cid %>[bufferSize];
@@ -73,22 +79,31 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
                     count = 0;
                     index = 0;
                     try {
-                        while (bis.available() > 0 && count < buffer.length) {
+						if (tempRow!=null) {
+							buffer[count++] = tempRow;
+							tempRow = null;
+						}
+                        while (!isEndOfFile && count < buffer.length) {
                             buffer[count] = new rowStruct_<%=cid %>();
                             buffer[count].readData(ois);
                             count++;
                         }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+						if (!isEndOfFile && count >= buffer.length && bis.available() == 0) {
+							tempRow = new rowStruct_<%=cid %>();
+							tempRow.readData(ois);
+						}
+                    } catch (Exception e) {
+						if(e.getCause() instanceof java.io.EOFException){
+							this.isEndOfFile = true; // the EOFException
+							tempRow = null;
+						} else {
+							throw new RuntimeException(e);
+						}
                     }
                 }
 
                 public boolean hasNext() {
-                    try {
-                        return index < count || bis.available() > 0;
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                	return index < count || !isEndOfFile;
                 }
 
                 public rowStruct_<%=cid %> next() {
