@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -32,6 +33,7 @@ import org.talend.cwm.helper.SchemaHelper;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
+import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 /**
  * DOC hywang class global comment. Detailled comment
@@ -291,7 +293,15 @@ public class ProjectNodeHelper {
                         break;
                     }
                 }
-                PackageHelper.addMetadataTable(dbtable, s);
+
+                // for bug 16794
+                if (s instanceof SchemaImpl) {
+                    SchemaImpl schemaElement = (SchemaImpl) s;
+                    EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
+                    ownedElement.add(dbtable);
+
+                }
+                // PackageHelper.addMetadataTable(dbtable, s);
             }
         } else {
             /*
