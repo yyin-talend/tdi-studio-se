@@ -234,7 +234,12 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
         String wsdlfile = (String) node.getPropertyValue("ENDPOINT"); //$NON-NLS-1$
         wsdlfile = wsdlfile.substring(1, wsdlfile.length() - 1);
-
+        if (wsdlfile.equals("")) {
+            MessageDialog.openError(Display.getDefault().getActiveShell(),
+                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"),
+                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.WSDLEquals"));
+            return;
+        }
         File dir = new File(getTmpFolder());
 
         TalendWSDL2Java java2WSDL = new TalendWSDL2Java();
@@ -250,8 +255,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                                             , java2WSDL.getException().getClass().getCanonicalName(), java2WSDL.getException()
                                                     .getMessage()));
         } else {
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), org.talend.designer.core.i18n.Messages
-                    .getString("WSDL2JAVAController.TOS"), //$NON-NLS-1$
+            MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), //$NON-NLS-1$
                     org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailedFromWSDL", wsdlfile)); //$NON-NLS-1$
         }
 
@@ -329,7 +334,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    // 
+                    //
                 }
             }
         }
@@ -487,7 +492,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                 }
 
                 // validate argument combinations
-                // 
+                //
                 validateOptions();
                 parser.run(wsdlURI);
 
