@@ -18,7 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -91,22 +90,20 @@ public class TalendPaletteViewer extends PaletteViewer {
         executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
     }
 
-    private void initToolBar() {
-        // getViewSite().getActionBars().getToolBarManager();
-    }
-
     /**
+     * FIXME ggu
      * 
-     * override from parent ScrollingGraphicalViewer, and remove the "final".
+     * Because the method createControl is final in super calss ScrollingGraphicalViewer,
+     * 
+     * Then, use the reflection function to move to class TalendPaletteViewerProvider.
      */
-    @Override
-    public Control createControl(Composite parent) {
-        FigureCanvas canvas = new TalendFigureCanvas(parent, getLightweightSystem(), this);
-        setControl(canvas);
-        installRootFigure(); // change the parent method to "protected".
-        return canvas;
-    }
-
+    // @Override
+    // public Control createControl(Composite parent) {
+    // FigureCanvas canvas = new TalendFigureCanvas(parent, getLightweightSystem(), this);
+    // setControl(canvas);
+    // installRootFigure(); // change the parent method to "protected".
+    // return canvas;
+    // }
     /*
      * (non-Javadoc)
      * 

@@ -20,7 +20,7 @@ import org.talend.core.ui.images.ECoreImage;
 /**
  * DOC hwang class global comment. Detailled comment
  */
-public class ShowFavoriteAction extends Action {
+public final class ShowFavoriteAction extends Action {
 
     private static ShowFavoriteAction showFavorite = null;
 
@@ -28,6 +28,7 @@ public class ShowFavoriteAction extends Action {
 
     private ShowFavoriteAction() {
         super("&Favorite"); //$NON-NLS-1$
+        setId(getClass().getCanonicalName());
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_DISICON));
     }
 
@@ -38,21 +39,11 @@ public class ShowFavoriteAction extends Action {
         return showFavorite;
     }
 
-    private ShowStandardAction showS = null;
-
-    public ShowStandardAction getShowS() {
-        return this.showS;
-    }
-
-    public void setShowS(ShowStandardAction showS) {
-        this.showS = showS;
-    }
-
     public void run() {
         ComponentUtilities.updatePalette(true);
         state = false;
         setEnabled(false);
-        getShowS().setEnabled(true);
+        ShowStandardAction.getInstance().setEnabled(true);
         if (!this.isEnabled()) {
             setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FAVORITE_ICON));
         }

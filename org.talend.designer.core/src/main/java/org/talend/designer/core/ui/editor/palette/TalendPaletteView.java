@@ -20,6 +20,9 @@ import org.talend.repository.ui.actions.ShowStandardAction;
 
 /**
  * DOC hwang class global comment. Detailled comment
+ * 
+ * @deprecated don't extension this, and move to the method postWindowOpen of class ApplicationWorkbenchWindowAdvisor,
+ * when open workbech.
  */
 public class TalendPaletteView extends PaletteView {
 
@@ -29,14 +32,12 @@ public class TalendPaletteView extends PaletteView {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         IToolBarManager toolMana = getViewSite().getActionBars().getToolBarManager();
-        ShowStandardAction showSt = ShowStandardAction.getInstance();
-        ShowFavoriteAction showSf = ShowFavoriteAction.getInstance();
-        showSt.setShowF(showSf);
-        showSf.setShowS(showSt);
-        toolMana.add(showSt);
-        toolMana.add(showSf);
-        if (showSf.state == true) {
-            showSt.doSetEnable();
+        ShowStandardAction showStandardAction = ShowStandardAction.getInstance();
+        ShowFavoriteAction showFavoriteAction = ShowFavoriteAction.getInstance();
+        toolMana.add(showStandardAction);
+        toolMana.add(showFavoriteAction);
+        if (ShowFavoriteAction.state) {
+            showStandardAction.doSetEnable();
         }
     }
 

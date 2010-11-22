@@ -187,14 +187,6 @@
                         name="%componentSettingsView">
                   </view>
                   <view
-			    	allowMultiple="false"
-					name="%palette"
-					icon="icons/palette_view.gif"
-					category="org.eclipse.ui"
-					class="org.talend.designer.core.ui.editor.palette.TalendPaletteView"
-					id="org.eclipse.gef.ui.palette_view">
-				</view>
-                  <view
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.jobsettings.JobSettingsView"

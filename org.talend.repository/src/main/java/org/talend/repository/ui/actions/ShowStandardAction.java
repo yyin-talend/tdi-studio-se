@@ -20,12 +20,13 @@ import org.talend.core.ui.images.ECoreImage;
 /**
  * DOC hwang class global comment. Detailled comment
  */
-public class ShowStandardAction extends Action {
+public final class ShowStandardAction extends Action {
 
-    public static ShowStandardAction showStandard = null;
+    private static ShowStandardAction showStandard = null;
 
     private ShowStandardAction() {
         super("&Standard"); //$NON-NLS-1$
+        setId(getClass().getCanonicalName());
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_DISICON));
     }
 
@@ -36,21 +37,11 @@ public class ShowStandardAction extends Action {
         return showStandard;
     }
 
-    private ShowFavoriteAction showF = null;
-
-    public ShowFavoriteAction getShowF() {
-        return this.showF;
-    }
-
-    public void setShowF(ShowFavoriteAction showF) {
-        this.showF = showF;
-    }
-
     public void run() {
         ComponentUtilities.updatePalette(false);
         ShowFavoriteAction.state = true;
         setEnabled(false);
-        getShowF().setEnabled(true);
+        ShowFavoriteAction.getInstance().setEnabled(true);
     }
 
     public void doRun() {
@@ -61,8 +52,7 @@ public class ShowStandardAction extends Action {
 
     public void doSetEnable() {
         setEnabled(false);
-        if (getShowF() != null)
-            getShowF().setEnabled(true);
+        ShowFavoriteAction.getInstance().setEnabled(true);
         if (!this.isEnabled()) {
             setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.STANDARD_ICON));
         }
