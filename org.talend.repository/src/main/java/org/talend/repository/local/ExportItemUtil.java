@@ -214,8 +214,8 @@ public class ExportItemUtil {
     private Collection<Item> getOtherVersions(Collection<Item> items) throws PersistenceException {
         Collection<Item> itemsVersions = new ArrayList<Item>();
         for (Item item : items) {
-            org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(pManager
-                    .getProject(item));
+            org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(
+                    pManager.getProject(item));
             List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
                     item.getProperty().getId(), false);
             for (IRepositoryViewObject repositoryObject : allVersion) {
@@ -373,7 +373,7 @@ public class ExportItemUtil {
     }
 
     private IPath getProjectPath() {
-        return new Path(project.getLabel());
+        return new Path(project.getTechnicalLabel());
     }
 
     private void computeItemFilesAndPaths(File destinationFile, Item item, boolean projectFolderStructure) {
