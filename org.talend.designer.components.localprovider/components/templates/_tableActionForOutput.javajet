@@ -3,7 +3,7 @@
 <%  
 //issue 0010346 Parallelization crash with "Drop table if exists and create"
 Boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
-String dbms=ElementParameterParser.getValue(node, "__TYPE__");
+String dbms=ElementParameterParser.getValue(node, "__MAPPING__");
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 	manager = getManager(dbmsId, cid);
@@ -29,11 +29,11 @@ if (!isParallelize) {
 					String query=manager.getCreateTableSQL(stmtStructure);
 					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					} else {
 %>				
-					stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+					stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					}
 				}
@@ -57,11 +57,11 @@ if (!isParallelize) {
 					String query=manager.getCreateTableSQL(stmtStructure);
 					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					} else {
 %>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					}
 				}
@@ -161,11 +161,11 @@ if (!isParallelize) {
 					String query=manager.getCreateTableSQL(stmtStructure);
 					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					} else {
 %>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					}
 				}
@@ -194,11 +194,11 @@ if (!isParallelize) {
 					String query=manager.getCreateTableSQL(stmtStructure);
 					if(query.lastIndexOf("(")==query.length()-1) {
 %>
-						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>"+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					} else {
 %>				
-						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>_id")+")<%=ending%>");
+						stmtCreate_<%=cid%>.execute("<%=query%>, "+DynamicUtils.getCreateTableSQL(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbms==null?"":dbms.toLowerCase()%>")+")<%=ending%>");
 <%
 					}
 				}

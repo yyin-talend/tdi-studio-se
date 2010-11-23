@@ -29,6 +29,16 @@ imports="
 	String enableStream = ElementParameterParser.getValue(node, "__ENABLE_STREAM__");
 	String dbms=ElementParameterParser.getValue(node, "__TYPE__");
 	
+	if(dbms!=null && (dbms.contains("MSSQL") || dbms.contains("ORACLE"))){
+		if (dbms.contains("ORACLE")) {
+			dbms = "ORACLE";
+		} else if (dbms.contains("MSSQL")) {
+			dbms = "MSSQL";
+		} else if (dbms.contains("PostgreSQL")) {
+			dbms = "PostgreS";
+		}
+	}
+	
     boolean whetherTrimAllCol = ("true").equals(ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__"));
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
     
