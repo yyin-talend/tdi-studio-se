@@ -57,9 +57,12 @@ try{
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{
      		<%if(("always").equals(overwrite)){%>
+     		  
      			String fromFile_<%=cid%> = key<%=cid %>;
      			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
-     		    if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
+     			
+     		    if (!fromFile_<%=cid%>.equals(toFile_<%=cid%>)){
+     		      if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
      		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
      		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
      		    	}
@@ -72,7 +75,8 @@ try{
 	     			}
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			nb_file_<%=cid%>++;
-     			}
+     			  }
+     	       }
      		<%}%>
      		<%if(("never").equals(overwrite)){%>
      			if(!(ftp_<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
