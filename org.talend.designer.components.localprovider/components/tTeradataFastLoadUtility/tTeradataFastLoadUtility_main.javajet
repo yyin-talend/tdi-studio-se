@@ -127,9 +127,9 @@ fw_<%=cid %>.close();
 <%//run fastload command----------------------------------------------------%>
 <%if("true".equals(defineCharset)) {
 	if(!("".equals(charset))) {%>
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload -c "+<%=charset%>+" < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload -c "+<%=charset%>+" < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}} else {%>	
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {

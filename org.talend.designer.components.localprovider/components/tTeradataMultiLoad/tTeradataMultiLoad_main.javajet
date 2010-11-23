@@ -143,7 +143,7 @@ fw_<%=cid %>.write("DELETE FROM "+tableFullName_<%=cid%>+" "+<%=where%>+" ;\r\n"
 
 
 <%//Import file----------------------------------------------------------%>
-fw_<%=cid %>.write(".IMPORT INFILE "+<%=loadFile%>);
+fw_<%=cid %>.write(".IMPORT INFILE \""+<%=loadFile%> +"\"");
 fw_<%=cid %>.write(" FORMAT VARText '"+<%=separator%>+"' LAYOUT customer_layout APPLY DML_LABEL;\r\n");
 fw_<%=cid %>.write(".END MLOAD;\r\n");
 fw_<%=cid %>.write(".LOGOFF;\r\n");
@@ -154,9 +154,9 @@ fw_<%=cid %>.close();
 <%//run mload command----------------------------------------------------%>
 <%if("true".equals(defineCharset)) {
 	if(!("".equals(charset))) {%>
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload -c "+<%=charset%>+" < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload -c "+<%=charset%>+" < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}} else {%>	
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload < "+<%=scriptPath%>+<%=table%>+".script > "+<%=errorFile%>+" 2>&1");
+String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
