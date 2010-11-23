@@ -144,6 +144,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                         IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
                         Font font = new Font(null, "courier", 10, SWT.NONE); //$NON-NLS-1$
                         PreferenceConverter.setValue(store, TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData());
+                        PreferenceConverter.setValue(store, TalendDesignerPrefConstants.CONSOLT_TEXT_FONT, font.getFontData());
                     }
                 });
             }

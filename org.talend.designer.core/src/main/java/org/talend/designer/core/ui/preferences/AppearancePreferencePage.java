@@ -37,7 +37,7 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
 
     private FontFieldEditor consoleFontField = null;
 
-    public static final String CONSOLE_FONT = "talendOutputConsoleFont"; //$NON-NLS-1$
+    //    public static final String CONSOLE_FONT = "talendOutputConsoleFont"; //$NON-NLS-1$
 
     public AppearancePreferencePage() {
         super(GRID);
@@ -52,8 +52,8 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
      */
     @Override
     protected void createFieldEditors() {
-        addField(new BooleanFieldEditor(ITalendCorePrefConstants.CONTEXT_GROUP_BY_SOURCE, Messages
-                .getString("AppearancePreferencePage.groupBySource"), //$NON-NLS-1$
+        addField(new BooleanFieldEditor(ITalendCorePrefConstants.CONTEXT_GROUP_BY_SOURCE,
+                Messages.getString("AppearancePreferencePage.groupBySource"), //$NON-NLS-1$
                 getFieldEditorParent()));
         Composite parent = getFieldEditorParent();
         addFields(parent);
@@ -98,12 +98,12 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
     }
 
     protected void addFontAndColorFields(Composite composite) {
-        memoFontEditor = new FontFieldEditor(TalendDesignerPrefConstants.MEMO_TEXT_FONT, Messages
-                .getString("AppearancePreferencePage.textFont"), composite); //$NON-NLS-1$
+        memoFontEditor = new FontFieldEditor(TalendDesignerPrefConstants.MEMO_TEXT_FONT,
+                Messages.getString("AppearancePreferencePage.textFont"), composite); //$NON-NLS-1$
         addField(memoFontEditor);
 
-        consoleFontField = new FontFieldEditor(OutputConsolePreferencePage.CONSOLE_FONT, Messages
-                .getString("AppearancePreferencePage.consoleFont"), composite); //$NON-NLS-1$
+        consoleFontField = new FontFieldEditor(TalendDesignerPrefConstants.CONSOLT_TEXT_FONT,
+                Messages.getString("AppearancePreferencePage.consoleFont"), composite); //$NON-NLS-1$
         addField(consoleFontField);
 
     }
