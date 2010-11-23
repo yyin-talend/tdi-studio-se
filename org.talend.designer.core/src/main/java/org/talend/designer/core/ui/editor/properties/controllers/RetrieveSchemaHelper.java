@@ -128,7 +128,9 @@ public class RetrieveSchemaHelper {
             // set advanced setting info
             DefaultElement de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Input//Sources//Source//Format//FileInfo//Record//FieldSeparator");
-            node.getElementParameter("IN_FIELD_SEP").setValue(de.getData().toString());
+            int separator = Integer.parseInt(de.getData().toString());
+            node.getElementParameter("IN_FIELD_SEP").setValue(
+                    TalendTextUtils.addQuotes(new Character((char) separator).toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Input//Sources//Source//Format//FileInfo//Record//HeaderRecordCount");
@@ -136,11 +138,11 @@ public class RetrieveSchemaHelper {
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Input//Sources//Source//Format//FileInfo//FileLocation//Directory");
-            node.getElementParameter("IN_DIR").setValue(de.getData().toString());
+            node.getElementParameter("IN_DIR").setValue(TalendTextUtils.addQuotes(de.getData().toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Input//Sources//Source//Format//FileInfo//FileLocation//FileName");
-            node.getElementParameter("IN_FILENAME").setValue(de.getData().toString());
+            node.getElementParameter("IN_FILENAME").setValue(TalendTextUtils.addQuotes(de.getData().toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Input//Sources//Source//Format//FileInfo//FileLocation");
@@ -148,7 +150,9 @@ public class RetrieveSchemaHelper {
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//Record//FieldSeparator");
-            node.getElementParameter("OUT_FIELD_SEP").setValue(de.getData().toString());
+            separator = Integer.parseInt(de.getData().toString());
+            node.getElementParameter("OUT_FIELD_SEP").setValue(
+                    TalendTextUtils.addQuotes(new Character((char) separator).toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//Record//HeaderRecordCount");
@@ -156,11 +160,11 @@ public class RetrieveSchemaHelper {
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//FileLocation//Directory");
-            node.getElementParameter("OUT_DIR").setValue(de.getData().toString());
+            node.getElementParameter("OUT_DIR").setValue(TalendTextUtils.addQuotes(de.getData().toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//FileLocation//FileName");
-            node.getElementParameter("OUT_FILENAME").setValue(de.getData().toString());
+            node.getElementParameter("OUT_FILENAME").setValue(TalendTextUtils.addQuotes(de.getData().toString()));
 
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//FileLocation");
