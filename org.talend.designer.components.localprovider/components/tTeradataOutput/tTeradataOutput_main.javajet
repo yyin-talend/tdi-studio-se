@@ -940,36 +940,46 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	<%
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
-                }catch (java.sql.SQLException e){
+                }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
-                		//throw(e);
-                	    boolean isFailure = false;
-                	    while(e != null){
-                	    	if(e.getErrorCode() == -2801){
-     				            System.out.println(" Message: " + e.getMessage());
-                	    		e.printStackTrace();
-                	    		System.out.println();
-                	    	}
-                	    	else if(e.getErrorCode() == 1339){
-                	    		isFailure = true;
-                	    	}
-                	    	else{
-     				            System.out.println(" Message: " + e.getMessage());
-                	    		e.printStackTrace();
-                	    	}
-                	    	e = e.getNextException();
-                	    }
-                	    if(isFailure){
- 				            System.out.println(" Message: " + e.getMessage());
-                	    	e.printStackTrace();
-                	    }
+                		throw(e);
+                	    
                 	<%
                 	}else {
                 	%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
+                }catch(java.sql.SQLException se){
+                	<%if(("true").equals(dieOnError)) {
+                    %>
+                	boolean isFailure = false;
+            	    while(se != null){
+            	    	if(se.getErrorCode() == -2801){
+ 				            System.out.println(" Message: " + se.getMessage());
+            	    		se.printStackTrace();
+            	    		System.out.println();
+            	    	}
+            	    	else if(se.getErrorCode() == 1339){
+            	    		isFailure = true;
+            	    	}
+            	    	else{
+ 				            System.out.println(" Message: " + se.getMessage());
+            	    		se.printStackTrace();
+            	    	}
+            	    	se = se.getNextException();
+            	    }
+            	    if(isFailure){
+				            System.out.println(" Message: " + se.getMessage());
+				            se.printStackTrace();
+            	    }
+            		<%
+                	}else {
+                	%>
+                	System.err.println(e.getMessage());
+                	<%
+                	}%>  
                 }
                 <%
                 }%>    			
@@ -1031,37 +1041,49 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                	<%
 		                	}
 		                	%>
-		                }catch (java.sql.SQLException e){
+		                }catch (java.sql.BatchUpdateException e){
 		                	<%if(("true").equals(dieOnError)) {
 		                	%>
-								//throw(e);
-		                	  boolean isFailure = false;
-		                	    while(e != null){
-		                	    	if(e.getErrorCode() == -2801){
-		     				            System.out.println(" Message: " + e.getMessage());
-		                	    		e.printStackTrace();
+								throw(e);
+							<%
+		                	}else {
+		                	%>
+		                        System.out.println(se.getMessage());
+		                	<%
+		                	}%>  
+		                	              
+		                }catch(java.sql.SQLException se){
+		                	
+		                	<%if(("true").equals(dieOnError)) {
+		                    %>
+		                	 boolean isFailure = false;
+		                	    while(se != null){
+		                	    	if(se.getErrorCode() == -2801){
+		     				            System.out.println(" Message: " + se.getMessage());
+		                	    		se.printStackTrace();
 		                	    		System.out.println();
 		                	    	}
-		                	    	else if(e.getErrorCode() == 1339){
+		                	    	else if(se.getErrorCode() == 1339){
 		                	    		isFailure = true;
 		                	    	}
 		                	    	else{
-		     				            System.out.println(" Message: " + e.getMessage());
-		                	    		e.printStackTrace();
+		     				            System.out.println(" Message: " + se.getMessage());
+		                	    		se.printStackTrace();
 		                	    	}
-		                	    	e = e.getNextException();
+		                	    	se = se.getNextException();
 		                	    }
 		                	    if(isFailure){
-		 				            System.out.println(" Message: " + e.getMessage());
-		                	    	e.printStackTrace();
+		 				            System.out.println(" Message: " + se.getMessage());
+		                	    	se.printStackTrace();
 		                	    }
+		                	    
 		                	<%
 		                	}else {
 		                	%>
-		                        System.out.println(e.getMessage());
+		                        System.out.println(se.getMessage());
 		                	<%
-		                	}%>                
-		                }            	                  	
+		                	}%>   
+		                }
                 	<%
                 	}%>
                 	
