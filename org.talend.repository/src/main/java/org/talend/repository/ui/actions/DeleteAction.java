@@ -62,6 +62,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
@@ -69,14 +70,15 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.JobletReferenceBean;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
 import org.talend.repository.ui.dialog.JobletReferenceDialog;
 import org.talend.repository.utils.AbstractResourceChangesService;
@@ -517,8 +519,8 @@ public class DeleteAction extends AContextualAction {
                                             String path = item2.getState().getPath();
 
                                             boolean found = false;
-                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
-                                                    .getVersion(), path, refP.getLabel());
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
+                                                    property2.getVersion(), path, refP.getLabel());
                                             bean.setJobFlag(isJob, isDelete);
 
                                             for (JobletReferenceBean b : list) {
@@ -549,8 +551,8 @@ public class DeleteAction extends AContextualAction {
                                 if (equals) {
 
                                     boolean found = false;
-                                    JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
-                                            .getVersion(), path, refP.getLabel());
+                                    JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
+                                            property2.getVersion(), path, refP.getLabel());
                                     bean.setJobFlag(isJob, isDelete);
 
                                     for (JobletReferenceBean b : list) {
@@ -785,9 +787,14 @@ public class DeleteAction extends AContextualAction {
                     ERepositoryStatus status = repObj.getRepositoryStatus();
                     boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
                     boolean isDeleted = status == ERepositoryStatus.DELETED;
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+
+                    if (nodeType.isSubItem() && repObj instanceof ISubRepositoryObject) {
+                        ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) repObj;
+                        isDeleted = SubItemHelper.isDeleted(subRepositoryObject.getAbstractMetadataObject());
+                    }
 
                     if (isDeleted) {
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
                             break;

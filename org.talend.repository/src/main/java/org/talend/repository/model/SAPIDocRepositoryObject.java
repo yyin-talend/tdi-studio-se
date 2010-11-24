@@ -100,6 +100,10 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
         iDocUnit.getConnection().getIDocs().remove(iDocUnit);
     }
 
+    public ERepositoryStatus getRepositoryStatus() {
+        return repObj.getRepositoryStatus();
+    }
+
     private void updateIdocUnit(Property property) {
         if (property == null) {
             return;

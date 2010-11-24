@@ -116,6 +116,11 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
     public void removeFromParent() {
         functionUnit.getConnection().getFuntions().remove(functionUnit);
     }
+    
+    
+    public ERepositoryStatus getRepositoryStatus() {
+        return repObj.getRepositoryStatus();
+    }
 
     private void updateFunctionUnit(Property property) {
         if (property == null) {
