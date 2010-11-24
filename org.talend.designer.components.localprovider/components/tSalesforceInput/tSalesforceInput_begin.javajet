@@ -71,12 +71,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
-			((org.talend.salesforce.SforceManagementImpl)sfMgr_<%=cid%>).setSforceService((com.salesforce.soap.partner.SforceService)globalMap.get("sforceService_<%=connection  %>"));
-			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
+			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
 			<%}else{%>
-			sfMgr_<%=cid%>.setTimeout(new Integer(<%=timeout%>));
-			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
-			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
 			if(!result_<%=cid%>){
 				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 			}
@@ -116,12 +113,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
 					
-				com.salesforce.soap.partner.SoapBindingStub binding_<%=cid %> = sfMgr_<%=cid%>.getBinding();
-				com.salesforce.soap.partner.QueryResult qr_<%=cid %> = null;
-				com.salesforce.soap.partner.QueryOptions qo_<%=cid %> = new com.salesforce.soap.partner.QueryOptions();
-				qo_<%=cid %>.setBatchSize(new Integer(<%=batchSize%>));
-				binding_<%=cid %>.setHeader(sfMgr_<%=cid%>.getSforceService().getServiceName().getNamespaceURI(), "QueryOptions", qo_<%=cid %>);
-				
 				StringBuilder sql = new StringBuilder(<%=sql%>);
 <%
 				if(!("".equals(condition))) {
@@ -133,26 +124,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 				}
 %>
-				qr_<%=cid %> = binding_<%=cid %>.query(sql.toString());
+				com.salesforce.soap.partner.QueryResult qr_<%=cid %> = sfMgr_<%=cid%>.query(sql.toString(),new Integer(<%=batchSize%>));
 				
-				org.talend.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
-				org.talend.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;
+				org.talend.salesforce.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
+				org.talend.salesforce.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;
 				
-    			org.talend.TopQueryResult topqr_<%=cid %> = null;    			
-    			topqr_<%=cid %> = new org.talend.TopQueryResult();
+    			org.talend.salesforce.TopQueryResult topqr_<%=cid %> = null;    			
+    			topqr_<%=cid %> = new org.talend.salesforce.TopQueryResult();
     			topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);				
 				
 				boolean bContinue_<%=cid %> = true;
 				
 				while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
 					
-					java.util.List<org.talend.TopRecord> allTopRecords_<%=cid %> = topqr_<%=cid %>.getAllTopRecords();
+					java.util.List<org.talend.salesforce.TopRecord> allTopRecords_<%=cid %> = topqr_<%=cid %>.getAllTopRecords();
 				    // process the query results
 				    for (int i_<%=cid %> = 0; i_<%=cid %> < allTopRecords_<%=cid %>.size(); i_<%=cid %>++) {					
 								
 						nb_line_<%=cid%> ++;
 						
-						org.talend.TopRecord topRecord_<%=cid%> = allTopRecords_<%=cid%>.get(i_<%=cid%>);
+						org.talend.salesforce.TopRecord topRecord_<%=cid%> = allTopRecords_<%=cid%>.get(i_<%=cid%>);
 						Object value_<%=cid%> = null;
 <%
 						for( int i = 0; i < columnList.size(); i++) {

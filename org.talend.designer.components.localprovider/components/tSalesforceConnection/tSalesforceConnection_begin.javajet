@@ -57,15 +57,14 @@ if(bulkConnection){
 
 
 	org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
-	sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
-	sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
-	boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+
+	boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
 	if(!result_<%=cid%>){
 		throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 	}
 	
-	globalMap.put("binding_<%=cid %>", sfMgr_<%=cid%>.getBinding());
-	globalMap.put("sforceService_<%=cid %>", sfMgr_<%=cid%>.getSforceService());
+	globalMap.put("stub_<%=cid %>", sfMgr_<%=cid%>.getStub());
+	globalMap.put("sessionHeader_<%=cid %>", sfMgr_<%=cid%>.getSessionHeader());
 <%}%>			
 			
 

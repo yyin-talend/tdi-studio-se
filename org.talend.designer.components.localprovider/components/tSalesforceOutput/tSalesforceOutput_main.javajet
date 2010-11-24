@@ -91,7 +91,7 @@ Object[] resultMessageObj_<%=cid%> = null;
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
 %>
-				java.util.List<org.apache.axis.message.MessageElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement>();
+				java.util.List<org.apache.axiom.om.OMElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axiom.om.OMElement>();
 				java.util.List<String> nullList_<%=cid %> = new java.util.ArrayList<String>();				
 <%    			
     			for (int i = 0; i < sizeColumns; i++) {//5  			
@@ -108,13 +108,13 @@ Object[] resultMessageObj_<%=cid%> = null;
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
 						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newOMElement("<%=column.getLabel() %>",FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>) ));
 						}
 <%				
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 						if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newOMElement("<%=column.getLabel() %>",java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString() ));
 						}
 <%				
 					} else {//others
@@ -125,7 +125,7 @@ Object[] resultMessageObj_<%=cid%> = null;
 		    			<%}else{%>
 		    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
 		    			<%}%>
-							list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
+							list_<%=cid %>.add(sforceManagement_<%=cid %>.newOMElement("<%=column.getLabel() %>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>) ));
 						}
 <%				
 					}
@@ -146,19 +146,19 @@ Object[] resultMessageObj_<%=cid%> = null;
  if ("insert".equals(action)) {//#######
 %>
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]));    			
 
 <%
 	} else if ("update".equals(action)) {//#######
 %>
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
 
 <%
     } else if ("upsert".equals(action)) {//#######
 %> 
 
-resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert("<%=modulename %>", "<%=upsertkey%>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
+resultMessageObj_<%=cid%> = sforceManagement_<%=cid %>.upsert("<%=modulename %>", "<%=upsertkey%>", (org.apache.axiom.om.OMElement[])list_<%=cid %>.toArray(new org.apache.axiom.om.OMElement[list_<%=cid %>.size()]),(String[])nullList_<%=cid%>.toArray(new String[nullList_<%=cid%>.size()]));    			
 
 <%
   }//#######

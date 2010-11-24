@@ -10,12 +10,13 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend;
+package org.talend.salesforce;
 
 public class TopConfig {
-	//Account_User_User_User_Email
-	public static String COLUMNNAME_DELIMTER = "_";
-	
-	//Boyle#Green#Pavlova#Song
-	public static String VALUE_DELIMITER = "#";
+
+    // Account_User_User_User_Email
+    public static String COLUMNNAME_DELIMTER = "_";
+
+    // Boyle#Green#Pavlova#Song
+    public static String VALUE_DELIMITER = "#";
 }

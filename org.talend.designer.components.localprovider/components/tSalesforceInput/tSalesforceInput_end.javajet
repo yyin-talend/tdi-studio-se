@@ -16,7 +16,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
-
+String batchSize = ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
@@ -42,11 +42,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             
             }
             // handle the loop + 1 problem by checking the most recent queryResult
-            if (qr_<%=cid %>.isDone()) {
+            if (qr_<%=cid %>.getDone()) {
                 bContinue_<%=cid %> = false;
             } else {
-                qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
-            	topqr_<%=cid %> = new org.talend.TopQueryResult();
+                qr_<%=cid %> = sfMgr_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator(),new Integer(<%=batchSize%>));
+            	topqr_<%=cid %> = new org.talend.salesforce.TopQueryResult();
 				topqr_<%=cid %>.processTopQueryResult(qr_<%=cid %>);
             }
         }

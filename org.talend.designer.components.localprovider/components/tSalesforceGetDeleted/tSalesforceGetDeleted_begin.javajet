@@ -60,7 +60,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String module = ElementParameterParser.getValue(node, "__MODULENAME__");
 			String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
 			module = (("CustomModule").equals(module)) ? customModulename.replaceAll("\"","") : module;
-			String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
@@ -74,21 +74,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
             java.util.Calendar startCal_<%=cid%> = startdf_<%=cid%>.getCalendar();
             java.util.Calendar endCal_<%=cid%> = enddf_<%=cid%>.getCalendar();
 			
-	        java.util.GregorianCalendar startDate_<%=cid%> = (java.util.GregorianCalendar) startCal_<%=cid%>;
-            java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
 	        
 	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
-			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SoapBindingStub)globalMap.get("binding_<%=connection %>"));
+			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
 			<%}else{%>
-			sfMgr_<%=cid%>.setTimeout(<%=timeout%>);
-			sfMgr_<%=cid%>.setNeedCompression(<%=needCompression%>);
-			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endPoint%>);
+			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
 			if(!result_<%=cid%>){
 				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 			}
 	        <%}%>
-			com.salesforce.soap.partner.SoapBindingStub binding_<%=cid%> = sfMgr_<%=cid%>.getBinding();
         	
 <%
 			java.lang.StringBuilder sb = new java.lang.StringBuilder();
@@ -104,35 +99,36 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			for(IConnection outgoingConn : outgoingConns) {
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>				
-			com.salesforce.soap.partner.GetDeletedResult gdr_<%=cid%> = binding_<%=cid%>.getDeleted("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
+			com.salesforce.soap.partner.GetDeletedResult gdr_<%=cid%> = sfMgr_<%=cid%>.getDeleted("<%=module%>", startCal_<%=cid%>, endCal_<%=cid%>);
     		com.salesforce.soap.partner.QueryResult qr_<%=cid%> = null;
     		com.salesforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
     		
         	java.util.List<String> idlist_<%=cid%> = new java.util.ArrayList<String>();
-        	java.util.Map<String,org.apache.axis.message.MessageElement[]> sobjectMap_<%=cid%> = new java.util.HashMap<String,org.apache.axis.message.MessageElement[]>();
+        	java.util.Map<String,org.apache.axiom.om.OMElement[]> sobjectMap_<%=cid%> = new java.util.HashMap<String,org.apache.axiom.om.OMElement[]>();
     		if (drs_<%=cid%> != null && drs_<%=cid%>.length > 0) {
         		for(com.salesforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
-        			idlist_<%=cid%>.add(dr_<%=cid%>.getId());
+        			idlist_<%=cid%>.add(dr_<%=cid%>.getId().getID());
         		}
-        		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");
+        		qr_<%=cid%> = sfMgr_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true",250);
         		boolean done = false;
         		while(!done && qr_<%=cid%> != null && qr_<%=cid%>.getRecords() != null){
         			for(int i_<%=cid %>=0;i_<%=cid %> < qr_<%=cid %>.getRecords().length;i_<%=cid %>++){
-        				if(idlist_<%=cid%>.contains(qr_<%=cid %>.getRecords(i_<%=cid %>).getId())){
-        					sobjectMap_<%=cid%>.put(qr_<%=cid %>.getRecords(i_<%=cid %>).getId(),qr_<%=cid %>.getRecords(i_<%=cid %>).get_any());
+        				if(idlist_<%=cid%>.contains(qr_<%=cid %>.getRecords()[i_<%=cid %>].getId().getID())){
+        					sobjectMap_<%=cid%>.put(qr_<%=cid %>.getRecords()[i_<%=cid %>].getId().getID(),qr_<%=cid %>.getRecords()[i_<%=cid %>].getExtraElement());
         				}
         			}
-        			if(qr_<%=cid %>.isDone()){
+        			if(qr_<%=cid %>.getDone()){
 						done = true;
 					}else{
-						qr_<%=cid %> = binding_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator());
+						qr_<%=cid %> = sfMgr_<%=cid %>.queryMore(qr_<%=cid %>.getQueryLocator(),250);
 					}	
         		}
+        		
         		
         		for(int i_<%=cid%>=0;i_<%=cid%><idlist_<%=cid%>.size();i_<%=cid%>++){
         			nb_line_<%=cid%> ++;
         			if(sobjectMap_<%=cid%>.get(idlist_<%=cid%>.get(i_<%=cid%>))!=null){
-						org.apache.axis.message.MessageElement[] fields_<%=cid %> = sobjectMap_<%=cid%>.get(idlist_<%=cid%>.get(i_<%=cid%>));
+						org.apache.axiom.om.OMElement[] fields_<%=cid %> = sobjectMap_<%=cid%>.get(idlist_<%=cid%>.get(i_<%=cid%>));
 						int len_<%=cid%> = fields_<%=cid %>.length;
 <%
 						for( int i = 0; i < columnList.size(); i++) {
@@ -144,23 +140,23 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>						
-							if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getValue() != null){
+							if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getText() != null && !"".equals(fields_<%=cid %>[<%=i%>].getText())){
 <%
 									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
 %>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getValue();
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText();
 <%
 									} else if(javaType == JavaTypesManager.DATE) { // Date
 %>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid %>[<%=i%>].getValue(), <%= patternValue %>);
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid %>[<%=i%>].getText(), <%= patternValue %>);
 <%
 									} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
 %>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getValue().getBytes();
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText().getBytes();
 <%
 									} else  { // other
 %>						
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=i%>].getValue());
+								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=i%>].getText());
 <%
 									}
 %>			

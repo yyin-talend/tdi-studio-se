@@ -10,14 +10,15 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend;
+package org.talend.salesforce;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.axis.message.MessageElement;
+import org.apache.axiom.om.OMElement;
 
 import com.salesforce.soap.partner.QueryResult;
 import com.salesforce.soap.partner.sobject.SObject;
@@ -42,38 +43,45 @@ public class TopRecord {
     }
 
     private void processQueryResult(QueryResult qr, String prefixName) throws Exception {
-
         for (int i = 0; i < qr.getRecords().length; i++) {
-
             SObject record = qr.getRecords()[i];
-
             processSObject(record, prefixName + TopConfig.COLUMNNAME_DELIMTER + record.getType());
-
         }
     }
 
     public void processSObject(SObject record, String prefixName) throws Exception {
-        MessageElement[] fields = record.get_any();
-
+        OMElement[] fields = record.getExtraElement();
         for (int j = 0; j < fields.length; j++) {
-            // check getValue() and getObjectValue()
+            processOMElement(fields[j], prefixName);
+        }
+    }
 
-            if (fields[j].getValue() == null) {
+    private void processOMElement(OMElement ome, String prefixName) throws Exception {
+        if (ome.getChildElements().hasNext()) {
+            Iterator iter = ome.getChildElements();
+            // delete the fixed id and type elements when find firstly
+            int typeCount = 0;
+            int idCount = 0;
 
-                Object objectValue = fields[j].getObjectValue();// Here check
-                // Here check the ObjectValue again, maybe this is a NODE, not a
-                // COMMON FIELD
-
+            while (iter.hasNext()) {
+                Object objectValue = iter.next();
                 if (objectValue != null) {
-                    // if (objectValue != null),
-                    // it is xsi:type="sf:sObject" OR xsi:type="QueryResult"
-                    // if ((value=null)&&(objectValue=null)), the FIELD/NODE is
-                    // xsi:nil="true"
+                    if (objectValue instanceof OMElement) {
+                        OMElement omeElem = (OMElement) objectValue;
 
-                    if (objectValue instanceof SObject) {
+                        if ("type".equals(omeElem.getLocalName()) && typeCount == 0) {
+                            typeCount++;
+                            continue;
+                        }
+                        if ("Id".equals(omeElem.getLocalName()) && idCount == 0) {
+                            idCount++;
+                            continue;
+                        }
+
+                        processOMElement(omeElem, prefixName + TopConfig.COLUMNNAME_DELIMTER + ome.getLocalName());
+                    } else if (objectValue instanceof SObject) {
                         SObject sobject = (SObject) objectValue;
                         processSObject(sobject, prefixName + TopConfig.COLUMNNAME_DELIMTER + sobject.getType());
-
                     } else if (objectValue instanceof QueryResult) {
                         QueryResult queryResult = (QueryResult) objectValue;
                         processQueryResult(queryResult, prefixName);
@@ -81,28 +89,23 @@ public class TopRecord {
                         throw new Exception("Unexcepted case happend...");
                     }
                 }
-
-            } else {
-                String newPrefixName = prefixName + TopConfig.COLUMNNAME_DELIMTER + fields[j].getName();
-
-                // add the columnName to List one by one(order is important)
-                if (!columnNameList.contains(newPrefixName)) {
-                    columnNameList.add(newPrefixName);
-                }
-
-                Object value = valueMap.get(newPrefixName);
-
-                if (value != null) {
-
-                    valueMap.put(newPrefixName, value + TopConfig.VALUE_DELIMITER + fields[j].getValue());
-                } else {
-                    valueMap.put(newPrefixName, fields[j].getValue());
-                }
-
             }
-
+        } else {
+            if (ome.getText() == null || "".equals(ome.getText())) {
+                return;
+            }
+            String newPrefixName = prefixName + TopConfig.COLUMNNAME_DELIMTER + ome.getLocalName();
+            // add the columnName to List one by one(order is important)
+            if (!columnNameList.contains(newPrefixName)) {
+                columnNameList.add(newPrefixName);
+            }
+            Object value = valueMap.get(newPrefixName);
+            if (value != null) {
+                valueMap.put(newPrefixName, value + TopConfig.VALUE_DELIMITER + ome.getText());
+            } else {
+                valueMap.put(newPrefixName, ome.getText());
+            }
         }
-
     }
 
     public Object getValue(String key) {
