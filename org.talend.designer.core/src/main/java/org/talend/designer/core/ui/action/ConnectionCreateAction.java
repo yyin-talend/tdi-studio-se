@@ -172,8 +172,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     }
                 }
                 if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
-                        .getMaxLinkOutput())
-                        && curNodeConnector.isBuiltIn()) {
+                        .getMaxLinkOutput()) && curNodeConnector.isBuiltIn()) {
                     menuList.add(getNewOutputMenuName());
                 }
             } else {
@@ -254,23 +253,42 @@ public class ConnectionCreateAction extends SelectionAction {
      */
     private String getDefaultTableName() {
         Node node = (Node) nodePart.getModel();
-        String removeQuotes = null;
+        StringBuffer removeQuotes = new StringBuffer();
         IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+        IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME");//$NON-NLS-1$
         if (node.isELTComponent() && elementParam != null && elementParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
+            if (schemaParam != null) {
+                String schema = schemaParam.getValue().toString();
+                if (schema != null) {
+                    schema = TalendTextUtils.removeQuotes(schema);
+                    if (!"".equals(schema)) { //$NON-NLS-1$
+                        removeQuotes.append(schema);
+                        removeQuotes.append(".");//$NON-NLS-1$
+                    }
+                }
+            }
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
                 if (!"".equals(name2)) { //$NON-NLS-1$
-                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
+                    removeQuotes.append(name2);
+                    removeQuotes.append(" (");
+                    removeQuotes.append(curNodeConnector.getMenuName());
+                    removeQuotes.append(")");
+                    //                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
                 }
             }
             if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
                 if (getDefaultSchemaName() != null) {
-                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes; //$NON-NLS-1$
+                    String temp = removeQuotes.toString();
+                    removeQuotes.append(getDefaultSchemaName());
+                    removeQuotes.append(".");
+                    removeQuotes.append(temp);
+                    //                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes; //$NON-NLS-1$
                 }
             }
         }
-        return removeQuotes;
+        return removeQuotes.toString();
     }
 
     /**
