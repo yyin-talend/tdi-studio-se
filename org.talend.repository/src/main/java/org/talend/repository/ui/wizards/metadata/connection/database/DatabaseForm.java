@@ -65,8 +65,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
-import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.utils.DBConnectionContextUtils.EDBParamName;
+import org.talend.repository.ui.utils.ManagerConnection;
 
 /**
  * @author ocarbone
@@ -484,8 +484,8 @@ public class DatabaseForm extends AbstractForm {
         browseJarFilesButton.setText("..."); //$NON-NLS-1$
         browseJarFilesButton.setToolTipText(Messages.getString("DatabaseForm.selectJar")); //$NON-NLS-1$
 
-        generalJdbcClassNameText = new LabelledText(generalDbCompositeParent, Messages
-                .getString("DatabaseForm.general.classname"), 2); //$NON-NLS-1$
+        generalJdbcClassNameText = new LabelledText(generalDbCompositeParent,
+                Messages.getString("DatabaseForm.general.classname"), 2); //$NON-NLS-1$
 
         generalJdbcUserText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.user"), 2); //$NON-NLS-1$
 
@@ -674,8 +674,8 @@ public class DatabaseForm extends AbstractForm {
         ManagerConnection managerConnection = new ManagerConnection();
 
         if (isContextMode()) { // context mode
-            String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem, dbTypeCombo
-                    .getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
+            String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem,
+                    dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
             if (urlStr == null) {
                 if (dbTypeCombo.getText().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
                     DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
@@ -705,8 +705,8 @@ public class DatabaseForm extends AbstractForm {
             managerConnection.setDbRootPath(directoryField.getText());
 
         }
-        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()), stringQuoteText
-                .getText(), nullCharText.getText());
+        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()),
+                stringQuoteText.getText(), nullCharText.getText());
         // check the connection
         databaseSettingIsValide = managerConnection.check();
 
@@ -1182,7 +1182,7 @@ public class DatabaseForm extends AbstractForm {
                         }
                     }
                     if (mapping == null) {
-                        mapping = "mysql_id";// default value //$NON-NLS-1$
+                        mapping = ""; //   mapping = "mysql_id";// default value //$NON-NLS-1$
                     }
 
                     getConnection().setDbmsId(mapping);
@@ -1518,8 +1518,9 @@ public class DatabaseForm extends AbstractForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
-                    if (validText(generalMappingFileText.getText())) {
-                        getConnection().setDbmsId(generalMappingFileText.getText());
+                    String mappingFileText = generalMappingFileText.getText();
+                    if (mappingFileText != null) {
+                        getConnection().setDbmsId(mappingFileText);
                         checkFieldsValue();
                     }
                 }
