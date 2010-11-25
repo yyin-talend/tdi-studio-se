@@ -239,8 +239,13 @@ public abstract class DbGenerationManager {
         if (outputTable != null) {
 
             IConnection connection = nameToOutputConnection.get(outputTable.getName());
+            List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
             if (connection != null) {
-                outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, connection.getMetadataTable());
+                IMetadataTable metadataTable = connection.getMetadataTable();
+                if (metadataTable != null) {
+                    columns.addAll(metadataTable.getListColumns());
+                    outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, metadataTable);
+                }
             }
 
             sb.append(DbMapSqlConstants.SELECT);
@@ -252,12 +257,19 @@ public abstract class DbGenerationManager {
                 for (int i = 0; i < lstSizeOutTableEntries; i++) {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
+                    for (IMetadataColumn column : columns) {
+                        if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
+                            expression = expression.replaceFirst("." + dbMapEntry.getName(),
+                                    "." + column.getOriginalDbColumnName());
+                            break;
+                        }
+                    }
                     if (i > 0) {
                         sb.append(DbMapSqlConstants.COMMA);
                         sb.append(DbMapSqlConstants.SPACE);
                     }
                     if (expression != null && expression.trim().length() > 0) {
-                        sb.append(dbMapEntry.getExpression());
+                        sb.append(expression);
                     } else {
                         sb.append(DbMapSqlConstants.LEFT_COMMENT);
                         String str = outputTable.getName() + DbMapSqlConstants.DOT + dbMapEntry.getName();
@@ -460,7 +472,7 @@ public abstract class DbGenerationManager {
                 Matcher regexMatcher = regex.matcher(expression);
                 return regexMatcher.find();
             } catch (PatternSyntaxException ex) {
-                // 
+                //
             }
         }
         return false;
