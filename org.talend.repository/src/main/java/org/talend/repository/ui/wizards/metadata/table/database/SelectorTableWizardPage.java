@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -211,6 +213,9 @@ public class SelectorTableWizardPage extends TemplateWizardPage {
         return getDatabaseConnection();
     }
 
+    public List<String> getItemListName() {
+        return tableForm.getItemTableNameList();
+    }
     // public IMetadataConnection getMetadataConnection() {
     // return this.metadataConnection;
     // }

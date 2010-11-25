@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -101,4 +104,14 @@ public class DatabaseTableWizardPage extends WizardPage {
         setControl(tableForm);
     }
 
+    public IWizardPage getPreviousPage() {
+        IWizardPage perviousPage = super.getPreviousPage();
+        if (perviousPage instanceof SelectorTableWizardPage) {
+            List<String> nameList = ((SelectorTableWizardPage) perviousPage).getItemListName();
+            if (nameList != null && nameList.isEmpty()) {
+                ((SelectorTableWizardPage) perviousPage).initControlData();
+            }
+        }
+        return perviousPage;
+    }
 }

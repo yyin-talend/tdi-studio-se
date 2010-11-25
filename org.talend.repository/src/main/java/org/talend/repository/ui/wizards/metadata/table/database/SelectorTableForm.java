@@ -1277,4 +1277,7 @@ public class SelectorTableForm extends AbstractForm {
         return exist;
     }
 
+    public List<String> getItemTableNameList() {
+        return this.itemTableName;
+    }
 }
