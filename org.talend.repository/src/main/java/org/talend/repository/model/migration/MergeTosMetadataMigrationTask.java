@@ -203,7 +203,10 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
             result = connection.getUsername();
             break;
         case Schema:
-            result = schema.getName();
+            /* if schema name is null,return a empty string is required,bug 0017244 */
+            if (schema.getName() != null) {
+                result = schema.getName();
+            }
             break;
         case Sid:
             result = connection.getSID();
