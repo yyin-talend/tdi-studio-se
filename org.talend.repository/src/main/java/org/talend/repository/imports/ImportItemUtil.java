@@ -82,6 +82,7 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -102,7 +103,6 @@ import org.talend.repository.imports.ItemRecord.State;
 import org.talend.repository.imports.TreeBuilder.ProjectNode;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.ILocalRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -120,21 +120,15 @@ public class ImportItemUtil {
 
     private static Logger log = Logger.getLogger(ImportItemUtil.class);
 
-    private static final String SEGMENT_PARENT = ".."; //$NON-NLS-1$
-
     private XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
     private boolean hasErrors = false;
-
-    private int usedItems = 0;
 
     private RepositoryObjectCache cache = new RepositoryObjectCache();
 
     private TreeBuilder treeBuilder = new TreeBuilder();
 
     private Set<String> deletedItems = new HashSet<String>();
-
-    ProjectManager projectManager = ProjectManager.getInstance();
 
     private Map<IPath, Project> projects = new HashMap<IPath, Project>();
 
@@ -186,8 +180,7 @@ public class ImportItemUtil {
         return getPath(node.getParent()).append(label);
     }
 
-    private boolean checkItem(ItemRecord itemRecord, boolean overwrite,
-            Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository) {
+    private boolean checkItem(ItemRecord itemRecord, boolean overwrite) {
 
         boolean result = false;
         try {
@@ -197,26 +190,24 @@ public class ImportItemUtil {
             }
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
 
+            cache.initialize(itemType);
+
             boolean isSqlPattern = (itemType == ERepositoryObjectType.SQLPATTERNS);
             String itemPath = null;
             if (item.getState() != null) {
                 itemPath = item.getState().getPath();
             }
 
-            if (!itemsFromRepository.containsKey(itemType)) {
-                List<IRepositoryViewObject> list = ProxyRepositoryFactory.getInstance().getAll(
-                        ProjectManager.getInstance().getCurrentProject(), itemType, true, false);
-                itemsFromRepository.put(itemType, list);
-            }
-
             boolean nameAvailable = true;
             IRepositoryViewObject itemWithSameId = null;
             IRepositoryViewObject itemWithSameName = null;
-            for (IRepositoryViewObject current : itemsFromRepository.get(itemType)) {
-                if (itemRecord.getProperty().getLabel().equalsIgnoreCase(current.getProperty().getLabel())
-                        && itemRecord.getProperty().getId() != current.getProperty().getId()) {
+
+            // take care, in cache it's RepositoryViewObject, not RepositoryObject
+            for (IRepositoryViewObject current : cache.getItemsFromRepository().get(itemType)) {
+                if (itemRecord.getProperty().getLabel().equalsIgnoreCase(current.getLabel())
+                        && itemRecord.getProperty().getId() != current.getId()) {
                     // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
-                    if (!isSqlPattern || current.getProperty().getItem().getState().getPath().equals(itemPath)) {
+                    if (!isSqlPattern || current.getPath().equals(itemPath)) {
                         nameAvailable = false;
                     }
                     // overwrite the item with same label but diff id: 15787: import items does not overwrite some
@@ -225,7 +216,7 @@ public class ImportItemUtil {
                         itemWithSameName = current;
                     }
                 }
-                if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getProperty().getId())) {
+                if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getId())) {
                     itemWithSameId = current;
                     if (!nameAvailable) {
                         break;
@@ -342,11 +333,10 @@ public class ImportItemUtil {
             return lockState.booleanValue();
         }
 
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<IRepositoryViewObject> list = cache.findObjectsByItem(itemRecord);
 
         for (IRepositoryViewObject obj : list) {
-            ERepositoryStatus status = factory.getStatus(obj);
+            ERepositoryStatus status = obj.getRepositoryStatus();
             if (status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
                 itemRecord.setLocked(true);
                 cache.setItemLockState(itemRecord, true);
@@ -443,7 +433,6 @@ public class ImportItemUtil {
     }
 
     private void checkDeletedFolders() {
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
         List<FolderItem> foldersList = (List<FolderItem>) ProjectManager.getInstance().getCurrentProject().getEmfProject()
                 .getFolders();
         for (FolderItem folderItem : foldersList) {
@@ -488,26 +477,10 @@ public class ImportItemUtil {
     public void clearAllData() {
         deletedItems.clear();
         cache.clear();
-
         treeBuilder.clear();
         xmiResourceManager.unloadResources();
         xmiResourceManager.resetResourceSet();
         projects.clear();
-    }
-
-    private void reinitRepository() {
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-        if (repFactory.getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory) {
-            return;
-        }
-        // only reinitialize for db repository
-        if (usedItems++ > 2) {
-            usedItems = 0;
-            try {
-                repFactory.initialize();
-            } catch (PersistenceException e) {
-            }
-        }
     }
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
@@ -868,8 +841,6 @@ public class ImportItemUtil {
             }
         }
 
-        Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository = new HashMap<ERepositoryObjectType, List<IRepositoryViewObject>>();
-
         progressMonitor.beginTask("Populate items to import", nbItems); //$NON-NLS-1$
 
         for (IPath path : collector.getPaths()) {
@@ -881,7 +852,7 @@ public class ImportItemUtil {
                     if (itemRecord.getProperty() != null) {
                         items.add(itemRecord);
 
-                        if (checkItem(itemRecord, overwrite, itemsFromRepository)) {
+                        if (checkItem(itemRecord, overwrite)) {
                             InternalEObject author = (InternalEObject) itemRecord.getProperty().getAuthor();
                             URI uri = null;
                             if (author != null) {
@@ -925,10 +896,10 @@ public class ImportItemUtil {
             }
         });
 
-        for (List<IRepositoryViewObject> list : itemsFromRepository.values()) {
+        for (List<IRepositoryViewObject> list : this.cache.getItemsFromRepository().values()) {
             list.clear();
         }
-        itemsFromRepository.clear();
+        this.cache.getItemsFromRepository().clear();
 
         return items;
     }
@@ -941,7 +912,7 @@ public class ImportItemUtil {
         // ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         // Project currentProject =
         // repositoryContext.getProject().getEmfProject();
-        Project currentProject = projectManager.getCurrentProject().getEmfProject();
+        Project currentProject = ProjectManager.getInstance().getCurrentProject().getEmfProject();
 
         if (project != null) {
             if (project.getLanguage().equals(currentProject.getLanguage())) {
@@ -1216,29 +1187,40 @@ public class ImportItemUtil {
         // with same id
         private Map<String, List<IRepositoryViewObject>> cache = new HashMap<String, List<IRepositoryViewObject>>();
 
+        private Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository = new HashMap<ERepositoryObjectType, List<IRepositoryViewObject>>();
+
         public List<IRepositoryViewObject> findObjectsByItem(ItemRecord itemRecord) throws PersistenceException {
             Item item = itemRecord.getItem();
             ERepositoryObjectType type = ERepositoryObjectType.getItemType(item);
-            if (!types.contains(type)) {
-                types.add(type);
-                // load object by type
-                List<IRepositoryViewObject> list = factory.getAll(type, true, true);
-                for (IRepositoryViewObject obj : list) {
-                    // items with same id
-                    List<IRepositoryViewObject> items = cache.get(obj.getId());
-                    if (items == null) {
-                        items = new ArrayList<IRepositoryViewObject>();
-                        cache.put(obj.getId(), items);
-                    }
-                    items.add(obj);
-                }
-            }
-
+            initialize(type);
             List<IRepositoryViewObject> result = cache.get(itemRecord.getProperty().getId());
             if (result == null) {
                 result = Collections.EMPTY_LIST;
             }
             return result;
+        }
+
+        public void initialize(ERepositoryObjectType itemType) throws PersistenceException {
+            if (!types.contains(itemType)) {
+                types.add(itemType);
+                // load object by type
+                List<IRepositoryViewObject> list = factory.getAll(itemType, true, false);
+                // change to RepositoryViewObject to save memory
+                // (could be enhanced directly in repository for future versions)
+                List<IRepositoryViewObject> newList = new ArrayList<IRepositoryViewObject>();
+                for (IRepositoryViewObject obj : list) {
+                    IRepositoryViewObject newObject = new RepositoryViewObject(obj.getProperty(), true);
+                    // items with same id
+                    List<IRepositoryViewObject> items = cache.get(newObject.getId());
+                    if (items == null) {
+                        items = new ArrayList<IRepositoryViewObject>();
+                        cache.put(newObject.getId(), items);
+                    }
+                    items.add(newObject);
+                    newList.add(newObject);
+                }
+                itemsFromRepository.put(itemType, newList);
+            }
         }
 
         public void setItemLockState(ItemRecord itemRecord, boolean state) {
@@ -1253,6 +1235,11 @@ public class ImportItemUtil {
             types.clear();
             cache.clear();
             lockState.clear();
+            itemsFromRepository.clear();
+        }
+
+        public Map<ERepositoryObjectType, List<IRepositoryViewObject>> getItemsFromRepository() {
+            return itemsFromRepository;
         }
     }
 
