@@ -68,6 +68,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 			String normalize_delimiter = ElementParameterParser.getValue(node, "__NORMALIZE_DELIMITER__");
 			String columnname_delimiter = ElementParameterParser.getValue(node, "__COLUMNNAME_DELIMITER__");
+			boolean queryAll = ("true").equals(ElementParameterParser.getValue(node,"__QUERY_ALL__"));
+			
 %>
 			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
@@ -124,7 +126,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 				}
 %>
-				com.salesforce.soap.partner.QueryResult qr_<%=cid %> = sfMgr_<%=cid%>.query(sql.toString(),new Integer(<%=batchSize%>));
+				com.salesforce.soap.partner.QueryResult qr_<%=cid %> = null; 
+<%
+			if(queryAll){
+%>
+				qr_<%=cid %> = sfMgr_<%=cid%>.queryAll(sql.toString(),new Integer(<%=batchSize%>));
+<%			
+			}else{
+%>
+				qr_<%=cid %> = sfMgr_<%=cid%>.query(sql.toString(),new Integer(<%=batchSize%>));
+<%
+			}
+%>
 				
 				org.talend.salesforce.TopConfig.VALUE_DELIMITER = <%=normalize_delimiter %>;
 				org.talend.salesforce.TopConfig.COLUMNNAME_DELIMTER = <%=columnname_delimiter %>;

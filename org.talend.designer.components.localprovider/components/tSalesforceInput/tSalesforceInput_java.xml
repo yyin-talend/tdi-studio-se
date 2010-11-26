@@ -2394,6 +2394,11 @@
 	    >
 	      <DEFAULT>"select FirstName, LastName from Contact"</DEFAULT>
 	    </PARAMETER>
+	    
+	    <PARAMETER NAME="QUERY_ALL" FIELD="CHECK" NUM_ROW="100" 
+			REQUIRED="true">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>	
 	</PARAMETERS>
 	
 	<ADVANCED_PARAMETERS>
