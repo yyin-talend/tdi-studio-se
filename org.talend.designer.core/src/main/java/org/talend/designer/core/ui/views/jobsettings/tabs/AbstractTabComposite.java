@@ -21,8 +21,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
@@ -124,35 +122,39 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
-     * ()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+    // * ()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
-     */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
+    // */
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

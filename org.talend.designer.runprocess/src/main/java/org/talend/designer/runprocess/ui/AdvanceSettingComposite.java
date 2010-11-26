@@ -29,8 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
@@ -160,19 +158,19 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
             argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
             GridLayout gridLayoutArguments = new GridLayout(1, false);
             argumentsComposite.setLayout(gridLayoutArguments);
-            argumentsViewer = new JobVMArgumentsComposite("vmarguments", Messages
-                    .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+            argumentsViewer = new JobVMArgumentsComposite("vmarguments",
+                    Messages.getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
                     argumentsComposite);
             execScroll.setMinSize(execGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         }
         addListeners();
 
-        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
-        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN));
-        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN));
+        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN));
+        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN));
     }
 
     /**
@@ -320,35 +318,36 @@ public class AdvanceSettingComposite extends ScrolledComposite implements IDynam
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
      */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

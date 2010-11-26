@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -28,7 +30,9 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -38,9 +42,11 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -147,10 +153,22 @@ public class ImplicitContextLoadHelper {
         String id = (String) getPreferenceValue(languagePrefix, EParameterName.REPOSITORY_PROPERTY_TYPE, String.class);
 
         Connection repositoryConnection = null;
-        Map<String, ConnectionItem> repositoryConnectionItemMap = extraComposite.getRepositoryConnectionItemMap();
 
-        if (repositoryConnectionItemMap.containsKey(id)) {
-            repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        Item item = null;
+        try {
+            IRepositoryViewObject repobj = factory.getLastVersion(id);
+            if (repobj != null) {
+                Property tmpproperty = repobj.getProperty();
+                if (tmpproperty != null) {
+                    item = tmpproperty.getItem();
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        if (item != null && item instanceof ConnectionItem) {
+            repositoryConnection = ((ConnectionItem) item).getConnection();
         } else {
             repositoryConnection = null;
         }
@@ -160,7 +178,6 @@ public class ImplicitContextLoadHelper {
 
         ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(element, repositoryConnection,
                 getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
-        cmd2.setMaps(extraComposite.getRepositoryTableMap());
 
         AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) element).getEditor();
         if (part instanceof AbstractMultiPageTalendEditor) {

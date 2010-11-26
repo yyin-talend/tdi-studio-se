@@ -87,8 +87,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
@@ -112,6 +110,7 @@ import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobErrorsChecker;
 import org.talend.designer.runprocess.ProcessMessage;
+import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.ProcessMessageManager;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -119,7 +118,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.RunprocessConstants;
-import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
@@ -479,8 +477,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 lineLimitText.setEditable(enableLineLimitButton.getSelection());
-                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT,
-                        enableLineLimitButton.getSelection());
+                RunProcessPlugin.getDefault().getPluginPreferences()
+                        .setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT, enableLineLimitButton.getSelection());
             }
         });
 
@@ -498,8 +496,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                 if (!s.equals("")) { //$NON-NLS-1$
                     try {
                         Integer.parseInt(s);
-                        RunProcessPlugin.getDefault().getPluginPreferences().setValue(
-                                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
+                        RunProcessPlugin.getDefault().getPluginPreferences()
+                                .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
                     } catch (Exception ex) {
                         e.doit = false;
                     }
@@ -509,17 +507,17 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         lineLimitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT,
-                        lineLimitText.getText());
+                RunProcessPlugin.getDefault().getPluginPreferences()
+                        .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
             }
         });
 
-        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences().getBoolean(
-                RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
+        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences()
+                .getBoolean(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
         enableLineLimitButton.setSelection(enable);
         lineLimitText.setEditable(enable);
-        String count = RunProcessPlugin.getDefault().getPluginPreferences().getString(
-                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
+        String count = RunProcessPlugin.getDefault().getPluginPreferences()
+                .getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
         if (count.equals("")) { //$NON-NLS-1$
             count = "100"; //$NON-NLS-1$
         }
@@ -1008,8 +1006,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true, monitor);
 
-                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(processContext
-                                .getStatisticsPort(), processContext.getTracesPort(), null);
+                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(
+                                processContext.getStatisticsPort(), processContext.getTracesPort(), null);
 
                         // see feature 0004820: The run job doesn't verify if
                         // code is correct before launching
@@ -1233,35 +1231,36 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
      */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)
@@ -1352,8 +1351,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                                 }
                             }
                             if (tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
-                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
-                                        .lastIndexOf(".java"));
+                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
+                                        tRunJobName.lastIndexOf(".java"));
                             else
                                 tRunJobName = currenctJobName;
                         }

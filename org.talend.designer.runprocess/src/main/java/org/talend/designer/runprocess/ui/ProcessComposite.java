@@ -85,8 +85,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
@@ -1873,35 +1871,36 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
-     */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
+    // */
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

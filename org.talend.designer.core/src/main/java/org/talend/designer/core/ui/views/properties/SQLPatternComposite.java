@@ -72,8 +72,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -748,8 +746,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 }
                 list = updateList;
             } else {
-                list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                        ERepositoryObjectType.SQLPATTERNS, false);
+                list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                        .getAll(ERepositoryObjectType.SQLPATTERNS, false);
 
                 // add reference sql pattern
                 addReferencedSQLTemplate(list, ProjectManager.getInstance().getCurrentProject());
@@ -796,8 +794,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     addReferencedSQLTemplate(list, newProject);
                 }
                 List<IRepositoryViewObject> refList;
-                refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(newProject,
-                        ERepositoryObjectType.SQLPATTERNS, false);
+                refList = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                        .getAll(newProject, ERepositoryObjectType.SQLPATTERNS, false);
                 for (IRepositoryViewObject repositoryObject : refList) {
                     Item item = repositoryObject.getProperty().getItem();
                     if (item instanceof SQLPatternItem) {
@@ -974,35 +972,39 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
-     * ()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+    // * ()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
-     */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
+    // */
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

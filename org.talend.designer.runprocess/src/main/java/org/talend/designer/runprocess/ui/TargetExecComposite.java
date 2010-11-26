@@ -28,8 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
@@ -179,35 +177,36 @@ public class TargetExecComposite extends ScrolledComposite implements IDynamicPr
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryConnectionItemMap()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getRepositoryTableMap()
      */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

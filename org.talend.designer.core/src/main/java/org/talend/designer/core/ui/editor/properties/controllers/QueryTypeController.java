@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -27,9 +26,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -37,8 +42,13 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -46,6 +56,8 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -172,14 +184,14 @@ public class QueryTypeController extends AbstractRepositoryController {
      * @return
      */
     private QueryGuessCommand getGuessQueryCommand() {
-        Map<String, IMetadataTable> repositoryTableMap = null;
+        // Map<String, IMetadataTable> repositoryTableMap = null;
         IMetadataTable newRepositoryMetadata = null;
         String realTableName = null;
         String realTableId = null;
 
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+            // repositoryTableMap = dynamicProperty.getRepositoryTableMap();
             // String paramName;
             IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
@@ -205,11 +217,43 @@ public class QueryTypeController extends AbstractRepositoryController {
             if (repositorySchemaTypeParameter != null) {
                 final Object value = repositorySchemaTypeParameter.getValue();
                 if (elem instanceof Node) {
-                    if (repositoryTableMap.containsKey(value)) {
-                        IMetadataTable repositoryMetadata = repositoryTableMap.get(value);
-                        realTableName = repositoryMetadata.getTableName();
-                        realTableId = repositoryMetadata.getId();
+                    /* value can be devided means the value like "connectionid - label" */
+                    String[] keySplitValues = value.toString().split(" - "); //$NON-NLS-N$
+                    if (keySplitValues.length > 1) {
+
+                        String connectionId = value.toString().split(" - ")[0]; //$NON-NLS-N$
+                        String tableLabel = value.toString().split(" - ")[1]; //$NON-NLS-N$
+                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        Item item = null;
+                        try {
+                            IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                            if (repobj != null) {
+                                Property property = repobj.getProperty();
+                                if (property != null) {
+                                    item = property.getItem();
+                                }
+                            }
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        if (item != null && item instanceof ConnectionItem) {
+                            Connection connection = ((ConnectionItem) item).getConnection();
+                            for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
+                                    .getTables(connection)) {
+                                if (table.getLabel().equals(tableLabel)) {
+                                    IMetadataTable repositoryMetadata = ConvertionHelper.convert(table);
+                                    realTableName = repositoryMetadata.getTableName();
+                                    realTableId = repositoryMetadata.getId();
+                                    break;
+                                }
+                            }
+                        }
                     }
+                    // if (repositoryTableMap.containsKey(value)) {
+                    // IMetadataTable repositoryMetadata = repositoryTableMap.get(value);
+                    // realTableName = repositoryMetadata.getTableName();
+                    // realTableId = repositoryMetadata.getId();
+                    // }
                 }
             }
             // }
@@ -233,7 +277,7 @@ public class QueryTypeController extends AbstractRepositoryController {
 
         if (newRepositoryMetadata == null) {
             String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
+            if (schemaSelected != null) {
                 // repositoryMetadata = repositoryTableMap.get(schemaSelected);
             } else if (newRepositoryMetadata == null) {
                 MessageDialog
@@ -245,7 +289,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         }
         cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
-        cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
+        cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), null);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         if ("Oracle".equalsIgnoreCase(type)) {
             type = EDatabaseTypeName.ORACLEFORSID.getDisplayName();
@@ -280,17 +324,52 @@ public class QueryTypeController extends AbstractRepositoryController {
             if (elem instanceof Node) {
                 String querySelected;
                 Query repositoryQuery = null;
-                Map<String, Query> repositoryQueryStoreMap = this.dynamicProperty.getRepositoryQueryStoreMap();
-                IElementParameter repositoryParam = param.getParentParameter().getChildParameters().get(
-                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                // Map<String, Query> repositoryQueryStoreMap = this.dynamicProperty.getRepositoryQueryStoreMap();
+                IElementParameter repositoryParam = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
                 querySelected = (String) repositoryParam.getValue();
 
-                if (repositoryQueryStoreMap.containsKey(querySelected)) {
-                    repositoryQuery = repositoryQueryStoreMap.get(querySelected);
-                }/*
-                  * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                  * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                  */
+                /* value can be devided means the value like "connectionid - label" */
+                String[] keySplitValues = querySelected.toString().split(" - "); //$NON-NLS-N$
+                if (keySplitValues.length > 1) {
+
+                    String connectionId = querySelected.split(" - ")[0]; //$NON-NLS-N$
+                    String queryLabel = querySelected.split(" - ")[1]; //$NON-NLS-N$
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    Item item = null;
+                    try {
+                        IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                        if (repobj != null) {
+                            Property property = repobj.getProperty();
+                            if (property != null) {
+                                item = property.getItem();
+                            }
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                    if (item != null && item instanceof DatabaseConnectionItem) {
+                        Connection conn = ((DatabaseConnectionItem) item).getConnection();
+                        if (conn instanceof DatabaseConnection) {
+                            DatabaseConnection dbconn = (DatabaseConnection) conn;
+                            QueriesConnection queryConnection = dbconn.getQueries();
+                            for (Query query : queryConnection.getQuery()) {
+                                if (query.getLabel().equals(queryLabel)) {
+                                    repositoryQuery = query;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // if (repositoryQueryStoreMap.containsKey(querySelected)) {
+                // repositoryQuery = repositoryQueryStoreMap.get(querySelected);
+                // }
+                /*
+                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                 */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);

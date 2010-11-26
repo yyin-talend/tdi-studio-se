@@ -51,7 +51,6 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
@@ -70,10 +69,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     private boolean updateColumnListFlag;
 
-    private Map<String, IMetadataTable> repositoryTableMap;
-
-    private Map<String, ConnectionItem> repositoryConnectionItemMap;
-
     /**
      * DOC dev ColumnListController constructor comment.
      * 
@@ -90,8 +85,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
-        repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-        repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
 
         Set<String> elementsName;
         Control ctrl;

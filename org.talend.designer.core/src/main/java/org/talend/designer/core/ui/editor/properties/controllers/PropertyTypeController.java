@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +50,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -68,6 +67,7 @@ import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -281,11 +281,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
             RepositoryReviewDialog dialog = null;
             if (dbTypeParam != null) {
                 String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
-                        .getRepositoryValue(), listRepositoryItems);
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                        param.getRepositoryValue(), listRepositoryItems);
             } else {
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
-                        .getRepositoryValue());
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                        param.getRepositoryValue());
             }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
@@ -296,26 +296,52 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
                 Connection repositoryConnection = null;
-                Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+                // Map<String, ConnectionItem> repositoryConnectionItemMap =
+                // dynamicProperty.getRepositoryConnectionItemMap();
 
-                if (repositoryConnectionItemMap.containsKey(id)) {
-                    repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                Item item = null;
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(id);
+                    if (repobj != null) {
+                        Property property = repobj.getProperty();
+                        if (property != null) {
+                            item = property.getItem();
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (item != null) {
+                    if (item instanceof ConnectionItem) {
+                        repositoryConnection = ((ConnectionItem) item).getConnection();
+                    }
                 } else {
                     repositoryConnection = null;
                     if (repositoryParam != null) {
-                        Item item = dialog.getResult().getObject().getProperty().getItem();
+                        item = dialog.getResult().getObject().getProperty().getItem();
                         if (item instanceof ConnectionItem) {
                             repositoryConnection = ((ConnectionItem) item).getConnection();
                         }
                     }
                 }
+                // if (repositoryConnectionItemMap.containsKey(id)) {
+                // repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                // } else {
+                // repositoryConnection = null;
+                // if (repositoryParam != null) {
+                // Item item = dialog.getResult().getObject().getProperty().getItem();
+                // if (item instanceof ConnectionItem) {
+                // repositoryConnection = ((ConnectionItem) item).getConnection();
+                // }
+                // }
+                // }
 
                 if (repositoryConnection != null) {
                     CompoundCommand compoundCommand = new CompoundCommand();
 
                     ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                             repositoryConnection, fullParamName, id);
-                    changeValuesFromRepository.setMaps(dynamicProperty.getRepositoryTableMap());
 
                     compoundCommand.add(changeValuesFromRepository);
 
@@ -474,13 +500,14 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                             IElementParameter propertyParam = elem
                                     .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(
-                                    EmfComponent.REPOSITORY);
+                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
+                                    .setValue(EmfComponent.REPOSITORY);
 
                             // 2. commnd
-                            Command cmd = new ChangeValuesFromRepository((Element) node, connItem.getConnection(), propertyParam
-                                    .getName()
-                                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
+                            Command cmd = new ChangeValuesFromRepository(
+                                    (Element) node,
+                                    connItem.getConnection(),
+                                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                             executeCommand(cmd);
                             // see bug in feature 5998.refresh repositoryList.
                             if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
@@ -545,78 +572,99 @@ public class PropertyTypeController extends AbstractRepositoryController {
             return null;
         }
 
-        Map<String, ConnectionItem> repositoryConnectionItemMap = null;
+        // Map<String, ConnectionItem> repositoryConnectionItemMap = null;
         IElementParameter repositoryParam = null;
         Map<String, FileItem> repositoryFileItemMap = null; // hywang add for feature 6484
 
         if (value.equals(EmfComponent.REPOSITORY)) {
-            repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            // repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
 
             if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
                 repositoryFileItemMap = ((MultipleThreadDynamicComposite) dynamicProperty).getRepositoryFileItemMap();
             }
 
-            repositoryParam = param.getParentParameter().getChildParameters().get(
-                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            repositoryParam = param.getParentParameter().getChildParameters()
+                    .get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             String connectionSelected = (String) repositoryParam.getValue();
 
-            if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-                repositoryConnectionItem = repositoryConnectionItemMap.get(connectionSelected);
-                repositoryConnection = repositoryConnectionItem.getConnection();
-            } else {
-                if (!repositoryConnectionItemMap.isEmpty()) {
-                    Iterator<ConnectionItem> iterator = repositoryConnectionItemMap.values().iterator();
-                    IElementParameter dbTypeParam = null;
-                    if (elem instanceof org.talend.designer.core.ui.editor.process.Process || elem instanceof StatsAndLogsElement
-                            || elem instanceof ImplicitContextLoadElement) {
-                        String[] split = paramName.split(":");
-                        String name = "";
-                        if (split.length == 2) {
-                            name = split[0];
-                        }
-                        if (EParameterName.PROPERTY_TYPE.getName().equals(name)) {
-                            dbTypeParam = elem.getElementParameter(EParameterName.DB_TYPE.getName());
-                        } else if (JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
-                                .equals(name)) {
-                            dbTypeParam = elem.getElementParameter(JobSettingsConstants
-                                    .getExtraParameterName(EParameterName.DB_TYPE.getName()));
-                        }
-                        if (dbTypeParam != null) {
-                            boolean asBefore = false;
-                            while (iterator.hasNext()) {
-                                ConnectionItem nextItem = iterator.next();
-                                if (nextItem instanceof DatabaseConnectionItem
-                                        && ((DatabaseConnectionItem) nextItem).getConnection() instanceof DatabaseConnection) {
-                                    List<String> asList = Arrays.asList(dbTypeParam.getListRepositoryItems());
-                                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) nextItem)
-                                            .getConnection();
-                                    if (isValidDbConnection(asList, connection)) {
-                                        repositoryConnectionItem = nextItem;
-                                        repositoryConnection = repositoryConnectionItem.getConnection();
-                                        break;
-                                    }
-                                } else {
-                                    asBefore = true;
-                                    break;
-                                }
-                            }
-                            if (asBefore) {
-                                repositoryConnectionItem = iterator.next();
-                                repositoryConnection = repositoryConnectionItem.getConnection();
-                            }
-                        } else {
-                            repositoryConnectionItem = iterator.next();
-                            repositoryConnection = repositoryConnectionItem.getConnection();
-                        }
-                    } else {
-                        repositoryConnectionItem = iterator.next();
-                        repositoryConnection = repositoryConnectionItem.getConnection();
+            /* bug 16969 */
+            // if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
+            try {
+                Item item = null;
+                IRepositoryViewObject repobj = factory.getLastVersion(connectionSelected);
+                if (repobj != null) {
+                    Property property = repobj.getProperty();
+                    if (property != null) {
+                        item = property.getItem();
                     }
+                }
+                if (item != null && item instanceof ConnectionItem) {
 
+                    repositoryConnectionItem = (ConnectionItem) factory.getLastVersion(connectionSelected).getProperty()
+                            .getItem();
+                    repositoryConnection = repositoryConnectionItem.getConnection();
                 } else {
                     repositoryConnection = null;
                 }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
+            // } else {
+            // if (!repositoryConnectionItemMap.isEmpty()) {
+            // Iterator<ConnectionItem> iterator = repositoryConnectionItemMap.values().iterator();
+            // IElementParameter dbTypeParam = null;
+            // if (elem instanceof org.talend.designer.core.ui.editor.process.Process || elem instanceof
+            // StatsAndLogsElement
+            // || elem instanceof ImplicitContextLoadElement) {
+            // String[] split = paramName.split(":");
+            // String name = "";
+            // if (split.length == 2) {
+            // name = split[0];
+            // }
+            // if (EParameterName.PROPERTY_TYPE.getName().equals(name)) {
+            // dbTypeParam = elem.getElementParameter(EParameterName.DB_TYPE.getName());
+            // } else if
+            // (JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()).equals(name)) {
+            // dbTypeParam = elem.getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE
+            // .getName()));
+            // }
+            // if (dbTypeParam != null) {
+            // boolean asBefore = false;
+            // while (iterator.hasNext()) {
+            // ConnectionItem nextItem = iterator.next();
+            // if (nextItem instanceof DatabaseConnectionItem
+            // && ((DatabaseConnectionItem) nextItem).getConnection() instanceof DatabaseConnection) {
+            // List<String> asList = Arrays.asList(dbTypeParam.getListRepositoryItems());
+            // DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) nextItem)
+            // .getConnection();
+            // if (isValidDbConnection(asList, connection)) {
+            // repositoryConnectionItem = nextItem;
+            // repositoryConnection = repositoryConnectionItem.getConnection();
+            // break;
+            // }
+            // } else {
+            // asBefore = true;
+            // break;
+            // }
+            // }
+            // if (asBefore) {
+            // repositoryConnectionItem = iterator.next();
+            // repositoryConnection = repositoryConnectionItem.getConnection();
+            // }
+            // } else {
+            // repositoryConnectionItem = iterator.next();
+            // repositoryConnection = repositoryConnectionItem.getConnection();
+            // }
+            // } else {
+            // repositoryConnectionItem = iterator.next();
+            // repositoryConnection = repositoryConnectionItem.getConnection();
+            // }
+            //
+            // } else {
+            // repositoryConnection = null;
+            // }
+            // }
             //
             // for ruleItem,hywang add
             if (repositoryFileItemMap.containsKey(connectionSelected)) {
@@ -636,13 +684,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
         }
         ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
                 paramName, value);
-        changeValuesFromRepository1.setMaps(dynamicProperty.getRepositoryTableMap());
         cc.add(changeValuesFromRepository1);
         if (repositoryConnection != null) {
             ChangeValuesFromRepository changeValuesFromRepository2 = new ChangeValuesFromRepository(elem, repositoryConnection,
                     repositoryParam.getParentParameter().getName() + ":" + repositoryParam.getName(), repositoryConnectionItem //$NON-NLS-1$
                             .getProperty().getId());
-            changeValuesFromRepository2.setMaps(dynamicProperty.getRepositoryTableMap());
             cc.add(changeValuesFromRepository2);
         }
         // hywang add for feature 6484
@@ -741,8 +787,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         final String name = "SOURCE_LIB"; //$NON-NLS-1$
                         IElementParameter libParam = node.getElementParameter(name);
                         if (libParam != null) {
-                            Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
-                                    .addQuotes(databaseConnection.getSID()));
+                            Command libSettingCmd = new PropertyChangeCommand(node, name,
+                                    TalendTextUtils.addQuotes(databaseConnection.getSID()));
                             cc.add(libSettingCmd);
                         }
 

@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -53,11 +54,13 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -947,7 +950,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     @Override
     protected Command createComboCommand(CCombo combo) {
-        IMetadataTable repositoryMetadata;
+        IMetadataTable repositoryMetadata = null;
 
         String fullParamName = (String) combo.getData(PARAMETER_NAME);
         IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
@@ -990,35 +993,92 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
                 }
             } else if (value.equals(EmfComponent.REPOSITORY)) {
-                Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+                // Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
                 IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                 if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                     String propertySelected = (String) ((Node) elem).getElementParameter(
                             EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                    final ConnectionItem connectionItem = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected);
-                    if (connectionItem != null) {
-                        connection = connectionItem.getConnection();
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    /* 16969 */
+                    Item item = null;
+                    try {
+                        IRepositoryViewObject repobj = factory.getLastVersion(propertySelected);
+                        if (repobj != null) {
+                            Property tmpproperty = repobj.getProperty();
+                            if (tmpproperty != null) {
+                                item = tmpproperty.getItem();
+                            }
+                        }
+                        // item = factory.getLastVersion(propertySelected).getProperty().getItem();
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                    if (item != null && item instanceof ConnectionItem) {
+
+                        final ConnectionItem connectionItem = (ConnectionItem) item;
+                        if (connectionItem != null) {
+                            connection = connectionItem.getConnection();
+                        }
                     }
                 }
 
                 IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters()
                         .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 String schemaSelected = (String) repositorySchemaType.getValue();
-                if (repositoryTableMap.containsKey(schemaSelected)) {
-                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                    // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
-                    newRepositoryIdValue = schemaSelected;// + " - " + repositoryMetadata.getLabel();
-                } else {
-                    if (repositoryTableMap.keySet().size() == 0) {
-                        repositoryMetadata = new MetadataTable();
-                    } else {
-                        newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
-                        // Gets the schema of the first item in repository schema type combo.
-                        repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
-                        // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
-                        // newRepositoryIdValue = newRepositoryIdValue + " - " + repositoryMetadata.getLabel();
+
+                /* value can be devided means the value like "connectionid - label" */
+                String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-N$
+                if (keySplitValues.length > 1) {
+                    String connectionId = keySplitValues[0]; //$NON-NLS-N$
+                    String tableLabel = keySplitValues[1]; //$NON-NLS-N$
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    Item item = null;
+                    try {
+                        IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                        if (repobj != null) {
+                            Property tmpproperty = repobj.getProperty();
+                            if (tmpproperty != null) {
+                                item = tmpproperty.getItem();
+                            }
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
                     }
+                    if (item != null && item instanceof ConnectionItem) {
+                        boolean findTable = false;
+                        for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
+                                .getTables(connection)) {
+                            if (table.getLabel().equals(tableLabel)) {
+                                repositoryMetadata = ConvertionHelper.convert(table);
+                                newRepositoryIdValue = schemaSelected;
+                                findTable = true;
+                                break;
+                            }
+                        }
+                        if (!findTable) {
+                            repositoryMetadata = new MetadataTable();
+                        }
+                    }
+                } else { // value only got a empty string
+                    repositoryMetadata = new MetadataTable();
                 }
+                /* see bug 16969 */
+                // if (repositoryTableMap.containsKey(schemaSelected)) {
+                // repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                // // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
+                // newRepositoryIdValue = schemaSelected;// + " - " + repositoryMetadata.getLabel();
+                // } else {
+                // if (repositoryTableMap.keySet().size() == 0) {
+                // repositoryMetadata = new MetadataTable();
+                // } else {
+                // newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
+                // // Gets the schema of the first item in repository schema type combo.
+                // repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
+                // // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
+                // // newRepositoryIdValue = newRepositoryIdValue + " - " + repositoryMetadata.getLabel();
+                // }
+                // }
+
             } else {
                 return new PropertyChangeCommand(elem, fullParamName, value);
             }

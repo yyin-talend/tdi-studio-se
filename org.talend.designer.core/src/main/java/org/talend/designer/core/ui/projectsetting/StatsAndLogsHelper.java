@@ -22,6 +22,8 @@ import java.util.TreeSet;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.ModuleNeeded;
@@ -34,8 +36,11 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.StatAndLogsSettings;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -49,6 +54,8 @@ import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Helper class for Load StatsAndLogs Preferences to EMF project in Project setting
@@ -184,8 +191,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setDisplayName(EParameterName.FILE_PATH.getDisplayName());
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param
-                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         param.setNumRow(11);
         paramList.add(param);
 
@@ -253,27 +259,38 @@ public class StatsAndLogsHelper extends Utils {
     }
 
     static void changeRepositoryConnection(Element process, StatsAndLogsComposite statsComposite) {
-        String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process, EParameterName.PROPERTY_TYPE
-                .getName());
+        String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process,
+                EParameterName.PROPERTY_TYPE.getName());
 
         String id = (String) (ElementParameter2ParameterType.getParameterValue(process, EParameterName.PROPERTY_TYPE.getName()));
 
         Connection repositoryConnection = null;
-        Map<String, ConnectionItem> repositoryConnectionItemMap = statsComposite.getRepositoryConnectionItemMap();
-
-        if (repositoryConnectionItemMap.containsKey(id)) {
-            repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+        /* 16969 */
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        Item item = null;
+        try {
+            IRepositoryViewObject repobj = factory.getLastVersion(id);
+            if (repobj != null) {
+                Property tmpproperty = repobj.getProperty();
+                if (tmpproperty != null) {
+                    item = tmpproperty.getItem();
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        if (item != null && item instanceof ConnectionItem) {
+            repositoryConnection = ((ConnectionItem) item).getConnection();
         } else {
             repositoryConnection = null;
         }
-        ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
+        ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection,
+                ImplicitContextLoadHelper.getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                        + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
-        ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
-        cmd2.setMaps(statsComposite.getRepositoryTableMap());
+        ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection,
+                ImplicitContextLoadHelper.getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
 
         AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) process).getEditor();
         if (part instanceof AbstractMultiPageTalendEditor) {
@@ -334,8 +351,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(51);
         param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
 
         param.setParentParameter(parentPropertyType);
         // paramList.add(param);
@@ -350,8 +366,8 @@ public class StatsAndLogsHelper extends Utils {
         param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()// +
         // ProjectSettingManager
-                // .
-                // CONNECTION_ITEM_LABEL
+        // .
+        // CONNECTION_ITEM_LABEL
                 )); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
@@ -376,8 +392,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(52);
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // dbVersion
@@ -393,8 +408,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(52);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'ACCESS' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'ACCESS' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // jdbc url
@@ -406,8 +420,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("URL"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // jdbc child param
@@ -442,8 +455,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("DRIVER_JAR"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // class name for jdbc
@@ -455,8 +467,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(57);
         param.setRepositoryValue("DRIVER_CLASS"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // host
@@ -468,8 +479,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // port
@@ -481,8 +491,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // dbName
@@ -494,8 +503,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // local service name
@@ -507,8 +515,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and DB_TYPE =='OCLE_OCI'"); //$NON-NLS-1$ 
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and DB_TYPE =='OCLE_OCI'"); //$NON-NLS-1$ 
         paramList.add(param);
 
         // additional parameters
@@ -520,8 +527,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='MSSQL' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='SYBASE') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='MSSQL' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='SYBASE') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
         // schema
         param = new ElementParameter(elem);
@@ -532,8 +538,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // username
@@ -546,8 +551,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(55);
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
         paramList.add(param);
 
         // password
@@ -560,8 +564,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setNumRow(55);
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
         paramList.add(param);
         // databse file path
         param = new ElementParameter(elem);
@@ -572,8 +575,7 @@ public class StatsAndLogsHelper extends Utils {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(56);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='SQLITE' or DB_TYPE=='ACCESS' or DB_TYPE=='FIREBIRD') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='SQLITE' or DB_TYPE=='ACCESS' or DB_TYPE=='FIREBIRD') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
         // Stats table
         param = new ElementParameter(elem);

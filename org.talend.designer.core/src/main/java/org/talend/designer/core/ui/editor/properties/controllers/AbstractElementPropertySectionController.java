@@ -58,6 +58,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
@@ -74,6 +75,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -87,8 +90,10 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -99,6 +104,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -122,6 +128,8 @@ import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
@@ -688,8 +696,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
         private void refreshNode() {
-            boolean flag = CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                    TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
+            boolean flag = CorePlugin.getDefault().getPreferenceStore()
+                    .getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
             if (flag) {
                 return;
             }
@@ -1402,13 +1410,41 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String realTableName = null;
         if (EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()))) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            final IMetadataTable metadataTable = dynamicProperty.getRepositoryTableMap().get(propertyValue);
+            IMetadataTable metadataTable = null;
+
+            String connectionId = propertyValue.toString().split(" - ")[0]; //$NON-NLS-N$
+            String tableLabel = propertyValue.toString().split(" - ")[1]; //$NON-NLS-N$
+
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            Item item = null;
+            try {
+                IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                if (repobj != null) {
+                    Property property = repobj.getProperty();
+                    if (property != null) {
+                        item = property.getItem();
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+            if (item != null && item instanceof ConnectionItem) {
+                Connection connection = ((ConnectionItem) item).getConnection();
+                for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
+                        .getTables(connection)) {
+                    if (table.getLabel().equals(tableLabel)) {
+                        metadataTable = ConvertionHelper.convert(table);
+                        break;
+                    }
+                }
+            }
+
             if (metadataTable != null) {
                 realTableName = metadataTable.getTableName();
             }
         }
-        connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), TalendTextUtils
-                .removeQuotes(schema), type, realTableName));
+        connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(),
+                TalendTextUtils.removeQuotes(schema), type, realTableName));
     }
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
@@ -1437,8 +1473,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
-        connParameters.setJdbcProperties(getParameterValueWithContext(element, EConnectionParameterName.PROPERTIES_STRING
-                .getName(), context));
+        connParameters.setJdbcProperties(getParameterValueWithContext(element,
+                EConnectionParameterName.PROPERTIES_STRING.getName(), context));
         connParameters
                 .setDatasource(getParameterValueWithContext(element, EConnectionParameterName.DATASOURCE.getName(), context));
     }
@@ -1711,20 +1747,33 @@ public abstract class AbstractElementPropertySectionController implements Proper
             String repositoryId = null;
             IElementParameter memoParam = elem.getElementParameter(propertyName);
 
-            IElementParameter repositoryParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, memoParam
-                    .getCategory());
+            IElementParameter repositoryParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
+                    memoParam.getCategory());
             if (repositoryParam != null) {
                 IElementParameter itemFromRepository = repositoryParam.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                 String value = (String) itemFromRepository.getValue();
                 repositoryId = value;
-                for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
-                    if (key.equals(value)) {
-                        repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty().getLabel();
+                // for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
+                // if (key.equals(value)) {
+                // repositoryName2 =
+                // this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty().getLabel();
+                // }
+                // }
+                /* get connection item dynamictly,not from cache ,see 16969 */
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(value);
+                    if (repobj != null) {
+                        Property property = repobj.getProperty();
+                        if (property != null) {
+                            repositoryName2 = property.getLabel();
+                        }
                     }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
                 }
             }
-
             // When no repository avaiable on "Repository" mode, open a MessageDialog.
             if (repositoryName2 == null || repositoryName2.length() == 0) {
                 MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages //$NON-NLS-1$

@@ -13,11 +13,11 @@
 package org.talend.designer.core.ui.projectsetting;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -34,9 +34,12 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ImplicitContextSettings;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.StatAndLogsSettings;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -54,6 +57,7 @@ import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -193,9 +197,9 @@ public class ProjectSettingManager extends Utils {
         ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
 
         // load the project settings to process
-        ElementParameter2ParameterType.loadElementParameters(process, implicitType, JobSettingsConstants
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName())
-                + ":" + EParameterName.PROPERTY_TYPE.getName());
+        ElementParameter2ParameterType.loadElementParameters(process, implicitType,
+                JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()) + ":"
+                        + EParameterName.PROPERTY_TYPE.getName());
         // TODO
         // changeImplicitContextRepositoryItem(process, extraComposite);
     }
@@ -209,27 +213,38 @@ public class ProjectSettingManager extends Utils {
 
     static void changeImplicitContextRepositoryItem(Element process, ExtraComposite extraComposite) {
         // change repository item
-        String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process, JobSettingsConstants
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
+        String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process,
+                JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
 
         String id = (String) (ElementParameter2ParameterType.getParameterValue(process, EParameterName.PROPERTY_TYPE.getName()));
 
         Connection repositoryConnection = null;
-        Map<String, ConnectionItem> repositoryConnectionItemMap = extraComposite.getRepositoryConnectionItemMap();
-
-        if (repositoryConnectionItemMap.containsKey(id)) {
-            repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+        /* 16969 */
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        Item item = null;
+        try {
+            IRepositoryViewObject repobj = factory.getLastVersion(id);
+            if (repobj != null) {
+                Property tmpproperty = repobj.getProperty();
+                if (tmpproperty != null) {
+                    item = tmpproperty.getItem();
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        if (item != null && item instanceof ConnectionItem) {
+            repositoryConnection = ((ConnectionItem) item).getConnection();
         } else {
             repositoryConnection = null;
         }
-        ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
+        ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection,
+                ImplicitContextLoadHelper.getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                        + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
-        ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
-                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
-        cmd2.setMaps(extraComposite.getRepositoryTableMap());
+        ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection,
+                ImplicitContextLoadHelper.getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
 
         AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) process).getEditor();
         if (part instanceof AbstractMultiPageTalendEditor) {
@@ -263,8 +278,8 @@ public class ProjectSettingManager extends Utils {
         }
         if (bImplicit) {
             ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
-            ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS
-                    .getName(), bImplicit);
+            ElementParameter2ParameterType.setParameterValue(process,
+                    EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), bImplicit);
             reloadImplicitValuesFromProjectSettings(process, ProjectManager.getInstance().getCurrentProject(), null);
 
         }
@@ -382,8 +397,7 @@ public class ProjectSettingManager extends Utils {
         String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
                 + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
-                        .getName())
-                        + " == 'true'"); //$NON-NLS-1$
+                        .getName()) + " == 'true'"); //$NON-NLS-1$
 
         param.setShowIf(condition);
         paramList.add(param);
@@ -494,9 +508,8 @@ public class ProjectSettingManager extends Utils {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param
-                .setShowIf(dbCondition
-                        + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL')"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+        param.setShowIf(dbCondition
+                + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL')"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 

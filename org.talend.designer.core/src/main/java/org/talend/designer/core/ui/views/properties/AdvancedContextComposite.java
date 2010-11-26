@@ -50,8 +50,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -245,35 +243,39 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
-     * ()
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        return null;
-    }
+    /* 16969 */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+    // * ()
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // *
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // return null;
+    // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
-     */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        return null;
-    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryTableMap()
+    // */
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // return null;
+    // }
 
     /*
      * (non-Javadoc)

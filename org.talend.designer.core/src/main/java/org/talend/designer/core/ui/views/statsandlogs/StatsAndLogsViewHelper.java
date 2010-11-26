@@ -13,11 +13,12 @@
 package org.talend.designer.core.ui.views.statsandlogs;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.Element;
@@ -26,6 +27,8 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
@@ -37,9 +40,11 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 
 /**
@@ -148,22 +153,39 @@ public class StatsAndLogsViewHelper {
                         .getValue();
                 String propertyType = (String) element.getElementParameter(
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue(); //$NON-NLS-1$
-
+                /* 16969 */
                 Connection repositoryConnection = null;
-                Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
-
-                if (repositoryConnectionItemMap.containsKey(id)) {
-                    repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                // Map<String, ConnectionItem> repositoryConnectionItemMap =
+                // dynamicProperty.getRepositoryConnectionItemMap();
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                Item item = null;
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(id);
+                    if (repobj != null) {
+                        Property tmpproperty = repobj.getProperty();
+                        if (tmpproperty != null) {
+                            item = tmpproperty.getItem();
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (item != null && item instanceof ConnectionItem) {
+                    repositoryConnection = ((ConnectionItem) item).getConnection();
                 } else {
                     repositoryConnection = null;
                 }
+                // if (repositoryConnectionItemMap.containsKey(id)) {
+                // repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                // } else {
+                // repositoryConnection = null;
+                // }
 
                 ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
                 ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
-                cmd2.setMaps(dynamicProperty.getRepositoryTableMap());
 
                 AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) applyTo).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {
@@ -510,30 +532,48 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.ON_DATABASE_FLAG.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE
-                        .getBoolean(LANGUAGE_PREFIX + EParameterName.ON_DATABASE_FLAG.getName()));
+                elementParameter
+                        .setValue(PREFERENCE_STORE.getBoolean(LANGUAGE_PREFIX + EParameterName.ON_DATABASE_FLAG.getName()));
                 continue;
             }
 
             if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
                 String propertyType = PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName());
                 String id = PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-
+                /* 16969 */
                 Connection repositoryConnection = null;
-                Map<String, ConnectionItem> repositoryConnectionItemMap = propertyComposite.getRepositoryConnectionItemMap();
-
-                if (repositoryConnectionItemMap.containsKey(id)) {
-                    repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                Item item = null;
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(id);
+                    if (repobj != null) {
+                        Property tmpproperty = repobj.getProperty();
+                        if (tmpproperty != null) {
+                            item = tmpproperty.getItem();
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (item != null && item instanceof ConnectionItem) {
+                    repositoryConnection = ((ConnectionItem) item).getConnection();
                 } else {
                     repositoryConnection = null;
                 }
+                // Map<String, ConnectionItem> repositoryConnectionItemMap =
+                // propertyComposite.getRepositoryConnectionItemMap();
+                //
+                // if (repositoryConnectionItemMap.containsKey(id)) {
+                // repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                // } else {
+                // repositoryConnection = null;
+                // }
 
                 ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(element, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
                 ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(element, repositoryConnection,
                         EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
-                cmd2.setMaps(propertyComposite.getRepositoryTableMap());
 
                 AbstractMultiPageTalendEditor part = (AbstractMultiPageTalendEditor) ((IProcess2) element).getEditor();
                 if (part instanceof AbstractMultiPageTalendEditor) {

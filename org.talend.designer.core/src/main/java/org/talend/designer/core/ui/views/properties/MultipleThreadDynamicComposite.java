@@ -45,30 +45,10 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
-import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
-import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
-import org.talend.core.model.metadata.builder.connection.FTPConnection;
-import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
-import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.HL7Connection;
-import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
-import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.MDMConnection;
-import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
-import org.talend.core.model.metadata.builder.connection.QueriesConnection;
-import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
-import org.talend.core.model.metadata.builder.connection.SAPConnection;
-import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
-import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -122,18 +102,16 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     protected DynamicPropertyGenerator generator;
 
-    private final Map<String, IMetadataTable> repositoryTableMap;
-
-    private final Map<String, ConnectionItem> repositoryConnectionItemMap;
-
     private Map<String, FileItem> repositoryFileItemMap = new HashMap<String, FileItem>(); // hywang add for 6484
 
     private Map<String, LinkRulesItem> repositoryLinkRulesItemMap = new HashMap<String, LinkRulesItem>(); // hywang add
 
     // for 6484
 
-    private final Map<String, Query> repositoryQueryStoreMap;
+    /* cache should be deleted ,bug 16969 */
+    // private final Map<String, Query> repositoryQueryStoreMap;
 
+    // private final Map<String, IMetadataTable> repositoryTableMap;
     private Map<String, String> tableIdAndDbTypeMap = new HashMap<String, String>();
 
     private Map<String, String> tableIdAndDbSchemaMap = new HashMap<String, String>();
@@ -232,9 +210,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 }
 
                 if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
-                    repositoryTableMap.clear();
-                    repositoryQueryStoreMap.clear();
-                    repositoryConnectionItemMap.clear();
+                    // repositoryTableMap.clear();
+                    // repositoryQueryStoreMap.clear();
                     tableIdAndDbTypeMap.clear();
                     tableIdAndDbSchemaMap.clear();
 
@@ -247,88 +224,88 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             if (connection.isReadOnly()) {
                                 continue;
                             }
-
-                            if (repositoryValue != null) {
-                                if ((connection instanceof DelimitedFileConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.DELIMITED.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof PositionalFileConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.POSITIONAL.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof FileExcelConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.EXCEL.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof EbcdicConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.EBCDIC.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof HL7Connection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.HL7.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof FTPConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.FTP.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof BRMSConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.BRMS.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof MDMConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.MDM.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof RegexpFileConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.REGEX.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof XmlFileConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.XML.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof GenericSchemaConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.GENERIC.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof LDAPSchemaConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.LDAP.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof WSDLSchemaConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.WSDL.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof SalesforceSchemaConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.SALESFORCE.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof SAPConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.SAP.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof HeaderFooterConnection)
-                                        && (repositoryValue.equals(ERepositoryCategoryType.HEADERFOOTER.getName()))) {
-                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                }
-                                if ((connection instanceof DatabaseConnection)
-                                        && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
-                                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection,
-                                            "TYPE", null); //$NON-NLS-1$
-                                    if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
-                                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$;
-                                        if (MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
-                                            repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                        }
-                                    } else {
-                                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                    }
-                                }
-                            } else {
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
+                            /* code for cache repositoryConnectionItemMap.put should be deleted ,bug 16969 */
+                            // if (repositoryValue != null) {
+                            // if ((connection instanceof DelimitedFileConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.DELIMITED.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof PositionalFileConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.POSITIONAL.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof FileExcelConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.EXCEL.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof EbcdicConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.EBCDIC.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof HL7Connection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.HL7.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof FTPConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.FTP.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof BRMSConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.BRMS.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof MDMConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.MDM.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof RegexpFileConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.REGEX.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof XmlFileConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.XML.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof GenericSchemaConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.GENERIC.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof LDAPSchemaConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.LDAP.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof WSDLSchemaConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.WSDL.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof SalesforceSchemaConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.SALESFORCE.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof SAPConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.SAP.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof HeaderFooterConnection)
+                            // && (repositoryValue.equals(ERepositoryCategoryType.HEADERFOOTER.getName()))) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // if ((connection instanceof DatabaseConnection)
+                            // && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
+                            // String currentDbType = (String) RepositoryToComponentProperty.getValue(connection,
+                            //                                            "TYPE", null); //$NON-NLS-1$
+                            //                                    if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                            //                                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$;
+                            // if (MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // } else {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
+                            // }
+                            // } else {
+                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            // }
                             for (Object tableObj : ConnectionHelper.getTables(connection)) {
                                 org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
@@ -337,8 +314,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                                     if (!factory.isDeleted(table)) {
                                         IMetadataTable newTable = ConvertionHelper.convert(table);
-                                        repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(), //$NON-NLS-1$
-                                                newTable);
+                                        //                                        repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(), //$NON-NLS-1$
+                                        // newTable);
                                         if (connection instanceof DatabaseConnection) {
                                             String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                             String schema = ((DatabaseConnection) connection).getUiSchema();
@@ -350,17 +327,18 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                     }
                                 }
                             }
-                            if (connection instanceof DatabaseConnection) {
-                                DatabaseConnection dbConnection = (DatabaseConnection) connection;
-                                QueriesConnection queriesConnection = dbConnection.getQueries();
-                                if (queriesConnection != null) {
-                                    List<Query> qs = queriesConnection.getQuery();
-                                    for (Query query : qs) {
-                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " //$NON-NLS-1$
-                                                + query.getLabel(), query);
-                                    }
-                                }
-                            }
+                            /* query cache should be deleted ,bug 16969 */
+                            // if (connection instanceof DatabaseConnection) {
+                            // DatabaseConnection dbConnection = (DatabaseConnection) connection;
+                            // QueriesConnection queriesConnection = dbConnection.getQueries();
+                            // if (queriesConnection != null) {
+                            // List<Query> qs = queriesConnection.getQuery();
+                            // for (Query query : qs) {
+                            //                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " //$NON-NLS-1$
+                            // + query.getLabel(), query);
+                            // }
+                            // }
+                            // }
 
                             monitorWrap.worked(1);
                         }
@@ -521,7 +499,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             if (curParam.getCategory() == section) {
                 if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
                     if (curParam.isShow(listParam)) {
-                        AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(), this);
+                        AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
+                                this);
 
                         if (controller == null) {
                             continue;
@@ -563,8 +542,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName() + " field:" + curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(
+                                    curParam.getFieldType(), this);
 
                             if (controller == null) {
                                 continue;
@@ -749,8 +728,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(
+                                    curParam.getFieldType(), this);
 
                             if (controller == null) {
                                 break;
@@ -1026,9 +1005,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         layout.spacing = ITabbedPropertyConstants.VMARGIN + 1;
         composite.setLayout(layout);
 
-        repositoryQueryStoreMap = new HashMap<String, Query>();
-        repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
-        repositoryTableMap = new HashMap<String, IMetadataTable>();
+        /* caches deleted by bug16969 */
+        // repositoryQueryStoreMap = new HashMap<String, Query>();
+        // repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
+        // repositoryTableMap = new HashMap<String, IMetadataTable>();
         hashCurControls = new DualHashBidiMap();
 
         if ((currentComponent == null) || (!currentComponent.equals(elem.getElementName()))) {
@@ -1044,9 +1024,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
             public void handleEvent(Event event) {
                 // if the focus is lost reinitialise all information from repository
-                repositoryTableMap.clear();
-                repositoryQueryStoreMap.clear();
-                repositoryConnectionItemMap.clear();
+                /* bug 16969 */
+                // repositoryTableMap.clear();
+                // repositoryQueryStoreMap.clear();
+                // repositoryConnectionItemMap.clear();
             }
 
         });
@@ -1090,7 +1071,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             int detail = event.getDetail();
             if ((getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
                     && (event.getCommand() instanceof ChangeMetadataCommand)
-                    && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) // 
+                    && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) //
                     || 0 != (detail & CommandStack.POST_REDO))) {
                 addComponents(true);
                 refresh();
@@ -1228,41 +1209,43 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         return this.tableIdAndDbSchemaMap;
     }
 
-    /**
-     * Getter for repositoryQueryStoreMap.
-     * 
-     * @return the repositoryQueryStoreMap
-     */
-    public Map<String, Query> getRepositoryQueryStoreMap() {
-        if (this.repositoryQueryStoreMap.isEmpty()) {
-            updateRepositoryList();
-        }
-        return repositoryQueryStoreMap;
-    }
+    /* query cache should be deleted ,bug 16969 */
+    // /**
+    // * Getter for repositoryQueryStoreMap.
+    // *
+    // * @return the repositoryQueryStoreMap
+    // */
+    // public Map<String, Query> getRepositoryQueryStoreMap() {
+    // if (this.repositoryQueryStoreMap.isEmpty()) {
+    // updateRepositoryList();
+    // }
+    // return repositoryQueryStoreMap;
+    // }
 
-    /**
-     * dev Comment method "getRepositoryTableMap".
-     * 
-     * @return Map
-     */
-    public Map<String, IMetadataTable> getRepositoryTableMap() {
-        if (this.repositoryTableMap.isEmpty()) {
-            updateRepositoryList();
-        }
-        return this.repositoryTableMap;
-    }
+    // /**
+    // * dev Comment method "getRepositoryTableMap".
+    // *
+    // * @return Map
+    // */
+    // public Map<String, IMetadataTable> getRepositoryTableMap() {
+    // if (this.repositoryTableMap.isEmpty()) {
+    // updateRepositoryList();
+    // }
+    // return this.repositoryTableMap;
+    // }
 
-    /**
-     * dev Comment method "getRepositoryConnectionItemMap".
-     * 
-     * @return Map
-     */
-    public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-        if (this.repositoryConnectionItemMap.isEmpty()) {
-            updateRepositoryList();
-        }
-        return this.repositoryConnectionItemMap;
-    }
+    /* 16969 */
+    // /**
+    // * dev Comment method "getRepositoryConnectionItemMap".
+    // *
+    // * @return Map
+    // */
+    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+    // if (this.repositoryConnectionItemMap.isEmpty()) {
+    // updateRepositoryList();
+    // }
+    // return this.repositoryConnectionItemMap;
+    // }
 
     /**
      * hywang Comment method "getRepositoryFileItemMap".

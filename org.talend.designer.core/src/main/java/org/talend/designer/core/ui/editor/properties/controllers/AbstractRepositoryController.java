@@ -310,8 +310,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     private LinkRulesItem lastLinkItem;
 
     private void fastRepositoryUpdateProperty() {
-        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, dynamicProperty
-                .getSection());
+        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
+                dynamicProperty.getSection());
 
         if (param == null) {
             return;
@@ -410,8 +410,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     }
 
     private void fastRepositoryUpdateQuery() {
-        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE, dynamicProperty
-                .getSection());
+        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE,
+                dynamicProperty.getSection());
         if (param == null) {
             return;
         }
@@ -460,9 +460,9 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
                     param.setListItemsDisplayName(new String[] { displayName });
                     param.setListItemsValue(new String[] { (String) param.getValue() });
-
-                    dynamicProperty.getRepositoryQueryStoreMap().clear();
-                    dynamicProperty.getRepositoryQueryStoreMap().put((String) param.getValue(), currentQuery);
+                    /* query cache should be deleted ,bug 16969 */
+                    // dynamicProperty.getRepositoryQueryStoreMap().clear();
+                    // dynamicProperty.getRepositoryQueryStoreMap().put((String) param.getValue(), currentQuery);
                 }
             }
         }

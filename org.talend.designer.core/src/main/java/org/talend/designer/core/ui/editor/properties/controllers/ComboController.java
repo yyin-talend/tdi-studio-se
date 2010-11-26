@@ -43,23 +43,34 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQPatternService;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -328,7 +339,6 @@ public class ComboController extends AbstractElementPropertySectionController {
      * @return
      */
     private Command createButtonCommand() {
-        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
         IMetadataTable repositoryMetadata = null;
         IMetadataTable newRepositoryMetadata = null;
         String realTableName = null;
@@ -359,14 +369,46 @@ public class ComboController extends AbstractElementPropertySectionController {
                         }
                     }
                     if (elem instanceof Node) {
+
                         // this.dynamicProperty.updateRepositoryList();
-                        if (repositoryTableMap.containsKey(value)) {
-                            repositoryMetadata = repositoryTableMap.get(value);
-                            realTableName = repositoryMetadata.getTableName();
-                            realTableId = repositoryMetadata.getId();
-                        } else {
-                            repositoryMetadata = new MetadataTable();
+                        String connectionId = value.toString().split(" - ")[0]; //$NON-NLS-N$
+                        String tableLabel = value.toString().split(" - ")[1]; //$NON-NLS-N$
+                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        Item item = null;
+                        try {
+                            IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                            if (repobj != null) {
+                                Property property = repobj.getProperty();
+                                if (property != null) {
+                                    item = property.getItem();
+                                }
+                            }
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
                         }
+                        if (item != null && item instanceof ConnectionItem) {
+                            boolean findTable = false;
+                            Connection connection = ((ConnectionItem) item).getConnection();
+                            for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
+                                    .getTables(connection)) {
+                                if (table.getLabel().equals(tableLabel)) {
+                                    repositoryMetadata = ConvertionHelper.convert(table);
+                                    findTable = true;
+                                    break;
+                                }
+                            }
+                            if (!findTable) {
+                                repositoryMetadata = new MetadataTable();
+                            }
+                        }
+
+                        // if (repositoryTableMap.containsKey(value)) {
+                        // repositoryMetadata = repositoryTableMap.get(value);
+                        // realTableName = repositoryMetadata.getTableName();
+                        // realTableId = repositoryMetadata.getId();
+                        // } else {
+                        // repositoryMetadata = new MetadataTable();
+                        // }
                     }
                 }
             }
@@ -384,8 +426,40 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         if (newRepositoryMetadata == null) {
             String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
-                repositoryMetadata = repositoryTableMap.get(schemaSelected);
+            if (schemaSelected != null) {
+
+                String connectionId = schemaSelected.toString().split(" - ")[0]; //$NON-NLS-N$
+                String tableLabel = schemaSelected.toString().split(" - ")[1]; //$NON-NLS-N$
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                Item item = null;
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(connectionId);
+                    if (repobj != null) {
+                        Property property = repobj.getProperty();
+                        if (property != null) {
+                            item = property.getItem();
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (item != null && item instanceof ConnectionItem) {
+                    boolean findTable = false;
+                    Connection connection = ((ConnectionItem) item).getConnection();
+                    for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
+                            .getTables(connection)) {
+                        if (table.getLabel().equals(tableLabel)) {
+                            repositoryMetadata = ConvertionHelper.convert(table);
+                            findTable = true;
+                            break;
+                        }
+                    }
+                    if (!findTable) {
+                        repositoryMetadata = new MetadataTable();
+                    }
+                }
+
+                // repositoryMetadata = repositoryTableMap.get(schemaSelected);
             } else if (newRepositoryMetadata == null) {
                 MessageDialog.openWarning(new Shell(),
                         Messages.getString("ComboController.alert"), Messages.getString("ComboController.nothingGuess")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -394,7 +468,8 @@ public class ComboController extends AbstractElementPropertySectionController {
         }
         cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
-        cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
+        /* parameter can be null,the setMaps won't use the third parameter */
+        cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), null);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         cmd.setParameters(realTableId, realTableName, type);
 
