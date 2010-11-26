@@ -70,6 +70,7 @@ imports="
                 <%if ((rejectConnName==null && isUseBatchByDBVersion && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                
                 try {
+                	if (pstmt_<%=cid %> != null) { 
 						pstmt_<%=cid %>.executeBatch();                	
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -83,7 +84,8 @@ imports="
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
-            	    	}%>            	    
+            	    	}%>
+            	    }          	    
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
