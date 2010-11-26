@@ -363,6 +363,10 @@
             mapping="CLOSED_LIST"
             name="Combo"/>
       <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.OpenedListGenerator"
+            mapping="OPENED_LIST"
+            name="Opened List"/>
+      <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.MemoGenerator"
             mapping="MEMO"
             name="Memo"/>
