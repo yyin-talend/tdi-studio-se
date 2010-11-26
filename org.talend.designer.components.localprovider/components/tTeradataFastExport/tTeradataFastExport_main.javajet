@@ -76,7 +76,7 @@ if(columnList!=null){
 fw_<%=cid %>.write("FROM "+ <%=dbname%> + "." + <%=table%>+";\r\n");
 
 <%//Export file----------------------------------------------------------%>
-fw_<%=cid %>.write(".EXPORT OUTFILE \""+<%=exportedFile%>+"\".data FORMAT TEXT mode record;\r\n");
+fw_<%=cid %>.write(".EXPORT OUTFILE \""+<%=exportedFile%>+".data\" FORMAT TEXT mode record;\r\n");
 fw_<%=cid %>.write(".END EXPORT;\r\n");
 fw_<%=cid %>.write(".LOGOFF;\r\n");
 
