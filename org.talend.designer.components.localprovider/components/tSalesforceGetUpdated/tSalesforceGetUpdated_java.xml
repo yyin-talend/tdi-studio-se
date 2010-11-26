@@ -2447,6 +2447,12 @@
 			REQUIRED="true" />
 		<IMPORT NAME="axis2-adb" MODULE="axis2-adb-1.5.2.jar"
 			REQUIRED="true" />
+		<IMPORT NAME="stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="activation" MODULE="activation-1.1.jar"
+			REQUIRED="true" />
+		<IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.9.jar"
+			REQUIRED="true" />	
     </IMPORTS>
   </CODEGENERATION>
 
