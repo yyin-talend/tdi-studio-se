@@ -184,6 +184,9 @@ while(1){
                     hCheckColumnsType.get(column.getLabel()) != null && 
                     !hCheckColumnsType.get(column.getLabel()).equals("string")
                 ){
+%>
+	if(( defined($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>]))){
+<%
                     if(
                         hCheckColumnsType.get(column.getLabel()) != null && 
                         hCheckColumnsType.get(column.getLabel()).equals("boolean")
@@ -197,7 +200,7 @@ while(1){
                         hCheckColumnsType.get(column.getLabel()).equals("int")
                     ){
 %>
-    if( !($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{int}$}) ){
+    if( !($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{int}$})){
 <%
                     }
                     if(
@@ -205,7 +208,7 @@ while(1){
                         hCheckColumnsType.get(column.getLabel()).equals("decimal")
                     ){
 %>
-    if( !($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{real}$}) ){
+    if(!($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{real}$}) ){
 <%
                     }
                     if(
@@ -235,6 +238,7 @@ while(1){
             "Column '<%=column.getLabel() %>' wrong type : <%=column.getTalendType() %>";
         last ;
     } # TYPE REJECT
+    }
 <%
                 }// if checked type
             }// for columns
