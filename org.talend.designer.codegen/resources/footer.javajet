@@ -414,6 +414,11 @@ this.globalResumeTicket = false;//to run others jobs
 			//filter the special subjob
 			if("tPrejob".equals(componentName)) continue;
 			if("tPostjob".equals(componentName)) continue;
+			
+			//bug16808 when use parallel option at Output components, that will multi thread
+			if(componentName.startsWith("tAsyncIn")) continue;
+			//end bug16808
+			
 			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 			
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
