@@ -1182,7 +1182,7 @@ public class DatabaseForm extends AbstractForm {
                         }
                     }
                     if (mapping == null) {
-                        mapping = ""; //   mapping = "mysql_id";// default value //$NON-NLS-1$
+                        mapping = "mysql_id"; // default value //$NON-NLS-1$
                     }
 
                     getConnection().setDbmsId(mapping);
@@ -1518,9 +1518,8 @@ public class DatabaseForm extends AbstractForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
-                    String mappingFileText = generalMappingFileText.getText();
-                    if (mappingFileText != null) {
-                        getConnection().setDbmsId(mappingFileText);
+                    if (validText(generalMappingFileText.getText())) {
+                        getConnection().setDbmsId(generalMappingFileText.getText());
                         checkFieldsValue();
                     }
                 }
