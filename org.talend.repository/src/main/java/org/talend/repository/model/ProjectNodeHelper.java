@@ -111,6 +111,10 @@ public class ProjectNodeHelper {
                 hasSchemaInCatalog = subschemas.size() > 0;
                 if (subschemas.size() > 0) {
                     for (Schema current : subschemas) {
+                        if (current.getName() == null) {
+                            /* if the current schema no name should set an empty string for name, bug 17244 */
+                            current.setName(""); //$NON-NLS-N$
+                        }
                         if (current.getName().equals(schema)) {
                             s = current;
                             break;
