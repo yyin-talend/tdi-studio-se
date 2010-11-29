@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
@@ -89,10 +88,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import orgomg.cwm.objectmodel.core.CoreFactory;
-import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
-import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 /**
  * @author cantoine
@@ -729,7 +726,9 @@ public class SelectorTableForm extends AbstractForm {
 
         // if (itemTableName != null && !itemTableName.isEmpty()) {
         // fill the combo
-        Collection tables = new ArrayList();
+        // if (itemTableName != null && !itemTableName.isEmpty()) {
+        // fill the combo
+        Collection<MetadataTable> tables = new ArrayList<MetadataTable>();
         Iterator<MetadataTable> iterate = ConnectionHelper.getTables(getConnection()).iterator();
         while (iterate.hasNext()) {
             MetadataTable metadata = iterate.next();
@@ -737,20 +736,9 @@ public class SelectorTableForm extends AbstractForm {
                 tables.add(metadata);
             }
         }
-        Catalog c = (Catalog) ConnectionHelper.getPackage(getConnection().getSID(), getConnection(), Catalog.class); // hywang
-        if (c != null) {
-            // for bug 16794
-            ModelElement modelElement = c.getOwnedElement().get(0);
-            if (modelElement instanceof SchemaImpl) {
-                SchemaImpl schemaElement = (SchemaImpl) modelElement;
-                EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
-
-                if (ownedElement.size() > 0 && ownedElement.containsAll(tables)) {
-                    ownedElement.removeAll(tables);
-                }
-            }
-
-        }
+        ProjectNodeHelper.removeTablesFromCurrentCatalogOrSchema(iMetadataConnection.getDatabase(),
+                iMetadataConnection.getSchema(), getConnection(), tables);
+        // }
         // }
     }
 

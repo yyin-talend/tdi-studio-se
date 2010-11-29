@@ -13,6 +13,7 @@
 package org.talend.repository.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -424,6 +425,49 @@ public class ProjectNodeHelper {
                 }
 
             }
+        }
+    }
+
+    public static void removeTablesFromCurrentCatalogOrSchema(String dbsid, String schema, DatabaseConnection dbconn,
+            Collection<? extends MetadataTable> tablesToDelete) {
+        boolean hasSchemaInCatalog = false;
+        Catalog c = (Catalog) ConnectionHelper.getPackage(dbsid, dbconn, Catalog.class);
+        Schema s = (Schema) ConnectionHelper.getPackage(schema, dbconn, Schema.class);
+        List<Schema> subschemas = new ArrayList<Schema>();
+        if (c != null) {
+            subschemas = CatalogHelper.getSchemas(c);
+            hasSchemaInCatalog = subschemas.size() > 0;
+        }
+        if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
+            c.getOwnedElement().removeAll(tablesToDelete);
+
+        } else if (s != null && !hasSchemaInCatalog && c == null) { // only schema
+            s.getOwnedElement().removeAll(tablesToDelete);
+            // PackageHelper.addMetadataTable(dbtable, s);
+        } else if (c != null && hasSchemaInCatalog) { // both schema and catalog
+            subschemas = CatalogHelper.getSchemas(c);
+            hasSchemaInCatalog = subschemas.size() > 0;
+            if (subschemas.size() > 0) {
+                for (Schema current : subschemas) {
+                    if (current.getName().equals(schema)) {
+                        s = current;
+                        break;
+                    }
+                }
+                /**
+                 * if dont specifc a schema because of getUiSchema() is null,show all cataogs table by default,or it
+                 * will cause bug 0016578
+                 */
+                if (s == null || "".equals(s)) {
+                    // allTables = ConnectionHelper.getTables(dbconn);
+                    c.getOwnedElement().removeAll(tablesToDelete);
+                } else {
+                    s.getOwnedElement().removeAll(tablesToDelete);
+                }
+                // PackageHelper.addMetadataTable(dbtable, s);
+            }
+        } else {
+            // return nothing
         }
     }
 }
