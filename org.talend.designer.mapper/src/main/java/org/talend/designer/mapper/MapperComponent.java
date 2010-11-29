@@ -437,15 +437,20 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
     private List<ExternalMapperTableEntry> getExternalEntities(List<MapperTableEntry> pEntities) {
         List<ExternalMapperTableEntry> entityList = new ArrayList<ExternalMapperTableEntry>();
-        for (MapperTableEntry pEntity : pEntities) {
-            ExternalMapperTableEntry externalEntity = new ExternalMapperTableEntry();
-            externalEntity.setExpression(pEntity.getExpression());
-            externalEntity.setName(pEntity.getName());
-            externalEntity.setNullable(pEntity.isNullable());
-            externalEntity.setType(pEntity.getType());
-            entityList.add(externalEntity);
+        if (pEntities != null && !pEntities.isEmpty()) {
+            for (MapperTableEntry pEntity : pEntities) {
+                ExternalMapperTableEntry externalEntity = new ExternalMapperTableEntry();
+                externalEntity.setExpression(pEntity.getExpression());
+                externalEntity.setName(pEntity.getName());
+                externalEntity.setNullable(pEntity.isNullable());
+                externalEntity.setType(pEntity.getType());
+                entityList.add(externalEntity);
+            }
+            return entityList;
+        } else {
+            // fix for tuj tMap_01_basics_04 , need to return null if no entity
+            return null;
         }
-        return entityList;
     }
 
     public AbstractExternalData saveExternalData() {
@@ -750,8 +755,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
                         if (renameAction) {
                             Perl5Substitution substitution = getRenameSubstitution(newName);
-                            String expression = renameDataIntoExpression(pattern, matcher, substitution, table
-                                    .getExpressionFilter());
+                            String expression = renameDataIntoExpression(pattern, matcher, substitution,
+                                    table.getExpressionFilter());
                             table.setExpressionFilter(expression);
                         } else {
                             if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
