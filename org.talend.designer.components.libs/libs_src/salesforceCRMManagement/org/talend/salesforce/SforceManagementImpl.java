@@ -790,7 +790,8 @@ public class SforceManagementImpl implements SforceManagement {
         if (results instanceof SaveResult[]) {
             for (SaveResult result : (SaveResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                resultMessage.put("id", result.getId().getID());
+                if (result.getId() != null)
+                    resultMessage.put("id", result.getId().getID());
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 if (!result.getSuccess()) {
                     for (Error error : result.getErrors()) {
@@ -815,7 +816,8 @@ public class SforceManagementImpl implements SforceManagement {
         } else if (results instanceof DeleteResult[]) {
             for (DeleteResult result : (DeleteResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                resultMessage.put("id", result.getId().getID());
+                if (result.getId() != null)
+                    resultMessage.put("id", result.getId().getID());
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 if (!result.getSuccess()) {
                     for (Error error : result.getErrors()) {
@@ -829,7 +831,8 @@ public class SforceManagementImpl implements SforceManagement {
         } else if (results instanceof UpsertResult[]) {
             for (UpsertResult result : (UpsertResult[]) results) {
                 resultMessage = new HashMap<String, String>();
-                resultMessage.put("id", result.getId().getID());
+                if (result.getId() != null)
+                    resultMessage.put("id", result.getId().getID());
                 resultMessage.put("success", String.valueOf(result.getSuccess()));
                 resultMessage.put("created", String.valueOf(result.getCreated()));
                 if (!result.getSuccess()) {
