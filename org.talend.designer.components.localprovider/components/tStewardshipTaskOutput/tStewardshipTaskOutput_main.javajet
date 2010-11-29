@@ -20,6 +20,7 @@
     
 	String loopingColumn = ElementParameterParser.getValue(node, "__LOOPING_COLUMN__");
 	String maxTaskCount = ElementParameterParser.getValue(node, "__NB_TASKS_PER_COMMIT__");
+	String taskName = ElementParameterParser.getValue(node, "__TASKNAME__");
 	String type = ElementParameterParser.getValue(node, "__TASKTYPE__");
 	String createdBy = ElementParameterParser.getValue(node, "__CREATED_BY__");
 	String owner = ElementParameterParser.getValue(node, "__OWNER__");
@@ -101,7 +102,7 @@ if(!taskFlag_<%=cid%>.equals(<%=dataUtil.getValueExpression(conn.getName(),loopi
 		}
 	}
 	task_<%=cid%> = tasks_<%=cid%>.addTask();
-	task_<%=cid%>.setBasicInfo("<%=type%>",<%=createdBy%>,<%=owner%>,<%=starRanking%>,<%=tags%>);
+	task_<%=cid%>.setBasicInfo(<%=taskName%>,"<%=type%>",<%=createdBy%>,<%=owner%>,<%=starRanking%>,<%=tags%>);
 <%if(RESOLUTION_TYPE.equals(type)){%>
 	taskFlag_<%=cid%> = <%=dataUtil.getValueExpression(conn.getName(),loopingColumn)%>;	
 }
