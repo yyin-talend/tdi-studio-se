@@ -91,6 +91,7 @@ public class MoveDownTreeNodeButton extends AbstractTreeNodeButton {
             treeViewer.expandAll();
             form.redrawLinkers();
             treeViewer.setSelection(selection);
+            form.updateConnection();
         }
     }
 

@@ -90,6 +90,7 @@ public class MoveUpTreeNodeButton extends AbstractTreeNodeButton {
             treeViewer.expandAll();
             form.redrawLinkers();
             treeViewer.setSelection(selection);
+            form.updateConnection();
         }
     }
 
