@@ -58,15 +58,21 @@ if(useXMLField){
 			inConn = incomingConn;
 			inConn.getMetadataTable();
 			inColumns = inConn.getMetadataTable().getListColumns();
-			for (IMetadataColumn inputCol : inColumns) {
-				if(inputCol.getLabel().equals(xmlField))
-				{
+			if(("tMDMReadConf").equals(inConn.getSource().getComponent().getName())){
+%>
+	String xmlStr_<%=cid%> = <%=inConn.getName()%>_xml;
+<%
+			}else{
+    			for (IMetadataColumn inputCol : inColumns) {
+    				if(inputCol.getLabel().equals(xmlField))
+    				{
 %>
 	String xmlStr_<%=cid%> = <%=inConn.getName()%>.<%=xmlField%>;
 <%
-					break;
-				}
-			}
+    					break;
+    				}
+    			}
+    		}
 			break;
 		}
 	}

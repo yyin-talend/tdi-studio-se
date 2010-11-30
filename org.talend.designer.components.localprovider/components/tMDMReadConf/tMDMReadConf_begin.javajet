@@ -40,7 +40,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	String universe = ElementParameterParser.getValue(node, "__UNIVERSE__");
 	String concept = ElementParameterParser.getValue(node, "__CONCEPT__");
-	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 	
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 	
@@ -95,7 +94,7 @@ org.talend.mdm.webservice.WSGetItem wsitem_<%=cid %> =
 new org.talend.mdm.webservice.WSGetItem(new org.talend.mdm.webservice.WSItemPK(dataCluster_<%=cid %>,<%=concept %>,ids_<%=cid %>));
 org.talend.mdm.webservice.WSItem item_<%=cid %>=xtentisWS_<%=cid %>.getItem(wsitem_<%=cid %>);
 
-<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>.getContent();
+String <%=outgoingConn.getName() %>_xml = item_<%=cid %>.getContent();
 nb_line_<%=cid %> ++;
 
 <%
@@ -148,7 +147,7 @@ for(int i_<%=cid %>=0;i_<%=cid %> <loop_<%=cid %>; i_<%=cid %>++){
 	String[] items_<%=cid %> = xtentisWS_<%=cid %>.getItems(getitems_<%=cid %>);
 	for(String item_<%=cid %> : items_<%=cid %>){
 		nb_line_<%=cid %> ++;
-		<%=outgoingConn.getName() %>.<%=xmlField %> = item_<%=cid %>;	
+		String <%=outgoingConn.getName() %>_xml = item_<%=cid %>;	
 <%
 }
 %>
