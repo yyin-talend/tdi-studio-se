@@ -92,7 +92,7 @@ imports="
                 	routines.system.DynamicMetadata dcm_<%=cid%>=new routines.system.DynamicMetadata();
                 	dcm_<%=cid%>.setName(rsmd_<%=cid%>.getColumnName(i));
                 	dcm_<%=cid%>.setDbName(rsmd_<%=cid%>.getColumnName(i));
-                	dcm_<%=cid%>.setType(routines.system.Dynamic.getTalendTypeFromDBType("<%=dbms==null?"":dbms.toLowerCase()%>_id", rsmd_<%=cid%>.getColumnTypeName(i), rsmd_<%=cid%>.getPrecision(i), rsmd_<%=cid%>.getScale(i)));
+                	dcm_<%=cid%>.setType(routines.system.Dynamic.getTalendTypeFromDBType("<%=dbms==null?"":dbms.toLowerCase()%>_id", rsmd_<%=cid%>.getColumnTypeName(i).toUpperCase(), rsmd_<%=cid%>.getPrecision(i), rsmd_<%=cid%>.getScale(i)));
                 	dcm_<%=cid%>.setDbType(rsmd_<%=cid%>.getColumnTypeName(i));
                 	dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
                 	dcm_<%=cid%>.setPrecision(rsmd_<%=cid%>.getScale(i));
