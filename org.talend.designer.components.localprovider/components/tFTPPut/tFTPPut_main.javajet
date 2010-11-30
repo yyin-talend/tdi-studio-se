@@ -39,7 +39,11 @@ try{
 %>
 		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
-      	for (String key<%=cid %> : keySet<%=cid %>){     
+      	for (String key<%=cid %> : keySet<%=cid %>){
+			if(key<%=cid %> == null || "".equals(key<%=cid%>)){
+				System.err.println("file name invalid!");
+				continue;
+			}
 			String tempdir<%=cid %> =  localdir<%=cid %>;
 			String filemask<%=cid %> = key<%=cid %>; 
 			String dir<%=cid %> = null;	
@@ -124,7 +128,11 @@ try{
 
 		String currentStatus_<%=cid %> = "No file transfered.";
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
-      	for (String key<%=cid %> : keySet<%=cid %>){     
+      	for (String key<%=cid %> : keySet<%=cid %>){
+      		if(key<%=cid %> == null || "".equals(key<%=cid%>)){
+				System.err.println("file name invalid!");
+				continue;
+			}    
 			String tempdir<%=cid %> =  localdir<%=cid %>;
 			String filemask<%=cid %> = key<%=cid %>; 
 			String dir<%=cid %> = null;	

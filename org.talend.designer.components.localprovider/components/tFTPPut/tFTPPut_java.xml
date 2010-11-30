@@ -158,8 +158,11 @@ COMPATIBILITY="ALL"
         <ITEM NAME="RESUME"  VALUE="resume"/>  
         <ITEM NAME="APPEND"  VALUE="append"/>      
       </ITEMS>
-    </PARAMETER> 
-   
+    </PARAMETER>
+    
+    <PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="9" COLOR="255;0;0" SHOW_IF="SFTPOVERWRITE == 'APPEND'">
+		<DEFAULT>Note: File can not be renamed while using "append" mode in SFTP</DEFAULT>
+	</PARAMETER>
     
     <PARAMETER
       NAME="AUTH_METHOD"
