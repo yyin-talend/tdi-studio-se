@@ -63,6 +63,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
@@ -283,8 +284,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 Set<String> names = builtInMap.get(item);
                 if (names != null && !names.isEmpty()) {
                     UpdateCheckResult result = new UpdateCheckResult(names);
-                    result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN, null, UpdateRepositoryUtils
-                            .getRepositorySourceName(item));
+                    result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN, null,
+                            UpdateRepositoryUtils.getRepositorySourceName(item));
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
@@ -323,8 +324,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         parameterList.add(newName);
 
                         UpdateCheckResult result = new UpdateCheckResult(nameSet);
-                        result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.RENAME, parameterList, UpdateRepositoryUtils
-                                .getRepositorySourceName(item));
+                        result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.RENAME, parameterList,
+                                UpdateRepositoryUtils.getRepositorySourceName(item));
                         result.setJob(getProcess());
                         if (!isOpenedProcess(getProcess())) {
                             result.setItemProcess(getProcess());
@@ -903,14 +904,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     boolean inputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_INPUT"); //$NON-NLS-1$
                     if (sapNodeParam != null && sapNodeParam.getValue() != null) {
-                        inputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
-                                .getValue(), true);
+                        inputSame = SAPConnectionUtils.sameParamterTableWith(function,
+                                (List<Map<String, Object>>) sapNodeParam.getValue(), true);
                     }
                     boolean outputSame = true;
                     sapNodeParam = node.getElementParameter("MAPPING_OUTPUT"); //$NON-NLS-1$
                     if (sapNodeParam != null && sapNodeParam.getValue() != null) {
-                        outputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
-                                .getValue(), false);
+                        outputSame = SAPConnectionUtils.sameParamterTableWith(function,
+                                (List<Map<String, Object>>) sapNodeParam.getValue(), false);
                     }
 
                     if (!same || !inputSame || !outputSame || onlySimpleShow) {
@@ -956,8 +957,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 IElementParameter schemaParam = schemaTypeParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                 if (schemaParam != null && ((ElementParameter) schemaTypeParam).isDisplayedByDefault()) {
                     if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
-                        String propertyValue = (String) schemaTypeParam.getChildParameters().get(
-                                EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
+                        String propertyValue = (String) schemaTypeParam.getChildParameters()
+                                .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
                         ConnectionItem connectionItem = null;
                         String schemaName = null;
                         String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
@@ -1016,7 +1017,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                      */
                                     if (onlySimpleShow
                                             || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                    IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                                                    IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
+                                            || connectionItem instanceof GenericSchemaConnectionItem
+                                            && !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                    IMetadataColumn.OPTIONS_NONE)) {
                                         result = new UpdateCheckResult(node);
                                         result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
                                                 copyOfrepositoryMetadata, source);
@@ -1242,8 +1246,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     if (service != null) {
                                         try {
                                             List<IRepositoryViewObject> all;
-                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
-                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                                    .getAll(ERepositoryObjectType.METADATA_CONNECTIONS);
                                             for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
