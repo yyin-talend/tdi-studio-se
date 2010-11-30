@@ -328,7 +328,7 @@ public class OpenedListController extends AbstractElementPropertySectionControll
             String name = (String) value;
             while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
                 if (name.equals(param.getListItemsValue()[nbInList])) {
-                    strValue = (String) param.getListItemsValue()[nbInList];
+                    strValue = (String) param.getListItemsDisplayName()[nbInList];
                     strValueSet = true;
                 }
                 nbInList++;
@@ -361,29 +361,22 @@ public class OpenedListController extends AbstractElementPropertySectionControll
      */
     private String[] getListToDisplay(IElementParameter param) {
         Object value = param.getValue();
-
-        Object[] originalList = param.getListItemsValue();
-        List<Object> asList = Arrays.asList(originalList);
+        String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
         String[] itemsShowIf = param.getListItemsShowIf();
-
-        if (value != null && !asList.contains(value)) {
-            stringToDisplay.add((String) value);
-        } else {
-            stringToDisplay.add(new String());
-        }
         if (itemsShowIf != null) {
             String[] itemsNotShowIf = param.getListItemsNotShowIf();
             for (int i = 0; i < originalList.length; i++) {
                 if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
-                    stringToDisplay.add((String) originalList[i]);
+                    stringToDisplay.add(originalList[i]);
                 }
             }
         } else {
             for (int i = 0; i < originalList.length; i++) {
-                stringToDisplay.add((String) originalList[i]);
+                stringToDisplay.add(originalList[i]);
             }
         }
         return stringToDisplay.toArray(new String[0]);
+    
     }
 }
