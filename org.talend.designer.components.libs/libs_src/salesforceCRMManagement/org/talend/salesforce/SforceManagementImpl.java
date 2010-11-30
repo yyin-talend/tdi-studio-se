@@ -246,37 +246,7 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            for (Error error : result.getErrors()) {
-                                errors.append(error.getMessage()).append("\n");
-                                if (logWriter != null) {
-                                    logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-                                    logWriter.append("\tFields: ");
-                                    boolean flag = false;
-                                    for (String field : error.getFields()) {
-                                        if (flag) {
-                                            logWriter.append(", ");
-                                        } else {
-                                            flag = true;
-                                        }
-                                        logWriter.append(field);
-                                    }
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                    logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                    logWriter.newLine();
-
-                                    logWriter
-                                            .append("\t--------------------------------------------------------------------------------");
-
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                }
-                            }
+                            errors = addLog(result.getErrors());
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -304,37 +274,7 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            for (Error error : result.getErrors()) {
-                                errors.append(error.getMessage()).append("\n");
-                                if (logWriter != null) {
-                                    logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-                                    logWriter.append("\tFields: ");
-                                    boolean flag = false;
-                                    for (String field : error.getFields()) {
-                                        if (flag) {
-                                            logWriter.append(", ");
-                                        } else {
-                                            flag = true;
-                                        }
-                                        logWriter.append(field);
-                                    }
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                    logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                    logWriter.newLine();
-
-                                    logWriter
-                                            .append("\t--------------------------------------------------------------------------------");
-
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                }
-                            }
+                            errors = addLog(result.getErrors());
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -362,37 +302,7 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            for (Error error : result.getErrors()) {
-                                errors.append(error.getMessage()).append("\n");
-                                if (logWriter != null) {
-                                    logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-                                    logWriter.append("\tFields: ");
-                                    boolean flag = false;
-                                    for (String field : error.getFields()) {
-                                        if (flag) {
-                                            logWriter.append(", ");
-                                        } else {
-                                            flag = true;
-                                        }
-                                        logWriter.append(field);
-                                    }
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                    logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                    logWriter.newLine();
-
-                                    logWriter
-                                            .append("\t--------------------------------------------------------------------------------");
-
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                }
-                            }
+                            errors = addLog(result.getErrors());
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -421,37 +331,7 @@ public class SforceManagementImpl implements SforceManagement {
                         if (result.getSuccess()) {
                             // TODO: send back the ID
                         } else {
-                            for (Error error : result.getErrors()) {
-                                errors.append(error.getMessage()).append("\n");
-                                if (logWriter != null) {
-                                    logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-                                    logWriter.append("\tFields: ");
-                                    boolean flag = false;
-                                    for (String field : error.getFields()) {
-                                        if (flag) {
-                                            logWriter.append(", ");
-                                        } else {
-                                            flag = true;
-                                        }
-                                        logWriter.append(field);
-                                    }
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                    logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                    logWriter.newLine();
-
-                                    logWriter
-                                            .append("\t--------------------------------------------------------------------------------");
-
-                                    logWriter.newLine();
-                                    logWriter.newLine();
-
-                                }
-                            }
+                            errors = addLog(result.getErrors());
                         }
                         if (exceptionForErrors && errors.toString().length() > 0) {
                             if (logWriter != null) {
@@ -499,37 +379,7 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        for (Error error : result.getErrors()) {
-                            errors.append(error.getMessage()).append("\n");
-                            if (logWriter != null) {
-                                logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                logWriter.newLine();
-                                logWriter.newLine();
-                                logWriter.append("\tFields: ");
-                                boolean flag = false;
-                                for (String field : error.getFields()) {
-                                    if (flag) {
-                                        logWriter.append(", ");
-                                    } else {
-                                        flag = true;
-                                    }
-                                    logWriter.append(field);
-                                }
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                                logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                logWriter.newLine();
-
-                                logWriter
-                                        .append("\t--------------------------------------------------------------------------------");
-
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                            }
-                        }
+                        errors = addLog(result.getErrors());
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -582,37 +432,7 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        for (Error error : result.getErrors()) {
-                            errors.append(error.getMessage()).append("\n");
-                            if (logWriter != null) {
-                                logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                logWriter.newLine();
-                                logWriter.newLine();
-                                logWriter.append("\tFields: ");
-                                boolean flag = false;
-                                for (String field : error.getFields()) {
-                                    if (flag) {
-                                        logWriter.append(", ");
-                                    } else {
-                                        flag = true;
-                                    }
-                                    logWriter.append(field);
-                                }
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                                logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                logWriter.newLine();
-
-                                logWriter
-                                        .append("\t--------------------------------------------------------------------------------");
-
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                            }
-                        }
+                        errors = addLog(result.getErrors());
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -657,37 +477,7 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        for (Error error : result.getErrors()) {
-                            errors.append(error.getMessage()).append("\n");
-                            if (logWriter != null) {
-                                logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                logWriter.newLine();
-                                logWriter.newLine();
-                                logWriter.append("\tFields: ");
-                                boolean flag = false;
-                                for (String field : error.getFields()) {
-                                    if (flag) {
-                                        logWriter.append(", ");
-                                    } else {
-                                        flag = true;
-                                    }
-                                    logWriter.append(field);
-                                }
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                                logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                logWriter.newLine();
-
-                                logWriter
-                                        .append("\t--------------------------------------------------------------------------------");
-
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                            }
-                        }
+                        errors = addLog(result.getErrors());
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -738,37 +528,7 @@ public class SforceManagementImpl implements SforceManagement {
                     if (result.getSuccess()) {
                         // TODO: send back the ID
                     } else {
-                        for (Error error : result.getErrors()) {
-                            errors.append(error.getMessage()).append("\n");
-                            if (logWriter != null) {
-                                logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
-                                logWriter.newLine();
-                                logWriter.newLine();
-                                logWriter.append("\tFields: ");
-                                boolean flag = false;
-                                for (String field : error.getFields()) {
-                                    if (flag) {
-                                        logWriter.append(", ");
-                                    } else {
-                                        flag = true;
-                                    }
-                                    logWriter.append(field);
-                                }
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                                logWriter.append("\tMessage: ").append(error.getMessage());
-
-                                logWriter.newLine();
-
-                                logWriter
-                                        .append("\t--------------------------------------------------------------------------------");
-
-                                logWriter.newLine();
-                                logWriter.newLine();
-
-                            }
-                        }
+                        errors = addLog(result.getErrors());
                     }
                     if (exceptionForErrors && errors.toString().length() > 0) {
                         if (logWriter != null) {
@@ -783,6 +543,45 @@ public class SforceManagementImpl implements SforceManagement {
         }
         return null;
 
+    }
+
+    private StringBuilder addLog(Error[] resultErrors) throws Exception {
+        StringBuilder errors = new StringBuilder("");
+        if (resultErrors != null) {
+            for (Error error : resultErrors) {
+                errors.append(error.getMessage()).append("\n");
+                if (logWriter != null) {
+                    logWriter.append("\tStatus Code: ").append(error.getStatusCode().toString());
+                    logWriter.newLine();
+                    logWriter.newLine();
+                    logWriter.append("\tFields: ");
+                    if (error.getFields() != null) {
+                        boolean flag = false;
+                        for (String field : error.getFields()) {
+                            if (flag) {
+                                logWriter.append(", ");
+                            } else {
+                                flag = true;
+                            }
+                            logWriter.append(field);
+                        }
+                    }
+                    logWriter.newLine();
+                    logWriter.newLine();
+
+                    logWriter.append("\tMessage: ").append(error.getMessage());
+
+                    logWriter.newLine();
+
+                    logWriter.append("\t--------------------------------------------------------------------------------");
+
+                    logWriter.newLine();
+                    logWriter.newLine();
+
+                }
+            }
+        }
+        return errors;
     }
 
     public Map<String, String> readResult(Object[] results) throws Exception {
