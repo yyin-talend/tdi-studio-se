@@ -75,6 +75,7 @@ public class DeleteNodeAction extends SelectionProviderAction {
             xmlViewer.refresh(parent);
         }
         xmlViewer.expandAll();
+        form.updateConnection();
         form.redrawLinkers();
 
     }
