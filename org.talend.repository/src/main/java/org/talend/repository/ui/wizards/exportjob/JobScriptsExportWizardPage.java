@@ -1282,6 +1282,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         List<ExportFileResource> resourcesToExport = null;
         try {
             resourcesToExport = getExportResources();
+            // if job has compile error, will not export to avoid problem if run jobscript
+            boolean hasErrors = CorePlugin.getDefault().getRunProcessService().checkExportProcess(selection);
+            if (hasErrors) {
+                manager.deleteTempFiles();
+                return false;
+            }
         } catch (ProcessorException e) {
             MessageBoxExceptionHandler.process(e);
             return false;

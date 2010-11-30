@@ -22,6 +22,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
@@ -32,9 +35,12 @@ import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
+import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * Check if there is error in jobs before running.
@@ -94,6 +100,53 @@ public class JobErrorsChecker {
             ExceptionHandler.process(e);
         }
 
+    }
+
+    public static boolean checkExportErrors(IStructuredSelection selection) {
+        if (!selection.isEmpty()) {
+            boolean isPerl = false;
+            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                isPerl = true;
+            }
+
+            ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+            Set<String> jobNames = new HashSet<String>();
+
+            List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
+            for (RepositoryNode node : nodes) {
+                Item item = node.getObject().getProperty().getItem();
+                try {
+                    IFile sourceFile = synchronizer.getFile(item);
+                    if (isPerl) {
+                        // check syntax error in perl. java use auto build to check syntax
+                        validatePerlScript(sourceFile);
+                    }
+                    jobNames.add(item.getProperty().getLabel());
+
+                    // Property property = process.getProperty();
+                    Problems.addRoutineFile(sourceFile, ProblemType.JOB, item.getProperty().getLabel(), item.getProperty()
+                            .getVersion(), true);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+
+            }
+
+            Problems.refreshProblemTreeView();
+
+            List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
+            ErrorDetailTreeBuilder builder = new ErrorDetailTreeBuilder();
+            List<JobErrorEntry> input = builder.createTreeInput(errors, jobNames);
+            if (input.size() > 0) {
+                String label = ((JobErrorEntry) input.get(0)).getLabel();
+                MessageDialog.openError(Display.getDefault().getActiveShell(),
+                        Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
+                        Messages.getString("JobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
+                return true;
+            }
+
+        }
+        return false;
     }
 
     /**

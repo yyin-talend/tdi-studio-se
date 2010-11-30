@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -259,5 +260,9 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
 
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
+    }
+
+    public boolean checkExportProcess(IStructuredSelection selection) {
+        return JobErrorsChecker.checkExportErrors(selection);
     }
 }
