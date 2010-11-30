@@ -34,8 +34,18 @@ String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FI
 boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
 String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
 List<Map<String, String>> headerParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
+boolean bNeedAuthentication = "true".equals(ElementParameterParser.getValue(node, "__NEED_AUTHENTICATION__"));
+String sUser = ElementParameterParser.getValue(node, "__USR__");
+String sPwd = ElementParameterParser.getValue(node, "__PWD__");
 %>
 java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
+
+<%if (bNeedAuthentication){%>
+  java.net.Authenticator.setDefault(new java.net.Authenticator() {
+	  protected java.net.PasswordAuthentication getPasswordAuthentication() {
+	  	return new java.net.PasswordAuthentication(<%=sUser%>, <%=sPwd%>.toCharArray());
+  }});
+<%}%>
 java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
 urlConn_<%=cid%>.setRequestMethod("<%=sMethod%>");
 urlConn_<%=cid%>.setDoOutput(true);
@@ -85,6 +95,8 @@ if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode())) 
   }
   %>
   bis_<%=cid%>.close();
+} else {
+  System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
 }
 
 <%
@@ -112,4 +124,4 @@ if (outConnName != null){
   }
 }
 %>
-
+urlConn_<%=cid%>.disconnect();
