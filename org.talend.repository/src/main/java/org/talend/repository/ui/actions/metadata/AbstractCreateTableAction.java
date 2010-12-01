@@ -65,10 +65,10 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
@@ -93,7 +93,7 @@ import orgomg.cwm.resource.record.RecordFile;
  */
 public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
-    protected static final int WIZARD_WIDTH = 800;
+    protected static final int WIZARD_WIDTH = 900;
 
     protected static final int WIZARD_HEIGHT = 495;
 
@@ -808,11 +808,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
                             && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())
                             && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
-                        String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(), metadataConnection
-                                .getDbVersionString(), metadataConnection.getServerName(), metadataConnection.getUsername(),
-                                metadataConnection.getPassword(), metadataConnection.getPort(), metadataConnection.getDatabase(),
-                                metadataConnection.getFileFieldName(), metadataConnection.getDataSourceName(), metadataConnection
-                                        .getDbRootPath(), metadataConnection.getAdditionalParams());
+                        String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(),
+                                metadataConnection.getDbVersionString(), metadataConnection.getServerName(),
+                                metadataConnection.getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(),
+                                metadataConnection.getDatabase(), metadataConnection.getFileFieldName(),
+                                metadataConnection.getDataSourceName(), metadataConnection.getDbRootPath(),
+                                metadataConnection.getAdditionalParams());
                         metadataConnection.setUrl(genUrl);
                     }
 
@@ -825,9 +826,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
 
                     if (noTableExistInDB) {
-                        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
-                                .getString("AbstractCreateTableAction.retrieveForbidden"), Messages
-                                .getString("AbstractCreateTableAction.retrieveForbidden.Message"));
+                        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
+                                Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
                     } else {
 
                         final boolean skipStep = checkConnectStatus(check, itemTableName);
