@@ -122,22 +122,34 @@ imports="
 						ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 <%
 					}else if(("UPDATA").equals(insertMode)){
-					if(useAttributeOptions && attributeOptions.size() > 0){
-					//7631: tLDAPOutput: Add a attributes options parameter 
+						if(useAttributeOptions && attributeOptions.size() > 0){
+						//7631: tLDAPOutput: Add a attributes options parameter 
 %>
-						List<javax.naming.directory.ModificationItem> mfItem_<%=cid%> = new java.util.ArrayList();
-						List<javax.naming.directory.Attribute> forUpate<%=cid%> = new java.util.ArrayList();
+							List<javax.naming.directory.ModificationItem> mfItem_<%=cid%> = new java.util.ArrayList();
+							List<javax.naming.directory.Attribute> forUpate<%=cid%> = new java.util.ArrayList();
 <%
-					  	for (int i=0; i<attributeOptions.size(); i++) {
-					  		Map<String, String> row  = attributeOptions.get(i);
-					  		String option = row.get("ATTRIBUTE_OPTION").trim();
-					  		String name = row.get("ATTRIBUTE_NAME").trim();
+						  	for (int i=0; i<attributeOptions.size(); i++) {
+						  		Map<String, String> row  = attributeOptions.get(i);
+						  		String option = row.get("ATTRIBUTE_OPTION").trim();
+						  		String name = row.get("ATTRIBUTE_NAME").trim();
+						  		String columnType = "";
+						  		for(IMetadataColumn column : columnList){
+						  			if(column.getLabel().equals(name)){
+										columnType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						  			}
+								}
 					  			if (!"REMOVE_ATTRIBUTE".equals(option)) {
+					  				if("String".equals(columnType)){
 %>
-							    	for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
+								    	for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
 							    			forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>", value_<%=cid%>));
-							    	}
+								    	}
 <%
+									}else{
+%>
+						    			forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>", <%=conn.getName() %>.<%=name%>));
+<%
+									}
   								} else {
 %>
 							  		forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>"));
@@ -171,16 +183,16 @@ imports="
 %>
 								forUpate<%=cid%>.clear();
 <%
-  						}  
+  							}
 %>
-  						ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>,mfItem_<%=cid%>.toArray(new javax.naming.directory.ModificationItem[0]));
+  							ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>,mfItem_<%=cid%>.toArray(new javax.naming.directory.ModificationItem[0]));
 <%
   	//7631
-					}else{
+						}else{
 %>
-						ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
+							ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
 <%
-					}
+						}
 					}else if(("DELETE").equals(insertMode)){
 %>
 						ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
