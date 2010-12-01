@@ -128,7 +128,6 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                 contextNameText.setEnabled(createNewButton.getSelection());
                 getButton(IDialogConstants.OK_ID).setEnabled(createNewButton.getSelection());
             }
-
         });
 
         return container;
@@ -158,8 +157,12 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         if (createNewButton.getSelection()) {
             if (nameInvalid(contextNameText)) {
                 MessageDialog.openError(getShell(), "Context", msg); //$NON-NLS-1$
+                return;
             } else {
                 item = PropertiesFactory.eINSTANCE.createContextItem();
+                if (item == null) {
+                    return;
+                }
                 Property createProperty = PropertiesFactory.eINSTANCE.createProperty();
                 createProperty
                         .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -181,8 +184,8 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                             IRepositoryService.class);
                     IProxyRepositoryFactory repositoryFactory = service.getProxyRepositoryFactory();
                     try {
-                        boolean nameAvaliabe = repositoryFactory.isNameAvailable(createProperty.getItem(), contextNameText
-                                .getText());
+                        boolean nameAvaliabe = repositoryFactory.isNameAvailable(createProperty.getItem(),
+                                contextNameText.getText());
                         if (!nameAvaliabe) {
                             MessageDialog.openError(getShell(), "Context", org.talend.core.i18n.Messages //$NON-NLS-1$
                                     .getString("PropertiesWizardPage.ItemExistsError")); //$NON-NLS-1$
@@ -213,7 +216,9 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         IContext jobDefaultContext = contextManager.getDefaultContext(); // get default context from job
         List<IContext> jobContextlist = contextManager.getListContext(); // get all context from job
         List<String> jobContextNames = getJobContextGroupNames(jobContextlist);
-
+        if (item == null) {
+            return;
+        }
         EList contextList = item.getContext();
 
         // if (contextList.isEmpty()) {
@@ -354,8 +359,8 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         designerCoreService.switchToCurComponentSettingsView();
         designerCoreService.switchToCurJobSettingsView();
         // refresh repository view
-        IRepositoryView view = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IRepositoryView view = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
         if (view != null) {
             view.refresh(ERepositoryObjectType.CONTEXT);
         }
