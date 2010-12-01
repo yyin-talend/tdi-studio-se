@@ -69,8 +69,6 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private boolean isSinglePageOnly;
 
     private Map<String, String> oldTableMap;

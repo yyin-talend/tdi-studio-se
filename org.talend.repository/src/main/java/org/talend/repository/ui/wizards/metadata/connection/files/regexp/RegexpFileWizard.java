@@ -74,8 +74,6 @@ public class RegexpFileWizard extends CheckLastVersionRepositoryWizard implement
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private IMetadataContextModeManager contextModeManager;
 
     private boolean isToolbar;

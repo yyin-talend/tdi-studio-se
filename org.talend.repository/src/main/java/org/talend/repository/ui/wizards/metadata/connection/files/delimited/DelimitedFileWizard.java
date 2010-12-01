@@ -74,8 +74,6 @@ public class DelimitedFileWizard extends CheckLastVersionRepositoryWizard implem
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private IMetadataContextModeManager contextModeManager;
 
     private boolean isToolbar;

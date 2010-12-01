@@ -69,8 +69,6 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private String originaleObjectLabel;
 
     private String originalVersion;

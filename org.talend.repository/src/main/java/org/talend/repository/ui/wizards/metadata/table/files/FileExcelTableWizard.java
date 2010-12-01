@@ -28,21 +28,17 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import org.talend.repository.ui.wizards.AbstractRepositoryFileTableWizard;
 
 /**
  * 
  * DOC yexiaowei class global comment. Detailled comment
  */
-public class FileExcelTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
+public class FileExcelTableWizard extends AbstractRepositoryFileTableWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(FileExcelTableWizard.class);
 
     private FileTableWizardPage tableWizardpage;
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
 
     private Map<String, String> oldTableMap;
 

@@ -41,10 +41,6 @@ public class SalesforceSchemaTableWizard extends CheckLastVersionRepositoryWizar
 
     private FileTableWizardPage tableWizardpage;
 
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
-
     private Map<String, String> oldTableMap;
 
     private IMetadataTable oldMetadataTable;

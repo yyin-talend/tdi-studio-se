@@ -78,8 +78,6 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private WSDLSchemaConnection connection;
 
     private boolean isSinglePageOnly;
@@ -320,8 +318,8 @@ public class WSDLSchemaWizard extends CheckLastVersionRepositoryWizard implement
         ConnectionContextHelper.checkContextMode(connectionItem);
         contextModeManager = new MetadataContextModeManager();
         if (connectionItem.getConnection().isContextMode()) {
-            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
-                    .getConnection(), true);
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(
+                    connectionItem.getConnection(), true);
             contextModeManager.setSelectedContextType(contextTypeForContextMode);
         }
     }

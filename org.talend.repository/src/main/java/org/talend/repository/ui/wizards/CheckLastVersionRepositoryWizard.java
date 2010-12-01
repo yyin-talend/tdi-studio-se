@@ -18,6 +18,8 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.ui.ILastVersionChecker;
@@ -30,6 +32,10 @@ import org.talend.repository.ui.wizards.documentation.DocumentationUpdateWizard;
  * DOC hywang class global comment. Detailled comment
  */
 public abstract class CheckLastVersionRepositoryWizard extends RepositoryWizard implements ILastVersionChecker {
+
+    protected ConnectionItem connectionItem;
+
+    protected MetadataTable metadataTable;
 
     public CheckLastVersionRepositoryWizard(IWorkbench workbench, boolean creation) {
         super(workbench, creation, false);

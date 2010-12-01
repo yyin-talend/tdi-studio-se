@@ -29,7 +29,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import org.talend.repository.ui.wizards.AbstractRepositoryFileTableWizard;
 
 /**
  * DOC cantoine class global comment.
@@ -37,15 +37,11 @@ import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
  * $Id: FileLdifTableWizard.java 88 2006-10-04 08:50:39 +0000 (mer., 04 oct. 2006) cantoine $
  * 
  */
-public class FileLdifTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
+public class FileLdifTableWizard extends AbstractRepositoryFileTableWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(FileLdifTableWizard.class);
 
     private FileTableWizardPage tableWizardpage;
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
 
     private Map<String, String> oldTableMap;
 

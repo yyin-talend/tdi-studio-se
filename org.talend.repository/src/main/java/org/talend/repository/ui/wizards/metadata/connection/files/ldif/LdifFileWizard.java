@@ -74,8 +74,6 @@ public class LdifFileWizard extends CheckLastVersionRepositoryWizard implements 
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private IMetadataContextModeManager contextModeManager;
 
     private String originaleObjectLabel;

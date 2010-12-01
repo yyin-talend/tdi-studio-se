@@ -45,10 +45,6 @@ public class LDAPSchemaTableWizard extends CheckLastVersionRepositoryWizard impl
 
     private FileTableWizardPage tableWizardpage;
 
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
-
     private Map<String, String> oldTableMap;
 
     private IMetadataTable oldMetadataTable;

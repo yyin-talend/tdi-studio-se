@@ -72,8 +72,6 @@ public class ExcelFileWizard extends CheckLastVersionRepositoryWizard implements
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private IMetadataContextModeManager contextModeManager;
 
     private boolean isToolbar;

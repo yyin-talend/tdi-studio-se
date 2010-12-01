@@ -59,8 +59,6 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
 
     private DatabaseTableFilterWizardPage tableFilterWizardPage;
 
-    private final ConnectionItem connectionItem;
-
     private DatabaseConnection temConnection;
 
     private boolean skipStep;

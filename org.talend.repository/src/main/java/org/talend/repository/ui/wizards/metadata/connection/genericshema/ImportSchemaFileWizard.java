@@ -72,8 +72,6 @@ public class ImportSchemaFileWizard extends CheckLastVersionRepositoryWizard imp
 
     private Property connectionProperty;
 
-    private ConnectionItem connectionItem;
-
     private File file;
 
     private boolean initOK = true;

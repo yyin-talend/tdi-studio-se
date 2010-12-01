@@ -29,22 +29,18 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import org.talend.repository.ui.wizards.AbstractRepositoryFileTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileTableWizardPage;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
-public class GenericSchemaTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
+public class GenericSchemaTableWizard extends AbstractRepositoryFileTableWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(GenericSchemaTableWizard.class);
 
     private FileTableWizardPage tableWizardpage;
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
 
     private Map<String, String> oldTableMap;
 

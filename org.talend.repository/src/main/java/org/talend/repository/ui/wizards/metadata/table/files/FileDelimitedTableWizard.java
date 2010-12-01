@@ -29,7 +29,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import org.talend.repository.ui.wizards.AbstractRepositoryFileTableWizard;
 
 /**
  * DOC ocarbone class global comment.
@@ -37,15 +37,11 @@ import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
  * $Id$
  * 
  */
-public class FileDelimitedTableWizard extends CheckLastVersionRepositoryWizard implements INewWizard {
+public class FileDelimitedTableWizard extends AbstractRepositoryFileTableWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(FileDelimitedTableWizard.class);
 
     private FileTableWizardPage tableWizardpage;
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
 
     private Map<String, String> oldTableMap;
 

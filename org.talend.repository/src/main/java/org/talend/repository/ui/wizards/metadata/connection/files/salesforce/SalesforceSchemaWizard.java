@@ -75,8 +75,6 @@ public class SalesforceSchemaWizard extends CheckLastVersionRepositoryWizard imp
 
     private Property connectionProperty = null;
 
-    private ConnectionItem connectionItem = null;
-
     private SalesforceModuleParseAPI salesforceAPI = new SalesforceModuleParseAPI();
 
     private boolean isSinglePageOnly = false;
