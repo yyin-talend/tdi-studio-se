@@ -300,6 +300,7 @@ public class DatabaseWizard extends CheckLastVersionRepositoryWizard implements 
                         // update
                         RepositoryUpdateManager.updateDBConnection(connectionItem);
                     }
+                    this.connection.setName(connectionProperty.getLabel());
                     factory.save(connectionItem);
                     // 0005170: Schema renamed - new name not pushed out to dependant jobs
                     boolean isModified = propertiesWizardPage.isNameModifiedByUser();
