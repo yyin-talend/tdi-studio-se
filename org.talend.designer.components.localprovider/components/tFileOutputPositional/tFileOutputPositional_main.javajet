@@ -28,13 +28,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__ROWSEPARATOR__"
         );
-        
+
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+
         List<Map<String, String>> formats =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
                 "__FORMATS__"
             );            
             
+        boolean useByte = ("true").equals(ElementParameterParser.getValue(node, "__USE_BYTE__"));
+        
         boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__")); 
         String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         
@@ -95,7 +102,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					%>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
 					}
 				}%> ;
+				<%if(useByte){%>
+    			tempLengthM<%=cid %>=tempStringM<%=cid %>.getBytes(<%=encoding %>).length;
+    			<%}else{%>
     			tempLengthM<%=cid %>=tempStringM<%=cid %>.length();
+    			<%}%>
     			
             	if (tempLengthM<%=cid %> >=<%=format.get("SIZE")%>) {
                     <%

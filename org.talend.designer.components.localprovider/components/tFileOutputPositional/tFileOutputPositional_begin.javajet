@@ -37,7 +37,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__FILENAME__"
         );
-
+		
+		boolean useByte = ("true").equals(ElementParameterParser.getValue(node, "__USE_BYTE__"));
+		
         boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
 
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
@@ -151,7 +153,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
     			//get  and format output String begin
     			tempStringB<%=cid %>="<%=column.getLabel() %>";
+    			<%if(useByte){%>
+    			tempLengthB<%=cid %>=tempStringB<%=cid %>.getBytes(<%=encoding %>).length;
+    			<%}else{%>
     			tempLengthB<%=cid %>=tempStringB<%=cid %>.length();
+    			<%}%>
     			
             	if (tempLengthB<%=cid %> > <%=format.get("SIZE")%>) {
 <%
