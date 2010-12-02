@@ -1,58 +1,54 @@
 <%@ jet 
-imports="
+  imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
-"
+  "
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
 String inFileName = ElementParameterParser.getValue(node, "__INFILE_NAME__");
 String outFileName = ElementParameterParser.getValue(node, "__OUTFILE_NAME__");
-String inEncoding = ElementParameterParser.getValue(node,"__INENCODING__");
-String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-
+String inEncoding = ElementParameterParser.getValue(node, "__INENCODING__");
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String use_inEncodingStr = ElementParameterParser.getValue(node, "__USE_INENCODING__");
-boolean use_inEncodingr = (use_inEncodingStr!=null&&!("").equals(use_inEncodingStr))?("true").equals(use_inEncodingStr):false;
-
+boolean use_inEncodingr = (use_inEncodingStr != null && !("").equals(use_inEncodingStr)) ? ("true").equals(use_inEncodingStr) : false;
 %>
 String fileNewName_<%=cid%> = <%=outFileName%>;
-<%
-if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
-%>
-//create directory only if not exists
-java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
-if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
-    parentFile_<%=cid%>.mkdirs();
-}
-<%
-}
-%>
-final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-		new java.io.FileOutputStream(fileNewName_<%=cid%>, false),<%=encoding %>));
 
-<%if(use_inEncodingr){%>
-String inEncoding_<%=cid %> = <%=inEncoding %>;
-<%}else{%>
-String inEncoding_<%=cid %> = System.getProperty("file.encoding");
+<%if (("true").equals(ElementParameterParser.getValue(node, "__CREATE__"))) {%>
+  //create directory only if not exists
+  java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
+  java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
+
+  if (parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
+    parentFile_<%=cid%>.mkdirs();
+  }
 <%}%>
-java.io.BufferedReader in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=inFileName %>), inEncoding_<%=cid %>));
+final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(
+  new java.io.OutputStreamWriter(
+    new java.io.FileOutputStream(fileNewName_<%=cid%>, false), <%=encoding %>));
+
+<%if (use_inEncodingr) {%>
+  String inEncoding_<%=cid %> = <%=inEncoding %>;
+<%} else {%>
+  String inEncoding_<%=cid %> = System.getProperty("file.encoding");
+<%}%>
+java.io.BufferedReader in_<%=cid %> = new java.io.BufferedReader(
+  new java.io.InputStreamReader(
+    new java.io.FileInputStream(<%=inFileName %>), inEncoding_<%=cid %>));
 char[] cbuf_<%=cid %> = new char[8192];  //8192: the default buffer size of BufferedReader
 int readSize_<%=cid %> = 0;
-while((readSize_<%=cid %>=in_<%=cid %>.read(cbuf_<%=cid %>))!=-1){
-	out<%=cid %>.write(cbuf_<%=cid %>,0,readSize_<%=cid %>);
-}
 
+while ((readSize_<%=cid %> = in_<%=cid %>.read(cbuf_<%=cid %>)) != -1) {
+  out<%=cid %>.write(cbuf_<%=cid %>, 0, readSize_<%=cid %>);
+}
 out<%=cid %>.flush();
 out<%=cid %>.close();
 in_<%=cid %>.close();
-
-globalMap.put("<%=cid %>_ISEND",true);
+globalMap.put("<%=cid %>_ISEND", true);
