@@ -14,17 +14,23 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String inFileName = ElementParameterParser.getValue(node, "__INFILE_NAME__");
 String outFileName = ElementParameterParser.getValue(node, "__OUTFILE_NAME__");
-String inEncoding = ElementParameterParser.getValue(node, "__INENCODING__");
-String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-String use_inEncodingStr = ElementParameterParser.getValue(node, "__USE_INENCODING__");
-boolean use_inEncodingr = (use_inEncodingStr != null && !("").equals(use_inEncodingStr)) ? ("true").equals(use_inEncodingStr) : false;
-%>
-String fileNewName_<%=cid%> = <%=outFileName%>;
+String sInEncoding = ElementParameterParser.getValue(node, "__INENCODING__");
+String sOutEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
+boolean bNeedEncode = "true".equals(ElementParameterParser.getValue(node, "__USE_INENCODING__"));
+boolean bCreateDir = "true".equals(ElementParameterParser.getValue(node, "__CREATE__"));
+String sTmpOutFileName = outFileName;
 
-<%if (("true").equals(ElementParameterParser.getValue(node, "__CREATE__"))) {%>
+if (outFileName.equals(inFileName)){
+  sTmpOutFileName = outFileName + "+ \"_tmp\"";
+  bCreateDir = false;
+}
+%>
+String sOutFileN_<%=cid%> = <%=sTmpOutFileName%>, sOriFileN_<%=cid%> = <%=inFileName%>;
+java.io.File outFile_<%=cid%> = new java.io.File(sOutFileN_<%=cid%>);
+
+<%if (bCreateDir) {%>
   //create directory only if not exists
-  java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-  java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
+  java.io.File parentFile_<%=cid%> = outFile_<%=cid%>.getParentFile();
 
   if (parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
     parentFile_<%=cid%>.mkdirs();
@@ -32,17 +38,16 @@ String fileNewName_<%=cid%> = <%=outFileName%>;
 <%}%>
 final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(
   new java.io.OutputStreamWriter(
-    new java.io.FileOutputStream(fileNewName_<%=cid%>, false), <%=encoding %>));
-
-<%if (use_inEncodingr) {%>
-  String inEncoding_<%=cid %> = <%=inEncoding %>;
-<%} else {%>
-  String inEncoding_<%=cid %> = System.getProperty("file.encoding");
-<%}%>
+    new java.io.FileOutputStream(sOutFileN_<%=cid%>, false), <%=sOutEncoding%>
+));
+    
 java.io.BufferedReader in_<%=cid %> = new java.io.BufferedReader(
   new java.io.InputStreamReader(
-    new java.io.FileInputStream(<%=inFileName %>), inEncoding_<%=cid %>));
-char[] cbuf_<%=cid %> = new char[8192];  //8192: the default buffer size of BufferedReader
+    new java.io.FileInputStream(sOriFileN_<%=cid%>), <%=bNeedEncode ? sInEncoding : "System.getProperty(\"file.encoding\")"%>
+));
+
+//8192: the default buffer size of BufferedReader
+char[] cbuf_<%=cid %> = new char[8192];  
 int readSize_<%=cid %> = 0;
 
 while ((readSize_<%=cid %> = in_<%=cid %>.read(cbuf_<%=cid %>)) != -1) {
@@ -51,4 +56,14 @@ while ((readSize_<%=cid %> = in_<%=cid %>.read(cbuf_<%=cid %>)) != -1) {
 out<%=cid %>.flush();
 out<%=cid %>.close();
 in_<%=cid %>.close();
+
+<%if (outFileName.equals(inFileName)){%>
+  if (outFile_<%=cid%>.exists()) {
+    java.io.File oriFile_<%=cid%> = new java.io.File(sOriFileN_<%=cid%>);
+    
+    if (!oriFile_<%=cid%>.exists() || (oriFile_<%=cid%>.exists() && oriFile_<%=cid%>.delete())) {
+      outFile_<%=cid%>.renameTo(oriFile_<%=cid%>);
+    }
+  }
+<%}%>
 globalMap.put("<%=cid %>_ISEND", true);
