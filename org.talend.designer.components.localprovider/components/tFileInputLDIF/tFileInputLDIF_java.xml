@@ -57,7 +57,7 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="VALUE_SEPERATOR"
+      NAME="VALUE_SEPARATOR"
       FIELD="TEXT"
       NUM_ROW="4"
     >
