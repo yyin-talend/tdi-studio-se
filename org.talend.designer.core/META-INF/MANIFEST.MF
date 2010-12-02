@@ -48,7 +48,6 @@ Export-Package: org.talend.designer.core;
    org.talend.designer.codegen",
  org.talend.designer.core.debug,
  org.talend.designer.core.model.components,
- org.talend.designer.core.model.metadata,
  org.talend.designer.core.model.process,
  org.talend.designer.core.model.process.jobsettings,
  org.talend.designer.core.model.process.statsandlogs,
