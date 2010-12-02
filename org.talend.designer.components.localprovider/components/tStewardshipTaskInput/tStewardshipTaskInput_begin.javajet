@@ -45,7 +45,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":<%=port%>/org.talend.datastewardship/services/TDSCWS?wsdl");
+				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
 				org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 				org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
 				
