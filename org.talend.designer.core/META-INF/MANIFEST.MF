@@ -10,6 +10,7 @@ Require-Bundle: org.talend.model,
  org.eclipse.core.runtime.compatibility,
  org.eclipse.ui.ide,
  org.epic.perleditor,
+ org.talend.metadata.managment,
  org.talend.core,
  org.talend.sqlbuilder,
  org.eclipse.update.scheduler,
@@ -28,8 +29,7 @@ Require-Bundle: org.talend.model,
  org.eclipse.ui.intro,
  org.eclipse.help,
  org.eclipse.jdt.core.manipulation,
- org.talend.core.runtime,
- org.talend.metadata.managment
+ org.talend.core.runtime
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;
@@ -48,6 +48,7 @@ Export-Package: org.talend.designer.core;
    org.talend.designer.codegen",
  org.talend.designer.core.debug,
  org.talend.designer.core.model.components,
+ org.talend.designer.core.model.metadata,
  org.talend.designer.core.model.process,
  org.talend.designer.core.model.process.jobsettings,
  org.talend.designer.core.model.process.statsandlogs,
