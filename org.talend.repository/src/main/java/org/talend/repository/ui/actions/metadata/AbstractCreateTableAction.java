@@ -25,6 +25,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -64,6 +67,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -796,66 +800,78 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         UIJob job = new UIJob(Messages.getString("CreateTableAction.action.createTitle")) { //$NON-NLS-1$
 
             @Override
-            public IStatus runInUIThread(IProgressMonitor monitor) {
+            public IStatus runInUIThread(final IProgressMonitor monitor) {
+                String name = "User action : " + getText(); //$NON-NLS-1$
+                RepositoryWorkUnit<Object> repositoryWorkUnit = new RepositoryWorkUnit<Object>(name, this) {
 
-                monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                    @Override
+                    protected void run() throws LoginException, PersistenceException {
 
-                if (!monitor.isCanceled()) {
-                    final ManagerConnection managerConnection = new ManagerConnection();
+                        monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
-                    DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-                    IMetadataConnection metadataConnection = ConvertionHelper.convert(connection);
-                    if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
-                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())
-                            && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
-                        String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(),
-                                metadataConnection.getDbVersionString(), metadataConnection.getServerName(),
-                                metadataConnection.getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(),
-                                metadataConnection.getDatabase(), metadataConnection.getFileFieldName(),
-                                metadataConnection.getDataSourceName(), metadataConnection.getDbRootPath(),
-                                metadataConnection.getAdditionalParams());
-                        metadataConnection.setUrl(genUrl);
-                    }
+                        if (!monitor.isCanceled()) {
+                            final ManagerConnection managerConnection = new ManagerConnection();
 
-                    boolean check = managerConnection.check(metadataConnection);
-                    List<String> itemTableName = null;
-                    // modified by nma, open schema editor even failed to connect
-                    if (check != false) {
-                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
-                    }
-                    boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
-
-                    if (noTableExistInDB) {
-                        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
-                                Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
-                    } else {
-
-                        final boolean skipStep = checkConnectStatus(check, itemTableName);
-
-                        DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation,
-                                node.getObject(), metadataTable, getExistingNames(), forceReadOnly, managerConnection,
-                                metadataConnection);
-                        databaseTableWizard.setSkipStep(skipStep);
-                        UIJob uijob = new UIJob("") { //$NON-NLS-1$
-
-                            // modified by wzhang. when connection failed,error message display.
-                            public IStatus runInUIThread(IProgressMonitor monitor) {
-                                if (!managerConnection.getIsValide()) {
-                                    MessageDialog.openError(null, Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
-                                            Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
-                                }
-                                return Status.OK_STATUS;
+                            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                            IMetadataConnection metadataConnection = ConvertionHelper.convert(connection);
+                            if (!metadataConnection.getDbType().equals(EDatabaseConnTemplate.GODBC.getDBDisplayName())
+                                    && !metadataConnection.getDbType().equals(EDatabaseConnTemplate.ACCESS.getDBDisplayName())
+                                    && !metadataConnection.getDbType().equals(
+                                            EDatabaseConnTemplate.GENERAL_JDBC.getDBDisplayName())) {
+                                String genUrl = DatabaseConnStrUtil.getURLString(metadataConnection.getDbType(),
+                                        metadataConnection.getDbVersionString(), metadataConnection.getServerName(),
+                                        metadataConnection.getUsername(), metadataConnection.getPassword(),
+                                        metadataConnection.getPort(), metadataConnection.getDatabase(),
+                                        metadataConnection.getFileFieldName(), metadataConnection.getDataSourceName(),
+                                        metadataConnection.getDbRootPath(), metadataConnection.getAdditionalParams());
+                                metadataConnection.setUrl(genUrl);
                             }
 
-                        };
-                        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                .getShell(), databaseTableWizard);
-                        wizardDialog.setBlockOnOpen(true);
-                        uijob.schedule(1300);
-                        handleWizard(node, wizardDialog);
+                            boolean check = managerConnection.check(metadataConnection);
+                            List<String> itemTableName = null;
+                            // modified by nma, open schema editor even failed to connect
+                            if (check != false) {
+                                itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+                            }
+                            boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
+
+                            if (noTableExistInDB) {
+                                MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                        Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
+                                        Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
+                            } else {
+
+                                final boolean skipStep = checkConnectStatus(check, itemTableName);
+
+                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
+                                        creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
+                                        managerConnection, metadataConnection);
+                                databaseTableWizard.setSkipStep(skipStep);
+                                UIJob uijob = new UIJob("") { //$NON-NLS-1$
+
+                                    // modified by wzhang. when connection failed,error message display.
+                                    public IStatus runInUIThread(IProgressMonitor monitor) {
+                                        if (!managerConnection.getIsValide()) {
+                                            MessageDialog.openError(null,
+                                                    Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                                    Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                                        }
+                                        return Status.OK_STATUS;
+                                    }
+
+                                };
+                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getShell(), databaseTableWizard);
+                                wizardDialog.setBlockOnOpen(true);
+                                uijob.schedule(1300);
+                                handleWizard(node, wizardDialog);
+                            }
+                        }
                     }
-                }
+                };
+                repositoryWorkUnit.setAvoidUnloadResources(isAvoidUnloadResources());
+                CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                        .executeRepositoryWorkUnit(repositoryWorkUnit);
                 monitor.done();
                 return Status.OK_STATUS;
             };
