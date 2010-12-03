@@ -88,29 +88,31 @@ public class OpenedListController extends AbstractElementPropertySectionControll
                 if (isDisposed) {
                     continue;
                 }
+                String text = ((CCombo) ctrl).getText();
                 if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
-                    if (!((CCombo) ctrl).getText().equals(elem.getPropertyValue(name))) {
+                     if (!text.equals(elem.getPropertyValue(name))) {
 
-                        String value = new String(""); //$NON-NLS-1$
-                        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                            IElementParameter param = elem.getElementParameters().get(i);
-                            if (param.getName().equals(name)) {
-                                for (int j = 0; j < param.getListItemsValue().length; j++) {
-                                    if (j < param.getListItemsDisplayName().length
-                                            && ((CCombo) ctrl).getText().equals(param.getListItemsDisplayName()[j])) {
-                                        value = (String) param.getListItemsValue()[j];
-                                    }
+                    String value = new String(""); //$NON-NLS-1$
+
+                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
+                        IElementParameter param = elem.getElementParameters().get(i);
+                        if (param.getName().equals(name)) {
+                            for (int j = 0; j < param.getListItemsValue().length; j++) {
+                                if (j < param.getListItemsDisplayName().length && text.equals(param.getListItemsDisplayName()[j])) {
+                                    value = (String) param.getListItemsValue()[j];
+                                    break;
                                 }
                             }
                         }
-                        if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
-                            return null;
-                        }
-                        return new PropertyChangeCommand(elem, name, value);
                     }
+                    if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
+                        return null;
+                    }
+                    return new PropertyChangeCommand(elem, name, value);
                 }
             }
         }
+         }
         return null;
     }
 
@@ -299,16 +301,22 @@ public class OpenedListController extends AbstractElementPropertySectionControll
                     for (int i = 0; i < elem.getElementParameters().size(); i++) {
                         IElementParameter param = elem.getElementParameters().get(i);
                         if (param.getFieldType().equals(EParameterFieldType.OPENED_LIST) && paramName.equals(param.getName())) {
+                            String text = ((CCombo) ctrl).getText();
                             String[] listItemsDisplayName = param.getListItemsDisplayName();
+                            boolean valueSet = false;
                             Object[] listItemsValue = param.getListItemsValue();
                             for (int j = 0; j < listItemsValue.length; j++) {
-                                if (j < listItemsDisplayName.length && ((CCombo) ctrl).getText().equals(listItemsDisplayName[j])) {
+                                if (j < listItemsDisplayName.length && text.equals(listItemsDisplayName[j])) {
                                     value = (String) listItemsValue[j];
+                                    valueSet = true;
                                     break;
                                 }
                             }
+                            if (!valueSet) {
+                                value = text;
+                            }
                             param.setValue(value);
-                            break;
+
                         }
                     }
                     return new PropertyChangeCommand(elem, paramName, value);
@@ -371,6 +379,21 @@ public class OpenedListController extends AbstractElementPropertySectionControll
         Object value = param.getValue();
         String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
+
+        boolean addedValue = true;
+        Object[] listItemsValue = param.getListItemsValue();
+        for (int i = 0; i < listItemsValue.length; i++) {
+            if (listItemsValue[i].equals(value)) {
+                addedValue = false;
+                break;
+            }
+        }
+        if (addedValue) {
+            stringToDisplay.add(value.toString());
+        } else {
+            stringToDisplay.add(new String());
+        }
+
         String[] itemsShowIf = param.getListItemsShowIf();
         if (itemsShowIf != null) {
             String[] itemsNotShowIf = param.getListItemsNotShowIf();
