@@ -25,6 +25,10 @@ if(("S").equals(buffer)){
 	bufferSize = "500000";
 }else if(("B").equals(buffer)){
 	bufferSize = "2000000";
+} else if(("M").equals(buffer)){
+	bufferSize = "1000000";
+} else {
+	bufferSize = buffer;
 }
 
 if (("").equals(directory)) { 

@@ -89,8 +89,9 @@
     
 	<PARAMETER
       NAME="BUFFER_SIZE"
-      FIELD="CLOSED_LIST"
+      FIELD="OPENED_LIST"
       NUM_ROW="8"
+      REQUIRED="true"
       SHOW_IF="IS_VIRTUAL_COMPONENT == 'true'"
     >
       <ITEMS DEFAULT="M">

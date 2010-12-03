@@ -77,7 +77,19 @@
     >
       <DEFAULT/>
     </PARAMETER>
-    
+
+	<PARAMETER
+      NAME="BUFFER_SIZE"
+      FIELD="OPENED_LIST"
+      NUM_ROW="18"
+    >
+      <ITEMS DEFAULT="M">
+        <ITEM NAME="SMALL" VALUE="S" />
+        <ITEM NAME="MEDIUM" VALUE="M"/>
+        <ITEM NAME="BIG" VALUE="B"/>
+      </ITEMS>
+    </PARAMETER>
+
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS/>
