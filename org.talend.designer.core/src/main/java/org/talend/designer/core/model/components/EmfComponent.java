@@ -45,6 +45,9 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.component_cache.ComponentCacheFactory;
+import org.talend.core.model.component_cache.ComponentInfo;
+import org.talend.core.model.component_cache.ComponentsCache;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
@@ -78,6 +81,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -119,7 +123,9 @@ public class EmfComponent implements IComponent {
 
     private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
 
-    private final File file;
+    private final String uriString;
+
+    private final String name;
 
     private static final long serialVersionUID = 1L;
 
@@ -183,16 +189,42 @@ public class EmfComponent implements IComponent {
 
     private String translatedFamilyName;
 
+    private ComponentInfo info;
+
+    private ComponentsCache cache;
+
+    private boolean isAlreadyLoad = false;
+
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
     private static SoftReference<ComponentResourceFactoryImpl> compResFactorySoftRef;
 
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
 
-    public EmfComponent(File file, String pathSource) throws BusinessException {
-        this.file = file;
+    public EmfComponent(String uriString, String name, String pathSource, ComponentsCache cache, boolean isload)
+            throws BusinessException {
+        this.uriString = uriString;
+        this.name = name;
         this.pathSource = pathSource;
-        load();
+        this.isAlreadyLoad = isload;
+        this.cache = cache;
+        if (!isAlreadyLoad) {
+            info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
+            load();
+            getOriginalFamilyName();
+            getPluginFullName();
+            getModulesNeeded();
+            isTechnical();
+            getVersion();
+            getPluginDependencies();
+            getTranslatedFamilyName();
+            info.setUriString(uriString);
+            info.setPathSource(pathSource);
+            cache.getComponentEntryMap().put(getName(), info);
+        } else {
+            info = (ComponentInfo) cache.getComponentEntryMap().get(getName());
+            isLoaded = true;
+        }
         codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage();
     }
@@ -219,6 +251,7 @@ public class EmfComponent implements IComponent {
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (!isLoaded) {
+            File file = new File(uriString);
             URI createURI = URI.createURI(file.toURI().toString());
             Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
@@ -245,7 +278,7 @@ public class EmfComponent implements IComponent {
 
                 isLoaded = true;
             } catch (IOException e) {
-                throw new BusinessException(Messages.getString("EmfComponent.0", file.getName()), e); //$NON-NLS-1$
+                throw new BusinessException(Messages.getString("EmfComponent.0", uriString), e); //$NON-NLS-1$
             }
         }
     }
@@ -621,6 +654,15 @@ public class EmfComponent implements IComponent {
     }
 
     public void addViewParameters(final List<ElementParameter> listParam, INode node) {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         ElementParameter param;
 
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
@@ -714,6 +756,15 @@ public class EmfComponent implements IComponent {
     }
 
     public void addMainParameters(final List<ElementParameter> listParam, INode node) {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         ElementParameter param;
         param = new ElementParameter(node);
         param.setName(EParameterName.UNIQUE_NAME.getName());
@@ -1173,6 +1224,15 @@ public class EmfComponent implements IComponent {
 
     @SuppressWarnings("unchecked")
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         EList listXmlParam;
         PARAMETERType xmlParam;
         ElementParameter param;
@@ -1783,18 +1843,26 @@ public class EmfComponent implements IComponent {
 
     public String getOriginalFamilyName() {
         String originalFamilyName = ""; //$NON-NLS-1$
-
-        int nbTotal = compType.getFAMILIES().getFAMILY().size();
-        int nb = 0;
-        for (Object objFam : compType.getFAMILIES().getFAMILY()) {
-            String curFamily = (String) objFam;
-            originalFamilyName += curFamily;
-            nb++;
-            if (nbTotal != nb) {
-                originalFamilyName += "|"; //$NON-NLS-1$
+        if (!isAlreadyLoad) {
+            int nbTotal = compType.getFAMILIES().getFAMILY().size();
+            int nb = 0;
+            for (Object objFam : compType.getFAMILIES().getFAMILY()) {
+                String curFamily = (String) objFam;
+                originalFamilyName += curFamily;
+                nb++;
+                if (nbTotal != nb) {
+                    originalFamilyName += "|"; //$NON-NLS-1$
+                }
+            }
+            info.setOriginalFamilyName(originalFamilyName);
+        } else {
+            if (info != null) {
+                originalFamilyName = info.getOriginalFamilyName();
+            } else {
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getOriginalFamilyName();
             }
         }
-
         return originalFamilyName;
     }
 
@@ -1804,36 +1872,47 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
      */
     public String getTranslatedFamilyName() {
-        if (translatedFamilyName != null) {
-            return translatedFamilyName;
-        }
-        translatedFamilyName = "";
-        IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
 
-        int nbTotal = compType.getFAMILIES().getFAMILY().size();
-        int nb = 0;
-        for (Object objFam : compType.getFAMILIES().getFAMILY()) {
+        if (!isAlreadyLoad) {
+            if (translatedFamilyName != null) {
+                info.setTranslatedFamilyName(translatedFamilyName);
+                return translatedFamilyName;
+            }
+            translatedFamilyName = "";
+            IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
 
-            String curFamily = (String) objFam;
-            String[] namesToTranslate = curFamily.split("/"); //$NON-NLS-1$
-            int nbSubTotal = namesToTranslate.length;
-            int nbSub = 0;
-            for (String toTranslate : namesToTranslate) {
-                String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                if (translated.startsWith("!!")) { //$NON-NLS-1$
-                    // no key to translate, so use original
-                    translatedFamilyName += toTranslate;
-                } else {
-                    translatedFamilyName += translated;
+            int nbTotal = compType.getFAMILIES().getFAMILY().size();
+            int nb = 0;
+            for (Object objFam : compType.getFAMILIES().getFAMILY()) {
+
+                String curFamily = (String) objFam;
+                String[] namesToTranslate = curFamily.split("/"); //$NON-NLS-1$
+                int nbSubTotal = namesToTranslate.length;
+                int nbSub = 0;
+                for (String toTranslate : namesToTranslate) {
+                    String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    if (translated.startsWith("!!")) { //$NON-NLS-1$
+                        // no key to translate, so use original
+                        translatedFamilyName += toTranslate;
+                    } else {
+                        translatedFamilyName += translated;
+                    }
+                    nbSub++;
+                    if (nbSubTotal != nbSub) {
+                        translatedFamilyName += "/"; //$NON-NLS-1$
+                    }
                 }
-                nbSub++;
-                if (nbSubTotal != nbSub) {
-                    translatedFamilyName += "/"; //$NON-NLS-1$
+                nb++;
+                if (nbTotal != nb) {
+                    translatedFamilyName += "|"; //$NON-NLS-1$
                 }
             }
-            nb++;
-            if (nbTotal != nb) {
-                translatedFamilyName += "|"; //$NON-NLS-1$
+            info.setTranslatedFamilyName(translatedFamilyName);
+        } else {
+            if (info != null) {
+                translatedFamilyName = info.getTranslatedFamilyName();
+            } else {
+                translatedFamilyName = "";
             }
         }
         return translatedFamilyName;
@@ -1845,15 +1924,33 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
     public boolean hasConditionalOutputs() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
 
     public String getName() {
-        return file.getParentFile().getName();
+        return name;
     }
 
     // if doesn't exist, return by default the name of the component.
     public String getShortName() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         if (!StringUtils.isEmpty(compType.getHEADER().getSHORTNAME())) {
             return compType.getHEADER().getSHORTNAME();
         } else {
@@ -1881,6 +1978,15 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean canStart() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isSTARTABLE();
     }
 
@@ -1890,6 +1996,15 @@ public class EmfComponent implements IComponent {
      * @see org.talend.designer.core.model.components.IComponent#createConnectors()
      */
     public List<NodeConnector> createConnectors(INode parentNode) {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         EList listConnType;
         CONNECTORType connType;
         NodeConnector nodeConnector;
@@ -2064,21 +2179,47 @@ public class EmfComponent implements IComponent {
     }
 
     public String getPluginFullName() {
-        String pluginFullName;
-
-        pluginFullName = compType.getHEADER().getEXTENSION();
-        if (pluginFullName == null) {
-            pluginFullName = IComponentsFactory.COMPONENTS_LOCATION;
+        String pluginFullName = null;
+        if (!isAlreadyLoad) {
+            pluginFullName = compType.getHEADER().getEXTENSION();
+            if (pluginFullName == null) {
+                pluginFullName = IComponentsFactory.COMPONENTS_LOCATION;
+            }
+            info.setPluginFullName(pluginFullName);
+        } else {
+            if (info != null) {
+                pluginFullName = info.getPluginFullName();
+            } else {
+                pluginFullName = IComponentsFactory.COMPONENTS_LOCATION;
+            }
         }
-
+        // cache.get
         return pluginFullName;
     }
 
     public boolean isSchemaAutoPropagated() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isSCHEMAAUTOPROPAGATE();
     }
 
     public boolean isDataAutoPropagated() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isDATAAUTOPROPAGATE();
     }
 
@@ -2114,49 +2255,112 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isVisibleInComponentDefinition() {
-        if (visible != null) {
-            return visible;
+        if (!isAlreadyLoad) {
+            if (visible != null) {
+                info.setIsVisibleInComponentDefinition(visible);
+                return visible;
+            }
+            boolean isVisible = compType.getHEADER().isVISIBLE();
+            info.setIsVisibleInComponentDefinition(isVisible);
+            return isVisible;
+        } else {
+            if (info != null) {
+                return info.isIsVisibleInComponentDefinition();
+            } else {
+                return false;
+            }
         }
-        return compType.getHEADER().isVISIBLE();
     }
 
     public String getVersion() {
-        return String.valueOf(compType.getHEADER().getVERSION());
+        String version = "";
+        if (!isAlreadyLoad) {
+            version = String.valueOf(compType.getHEADER().getVERSION());
+            info.setVersion(version);
+        } else {
+            if (info == null) {
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getVersion();
+            } else {
+                version = info.getVersion();
+            }
+        }
+
+        return version;
     }
 
     public List<ModuleNeeded> getModulesNeeded() {
         List<String> moduleNames = new ArrayList<String>();
         List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
-        if (compType.getCODEGENERATION().getIMPORTS() != null) {
-            EList emfImportList;
-            emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
-            for (int i = 0; i < emfImportList.size(); i++) {
-                IMPORTType importType = (IMPORTType) emfImportList.get(i);
+        if (!isAlreadyLoad) {
+            if (compType.getCODEGENERATION().getIMPORTS() != null) {
+                EList emfImportList;
+                emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
+                info.getImportType().addAll(emfImportList);
+                for (int i = 0; i < emfImportList.size(); i++) {
+                    IMPORTType importType = (IMPORTType) emfImportList.get(i);
 
-                String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
-                if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                    msg = Messages.getString("modules.required"); //$NON-NLS-1$
-                }
-                List<String> list = getInstallURL(importType);
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
-                        importType.isREQUIRED(), list);
-                moduleNames.add(importType.getMODULE());
-                componentImportNeeds.setShow(importType.isSHOW());
-                componentImportNeedsList.add(componentImportNeeds);
-            }
-        }
-        for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
-            for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
-                IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
-                if (component == null) {
-                    continue;
-                }
-                for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
-                    if (!moduleNames.contains(moduleNeeded.getModuleName())) {
-                        ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
-                                moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL());
-                        componentImportNeedsList.add(componentImportNeeds);
+                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
+                    if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
                     }
+
+                    List<String> list = getInstallURL(importType);
+                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
+                            importType.isREQUIRED(), list);
+                    moduleNames.add(importType.getMODULE());
+                    componentImportNeeds.setShow(importType.isSHOW());
+                    componentImportNeedsList.add(componentImportNeeds);
+                }
+                List<String> componentList = info.getComponentNames();
+                for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
+                    for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
+                        IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+                        componentList.add(multipleComponentItem.getComponent());
+                        if (component == null) {
+                            continue;
+                        }
+                        for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
+                            if (!moduleNames.contains(moduleNeeded.getModuleName())) {
+                                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(),
+                                        moduleNeeded.getModuleName(), moduleNeeded.getInformationMsg(),
+                                        moduleNeeded.isRequired(), moduleNeeded.getInstallURL());
+                                componentImportNeedsList.add(componentImportNeeds);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (info != null) {
+                EList emfImportList = info.getImportType();
+                for (int i = 0; i < emfImportList.size(); i++) {
+                    IMPORTType importType = (IMPORTType) emfImportList.get(i);
+
+                    String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
+                    if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                    }
+                    List<String> list = getInstallURL(importType);
+                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
+                            importType.isREQUIRED(), list);
+                    moduleNames.add(importType.getMODULE());
+                    componentImportNeeds.setShow(importType.isSHOW());
+                    componentImportNeedsList.add(componentImportNeeds);
+                }
+                for (String name : info.getComponentNames()) {
+                    IComponent component = ComponentsFactoryProvider.getInstance().get(name);
+                    if (component == null) {
+                        continue;
+                    }
+                    for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
+                        if (!moduleNames.contains(moduleNeeded.getModuleName())) {
+                            ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
+                                    moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL());
+                            componentImportNeedsList.add(componentImportNeeds);
+                        }
+                    }
+
                 }
             }
         }
@@ -2197,6 +2401,15 @@ public class EmfComponent implements IComponent {
      * @return
      */
     private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         ArrayList<IMultipleComponentManager> theMultipleComponentManagers = new ArrayList<IMultipleComponentManager>();
         EList templatesTypes = compType.getCODEGENERATION().getTEMPLATES();
         if (templatesTypes != null) {
@@ -2383,7 +2596,8 @@ public class EmfComponent implements IComponent {
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
-        File dirFile = new File(file.getParent());
+        File dirChildFile = new File(uriString);
+        File dirFile = dirChildFile.getParentFile();
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
 
@@ -2416,10 +2630,20 @@ public class EmfComponent implements IComponent {
     @SuppressWarnings("unchecked")
     public List<String> getPluginDependencies() {
         List<String> pluginDependencyList = new ArrayList<String>();
-        if (this.compType.getPLUGINDEPENDENCIES() != null) {
-            List<PLUGINDEPENDENCYTypeImpl> pti = this.compType.getPLUGINDEPENDENCIES().getPLUGINDEPENDENCY();
-            for (PLUGINDEPENDENCYTypeImpl pt : pti) {
-                pluginDependencyList.add(pt.getID());
+        if (!isAlreadyLoad) {
+            if (this.compType.getPLUGINDEPENDENCIES() != null) {
+                List<PLUGINDEPENDENCYTypeImpl> pti = this.compType.getPLUGINDEPENDENCIES().getPLUGINDEPENDENCY();
+                for (PLUGINDEPENDENCYTypeImpl pt : pti) {
+                    pluginDependencyList.add(pt.getID());
+                }
+            }
+            info.getPluginDependencies().addAll(pluginDependencyList);
+        } else {
+            if (info != null) {
+                pluginDependencyList = info.getPluginDependencies();
+            } else {
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getPluginDependencies();
             }
         }
         return pluginDependencyList;
@@ -2427,6 +2651,15 @@ public class EmfComponent implements IComponent {
 
     public boolean useMerge() {
         if (useMerge == null) {
+            if (compType == null) {
+                isLoaded = false;
+                try {
+                    load();
+                } catch (BusinessException e) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e);
+                }
+            }
             useMerge = false;
             EList listConnType;
             CONNECTORType connType;
@@ -2444,6 +2677,15 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isMultiplyingOutputs() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }
 
@@ -2453,7 +2695,15 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
     public boolean isMultipleOutput() {
-
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         EList listConnType = compType.getCONNECTORS().getCONNECTOR();
         for (int i = 0; i < listConnType.size(); i++) {
             CONNECTORType connType = (CONNECTORType) listConnType.get(i);
@@ -2469,6 +2719,15 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isMultiSchemaOutput() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         EList listConnType = compType.getCONNECTORS().getCONNECTOR();
         for (int i = 0; i < listConnType.size(); i++) {
             CONNECTORType connType = (CONNECTORType) listConnType.get(i);
@@ -2481,6 +2740,15 @@ public class EmfComponent implements IComponent {
     }
 
     private boolean connectorUseInputLinkSelection(String name) {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         EList listConnType;
         CONNECTORType connType;
 
@@ -2505,6 +2773,15 @@ public class EmfComponent implements IComponent {
      */
     public boolean useLookup() {
         if (useLookup == null) {
+            if (compType == null) {
+                isLoaded = false;
+                try {
+                    load();
+                } catch (BusinessException e) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e);
+                }
+            }
             useLookup = false;
             EList listConnType;
             CONNECTORType connType;
@@ -2528,6 +2805,15 @@ public class EmfComponent implements IComponent {
      */
     public boolean useImport() {
         if (useImport == null) {
+            if (compType == null) {
+                isLoaded = false;
+                try {
+                    load();
+                } catch (BusinessException e) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e);
+                }
+            }
             useImport = false;
             EList listParameterType;
             PARAMETERType parameterType;
@@ -2562,6 +2848,15 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isHashComponent()
      */
     public boolean isHashComponent() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isHASHCOMPONENT();
     }
 
@@ -2571,11 +2866,21 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
     public boolean isTechnical() {
-        if (technical != null) {
-            return technical;
+        boolean isTrchnical = false;
+        if (!isAlreadyLoad) {
+            if (technical != null) {
+                info.setIsTechnical(technical);
+                return technical;
+            }
+            info.setIsTechnical(compType.getHEADER().isTECHNICAL());
+            isTrchnical = compType.getHEADER().isTECHNICAL();
+        } else {
+            if (info != null)
+                isTrchnical = info.isIsTechnical();
         }
 
-        return compType.getHEADER().isTECHNICAL();
+        return isTrchnical;
+
     }
 
     /*
@@ -2584,6 +2889,15 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isSingleton()
      */
     public boolean isSingleton() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isSINGLETON();
     }
 
@@ -2593,6 +2907,15 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
      */
     public boolean isMainCodeCalled() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isMAINCODECALLED();
     }
 
@@ -2603,6 +2926,15 @@ public class EmfComponent implements IComponent {
      * @return
      */
     public String getRepositoryType() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
             if (pType.getFIELD().equals("PROPERTY_TYPE")) { //$NON-NLS-1$
                 return pType.getREPOSITORYVALUE();
@@ -2612,6 +2944,15 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean canParallelize() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().isPARALLELIZE();
     }
 

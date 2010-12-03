@@ -426,7 +426,7 @@ public class Node extends Element implements IGraphicalNode {
             setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
         }
         pluginFullName = newComponent.getPluginFullName();
-        if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
+        if (!pluginFullName.equals(IComponentsFactory.COMPONENTS_LOCATION)) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }
 
@@ -835,8 +835,8 @@ public class Node extends Element implements IGraphicalNode {
                 String newLabel = label;
                 String newShowHintText = showHintText;
                 String newConnectionName = connectionName;
-                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
-                        .getElementParameters());
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(),
+                        connNode.getElementParameters());
                 newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
                 newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
                 newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
@@ -883,8 +883,8 @@ public class Node extends Element implements IGraphicalNode {
 
             if (connNode != null) {
 
-                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
-                        .getElementParameters());
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(),
+                        connNode.getElementParameters());
                 newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
                 newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
                 newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
@@ -1165,8 +1165,8 @@ public class Node extends Element implements IGraphicalNode {
             /*
              * param.getChildParameters() .get(EParameterName.SCHEMA_TYPE.getName()).setValue( EmfComponent.REPOSITORY);
              */
-            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
-                    repositorySchemaParamTarget.getValue());
+            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                    .setValue(repositorySchemaParamTarget.getValue());
             this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
         }
     }
@@ -1943,8 +1943,8 @@ public class Node extends Element implements IGraphicalNode {
             toUpdate = true;
         } else {
 
-            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer == null ? this : nodeContainer
-                    .getNode());
+            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR,
+                    nodeContainer == null ? this : nodeContainer.getNode());
             List<String> newWarningList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer == null ? this
                     : nodeContainer.getNode());
 
@@ -3153,8 +3153,8 @@ public class Node extends Element implements IGraphicalNode {
     // hywang add this method for feature 8221
     private boolean isCheckMultiSchemaForMSField() {
         boolean needMultiSchema = false;
-        if (this.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString().equals(
-                "tFileInputMSFieldDelimited") && this.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (this.getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue().toString()
+                .equals("tFileInputMSFieldDelimited") && this.getElementParameter("USE_MUL_SCHEMAS") != null) { //$NON-NLS-1$ //$NON-NLS-2$
             if (Boolean.parseBoolean(this.getElementParameter("USE_MUL_SCHEMAS").getValue().toString())) { //$NON-NLS-1$
                 needMultiSchema = true;
             }

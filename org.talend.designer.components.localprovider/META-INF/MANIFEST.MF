@@ -116,3 +116,4 @@ Bundle-ClassPath: .,
  components/tHL7Input/hapi-structures-v25-1.0.1.jar,
  components/tHL7Input/hapi-structures-v251-1.0.1.jar,
  components/tHL7Input/hapi-structures-v26-1.0.1.jar
+Import-Package: org.talend.repository.utils

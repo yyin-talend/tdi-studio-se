@@ -105,7 +105,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
      */
     public void refreshTemplates() {
-        ComponentsFactoryProvider.getInstance().reset();
+        ComponentsFactoryProvider.getInstance().resetCache();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
