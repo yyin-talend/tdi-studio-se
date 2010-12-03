@@ -29,7 +29,7 @@ imports="
 	String enableStream = ElementParameterParser.getValue(node, "__ENABLE_STREAM__");
 	String dbms=ElementParameterParser.getValue(node, "__TYPE__");
 	
-	if(dbms!=null && (dbms.contains("MSSQL") || dbms.contains("ORACLE"))){
+	if(dbms!=null && (dbms.contains("MSSQL") || dbms.contains("ORACLE") || dbms.contains("PostgreSQL"))){
 		if (dbms.contains("ORACLE")) {
 			dbms = "ORACLE";
 		} else if (dbms.contains("MSSQL")) {
