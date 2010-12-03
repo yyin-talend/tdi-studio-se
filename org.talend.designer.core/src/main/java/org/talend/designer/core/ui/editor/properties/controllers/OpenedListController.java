@@ -294,16 +294,24 @@ public class OpenedListController extends AbstractElementPropertySectionControll
                 if (data != null) {
                     paramName = data.toString();
                 }
-                String text = "";
+                String value = "";
                 if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
                     for (int i = 0; i < elem.getElementParameters().size(); i++) {
                         IElementParameter param = elem.getElementParameters().get(i);
                         if (param.getFieldType().equals(EParameterFieldType.OPENED_LIST) && paramName.equals(param.getName())) {
-                            text = combo.getText();
-                            param.setValue(text);
+                            String[] listItemsDisplayName = param.getListItemsDisplayName();
+                            Object[] listItemsValue = param.getListItemsValue();
+                            for (int j = 0; j < listItemsValue.length; j++) {
+                                if (j < listItemsDisplayName.length && ((CCombo) ctrl).getText().equals(listItemsDisplayName[j])) {
+                                    value = (String) listItemsValue[j];
+                                    break;
+                                }
+                            }
+                            param.setValue(value);
+                            break;
                         }
                     }
-                    return new PropertyChangeCommand(elem, paramName, text);
+                    return new PropertyChangeCommand(elem, paramName, value);
                 }
             }
         }
@@ -377,6 +385,6 @@ public class OpenedListController extends AbstractElementPropertySectionControll
             }
         }
         return stringToDisplay.toArray(new String[0]);
-    
+
     }
 }
