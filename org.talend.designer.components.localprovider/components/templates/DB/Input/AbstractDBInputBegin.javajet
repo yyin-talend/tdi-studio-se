@@ -36,6 +36,8 @@ imports="
 			dbms = "MSSQL";
 		} else if (dbms.contains("PostgreSQL")) {
 			dbms = "PostgreS";
+		} else if(dbms.contains("SybaseASE")) {
+			dbms = "sybase";
 		}
 	}
 	
