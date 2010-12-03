@@ -53,7 +53,11 @@ public class SalesforceSchemaInputNode extends FileInputNode {
             if (parameters[i].equals("MODULENAME")) { //$NON-NLS-1$
                 param = new TextElementParameter(parameters[i], values[i]);
             } else {
-                param = new TextElementParameter(parameters[i], TalendTextUtils.addQuotes(values[i]));
+                if (parameters[i].equals("TIMEOUT")) {
+                    param = new TextElementParameter(parameters[i], values[i]);
+                } else {
+                    param = new TextElementParameter(parameters[i], TalendTextUtils.addQuotes(values[i]));
+                }
             }
             addParameter(param);
         }
