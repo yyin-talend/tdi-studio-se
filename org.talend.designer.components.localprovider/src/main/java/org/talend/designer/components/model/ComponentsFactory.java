@@ -46,6 +46,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
@@ -55,6 +56,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentCachePackage;
@@ -91,7 +93,11 @@ public class ComponentsFactory implements IComponentsFactory {
     /**
      * 
      */
-    private static final String TALEND_COMPONENT_CACHE = "talendComponent.cache";
+    private static final String TALEND_JAVA_COMPONENT_CACHE = "ComponentsCache.javacache";
+
+    private static final String TALEND_PERL_COMPONENT_CACHE = "ComponentsCache.perlcache";
+
+    private static final String METADATA_NAME = ".metadata";
 
     private static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user"; //$NON-NLS-1$
 
@@ -248,9 +254,10 @@ public class ComponentsFactory implements IComponentsFactory {
         componentList = new HashSet<IComponent>();
         customComponentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
-
+        Location instanceLoc = Platform.getInstanceLocation();
+        File file = new File(instanceLoc.getURL().getFile(), ComponentsFactory.METADATA_NAME);
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
-        String installLocation = Platform.getInstallLocation().getURL().getFile();
+        String installLocation = file.getAbsolutePath();
         boolean isNeedClean = cleanComponentCache();
         isCreated = hasComponentFile(installLocation) && !isNeedClean;
         if (isReset) {
@@ -377,7 +384,12 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws IOException
      */
     private ComponentsCache loadComponentResource(String installLocation) throws IOException {
-        URI uri = URI.createFileURI(installLocation).appendSegment(ComponentsFactory.TALEND_COMPONENT_CACHE);
+        URI uri = URI.createFileURI(installLocation);
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            uri = uri.appendSegment(ComponentsFactory.TALEND_PERL_COMPONENT_CACHE);
+        } else {
+            uri = uri.appendSegment(ComponentsFactory.TALEND_JAVA_COMPONENT_CACHE);
+        }
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         Resource resource = compFact.createResource(uri);
         Map optionMap = new HashMap();
@@ -399,7 +411,12 @@ public class ComponentsFactory implements IComponentsFactory {
      * @return
      */
     private boolean hasComponentFile(String installLocation) {
-        File file = new File(new Path(installLocation).append(ComponentsFactory.TALEND_COMPONENT_CACHE).toString());
+        File file = null;
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            file = new File(new Path(installLocation).append(ComponentsFactory.TALEND_JAVA_COMPONENT_CACHE).toString());
+        } else {
+            file = new File(new Path(installLocation).append(ComponentsFactory.TALEND_PERL_COMPONENT_CACHE).toString());
+        }
         return file.exists();
     }
 
