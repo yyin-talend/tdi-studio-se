@@ -165,6 +165,15 @@
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>ingres_id</DEFAULT>
+    </PARAMETER>
+
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>

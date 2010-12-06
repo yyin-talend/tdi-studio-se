@@ -96,6 +96,9 @@
 			<DEFAULT>"select * from sysobjects "</DEFAULT>
 		</PARAMETER>
 
+		<PARAMETER NAME="MAPPING" FIELD="MAPPING_TYPE" NUM_ROW="55" SHOW="false" >       
+      		<DEFAULT>ibmdb2_id</DEFAULT>
+    	</PARAMETER>
 	</PARAMETERS>
 
 	<ADVANCED_PARAMETERS>

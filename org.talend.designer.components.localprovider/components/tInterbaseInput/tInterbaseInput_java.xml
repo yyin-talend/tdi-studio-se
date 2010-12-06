@@ -154,6 +154,15 @@
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
     
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="13"
+      SHOW="false"
+    >       
+      <DEFAULT>interbase_id</DEFAULT>
+    </PARAMETER>
+    
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>

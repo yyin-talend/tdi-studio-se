@@ -175,6 +175,15 @@
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>postgresplus_id</DEFAULT>
+    </PARAMETER>
+
    </PARAMETERS>
 	
    <ADVANCED_PARAMETERS>

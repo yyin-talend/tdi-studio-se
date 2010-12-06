@@ -173,6 +173,15 @@
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
     
+	<PARAMETER
+	     NAME="MAPPING"
+	     FIELD="MAPPING_TYPE"
+	     NUM_ROW="100"
+	     SHOW="false"
+	>       
+	   <DEFAULT>id_MSSQL</DEFAULT>
+	</PARAMETER>
+    
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>
