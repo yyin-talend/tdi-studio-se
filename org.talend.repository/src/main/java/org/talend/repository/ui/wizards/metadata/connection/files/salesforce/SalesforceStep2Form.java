@@ -557,9 +557,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         }
         processDescription.setSalesforceSchemaBean(bean);
 
-        IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(), bean
-                .getModuleName(), bean.getBatchSize(), bean.isUseProxy(), bean.isUesHttp(), bean.getProxyHost(), bean
-                .getProxyPort(), bean.getProxyUsername(), bean.getProxyPassword(), false);
+        IMetadataTable tableGet = getMetadatasForSalesforce(bean.getWebServerUrl(), bean.getUserName(), bean.getPassword(),
+                String.valueOf(bean.getTimeOut()), bean.getModuleName(), bean.getBatchSize(), bean.isUseProxy(),
+                bean.isUesHttp(), bean.getProxyHost(), bean.getProxyPort(), bean.getProxyUsername(), bean.getProxyPassword(),
+                false);
 
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         IMetadataTable table = new MetadataTable();

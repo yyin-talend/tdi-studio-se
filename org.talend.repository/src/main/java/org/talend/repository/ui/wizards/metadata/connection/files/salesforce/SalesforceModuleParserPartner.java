@@ -12,24 +12,20 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.rpc.ServiceException;
-
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.repository.i18n.Messages;
+import org.talend.salesforce.SforceManagementImpl;
 
-import com.sforce.soap.partner.DescribeGlobalResult;
-import com.sforce.soap.partner.DescribeSObjectResult;
-import com.sforce.soap.partner.Field;
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.SforceServiceLocator;
-import com.sforce.soap.partner.SoapBindingStub;
+import com.salesforce.soap.partner.DescribeSObject;
+import com.salesforce.soap.partner.DescribeSObjectResult;
+import com.salesforce.soap.partner.Field;
+import com.salesforce.soap.partner.InvalidSObjectFault;
+import com.salesforce.soap.partner.SessionHeader;
+import com.salesforce.soap.partner.UnexpectedErrorFault;
 
 /**
  * Maybe need a long connection ...
@@ -62,9 +58,11 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
     //
     // private String proxyPassword = null;
 
-    private SoapBindingStub binding = null;
+    // private SoapBindingStub binding = null;
 
-    private LoginResult loginResult = null; // maintain the login results
+    private SforceManagementImpl sforceManagement = null;
+
+    // private LoginResult loginResult = null; // maintain the login results
 
     private String currentModuleName = null;
 
@@ -83,6 +81,8 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
             throw new Exception(Messages.getString("SalesforceModuleParseAPI.lostUsernameOrPass")); //$NON-NLS-1$
         }
         ArrayList doLoginList = null;
+        sforceManagement = new SforceManagementImpl();
+        boolean login = false;
         if (name != null && pwd != null && url != null) {
             if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
                 // || !checkString(proxyHost, this.proxyHost)
@@ -92,7 +92,8 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
                 // || (proxy != null && theProxy != null && !proxy.equals(theProxy) || (proxy != null && theProxy ==
                 // null) || (proxy == null && theProxy != null))) {
 
-                doLoginList = doLogin(endPoint, username, password);
+                // doLoginList = doLogin(endPoint, username, password);
+                login = sforceManagement.login(endPoint, username, password, 10000, false);
 
             } else {
                 if (isLogin()) {
@@ -100,9 +101,49 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
                 }
             }
         } else {
-            doLoginList = doLogin(endPoint, username, password);
+            // doLoginList = doLogin(endPoint, username, password);
+            login = sforceManagement.login(endPoint, username, password, 10000, false);
+            doLoginList = new ArrayList();
+            doLoginList.add(sforceManagement.getStub());
         }
+        setLogin(login);
+        setSforceManagement(sforceManagement);
+        this.name = username;
+        this.pwd = password;
+        this.url = endPoint;
+        return doLoginList;
+    }
 
+    public ArrayList login(String endPoint, String username, String password, String timeOut) throws Exception {
+        if (endPoint == null) {
+            throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
+        }
+        if (username == null || password == null) {
+            throw new Exception(Messages.getString("SalesforceModuleParseAPI.lostUsernameOrPass")); //$NON-NLS-1$
+        }
+        int time = Integer.valueOf(timeOut);
+        ArrayList doLoginList = null;
+        sforceManagement = new SforceManagementImpl();
+        boolean login = false;
+        if (name != null && pwd != null && url != null) {
+            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
+
+                // doLoginList = doLogin(endPoint, username, password);
+                login = sforceManagement.login(endPoint, username, password, time, false);
+
+            } else {
+                if (isLogin()) {
+                    return doLoginList;
+                }
+            }
+        } else {
+            // doLoginList = doLogin(endPoint, username, password);
+            login = sforceManagement.login(endPoint, username, password, time, false);
+            doLoginList = new ArrayList();
+            doLoginList.add(sforceManagement.getStub());
+        }
+        setLogin(login);
+        setSforceManagement(sforceManagement);
         this.name = username;
         this.pwd = password;
         this.url = endPoint;
@@ -119,52 +160,53 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
         return false;
     }
 
-    protected ArrayList doLogin(String endPoint, String username, String password) throws RemoteException, ServiceException,
-            MalformedURLException {
-        try {
-            URL soapAddress = new java.net.URL(endPoint);
-            binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
-
-            loginResult = binding.login(username, password);
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        setLogin(true);
-        // on a successful login, you should always set up your session id
-        // and the url for subsequent calls
-
-        // reset the url endpoint property, this will cause subsequent calls
-        // to made to the serverURL from the login result
-        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
-
-        // create a session head object
-        SessionHeader sh = new SessionHeader();
-        // set the sessionId property on the header object using
-        // the value from the login result
-        sh.setSessionId(loginResult.getSessionId());
-        // add the header to the binding stub
-        String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
-        binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
-
-        ArrayList arrayList = new ArrayList();
-        arrayList.add(binding);
-
-        return arrayList;
-    }
+    // protected ArrayList doLogin(String endPoint, String username, String password) throws RemoteException,
+    // ServiceException,
+    // MalformedURLException {
+    // try {
+    // URL soapAddress = new java.net.URL(endPoint);
+    // binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
+    //
+    // loginResult = binding.login(username, password);
+    //
+    // } catch (ArrayIndexOutOfBoundsException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    // setLogin(true);
+    // // on a successful login, you should always set up your session id
+    // // and the url for subsequent calls
+    //
+    // // reset the url endpoint property, this will cause subsequent calls
+    // // to made to the serverURL from the login result
+    // binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
+    //
+    // // create a session head object
+    // SessionHeader sh = new SessionHeader();
+    // // set the sessionId property on the header object using
+    // // the value from the login result
+    // sh.setSessionId(loginResult.getSessionId());
+    // // add the header to the binding stub
+    // String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
+    //        binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
+    //
+    // ArrayList arrayList = new ArrayList();
+    // arrayList.add(binding);
+    //
+    // return arrayList;
+    // }
 
     public void describeGlobalSample() {
-        try {
-            DescribeGlobalResult describeGlobalResult = null;
-            describeGlobalResult = binding.describeGlobal();
-            String[] types = describeGlobalResult.getTypes();
-            for (int i = 0; i < types.length; i++)
-                System.out.println(types[i]);
-            System.out.println("\nDescribe global was successful...\r\n"); //$NON-NLS-1$
-        } catch (Exception ex) {
-            System.out.println("\nFailed to return types, error message was: \n" + ex.getMessage()); //$NON-NLS-1$
-        }
+        // try {
+        // DescribeGlobalResult describeGlobalResult = null;
+        // describeGlobalResult = binding.describeGlobal();
+        // String[] types = describeGlobalResult.getTypes();
+        // for (int i = 0; i < types.length; i++)
+        // System.out.println(types[i]);
+        //            System.out.println("\nDescribe global was successful...\r\n"); //$NON-NLS-1$
+        // } catch (Exception ex) {
+        //            System.out.println("\nFailed to return types, error message was: \n" + ex.getMessage()); //$NON-NLS-1$
+        // }
     }
 
     /**
@@ -175,6 +217,7 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
      * @return
      */
     public List<IMetadataColumn> fetchMetaDataColumns(String module) {
+
         Field[] fields = fetchSFDescriptionField(module);
 
         if (fields == null || fields.length <= 0) {
@@ -199,27 +242,47 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
      * @return
      */
     private Field[] fetchSFDescriptionField(String module) {
+
+        DescribeSObject d = new DescribeSObject();
+        d.setSObjectType(module);
+        SessionHeader sh = sforceManagement.getSessionHeader();
+        DescribeSObjectResult r;
         try {
-            // Invoke describeSObject and save results in DescribeSObjectResult
-            DescribeSObjectResult describeSObjectResult = binding.describeSObject(module);
-            // Determine whether the describeSObject call succeeded.
-            if (!(describeSObjectResult == null)) {
-                // Retrieve fields from the results
-                Field[] fields = describeSObjectResult.getFields();
-                // Get the name of the object
-                String objectName = describeSObjectResult.getName();
-                // Get some flags
-                boolean isActivateable = describeSObjectResult.isActivateable();
-                // Many other values are accessible
-                setCurrentModuleName(module);
-                return fields;
-            }
-            setCurrentModuleName(null);
-            return null;
-        } catch (Exception ex) {
-            setCurrentModuleName(null);
-            return null;
+            r = sforceManagement.getStub().describeSObject(d, sh, null, null, null).getResult();
+            Field[] fields = r.getFields();
+            setCurrentModuleName(module);
+            return fields;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (InvalidSObjectFault e) {
+            e.printStackTrace();
+        } catch (UnexpectedErrorFault e) {
+            e.printStackTrace();
         }
+
+        return null;
+
+        // try {
+        // // Invoke describeSObject and save results in DescribeSObjectResult
+        // DescribeSObjectResult describeSObjectResult = binding.describeSObject(module);
+        // // Determine whether the describeSObject call succeeded.
+        // if (!(describeSObjectResult == null)) {
+        // // Retrieve fields from the results
+        // Field[] fields = describeSObjectResult.getFields();
+        // // Get the name of the object
+        // String objectName = describeSObjectResult.getName();
+        // // Get some flags
+        // boolean isActivateable = describeSObjectResult.isActivateable();
+        // // Many other values are accessible
+        // setCurrentModuleName(module);
+        // return fields;
+        // }
+        // setCurrentModuleName(null);
+        // return null;
+        // } catch (Exception ex) {
+        // setCurrentModuleName(null);
+        // return null;
+        // }
     }
 
     /**
@@ -276,7 +339,8 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
         }
         // mdColumn.setType(talendType);
         mdColumn.setTalendType("id_" + talendType); // How to transfer type? TODO //$NON-NLS-1$
-        mdColumn.setNullable(field.isNillable());
+        // mdColumn.setNullable(field.isNillable());
+        mdColumn.setNullable(field.getNillable());
 
         if (type.equals("date")) { //$NON-NLS-1$
             mdColumn.setPattern("\"yyyy-MM-dd\""); //$NON-NLS-1$
@@ -345,6 +409,14 @@ public class SalesforceModuleParserPartner implements ISalesforceModuleParser {
      */
     public void setCurrentMetadataColumns(List<IMetadataColumn> currentMetadataColumns) {
         this.currentMetadataColumns = currentMetadataColumns;
+    }
+
+    public SforceManagementImpl getSforceManagement() {
+        return this.sforceManagement;
+    }
+
+    private void setSforceManagement(SforceManagementImpl sforceManagement) {
+        this.sforceManagement = sforceManagement;
     }
 
 }

@@ -97,13 +97,33 @@ public class SalesforceModuleParseEnterprise implements ISalesforceModuleParser 
         ArrayList doLoginList = null;
         if (name != null && pwd != null && url != null) {
             if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
-                // || !checkString(proxyHost, this.proxyHost)
-                // || !checkString(proxyPort, this.proxyPort)
-                // || !checkString(proxyUsername, this.proxyUsername)
-                // || !checkString(proxyPassword, this.proxyPassword)
-                // || (proxy != null && theProxy != null && !proxy.equals(theProxy) || (proxy != null && theProxy ==
-                // null) || (proxy == null && theProxy != null))) {
+                doLoginList = doLogin(endPoint, username, password);
 
+            } else {
+                if (isLogin()) {
+                    return doLoginList;
+                }
+            }
+        } else {
+            doLoginList = doLogin(endPoint, username, password);
+        }
+
+        this.name = username;
+        this.pwd = password;
+        this.url = endPoint;
+        return doLoginList;
+    }
+
+    public ArrayList login(String endPoint, String username, String password, String timeOut) throws Exception {
+        if (endPoint == null) {
+            throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
+        }
+        if (username == null || password == null) {
+            throw new Exception(Messages.getString("SalesforceModuleParseAPI.lostUsernameOrPass")); //$NON-NLS-1$
+        }
+        ArrayList doLoginList = null;
+        if (name != null && pwd != null && url != null) {
+            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
                 doLoginList = doLogin(endPoint, username, password);
 
             } else {

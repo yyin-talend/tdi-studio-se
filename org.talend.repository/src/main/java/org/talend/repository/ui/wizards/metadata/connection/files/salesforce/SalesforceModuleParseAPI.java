@@ -106,6 +106,20 @@ public class SalesforceModuleParseAPI {
         return returnValues;
     }
 
+    public ArrayList login(String endPoint, String username, String password, String timeOut) throws Exception {
+        ArrayList returnValues;
+        currentAPI = new SalesforceModuleParseEnterprise();
+        currentAPI.setLogin(login);
+        try {
+            returnValues = currentAPI.login(endPoint, username, password);
+        } catch (IOException e) {
+            currentAPI = new SalesforceModuleParserPartner();
+            currentAPI.setLogin(login);
+            returnValues = currentAPI.login(endPoint, username, password, timeOut);
+        }
+        return returnValues;
+    }
+
     /**
      * Fetch a module from SF and transfor to Talend metadata data type. DOC YeXiaowei Comment method
      * "fetchMetaDataColumns".

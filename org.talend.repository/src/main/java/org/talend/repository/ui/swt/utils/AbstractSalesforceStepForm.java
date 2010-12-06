@@ -42,8 +42,13 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.ISalesforceModuleParser;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParseAPI;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParserPartner;
 
+import com.salesforce.soap.partner.DescribeSObjectsResponse;
+import com.salesforce.soap.partner.InvalidSObjectFault;
+import com.salesforce.soap.partner.SforceServiceStub;
 import com.sforce.soap.enterprise.DescribeGlobalResult;
 import com.sforce.soap.enterprise.SoapBindingStub;
 import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
@@ -54,8 +59,8 @@ import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
  */
 public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
+            .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     protected SalesforceSchemaConnection connection;
 
@@ -69,9 +74,11 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     private SoapBindingStub binding = null;
 
-    private com.sforce.soap.partner.SoapBindingStub bindingPartner = null;
+    private SforceServiceStub bindingPartner = null;
 
-    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/16.0"; //$NON-NLS-1$
+    // private com.salesforce.soap.partner.SoapBindingStub bindingPartner = null;
+
+    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/19.0"; //$NON-NLS-1$
 
     public static final String TSALESFORCE_PARTNER_INPUT_URL = "https://test.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
 
@@ -128,7 +135,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return RepositoryPlugin.getDefault().getDesignerCoreService().getRefrenceNode(tSalesforceUniqueName);
     }
 
-    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
+    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String timeOut, String moduleName,
             String betchSize, boolean useProxy, boolean useHttp, String proxyHost, String proxyPort, String proxyUsername,
             String proxyPassword, boolean update) {
 
@@ -140,16 +147,16 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;//$NON-NLS-1$
         }
         if (!moduleName.equals(salesforceAPI.getCurrentModuleName())) {
-            result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
-                    proxyUsername, proxyPassword);
+            result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, timeOut, moduleName, proxy, proxyHost,
+                    proxyPort, proxyUsername, proxyPassword);
             if (result == null) {
                 result = getMetadataTableFromConfigFile(moduleName);
             }
             return result;
         } else {
             if (update) {
-                result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, moduleName, proxy, proxyHost, proxyPort,
-                        proxyUsername, proxyPassword);
+                result = getMetadataTableBySalesforceServerAPI(endPoint, user, pass, timeOut, moduleName, proxy, proxyHost,
+                        proxyPort, proxyUsername, proxyPassword);
                 if (result == null) {
                     result = getMetadataTableFromConfigFile(moduleName);
                 }
@@ -163,7 +170,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user, final String pass,
-            final String moduleName, final String proxy, final String proxyHost, final String proxyPort,
+            final String timeOut, final String moduleName, final String proxy, final String proxyHost, final String proxyPort,
             final String proxyUsername, final String proxyPassword) {
         IMetadataTable metadataTable = new org.talend.core.model.metadata.MetadataTable();
 
@@ -198,12 +205,15 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     if (!salesforceAPI.isLogin()) {
                         try {
 
-                            ArrayList loginList = salesforceAPI.login(endPoint, user, pass);
+                            ArrayList loginList = salesforceAPI.login(endPoint, user, pass, timeOut);
                             for (int i = 0; i < loginList.size(); i++) {
                                 if (loginList.get(i) instanceof SoapBindingStub) {
                                     binding = (SoapBindingStub) loginList.get(i);
-                                } else if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
-                                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
+                                } else
+                                // if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub)
+                                {
+                                    // bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
+                                    bindingPartner = new SforceServiceStub(endPoint);
                                 }
                             }
                         } catch (Throwable e) {
@@ -230,8 +240,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     protected SalesforceModuleParseAPI checkSalesfoceLogin(final String proxy, final String endPoint, final String username,
-            final String password, final String proxyHost, final String proxyPort, final String proxyUsername,
-            final String proxyPassword) {
+            final String password, final String timeOut, final String proxyHost, final String proxyPort,
+            final String proxyUsername, final String proxyPassword) {
         final List<String> errors = new ArrayList<String>();
 
         salesforceAPI.setLogin(false);
@@ -269,14 +279,14 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     salesforceAPI.setProxy(proxyHost, proxyPort, proxyUsername, proxyPassword, httpProxy, socksProxy, httpsProxy);
                     try {
                         // binding ;
-                        ArrayList loginList = salesforceAPI.login(endPoint, username, password);
+                        ArrayList loginList = salesforceAPI.login(endPoint, username, password, timeOut);
                         if (loginList != null) {
                             for (int i = 0; i < loginList.size(); i++) {
                                 if (loginList.get(i) instanceof SoapBindingStub) {
                                     binding = (SoapBindingStub) loginList.get(i);
                                 }
-                                if (loginList.get(i) instanceof com.sforce.soap.partner.SoapBindingStub) {
-                                    bindingPartner = (com.sforce.soap.partner.SoapBindingStub) loginList.get(i);
+                                if (loginList.get(i) instanceof SforceServiceStub) {
+                                    bindingPartner = (SforceServiceStub) loginList.get(i);
                                 }
 
                             }
@@ -284,8 +294,6 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         }
 
                         salesforceAPI.setLogin(true);
-                    } catch (com.sforce.soap.partner.fault.ApiFault ex) {
-                        errors.add(ex.getExceptionMessage());
                     } catch (Throwable e) {
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
@@ -323,12 +331,21 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return null;
     }
 
-    protected com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner()
-            throws com.sforce.soap.partner.fault.UnexpectedErrorFault, RemoteException {
+    protected com.salesforce.soap.partner.DescribeGlobalResult describeGlobalPartner() throws RemoteException {
         if (salesforceAPI.isLogin()) {
-            if (bindingPartner != null) {
-                return bindingPartner.describeGlobal();
-            }
+            ISalesforceModuleParser currentAPI = salesforceAPI.getCurrentAPI();
+            if (currentAPI instanceof SalesforceModuleParserPartner) {
+                SalesforceModuleParserPartner partner = (SalesforceModuleParserPartner) currentAPI;
+                try {
+                    DescribeSObjectsResponse describeSObjects = bindingPartner.describeSObjects(null, null, null, null, null);
+                    // return describeSObjects.getResult();
+                } catch (InvalidSObjectFault e) {
+                    e.printStackTrace();
+                } catch (com.salesforce.soap.partner.UnexpectedErrorFault e) {
+                    e.printStackTrace();
+                }
+
+            }          
         }
         return null;
     }
@@ -369,6 +386,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         String webServiceUrl = getConnection().getWebServiceUrl();
         String userName = getConnection().getUserName();
         String password = getConnection().getPassword();
+        String timeOut = getConnection().getTimeOut();
         // add for feature 7507
         String betchSize = getConnection().getBatchSize();
         boolean useProxy = getConnection().isUseProxy();
@@ -382,6 +400,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
             userName = getContextModeManager().getOriginalValue(userName);
             password = getContextModeManager().getOriginalValue(password);
+            timeOut = getContextModeManager().getOriginalValue(timeOut);
             betchSize = getContextModeManager().getOriginalValue(betchSize);
             useProxy = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useProxy)));
             useHttp = Boolean.valueOf(getContextModeManager().getOriginalValue(String.valueOf(useHttp)));
@@ -391,8 +410,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             proxyPassword = getContextModeManager().getOriginalValue(proxyPassword);
         }
 
-        metadataTableOrder = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, betchSize, useProxy,
-                useHttp, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
+        metadataTableOrder = getMetadatasForSalesforce(webServiceUrl, userName, password, timeOut, moduleName, betchSize,
+                useProxy, useHttp, proxyHost, proxyPort, proxyUsername, proxyPassword, true);
 
         return metadataTableOrder;
     }

@@ -24,6 +24,8 @@ public interface ISalesforceModuleParser {
 
     ArrayList login(String endPoint, String username, String password) throws Exception;
 
+    ArrayList login(String endPoint, String username, String password, String timeOut) throws Exception;
+
     void describeGlobalSample();
 
     /**

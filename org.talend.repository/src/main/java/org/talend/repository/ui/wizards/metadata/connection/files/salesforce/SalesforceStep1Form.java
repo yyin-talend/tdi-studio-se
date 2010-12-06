@@ -47,7 +47,11 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.SalesforceSchemaBean;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
+import org.talend.salesforce.SforceManagementImpl;
 
+import com.salesforce.soap.partner.DescribeGlobal;
+import com.salesforce.soap.partner.DescribeGlobalSObjectResult;
+import com.salesforce.soap.partner.SessionHeader;
 import com.sforce.soap.enterprise.DescribeGlobalResult;
 
 /**
@@ -63,6 +67,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private String pwd = null;
 
     private String batchSize = null;
+
+    private String timeOut = null;
 
     private LabelledText webServiceUrlText = null;
 
@@ -430,8 +436,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 } else if (useHttpBtn.getSelection()) {
                     proxy = SalesforceModuleParseAPI.USE_HTTP_PROXY;
                 }
-                SalesforceModuleParseAPI checkSalesfoceLogin = checkSalesfoceLogin(proxy, endPoint, username, pwd, proxyHostText
-                        .getText(), proxyPortText.getText(), proxyUsernameText.getText(), proxyPasswordText.getText());
+                SalesforceModuleParseAPI checkSalesfoceLogin = checkSalesfoceLogin(proxy, endPoint, username, pwd, timeOut,
+                        proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
+                        proxyPasswordText.getText());
                 if (checkSalesfoceLogin != null) {
                     setSalesforceModuleParseAPI(checkSalesfoceLogin);
                     loginOk = checkSalesfoceLogin.getCurrentAPI().isLogin();
@@ -503,8 +510,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 SalesforceModuleParseAPI checkSalesfoceLogin = getSalesforceModuleParseAPI();
                 if (checkSalesfoceLogin != null) {
                     String[] types = null;
+                    DescribeGlobalSObjectResult[] dgsrs = null;
                     DescribeGlobalResult describeGlobalResult = null;
-                    com.sforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
+                    com.salesforce.soap.partner.DescribeGlobalResult describeGlobalPartner = null;
                     monitorWrap.worked(50);
                     boolean socksProxy = false;
                     boolean httpProxy = false;
@@ -524,15 +532,24 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                         salesforceAPI.setProxy(proxyHostText.getText(), proxyPortText.getText(), proxyUsernameText.getText(),
                                 proxyPasswordText.getText(), httpProxy, socksProxy, httpsProxy);
 
-                        if (checkSalesfoceLogin.getCurrentAPI() instanceof SalesforceModuleParseEnterprise) {
+                        ISalesforceModuleParser currentAPI = checkSalesfoceLogin.getCurrentAPI();
+                        if (currentAPI instanceof SalesforceModuleParseEnterprise) {
                             describeGlobalResult = describeGlobal();
                             if (describeGlobalResult != null) {
                                 types = describeGlobalResult.getTypes();
                             }
                         } else {
-                            describeGlobalPartner = describeGlobalPartner();
-                            if (describeGlobalPartner != null) {
-                                types = describeGlobalPartner.getTypes();
+                            // for bug 17280 use new jar axis2 for salesforce component and wizard.
+                            if (currentAPI instanceof SalesforceModuleParserPartner) {
+                                SalesforceModuleParserPartner partner = (SalesforceModuleParserPartner) currentAPI;
+
+                                SforceManagementImpl sforceManagement = partner.getSforceManagement();
+                                SessionHeader sessionHeader = sforceManagement.getSessionHeader();
+                                DescribeGlobal dg = new DescribeGlobal();
+                                com.salesforce.soap.partner.DescribeGlobalResult dgr = sforceManagement.getStub()
+                                        .describeGlobal(dg, sessionHeader, null, null).getResult();
+                                dgsrs = dgr.getSobjects();
+
                             }
                         }
                         monitorWrap.worked(50);
@@ -557,6 +574,16 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                                         list.add(types[j]);
                                     }
                                 }
+                            }
+                            if (dgsrs != null && dgsrs.length > 0) {
+                                for (int k = 0; k < dgsrs.length; k++) {
+                                    DescribeGlobalSObjectResult dsResult = dgsrs[k];
+                                    String name = dsResult.getName();
+                                    if (!list.contains(name)) {
+                                        list.add(name);
+                                    }
+                                }
+
                             }
                             modulename = list.toArray();
 
@@ -596,11 +623,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         username = userNameText.getText();
         pwd = passwordText.getText();
         batchSize = batchSizeText.getText();
+        timeOut = timeOutText.getText();
 
         if (isContextMode() && getContextModeManager() != null) {
             endPoint = getContextModeManager().getOriginalValue(endPoint);
             username = getContextModeManager().getOriginalValue(username);
             pwd = getContextModeManager().getOriginalValue(pwd);
+            timeOut = getContextModeManager().getOriginalValue(timeOut);
         }
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
         // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
@@ -612,10 +641,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         endPoint = webServiceUrlText.getText();
         username = userNameText.getText();
         pwd = passwordText.getText();
+        timeOut = timeOutText.getText();
         if (isContextMode() && getContextModeManager() != null) {
             endPoint = getContextModeManager().getOriginalValue(endPoint);
             username = getContextModeManager().getOriginalValue(username);
             pwd = getContextModeManager().getOriginalValue(pwd);
+            timeOut = getContextModeManager().getOriginalValue(timeOut);
         }
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
         // if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
@@ -731,8 +762,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         setTextValue(getConnection().getProxyUsername(), proxyUsernameText);
         setTextValue(getConnection().getProxyPassword(), proxyPasswordText);
         String timeOutStr = getConnection().getTimeOut();
-        setTextValue((timeOutStr != null && !"".equals(timeOutStr)) ? timeOutStr : String //$NON-NLS-1$
-                .valueOf(SalesforceSchemaBean.DEFAULT_TIME_OUT), timeOutText);
+        String value = (timeOutStr != null && !"".equals(timeOutStr)) ? timeOutStr : String //$NON-NLS-1$
+                .valueOf(SalesforceSchemaBean.DEFAULT_TIME_OUT);
+        timeOut = value;
+        setTextValue(value, timeOutText);
 
         if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
             moduleNameCombo.setText(getConnection().getModuleName());
