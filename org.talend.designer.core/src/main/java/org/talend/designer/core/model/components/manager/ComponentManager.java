@@ -21,7 +21,6 @@ import org.eclipse.osgi.service.datalocation.Location;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentsCache;
@@ -34,9 +33,9 @@ public class ComponentManager {
 
     private static ComponentsCache cache;
 
-    private static final String TALEND_JAVA_COMPONENT_CACHE = "ComponentsCache.javacache";
+    private static final String TALEND_COMPONENT_CACHE = "ComponentsCache.";
 
-    private static final String TALEND_PERL_COMPONENT_CACHE = "ComponentsCache.perlcache";
+    private static final String TALEND_FILE_NAME = "cache";
 
     private static final String METADATA_NAME = ".metadata";
 
@@ -62,12 +61,9 @@ public class ComponentManager {
     }
 
     public static Resource createComponentCacheResource(String installLocation) {
-        URI uri = URI.createFileURI(installLocation);
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            uri = uri.appendSegment(ComponentManager.TALEND_PERL_COMPONENT_CACHE);
-        } else {
-            uri = uri.appendSegment(ComponentManager.TALEND_JAVA_COMPONENT_CACHE);
-        }
+        URI uri = URI.createFileURI(installLocation).appendSegment(
+                ComponentManager.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
+                        + ComponentManager.TALEND_FILE_NAME);
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         return compFact.createResource(uri);
     }

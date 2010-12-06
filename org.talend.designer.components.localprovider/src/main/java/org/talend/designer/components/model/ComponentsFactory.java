@@ -56,7 +56,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentCachePackage;
@@ -93,9 +92,9 @@ public class ComponentsFactory implements IComponentsFactory {
     /**
      * 
      */
-    private static final String TALEND_JAVA_COMPONENT_CACHE = "ComponentsCache.javacache";
+    private static final String TALEND_COMPONENT_CACHE = "ComponentsCache.";
 
-    private static final String TALEND_PERL_COMPONENT_CACHE = "ComponentsCache.perlcache";
+    private static final String TALEND_FILE_NAME = "cache";
 
     private static final String METADATA_NAME = ".metadata";
 
@@ -384,12 +383,9 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws IOException
      */
     private ComponentsCache loadComponentResource(String installLocation) throws IOException {
-        URI uri = URI.createFileURI(installLocation);
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            uri = uri.appendSegment(ComponentsFactory.TALEND_PERL_COMPONENT_CACHE);
-        } else {
-            uri = uri.appendSegment(ComponentsFactory.TALEND_JAVA_COMPONENT_CACHE);
-        }
+        URI uri = URI.createFileURI(installLocation).appendSegment(
+                ComponentsFactory.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
+                        + ComponentsFactory.TALEND_FILE_NAME);
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         Resource resource = compFact.createResource(uri);
         Map optionMap = new HashMap();
@@ -411,12 +407,9 @@ public class ComponentsFactory implements IComponentsFactory {
      * @return
      */
     private boolean hasComponentFile(String installLocation) {
-        File file = null;
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            file = new File(new Path(installLocation).append(ComponentsFactory.TALEND_JAVA_COMPONENT_CACHE).toString());
-        } else {
-            file = new File(new Path(installLocation).append(ComponentsFactory.TALEND_PERL_COMPONENT_CACHE).toString());
-        }
+        File file = file = new File(new Path(installLocation).append(
+                ComponentsFactory.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
+                        + ComponentsFactory.TALEND_FILE_NAME).toString());
         return file.exists();
     }
 
