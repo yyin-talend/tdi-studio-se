@@ -512,4 +512,8 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public String getShortName() {
         return "slog";
     }
+
+    public String getCombine() {
+        return null;
+    }
 }

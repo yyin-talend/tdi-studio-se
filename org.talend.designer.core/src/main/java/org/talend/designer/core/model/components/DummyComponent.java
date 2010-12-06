@@ -504,4 +504,9 @@ public class DummyComponent implements IComponent {
         return "dc";
     }
 
+    public String getCombine() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

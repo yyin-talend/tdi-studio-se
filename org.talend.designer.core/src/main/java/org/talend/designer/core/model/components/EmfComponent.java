@@ -3010,4 +3010,8 @@ public class EmfComponent implements IComponent {
     public void setTechnical(Boolean technical) {
         this.technical = technical;
     }
+
+    public String getCombine() {
+        return compType.getHEADER().getCOMBINE();
+    }
 }

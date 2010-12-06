@@ -77,6 +77,8 @@ public class DataProcess {
 
     private static final String FSNODE_COMPONENT_NAME = "tFSNode"; //$NON-NLS-1$
 
+    private static final String ELTNODE_COMPONENT_NAME = "tELTNode"; //$NON-NLS-1$
+
     private Map<INode, INode> buildCheckMap = null;
 
     private BidiMap buildGraphicalMap = null;
@@ -86,6 +88,8 @@ public class DataProcess {
     private Map<INode, INode> checkMultipleMap = null;
 
     private Map<INode, INode> checkFileScaleMap = null;
+
+    private Map<INode, INode> checkEltMap = null;
 
     private Map<INode, INode> checktUniteMap = null;
 
@@ -110,6 +114,7 @@ public class DataProcess {
         checktUniteMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
         checkFileScaleMap = new HashMap<INode, INode>();
+        checkEltMap = new HashMap<INode, INode>();
         buildGraphicalMap = new DualHashBidiMap();
         connectionsToIgnoreInMerge = new ArrayList<IConnection>();
         shortUniqueNameList = new ArrayList<String>();
@@ -216,8 +221,8 @@ public class DataProcess {
             IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
-                addvFlowMeterBetween(dataNode, buildDataNodeFromNode(connection.getTarget(), prefix), connection, graphicalNode
-                        .getProcess(), connection.getElementParameters());
+                addvFlowMeterBetween(dataNode, buildDataNodeFromNode(connection.getTarget(), prefix), connection,
+                        graphicalNode.getProcess(), connection.getElementParameters());
             } else {
                 dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
@@ -1068,6 +1073,191 @@ public class DataProcess {
         }
     }
 
+    private void replaceEltComponents(INode graphicalNode) {
+        if (checkEltMap.containsKey(graphicalNode)) {
+            return;
+        }
+        // if the original component is in dummy state, no need to replace it
+        if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
+            return;
+        }
+
+        INode currentComponent = graphicalNode;
+        AbstractNode dataNode;
+
+        dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
+        checkEltMap.put(graphicalNode, dataNode);
+        boolean needCreateTELTNode = false;
+        boolean loopEnd = dataNode == null || !ELTNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+
+        Set<INode> progressBarList = null;
+        DataNode eltNode = null, oldFsNode = null;
+        while (!loopEnd) {
+            List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
+                    IConnectionCategory.FLOW);
+            dataNodeList.remove(dataNode);
+            buildCheckMap.remove(currentComponent);
+            if (eltNode != null) {
+                needCreateTELTNode = needCreateNewEltNode(eltNode, dataNode);
+                oldFsNode = eltNode;
+            }
+            INode originalGraphicNode = null;
+            if (buildGraphicalMap.getKey(currentComponent) != null) {
+                originalGraphicNode = (INode) buildGraphicalMap.getKey(currentComponent);
+            }
+
+            // add the tELTNode component if this one is not already added to the list.
+            if (eltNode == null || needCreateTELTNode) {
+                if (originalGraphicNode != null) {
+                    progressBarList = originalGraphicNode.fsComponentsInProgressBar();
+                    progressBarList.clear();
+                }
+                // Create the new elt component
+                IComponent component = ComponentsFactoryProvider.getInstance().get(ELTNODE_COMPONENT_NAME);
+                if (component == null) {
+                    break;
+                }
+                eltNode = new DataNode(component, currentComponent.getUniqueName());
+                eltNode.setActivate(currentComponent.isActivate());
+                eltNode.setStart(currentComponent.isStart());
+                eltNode.setDesignSubjobStartNode(currentComponent.getDesignSubjobStartNode());
+
+                IMetadataTable newMetadata = currentComponent.getMetadataList().get(0).clone();
+                newMetadata.setTableName(currentComponent.getUniqueName());
+                eltNode.getMetadataList().remove(0);
+                eltNode.getMetadataList().addAll(currentComponent.getMetadataList());
+
+                eltNode.setSubProcessStart(currentComponent.isSubProcessStart() || needCreateTELTNode);
+                eltNode.setProcess(currentComponent.getProcess());
+                List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+                List<IConnection> incomingConnections = new ArrayList<IConnection>();
+                eltNode.setIncomingConnections(incomingConnections);
+                eltNode.setOutgoingConnections(outgoingConnections);
+                addDataNode(eltNode);
+            } else {
+                // bug15885, add metadatas of connector
+                eltNode.getMetadataList().addAll(currentComponent.getMetadataList());
+            }
+            if (progressBarList != null && originalGraphicNode != null) {
+                progressBarList.add(originalGraphicNode);
+            }
+
+            copyElementParametersValue(dataNode, eltNode);
+
+            if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
+                loopEnd = true;
+            } else {
+                loopEnd = !FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+            }
+
+            setReplacedNodeConnections(eltNode, dataNode, oldFsNode, needCreateTELTNode, loopEnd);
+
+            if (!flowConnections.isEmpty()) {
+                // initialize with next component for next loop
+                currentComponent = flowConnections.get(0).getTarget();
+                dataNode = (AbstractNode) buildCheckMap.get(currentComponent);
+                needCreateTELTNode = false;
+            }
+        }
+        for (IConnection connection : currentComponent.getOutgoingConnections()) {
+            if (connection.isActivate()) {
+                replaceEltComponents(connection.getTarget());
+            }
+        }
+
+    }
+
+    private boolean needCreateNewEltNode(DataNode eltNode, AbstractNode dataNode) {
+        boolean needCreateTFSNode = false;
+        // check if use the same dbtype, db and table
+        IElementParameter fsNodeParam = eltNode.getElementParameter("DBTYPE"); //$NON-NLS-1$
+        IElementParameter param = dataNode.getElementParameter("DBTYPE"); //$NON-NLS-1$
+        if (param != null) {
+            if (!param.getValue().equals(fsNodeParam.getValue())) {
+                needCreateTFSNode = true;
+            } else {
+                IElementParameter eltdbParam = eltNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
+                IElementParameter dbParam = dataNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
+                if (dbParam != null) {
+                    if (!dbParam.getValue().equals(eltdbParam.getValue())) {
+                        needCreateTFSNode = true;
+                        // can check if the two node connect to the same database ,if yes no need to create a
+                        // new node
+                        //
+                    } else {
+                        IElementParameter eltSourcetableParam = eltNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
+                        // for tELTMerge
+                        if (eltSourcetableParam == null) {
+                            eltSourcetableParam = eltNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
+                        }
+                        IElementParameter sourceTableParam = dataNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
+                        // for tELTMerge
+                        if (sourceTableParam == null) {
+                            sourceTableParam = dataNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
+                        }
+
+                        if (sourceTableParam != null && eltSourcetableParam != null) {
+                            if (!sourceTableParam.getValue().equals(eltSourcetableParam.getValue())) {
+                                needCreateTFSNode = true;
+                            }
+                        }
+                        IElementParameter eltTargetTableParam = eltNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
+                        if (eltTargetTableParam == null) {
+                            eltTargetTableParam = eltNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
+                        }
+                        IElementParameter targetTableParam = dataNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
+                        if (targetTableParam == null) {
+                            targetTableParam = dataNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
+                        }
+
+                        if (targetTableParam != null && eltTargetTableParam != null) {
+                            if (!targetTableParam.getValue().equals(eltTargetTableParam.getValue())) {
+                                needCreateTFSNode = true;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return needCreateTFSNode;
+
+    }
+
+    private void setReplacedNodeConnections(DataNode realNode, AbstractNode dataNode, DataNode oldFsNode, boolean needCreateNode,
+            boolean loopEnd) {
+        // replug each non-flow output connection, to the realNode(tSFNode,tELTNode).
+        // if end of the loop or need new realNode, need to copy all links
+        for (IConnection connection : dataNode.getOutgoingConnections()) {
+            if (connection.isActivate()) {
+                if (loopEnd || !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    ((List<IConnection>) realNode.getOutgoingConnections()).add(connection);
+                    ((DataConnection) connection).setSource(realNode);
+                }
+            }
+        }
+        // replug each non-flow input connection, to the realNode.
+        // if end of the loop or need new realNode, need to copy all links
+        for (IConnection connection : dataNode.getIncomingConnections()) {
+            if (connection.isActivate()) {
+                if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    ((List<IConnection>) realNode.getIncomingConnections()).add(connection);
+                    ((DataConnection) connection).setTarget(realNode);
+                }
+                if (needCreateNode) {
+                    // replug between different realNode.
+                    ((List<IConnection>) realNode.getIncomingConnections()).add(connection);
+                    ((List<IConnection>) oldFsNode.getOutgoingConnections()).add(0, connection);
+                    ((DataConnection) connection).setTarget(realNode);
+                    ((DataConnection) connection).setSource(oldFsNode);
+                    ((DataConnection) connection).setLineStyle(EConnectionType.ON_SUBJOB_OK);
+                    ((DataConnection) connection).setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
+                }
+            }
+        }
+    }
+
     private void replaceFileScalesComponents(INode graphicalNode) {
         if (checkFileScaleMap.containsKey(graphicalNode)) {
             // return checkMultipleMap.get(graphicalNode);
@@ -1091,6 +1281,8 @@ public class DataProcess {
         boolean needCreateTFSNode = false;
         boolean loopEnd = dataNode == null
                 || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
+        // loopEnd =!FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+
         Set<INode> progressBarList = null;
         DataNode fsNode = null, oldFsNode = null;
         while (!loopEnd) {
@@ -1166,37 +1358,9 @@ public class DataProcess {
                 loopEnd = true;
             } else {
                 loopEnd = !ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName());
+                // loopEnd =!FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
             }
-
-            // replug each non-flow output connection, to the FSNode.
-            // if end of the loop or need new FSScale, need to copy all links
-            for (IConnection connection : dataNode.getOutgoingConnections()) {
-                if (connection.isActivate()) {
-                    if (loopEnd || !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                        ((List<IConnection>) fsNode.getOutgoingConnections()).add(connection);
-                        ((DataConnection) connection).setSource(fsNode);
-                    }
-                }
-            }
-            // replug each non-flow input connection, to the FSNode.
-            // if end of the loop or need new FSScale, need to copy all links
-            for (IConnection connection : dataNode.getIncomingConnections()) {
-                if (connection.isActivate()) {
-                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                        ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
-                        ((DataConnection) connection).setTarget(fsNode);
-                    }
-                    if (needCreateTFSNode) {
-                        // replug between different tFSNodes.
-                        ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
-                        ((List<IConnection>) oldFsNode.getOutgoingConnections()).add(0, connection);
-                        ((DataConnection) connection).setTarget(fsNode);
-                        ((DataConnection) connection).setSource(oldFsNode);
-                        ((DataConnection) connection).setLineStyle(EConnectionType.ON_SUBJOB_OK);
-                        ((DataConnection) connection).setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
-                    }
-                }
-            }
+            setReplacedNodeConnections(fsNode, dataNode, oldFsNode, needCreateTFSNode, loopEnd);
 
             if (!flowConnections.isEmpty()) {
                 // initialize with next component for next loop
@@ -1305,6 +1469,12 @@ public class DataProcess {
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceFileScalesComponents(node);
+            }
+        }
+
+        for (INode node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                replaceEltComponents(node);
             }
         }
 

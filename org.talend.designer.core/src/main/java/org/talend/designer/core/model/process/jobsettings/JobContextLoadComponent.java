@@ -529,4 +529,7 @@ public class JobContextLoadComponent implements IComponent {
         return "icl";
     }
 
+    public String getCombine() {
+        return null;
+    }
 }
