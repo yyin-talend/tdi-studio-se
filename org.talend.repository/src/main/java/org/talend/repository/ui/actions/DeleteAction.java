@@ -799,6 +799,12 @@ public class DeleteAction extends AContextualAction {
                             visible = false;
                             break;
                         }
+
+                        if (ERepositoryObjectType.METADATA_CON_COLUMN.equals(nodeType)) {
+                            visible = false;
+                            break;
+                        }
+
                         if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
                             visible = false;
                             break;
@@ -814,6 +820,7 @@ public class DeleteAction extends AContextualAction {
                         switch (repObj.getRepositoryObjectType()) {
                         case METADATA_CON_TABLE:
                         case METADATA_CON_QUERY:
+                        case METADATA_CON_COLUMN:
                             visible = false;
                             break;
                         default:
