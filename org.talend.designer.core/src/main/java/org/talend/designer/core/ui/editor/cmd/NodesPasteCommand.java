@@ -25,6 +25,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -430,8 +431,15 @@ public class NodesPasteCommand extends Command {
                         String oldName = metaTable.getTableName();
                         String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
                         externalNode.renameOutputConnection(oldName, newName);
-                        CorePlugin.getDefault().getMapperService().renameJoinTable(process, externalNode.getExternalData(),
-                                createdNames);
+                        CorePlugin.getDefault().getMapperService()
+                                .renameJoinTable(process, externalNode.getExternalData(), createdNames);
+                    }
+                    // when copy a external node, should also copy screeshot
+                    if (copiedNode.getExternalNode() != null) {
+                        ImageDescriptor screenshot = copiedNode.getExternalNode().getScreenshot();
+                        if (screenshot != null) {
+                            externalNode.setScreenshot(screenshot);
+                        }
                     }
                 }
             }
@@ -560,8 +568,8 @@ public class NodesPasteCommand extends Command {
                                 connection.getConnectorName(), metaTableName, newConnectionName, connection.isMonitorConnection());
                     } else {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                                connection.getConnectorName(), metaTableName, newConnectionName, metaTableName, connection
-                                        .isMonitorConnection());
+                                connection.getConnectorName(), metaTableName, newConnectionName, metaTableName,
+                                connection.isMonitorConnection());
                     }
 
                     connections.add(pastedConnection);
