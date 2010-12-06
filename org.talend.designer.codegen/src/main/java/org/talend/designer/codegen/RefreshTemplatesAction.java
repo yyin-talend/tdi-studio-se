@@ -39,7 +39,7 @@ public class RefreshTemplatesAction extends Action {
      */
     @Override
     public void run() {
-        ComponentsFactoryProvider.getInstance().reset();
+        ComponentsFactoryProvider.getInstance().resetCache();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
         // achen modify to record ctrl+shift+f3 is pressed to fix bug 0006107
