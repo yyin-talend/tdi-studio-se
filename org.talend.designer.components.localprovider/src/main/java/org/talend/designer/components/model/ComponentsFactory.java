@@ -383,9 +383,9 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws IOException
      */
     private ComponentsCache loadComponentResource(String installLocation) throws IOException {
-        URI uri = URI.createFileURI(installLocation).appendSegment(
-                ComponentsFactory.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
-                        + ComponentsFactory.TALEND_FILE_NAME);
+        String filePath = ComponentsFactory.TALEND_COMPONENT_CACHE
+                + LanguageManager.getCurrentLanguage().toString().toLowerCase() + ComponentsFactory.TALEND_FILE_NAME;
+        URI uri = URI.createFileURI(installLocation).appendSegment(filePath);
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         Resource resource = compFact.createResource(uri);
         Map optionMap = new HashMap();
@@ -407,9 +407,9 @@ public class ComponentsFactory implements IComponentsFactory {
      * @return
      */
     private boolean hasComponentFile(String installLocation) {
-        File file = file = new File(new Path(installLocation).append(
-                ComponentsFactory.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
-                        + ComponentsFactory.TALEND_FILE_NAME).toString());
+        String filePath = ComponentsFactory.TALEND_COMPONENT_CACHE
+                + LanguageManager.getCurrentLanguage().toString().toLowerCase() + ComponentsFactory.TALEND_FILE_NAME;
+        File file = file = new File(new Path(installLocation).append(filePath).toString());
         return file.exists();
     }
 

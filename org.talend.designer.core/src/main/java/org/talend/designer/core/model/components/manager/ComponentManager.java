@@ -61,9 +61,9 @@ public class ComponentManager {
     }
 
     public static Resource createComponentCacheResource(String installLocation) {
-        URI uri = URI.createFileURI(installLocation).appendSegment(
-                ComponentManager.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
-                        + ComponentManager.TALEND_FILE_NAME);
+        String filePath = ComponentManager.TALEND_COMPONENT_CACHE + LanguageManager.getCurrentLanguage().toString().toLowerCase()
+                + ComponentManager.TALEND_FILE_NAME;
+        URI uri = URI.createFileURI(installLocation).appendSegment(filePath);
         ComponentCacheResourceFactoryImpl compFact = new ComponentCacheResourceFactoryImpl();
         return compFact.createResource(uri);
     }
