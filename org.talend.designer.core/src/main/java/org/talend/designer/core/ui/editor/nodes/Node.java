@@ -301,6 +301,9 @@ public class Node extends Element implements IGraphicalNode {
 
     private void init(IComponent newComponent) {
         this.component = newComponent;
+        if (component == null || component.getName() == null) {
+            System.out.println("llll");
+        }
         this.label = component.getName();
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 

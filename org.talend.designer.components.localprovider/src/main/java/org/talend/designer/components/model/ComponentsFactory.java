@@ -46,7 +46,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
@@ -95,8 +94,6 @@ public class ComponentsFactory implements IComponentsFactory {
     private static final String TALEND_COMPONENT_CACHE = "ComponentsCache.";
 
     private static final String TALEND_FILE_NAME = "cache";
-
-    private static final String METADATA_NAME = ".metadata";
 
     private static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user"; //$NON-NLS-1$
 
@@ -253,10 +250,8 @@ public class ComponentsFactory implements IComponentsFactory {
         componentList = new HashSet<IComponent>();
         customComponentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
-        Location instanceLoc = Platform.getInstanceLocation();
-        File file = new File(instanceLoc.getURL().getFile(), ComponentsFactory.METADATA_NAME);
+        String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
-        String installLocation = file.getAbsolutePath();
         boolean isNeedClean = cleanComponentCache();
         isCreated = hasComponentFile(installLocation) && !isNeedClean;
         if (isReset) {

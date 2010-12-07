@@ -12,12 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.model.components.manager;
 
-import java.io.File;
-
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -37,8 +35,6 @@ public class ComponentManager {
 
     private static final String TALEND_FILE_NAME = "cache";
 
-    private static final String METADATA_NAME = ".metadata";
-
     public static ComponentsCache getInstance() {
         if (cache == null) {
             cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
@@ -47,9 +43,7 @@ public class ComponentManager {
     }
 
     public static void saveResource() {
-        Location instanceLoc = Platform.getInstanceLocation();
-        File file = new File(instanceLoc.getURL().getFile(), ComponentManager.METADATA_NAME);
-        String installLocation = file.getAbsolutePath();
+        String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         try {
             Resource resource = createComponentCacheResource(installLocation);
             resource.getContents().add(cache);

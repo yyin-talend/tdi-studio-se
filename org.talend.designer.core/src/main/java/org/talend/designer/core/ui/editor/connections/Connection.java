@@ -345,6 +345,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
 
                 addElementParameter(param);
+                if (ComponentsFactoryProvider.getInstance().get("tFilterRow") == null) {
+                    System.out.println("kaka");
+                }
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
                 Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.setTemplate(source.isTemplate());
@@ -561,7 +564,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
-                        && source != null && source.getComponent().getName().equals(source.getLabel())) {
+                        && source != null
+                        && source.getComponent().getName().equals(source.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
