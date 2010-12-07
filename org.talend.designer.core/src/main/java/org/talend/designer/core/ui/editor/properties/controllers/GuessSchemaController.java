@@ -565,16 +565,16 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         if (value != null && !value.equals("")) { //$NON-NLS-1$
                             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                                 if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
-                                            .getTalendTypeOfValue(value));
+                                    globalType = JavaDataTypeHelper.getCommonType(globalType,
+                                            JavaDataTypeHelper.getTalendTypeOfValue(value));
                                 }
                             } else {
                                 // if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
                                 if (!PerlDataTypeHelper.getNewTalendTypeOfValue(value).equals(globalType)) {
                                     // globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
                                     // .getTalendTypeOfValue(value));
-                                    globalType = PerlDataTypeHelper.getNewCommonType(globalType, PerlDataTypeHelper
-                                            .getNewTalendTypeOfValue(value));
+                                    globalType = PerlDataTypeHelper.getNewCommonType(globalType,
+                                            PerlDataTypeHelper.getNewTalendTypeOfValue(value));
                                 }
                             }
                             if (lengthValue < value.length()) {
@@ -704,9 +704,9 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
             if (isStatus) {
 
-                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(), iMetadataConnection
-                        .getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl(),
-                        iMetadataConnection.getDriverJarPath());
+                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                        iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
+                        iMetadataConnection.getUrl(), iMetadataConnection.getDriverJarPath());
                 final Property property = (Property) GuessSchemaProcess.getNewmockProperty();
                 List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 
@@ -808,7 +808,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
-                    metadataConnection.getDbVersionString());
+                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams());
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
@@ -880,10 +880,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         try {
                             if (isStatus) {
                                 ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
-                                        iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection
-                                                .getDatabase(), iMetadataConnection.getSchema(), iMetadataConnection
-                                                .getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
-                                                .getDbVersionString());
+                                        iMetadataConnection.getUsername(), iMetadataConnection.getPassword(),
+                                        iMetadataConnection.getDatabase(), iMetadataConnection.getSchema(),
+                                        iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
+                                        iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
                                 if (ExtractMetaDataUtils.conn != null) {
                                     Statement smst = ExtractMetaDataUtils.conn.createStatement();
                                     ExtractMetaDataUtils.setQueryStatementTimeout(smst);
@@ -932,8 +932,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), Messages
-                                            .getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
+                                    MessageDialog.openWarning(composite.getShell(),
+                                            Messages.getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
                                 }
                             });
                         }

@@ -43,21 +43,25 @@ public class DbInfo {
 
     private String trueDBTypeForJDBC = null;
 
+    private String additionalParams = null;
+
     private Connection conn = null;
 
-    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url) {
+    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String additionalParams) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
         this.dbVersion = dbVersion;
         this.url = url;
+        this.additionalParams = additionalParams;
         generateDriverName();
         genarateDriverJarPath();
         getConnFromNode();
         this.trueDBTypeForJDBC = getTrueDBType(driverClassName, driverJarPath);
     }
 
-    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverJarPath) {
+    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverJarPath,
+            String additionalParams) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
@@ -76,7 +80,7 @@ public class DbInfo {
 
     // hywang add constructor for bug 9594
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverClassName,
-            String driverJarPath) {
+            String driverJarPath, String additionalParams) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
@@ -154,11 +158,12 @@ public class DbInfo {
             List list = null;
             if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
                 list = ExtractMetaDataUtils.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath,
-                        dbVersion);
+                        dbVersion, additionalParams);
             } else {
                 // driverJarPath set to null,to reget driverJarPath
                 driverJarPath = ""; //$NON-NLS-N$
-                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion); //$NON-NLS-N$
+                list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion,
+                        additionalParams); //$NON-NLS-N$
             }
             if (list != null && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {

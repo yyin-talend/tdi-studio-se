@@ -62,12 +62,13 @@ public class ConvertRepositoryNodeToProcessNode {
         String pwd = iMetadataConnection.getPassword();
         String dbVersion = iMetadataConnection.getDbVersionString();
         String url = iMetadataConnection.getUrl();
+        String additionalParams = iMetadataConnection.getAdditionalParams();
 
         if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) { // hywang for 9594
-            info = new DbInfo(dbType, username, pwd, dbVersion, url, iMetadataConnection.getDriverClass(), iMetadataConnection
-                    .getDriverJarPath());
+            info = new DbInfo(dbType, username, pwd, dbVersion, url, iMetadataConnection.getDriverClass(),
+                    iMetadataConnection.getDriverJarPath(), additionalParams);
         } else {
-            info = new DbInfo(dbType, username, pwd, dbVersion, url);
+            info = new DbInfo(dbType, username, pwd, dbVersion, url, additionalParams);
         }
         try {
             convertToProcessNode(connectionItem, tableName);
@@ -103,10 +104,9 @@ public class ConvertRepositoryNodeToProcessNode {
         cc.add(changeValueCommand);
 
         // change metadata command
-        RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) node, schemaParam
-                .getName()
-                + ":" //$NON-NLS-1$
-                + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, table, null);
+        RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) node,
+                schemaParam.getName() + ":" //$NON-NLS-1$
+                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, table, null);
         cc.add(changeMetadataCommand);
 
         // guess query command

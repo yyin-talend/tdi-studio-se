@@ -120,7 +120,7 @@ public class ManagerConnection {
         messageException = null;
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
-                    username, password, schemaOracle, driverClassName, driverJarPath, dbVersionString);
+                    username, password, schemaOracle, driverClassName, driverJarPath, dbVersionString, additionalParams);
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public class ManagerConnection {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
-                    metadataConnection.getDbVersionString());
+                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams());
             // qli
             // record this metadataConnection as old connection.
             oldConnection = metadataConnection;

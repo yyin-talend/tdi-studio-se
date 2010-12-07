@@ -613,6 +613,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     contextManager);
             String dbVersion = ContextParameterUtils.parseScriptContextCode(metadataConnection.getDbVersionString(),
                     contextManager);
+            String additionalParams = ContextParameterUtils.parseScriptContextCode(metadataConnection.getAdditionalParams(),
+                    contextManager);
             // specially used for URL
             String server = ContextParameterUtils.parseScriptContextCode(metadataConnection.getServerName(), contextManager);
             String port = ContextParameterUtils.parseScriptContextCode(metadataConnection.getPort(), contextManager);
@@ -628,7 +630,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     filePath.toLowerCase(), datasource, dbRootPath, additionParam);
 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(DBType, newURL, userName, password,
-                    schema, driveClass, driverJarPath, dbVersion);
+                    schema, driveClass, driverJarPath, dbVersion, additionalParams);
             ConnectionParameters connParameters2 = new ConnectionParameters();
             if (connParameters == null) {
                 connParameters = connParameters2;
@@ -656,7 +658,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
-                    metadataConnection.getDbVersionString());
+                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams());
             connParameters.setConnectionComment(testConnection.getMessageException());
 
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {

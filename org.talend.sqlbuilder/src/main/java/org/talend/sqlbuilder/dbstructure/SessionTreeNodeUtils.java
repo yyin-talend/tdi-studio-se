@@ -156,7 +156,7 @@ public class SessionTreeNodeUtils {
         ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
-                iMetadataConnection.getDbVersionString());
+                iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
         SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }
