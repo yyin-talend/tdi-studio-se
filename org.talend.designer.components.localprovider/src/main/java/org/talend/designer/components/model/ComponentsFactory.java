@@ -290,10 +290,6 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         // TimeMeasure.step("initComponents", "loadComponentsFromProvider");
-
-        // 3.Load Component from extension point: component_definition
-        loadComponentsFromExtensions();
-        // TimeMeasure.step("initComponents", "loadComponentsFromExtension[joblets?]");
         if (isCreated) {
             try {
                 reloadComponentsFromCache();
@@ -301,6 +297,10 @@ public class ComponentsFactory implements IComponentsFactory {
                 ExceptionHandler.process(e);
             }
         }
+        // 3.Load Component from extension point: component_definition
+        loadComponentsFromExtensions();
+        // TimeMeasure.step("initComponents", "loadComponentsFromExtension[joblets?]");
+
         // TimeMeasure.step("initComponents", "reloadFromCache");
 
         if (!isCreated) {
