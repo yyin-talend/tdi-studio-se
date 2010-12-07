@@ -90,35 +90,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     %>
     
-    <%
-    if(!("NONE").equals(tableAction)) {
-        if(("CREATE").equals(tableAction)) {
-            %>
-            java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema, scdConfiger)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-            %>
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = connection_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-            boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=dbtable%>)) {
-                    whetherExist_<%=cid%> = true;
-                    break;
-                }
-            }
-            if(!whetherExist_<%=cid%>) {
-                java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema, scdConfiger)%>");
-                stmtCreate_<%=cid%>.close();
-            }
-            <%
-        }        
-    }
-    %>
+    <%@ include file="../templates/_tableActionForSCD.javajet"%>
         
     java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
     java.util.Calendar calendarYear0_<%=cid%> = java.util.Calendar.getInstance();

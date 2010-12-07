@@ -49,6 +49,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
     String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+    String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
     String dbType = ORACLE;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -118,6 +119,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     } else {
         tableName_<%=cid%> = schema_<%=cid%> + "." + <%=dbtable%>;
     }
+    
+    <%@ include file="../templates/_tableActionForSCD.javajet"%>
+    
     java.sql.Timestamp timestamp_<%=cid%> = null;
     String tmpValue_<%=cid%> = null;    
     <%
