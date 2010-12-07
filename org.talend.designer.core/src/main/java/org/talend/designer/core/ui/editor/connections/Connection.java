@@ -345,9 +345,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                 param.setShow(true);
 
                 addElementParameter(param);
-                if (ComponentsFactoryProvider.getInstance().get("tFilterRow") == null) {
-                    System.out.println("kaka");
-                }
                 IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow");
                 Node tmpNode = new Node(component, (Process) source.getProcess());
                 tmpNode.setTemplate(source.isTemplate());
