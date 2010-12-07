@@ -2625,7 +2625,7 @@ public class Node extends Element implements IGraphicalNode {
                                     | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
                         if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
                                 && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
-                            String warningMessage = Messages.getString("Node.lengthWarning", //$NON-NLS-1$
+                            String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
                                     inputConnecion.getName());
                             Problems.add(ProblemStatus.WARNING, this, warningMessage);
                         } else {
