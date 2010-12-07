@@ -14,12 +14,15 @@ package org.talend.repository.ui.wizards.metadata.table.database;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -27,23 +30,30 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.utils.platform.PluginChecker;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.cwm.helper.CatalogHelper;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.ResourceHelper;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
+import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.objectmodel.core.Package;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -72,6 +82,11 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
     private List<IMetadataTable> oldMetadataTable;
 
     private MetadataTable selectedMetadataTable;
+
+    /* hywang add for 0017426,catches used to store the uuids and labels of old tables and columns */
+    private static Map<String, String> originalColumnsMap = new HashMap<String, String>();
+
+    private static Map<String, String> originalTablesMap = new HashMap<String, String>();
 
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
@@ -103,6 +118,8 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
             oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
             cloneBaseDataBaseConnection((DatabaseConnection) connectionItem.getConnection());
         }
+        originalColumnsMap.clear();
+        originalTablesMap.clear();
     }
 
     /**
@@ -168,21 +185,100 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
         if (tableWizardpage.isPageComplete()) {
             // temConnection will be set to model when finish
             DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
-            EList<Package> dataPackage = temConnection.getDataPackage();
-            Collection<Package> copyDataPackage = EcoreUtil.copyAll(dataPackage);
-            ConnectionHelper.addPackages(copyDataPackage, connection);
-            temConnection = null;
-            RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
+            /* compare the original datapackages and new datapackages */
+            EList<Package> dataPackageTemConnection = temConnection.getDataPackage();
+            EList<Package> dataPackageFromOrignalConnection = connection.getDataPackage();
+
+            /*
+             * The first save,to make sure all the columns and tables in temConnection can has a eResource,or it can't
+             * set uuids
+             */
             saveMetaData();
+            if (PluginChecker.isTDQLoaded()) {
+                /* generate the map contains old uuid and label for old tables and columns */
+                generateOriginalColumnsMap(dataPackageFromOrignalConnection);
+                Collection<Package> copyDataPackage = EcoreUtil.copyAll(dataPackageTemConnection);
+                ConnectionHelper.addPackages(copyDataPackage, connection);
+                /* using the old uuid to replace the old ones which on tables and columns */
+                replaceUUidsForColumnsAndTables(copyDataPackage);
+                RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
+                /* The second save is used to save the changes of uuid */
+                saveMetaData();
+            }
             closeLockStrategy();
 
             List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
             list.add(repositoryObject);
             RepositoryPlugin.getDefault().getRepositoryService().notifySQLBuilder(list);
+            temConnection = null;
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void generateOriginalColumnsMap(Collection<? extends Package> dataPackageFromOrignalConnection) {
+        for (orgomg.cwm.objectmodel.core.Package pkg : dataPackageFromOrignalConnection) {
+            for (ModelElement mol : pkg.getOwnedElement()) {
+                if (mol instanceof MetadataTable) {
+                    MetadataTable table = (MetadataTable) mol;
+                    String oldTableUuid = ResourceHelper.getUUID(table);
+                    originalTablesMap.put(table.getLabel(), oldTableUuid);
+                    for (ModelElement col : table.getFeature()) {
+                        if (col instanceof MetadataColumn) {
+                            MetadataColumn column = (MetadataColumn) col;
+                            String oldColumnUuid = ResourceHelper.getUUID(column);
+                            originalColumnsMap.put(column.getLabel(), oldColumnUuid);
+                        }
+                    }
+                }
+                if (mol instanceof Catalog) {
+                    Catalog catlog = (Catalog) mol;
+                    List<Schema> subschemas = CatalogHelper.getSchemas(catlog);
+                    if (!subschemas.isEmpty()) {
+                        generateOriginalColumnsMap(subschemas);
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void replaceUUidsForColumnsAndTables(Collection<? extends Package> copyDataPackage) {
+        for (orgomg.cwm.objectmodel.core.Package pkg : copyDataPackage) {
+            for (ModelElement mol : pkg.getOwnedElement()) {
+                if (mol instanceof MetadataTable) {
+                    MetadataTable table = (MetadataTable) mol;
+                    if (originalTablesMap.keySet().contains(table.getLabel())) {
+                        Resource resource = table.eResource();
+                        if (resource != null && resource instanceof XMLResource) {
+                            XMLResource xmlResource = (XMLResource) resource;
+                            xmlResource.setID(table, originalTablesMap.get(table.getLabel()));
+                        }
+                    }
+                    for (ModelElement col : table.getFeature()) {
+                        if (col instanceof MetadataColumn) {
+                            MetadataColumn column = (MetadataColumn) col;
+                            if (originalColumnsMap.keySet().contains(column.getLabel())) {
+                                Resource resource = column.eResource();
+                                if (resource != null && resource instanceof XMLResource) {
+                                    XMLResource xmlResource = (XMLResource) resource;
+                                    xmlResource.setID(column, originalColumnsMap.get(column.getLabel()));
+                                }
+                            }
+                        }
+                    }
+                }
+                if (mol instanceof Catalog) {
+                    Catalog catlog = (Catalog) mol;
+                    List<Schema> subschemas = CatalogHelper.getSchemas(catlog);
+                    if (!subschemas.isEmpty()) {
+                        replaceUUidsForColumnsAndTables(subschemas);
+                    }
+                }
+            }
+
         }
     }
 
