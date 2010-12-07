@@ -15,7 +15,11 @@ package org.talend.componentdesigner.manager;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -23,9 +27,17 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -37,6 +49,8 @@ import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.progress.ProgressUI;
+import org.talend.core.utils.JavaUtil;
+import org.talend.core.utils.PluginUtil;
 
 /**
  * @author rli
@@ -111,11 +125,11 @@ public final class ComponentProjectManager {
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
-                CreateProjectOperation op = new CreateProjectOperation(description, Messages
-                        .getString("ComponentProjectManager.NewProject")); //$NON-NLS-1$
+                CreateProjectOperation op = new CreateProjectOperation(description,
+                        Messages.getString("ComponentProjectManager.NewProject")); //$NON-NLS-1$
                 try {
-                    PlatformUI.getWorkbench().getOperationSupport().getOperationHistory().execute(op, monitor,
-                            WorkspaceUndoUtil.getUIInfoAdapter(currentShell));
+                    PlatformUI.getWorkbench().getOperationSupport().getOperationHistory()
+                            .execute(op, monitor, WorkspaceUndoUtil.getUIInfoAdapter(currentShell));
                 } catch (ExecutionException e) {
                     throw new InvocationTargetException(e);
                 }
@@ -157,6 +171,120 @@ public final class ComponentProjectManager {
         project = newProjectHandle;
 
         return project;
+    }
+
+    /**
+     * 
+     * DOC ycbai Convert the project to java project and initialize its classpath.
+     * 
+     * @param project
+     * @param shell
+     */
+    public void configProject(final IProject project, Shell shell) {
+        IRunnableWithProgress op = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+                monitor.beginTask("Conifg project...", 4);
+                try {
+                    IJavaProject javaProject = JavaCore.create(project);
+                    JavaUtil.addJavaNature(project, new SubProgressMonitor(monitor, 1));
+                    initializeClasspath(javaProject, new SubProgressMonitor(monitor, 3));
+                } catch (OperationCanceledException e) {
+                    e.printStackTrace();
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                } finally {
+                    monitor.done();
+                }
+            }
+
+        };
+
+        try {
+            ProgressUI.popProgressDialog(op, shell);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * DOC ycbai Initialize classpath of project.
+     * 
+     * @param project
+     * @param monitor
+     * @throws OperationCanceledException
+     * @throws CoreException
+     */
+    private void initializeClasspath(IJavaProject project, IProgressMonitor monitor) throws OperationCanceledException,
+            CoreException {
+        if (monitor != null && monitor.isCanceled()) {
+            throw new OperationCanceledException();
+        }
+        if (project == null)
+            return;
+        IClasspathEntry[] entries = null;
+        List<IClasspathEntry> cpEntries = new ArrayList<IClasspathEntry>();
+        cpEntries.addAll(Arrays.asList(getDefaultJREClasspathEntries()));
+        cpEntries.addAll(getDefaultUtilClasspathEntries());
+        entries = (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
+        if (monitor != null)
+            monitor.worked(1);
+
+        IPath output = getOutputLocation();
+        IProgressMonitor subProgressMonitor = monitor == null ? new NullProgressMonitor() : new SubProgressMonitor(monitor, 2);
+        project.setRawClasspath(entries, output, subProgressMonitor);
+    }
+
+    /**
+     * DOC ycbai Get default jre classpath entries.
+     * 
+     * @return
+     */
+    private IClasspathEntry[] getDefaultJREClasspathEntries() {
+        IPath path = new Path(
+                "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/"
+                        + JavaUtil.getDefaultEEName());
+        return new IClasspathEntry[] { JavaCore.newContainerEntry(path) };
+    }
+
+    /**
+     * DOC ycbai Get default util classpath entries.
+     * 
+     * @return
+     */
+    private List<IClasspathEntry> getDefaultUtilClasspathEntries() {
+        List<IClasspathEntry> ces = new ArrayList<IClasspathEntry>();
+        addLibClasspathEntries(ces, "org.talend.core.runtime");
+        addLibClasspathEntries(ces, "org.talend.metadata.managment");
+        addLibClasspathEntries(ces, "org.talend.core");
+        addLibClasspathEntries(ces, "org.talend.designer.codegen");
+        addLibClasspathEntries(ces, "org.talend.commons");
+        return ces;
+    }
+
+    /**
+     * DOC ycbai Add lib classpath entries.
+     * 
+     * @param libClasspaths
+     * @param entryId
+     */
+    private void addLibClasspathEntries(List<IClasspathEntry> libClasspaths, String entryId) {
+        String path = PluginUtil.getPluginInstallPath(entryId);
+        if (StringUtils.trimToNull(path) != null) {
+            libClasspaths.add(JavaCore.newLibraryEntry(new Path(path), null, null));
+        }
+    }
+
+    /**
+     * DOC ycbai Get the default output location.
+     * 
+     * @return
+     */
+    public IPath getOutputLocation() {
+        IPath outputLocationPath = new Path(project.getName()).makeAbsolute();
+        return outputLocationPath;
     }
 
     /**

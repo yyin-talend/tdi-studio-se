@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -114,7 +115,8 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
     public void creatComponentProj(String directory) {
         ComponentProjectManager manager = ComponentProjectManager.getInstance();
         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-        manager.createNewProject(directory, PluginConstant.COMPONENT_PROJECT, shell);
+        IProject project = manager.createNewProject(directory, PluginConstant.COMPONENT_PROJECT, shell);
+        manager.configProject(project, shell);
         ComponentDesigenerPlugin.getDefault().setUsed(true);
     }
 }
