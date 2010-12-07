@@ -101,7 +101,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						}
 	                	if(!split && compress && !isAppend){
 	                	%>
-	        		if(isFirstCheckDyn_<%=cid %> && (new java.io.File(zipName_<%=cid%>).length()==0)){
+	        		if(isFirstCheckDyn_<%=cid %> && (file_<%=cid%>.length()==0)){
 	                	<%
 	                	}else{
     		        %>
@@ -409,12 +409,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							}
             				if(!split && compress && !isAppend){
             				%>
-        				if(isFirstCheckDyn_<%=cid %> && (new java.io.File(zipName_<%=cid%>).length()==0)){
+        				if(isFirstCheckDyn_<%=cid %> && (file_<%=cid%>.length()==0)){
         					headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             				<%
             				}else{
             			%>
-            			if(isFirstCheckDyn_<%=cid %> && file_<%=cid%>.length()==0){
+            			if(isFirstCheckDyn_<%=cid %> && file<%=cid%>.length()==0){
             				headColu<%=cid%> = new String[<%=sizeColumns%>-1+<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount()];
             			<%
             				}
@@ -557,8 +557,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        }
             			        if(isIncludeHeader && isAppend){
             			            %>
-                                    file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
-                        		    if(file_<%=cid%>.length() == 0) {
+                                    file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
+                        		    if(file<%=cid%>.length() == 0) {
                         		        CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
                         		        <%if(isInRowMode){%>
                         		        out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());

@@ -49,10 +49,11 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
     directory_<%=cid%> = "";
 }
 boolean isFileGenerated_<%=cid %> = true;
+java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
 <%
 	if(isAppend){
 %>
-if(new java.io.File(<%=fileName%>).exists()){
+if(file<%=cid %>.exists()){
 	isFileGenerated_<%=cid %> = false;
 }
 <%
@@ -140,8 +141,9 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     			if(!split){
     				if(compress && !isAppend){// compress the dest file
 %>
-				java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				file<%=cid%> = new java.io.File(fileName_<%=cid %>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+				java.io.File file_<%=cid%> = new java.io.File(zipName_<%=cid %>);
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
@@ -153,14 +155,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    //routines.system.Row
     		    java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
             		new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>),<%=encoding%>));
-    		    java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
 <% 
 					}
     			} else {
 %>
                 java.io.Writer out<%=cid %> = new <%=writerClass%>(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
-                java.io.File file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
+                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
 <%
     			}
     			
@@ -185,7 +186,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 					}
 					if(!split && compress && !isAppend){
 		        %>
-    		    if(new java.io.File(zipName_<%=cid %>).length()==0)  
+    		    if(file_<%=cid%>.length()==0)  
     		    {
     		    <%
     		    	}else{
@@ -435,12 +436,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	            	if(isInRowMode){
     					if(compress && !isAppend){// compress the dest file
 %>
-				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				file<%=cid%> = new java.io.File(fileName_<%=cid %>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+				java.io.File file_<%=cid%> = new java.io.File(zipName_<%=cid %>);				
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
-    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file_<%=cid%>.getName()));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim()); 
@@ -451,19 +453,18 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());  
-                
-                java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);
                 <%
                 		}
                 	}else{
                 		if(compress && !isAppend){// compress the dest file
 				%>
-				java.io.File file_<%=cid%> = new java.io.File(fileName_<%=cid%>);
+				file<%=cid%> = new java.io.File(fileName_<%=cid %>);
 				String zipName_<%=cid %> = fullName_<%=cid%> + ".zip";
+				java.io.File file_<%=cid%> = new java.io.File(zipName_<%=cid %>);
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
-    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file_<%=cid%>.getName()));
+    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                     zipOut_<%=cid %>, <%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim()); 
 				<%
@@ -471,8 +472,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				%>
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
-                
-                java.io.File file_<%=cid%>=new java.io.File(fileName_<%=cid%>);  
 				<%
 						}
                 	}
@@ -492,7 +491,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 <%
                 	}
                 %>
-                java.io.File file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
+                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                 <%
 	            }
 	    		%>
@@ -521,12 +520,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				}
 				if(!split && compress && !isAppend){
 	        %>
-	        	if(new java.io.File(zipName_<%=cid%>).length()==0)
+	        	if(file_<%=cid%>.length()==0)
 	        	{
 	        <%
 	        	}else{
 	        %>
-    	        if(file_<%=cid%>.length()==0)  
+    	        if(file<%=cid%>.length()==0)  
     	        {
     	            <%
     	        }			
