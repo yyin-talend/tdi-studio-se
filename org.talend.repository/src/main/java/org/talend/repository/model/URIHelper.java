@@ -31,9 +31,11 @@ public class URIHelper {
     private static final String PLATFORM = "platform"; //$NON-NLS-1$
 
     public static IFile getFile(URI uri) {
-        IPath path = convert(uri);
-        if (path != null) {
-            return ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+        if (uri != null) {
+            IPath path = convert(uri);
+            if (path != null) {
+                return ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+            }
         }
         return null;
     }
