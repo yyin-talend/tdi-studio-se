@@ -128,9 +128,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 	
 	for (IMetadataColumn column : inputColumns) {
 		if(inputKeysColumns.containsKey(column.getLabel())) {
-	
+			if (column.getTalendType().equals("id_Dynamic")) {
+			%>operation_finder_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>.clone();
+			<%
+			} else {
 			%>operation_finder_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
 			<%
+			}
 		}
 	}
 	
@@ -196,9 +200,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		<%
 		for (IMetadataColumn column : inputColumns) {
 			if(inputKeysColumns.containsKey(column.getLabel())) {
-		
+				if (column.getTalendType().equals("id_Dynamic")) {
+				%>operation_result_<%=cid %>.<%=column.getLabel()%> = operation_finder_<%=cid %>.<%=column.getLabel()%>.clone();
+				<%
+				} else {
 				%>operation_result_<%=cid %>.<%=column.getLabel()%> = operation_finder_<%=cid %>.<%=column.getLabel()%>;
 				<%
+				}
 			}
 		}
 		%>

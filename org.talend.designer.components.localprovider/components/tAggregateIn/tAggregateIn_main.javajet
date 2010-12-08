@@ -129,6 +129,9 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
             							if(inColumn.getLabel().equals(inputColumn)){
             								inputJavaType = JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType());
             								sameType = (inputJavaType == outputJavaType);
+            								if(!sameType && inColumn.getTalendType().equals("id_Dynamic") && outputColumn.getTalendType().equals("id_Dynamic")) {
+            									sameType = true;
+            								}
             								break loop;
             							}
             						}
