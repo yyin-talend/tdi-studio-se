@@ -300,8 +300,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPreferenceStore().getString(
-                TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
+                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -312,8 +312,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPreferenceStore().getString(
-                TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
+                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -685,15 +685,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         if (param.getParentParameter() != null) {
             if (param.getParentParameter().getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
-                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
-                        EParameterName.PROPERTY_TYPE.getName());
+                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.PROPERTY_TYPE.getName());
                 if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
                     return;
                 }
             }
             if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
-                        EParameterName.SCHEMA_TYPE.getName());
+                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.SCHEMA_TYPE.getName());
                 if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
                     // save conenction value
                 } else if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
@@ -732,8 +732,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     return;
                 }
                 if (tmpParam1 != null
-                        && StringUtils.equals(tmpParam1.getValue() == null ? null : tmpParam1.getValue().toString(), param
-                                .getValue() == null ? null : param.getValue().toString())) {
+                        && StringUtils.equals(tmpParam1.getValue() == null ? null : tmpParam1.getValue().toString(),
+                                param.getValue() == null ? null : param.getValue().toString())) {
 
                     return;
                 }
@@ -909,14 +909,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                 }
 
                                 if (needRemoveQuotes) {
-                                    lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(elementValue
-                                            .getValue()));
+                                    lineValues.put(elementValue.getElementRef(),
+                                            TalendTextUtils.removeQuotes(elementValue.getValue()));
                                 } else {
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
                                 }
                                 if (elementValue.getType() != null) {
-                                    lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
-                                            .getType());
+                                    lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
+                                            elementValue.getType());
                                 }
                             }
                         }
@@ -950,8 +950,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         }
 
                         if (setToCustom) {
-                            param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(
-                                    EmfComponent.ENCODING_TYPE_CUSTOM);
+                            param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
+                                    .setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
                         }
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
@@ -1419,8 +1419,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     EParameterName.PROCESS_TYPE_VERSION.getName());
             ProcessItem processItem = null;
             if (processVersionParam != null) {
-                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) processVersionParam
-                        .getValue());
+                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(),
+                        (String) processVersionParam.getValue());
             } else {
                 processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue());
             }
@@ -1505,8 +1505,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                     }
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
                                     if (elementValue.getType() != null) {
-                                        lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
-                                                .getType());
+                                        lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
+                                                elementValue.getType());
                                     }
                                 }
                             }
@@ -1610,8 +1610,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         metadataTable.setTableName(nc.getUniqueName());
                     }
                 }
-                MetadataTool.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
-                        .getElementParameters());
+                MetadataTool.initilializeSchemaFromElementParameters(metadataTable,
+                        (List<IElementParameter>) nc.getElementParameters());
             }
         }
         List<IMetadataTable> oldComponentMetadataList = new ArrayList<IMetadataTable>(nc.getMetadataList());
@@ -1725,8 +1725,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     }
                 }
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname, cType
-                        .getLabel(), cType.getMetaname(), monitorConnection);
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
+                        cType.getLabel(), cType.getMetaname(), monitorConnection);
             }
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
@@ -2993,11 +2993,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     }
                 }
                 if (pathExist) {
-                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
-                            property.getId(), state.getPath(), type);
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getAllVersion(property.getId(), state.getPath(), type);
                 } else {
-                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
-                            property.getId());
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getAllVersion(property.getId());
                 }
                 if (allVersion == null || allVersion.isEmpty()) {
                     return false;
@@ -3089,6 +3089,39 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      */
     public void checkTableParameters() {
         checkNodeTableParameters();
+    }
+
+    /**
+     * DOC Administrator Comment method "updateProcess".
+     * 
+     * @param processType
+     */
+    public void updateProcess(ProcessType processType) {
+        setActivate(false);
+
+        elem.clear();
+        nodes.clear();
+        subjobContainers.clear();
+        // ((ProcessItem) property.getItem()).setProcess(processType);
+
+        Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
+
+        try {
+            loadNodes(processType, nodesHashtable);
+        } catch (PersistenceException e) {
+            // there are some components unloaded.
+            return;
+        }
+
+        repositoryId = processType.getRepositoryContextId();
+
+        loadConnections(processType, nodesHashtable);
+
+        loadSubjobs(processType);
+
+        setActivate(true);
+        checkStartNodes();
+        fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
 }

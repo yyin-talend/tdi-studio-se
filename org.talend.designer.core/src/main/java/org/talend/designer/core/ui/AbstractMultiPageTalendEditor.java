@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -38,6 +41,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,6 +50,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -57,10 +62,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.internal.WorkbenchPage;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.texteditor.rulers.IColumnSupport;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
@@ -74,6 +83,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.builder.connection.Properties;
@@ -84,6 +94,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
@@ -92,6 +103,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
+import org.talend.core.ui.ICreateXtextProcessService;
+import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
@@ -100,6 +113,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
@@ -118,18 +132,22 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * DOC qzhang class global comment. Detailled comment
  */
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
+
+    private boolean initBool = true;
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -180,7 +198,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected AbstractDecoratedTextEditor codeEditor;
 
-    protected IProcess2 process;
+    // protected IProcess2 process;
 
     protected IProcessor processor;
 
@@ -452,7 +470,90 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (codeEditor instanceof ISyntaxCheckableEditor && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
                 ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
+        } else if (newPageIndex == 0) {
+            if (initBool == true) {
+                initBool = false;
+            } else {
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+                    try {
+                        boolean isDirty = getEditor(2).isDirty();
+                        getEditor(2).doSave(null);
+                        IProcess2 oldProcess = getProcess();
+
+                        ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+                        ProcessType processType = n.convertDesignerEditorInput(
+                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                                oldProcess.getProperty());
+
+                        // designerEditor.getProcess().dispose();
+                        // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
+                        // processItem.setProcess(processType);
+                        IProcess2 newProcess = null;
+                        Item item = getProcess().getProperty().getItem();
+
+                        if (item instanceof ProcessItem) {
+                            // ((ProcessItem) item).setProcess(processType);
+                            // newProcess = new Process(item.getProperty());
+
+                            ((Process) designerEditor.getProcess()).updateProcess(processType);
+                        } else if (item instanceof JobletProcessItem) {
+                            ((Process) designerEditor.getProcess()).updateProcess(processType);
+
+                            // AbstractProcessProvider processProvider = AbstractProcessProvider
+                            // .findProcessProviderFromPID(IComponent.JOBLET_PID);
+                            // if (processProvider != null) {
+                            // newProcess = processProvider.buildNewGraphicProcess(item);
+                            // }
+                            // designerEditor.setProcess(newProcess);
+                            //
+                            // Boolean lastVersion = null;
+                            // if (oldProcess instanceof ILastVersionChecker) {
+                            // lastVersion = ((ILastVersionChecker) oldProcess).isLastVersion(item);
+                            // }
+                            //
+                            // if (designerEditor.getEditorInput() instanceof JobEditorInput) {
+                            // ((JobEditorInput) designerEditor.getEditorInput()).checkInit(lastVersion, null, true);
+                            // }
+                        }
+
+                        designerEditor.setDirty(isDirty);
+
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+
+                }
+            }
+        } else if (newPageIndex == 2) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+                ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
+
+                String scriptValue;
+                try {
+                    scriptValue = convertJobtoScriptService.convertJobtoScript(getProcess().saveXmlFile());
+                    IFile file = (IFile) getEditor(2).getEditorInput().getAdapter(IResource.class);
+                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
+                    if (file.exists()) {
+                        ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
+                                .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
+
+                        IAction action = ((AbstractDecoratedTextEditor) getEditor(2)).getAction("FoldingRestore"); //$NON-NLS-1$
+                        action.run();
+                        getEditor(2).doSave(null);
+                    } else {
+                        file.create(byteArrayInputStream, true, null);
+                    }
+                } catch (PartInitException e) {
+                    ExceptionHandler.process(e);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
         }
+
     }
 
     /**
@@ -488,6 +589,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPages() {
         createPage0();
         createPage1();
+        createPage2();
 
         if (getPageCount() == 1) {
             Composite container = getContainer();
@@ -513,7 +615,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
      */
     protected void createPage1() {
-        process = designerEditor.getProcess();
+        IProcess2 process = getProcess();
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
         ((Process) process).setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getProperty(), process.getContextManager()
@@ -547,10 +649,59 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     }
 
+    // create jobscript editor
+    protected void createPage2() {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+            return;
+        }
+
+        ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
+
+        Item item = getDesignerEditor().getProcess().getProperty().getItem();
+        ProcessType processType;
+        if (item instanceof ProcessItem) {
+            processType = ((ProcessItem) item).getProcess();
+        } else {
+            return; // deactivate for joblet
+            // processType = ((JobletProcessItem) item).getJobletProcess();
+        }
+        String scriptValue = convertJobtoScriptService.convertJobtoScript(processType);
+        try {
+            IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+            IFile file = currentProject.getFolder("temp").getFile(getEditorInput().getName() + ".jobscript");
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
+            if (file.exists()) {
+                file.setContents(byteArrayInputStream, 0, null);
+            } else
+                file.create(byteArrayInputStream, true, null);
+
+            // the way to get the xtextEditor programmly
+            IEditorInput editorInput = new FileEditorInput(file);
+            IEditorDescriptor desc = WorkbenchPlugin.getDefault().getEditorRegistry()
+                    .findEditor("org.talend.metalanguage.jobscript.JobScript");
+
+            WorkbenchPage page = (WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            EditorReference ref = new EditorReference(page.getEditorManager(), new FileEditorInput(file), (EditorDescriptor) desc);
+
+            IEditorPart editorPart = ref.getEditor(true);
+            if (editorPart != null) {
+                int index = addPage(editorPart, editorInput);
+                setPageText(index, "Jobscript");
+            }
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
     /**
      * DOC bqian Comment method "generateCode".
      */
     protected void generateCode() {
+        final IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
             return;
         }
@@ -603,15 +754,106 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         display = getSite().getShell().getDisplay();
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
-        getEditor(0).doSave(monitor);
-        designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
-        propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
-        propertyIsDirty = false;
-        firePropertyChange(IEditorPart.PROP_DIRTY);
-        if (processEditorInput.getItem() instanceof ProcessItem) {
-            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-        } else {
-            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+
+        if (getActivePage() == 0) {
+            getEditor(0).doSave(monitor);
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+                ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
+
+                Item item = getDesignerEditor().getProcess().getProperty().getItem();
+                ProcessType processType;
+                if (item instanceof ProcessItem) {
+                    processType = ((ProcessItem) item).getProcess();
+                } else {
+                    processType = ((JobletProcessItem) item).getJobletProcess();
+                }
+
+                if (item instanceof ProcessItem) { // disable for joblet for now
+                    String scriptValue = convertJobtoScriptService.convertJobtoScript(processType);
+                    try {
+                        IFile file = (IFile) getEditor(2).getEditorInput().getAdapter(IResource.class);
+                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
+                        if (file.exists()) {
+                            ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
+                                    .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
+
+                            IAction action = ((AbstractDecoratedTextEditor) getEditor(2)).getAction("FoldingRestore"); //$NON-NLS-1$
+                            action.run();
+                            getEditor(2).doSave(monitor);
+                        } else {
+                            file.create(byteArrayInputStream, true, null);
+                        }
+                    } catch (PartInitException e) {
+                        ExceptionHandler.process(e);
+                    } catch (CoreException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        } else if (getActivePage() == 2) {
+            getEditor(2).doSave(monitor);
+            try {
+                // ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+                //
+                // ProcessType processType = n.convertDesignerEditorInput(
+                // ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                // designerEditor.getProcess().getProperty());
+                // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
+                // processItem.setProcess(processType);
+                // getProcess().loadXmlFile();
+
+                IProcess2 oldProcess = getProcess();
+
+                ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+                ProcessType processType = n.convertDesignerEditorInput(
+                        ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                        oldProcess.getProperty());
+
+                // designerEditor.getProcess().dispose();
+                // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
+                // processItem.setProcess(processType);
+                IProcess2 newProcess = null;
+                Item item = getProcess().getProperty().getItem();
+
+                if (item instanceof ProcessItem) {
+                    // ((ProcessItem) item).setProcess(processType);
+                    // newProcess = new Process(item.getProperty());
+
+                    ((Process) designerEditor.getProcess()).updateProcess(processType);
+                } else if (item instanceof JobletProcessItem) {
+                    AbstractProcessProvider processProvider = AbstractProcessProvider
+                            .findProcessProviderFromPID(IComponent.JOBLET_PID);
+                    if (processProvider != null) {
+                        newProcess = processProvider.buildNewGraphicProcess(item);
+                    }
+                    designerEditor.setProcess(newProcess);
+
+                    Boolean lastVersion = null;
+                    if (oldProcess instanceof ILastVersionChecker) {
+                        lastVersion = ((ILastVersionChecker) oldProcess).isLastVersion(item);
+                    }
+
+                    if (designerEditor.getEditorInput() instanceof JobEditorInput) {
+                        ((JobEditorInput) designerEditor.getEditorInput()).checkInit(lastVersion, null, true);
+                    }
+                }
+
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        if (designerEditor != null && dirtyListener != null)
+            designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
+        if (processEditorInput != null) {
+            propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
+            propertyIsDirty = false;
+            firePropertyChange(IEditorPart.PROP_DIRTY);
+            if (processEditorInput.getItem() instanceof ProcessItem) {
+                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+            } else {
+                RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+            }
         }
     }
 
@@ -722,6 +964,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void codeSync() {
+        IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
             return;
         }
@@ -962,7 +1205,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * @return the process
      */
     public IProcess2 getProcess() {
-        return this.process;
+        return designerEditor.getProcess();
     }
 
     public void updateChildrens() {
@@ -1051,6 +1294,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return designerEditor;
     }
 
+    public void beforeDispose() {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+            return;
+        }
+        if (this.getPageCount() > 2) {
+            IColumnSupport cs = (IColumnSupport) ((AbstractDecoratedTextEditor) getEditor(2)).getAdapter(IColumnSupport.class);
+            cs.dispose();
+        }
+    }
+
     /**
      * The <code>MultiPageEditorPart</code> implementation of this <code>IWorkbenchPart</code> method disposes all
      * nested editors. Subclasses may extend.
@@ -1063,7 +1316,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // setInput(null);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         getSite().getWorkbenchWindow().getPartService().removePartListener(partListener);
-
         super.dispose();
 
         if (isKeepPropertyLocked()) {
@@ -1074,8 +1326,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
-            process.getProperty().eAdapters().remove(dirtyListener);
-            Property property = process.getProperty();
+            getProcess().getProperty().eAdapters().remove(dirtyListener);
+            Property property = getProcess().getProperty();
             if (property.eResource() == null || property.getItem().eResource() == null) {
                 property = repFactory.getUptodateProperty(property);
             }
@@ -1086,7 +1338,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         }
 
-        if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
+        if (AbstractProcessProvider.isExtensionProcessForJoblet(getProcess())) {
             RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         } else {
             RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
@@ -1100,7 +1352,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             JDIDebugModel.removeJavaBreakpointListener((IJavaBreakpointListener) processor);
         }
         processor = null;
-        process = null;
         dirtyListener = null;
     }
 

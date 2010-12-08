@@ -393,7 +393,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected boolean savePreviouslyNeeded;
 
-    protected IProcess2 process;
+    // protected IProcess2 process;
 
     private RulerComposite rulerComp;
 
@@ -457,7 +457,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
             // / See bug 4821
             ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
-                    .updateModulesNeededForCurrentJob(this.process);
+                    .updateModulesNeededForCurrentJob(getProcess());
 
             monitor.worked(10);
 
@@ -539,7 +539,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         try {
             if (input instanceof JobEditorInput) {
-                process = ((JobEditorInput) input).getLoadedProcess();
+                // process = ((JobEditorInput) input).getLoadedProcess();
                 projectName = CorePlugin.getDefault().getProxyRepositoryFactory()
                         .getProject(((RepositoryEditorInput) input).getItem()).getLabel();
             }
@@ -548,6 +548,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             return;
         }
 
+        IProcess2 process = getProcess();
         if (process.getProperty().getItem() instanceof ProcessItem) {
             currentJobResource.setJobInfo(new JobInfo((ProcessItem) process.getProperty().getItem(), process.getProperty(),
                     process.getContextManager().getDefaultContext().getName()));
@@ -881,7 +882,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     }
 
     public IProcess2 getProcess() {
-        return this.process;
+        if (this.getEditorInput() instanceof JobEditorInput) {
+            return ((JobEditorInput) this.getEditorInput()).getLoadedProcess();
+        }
+        return null;
+    }
+
+    public void setProcess(IProcess2 process) {
+        if (this.getEditorInput() instanceof JobEditorInput) {
+            ((JobEditorInput) this.getEditorInput()).setLoadedProcess(process);
+
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -920,6 +931,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         Graphics graphics = new SWTGraphics(gc);
         Point point = contentLayer.getBounds().getTopLeft();
         graphics.translate(-point.x, -point.y);
+        IProcess2 process = getProcess();
         process.setPropertyValue(IProcess.SCREEN_OFFSET_X, String.valueOf(-point.x));
         process.setPropertyValue(IProcess.SCREEN_OFFSET_Y, String.valueOf(-point.y));
         backgroundLayer.paint(graphics);
@@ -1014,7 +1026,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             public void execute(final IProgressMonitor monitor) throws CoreException {
                 try {
                     savePreviewPictures();
-                    process.saveXmlFile();
+                    getProcess().saveXmlFile();
                     // file.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (Exception e) {
                     // e.printStackTrace();
@@ -1104,9 +1116,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         super.dispose();
         if (!getParent().isKeepPropertyLocked()) {
-            ((Process) process).dispose();
+            ((Process) getProcess()).dispose();
         }
-        process = null;
+        // process = null;
         parent = null;
 
         getEditDomain().getCommandStack().dispose();
@@ -1200,6 +1212,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * @see org.talend.repository.job.deletion.IResourceProtection#getProtectedIds()
      */
     public String[] calculateProtectedIds() {
+        IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) {
             return new String[] {};
         }
@@ -1643,7 +1656,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // this uses the PartFactory set in configureGraphicalViewer
         // to create an EditPart for the diagram and sets it as the
         // content for the viewer
-        getGraphicalViewer().setContents(this.process);
+        IProcess2 process = getProcess();
+        getGraphicalViewer().setContents(process);
 
         // containers are not correctly updated by default, so update them after all nodes have been added
         for (ISubjobContainer subjobContainer : process.getSubjobContainers()) {

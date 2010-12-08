@@ -81,10 +81,10 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
 
             public void run() {
                 Image image = null;
-                if (process == null) {
+                if (getProcess() == null) {
                     return;
                 }
-                InformationLevel level = process.getProperty().getMaxInformationLevel();
+                InformationLevel level = getProcess().getProperty().getMaxInformationLevel();
                 if (level.getValue() == InformationLevel.ERROR) {
                     image = OverlayImageProvider.getImageWithError(ImageProvider.getImage(ECoreImage.PROCESS_ICON)).createImage();
                 } else {
@@ -120,7 +120,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         super.setName();
         String label = getEditorInput().getName();
         IProcess2 process2 = this.getProcess();
-        String jobVersion = process2.getVersion();
+        String jobVersion = "0.1";
+        if (process2 != null)
+            jobVersion = process2.getVersion();
         // if (getActivePage() == 1) {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
@@ -134,9 +136,11 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             }
         }
         String title = "MultiPageTalendEditor.Job";//$NON-NLS-1$
-        Item item = process2.getProperty().getItem();
-        if (item instanceof JobletProcessItem) {
-            title = title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
+        if (process2 != null) {
+            Item item = process2.getProperty().getItem();
+            if (item instanceof JobletProcessItem) {
+                title = title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
+            }
         }
         if (revisionNumStr != null) {
             setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr);

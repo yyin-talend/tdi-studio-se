@@ -34,7 +34,7 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
     }
 
     public Process getProcess() {
-        return (Process) this.process;
+        return (Process) super.getProcess();
     }
 
     @Override

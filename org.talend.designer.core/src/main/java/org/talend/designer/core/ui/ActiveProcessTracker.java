@@ -189,7 +189,7 @@ public class ActiveProcessTracker implements IPartListener {
                 }
                 UIUtils.closeSqlBuilderDialogs(process.getName());
             }
-
+            mpte.beforeDispose();
         } else if (part instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) part)) {
                 Contexts.setTitle(""); //$NON-NLS-1$
@@ -234,8 +234,8 @@ public class ActiveProcessTracker implements IPartListener {
             if (mpte.isJobAlreadyOpened()) {
                 mpte.updateChildrens();
                 // close the first editor and keep the new one. (so only one will remain)
-                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditors(
-                        mpte.getEditorInput(), mpte.getEditorId(), IWorkbenchPage.MATCH_INPUT);
+                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .findEditors(mpte.getEditorInput(), mpte.getEditorId(), IWorkbenchPage.MATCH_INPUT);
                 IEditorPart editorPart = ref[0].getEditor(false);
                 editorPart.doSave(new NullProgressMonitor());
                 ((AbstractMultiPageTalendEditor) editorPart).setKeepPropertyLocked(true);
