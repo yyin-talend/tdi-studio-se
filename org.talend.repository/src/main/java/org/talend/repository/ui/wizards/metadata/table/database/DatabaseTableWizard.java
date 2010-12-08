@@ -195,6 +195,7 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
              * set uuids
              */
             saveMetaData();
+
             if (PluginChecker.isTDQLoaded()) {
                 /* generate the map contains old uuid and label for old tables and columns */
                 generateOriginalColumnsMap(dataPackageFromOrignalConnection);
@@ -202,10 +203,10 @@ public class DatabaseTableWizard extends CheckLastVersionRepositoryWizard implem
                 ConnectionHelper.addPackages(copyDataPackage, connection);
                 /* using the old uuid to replace the old ones which on tables and columns */
                 replaceUUidsForColumnsAndTables(copyDataPackage);
-                RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
                 /* The second save is used to save the changes of uuid */
                 saveMetaData();
             }
+            RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
             closeLockStrategy();
 
             List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
