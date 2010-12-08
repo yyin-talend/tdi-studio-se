@@ -22,7 +22,7 @@
 					dbschemaForSearch_<%=cid%> = schema_<%=cid%>.toUpperCase();
 				}
 				
-	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, <%=dbtable%>.toUpperCase(), new String[]{"TABLE"});
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, (<%=dbtable%>).toUpperCase(), new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
 	            if(rsTable_<%=cid%>.next()) {
 	            	whetherExist_<%=cid%> = true;
