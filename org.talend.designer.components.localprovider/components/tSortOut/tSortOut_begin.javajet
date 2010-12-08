@@ -83,7 +83,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		JavaType columnType = listColumnTypes.get(i);
     		if(criteriaType == SORT_NUM){
     			if(!columnType.isPrimitive()){
-    				if(columnType == JavaTypesManager.LIST || columnType == JavaTypesManager.BYTE_ARRAY || columnType == JavaTypesManager.OBJECT || columnType == JavaTypesManager.STRING){
+    				if("id_Dynamic".equals(columnType.getId()) || columnType == JavaTypesManager.LIST || columnType == JavaTypesManager.BYTE_ARRAY || columnType == JavaTypesManager.OBJECT || columnType == JavaTypesManager.STRING){
 %>
 if(true){
 	throw new Exception("Bad sort criteria: couldn't sort column \"<%=listCols.get(i) %>\" as num.");
@@ -118,7 +118,8 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 				Integer criteriaType = listCriteriaTypes.get(i);
 				Integer criteria = listCriterias.get(i);
 				if(criteriaType == SORT_NUM){
-					if(listNullables.get(i)){//
+					if("id_Dynamic".equals(columnType.getId())){
+					} else if(listNullables.get(i)){//
 %>
 		if(this.<%=colname %> == null && other.<%=colname %> != null){
 <%
@@ -313,7 +314,7 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 <%
 						}
 					}
-				}else{//end tag for if(criteriaType == SORT_ALPHA) for SORT_DATE
+				}else if(!"id_Dynamic".equals(columnType.getId())){//end tag for if(criteriaType == SORT_ALPHA) for SORT_DATE
 %>
 		if(this.<%=colname %> == null && other.<%=colname %> != null){
 <%
@@ -385,7 +386,8 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				Integer criteriaType = listCriteriaTypes.get(i);
 				Integer criteria = listCriterias.get(i);
 				if(criteriaType == SORT_NUM){
-					if(listNullables.get(i)){//
+					if("id_Dynamic".equals(columnType.getId())){
+					} else if(listNullables.get(i)){//
 %>
 		if(this.<%=colname %> == null && other.<%=colname %> != null){
 <%
@@ -580,7 +582,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 <%
 						}
 					}
-				}else{//end tag for if(criteriaType == SORT_ALPHA) for SORT_DATE
+				}else if(!"id_Dynamic".equals(columnType.getId())){//end tag for if(criteriaType == SORT_ALPHA) for SORT_DATE
 %>
 		if(this.<%=colname %> == null && other.<%=colname %> != null){
 <%
@@ -678,7 +680,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
            			    	result.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
-				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
+				} else if(("id_Dynamic").equals(column.getTalendType()) || ("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
 			            length = dis.readInt();
            				if (length == -1) {
@@ -769,7 +771,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				dos.writeLong(this.<%=column.getLabel() %>.getTime());
 			}
 					<%
-				} else if(("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
+				} else if(("id_Dynamic").equals(column.getTalendType()) || ("Object").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate) || ("List").equals(typeToGenerate)) {
 					%>
 			if(this.<%=column.getLabel() %> == null) {
 				dos.writeInt(-1);
