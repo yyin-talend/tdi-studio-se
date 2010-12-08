@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -299,12 +300,22 @@ public class ProjectNodeHelper {
                     }
                 }
 
-                // for bug 16794
-                if (s instanceof SchemaImpl) {
-                    SchemaImpl schemaElement = (SchemaImpl) s;
-                    EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
-                    ownedElement.add(dbtable);
+                if (s != null) {
+                    // for bug 16794
+                    if (s instanceof SchemaImpl) {
+                        SchemaImpl schemaElement = (SchemaImpl) s;
+                        EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
+                        ownedElement.add(dbtable);
 
+                    }
+                } else if (subschemas.size() > 0) {
+                    // added for bug 17467
+                    // set db connection's schema as null, and retrieve schema again, to add some tables
+                    for (int i = 0; i < subschemas.size(); i++) {
+                        SchemaImpl schemaElement = (SchemaImpl) subschemas.get(i);
+                        EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
+                        ownedElement.add(dbtable);
+                    }
                 }
                 // PackageHelper.addMetadataTable(dbtable, s);
             }
@@ -442,6 +453,7 @@ public class ProjectNodeHelper {
             subschemas = CatalogHelper.getSchemas(c);
             hasSchemaInCatalog = subschemas.size() > 0;
         }
+        
         if (c != null && s == null && !hasSchemaInCatalog) { // only catalog
             c.getOwnedElement().removeAll(tablesToDelete);
 
@@ -464,7 +476,24 @@ public class ProjectNodeHelper {
                  */
                 if (s == null || "".equals(s)) {
                     // allTables = ConnectionHelper.getTables(dbconn);
-                    c.getOwnedElement().removeAll(tablesToDelete);
+
+                    // added for bug 17467
+                    // set db connection's schema as null, and retrieve schema again, to remove some tables
+                    EList<ModelElement> ownedElement = c.getOwnedElement();
+                    if (ownedElement instanceof EObjectContainmentWithInverseEList) {
+                        EObjectContainmentWithInverseEList elist = (EObjectContainmentWithInverseEList) ownedElement;
+                        if (!elist.isEmpty() && elist.size() > 0) {
+                            for (int i = 0; i < elist.size(); i++) {
+                                Object object = elist.get(i);
+                                if (object instanceof SchemaImpl) {
+                                    SchemaImpl schemaImpl = (SchemaImpl) object;
+                                    EList<ModelElement> ownedElement2 = schemaImpl.getOwnedElement();
+                                    ownedElement2.removeAll(tablesToDelete);
+                                }
+                            }
+                        }
+                    }
+                    // ownedElement.removeAll(tablesToDelete);
                 } else {
                     s.getOwnedElement().removeAll(tablesToDelete);
                 }
