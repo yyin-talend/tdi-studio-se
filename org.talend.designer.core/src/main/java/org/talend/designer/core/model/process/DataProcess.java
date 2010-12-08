@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
@@ -1270,8 +1269,8 @@ public class DataProcess {
 
         // String[] fsNodeNeedReplace = new String[] {
         //                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-        String[] fsNodeNeedReplace = new String[] {
-                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        // String[] fsNodeNeedReplace = new String[] {
+        //                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
         INode currentComponent = graphicalNode;
         AbstractNode dataNode;
@@ -1279,9 +1278,7 @@ public class DataProcess {
         dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
         checkFileScaleMap.put(graphicalNode, dataNode);
         boolean needCreateTFSNode = false;
-        boolean loopEnd = dataNode == null
-                || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
-        // loopEnd =!FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+        boolean loopEnd = dataNode == null || !FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
 
         Set<INode> progressBarList = null;
         DataNode fsNode = null, oldFsNode = null;
@@ -1357,8 +1354,7 @@ public class DataProcess {
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
                 loopEnd = true;
             } else {
-                loopEnd = !ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName());
-                // loopEnd =!FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+                loopEnd = !FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
             }
             setReplacedNodeConnections(fsNode, dataNode, oldFsNode, needCreateTFSNode, loopEnd);
 
