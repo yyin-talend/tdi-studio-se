@@ -29,6 +29,7 @@ String cid = node.getUniqueName();
 			String timeoutSecTemp = ElementParameterParser.getValue(node, "__TIMEOUT__");
 			String timeoutSec = (timeoutSecTemp!=null&&!("").equals(timeoutSecTemp))?timeoutSecTemp:"2";
 			int timeout = (int)(Double.valueOf(timeoutSec) * 1000);
+			boolean reuseHttpClient = ("true").equals(ElementParameterParser.getValue(node,"__REUSE_HTTP_CLIENT__"));
 %>
 			int nb_line_<%=cid%> = 0;	
 			System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
@@ -48,7 +49,7 @@ String cid = node.getUniqueName();
             auth_<%=cid%> .setPreemptiveAuthentication(false);
             
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.AUTHENTICATE, auth_<%=cid%>);
-            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "false");
+            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "<%=reuseHttpClient%>");
             
             options_<%=cid%> .setUserName(<%=username%>);
             options_<%=cid%> .setPassword(<%=password%>);
