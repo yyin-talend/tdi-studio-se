@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -37,12 +38,12 @@ import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -85,6 +86,10 @@ public class RepositoryDoubleClickAction extends Action {
         }
 
         RepositoryNode node = (RepositoryNode) obj;
+
+        if (node.getObject() instanceof MetadataColumnRepositoryObject) {
+            node = node.getParent().getParent();
+        }
 
         if ((node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)
                 && !isLinkCDCNode(node)) {
@@ -143,6 +148,12 @@ public class RepositoryDoubleClickAction extends Action {
             if (nodeType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
                 return true;
             }
+        } else if (nodeType == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            node = node.getParent().getParent().getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+                return true;
+            }
         }
         return false;
     }
@@ -157,6 +168,12 @@ public class RepositoryDoubleClickAction extends Action {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
             node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+                return true;
+            }
+        } else if (nodeType == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            node = node.getParent().getParent().getParent();
             nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             if (nodeType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
                 return true;
@@ -179,6 +196,12 @@ public class RepositoryDoubleClickAction extends Action {
             if (nodeType == ERepositoryObjectType.METADATA_SAP_FUNCTION || nodeType == ERepositoryObjectType.METADATA_SAP_IDOC) {
                 return true;
             }
+        } else if (nodeType == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            node = node.getParent().getParent().getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_SAP_FUNCTION || nodeType == ERepositoryObjectType.METADATA_SAP_IDOC) {
+                return true;
+            }
         }
         return false;
     }
@@ -187,6 +210,12 @@ public class RepositoryDoubleClickAction extends Action {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
             node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_FILE_HL7) {
+                return true;
+            }
+        } else if (nodeType == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            node = node.getParent().getParent().getParent();
             nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             if (nodeType == ERepositoryObjectType.METADATA_FILE_HL7) {
                 return true;
@@ -219,7 +248,9 @@ public class RepositoryDoubleClickAction extends Action {
                 }
                 continue;
             }
-            if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
+            if (nodeType != null
+                    && (nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE) || (nodeType
+                            .equals(ERepositoryObjectType.METADATA_CON_COLUMN)))) {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }

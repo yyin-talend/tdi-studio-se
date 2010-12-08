@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -101,10 +102,18 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
-        if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+        if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)
+                || ERepositoryObjectType.METADATA_CON_COLUMN.equals(nodeType)) {
             final IRepositoryViewObject object = node.getObject();
             if (object instanceof MetadataTableRepositoryObject) {
                 MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
+                if (table instanceof SubscriberTable) {
+                    this.node = null;
+                    return;
+                }
+            } else if (object instanceof MetadataColumnRepositoryObject) {
+                MetadataTable table = ((MetadataColumnRepositoryObject) object).getTdColumn().getTable();
+                this.node = node.getParent().getParent();
                 if (table instanceof SubscriberTable) {
                     this.node = null;
                     return;
@@ -166,7 +175,8 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 }
 
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_CON_COLUMN.equals(nodeType)) {
                     setText(EDIT_LABEL);
                     collectSiblingNames(node);
                     IRepositoryViewObject repositoryObject = node.getObject();

@@ -20,13 +20,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -52,8 +53,12 @@ public abstract class AbstractCreateAction extends AContextualAction {
         if (selection.isEmpty() || selection.size() != 1 || !(o instanceof RepositoryNode)) {
             return;
         }
-        init((RepositoryNode) o);
-        repositoryNode = (RepositoryNode) o;
+        RepositoryNode repNode = (RepositoryNode) o;
+        if (repNode.getObject() instanceof MetadataColumnRepositoryObject) {
+            repNode = repNode.getParent().getParent();
+        }
+        init(repNode);
+        repositoryNode = repNode;
     }
 
     protected abstract void init(RepositoryNode node);
@@ -105,8 +110,10 @@ public abstract class AbstractCreateAction extends AContextualAction {
         Property updatedProperty = null;
         if (getNeededVersion() == null) {
             try {
-                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                        new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+                updatedProperty = ProxyRepositoryFactory
+                        .getInstance()
+                        .getLastVersion(new Project(ProjectManager.getInstance().getProject(property.getItem())),
+                                property.getId()).getProperty();
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }

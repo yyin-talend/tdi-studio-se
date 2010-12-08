@@ -1245,42 +1245,26 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private void createColumns(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable,
             ERepositoryObjectType repositoryObjectType) {
-        RepositoryNode columnsNode = new StableRepositoryNode(node,
-                Messages.getString("RepositoryContentProvider.repositoryLabel.ColumnSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
-        node.getChildren().add(columnsNode);
         List<MetadataColumn> columnList = new ArrayList<MetadataColumn>();
         columnList.addAll(metadataTable.getColumns());
+        int num = columnList.size();
+        StringBuffer floderName = new StringBuffer();
+        floderName.append(Messages.getString("RepositoryContentProvider.repositoryLabel.ColumnSchemas"));//$NON-NLS-1$
+        floderName.append("(");//$NON-NLS-1$
+        floderName.append(num);
+        floderName.append(")");//$NON-NLS-1$
+        RepositoryNode columnsNode = new StableRepositoryNode(node, floderName.toString(), ECoreImage.FOLDER_CLOSE_ICON);
+        node.getChildren().add(columnsNode);
+
         for (MetadataColumn column : columnList) {
             if (column == null) {
                 continue;
             }
-            // if (column instanceof TdColumn) {
             RepositoryNode columnNode = createMataColumnNode(columnsNode, repObj, column, repositoryObjectType);
             columnsNode.getChildren().add(columnNode);
-            // } else if (column instanceof MetadataColumn) {
-            // // TdColumn tdColumn = switchToTDColumn(column);
-            // RepositoryNode columnNode = createMataColumnNode(columnsNode, repObj, tdColumn, repositoryObjectType);
-            // columnsNode.getChildren().add(columnNode);
-            // }
 
         }
     }
-
-    // private TdColumn switchToTDColumn(MetadataColumn column) {
-    // TdColumn tdColumn = RelationalFactoryImpl.init().createTdColumn();
-    // tdColumn.setId(column.getId());
-    // tdColumn.setName(column.getName());
-    // tdColumn.setChangeability(column.getChangeability());
-    // tdColumn.setComment(column.getComment());
-    // tdColumn.setDefaultValue(column.getDefaultValue());
-    // tdColumn.setInitialValue(column.getInitialValue());
-    // tdColumn.setLabel(column.getLabel());
-    // tdColumn.setLength(column.getLength());
-    // tdColumn.setMultiplicity(column.getMultiplicity());
-    // tdColumn.setNamespace(column.getNamespace());
-    // // tdColumn.setTable(column.getTable());
-    // return tdColumn;
-    // }
 
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,
             Connection metadataConnection) {

@@ -47,10 +47,10 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -135,6 +135,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_CDC:
             case METADATA_SAP_IDOC:
             case METADATA_SAP_FUNCTION:
+            case METADATA_CON_COLUMN:
                 String label = object.getLabel();
                 if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {
 
