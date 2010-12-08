@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,8 +26,10 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -35,6 +38,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
@@ -248,10 +252,30 @@ public class EmfComponent implements IComponent {
         return returnValue;
     }
 
+    private String getComponentsLocation(String folder) {
+        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+
+        File file = null;
+        try {
+            URL url = FileLocator.find(b, new Path(folder), null);
+            if (url == null) {
+                return null;
+            }
+            URL fileUrl = FileLocator.toFileURL(url);
+            file = new File(fileUrl.getPath());
+        } catch (Exception e) {
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
+        }
+
+        return file.getAbsolutePath();
+    }
+
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (!isLoaded) {
-            File file = new File(uriString);
+            String source = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+            File file = new File(source + uriString);
             URI createURI = URI.createURI(file.toURI().toString());
             Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
@@ -2596,7 +2620,8 @@ public class EmfComponent implements IComponent {
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
-        File dirChildFile = new File(uriString);
+        String source = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        File dirChildFile = new File(source + uriString);
         File dirFile = dirChildFile.getParentFile();
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
@@ -3012,6 +3037,15 @@ public class EmfComponent implements IComponent {
     }
 
     public String getCombine() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().getCOMBINE();
     }
 }

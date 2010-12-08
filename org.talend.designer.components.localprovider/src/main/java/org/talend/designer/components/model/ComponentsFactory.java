@@ -333,6 +333,7 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     private void reloadComponentsFromCache() throws BusinessException {
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
+        File pathFile = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         while (it.hasNext()) {
             Map.Entry<String, ComponentInfo> entry = (Map.Entry<String, ComponentInfo>) it.next();
             ComponentInfo info = entry.getValue();
@@ -353,7 +354,7 @@ public class ComponentsFactory implements IComponentsFactory {
             if (!componentList.contains(currentComp)) {
                 currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getPathSource()));
 
-                File currentFile = new File(info.getUriString());
+                File currentFile = new File(pathFile.getAbsoluteFile() + info.getUriString());
                 loadIcons(currentFile.getParentFile(), currentComp);
                 componentList.add(currentComp);
             }
@@ -491,6 +492,7 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         File source = getComponentsLocation(pathSource);
+        File replaceSource = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         File[] childDirectories;
 
         FileFilter fileFilter = new FileFilter() {
@@ -551,9 +553,10 @@ public class ComponentsFactory implements IComponentsFactory {
                         }
                         continue;
                     }
-
-                    EmfComponent currentComp = new EmfComponent(xmlMainFile.getAbsolutePath(), xmlMainFile.getParentFile()
-                            .getName(), pathSource, cache, isCreated);
+                    String pathName = xmlMainFile.getAbsolutePath();
+                    pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
+                    EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
+                            cache, isCreated);
                     // if the component is not needed in the current branding,
                     // and that this one IS NOT a specific component for code generation
                     // just don't load it
