@@ -429,8 +429,10 @@ public class StatsAndLogsHelper extends Utils {
         Set<String> moduleValueList = new TreeSet<String>();
         for (ModuleNeeded module : moduleNeededList) {
             String moduleName = module.getModuleName();
-            moduleNameList.add(moduleName);
-            moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
+            if (moduleName != null) {
+                moduleNameList.add(moduleName);
+                moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
+            }
         }
         Comparator<String> comprarator = new IgnoreCaseComparator();
         String[] moduleNameArray = moduleNameList.toArray(new String[0]);
