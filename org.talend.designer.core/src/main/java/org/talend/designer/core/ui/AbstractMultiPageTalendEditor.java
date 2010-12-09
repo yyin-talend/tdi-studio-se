@@ -843,8 +843,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ExceptionHandler.process(e);
             }
         }
-        if (designerEditor != null && dirtyListener != null)
-            designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
+        /*
+         * refresh should be executed before add the listener,or it will has eProxy on the property,it will cause a
+         * editor dirty problem. hywang commet bug 17357
+         */
         if (processEditorInput != null) {
             propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
             propertyIsDirty = false;
@@ -855,6 +857,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
             }
         }
+        if (designerEditor != null && dirtyListener != null)
+            designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
     }
 
     protected void updateRunJobContext() {

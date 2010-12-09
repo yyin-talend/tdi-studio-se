@@ -1479,7 +1479,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * DOC Administrator Comment method "checkSaveBeforeRunSelection".
      */
     private void checkSaveBeforeRunSelection() {
-        if (processManager.getSaveJobBeforeRun()) {
+        /* processContext can store the save button value of current processView,bug 16791 */
+        if (processContext.isSaveBeforeRun()) {
             SaveJobBeforeRunAction action = new SaveJobBeforeRunAction(processContext.getProcess());
             action.run();
         }
