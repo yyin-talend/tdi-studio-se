@@ -39,7 +39,7 @@ if(("false").equals(isExternalSort)){
 		if (metadata!=null) {
 			for (IMetadataColumn column : metadata.getListColumns()) { 
 %>
-	arrayRow<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %>;
+	arrayRow<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %><%if(("id_Dynamic").equals(column.getTalendType())){%>.clone()<%}%>;
 <%
 			}
 		}
@@ -57,7 +57,7 @@ if(("false").equals(isExternalSort)){
 		if (metadata!=null) {
 			for (IMetadataColumn column : metadata.getListColumns()) { 
 %>
-	current_<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %>;
+	current_<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %><%if(("id_Dynamic").equals(column.getTalendType())){%>.clone()<%}%>;
 <%
 			}
 		}
