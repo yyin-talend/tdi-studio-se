@@ -147,8 +147,6 @@ import org.talend.repository.model.ResourceModelUtils;
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
 
-    private boolean initBool = true;
-
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 
         @Override
@@ -448,6 +446,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     }
 
+    // only convert process and jobscript when select between designer and jboscript page.
+    int oldPageIndex = -1;
+
     /**
      * Calculates the contents of page 2 when the it is activated.
      */
@@ -470,61 +471,36 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (codeEditor instanceof ISyntaxCheckableEditor && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
                 ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
-        } else if (newPageIndex == 0) {
-            if (initBool == true) {
-                initBool = false;
-            } else {
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-                    try {
-                        boolean isDirty = getEditor(2).isDirty();
-                        getEditor(2).doSave(null);
-                        IProcess2 oldProcess = getProcess();
+        } else if (newPageIndex == 0 && oldPageIndex == 2) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+                try {
+                    boolean isDirty = getEditor(2).isDirty();
+                    getEditor(2).doSave(null);
+                    IProcess2 oldProcess = getProcess();
 
-                        ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                        ProcessType processType = n.convertDesignerEditorInput(
-                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                                oldProcess.getProperty());
+                    ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+                    ProcessType processType = n.convertDesignerEditorInput(
+                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                            oldProcess.getProperty());
 
-                        // designerEditor.getProcess().dispose();
-                        // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
-                        // processItem.setProcess(processType);
-                        IProcess2 newProcess = null;
-                        Item item = getProcess().getProperty().getItem();
+                    IProcess2 newProcess = null;
+                    Item item = getProcess().getProperty().getItem();
 
-                        if (item instanceof ProcessItem) {
-                            // ((ProcessItem) item).setProcess(processType);
-                            // newProcess = new Process(item.getProperty());
+                    if (item instanceof ProcessItem) {
 
-                            ((Process) designerEditor.getProcess()).updateProcess(processType);
-                        } else if (item instanceof JobletProcessItem) {
-                            ((Process) designerEditor.getProcess()).updateProcess(processType);
-
-                            // AbstractProcessProvider processProvider = AbstractProcessProvider
-                            // .findProcessProviderFromPID(IComponent.JOBLET_PID);
-                            // if (processProvider != null) {
-                            // newProcess = processProvider.buildNewGraphicProcess(item);
-                            // }
-                            // designerEditor.setProcess(newProcess);
-                            //
-                            // Boolean lastVersion = null;
-                            // if (oldProcess instanceof ILastVersionChecker) {
-                            // lastVersion = ((ILastVersionChecker) oldProcess).isLastVersion(item);
-                            // }
-                            //
-                            // if (designerEditor.getEditorInput() instanceof JobEditorInput) {
-                            // ((JobEditorInput) designerEditor.getEditorInput()).checkInit(lastVersion, null, true);
-                            // }
-                        }
-
-                        designerEditor.setDirty(isDirty);
-
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
+                        ((Process) designerEditor.getProcess()).updateProcess(processType);
+                    } else if (item instanceof JobletProcessItem) {
+                        ((Process) designerEditor.getProcess()).updateProcess(processType);
                     }
 
+                    designerEditor.setDirty(isDirty);
+
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
                 }
             }
-        } else if (newPageIndex == 2) {
+
+        } else if (newPageIndex == 2 && oldPageIndex == 0) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
                 ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
 
@@ -551,8 +527,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     ExceptionHandler.process(e);
                 }
             }
-
         }
+        oldPageIndex = getActivePage();
 
     }
 
