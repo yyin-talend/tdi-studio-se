@@ -30,8 +30,7 @@ Require-Bundle: org.talend.model,
  org.eclipse.help,
  org.eclipse.jdt.core.manipulation,
  org.talend.core.runtime,
- org.talend.metadata.managment,
- org.eclipse.xtext.ui
+ org.talend.metadata.managment
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;
