@@ -1907,6 +1907,7 @@ public class EmfComponent implements IComponent {
 
             int nbTotal = compType.getFAMILIES().getFAMILY().size();
             int nb = 0;
+            String transFamilyNames = "";
             for (Object objFam : compType.getFAMILIES().getFAMILY()) {
 
                 String curFamily = (String) objFam;
@@ -1921,22 +1922,39 @@ public class EmfComponent implements IComponent {
                     } else {
                         translatedFamilyName += translated;
                     }
+                    transFamilyNames += toTranslate + ";";
                     nbSub++;
                     if (nbSubTotal != nbSub) {
                         translatedFamilyName += "/"; //$NON-NLS-1$
+                        transFamilyNames += "/" + ";";
                     }
                 }
                 nb++;
                 if (nbTotal != nb) {
                     translatedFamilyName += "|"; //$NON-NLS-1$
+                    transFamilyNames += "|" + ";";
                 }
             }
-            info.setTranslatedFamilyName(translatedFamilyName);
+            info.setTranslatedFamilyName(transFamilyNames);
         } else {
+            translatedFamilyName = "";
             if (info != null) {
-                translatedFamilyName = info.getTranslatedFamilyName();
-            } else {
-                translatedFamilyName = "";
+                IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
+                String transName = info.getTranslatedFamilyName();
+                String[] transNames = transName.split(";");
+                for (String toTranslate : transNames) {
+                    if (toTranslate.equals("/") || toTranslate.equals("|")) {
+                        translatedFamilyName += toTranslate;
+                    } else {
+                        String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_"));
+                        if (translated.startsWith("!!")) { //$NON-NLS-1$
+                            // no key to translate, so use original
+                            translatedFamilyName += toTranslate;
+                        } else {
+                            translatedFamilyName += translated;
+                        }
+                    }
+                }
             }
         }
         return translatedFamilyName;
