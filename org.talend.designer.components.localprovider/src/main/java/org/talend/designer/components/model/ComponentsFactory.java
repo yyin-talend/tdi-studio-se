@@ -158,6 +158,9 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private boolean isComponentVisible(String componentName) {
+        // @FIXME there must have a bug in this method : lots of components are hidden by default.
+        if (1==1) return true; // Better to always return true for M1
+        
         Boolean visible = Boolean.TRUE;
 
         if (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, componentName)) {
