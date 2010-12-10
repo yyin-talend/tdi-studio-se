@@ -58,6 +58,7 @@
 
     <PARAMETER
       NAME="VALUE_SEPARATOR"
+      REQUIRED="true"
       FIELD="TEXT"
       NUM_ROW="4"
     >
