@@ -271,10 +271,9 @@ public class ComponentsFactory implements IComponentsFactory {
         if (cache == null) {
             cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
         }
-
+        XsdValidationCacheManager.getInstance().load();
         // 1. Load system components:
         if (!isCreated) {
-            XsdValidationCacheManager.getInstance().load();
             loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         }
         // TimeMeasure.step("initComponents", "loadComponents");
