@@ -343,6 +343,18 @@ public class ComponentsFactory implements IComponentsFactory {
             IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
             String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
             EmfComponent currentComp = new EmfComponent(info.getUriString(), name, info.getPathSource(), cache, true);
+            // if the component is not needed in the current branding,
+            // and that this one IS NOT a specific component for code generation
+            // just don't load it
+            if (availableComponents != null
+                    && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                    && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                            || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+                continue;
+            }
+            // if the component is not needed in the current branding,
+            // and that this one IS a specific component for code generation,
+            // hide it
             if (availableComponents != null
                     && !ArrayUtils.contains(availableComponents, currentComp.getName())
                     && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
@@ -556,6 +568,17 @@ public class ComponentsFactory implements IComponentsFactory {
                     pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
                     EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
                             cache, isCreated);
+                    // force to call some functions to update the cache. (to improve)
+                    currentComp.isVisibleInComponentDefinition();
+                    currentComp.isTechnical();
+                    currentComp.getOriginalFamilyName();
+                    currentComp.getTranslatedFamilyName();
+                    currentComp.getPluginFullName();
+                    currentComp.getVersion();
+                    currentComp.getModulesNeeded();
+                    currentComp.getPluginDependencies();
+                    // end of force cache update.
+
                     // if the component is not needed in the current branding,
                     // and that this one IS NOT a specific component for code generation
                     // just don't load it
