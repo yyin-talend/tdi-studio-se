@@ -2297,11 +2297,11 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isVisibleInComponentDefinition() {
+        if (visible != null) {
+            return visible;
+        }
+
         if (!isAlreadyLoad) {
-            if (visible != null) {
-                info.setIsVisibleInComponentDefinition(visible);
-                return visible;
-            }
             boolean isVisible = compType.getHEADER().isVISIBLE();
             info.setIsVisibleInComponentDefinition(isVisible);
             return isVisible;
