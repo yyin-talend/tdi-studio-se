@@ -209,6 +209,8 @@
 	            <ITEM NAME="AUTOMAPPING" VALUE="AUTOMAPPING"/>
 	            <ITEM NAME="CLOB" VALUE="CLOB"/>
 	            <ITEM NAME="BLOB" VALUE="BLOB"/>
+	            <ITEM NAME="DECIMAL" VALUE="DECIMAL"/>
+	            <ITEM NAME="NUMERIC" VALUE="NUMERIC"/>
 	          </ITEMS>
     </PARAMETER>
     
@@ -235,6 +237,8 @@
 	            <ITEM NAME="AUTOMAPPING" VALUE="AUTOMAPPING"/>
 	            <ITEM NAME="CLOB" VALUE="CLOB"/>
 	            <ITEM NAME="BLOB" VALUE="BLOB"/>
+	          	<ITEM NAME="DECIMAL" VALUE="DECIMAL"/>
+	            <ITEM NAME="NUMERIC" VALUE="NUMERIC"/>
 	          </ITEMS>
          </ITEM>
         <ITEM NAME="ISCUSTOME" FIELD="CHECK"></ITEM>
