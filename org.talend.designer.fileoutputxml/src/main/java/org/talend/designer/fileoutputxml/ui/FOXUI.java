@@ -569,11 +569,12 @@ public class FOXUI {
             // modified for wzhang. fix value can contains space.
             if ("C4".equals(property)) { //$NON-NLS-1$
                 validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
-            }
-            if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
-                validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
             } else {
-                validateLabel = StringUtil.validateLabelForXML(text.getText());
+                if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
+                    validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
+                } else {
+                    validateLabel = StringUtil.validateLabelForXML(text.getText());
+                }
             }
             if (!validateLabel) {
                 errorMessage = Messages.getString("FOXUI.21"); //$NON-NLS-1$
