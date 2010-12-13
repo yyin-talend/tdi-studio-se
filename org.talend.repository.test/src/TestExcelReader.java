@@ -5,7 +5,7 @@ import jxl.read.biff.BiffException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelReader;
 
 // ============================================================================
