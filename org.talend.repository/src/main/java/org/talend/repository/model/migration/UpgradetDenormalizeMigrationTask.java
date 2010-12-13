@@ -19,7 +19,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;

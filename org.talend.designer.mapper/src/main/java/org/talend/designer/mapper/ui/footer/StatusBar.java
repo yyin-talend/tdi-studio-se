@@ -19,8 +19,8 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.IImage;
 
 /**
  * DOC amaumont class global comment. Detailled comment
@@ -97,7 +97,7 @@ public class StatusBar extends Composite {
                 if (iimage == null) {
                     image = null;
                 } else {
-                    image = org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                    image = org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                             .getImageDesc(iimage));
                 }
 //            } else {

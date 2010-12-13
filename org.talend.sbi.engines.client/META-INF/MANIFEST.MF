@@ -6,6 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.sbi.engines.client.Activator
 Require-Bundle: org.talend.core,
  org.eclipse.ui.ide,
+ org.talend.core.repository,
  org.talend.repository,
  org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,

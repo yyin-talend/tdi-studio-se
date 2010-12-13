@@ -20,7 +20,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 
 /**

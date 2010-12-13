@@ -18,8 +18,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
@@ -27,10 +27,10 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.ParameterTypeFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

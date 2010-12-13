@@ -23,8 +23,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
 

@@ -25,8 +25,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.eclipse.emf.common.util.EList;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.repository.model.EAuthenticationMethod;

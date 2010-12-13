@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.alfrescooutput.AlfrescoOutputManager;

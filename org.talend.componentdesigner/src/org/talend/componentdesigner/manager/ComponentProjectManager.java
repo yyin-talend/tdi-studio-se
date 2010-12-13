@@ -272,7 +272,7 @@ public final class ComponentProjectManager {
      */
     private void addLibClasspathEntries(List<IClasspathEntry> libClasspaths, String entryId) {
         String path = PluginUtil.getPluginInstallPath(entryId);
-        if (StringUtils.trimToNull(path) != null) {
+        if (StringUtils.isNotEmpty(path)) {
             libClasspaths.add(JavaCore.newLibraryEntry(new Path(path), null, null));
         }
     }

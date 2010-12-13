@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.help.perl.model;
 
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.help.Activator;
 
 /**

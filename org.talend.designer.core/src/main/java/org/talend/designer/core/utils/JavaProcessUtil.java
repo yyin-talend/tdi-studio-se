@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hsqldb.lib.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
@@ -291,7 +291,7 @@ public class JavaProcessUtil {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
 
             for (Map<String, Object> line : tableValues) {
-                if (line.containsKey("LIBPATH") && !StringUtil.isEmpty((String) line.get("LIBPATH"))) {
+                if (line.containsKey("LIBPATH") && !StringUtils.isEmpty((String) line.get("LIBPATH"))) {
                     String path = (String) line.get("LIBPATH");
                     neededLibraries.add(TalendTextUtils.removeQuotes(path));
                 }

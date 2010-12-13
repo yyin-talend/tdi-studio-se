@@ -32,8 +32,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
@@ -47,6 +47,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
@@ -55,7 +56,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -93,9 +93,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                         statisticPort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                    ExportChoice.setParameterValues), isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess,
-                    processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher),
+                    isOptionChoosed(exportChoice, ExportChoice.setParameterValues),
+                    isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess, processItem, escapeSpace(contextName),
+                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
             List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
@@ -315,10 +316,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
-            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
-                    .getJobVersion());
-            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
-                    .getJobVersion(), subjobInfo.getContextName());
+            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(),
+                    subjobInfo.getJobVersion());
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(),
+                    subjobInfo.getJobVersion(), subjobInfo.getContextName());
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -409,9 +410,9 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
             p.put("JobClassName", getCorrespondingProjectName(null) //$NON-NLS-1$
-                    + "." //$NON-NLS-1$
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
+                            + "." //$NON-NLS-1$
+                            + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
+                                    .getProperty().getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription())); //$NON-NLS-1$
             p.put("rowNumber", Integer.toString(nbLine)); //$NON-NLS-1$
             p.put("host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$

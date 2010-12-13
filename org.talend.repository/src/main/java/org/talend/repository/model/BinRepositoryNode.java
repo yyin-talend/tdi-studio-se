@@ -12,8 +12,8 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import org.talend.commons.ui.image.IImage;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.repository.i18n.Messages;
 
 /**

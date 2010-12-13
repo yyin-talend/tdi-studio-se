@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.IImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

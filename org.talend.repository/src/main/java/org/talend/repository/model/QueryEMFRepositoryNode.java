@@ -12,10 +12,10 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.ECoreImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

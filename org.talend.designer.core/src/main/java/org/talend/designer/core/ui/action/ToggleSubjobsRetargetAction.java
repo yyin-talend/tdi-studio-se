@@ -16,8 +16,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.RetargetAction;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 
 /**
  * bqian class global comment. Detailled comment

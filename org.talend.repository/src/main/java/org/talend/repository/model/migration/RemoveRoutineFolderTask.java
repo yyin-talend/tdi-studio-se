@@ -17,12 +17,12 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
-import org.talend.repository.model.ResourceModelUtils;
+import org.talend.core.repository.model.ResourceModelUtils;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

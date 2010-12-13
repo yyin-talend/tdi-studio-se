@@ -365,7 +365,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
                 ProcessorUtilities
                         .generateCode(jobInfo.getJobId(), contextCombo.getText(), jobInfo.getJobVersion(), false, false);
             } catch (ProcessorException e) {
-                org.talend.commons.exception.ExceptionHandler.process(e);
+                org.talend.commons.ui.runtime.exception.ExceptionHandler.process(e);
             }
         }
 

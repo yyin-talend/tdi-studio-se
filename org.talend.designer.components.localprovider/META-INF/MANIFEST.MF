@@ -15,7 +15,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,
  org.talend.librariesmanager,
- org.talend.model
+ org.talend.model,
+ org.apache.log4j,
+ org.eclipse.emf.ecore.xmi,
+ org.talend.libraries.apache,
+ org.apache.xerces
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: ca.uhn.hl7v2,
@@ -116,4 +120,4 @@ Bundle-ClassPath: .,
  components/tHL7Input/hapi-structures-v25-1.0.1.jar,
  components/tHL7Input/hapi-structures-v251-1.0.1.jar,
  components/tHL7Input/hapi-structures-v26-1.0.1.jar
-Import-Package: org.talend.repository.utils
+Import-Package: org.talend.core.repository.utils

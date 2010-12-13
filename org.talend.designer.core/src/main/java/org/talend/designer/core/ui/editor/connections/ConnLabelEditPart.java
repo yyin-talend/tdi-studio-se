@@ -29,7 +29,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.talend.commons.utils.workbench.gef.LabelCellEditorLocator;
+import org.talend.commons.ui.utils.workbench.gef.LabelCellEditorLocator;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;

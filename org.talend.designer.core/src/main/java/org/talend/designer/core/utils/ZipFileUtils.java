@@ -28,7 +28,7 @@ import java.util.jar.JarOutputStream;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
 public class ZipFileUtils {
 

@@ -13,9 +13,11 @@
 package org.talend.expressionbuilder;
 
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.core.model.process.INode;
+import org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
-import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -26,11 +28,10 @@ import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 public class ExpressionBuilderService implements IExpressionBuilderDialogService {
 
     /*
-     * (non-Javadoc)
+     * (non-Jsdoc)
      * 
-     * @see
-     * org.talend.expressionbuilder.IExpressionBuilderDialogService#expressionBuilderFactory(org.eclipse.swt.widgets
-     * .Composite, org.talend.expressionbuilder.IExpressionConsumer)
+     * @see org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService#getExpressionBuilderInstance(Composite,
+     * IExpressionDataBean, INode)
      */
     public IExpressionBuilderDialogController getExpressionBuilderInstance(Composite parent, IExpressionDataBean dataBean,
             INode component) {

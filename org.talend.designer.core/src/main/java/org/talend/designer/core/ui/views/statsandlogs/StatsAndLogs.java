@@ -15,7 +15,7 @@ package org.talend.designer.core.ui.views.statsandlogs;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
 /**
  * ftang class global comment. Detailed comment <br/>

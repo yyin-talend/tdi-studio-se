@@ -13,8 +13,8 @@
 package org.talend.designer.core.ui.editor.subjobcontainer;
 
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.core.ui.editor.connections.CollapseFigure;
 
 

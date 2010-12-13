@@ -24,6 +24,7 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.metadata.IMetadataColumn;

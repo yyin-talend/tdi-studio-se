@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.repository.i18n.Messages;
 
 /**

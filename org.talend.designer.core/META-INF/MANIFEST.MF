@@ -19,7 +19,7 @@ Require-Bundle: org.talend.model,
  org.eclipse.ltk.core.refactoring,
  org.talend.librariesmanager,
  com.ibm.icu,
- org.talend.repository,
+ org.talend.commons,
  org.talend.commons.ui,
  org.eclipse.debug.ui,
  org.apache.axis,
@@ -29,8 +29,13 @@ Require-Bundle: org.talend.model,
  org.eclipse.ui.intro,
  org.eclipse.help,
  org.eclipse.jdt.core.manipulation,
+ org.talend.core.repository,
  org.talend.core.runtime,
- org.talend.metadata.managment
+ org.talend.metadata.managment,
+ org.talend.repository,
+ org.talend.libraries.apache,
+ org.talend.libraries.dom4j-jaxen,
+ org.talend.libraries
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

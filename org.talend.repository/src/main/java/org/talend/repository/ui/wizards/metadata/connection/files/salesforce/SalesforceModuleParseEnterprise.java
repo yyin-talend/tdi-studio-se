@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.repository.i18n.Messages;
 

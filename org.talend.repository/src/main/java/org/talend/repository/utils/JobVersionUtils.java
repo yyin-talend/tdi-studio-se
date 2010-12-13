@@ -15,10 +15,10 @@ package org.talend.repository.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**

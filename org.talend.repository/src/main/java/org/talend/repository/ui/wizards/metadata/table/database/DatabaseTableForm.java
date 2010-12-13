@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -48,8 +49,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.hsqldb.lib.StringUtil;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -78,6 +78,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -90,7 +91,6 @@ import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectNodeHelper;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.GuessSchemaUtil;
@@ -907,8 +907,7 @@ public class DatabaseTableForm extends AbstractForm {
 
             String[] exisNames = TableHelper.getTableNames(getConnection(), table.getLabel());
             List existNames = existingNames == null ? Collections.EMPTY_LIST : Arrays.asList(exisNames);
-
-            if (StringUtil.isEmpty(table.getLabel())) { //$NON-NLS-1$
+            if (StringUtils.isEmpty(table.getLabel())) { //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlert")); //$NON-NLS-1$
                 return false;
 

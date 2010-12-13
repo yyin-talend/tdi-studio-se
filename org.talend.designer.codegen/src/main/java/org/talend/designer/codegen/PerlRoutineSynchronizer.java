@@ -127,8 +127,8 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
             IProject perlProject = service.getProject(ECodeLanguage.PERL);
 
             String projectFolderName = jobInfo.getProjectFolderName();
-            IFile file = perlProject.getFile(PerlResourcesHelper.getJobFileName(projectFolderName, jobInfo.getJobName(), jobInfo
-                    .getJobVersion()));
+            IFile file = perlProject.getFile(PerlResourcesHelper.getJobFileName(projectFolderName, jobInfo.getJobName(),
+                    jobInfo.getJobVersion()));
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);

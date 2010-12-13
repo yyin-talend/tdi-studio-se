@@ -61,7 +61,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
@@ -79,11 +80,10 @@ import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.utils.TableUtils;
-import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.ui.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
-import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -426,10 +426,10 @@ public abstract class DataMapTableView extends Composite {
                 if (getDataMapTable() instanceof AbstractInOutTable) {
 
                     if (imageKey == null) {
-                        imageKey = org.talend.commons.ui.image.ImageProvider.getImage(EImage.KEY_ICON);
+                        imageKey = org.talend.commons.ui.runtime.image.ImageProvider.getImage(EImage.KEY_ICON);
                     }
                     if (imageEmpty == null) {
-                        imageEmpty = org.talend.commons.ui.image.ImageProvider.getImage(EImage.EMPTY);
+                        imageEmpty = org.talend.commons.ui.runtime.image.ImageProvider.getImage(EImage.EMPTY);
                     }
                 }
                 newTableViewerCreator.setLabelProvider(new DefaultTableLabelProvider(newTableViewerCreator) {

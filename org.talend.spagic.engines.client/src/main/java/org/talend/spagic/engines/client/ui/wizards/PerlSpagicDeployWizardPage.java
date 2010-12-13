@@ -18,9 +18,9 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
@@ -136,8 +136,8 @@ public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
         }
         if (process.length > 0) {
             try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }

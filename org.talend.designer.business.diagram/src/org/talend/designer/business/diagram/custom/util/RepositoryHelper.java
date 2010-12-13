@@ -26,11 +26,11 @@ import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.Repository;
 import org.talend.designer.business.model.business.TalendItem;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

@@ -18,8 +18,8 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 
 /**
  * DOC Administrator class global comment. Detailled comment

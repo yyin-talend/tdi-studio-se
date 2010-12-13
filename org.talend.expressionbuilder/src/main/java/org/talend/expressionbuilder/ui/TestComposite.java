@@ -46,10 +46,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.JavaTestShadow;
 import org.talend.expressionbuilder.test.shadow.ExpressionTestMain;
-import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

@@ -16,7 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 

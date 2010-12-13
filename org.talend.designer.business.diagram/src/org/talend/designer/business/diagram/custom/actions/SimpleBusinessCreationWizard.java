@@ -17,7 +17,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -25,10 +26,9 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 public class SimpleBusinessCreationWizard extends RepositoryWizard {

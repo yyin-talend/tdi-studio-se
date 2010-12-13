@@ -43,7 +43,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorPart;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -53,9 +55,7 @@ import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
-import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
-import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

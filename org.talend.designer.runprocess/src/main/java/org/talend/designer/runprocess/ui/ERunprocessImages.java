@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui;
 
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.designer.runprocess.RunProcessPlugin;
 
 /**

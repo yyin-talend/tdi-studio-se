@@ -72,10 +72,10 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.rulers.IColumnSupport;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -103,6 +103,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.ICreateXtextProcessService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
@@ -139,7 +140,6 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * DOC qzhang class global comment. Detailled comment

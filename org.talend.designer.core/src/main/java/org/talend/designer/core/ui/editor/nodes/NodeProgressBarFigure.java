@@ -22,9 +22,9 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 
 /**
  * DOC Administrator class global comment. Detailled comment

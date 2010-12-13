@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.designer.abstractmap.MapPlugin;
 import org.talend.designer.abstractmap.i18n.Messages;
 import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;

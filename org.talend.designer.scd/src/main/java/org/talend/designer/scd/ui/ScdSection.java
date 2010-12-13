@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.util.SWTResourceManager;
 
@@ -125,12 +125,12 @@ public class ScdSection {
     protected void createToolbar(Composite headerComposite) {
         toolBar = new ToolBar(headerComposite, SWT.FLAT | SWT.RIGHT | SWT.NONE);
         addEntryItem = new ToolItem(toolBar, SWT.PUSH);
-        addEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+        addEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                 .getImageDesc(EImage.ADD_ICON)));
         toolBar.setBackground(SWTResourceManager.getColor(IColorConstants.YELLOW));
 
         removeEntryItem = new ToolItem(toolBar, SWT.PUSH);
-        removeEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+        removeEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                 .getImageDesc(EImage.MINUS_ICON)));
         // removeEntryItem.setBackground(SWTResourceManager.getColor(IColorConstants.YELLOW));
 

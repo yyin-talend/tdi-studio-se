@@ -18,4 +18,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.libraries.dom4j-jaxen,
  org.talend.core.runtime,
  org.talend.model,
- org.talend.metadata.managment
+ org.talend.metadata.managment,
+ org.eclipse.jface,
+ org.eclipse.ui.workbench,
+ org.apache.log4j,
+ org.eclipse.gef

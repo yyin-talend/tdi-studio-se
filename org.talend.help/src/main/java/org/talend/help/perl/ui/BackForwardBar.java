@@ -26,14 +26,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.help.perl.model.EImage;
 import org.talend.help.perl.model.Node;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ÐÇÆÚÎå, 29 ¾ÅÔÂ 2006) nrousseau $
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 29 ï¿½ï¿½ï¿½ï¿½ 2006) nrousseau $
  * 
  */
 public class BackForwardBar {

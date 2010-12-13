@@ -36,9 +36,9 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.LinkType;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * ggu class global comment. Detailled comment

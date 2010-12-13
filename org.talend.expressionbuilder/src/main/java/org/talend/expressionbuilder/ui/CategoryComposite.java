@@ -43,12 +43,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.talend.commons.expressionbuilder.Variable;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.Category;
 import org.talend.expressionbuilder.model.CategoryManager;
-import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.test.shadow.VirtualMetadataColumn;
 import org.talend.expressionbuilder.ui.proposal.ExpressionContentProposal;
 

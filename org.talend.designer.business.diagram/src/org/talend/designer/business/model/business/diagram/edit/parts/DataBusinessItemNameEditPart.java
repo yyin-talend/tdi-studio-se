@@ -46,7 +46,7 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessTextSelectionEditPolicy;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;

@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.epic.core.preferences.PerlMainPreferencePage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.LoginException;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
@@ -45,9 +45,9 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 
 /**

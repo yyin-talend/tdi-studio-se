@@ -52,9 +52,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.ListDialog;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -105,6 +105,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
@@ -137,13 +138,12 @@ import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.MetadataTableRepositoryObject;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
@@ -620,8 +620,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (store.component != null) {
                     list.add(store);
                 } else {
-                    MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
-                            .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
+                    MessageDialog.openInformation(editor.getEditorSite().getShell(),
+                            Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
                             Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
                 }
             }
@@ -675,9 +675,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
                     } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
                         LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
-                    } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                            TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
-                            node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
+                    } else if (CorePlugin.getDefault().getDesignerCoreService()
+                            .getPreferenceStore(TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
+                                    node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
                         LabelValue = selectedNode.getObject().getLabel();
                     }
                     if (LabelValue != null) {
@@ -801,8 +801,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             final String name = "SOURCE_LIB"; //$NON-NLS-1$
                             IElementParameter libParam = node.getElementParameter(name);
                             if (libParam != null) {
-                                Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
-                                        .addQuotes(databaseConnection.getSID()));
+                                Command libSettingCmd = new PropertyChangeCommand(node, name,
+                                        TalendTextUtils.addQuotes(databaseConnection.getSID()));
                                 list.add(libSettingCmd);
                             }
 
@@ -828,8 +828,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC
                     && PluginChecker.isEBCDICPluginLoaded()) {
                 for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
-                    Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
-                            .getLabel(), ConvertionHelper.convert(table));
+                    Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
                     list.add(ebcdicCmd);
                 }
             }
@@ -870,8 +870,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // fore HL7, by gcui
                 if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
                     for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
-                        Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS, table
-                                .getLabel(), ConvertionHelper.convert(table));
+                        Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
+                                table.getLabel(), ConvertionHelper.convert(table));
                         list.add(hl7Cmd);
                     }
                 }
@@ -1048,13 +1048,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 //                String displayName = "Rules:" + rulesItem.getProperty().getLabel(); //$NON-NLS-N$
                 IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
                 if (propertyParam != null) {
-                    propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(
-                            EmfComponent.REPOSITORY);
+                    propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
+                            .setValue(EmfComponent.REPOSITORY);
                     // propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
                     // .setListItemsDisplayName(new String[] { displayName });
                     final String showId = rulesItem.getProperty().getId();
-                    PropertyChangeCommand command6 = new PropertyChangeCommand(node, EParameterName.REPOSITORY_PROPERTY_TYPE
-                            .getName(), showId);
+                    PropertyChangeCommand command6 = new PropertyChangeCommand(node,
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
                     list.add(command6);
                 }
             }
@@ -1066,8 +1066,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
                 // .setListItemsDisplayName(new String[] { displayName });
                 final String showId = linkItem.getProperty().getId();
-                PropertyChangeCommand command7 = new PropertyChangeCommand(node, EParameterName.REPOSITORY_PROPERTY_TYPE
-                        .getName(), showId);
+                PropertyChangeCommand command7 = new PropertyChangeCommand(node,
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
                 list.add(command7);
             }
         }
@@ -1142,8 +1142,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             // for EBCDIC (bug 5860)
             if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
-                Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
-                        .getLabel(), ConvertionHelper.convert(table));
+                Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                        table.getLabel(), ConvertionHelper.convert(table));
                 return ebcdicCmd;
             }
             if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
@@ -1226,9 +1226,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private Command getPropertyPublicPart(RepositoryNode selectedNode, IElementParameter param, Node node,
             ConnectionItem connectionItem) {
         param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-        ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
-                .getName()
-                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId()); //$NON-NLS-1$
+        ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(
+                node,
+                connectionItem.getConnection(),
+                param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId()); //$NON-NLS-1$
         return command2;
 
     }

@@ -6,18 +6,19 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.ui.image.OverlayImage;
-import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.OverlayImage;
+import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.designer.business.diagram.custom.commands.ChangeTalendItemLabelCommand;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -26,7 +27,6 @@ import org.talend.designer.business.model.business.Routine;
 import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProvider {
 

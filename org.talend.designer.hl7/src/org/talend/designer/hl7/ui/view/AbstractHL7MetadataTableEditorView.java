@@ -23,9 +23,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
@@ -542,7 +542,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
 
         column.setBeanPropertyAccessors(getLabelAccessor());
         final Image imageKey = ImageProvider.getImage(EImage.KEY_ICON);
-        final Image imageEmpty = org.talend.commons.ui.image.ImageProvider.getImage(EImage.EMPTY);
+        final Image imageEmpty = org.talend.commons.ui.runtime.image.ImageProvider.getImage(EImage.EMPTY);
         final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
         column.setCellEditor(cellEditor);
         cellEditor.addListener(new DialogErrorForCellEditorListener(cellEditor, column) {

@@ -22,7 +22,7 @@ import java.net.UnknownHostException;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 
 /**
  * Sockte server that listening the notification from the expression jobs..

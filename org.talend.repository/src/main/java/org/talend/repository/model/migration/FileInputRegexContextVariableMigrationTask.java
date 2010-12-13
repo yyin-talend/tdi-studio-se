@@ -18,10 +18,10 @@ import java.util.GregorianCalendar;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * This migration task did nothing but for importing job(s) from TOS 3.0.0. <br/>

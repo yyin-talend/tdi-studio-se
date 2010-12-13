@@ -15,15 +15,15 @@ package org.talend.repository.ui.wizards;
 import java.util.List;
 
 import org.eclipse.ui.IWorkbench;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ILastVersionChecker;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 import org.talend.repository.ui.wizards.documentation.DocumentationCreateWizard;
 import org.talend.repository.ui.wizards.documentation.DocumentationUpdateWizard;

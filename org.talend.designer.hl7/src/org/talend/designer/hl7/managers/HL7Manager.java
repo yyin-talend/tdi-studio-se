@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MultiSchemasUtil;

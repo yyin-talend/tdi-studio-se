@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui;
 
-import org.talend.commons.ui.image.IImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.repository.RepositoryPlugin;
 
 /**

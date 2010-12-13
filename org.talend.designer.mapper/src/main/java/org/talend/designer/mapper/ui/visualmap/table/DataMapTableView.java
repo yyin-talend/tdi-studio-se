@@ -75,8 +75,10 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
@@ -87,8 +89,8 @@ import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
@@ -101,11 +103,10 @@ import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TableUtils;
-import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.ui.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
@@ -117,6 +118,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
+import org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -150,8 +152,6 @@ import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvi
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.talend.expressionbuilder.IExpressionBuilderDialogService;
-import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -604,8 +604,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
      * DOC amaumont Comment method "createTableForColumns".
      */
     protected void createTableForColumns() {
-        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(abstractDataMapTable
-                .getTableColumnsEntriesModel(), centerComposite) {
+        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(
+                abstractDataMapTable.getTableColumnsEntriesModel(), centerComposite) {
 
             @Override
             protected void createColumns(TableViewerCreator<IColumnEntry> tableViewerCreator, Table table) {
@@ -644,10 +644,10 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 if (getDataMapTable() instanceof AbstractInOutTable) {
 
                     if (imageKey == null) {
-                        imageKey = org.talend.commons.ui.image.ImageProvider.getImage(EImage.KEY_ICON);
+                        imageKey = org.talend.commons.ui.runtime.image.ImageProvider.getImage(EImage.KEY_ICON);
                     }
                     if (imageEmpty == null) {
-                        imageEmpty = org.talend.commons.ui.image.ImageProvider.getImage(EImage.EMPTY);
+                        imageEmpty = org.talend.commons.ui.runtime.image.ImageProvider.getImage(EImage.EMPTY);
                     }
                 }
                 newTableViewerCreator.setLabelProvider(new DefaultTableLabelProvider(newTableViewerCreator) {
@@ -1697,8 +1697,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 IExpressionBuilderDialogService.class);
 
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-        final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator
-                .getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
+        final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(
+                tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
 
             @Override
             public void activate() {
@@ -1758,8 +1758,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
-                            .getCurrentModifiedBean()
-                            : modifiedObjectInfo.getPreviousModifiedBean());
+                            .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
                     mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
                     resizeTextEditor(text, tableViewerCreator);
                 }
@@ -1827,8 +1826,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
                 if (styledTextHandler.getCurrentEntry() != currentModifiedEntry) {
                     styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                    styledTextHandler
-                            .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                    styledTextHandler.setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
                 }
             }
 
@@ -2173,8 +2171,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                         IExpressionBuilderDialogService.class);
 
                 IExpressionBuilderDialogController dialogForTable = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
-                        .getExpressionBuilderInstance(DataMapTableView.this.getCenterComposite(), null, mapperManager
-                                .getAbstractMapComponent());
+                        .getExpressionBuilderInstance(DataMapTableView.this.getCenterComposite(), null,
+                                mapperManager.getAbstractMapComponent());
 
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
@@ -2257,8 +2255,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                     styledTextHandler.getStyledText().setEnabled(true);
                     styledTextHandler.getStyledText().setEditable(true);
                     expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
-                    expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
-                            .getExpressionFilter());
+                    expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
+                            table.getExpressionFilter());
                     expressionProposalStyledText.setContentProposalProvider(expressionProposalProviderForExpressionFilter);
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
                             Arrays.<ITableEntry> asList(currentExpressionFilterEntry), true, false);
@@ -2379,7 +2377,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             // styledTextHandler.getStyledText().replaceTextRange(event.start,
             // event.length, event.replacedText);
             // }
-            //                
+            //
             // });
 
             ExpressionEditorToMapperStyledTextKeyListener keyAndModifyListener = new ExpressionEditorToMapperStyledTextKeyListener(
@@ -2510,8 +2508,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             if (this.expressionProposalProviderForExpressionFilter == null) {
                 this.expressionProposalProviderForExpressionFilter = createExpressionProposalProvider();
             }
-            expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
-                    .getExpressionFilter());
+            expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
+                    table.getExpressionFilter());
             table.getExpressionFilter().setName(EXPRESSION_FILTER_ENTRY);
             this.proposalForExpressionFilterText = ProposalUtils.getCommonProposal(expressionFilterText,
                     expressionProposalProviderForExpressionFilter);

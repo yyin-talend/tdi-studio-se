@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.ui.images.CoreImageProvider;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**

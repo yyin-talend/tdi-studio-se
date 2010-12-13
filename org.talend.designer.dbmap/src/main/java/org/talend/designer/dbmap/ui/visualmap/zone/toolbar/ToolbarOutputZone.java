@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
@@ -65,13 +65,13 @@ public class ToolbarOutputZone extends ToolbarZone {
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
-        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
-        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.removeOutputTable")); //$NON-NLS-1$
 
         addCommonsComponents();

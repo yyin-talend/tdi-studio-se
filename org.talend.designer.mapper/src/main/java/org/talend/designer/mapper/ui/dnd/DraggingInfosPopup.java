@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.designer.mapper.i18n.Messages;
 
 /**

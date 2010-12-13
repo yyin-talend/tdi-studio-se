@@ -21,15 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Task replace run before and after with then run connection.

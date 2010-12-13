@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.process.IContextParameter;

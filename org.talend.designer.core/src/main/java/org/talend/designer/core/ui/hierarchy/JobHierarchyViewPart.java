@@ -444,7 +444,7 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
                         .getActiveWorkbenchWindow());
                 // fHierarchyLifeCycle.ensureRefreshedTypeHierarchy(inputElement, getSite().getWorkbenchWindow());
             } catch (InvocationTargetException e) {
-                org.talend.commons.exception.ExceptionHandler.process(e);
+                org.talend.commons.ui.runtime.exception.ExceptionHandler.process(e);
                 clearInput();
                 return;
             } catch (InterruptedException e) {

@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
@@ -62,13 +62,13 @@ public class ToolbarInputZone extends ToolbarZone {
     private void createComponents() {
         addAlias = new ToolItem(getToolBarActions(), SWT.PUSH);
         addAlias.setToolTipText(Messages.getString("ToolbarInputZone.widgetTooltip.addAlias")); //$NON-NLS-1$
-        addAlias.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+        addAlias.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                 .getImageDesc(EImage.ADD_ICON)));
 
         removeAlias = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeAlias.setEnabled(false);
-        removeAlias.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeAlias.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeAlias.setToolTipText(Messages.getString("ToolbarInputZone.widgetTooltip.removeAlias")); //$NON-NLS-1$
 
         addCommonsComponents();

@@ -16,8 +16,8 @@ import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 
 /**
  * Figure used to represent a button with expanded and collapsed icon.

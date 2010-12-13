@@ -42,10 +42,10 @@ import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.RepositoryFactoryProvider;
+import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.designer.codegen.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
-import org.talend.repository.utils.ProjectHelper;
 
 /***/
 public class CodeGenInit implements IApplication {

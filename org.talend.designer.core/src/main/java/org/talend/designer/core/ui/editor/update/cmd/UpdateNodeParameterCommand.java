@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.eclipse.gef.commands.Command;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;

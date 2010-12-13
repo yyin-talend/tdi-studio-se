@@ -14,10 +14,10 @@ package org.talend.designer.core.ui.hierarchy;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 
 /**

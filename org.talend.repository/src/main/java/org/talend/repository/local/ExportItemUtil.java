@@ -40,8 +40,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
 import org.talend.commons.emf.EmfHelper;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -57,6 +57,8 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
@@ -64,8 +66,6 @@ import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.utils.ResourceFilenameHelper;
 
 /***/
 public class ExportItemUtil {

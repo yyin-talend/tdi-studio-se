@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.AddQuotesInPropertyComponentConversion;

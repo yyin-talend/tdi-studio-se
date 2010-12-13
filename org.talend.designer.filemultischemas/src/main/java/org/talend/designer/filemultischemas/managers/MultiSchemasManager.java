@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;

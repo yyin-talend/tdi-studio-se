@@ -44,20 +44,20 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.repository.model.DynamicButtonBean;
+import org.talend.core.repository.model.DynamicChoiceBean;
+import org.talend.core.repository.model.DynamicFieldBean;
+import org.talend.core.repository.model.IRepositoryFactory;
+import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.DynamicButtonBean;
-import org.talend.repository.model.DynamicChoiceBean;
-import org.talend.repository.model.DynamicFieldBean;
-import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.login.LoginComposite;
 
 /**

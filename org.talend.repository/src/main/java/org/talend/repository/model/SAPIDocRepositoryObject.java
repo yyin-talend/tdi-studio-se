@@ -24,6 +24,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.repository.model.ISubRepositoryObject;
 
 /**
  * DOC zli class global comment. Detailled comment

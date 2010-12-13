@@ -15,8 +15,8 @@ package org.talend.repository.preference;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.talend.core.model.properties.Status;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryPreferenceStore;
 
 /**

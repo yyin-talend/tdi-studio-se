@@ -38,11 +38,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 
 /**

@@ -28,8 +28,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.emf.EmfHelper;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -40,13 +40,13 @@ import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.model.ILocalRepositoryFactory;
+import org.talend.core.repository.model.ILocalRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.repository.utils.URIHelper;
+import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.ResourceModelUtils;
-import org.talend.repository.utils.URIHelper;
-import org.talend.repository.utils.XmiResourceManager;
 
 /**
  * DOC nrousseau class global comment. Detailled comment

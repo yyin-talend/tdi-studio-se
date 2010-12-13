@@ -21,7 +21,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Substitution;
 import org.apache.oro.text.regex.Util;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;

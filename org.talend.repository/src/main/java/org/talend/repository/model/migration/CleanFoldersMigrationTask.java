@@ -18,16 +18,16 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
+import org.talend.core.repository.model.ILocalRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.migration.AbstractMigrationTask;
 import org.talend.migration.IProjectMigrationTask;
-import org.talend.repository.model.ILocalRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC Administrator class global comment. Detailled comment

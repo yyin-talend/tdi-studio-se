@@ -25,7 +25,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.properties.SnippetItem;
 import org.talend.core.model.repository.ERepositoryObjectType;

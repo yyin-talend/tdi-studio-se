@@ -31,13 +31,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.expressionbuilder.Variable;
+import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.JavaFunctionParser;
-import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.ui.CategoryComposite;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 

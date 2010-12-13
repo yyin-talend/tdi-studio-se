@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.jboss.serial.io.JBossObjectInputStream;
 import org.jboss.serial.io.JBossObjectOutputStream;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.components.persistent.utils.FileUtils;
 
 import routines.system.IPersistableRow;

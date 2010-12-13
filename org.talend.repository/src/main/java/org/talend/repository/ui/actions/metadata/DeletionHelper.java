@@ -13,9 +13,9 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
 /**

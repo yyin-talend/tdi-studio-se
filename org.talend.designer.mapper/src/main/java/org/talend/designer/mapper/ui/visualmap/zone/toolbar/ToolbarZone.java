@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.image.ImageInfo;
@@ -81,12 +81,12 @@ public abstract class ToolbarZone {
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
         upTableButton.setToolTipText(getMoveUpTooltipText());
-        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+        upTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                 .getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
-        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+        downTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
                 .getImageDesc(EImage.DOWN_ICON)));
         downTableButton.setToolTipText(getMoveDownTooltipText());
 

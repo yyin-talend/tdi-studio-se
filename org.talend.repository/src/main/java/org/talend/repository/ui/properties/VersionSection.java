@@ -52,7 +52,7 @@ import org.talend.core.i18n.Messages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.IRepositoryNode.ENodeType;

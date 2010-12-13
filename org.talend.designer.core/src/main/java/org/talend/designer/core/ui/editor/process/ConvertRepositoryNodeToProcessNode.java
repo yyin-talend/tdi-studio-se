@@ -13,7 +13,7 @@
 package org.talend.designer.core.ui.editor.process;
 
 import org.eclipse.gef.commands.CompoundCommand;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataConnection;

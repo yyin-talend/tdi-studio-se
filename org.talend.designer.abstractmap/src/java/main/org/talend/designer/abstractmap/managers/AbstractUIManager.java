@@ -13,7 +13,7 @@
 package org.talend.designer.abstractmap.managers;
 
 import org.apache.log4j.Level;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
 
 /**

@@ -21,7 +21,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.proposal.xpath.XPathContentProposal;
 import org.talend.repository.i18n.Messages;
 import org.w3c.dom.Node;

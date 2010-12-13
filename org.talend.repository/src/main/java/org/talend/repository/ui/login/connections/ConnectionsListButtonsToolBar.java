@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;

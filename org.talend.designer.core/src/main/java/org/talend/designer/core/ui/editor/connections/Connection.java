@@ -36,6 +36,8 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.repository.model.ILocalRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -45,8 +47,6 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ILocalRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Class that define the connection. It's the model part of the Gef element <br/>

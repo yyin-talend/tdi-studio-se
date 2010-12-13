@@ -18,7 +18,7 @@ import org.eclipse.draw2d.Locator;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment

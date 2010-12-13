@@ -23,15 +23,15 @@ import java.util.List;
 
 import jxl.Workbook;
 
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC gldu class global comment. Detailled comment

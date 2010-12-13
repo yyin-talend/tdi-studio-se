@@ -15,7 +15,7 @@ package org.talend.expressionbuilder.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.expressionbuilder.test.shadow.Variable;
+import org.talend.commons.expressionbuilder.Variable;
 
 /**
  * The argument that transfered to code generator.

@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.Path;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;

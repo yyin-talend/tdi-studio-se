@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.EDatabaseConnVar;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
