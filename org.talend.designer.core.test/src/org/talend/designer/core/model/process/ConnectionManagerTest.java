@@ -33,11 +33,13 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.component_cache.ComponentsCache;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -61,15 +63,25 @@ public class ConnectionManagerTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        ComponentsCache cache = ComponentManager.getInstance();
+
         String componentDir = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER).getAbsolutePath();
+
         String sourceComponentPath = componentDir.concat(File.separator).concat("tFileInputDelimited").concat(File.separator)
                 .concat("tFileInputDelimited_java.xml");
         File sourceXmlMainFile = new File(sourceComponentPath);
-        EmfComponent sourceComponent = new EmfComponent(sourceXmlMainFile, IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        String pathName = sourceXmlMainFile.getAbsolutePath();
+        pathName = pathName.replace(componentDir, "");
+        EmfComponent sourceComponent = new EmfComponent(pathName, sourceXmlMainFile.getParentFile().getName(), componentDir,
+                cache, false);
+
         String targetComponentPath = componentDir.concat(File.separator).concat("tFileOutputDelimited").concat(File.separator)
                 .concat("tFileOutputDelimited_java.xml");
         File targetXmlMainFile = new File(targetComponentPath);
-        EmfComponent targetComponent = new EmfComponent(targetXmlMainFile, IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        pathName = targetXmlMainFile.getAbsolutePath();
+        pathName = pathName.replace(componentDir, "");
+        EmfComponent targetComponent = new EmfComponent(pathName, targetXmlMainFile.getParentFile().getName(), componentDir,
+                cache, false);
 
         Property property = getMyProperty();
         org.talend.designer.core.ui.editor.process.Process process = new Process(property);
