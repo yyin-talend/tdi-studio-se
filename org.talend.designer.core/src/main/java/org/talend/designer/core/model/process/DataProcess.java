@@ -228,6 +228,7 @@ public class DataProcess {
                 dataConnec.setLineStyle(connection.getLineStyle());
                 dataConnec.setTraceConnection(connection.isTraceConnection());
                 dataConnec.setTracesCondition(connection.getTracesCondition());
+                dataConnec.setMonitorConnection(connection.isMonitorConnection());
                 dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER))
                         && (connection.getTarget().getMetadataList().size() > 0)) {
@@ -399,6 +400,7 @@ public class DataProcess {
             dataConnec.setLineStyle(connection.getLineStyle());
         }
         dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
         dataConnec.setTracesCondition(connection.getTracesCondition());
         dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setMetadataTable(connection.getMetadataTable());
@@ -919,6 +921,7 @@ public class DataProcess {
                     dataConnec.setTraceConnection(connection.isTraceConnection());
                     dataConnec.setTracesCondition(connection.getTracesCondition());
                     dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+                    dataConnec.setMonitorConnection(connection.isMonitorConnection());
                     // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                     if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
                         dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
@@ -1685,6 +1688,7 @@ public class DataProcess {
         dataConnec.setConnectorName(mergeOutputConnection.getConnectorName());
         dataConnec.setMetadataTable(newMetadata);
         dataConnec.setTraceConnection(mergeOutputConnection.isTraceConnection());
+        dataConnec.setMonitorConnection(mergeOutputConnection.isMonitorConnection());
         dataConnec.setTracesCondition(mergeOutputConnection.getTracesCondition());
         dataConnec.setEnabledTraceColumns(mergeOutputConnection.getEnabledTraceColumns());
         dataConnec.setName(mergeOutputConnection.getName()); //$NON-NLS-1$
@@ -1878,6 +1882,7 @@ public class DataProcess {
         dataConnec.setMetadataTable(newMetadata);
         dataConnec.setTraceConnection(connection.isTraceConnection());
         dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
         dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setName("pRow_" + connection.getName()); //$NON-NLS-1$
         dataConnec.setSource(asyncInNode);
