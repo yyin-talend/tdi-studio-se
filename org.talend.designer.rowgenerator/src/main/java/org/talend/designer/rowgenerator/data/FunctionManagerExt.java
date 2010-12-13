@@ -136,7 +136,33 @@ public class FunctionManagerExt extends FunctionManager {
      * @return
      */
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
+
         Function currentFun = null;
+        // for bug 0017094
+
+        if (value != null && value.split("\\.").length > 3 && value.split("\\(").length > 3) {
+            int index = -1;
+            int k = 0;
+            for (int i = 0; i < funs.size(); i++) { // && !isExsit
+                Function function = funs.get(i);
+                int indexOf = value.indexOf(function.getName());
+                if (index == -1 || (indexOf > -1 && index > indexOf)) {
+                    index = indexOf;
+                    k = i;
+                }
+            }
+            int firstIndex = value.indexOf("(");
+            int lastIndex = value.lastIndexOf(")");
+            if (firstIndex < lastIndex && lastIndex < value.length()) {
+                String str = value.substring(firstIndex + 1, lastIndex);
+                String[] split = str.split(" ,");
+                if (funs.get(k).getParameters().size() == split.length) {
+                    currentFun = funs.get(k).clone(split);
+                }
+            }
+            return currentFun;
+        }
+
         boolean isExsit = false;
         for (int i = 0; i < funs.size() && !isExsit; i++) {
             Function function = funs.get(i);
