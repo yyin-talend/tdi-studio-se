@@ -137,10 +137,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 			IConnection conn = conns_dynamic.get(0);
 			if(!("".equals(updateSetStmt.toString()))) {
 %>
-				String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%			} else {
 %>
-				String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+				String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 			}
 		}
@@ -161,10 +161,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				if(!("".equals(updateSetStmt.toString()))) {
 %>
-					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%				} else {
 %>
-					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 				}
 			}
@@ -187,10 +187,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 				}
 				if(!("".equals(updateSetStmt.toString()))) {
 %>
-					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%>, "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%				} else {
 %>
-					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+" WHERE <%=updateWhereStmt.toString()%>";
+					String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET "+DynamicUtils.getUpdateSet(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+" WHERE <%=updateWhereStmt.toString()%>";
 <%
 				}
 			}
