@@ -244,7 +244,7 @@ public final class ComponentProjectManager {
      */
     private IClasspathEntry[] getDefaultJREClasspathEntries() {
         IPath path = new Path(
-                "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/"
+                "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" //$NON-NLS-1$
                         + JavaUtil.getDefaultEEName());
         return new IClasspathEntry[] { JavaCore.newContainerEntry(path) };
     }
@@ -256,11 +256,11 @@ public final class ComponentProjectManager {
      */
     private List<IClasspathEntry> getDefaultUtilClasspathEntries() {
         List<IClasspathEntry> ces = new ArrayList<IClasspathEntry>();
-        addLibClasspathEntries(ces, "org.talend.core.runtime");
-        addLibClasspathEntries(ces, "org.talend.metadata.managment");
-        addLibClasspathEntries(ces, "org.talend.core");
-        addLibClasspathEntries(ces, "org.talend.designer.codegen");
-        addLibClasspathEntries(ces, "org.talend.commons");
+        addLibClasspathEntries(ces, "org.talend.core.runtime"); //$NON-NLS-1$
+        addLibClasspathEntries(ces, "org.talend.metadata.managment"); //$NON-NLS-1$
+        addLibClasspathEntries(ces, "org.talend.core"); //$NON-NLS-1$
+        addLibClasspathEntries(ces, "org.talend.designer.codegen"); //$NON-NLS-1$
+        addLibClasspathEntries(ces, "org.talend.commons"); //$NON-NLS-1$
         return ces;
     }
 
