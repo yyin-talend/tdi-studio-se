@@ -827,44 +827,59 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                                 metadataConnection.setUrl(genUrl);
                             }
 
-                            boolean check = managerConnection.check(metadataConnection);
-                            List<String> itemTableName = null;
-                            // modified by nma, open schema editor even failed to connect
-                            if (check != false) {
-                                itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
-                            }
-                            boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
+                            if (creation) {
+                                boolean check = managerConnection.check(metadataConnection);
+                                List<String> itemTableName = null;
+                                // modified by nma, open schema editor even failed to connect
+                                if (check != false) {
+                                    itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+                                }
+                                boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
 
-                            if (noTableExistInDB) {
-                                MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                        Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
-                                        Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
+                                if (noTableExistInDB) {
+                                    MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                            Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
+                                            Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
+                                } else {
+
+                                    final boolean skipStep = checkConnectStatus(check, itemTableName);
+
+                                    DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
+                                            creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
+                                            managerConnection, metadataConnection);
+                                    databaseTableWizard.setSkipStep(skipStep);
+                                    UIJob uijob = new UIJob("") { //$NON-NLS-1$
+
+                                        // modified by wzhang. when connection failed,error message display.
+                                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                                            if (!managerConnection.getIsValide()) {
+                                                MessageDialog.openError(null,
+                                                        Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                                        Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                                            }
+                                            return Status.OK_STATUS;
+                                        }
+
+                                    };
+                                    WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench()
+                                            .getActiveWorkbenchWindow().getShell(), databaseTableWizard);
+                                    wizardDialog.setBlockOnOpen(true);
+                                    uijob.schedule(1300);
+                                    handleWizard(node, wizardDialog);
+                                }
                             } else {
-
-                                final boolean skipStep = checkConnectStatus(check, itemTableName);
+                                // added for bug 16595
+                                // no need connect to database when double click one schema.
+                                final boolean skipStep = true;
 
                                 DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
                                         creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
                                         managerConnection, metadataConnection);
                                 databaseTableWizard.setSkipStep(skipStep);
-                                UIJob uijob = new UIJob("") { //$NON-NLS-1$
-
-                                    // modified by wzhang. when connection failed,error message display.
-                                    public IStatus runInUIThread(IProgressMonitor monitor) {
-                                        if (!managerConnection.getIsValide()) {
-                                            MessageDialog.openError(null,
-                                                    Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
-                                                    Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
-                                        }
-                                        return Status.OK_STATUS;
-                                    }
-
-                                };
                                 WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                                         .getShell(), databaseTableWizard);
-                                wizardDialog.setBlockOnOpen(true);
-                                uijob.schedule(1300);
                                 handleWizard(node, wizardDialog);
+
                             }
                         }
                     }

@@ -732,9 +732,9 @@ public class DatabaseTableForm extends AbstractForm {
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
-                                SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
-                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                        .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
+                                SelectorTableForm.openInfoDialogInUIThread(getShell(),
+                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                                .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
                             }
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
@@ -769,8 +769,8 @@ public class DatabaseTableForm extends AbstractForm {
                                         if (!isReadOnly()) {
                                             msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                                         }
-                                        SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
-                                                .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
+                                        SelectorTableForm.openInfoDialogInUIThread(getShell(),
+                                                Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
                                     }
                                 }
                             });
@@ -1124,7 +1124,7 @@ public class DatabaseTableForm extends AbstractForm {
         super.setVisible(visible);
         if (visible) {
             initializeForm();
-            checkConnection(false);
+            // checkConnection(false);
         }
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
