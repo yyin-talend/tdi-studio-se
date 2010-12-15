@@ -436,6 +436,7 @@ public class DataProcess {
 
         dataConnec.setTraceConnection(connection.isTraceConnection());
         dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
         dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setMetadataTable(meterNode.getMetadataList().get(0));
         dataConnec.setName(connection.getName());
@@ -998,6 +999,7 @@ public class DataProcess {
                 dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
                 dataConnec.setMetadataTable(newMetadata);
                 dataConnec.setTraceConnection(connection.isTraceConnection());
+                dataConnec.setMonitorConnection(connection.isMonitorConnection());
                 dataConnec.setTracesCondition(connection.getTracesCondition());
                 dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 dataConnec.setName(connection.getName());
