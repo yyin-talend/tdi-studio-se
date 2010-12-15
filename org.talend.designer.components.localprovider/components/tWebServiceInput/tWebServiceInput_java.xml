@@ -207,7 +207,7 @@ for(int i = 0; i &lt; result.length; i++){
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
-			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar"
+			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-discovery"
 				MODULE="commons-discovery-0.2.jar" REQUIRED="true" />

@@ -155,7 +155,7 @@
       <IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" /> 
       <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true" />  
