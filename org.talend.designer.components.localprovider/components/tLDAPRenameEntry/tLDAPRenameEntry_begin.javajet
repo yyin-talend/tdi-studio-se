@@ -30,7 +30,7 @@ if(("false").equals(useExistingConn)){
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
 	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
-	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+	String passwd =ElementParameterParser.getValue(node, "__PASS__");
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 %>

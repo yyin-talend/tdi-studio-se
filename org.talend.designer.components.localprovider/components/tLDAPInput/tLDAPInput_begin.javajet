@@ -53,7 +53,7 @@ if(("false").equals(useExistingConn)){
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
-	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+	String passwd =ElementParameterParser.getValue(node, "__PASS__");
 %>
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

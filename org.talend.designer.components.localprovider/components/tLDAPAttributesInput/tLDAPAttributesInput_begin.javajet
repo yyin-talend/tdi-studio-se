@@ -43,7 +43,7 @@ imports="
 if(("false").equals(useExistingConn)){
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
-	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+	String passwd =ElementParameterParser.getValue(node, "__PASS__");
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
 	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
