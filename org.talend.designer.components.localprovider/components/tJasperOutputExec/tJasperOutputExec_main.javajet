@@ -60,10 +60,10 @@ String recordDelimiter = ElementParameterParser.getValue(node, "__RECORD_DELIMIT
 			}else if(reportType.equalsIgnoreCase("txt")){
 %>
 	net.sf.jasperreports.engine.JRExporter exporter_<%=cid%> = new net.sf.jasperreports.engine.export.JRTextExporter();		
-	exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.PAGE_WIDTH, 255);
-    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.CHARACTER_WIDTH, 10);
-    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.PAGE_HEIGHT, 61);
-    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.CHARACTER_HEIGHT, 20);        
+	exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.PAGE_WIDTH, new Float("255"));
+    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.CHARACTER_WIDTH, new Float("10"));
+    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.PAGE_HEIGHT, new Float("61"));
+    exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.export.JRTextExporterParameter.CHARACTER_HEIGHT, new Float("20"));        
 <%
 			}else if(reportType.equalsIgnoreCase("odt")){
 %>
