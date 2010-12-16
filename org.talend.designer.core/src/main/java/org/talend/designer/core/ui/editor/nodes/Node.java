@@ -115,6 +115,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private int currentStatus, oldStatus = 0;
 
+    private boolean needlibrary = false;
+
     // properties
     public static final String LOCATION = "nodeLocation"; //$NON-NLS-1$
 
@@ -297,6 +299,7 @@ public class Node extends Element implements IGraphicalNode {
         this.oldcomponent = component;
         this.process = process;
         init(component);
+        needlibrary = false;
     }
 
     private void init(IComponent newComponent) {
@@ -1485,6 +1488,11 @@ public class Node extends Element implements IGraphicalNode {
             for (IMetadataTable table : getMetadataList()) {
                 table.setDbms((String) value);
             }
+        }
+
+        if (!id.equals(EParameterName.LABEL.getName()) && !id.equals(EParameterName.UNIQUE_NAME.getName())
+                && !id.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
+            needlibrary = true;
         }
 
         parameter.setValue(value);
@@ -3243,6 +3251,15 @@ public class Node extends Element implements IGraphicalNode {
 
     public int getPosY() {
         return location.y;
+    }
+
+    public boolean isNeedloadLib() {
+        return needlibrary;
+    }
+
+    public void setNeedLoadLib(boolean isNeedLib) {
+        // TODO Auto-generated method stub
+        this.needlibrary = isNeedLib;
     }
 
 }

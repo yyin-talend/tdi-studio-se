@@ -181,8 +181,8 @@ public class PropertyChangeCommand extends Command {
                 reloadNode((Node) elem, newComponent);
             } else {
 
-                IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters().get(
-                        EParameterName.PROCESS_TYPE_PROCESS.getName());
+                IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters()
+                        .get(EParameterName.PROCESS_TYPE_PROCESS.getName());
                 ProcessItem processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) newValue);
                 if (processItem != null) {
                     currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
@@ -323,9 +323,9 @@ public class PropertyChangeCommand extends Command {
 
             }
         }
-        if (!updateCode) {
-            CodeView.refreshCodeView(elem);
-        }
+        // if (!updateCode) {
+        // CodeView.refreshCodeView(elem);
+        // }
         //
         if (elem instanceof IGraphicalNode) {
             ((IGraphicalNode) elem).checkAndRefreshNode();

@@ -455,9 +455,19 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             getCommandStack().markSaveLocation();
             setDirty(false);
 
-            // / See bug 4821
-            ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
-                    .updateModulesNeededForCurrentJob(getProcess());
+            boolean isneedReload = false;
+            for (int i = 0; i < getProcess().getGraphicalNodes().size(); i++) {
+                Node node = (Node) getProcess().getGraphicalNodes().get(i);
+                if (node.isNeedloadLib()) {
+                    isneedReload = true;
+                    node.setNeedLoadLib(false);
+                }
+            }
+
+            if (isneedReload)
+                // / See bug 4821
+                ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
+                        .updateModulesNeededForCurrentJob(getProcess());
 
             monitor.worked(10);
 

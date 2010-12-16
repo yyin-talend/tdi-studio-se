@@ -1449,6 +1449,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
             externalInnerContents.add(innerContent);
         }
+        nc.setNeedLoadLib(false);
         return nc;
     }
 

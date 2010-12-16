@@ -501,12 +501,10 @@ public class ComboController extends AbstractElementPropertySectionController {
                 if (propertyParam != null) {
                     dbtype = propertyParam.getValue().toString();
                 }
-
-                String[][][] tdqPatterns = service.retrieveTDQPatterns();
-                if (tdqPatterns != null) {
-                    if (StringUtils.equals(paramName, "PATTERN_LIST")) { //$NON-NLS-1$
+                if (StringUtils.equals(paramName, "PATTERN_LIST")) { //$NON-NLS-1$
+                    String[][][] tdqPatterns = service.retrieveTDQPatterns();
+                    if (tdqPatterns != null) {
                         Map<String, String> patternMap = retrievePattern(dbtype, tdqPatterns);
-
                         // set into paramlist
                         addPatternToComponent(param, patternMap);
                     }
