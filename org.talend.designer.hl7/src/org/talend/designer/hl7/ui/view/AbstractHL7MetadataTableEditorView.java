@@ -33,8 +33,8 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.CheckColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
@@ -51,8 +51,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
-import org.talend.designer.core.ui.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.hl7.edit.HL7Tree2SchemaLinker;
 
 /**
@@ -216,7 +216,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         // final CellEditorValueAdapter finalComboValueAdapter =
         // comboValueAdapter;
         // final String[] finalArrayTalendTypes = arrayTalendTypes;
-        //        
+        //
         // column.setTableEditorContent(new TableEditorContent() {
         //
         // /* (non-Javadoc)
@@ -240,7 +240,7 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         // tableEditor.minimumWidth = combo.getSize().x;
         // return combo;
         // }
-        //            
+        //
         // });
 
         // //////////////////////////////////////////////////////////////////////////////////////
@@ -335,8 +335,8 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         column.setModifiable(!isReadOnly());
         column.setWeight(10);
         column.setMinimumWidth(10);
-        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()), CellEditorValueAdapterFactory
-                .getPositiveIntAdapter());
+        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()),
+                CellEditorValueAdapterFactory.getPositiveIntAdapter());
     }
 
     /**
@@ -362,8 +362,8 @@ public abstract class AbstractHL7MetadataTableEditorView<B> extends AbstractData
         column.setModifiable(!isReadOnly());
         column.setWeight(10);
         column.setMinimumWidth(10);
-        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()), CellEditorValueAdapterFactory
-                .getPositiveIntAdapter(true));
+        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()),
+                CellEditorValueAdapterFactory.getPositiveIntAdapter(true));
     }
 
     /**

@@ -81,11 +81,11 @@ import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
 import org.talend.designer.core.utils.KeyHelper;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -137,8 +137,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         composite.setLayoutData(compositeData);
         composite.setLayout(new FillLayout());
 
-        BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(
-                ((IStructuredSelection) selection).getFirstElement());
+        BusinessType type = CorePlugin.getDefault().getDiagramModelService()
+                .getBusinessModelType(((IStructuredSelection) selection).getFirstElement());
         if (BusinessType.SHAP == type || BusinessType.CONNECTION == type) {
             createControls(composite);
             setInput(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor(), selection);
@@ -158,8 +158,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
         tableViewer = new TableViewer(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         tableViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-        tableViewer.setLabelProvider(CorePlugin.getDefault().getDiagramModelService().getRepositoryFactoryProxyLabelProvider(
-                adapterFactory));
+        tableViewer.setLabelProvider(CorePlugin.getDefault().getDiagramModelService()
+                .getRepositoryFactoryProxyLabelProvider(adapterFactory));
 
         Table table = tableViewer.getTable();
         TableLayout tableLayout = new TableLayout();
@@ -411,16 +411,16 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
             if (lastVersion != null) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(lastVersion.getProperty().getItem());
-                RepositoryNode repositoryNode = new RepositoryNode(lastVersion, RepositoryNodeUtilities
-                        .getParentRepositoryNodeFromSelection(lastVersion), ENodeType.REPOSITORY_ELEMENT);
+                RepositoryNode repositoryNode = new RepositoryNode(lastVersion,
+                        RepositoryNodeUtilities.getParentRepositoryNodeFromSelection(lastVersion), ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
 
                 return repositoryNode;
             } else if (item instanceof SQLPattern) {
                 IRepositoryViewObject object = getObjectFromSystem(item, ERepositoryObjectType.SQLPATTERNS);
                 if (object != null) {
-                    RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
-                            .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
+                    RepositoryNode repositoryNode = new RepositoryNode(object,
+                            RepositoryNodeUtilities.getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
                     repositoryNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
 
                     return repositoryNode;
@@ -428,8 +428,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             } else if (item instanceof Routine) {
                 IRepositoryViewObject object = getObjectFromSystem(item, ERepositoryObjectType.ROUTINES);
                 if (object != null) {
-                    RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
-                            .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
+                    RepositoryNode repositoryNode = new RepositoryNode(object,
+                            RepositoryNodeUtilities.getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
                     repositoryNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
 
                     return repositoryNode;

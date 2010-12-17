@@ -66,7 +66,6 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -76,6 +75,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.wizards.PropertiesWizard;
 
 /**
@@ -132,8 +132,8 @@ public class EditPropertiesAction extends AContextualAction {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
             }
             // refresh ...
-            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                    IJobSettingsView.ID);
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView(IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
@@ -213,8 +213,8 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), Messages
-                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                MessageDialog.openError(this.getViewPart().getViewSite().getShell(),
+                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 

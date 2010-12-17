@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.core.model.process.INode;
-import org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
 /**

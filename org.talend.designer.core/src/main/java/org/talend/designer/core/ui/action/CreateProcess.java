@@ -47,12 +47,12 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -86,8 +86,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     }
 
     public IRepositoryView getRepositoryView() {
-        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
         return (IRepositoryView) findView;
     }
 

@@ -39,7 +39,6 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.process.INode;
-import org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
@@ -47,6 +46,7 @@ import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
+import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

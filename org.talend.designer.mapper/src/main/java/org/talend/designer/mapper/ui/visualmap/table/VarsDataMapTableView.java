@@ -30,8 +30,8 @@ import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
@@ -45,10 +45,10 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
-import org.talend.designer.core.ui.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -346,8 +346,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         addEntryItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.addVariable")); //$NON-NLS-1$
-        addEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         addEntryItem.addSelectionListener(new SelectionListener() {
 
@@ -403,8 +403,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         // /////////////////////////////////////////////////////////////////
         removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.removeVariable")); //$NON-NLS-1$
 
         removeEntryItem.addSelectionListener(new SelectionListener() {

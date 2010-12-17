@@ -39,13 +39,13 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.expressionbuilder.ExpressionPersistance;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -207,8 +207,8 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
                 } else if (item instanceof BusinessProcessItem) {
                     BusinessProcessItem businessProcessItem = (BusinessProcessItem) item;
-                    IFile file = CorePlugin.getDefault().getDiagramModelService().getDiagramFileAndUpdateResource(page,
-                            businessProcessItem);
+                    IFile file = CorePlugin.getDefault().getDiagramModelService()
+                            .getDiagramFileAndUpdateResource(page, businessProcessItem);
                     fileEditorInput = new RepositoryEditorInput(file, businessProcessItem);
                 } else if (item instanceof RoutineItem) {
                     RoutineItem routineItem = (RoutineItem) item;

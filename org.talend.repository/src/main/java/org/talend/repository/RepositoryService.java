@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -789,4 +790,7 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    public IDialogSettings getDialogSettings() {
+        return RepositoryPlugin.getDefault().getDialogSettings();
+    }
 }

@@ -27,8 +27,8 @@ import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.context.ContextWizard;
 
 /**

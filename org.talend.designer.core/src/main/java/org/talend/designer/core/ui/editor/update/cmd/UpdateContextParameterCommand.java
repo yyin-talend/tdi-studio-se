@@ -24,11 +24,11 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
+import org.talend.core.model.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess2;
@@ -202,8 +202,8 @@ public class UpdateContextParameterCommand extends Command {
                     Map<String, String> renamedMap = new HashMap<String, String>();
                     renamedMap.put(newName, oldName);
 
-                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, renamedMap, process
-                            .getId(), null);
+                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, renamedMap,
+                            process.getId(), null);
                     try {
                         // perhaps, need optimize.
                         UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(DesignerPlugin.getDefault()

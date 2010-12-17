@@ -25,7 +25,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.repository.i18n.Messages;
 
 /**
  * @author ocarbone
@@ -252,7 +251,7 @@ public class DataStringConnection {
 
             databaseType.remove("JavaDB Embeded"); //$NON-NLS-1$
             databaseType.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
-            databaseType.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
+            databaseType.remove("JavaDB DerbyClient"); //$NON-NLS-1$
 
             databaseType.remove("HSQLDB Server"); //$NON-NLS-1$
             databaseType.remove("HSQLDB WebServer"); //$NON-NLS-1$
@@ -583,9 +582,9 @@ public class DataStringConnection {
             return null;
         }
         DataStringConnection dataStrConn = new DataStringConnection();
-        dataStrConn.getString(getDBTypes().indexOf(conn.getDatabaseType()), conn.getServerName(), conn.getUsername(), conn
-                .getPassword(), conn.getPort(), conn.getSID(), conn.getFileFieldName(), conn.getDatasourceName(), conn
-                .getDBRootPath(), conn.getAdditionalParams());
+        dataStrConn.getString(getDBTypes().indexOf(conn.getDatabaseType()), conn.getServerName(), conn.getUsername(),
+                conn.getPassword(), conn.getPort(), conn.getSID(), conn.getFileFieldName(), conn.getDatasourceName(),
+                conn.getDBRootPath(), conn.getAdditionalParams());
         return dataStrConn.getUrlConnectionStr();
     }
 

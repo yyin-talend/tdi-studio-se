@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.repository.ui.views.IJobSettingsView;
 
 /**
  * yzhang class global comment. Detailled comment

@@ -118,7 +118,6 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
-import org.talend.core.ui.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -152,6 +151,7 @@ import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvi
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

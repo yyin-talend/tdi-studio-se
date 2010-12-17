@@ -74,13 +74,13 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -270,8 +270,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             final IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
 
             try {
-                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                        IncrementalProjectBuilder.AUTO_BUILD, null);
+                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                        .build(IncrementalProjectBuilder.AUTO_BUILD, null);
             } catch (CoreException e1) {
                 ExceptionHandler.process(e1);
             }
@@ -323,8 +323,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 try {
-                    CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                            IncrementalProjectBuilder.AUTO_BUILD, null);
+                    CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                            .build(IncrementalProjectBuilder.AUTO_BUILD, null);
                 } catch (CoreException e1) {
                     ExceptionHandler.process(e1);
                 }

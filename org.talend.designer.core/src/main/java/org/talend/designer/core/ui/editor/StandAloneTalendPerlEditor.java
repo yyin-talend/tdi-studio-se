@@ -54,12 +54,12 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**

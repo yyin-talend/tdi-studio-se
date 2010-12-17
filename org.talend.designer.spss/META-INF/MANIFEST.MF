@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.views.properties.tabbed,
  org.talend.designer.codegen,
  org.talend.metadata.managment,
+ org.talend.metadata.managment.ui,
  org.talend.model,
  org.apache.log4j
 Bundle-ClassPath: JSPSS.jar,

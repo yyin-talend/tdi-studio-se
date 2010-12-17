@@ -15,7 +15,7 @@ package org.talend.designer.mapper.ui.commands;
 import java.io.File;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.core.ui.extended.command.MetadataImportXmlCommand;
+import org.talend.core.ui.metadata.extended.command.MetadataImportXmlCommand;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

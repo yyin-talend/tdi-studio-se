@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.talend.core.runtime,
  org.talend.model,
  org.talend.metadata.managment,
+ org.talend.metadata.managment.ui,
  org.eclipse.swt,
  org.eclipse.jface
 Eclipse-LazyStart: true

@@ -18,7 +18,7 @@ import org.talend.core.model.metadata.MetadataTool;
  * This class is used for column name validation.
  * 
  * @author ftang, 2007-06-13 <br/>
- * 
+ * @deprecated use MetadataToolHelper
  */
 public class ColumnNameValidator {
 
