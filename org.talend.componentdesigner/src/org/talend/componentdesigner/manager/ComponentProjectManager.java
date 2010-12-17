@@ -45,11 +45,11 @@ import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.progress.ProgressUI;
-import org.talend.core.utils.JavaUtil;
 import org.talend.core.utils.PluginUtil;
 
 /**
@@ -187,7 +187,7 @@ public final class ComponentProjectManager {
                 monitor.beginTask("Conifg project...", 4);
                 try {
                     IJavaProject javaProject = JavaCore.create(project);
-                    JavaUtil.addJavaNature(project, new SubProgressMonitor(monitor, 1));
+                    JavaUtils.addJavaNature(project, new SubProgressMonitor(monitor, 1));
                     initializeClasspath(javaProject, new SubProgressMonitor(monitor, 3));
                 } catch (OperationCanceledException e) {
                     e.printStackTrace();
@@ -245,7 +245,7 @@ public final class ComponentProjectManager {
     private IClasspathEntry[] getDefaultJREClasspathEntries() {
         IPath path = new Path(
                 "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" //$NON-NLS-1$
-                        + JavaUtil.getDefaultEEName());
+                        + JavaUtils.getDefaultEEName());
         return new IClasspathEntry[] { JavaCore.newContainerEntry(path) };
     }
 
