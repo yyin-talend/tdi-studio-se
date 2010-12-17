@@ -131,6 +131,10 @@ public class DeleteAction extends AContextualAction {
                 RepositoryNode node = (RepositoryNode) obj;
                 try {
 
+                    if (node.getObject().isDeleted()) {
+                        continue;
+                    }
+
                     if (isForbidNode(node)) {
                         continue;
                     }
