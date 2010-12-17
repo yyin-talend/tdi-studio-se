@@ -12,6 +12,8 @@
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.process.INode
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.utils.NodeUtil
+    org.talend.core.model.process.EConnectionType
     "
 %>
 <%
@@ -31,6 +33,18 @@ String cid = node.getUniqueName();
         listInColumns = inConn.getMetadataTable().getListColumns();
       }
 	}
+	String inConnName = null;
+	if(!node.isDesignSubjobStartNode()){
+		INode other = node.getDesignSubjobStartNode();
+        for (IConnection conn : other.getOutgoingConnections()) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+            	if (other.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(other))) {
+            		inConnName = conn.getName();
+            	}
+            }
+        }
+	}
+	
   /* get the schema of itself (maybe no output flow)*/
   List<IMetadataColumn> listColumsToTest = node.getMetadataList().get(0).getListColumns();
 
@@ -386,7 +400,7 @@ class RowSetValueUtil_<%=cid %> {
     
     if(iInColIndex % 100 == 0){
 %>
-	void setRowValue_<%=(iInColIndex/100) %>(<%=sInConnName %>Struct <%=sInConnName %>) {
+	void setRowValue_<%=(iInColIndex/100) %>(<%=inConnName!=null?inConnName:sInConnName %>Struct <%=sInConnName %>) {
 <%
     }
     // when using another schema, it's size may less than listInColumns
