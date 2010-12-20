@@ -24,25 +24,40 @@ String cid = node.getUniqueName();
     /*in shema:*/
     List<? extends IConnection> listInConns = node.getIncomingConnections();
     String sInConnName = null;
+    IConnection inConn = null;
     List<IMetadataColumn> listInColumns = null;
     
     if (listInConns != null && listInConns.size() > 0) {
-      IConnection inConn = listInConns.get(0);
-      sInConnName = inConn.getName();
-      if (inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-        listInColumns = inConn.getMetadataTable().getListColumns();
+      IConnection inConnTemp = listInConns.get(0);
+      sInConnName = inConnTemp.getName();
+      if (inConnTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+      	inConn = inConnTemp;
+        listInColumns = inConnTemp.getMetadataTable().getListColumns();
       }
 	}
 	String inConnName = null;
-	if(!node.isDesignSubjobStartNode()){
-		INode other = node.getDesignSubjobStartNode();
-        for (IConnection conn : other.getOutgoingConnections()) {
-            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-            	if (other.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(other))) {
-            		inConnName = conn.getName();
-            	}
-            }
-        }
+	
+	class FindConnStartConn{
+		IConnection findStartConn(IConnection conn){
+			INode node = conn.getSource();
+			if(node.isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(node))){
+				return conn;
+			}
+			List<? extends IConnection> listInConns = node.getIncomingConnections();
+			IConnection inConnTemp = null;
+			if (listInConns != null && listInConns.size() > 0) {
+              inConnTemp = listInConns.get(0);
+              if (inConnTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+                return findStartConn(inConnTemp);
+              }
+        	}
+        	return null;
+		}
+	}
+	if(inConn != null){
+		FindConnStartConn finder = new FindConnStartConn();
+    	IConnection startConn = finder.findStartConn(inConn);
+    	inConnName = startConn.getName();
 	}
 	
   /* get the schema of itself (maybe no output flow)*/
