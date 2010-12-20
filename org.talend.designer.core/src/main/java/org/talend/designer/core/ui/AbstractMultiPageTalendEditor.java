@@ -102,6 +102,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.ICreateXtextProcessService;
@@ -115,6 +116,7 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
@@ -947,6 +949,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
             return;
+        }
+        // added for routines code generated switch editor 0 to 3.
+        ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
+        if (oldPageIndex == 2) {
+            try {
+                List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+                processItem.getProcess().getParameters().getRoutinesParameter().addAll(dependenciesInPreference);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
         }
         // if some code has been generated already, for the editor we should need only the main job, not the childs.
         try {

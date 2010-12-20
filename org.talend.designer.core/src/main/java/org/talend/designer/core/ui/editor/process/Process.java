@@ -1149,7 +1149,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private void saveRoutinesDependencies(ProcessType oldProcess, ProcessType newprocess) {
         newprocess.getParameters().getRoutinesParameter().addAll(oldProcess.getParameters().getRoutinesParameter());
-        loadRoutinesDependencies(newprocess);
+        // loadRoutinesDependencies(newprocess);
     }
 
     // private void saveRoutinesDependencies(TalendFileFactory fileFact, ProcessType process) {
@@ -1209,7 +1209,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (processType.getParameters() != null) {
             loadElementParameters(this, processType.getParameters().getElementParameter());
         }
-        loadRoutinesDependencies(processType);
+        // loadRoutinesDependencies(processType);
 
         try {
             loadNodes(processType, nodesHashtable);
@@ -1304,6 +1304,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
+    /**
+     * 
+     * @deprecated have changed the model
+     */
     private void loadRoutinesDependencies(ProcessType process) {
         /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
         if (process.getParameters() == null) {
