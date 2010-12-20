@@ -146,8 +146,8 @@ public class JavaCompilationParticipant extends CompilationParticipant {
         if (CommonsPlugin.isHeadless()) {
             return false;
         }
-        if (JavaProcessor.getJavaProject() != null) {
-            return JavaProcessor.getJavaProject().equals(project);
+        if (JavaProcessorUtilities.getJavaProject() != null) {
+            return JavaProcessorUtilities.getJavaProject().equals(project);
         }
         return false;
     }

@@ -53,7 +53,7 @@ import org.talend.designer.core.ui.editor.DetailedProblem;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 
 /**
  * Check syntax of Java expressions.
@@ -168,7 +168,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                         // use working copy to hold source with error
                         org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
                         try {
-                            JavaProcessor.updateClasspath();
+                            JavaProcessorUtilities.computeLibrariesPath(process.getNeededLibraries(false), process);
                             try {
                                 WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
                                 };
@@ -256,8 +256,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 // System.out.println(problem.getID() + ": " + problem.getMessage());
                 char[] charArray = this.code.toCharArray();
 
-                String source = String.copyValueOf(charArray, problem.getSourceStart(), problem.getSourceEnd()
-                        - problem.getSourceStart() + 1);
+                String source = String.copyValueOf(charArray, problem.getSourceStart(),
+                        problem.getSourceEnd() - problem.getSourceStart() + 1);
 
                 // System.out.println("source=" + source);
 

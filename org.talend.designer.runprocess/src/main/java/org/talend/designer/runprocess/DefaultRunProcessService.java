@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +32,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
@@ -153,14 +157,14 @@ public class DefaultRunProcessService implements IRunProcessService {
         case PERL:
             return PerlUtils.getProject();
         case JAVA:
-            return JavaProcessor.getProcessorProject();
+            return JavaProcessorUtilities.getProcessorProject();
         default:
             return PerlUtils.getProject();
         }
     }
 
     public IJavaProject getJavaProject() throws CoreException {
-        return JavaProcessor.getJavaProject();
+        return JavaProcessorUtilities.getJavaProject();
     }
 
     /*
@@ -173,10 +177,10 @@ public class DefaultRunProcessService implements IRunProcessService {
         throw new UnsupportedOperationException(Messages.getString("DefaultRunProcessService.methodCalledError")); //$NON-NLS-1$
     }
 
-    public void updateLibraries() throws CoreException {
+    public void updateLibraries(Set<String> jobModuleList, IProcess process) {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            JavaProcessor.updateClasspath();
+            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(), null);
         default:
             // nothing
         }

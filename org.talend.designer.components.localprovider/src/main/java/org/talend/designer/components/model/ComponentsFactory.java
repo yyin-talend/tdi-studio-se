@@ -237,7 +237,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return false;
     }
 
-    private void init() {
+    private void init(boolean duringLogon) {
         removeOldComponentsUserFolder(); // not used anymore
         long startTime = System.currentTimeMillis();
 
@@ -311,10 +311,9 @@ public class ComponentsFactory implements IComponentsFactory {
         }
         // TimeMeasure.step("initComponents", "createCache");
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
-        try {
-            CorePlugin.getDefault().getRunProcessService().updateLibraries();
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
+
+        if (!duringLogon) {
+            CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
         }
         // TimeMeasure.step("initComponents", "updateLibraries");
 
@@ -722,14 +721,14 @@ public class ComponentsFactory implements IComponentsFactory {
 
     public int size() {
         if (componentList == null) {
-            init();
+            init(false);
         }
         return componentList.size();
     }
 
     public IComponent get(String name) {
         if (componentList == null) {
-            init();
+            init(false);
         }
 
         for (IComponent comp : componentList) {
@@ -743,7 +742,16 @@ public class ComponentsFactory implements IComponentsFactory {
     public void initializeComponents(IProgressMonitor monitor) {
         this.monitor = monitor;
         if (componentList == null) {
-            init();
+            init(false);
+        }
+        this.monitor = null;
+        this.subMonitor = null;
+    }
+
+    public void initializeComponents(IProgressMonitor monitor, boolean duringLogon) {
+        this.monitor = monitor;
+        if (componentList == null) {
+            init(duringLogon);
         }
         this.monitor = null;
         this.subMonitor = null;
@@ -756,14 +764,14 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public Set<IComponent> getComponents() {
         if (componentList == null) {
-            init();
+            init(false);
         }
         return componentList;
     }
 
     public List<IComponent> getCustomComponents() {
         if (customComponentList == null) {
-            init();
+            init(false);
         }
         return customComponentList;
     }
@@ -786,7 +794,7 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public List<String> getSkeletons() {
         if (skeletonList == null) {
-            init();
+            init(false);
         }
         return skeletonList;
     }
@@ -980,5 +988,4 @@ public class ComponentsFactory implements IComponentsFactory {
     public void resetSpecificComponents() {
         loadComponentsFromExtensions();
     }
-
 }
