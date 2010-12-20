@@ -131,9 +131,9 @@ public class DeleteAction extends AContextualAction {
                 RepositoryNode node = (RepositoryNode) obj;
                 try {
 
-                    if (node.getObject().isDeleted()) {
-                        continue;
-                    }
+                    // if (node.getObject().isDeleted() && !this.getText().equals(DELETE_FOREVER_TOOLTIP)) {
+                    // continue;
+                    // }
 
                     if (isForbidNode(node)) {
                         continue;
@@ -598,6 +598,8 @@ public class DeleteAction extends AContextualAction {
         IRepositoryViewObject nodeObject = node.getObject();
         // Avoid to delete node which is locked.
         if (nodeObject != null
+                && nodeObject.getProperty() != null
+                && nodeObject.getProperty().getItem() != null
                 && (nodeObject.getProperty().getItem().getState().isLocked() || RepositoryManager
                         .isOpenedItemInEditor(nodeObject)) && !(DELETE_FOREVER_TITLE.equals(getText()))) {
 
@@ -701,7 +703,21 @@ public class DeleteAction extends AContextualAction {
                         for (IRepositoryNode curNode : currentJobNode.getChildren()) {
                             deleteElements(factory, deleteActionCache, (RepositoryNode) curNode, confirm);
                         }
-                        factory.deleteFolder(currentJobNode.getContentType(), RepositoryNodeUtilities.getPath(currentJobNode));
+                        if (currentJobNode.getObject() != null && currentJobNode.getObject().getProperty() != null
+                                && currentJobNode.getObject().getProperty().getItem() != null) {
+                            Item fitem = currentJobNode.getObject().getProperty().getItem();
+                            if ((fitem instanceof FolderItem) && (((FolderItem) fitem).getType().getValue() == FolderType.FOLDER)) {
+                                factory.deleteFolder(currentJobNode.getContentType(),
+                                        RepositoryNodeUtilities.getFolderPath(currentJobNode.getObject().getProperty().getItem()));
+                            } else {
+                                factory.deleteFolder(currentJobNode.getContentType(),
+                                        RepositoryNodeUtilities.getPath(currentJobNode));
+                            }
+
+                        } else {
+                            factory.deleteFolder(currentJobNode.getContentType(), RepositoryNodeUtilities.getPath(currentJobNode));
+                        }
+
                     } else {
                         factory.deleteObjectPhysical(objToDelete);
                         ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
@@ -760,9 +776,16 @@ public class DeleteAction extends AContextualAction {
                     } else {
                         this.setText(DELETE_LOGICAL_TITLE);
                         this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
+
                         if (node.hasChildren()) {
-                            visible = true;
-                            enabled = true;
+                            if (containChild(node, selection)) {
+                                visible = false;
+                                break;
+                            } else {
+                                visible = true;
+                                enabled = true;
+                            }
+
                         }
                     }
 
@@ -871,5 +894,15 @@ public class DeleteAction extends AContextualAction {
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    private boolean containChild(RepositoryNode node, IStructuredSelection selection) {
+        for (Object o : (selection).toArray()) {
+            RepositoryNode child = (RepositoryNode) o;
+            if (child.getParent() != null && child.getParent().equals(node)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
