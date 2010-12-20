@@ -22,6 +22,7 @@ import netscape.ldap.util.LDIFRecord;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.utils.TalendQuoteUtils;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -62,8 +63,8 @@ public class FileInputLdifNode extends FileInputNode {
             ExceptionHandler.process(e);
         }
 
-        String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$
-        String[] paramValues = new String[] { filename, encoding };
+        String[] paramNames = new String[] { "FILENAME", "ENCODING", "VALUE_SEPARATOR" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String[] paramValues = new String[] { filename, encoding, TalendQuoteUtils.addQuotes(",") }; //$NON-NLS-1$
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
