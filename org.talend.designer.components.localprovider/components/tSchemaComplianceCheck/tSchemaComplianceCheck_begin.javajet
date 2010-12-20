@@ -57,7 +57,9 @@ String cid = node.getUniqueName();
 	if(inConn != null){
 		FindConnStartConn finder = new FindConnStartConn();
     	IConnection startConn = finder.findStartConn(inConn);
-    	inConnName = startConn.getName();
+    	if(startConn!=null){
+    		inConnName = startConn.getName();
+    	}
 	}
 	
   /* get the schema of itself (maybe no output flow)*/
