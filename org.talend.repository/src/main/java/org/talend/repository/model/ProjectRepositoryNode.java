@@ -64,11 +64,14 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
+import org.talend.core.model.properties.Information;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.JobletDocumentationItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.ProjectReference;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
@@ -1004,8 +1007,27 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // not folder or folders have no subFolder
         for (Object obj : fromModel.getMembers()) {
             IRepositoryViewObject repositoryObject = (IRepositoryViewObject) obj;
-            if (!repositoryObject.isDeleted())
-                addNode(parent, type, recBinNode, repositoryObject);
+            try {
+                if (!repositoryObject.isDeleted()) {
+                    addNode(parent, type, recBinNode, repositoryObject);
+                }
+            } catch (Exception e) {
+                ExceptionHandler.log("Item not valid: [" + repositoryObject.getType() + "] " + repositoryObject.getLabel());
+
+                if (repositoryObject.getProperty().getInformations().isEmpty()) {
+                    Information info = PropertiesFactory.eINSTANCE.createInformation();
+                    info.setLevel(InformationLevel.ERROR_LITERAL);
+                    info.setText("Invalid item");
+                    Property property = repositoryObject.getProperty();
+                    property.getInformations().add(info);
+                    try {
+                        factory.save(project, property);
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    }
+                    repositoryObject.getProperty(); // call getProperty to update since it's a RepositoryViewObject.
+                }
+            }
         }
     }
 
