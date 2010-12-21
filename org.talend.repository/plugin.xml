@@ -1282,6 +1282,12 @@
             class="org.talend.repository.model.migration.FixProjectResourceLink"
             id="FixProjectResourceLink"
             name="Fix a problem of project resources linked to items">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
+            id="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
+            name="Reset the field value of tInfiniteLoop">
       </projecttask>      
    </extension>
    
