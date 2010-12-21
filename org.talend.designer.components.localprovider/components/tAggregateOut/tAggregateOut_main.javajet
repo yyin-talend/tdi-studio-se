@@ -411,7 +411,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 	
 					%>
 					if(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> == null) {
-						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = new BigDecimal(0);
+						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = new BigDecimal(0)<%=outputColumn.getPrecision()==null? "":".setScale(" + outputColumn.getPrecision().intValue()+")" %>;
 					}
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.add(
 						<%if(!inputIsBigDecimal || forceUseBigDecimal) {
