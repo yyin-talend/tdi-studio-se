@@ -41,10 +41,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String endDate = ElementParameterParser.getValue(node, "__END_DATETIME__");
 			String starRanking = ElementParameterParser.getValue(node, "__STAR_RANKING__");
 			String limit = ElementParameterParser.getValue(node,"__LIMIT__");
+			String username = ElementParameterParser.getValue(node, "__USERNAME__");
+    		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
+
+                java.net.Authenticator.setDefault(new java.net.Authenticator() {
+                    protected java.net.PasswordAuthentication getPasswordAuthentication() {
+                    	return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
+                }});
+				
 				java.net.URL wsdlUrl_<%=cid%> = new java.net.URL("http://"+<%=host%>+":"+<%=port%>+"/org.talend.datastewardship/services/TDSCWS?wsdl");
 				org.talend.datastewardship.server.ws.TDSCWS_Service service_<%=cid%> = new org.talend.datastewardship.server.ws.TDSCWS_Service(wsdlUrl_<%=cid%>);
 				org.talend.datastewardship.server.ws.TDSCWS TDSCWS_<%=cid%> = service_<%=cid%>.getTDSCWSImplPort();
