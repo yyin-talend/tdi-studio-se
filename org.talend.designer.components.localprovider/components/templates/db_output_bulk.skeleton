@@ -591,15 +591,27 @@ public class CLASS {
         }
         public Map<String, StringBuilder> createProcessSQL(List<Column> stmtStructure) {
             Map<String, StringBuilder> actionSQLMap = new HashMap<String, StringBuilder>();
-            for(Column column : stmtStructure) {
-                if(column.isReplaced()) {
-                    List<Column> replacedColumns = column.getReplacement();
-                    for(Column replacedColumn : replacedColumns) {
-                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
-                    }
-                } else {
-                    actionSQLMap = processSQLClause(column, actionSQLMap);                    
-                }
+            if(stmtStructure==null || stmtStructure.size() < 1) {
+            	actionSQLMap.put(INSERT_COLUMN_NAME, new StringBuilder());
+            	actionSQLMap.put(INSERT_VALUE_STMT, new StringBuilder());
+            	actionSQLMap.put(UPDATE_SET_STMT, new StringBuilder());
+            	actionSQLMap.put(UPDATE_WHERE_STMT, new StringBuilder());
+            	actionSQLMap.put(DELETE_WHERE_STMT, new StringBuilder());
+            	actionSQLMap.put(FIRST_UPDATE_KEY, new StringBuilder());
+            	actionSQLMap.put(FIRST_DELETE_KEY, new StringBuilder());
+            	actionSQLMap.put(FIRST_INSERT_COLUMN, new StringBuilder());
+            	actionSQLMap.put(FIRST_UPDATE_COLUMN, new StringBuilder());
+            } else {
+	            for(Column column : stmtStructure) {
+	                if(column.isReplaced()) {
+	                    List<Column> replacedColumns = column.getReplacement();
+	                    for(Column replacedColumn : replacedColumns) {
+	                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
+	                    }
+	                } else {
+	                    actionSQLMap = processSQLClause(column, actionSQLMap);                    
+	                }
+	            }
             }
             return actionSQLMap;
         }
