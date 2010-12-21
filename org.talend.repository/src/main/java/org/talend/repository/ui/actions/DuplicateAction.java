@@ -36,6 +36,7 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -446,6 +447,11 @@ public class DuplicateAction extends AContextualAction {
 
                     if (newItem instanceof ProcessItem) {
                         RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+                    }
+
+                    if (newItem instanceof ConnectionItem) {
+                        ConnectionItem connectionItem = (ConnectionItem) newItem;
+                        connectionItem.getConnection().getSupplierDependency().clear();
                     }
                     factory.save(newItem);
                 } catch (Exception e) {
