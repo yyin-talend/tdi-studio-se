@@ -260,18 +260,30 @@ public class ToolbarInputZone extends ToolbarZone {
                                 if (!killBtn.isDisposed() && enabled != killBtn.isEnabled()) {
                                     killBtn.setEnabled(enabled);
                                 }
-                                nextRow.setEnabled(true);
+                                if (!nextRow.isDisposed()) {
+                                    nextRow.setEnabled(true);
+                                }
                             } else if (RunProcessContext.NEXTBREAKPOINT.equals(propName)) {
                                 boolean running = ((Boolean) evt.getNewValue()).booleanValue();
-                                nextBreakpoint.setEnabled(running);
-                                nextRow.setEnabled(true);
+                                if (!nextBreakpoint.isDisposed()) {
+                                    nextBreakpoint.setEnabled(running);
+                                }
+                                if (!nextRow.isDisposed()) {
+                                    nextRow.setEnabled(true);
+                                }
 
                             } else if (RunProcessContext.BREAKPOINT_BAR.equals(propName)) {
                                 boolean enable = ((Boolean) evt.getNewValue()).booleanValue();
                                 if (!enable) {
-                                    previousRow.setEnabled(false);
-                                    nextRow.setEnabled(false);
-                                    nextBreakpoint.setEnabled(false);
+                                    if (!previousRow.isDisposed()) {
+                                        previousRow.setEnabled(false);
+                                    }
+                                    if (!nextRow.isDisposed()) {
+                                        nextRow.setEnabled(false);
+                                    }
+                                    if (!nextBreakpoint.isDisposed()) {
+                                        nextBreakpoint.setEnabled(false);
+                                    }
                                 }
 
                             }
