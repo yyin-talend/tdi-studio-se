@@ -1012,7 +1012,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     addNode(parent, type, recBinNode, repositoryObject);
                 }
             } catch (Exception e) {
-                ExceptionHandler.log("Item not valid: [" + repositoryObject.getType() + "] " + repositoryObject.getLabel());
+                ExceptionHandler.log("Item not valid: [" + repositoryObject.getRepositoryObjectType() + "] "
+                        + repositoryObject.getLabel());
 
                 if (repositoryObject.getProperty().getInformations().isEmpty()) {
                     Information info = PropertiesFactory.eINSTANCE.createInformation();
