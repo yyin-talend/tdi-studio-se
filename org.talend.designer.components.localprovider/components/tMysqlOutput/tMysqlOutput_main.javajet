@@ -189,7 +189,7 @@ if(columnList != null && columnList.size() > 0) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 						String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {
@@ -262,7 +262,7 @@ if(columnList != null && columnList.size() > 0) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 						insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 <%					} else {
@@ -280,7 +280,7 @@ if(columnList != null && columnList.size() > 0) {
 
 				    pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 <%
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 		    
 				    insertColName<%=cid%> = "<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>");
@@ -307,7 +307,7 @@ if(columnList != null && columnList.size() > 0) {
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 						String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {
@@ -361,7 +361,7 @@ if(columnList != null && columnList.size() > 0) {
 			if(conns_dynamic!=null && conns_dynamic.size()>0){
 				IConnection conn = conns_dynamic.get(0);
 
-				if(insertColName!=null) {
+				if(!("".equals(insertColName.toString()))) {
 %>
 					String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {
@@ -390,7 +390,7 @@ if(columnList != null && columnList.size() > 0) {
 			if(conns_dynamic!=null && conns_dynamic.size()>0){
 				IConnection conn = conns_dynamic.get(0);
 
-				if(insertColName!=null) {
+				if(!("".equals(insertColName.toString()))) {
 %>
 					String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {

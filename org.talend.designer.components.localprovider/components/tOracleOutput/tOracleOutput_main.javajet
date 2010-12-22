@@ -175,7 +175,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 						String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>,"<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {
@@ -233,7 +233,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
 
-					if(insertColName!=null) {
+					if(!("".equals(insertColName.toString()))) {
 %>
 						String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%					} else {
@@ -261,7 +261,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					if(conns_dynamic!=null && conns_dynamic.size()>0){
 						IConnection conn = conns_dynamic.get(0);
 
-						if(insertColName!=null) {
+						if(!("".equals(insertColName.toString()))) {
 %>
 							String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
 <%						} else {
