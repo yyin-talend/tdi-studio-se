@@ -40,7 +40,7 @@ public class LDAPSchemaInputNode extends FileInputNode {
 
         String[] paramNames = new String[] {
                 "USE_EXISTING_CONNECTION", "FILENAME", "ENCODING", "HOST", "PORT", "PROTOCOL", "AUTHENTIFICATION", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$//$NON-NLS-7$
-                "USER", "PASSWD", "FILTER", "BASEDN", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "USER", "PASS", "FILTER", "BASEDN", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 "MULTI_VALUE_SEPARATOR", "LIMIT", "TIMEOUT", "ALIASES", "REFERRALS" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         String[] paramValues = new String[] { "false", fileName, encoding, schemaBean.getHost(), schemaBean.getPort(),//$NON-NLS-1$
                 schemaBean.getEncryMethod(), schemaBean.isAuthen() + "", schemaBean.getUser(), schemaBean.getPasswd(), //$NON-NLS-1$
