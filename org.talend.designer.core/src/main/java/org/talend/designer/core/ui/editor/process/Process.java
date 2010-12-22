@@ -1148,7 +1148,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void saveRoutinesDependencies(ProcessType oldProcess, ProcessType newprocess) {
-        newprocess.getParameters().getRoutinesParameter().addAll(oldProcess.getParameters().getRoutinesParameter());
+        /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
+        if (newprocess.getParameters() == null) {
+            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+            newprocess.setParameters(parameterType);
+        }
+        if (oldProcess.getParameters() != null) {
+            newprocess.getParameters().getRoutinesParameter().addAll(oldProcess.getParameters().getRoutinesParameter());
+        }
         // loadRoutinesDependencies(newprocess);
     }
 
