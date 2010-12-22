@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
@@ -51,6 +50,7 @@ import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
@@ -652,7 +652,8 @@ public abstract class JobScriptsManager {
      * if item is null, will return currrent probject path.
      */
     protected IPath getCorrespondingProjectRootPath(Item item) throws Exception {
-        org.talend.core.model.properties.Project p = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(item);
+        // for bug 17685
+        org.talend.core.model.properties.Project p = ProjectManager.getInstance().getProject(item);
         IProject project = null;
         if (p != null) {
             project = ResourcesPlugin.getWorkspace().getRoot().getProject(p.getTechnicalLabel().toUpperCase());
@@ -683,8 +684,8 @@ public abstract class JobScriptsManager {
         if (!needDependencies) {
             return;
         }
-        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(Arrays
-                .asList(new Item[] { processItem }), false);
+        Collection<IRepositoryViewObject> allDependencies = ProcessUtils.getAllProcessDependencies(
+                Arrays.asList(new Item[] { processItem }), false);
 
         for (IRepositoryViewObject object : allDependencies) {
             Item item = object.getProperty().getItem();
@@ -704,10 +705,10 @@ public abstract class JobScriptsManager {
                 checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
                         FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
-                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
-                        itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
-                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath).append(
-                        itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                IPath itemFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
+                        .append(itemName + "_" + itemVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+                IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(itemPath)
+                        .append(itemName + "_" + itemVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
                                 + FileConstants.PROPERTIES_EXTENSION);
 
                 List<URL> metadataNameFileUrls = new ArrayList<URL>();
