@@ -131,9 +131,9 @@ public class DeleteAction extends AContextualAction {
                 RepositoryNode node = (RepositoryNode) obj;
                 try {
 
-                    // if (node.getObject().isDeleted() && !this.getText().equals(DELETE_FOREVER_TOOLTIP)) {
-                    // continue;
-                    // }
+                    if (this.containParent(node, (IStructuredSelection) selection)) {
+                        continue;
+                    }
 
                     if (isForbidNode(node)) {
                         continue;
@@ -778,14 +778,8 @@ public class DeleteAction extends AContextualAction {
                         this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
 
                         if (node.hasChildren()) {
-                            if (containChild(node, selection)) {
-                                visible = false;
-                                break;
-                            } else {
-                                visible = true;
-                                enabled = true;
-                            }
-
+                            visible = true;
+                            enabled = true;
                         }
                     }
 
@@ -896,10 +890,10 @@ public class DeleteAction extends AContextualAction {
         this.visible = visible;
     }
 
-    private boolean containChild(RepositoryNode node, IStructuredSelection selection) {
+    private boolean containParent(RepositoryNode node, IStructuredSelection selection) {
         for (Object o : (selection).toArray()) {
-            RepositoryNode child = (RepositoryNode) o;
-            if (child.getParent() != null && child.getParent().equals(node)) {
+            RepositoryNode parent = (RepositoryNode) o;
+            if (node.getParent() != null && node.getParent().equals(parent)) {
                 return true;
             }
         }
