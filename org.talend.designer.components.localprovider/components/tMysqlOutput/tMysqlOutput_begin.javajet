@@ -80,7 +80,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
-	
+	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
 
 <%
@@ -205,7 +206,19 @@ if(!useExistingConnection) {
         <%
     }
 }
-
+%>
+<%
+if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && !extendedInsert) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+   int batchSize_<%=cid%> = <%=batchSize%>;
+   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
+}
+%>
+ 
+<%
 if(!isDynamic) {
 %>
 int count_<%=cid%>=0;

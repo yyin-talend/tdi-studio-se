@@ -39,6 +39,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
 	int numPerInsert = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__"));
+	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
 
 <%
@@ -324,5 +326,13 @@ if(columnList != null && columnList.size() > 0) {
 
 	<%
 	}
+	if (useBatchSize  && !extendedInsert) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+	   int batchSize_<%=cid%> = <%=batchSize%>;
+	   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
+}
 }
 %>

@@ -47,7 +47,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
     boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
 
-    
+	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
     //feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
@@ -246,6 +248,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	    	}
     	}
+		if (useBatchSize) {
+		    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+				batchSize_<%=cid%> = buffersSize_<%=tAsyncIn_cid%>;
+<%
+		    }
+    	}
 	} // end bug0014422
 
     if(incomingConnName != null && columnList != null) {
@@ -321,6 +330,19 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+			<%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+    		  <%if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    		  %>
+    		  batchSizeCounter_<%=cid%>++;
+    		  <%
+    		  }%>    		
+    		<%
+    		}else {    		
+    		%>
             try {
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
@@ -353,6 +375,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+            <%
+            } // end whether use batch
+            %>
             <%
         } else if(("UPDATE").equals(dataAction)) {
             int counterCol = 1;
@@ -424,6 +449,19 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+            <%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+    		  <%if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    		  %>
+    		  batchSizeCounter_<%=cid%>++;
+    		  <%
+    		  }%>    		
+    		<%
+    		}else {    		
+    		%>
             try {
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
@@ -456,6 +494,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+            <%
+            } // end whether use batch
+            %>
             <%
         } else if (("INSERT_OR_UPDATE").equals(dataAction)) {
             int columnIndex = 1;
@@ -870,6 +911,19 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
             %>
+            <%if (rejectConnName == null && useBatchSize) { // whether use batch
+    		%>
+    		pstmt_<%=cid %>.addBatch();
+    		nb_line_<%=cid%>++;    		 
+			
+    		  <%if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    		  %>
+    		  batchSizeCounter_<%=cid%>++;
+    		  <%
+    		  }%>    		
+    		<%
+    		}else {    		
+    		%>
             try {
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(Exception e) {
@@ -901,6 +955,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 } 
                 %>
             }
+            <%
+            } // end whether use batch
+            %>
             nb_line_<%=cid%>++;
         <%
         }
@@ -928,21 +985,95 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%
         }   
         
-        ////////////commit every////////////
-        if(!("true").equals(useExistingConn)) {
-            if(!("").equals(commitEvery)&&!("0").equals(commitEvery)) {
-                %>
-                commitCounter_<%=cid%>++;
-        
-                if(commitEvery_<%=cid%><=commitCounter_<%=cid%>) {
-                
-                    conn_<%=cid%>.commit();
-                    
-                    commitCounter_<%=cid%>=0;
-        
+		//////////batch execute by batch size///////
+    	if (useBatchSize&& (rejectConnName==null)) {
+    		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
+    		%>
+    			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
+                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                %>                                                
+                try {
+						pstmt_<%=cid %>.executeBatch();                	
+            	    	<%if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>
+            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    	}%>                         	    	
+            	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
+                }catch (java.sql.BatchUpdateException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+                		throw(e);
+                	<%
+                	}else {
+                	%>
+                	System.err.println(e.getMessage());
+                	<%
+                	}%>
                 }
-            <%
-            }
-        }
+                <%
+                }%>    			
+    			
+    			
+    			
+    			}
+    		<%	
+    		}
+    	
+    	}
+        ////////////commit every////////////
+		if(!"true".equals(useExistingConn)) {
+    		if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+    		    %>
+    		    commitCounter_<%=cid%>++;            
+                if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+                
+                <%if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                %>
+                try {
+                		pstmt_<%=cid %>.executeBatch();
+            	    	<%if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>            	    		
+            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}%>            	    
+                }catch (java.sql.BatchUpdateException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+						throw(e);
+                	<%
+                	}else {
+                	%>
+                        System.out.println(e.getMessage());
+                	<%
+                	}%>
+                
+                }            	                              
+                <%
+                }%>
+                	conn_<%=cid%>.commit();                
+                	commitCounter_<%=cid%>=0;
+                }	
+                <%
+    		}
+    	}
+        
+        
     }
     %>

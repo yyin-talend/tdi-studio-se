@@ -47,6 +47,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	
+	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	
 	String rejectConnName = null;
 	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 	if(rejectConns != null && rejectConns.size() > 0) {
@@ -86,21 +88,21 @@ skeleton="../templates/db_output_bulk.skeleton"
         IMetadataTable metadata = metadatas.get(0);
 	isDynamic = metadata.isDynamicSchema(); 
     }
-   
-	if(extendedInsert){
-		
-		String dbVersion = "" ;
-    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		if(("true").equals(useExistingConn)) {
-			List<? extends INode> nodes =  process.getNodesOfType("tMysqlConnection");
-			for (INode ne:nodes) {
-				if (connection.equals(ne.getUniqueName())) {
-					dbVersion = ElementParameterParser.getValue(ne, "__DB_VERSION__");
-				}
+    
+   	String dbVersion = "" ;
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	if(("true").equals(useExistingConn)) {
+		List<? extends INode> nodes =  process.getNodesOfType("tMysqlConnection");
+		for (INode ne:nodes) {
+			if (connection.equals(ne.getUniqueName())) {
+				dbVersion = ElementParameterParser.getValue(ne, "__DB_VERSION__");
 			}
-		} else {
-			dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 		}
+	} else {
+		dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+	}
+		
+	if(extendedInsert){
 		
 		if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion)) {		
 		    class ExtendInsertOperation{
@@ -407,6 +409,37 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%
     } else {
         %>
+	<%if ((rejectConnName==null && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && useBatchSize) && ( ("INSERT").equals(dataAction) ||("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    %>                
+    try {
+			pstmt_<%=cid %>.executeBatch();                	
+	    	<%if (("INSERT").equals(dataAction)) {
+	    	%>
+	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
+	    	<%
+	    	}else if (("UPDATE").equals(dataAction)) {
+	    	%>
+	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+	    	<%
+	    	}else if (("DELETE").equals(dataAction)) {
+	    	%>
+	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+	    	<%
+	    	}%>            	    
+    }catch (java.sql.BatchUpdateException e){
+    	<%if(("true").equals(dieOnError)) {
+    	%>
+    		throw(e);
+    	<%
+    	}else {
+    	%>
+    	System.out.println(e.getMessage());
+    	<%
+    	}%>                	
+	}                                  
+    <%
+    }%>  
+    
         if(pstmt_<%=cid %> != null) {
 <%
 //to fixed: bug8422

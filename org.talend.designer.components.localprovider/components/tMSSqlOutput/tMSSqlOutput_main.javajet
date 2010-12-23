@@ -1453,7 +1453,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
     		    commitCounter_<%=cid%>++;            
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                <%if ((rejectConnName==null && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                <%if ((rejectConnName==null && "true".equals(useBatchSize)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
                 		pstmt_<%=cid %>.executeBatch();

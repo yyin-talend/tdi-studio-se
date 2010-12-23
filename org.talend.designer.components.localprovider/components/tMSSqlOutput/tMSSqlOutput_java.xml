@@ -277,24 +277,7 @@
 		  >
 	  		<DEFAULT>10000</DEFAULT>
 		</PARAMETER>
-		    
-		<!-- 		<PARAMETER 
-	  	  NAME="USE_BATCH_SIZE" 
-	  	  FIELD="CHECK"
-		  NUM_ROW="160"
-		  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
-	  	>
-	  		<DEFAULT>true</DEFAULT>
-		</PARAMETER>            
-
-  		<PARAMETER 
-	  	  NAME="BATCH_SIZE" 
-	  	  FIELD="TEXT"
-		  NUM_ROW="160"
-		  SHOW_IF="(USE_BATCH_SIZE == 'true') AND (USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
-		  >
-	  		<DEFAULT>10000</DEFAULT>
-		</PARAMETER>    -->        
+		          
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>

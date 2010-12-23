@@ -39,6 +39,8 @@ String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 boolean convertToUppercase = ("true").equals(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
 boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
 
 <%
@@ -143,6 +145,18 @@ if(!("true").equals(useExistingConn)) {
     }
 }
 %>
+
+<%
+if (useBatchSize) {
+    if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
+%>
+   int batchSize_<%=cid%> = <%=batchSize%>;
+   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
+}
+%> 
+
 String tableName_<%=cid%> = null;
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
