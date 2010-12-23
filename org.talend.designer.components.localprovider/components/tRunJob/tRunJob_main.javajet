@@ -124,21 +124,23 @@ paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %
 
 java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
 
-//Bug15353
 <%
 if(transmitWholeContext){//111111
-	List<IContextParameter> processParams = new ArrayList<IContextParameter>();
-    processParams = currentProcess.getContextManager().getContext(context).getContextParameterList();
-	for (IContextParameter ctxParam : processParams){
-%>
-		paraList_<%=cid %>.add("--context_param " + "<%=ctxParam.getName()%>" + "=" + <%=ctxParam.getValue()%>);
+%> 
+  context.synchronizeContext();
+  java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
+  while (propertyNames_<%=cid %>.hasMoreElements()) {
+    String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
+    Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
+    paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+  }
+  
 <%
-	}
  List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
     for (IContextParameter ctxParam :params){
     	String ctxParamName = ctxParam.getName();
  %>  
-    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
+		    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
  <%}
 
 }//111111
