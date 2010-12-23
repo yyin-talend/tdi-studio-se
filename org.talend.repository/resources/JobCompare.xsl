@@ -198,7 +198,7 @@
 					</h2>
 					<br />
 					<table border="0" class="FONTSTYLE"
-									cellpadding="0" cellspacing="0" align="center" style="border-collapse: collapse"
+									cellpadding="0" cellspacing="0" align="left" style="border-collapse: collapse"
 									bordercolor="#111111" summary="">
 									<tr class="FONTSTYLE">
 										<td class="FONTSTYLE">

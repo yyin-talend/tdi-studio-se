@@ -70,34 +70,34 @@
 			</tr>
 			<xsl:for-each select="/externalNode/column">
 				<tr class="FONTSTYLE">
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@name" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@key" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@type" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@nullable" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@length" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@precision" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@default" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@comment" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@functions" />
 					</td>
-					<td align="center">
+					<td align="left">
 						<xsl:value-of select="@parameters" />
 					</td>
 				</tr>

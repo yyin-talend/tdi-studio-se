@@ -140,19 +140,19 @@
 								<xsl:for-each
 									select="metadataTableEntries/entry">
 									<tr class="FONTSTYLE">
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@name" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@expression" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@operator" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@isJoin" />
 										</td>
@@ -190,19 +190,19 @@
 								<xsl:for-each
 									select="customConditionsEntries/entry">
 									<tr class="FONTSTYLE">
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@name" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@expression" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@operator" />
 										</td>
-										<td align="center">
+										<td align="left">
 											<xsl:value-of
 												select="@isJoin" />
 										</td>

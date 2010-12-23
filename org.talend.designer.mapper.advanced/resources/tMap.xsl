@@ -59,16 +59,16 @@
 						</tr>
 						<xsl:for-each select="table/metadataTableEntries/entry">
 							<tr class="FONTSTYLE">
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@name"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@type"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@expression"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@isNullable"/>
 								</td>
 							</tr>
@@ -85,16 +85,16 @@
 						</tr>
 						<xsl:for-each select="table/constraintTableEntries/entry">
 							<tr class="FONTSTYLE">
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@name"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@type"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@expression"/>
 								</td>
-								<td align="center">
+								<td align="left">
 									<xsl:value-of select="@isNullable"/>
 								</td>
 							</tr>

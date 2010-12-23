@@ -531,19 +531,19 @@
 								<img src="{@icon}" alt="" />
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
-							<td align="center" class="TABLECOLUMNSTYLE"
+							<td align="left" class="TABLECOLUMNSTYLE"
 								width="15%">
 								<xsl:value-of select="/project/@i18n.job.unique.name" />
 							</td>
-							<td class="FONTSTYLE" align="center"
+							<td class="FONTSTYLE" align="left"
 								width="15%">
 								<xsl:value-of select="@uniqueName" />
 							</td>
-							<td align="center" class="TABLECOLUMNSTYLE"
+							<td align="left" class="TABLECOLUMNSTYLE"
 								width="15%">
 								<xsl:value-of select="/project/@i18n.job.input" />
 							</td>
-							<td class="FONTSTYLE" align="center">
+							<td class="FONTSTYLE" align="left">
 								<xsl:for-each select="input">
 									<xsl:choose>
 										<xsl:when
@@ -567,18 +567,18 @@
 							</td>
 						</tr>
 						<tr>
-							<td align="center"
+							<td align="left"
 								class="TABLECOLUMNSTYLE">
 								<xsl:value-of select="/project/@i18n.job.label" />
 							</td>
-							<td align="center">
+							<td align="left">
 								<xsl:value-of select="@label" />
 							</td>
-							<td align="center"
+							<td align="left"
 								class="TABLECOLUMNSTYLE">
 								<xsl:value-of select="/project/@i18n.job.output" />
 							</td>
-							<td class="FONTSTYLE" align="center">
+							<td class="FONTSTYLE" align="left">
 								<xsl:for-each select="output">
 									<xsl:choose>
 										<xsl:when
@@ -685,27 +685,27 @@
 							</tr>
 							<xsl:for-each select="column">
 								<tr class="FONTSTYLE">
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@name" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@key" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@type" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@length" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of
 											select="@precision" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of
 											select="@nullable" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@comment" />
 									</td>
 								</tr>
@@ -743,19 +743,19 @@
 								<img src="{@icon}" alt="" />
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
-							<td align="center" class="TABLECOLUMNSTYLE"
+							<td align="left" class="TABLECOLUMNSTYLE"
 								width="15%">
 								<xsl:value-of select="/project/@i18n.job.unique.name" />
 							</td>
-							<td class="FONTSTYLE" align="center"
+							<td class="FONTSTYLE" align="left"
 								width="15%">
 								<xsl:value-of select="@uniqueName" />
 							</td>
-							<td align="center" class="TABLECOLUMNSTYLE"
+							<td align="left" class="TABLECOLUMNSTYLE"
 								width="15%">
 								<xsl:value-of select="/project/@i18n.job.input" />
 							</td>
-							<td class="FONTSTYLE" align="center">
+							<td class="FONTSTYLE" align="left">
 								<xsl:for-each select="input">
 									<xsl:choose>
 										<xsl:when
@@ -779,18 +779,18 @@
 							</td>
 						</tr>
 						<tr>
-							<td align="center"
+							<td align="left"
 								class="TABLECOLUMNSTYLE">
 								<xsl:value-of select="/project/@i18n.job.label" />
 							</td>
-							<td align="center">
+							<td align="left">
 								<xsl:value-of select="@label" />
 							</td>
-							<td align="center"
+							<td align="left"
 								class="TABLECOLUMNSTYLE">
 								<xsl:value-of select="/project/@i18n.job.output" />
 							</td>
-							<td class="FONTSTYLE" align="center">
+							<td class="FONTSTYLE" align="left">
 								<xsl:for-each select="output">
 									<xsl:choose>
 										<xsl:when
@@ -831,7 +831,7 @@
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
 						bordercolor="#111111" frame="box" summary="">
 						<tr>
-							<th align="center" width="30%"
+							<th align="left" width="30%"
 								class="TABLECOLUMNSTYLE">
 								<xsl:value-of select="/project/@i18n.job.properties" />
 							</th>
@@ -842,7 +842,7 @@
 						</tr>
 						<xsl:for-each select="parameters/column">
 							<tr>
-								<td class="FONTSTYLE" align="center">
+								<td class="FONTSTYLE" align="left">
 									<xsl:variable name="propname"
 										select="@name" />
 									<xsl:value-of select="$propname" />
@@ -898,27 +898,27 @@
 							</tr>
 							<xsl:for-each select="column">
 								<tr class="FONTSTYLE">
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@name" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@key" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@type" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@length" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of
 											select="@precision" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of
 											select="@nullable" />
 									</td>
-									<td align="center">
+									<td align="left">
 										<xsl:value-of select="@comment" />
 									</td>
 								</tr>
@@ -940,7 +940,7 @@
 					style="border-collapse: collapse; padding-left:10mm;"
 					bordercolor="#111111" frame="box" summary="">
 					<tr>
-						<th width="50%" align="center"
+						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
 							<xsl:value-of select="/project/@i18n.job.content" />
 						</th>
