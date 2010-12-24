@@ -45,7 +45,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.5.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.6.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-2.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-analysis-2.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Groovy_Module" MODULE="asm-attrs-2.2.jar" REQUIRED="true" />
