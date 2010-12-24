@@ -15,7 +15,7 @@ imports="
 		public void createURL(INode node) {
 			super.createURL(node);
 %>
-		String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + "/" +<%=dbport%> + ":" +  <%=dbname%>;
+		String url_<%=cid %> ="jdbc:firebirdsql:" + <%=dbhost%> + <%if(dbport == null || "".equals(dbport)){%> "/" + <%=dbport%> <%}%> ":" +  <%=dbname%>;
 <%	
 		}
 		
