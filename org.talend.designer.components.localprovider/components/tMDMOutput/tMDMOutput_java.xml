@@ -33,7 +33,7 @@
 	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 		NUM_ROW="10">
 		<TABLE READONLY="false">
-			<COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+			<COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true"/>
 		</TABLE>
 	</PARAMETER>
 		
@@ -45,9 +45,9 @@
 	      CONTEXT="REJECT"
 	      SHOW="true">
 	      <TABLE READONLY="true">
+	        <COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true"/>
 	        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-	        <COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 	      </TABLE>
 	    </PARAMETER> 
 	    
