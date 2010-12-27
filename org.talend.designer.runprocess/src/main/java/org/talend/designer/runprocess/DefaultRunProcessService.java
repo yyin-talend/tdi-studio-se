@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -30,12 +31,11 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
-import org.talend.designer.runprocess.perl.PerlProcessor;
-import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.runprocess.data.PerformanceData;
@@ -47,6 +47,8 @@ import org.talend.runprocess.data.PerformanceData;
  * 
  */
 public class DefaultRunProcessService implements IRunProcessService {
+
+    private static final String ROUTINE_FILENAME_EXT = ".pm"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -98,9 +100,14 @@ public class DefaultRunProcessService implements IRunProcessService {
     public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
-
-        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
-                statOption, traceOption, codeOptions);
+        int i = 0;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+            IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                    IDesignerPerlService.class);
+            i = service.perlExec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
+                    statOption, traceOption, codeOptions);
+        }
+        return i;
 
     }
 
@@ -130,7 +137,12 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @return
      */
     protected IProcessor createPerlProcessor(IProcess process, Property property, boolean filenameFromLabel) {
-        return new PerlProcessor(process, property, filenameFromLabel);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+            IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                    IDesignerPerlService.class);
+            return service.createPerlProcessor(process, property, filenameFromLabel);
+        }
+        return null;
     }
 
     /**
@@ -149,17 +161,26 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     public String getRoutineFilenameExt() {
-        return PerlUtils.ROUTINE_FILENAME_EXT;
+        return ROUTINE_FILENAME_EXT;
     }
 
     public IProject getProject(ECodeLanguage language) throws CoreException {
         switch (language) {
         case PERL:
-            return PerlUtils.getProject();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                return service.getProject();
+            }
         case JAVA:
             return JavaProcessorUtilities.getProcessorProject();
         default:
-            return PerlUtils.getProject();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                return service.getProject();
+            }
+            return null;
         }
     }
 

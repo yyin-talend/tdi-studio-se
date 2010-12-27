@@ -98,9 +98,9 @@ public final class ImportDemoProjectAction extends Action {
                         String techName = demoProjectBean.getProjectName();
 
                         if (checkProjectIsExisting(techName)) {
-                            boolean reImportFlag = MessageDialog.openQuestion(shell, Messages
-                                    .getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages //$NON-NLS-1$
-                                    .getString("ImportDemoProjectAction.alertDialog.message")); //$NON-NLS-1$
+                            boolean reImportFlag = MessageDialog.openQuestion(shell,
+                                    Messages.getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages //$NON-NLS-1$
+                                            .getString("ImportDemoProjectAction.alertDialog.message")); //$NON-NLS-1$
                             if (!reImportFlag) {
                                 return;
                             }
@@ -108,7 +108,11 @@ public final class ImportDemoProjectAction extends Action {
 
                         String demoFilePath = demoProjectBean.getDemoProjectFilePath();
                         EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
-                        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
+                        String pluginID = ResourcesPlugin.PLUGIN_ID;
+                        if (techName.equals("TALENDDEMOSPERL")) {
+                            pluginID = "org.talend.resources.perl";
+                        }
+                        Bundle bundle = Platform.getBundle(pluginID);
 
                         URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
 
@@ -129,8 +133,8 @@ public final class ImportDemoProjectAction extends Action {
                     }
 
                     monitorWrap.done();
-                    MessageDialog.openInformation(shell, Messages
-                            .getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
+                    MessageDialog.openInformation(shell,
+                            Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
                             Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
                     PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
                             .getPreferenceStore());

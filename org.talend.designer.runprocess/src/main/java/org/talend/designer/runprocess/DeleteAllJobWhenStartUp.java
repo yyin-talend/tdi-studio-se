@@ -25,7 +25,6 @@ import org.eclipse.ui.IStartup;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
-import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Delete all the perl and java jobs when T.O.S start up.
@@ -38,6 +37,8 @@ import org.talend.designer.runprocess.perl.PerlUtils;
 public class DeleteAllJobWhenStartUp implements IStartup {
 
     public static boolean executed;
+
+    public static final String PERL_PROJECT_NAME = ".Perl";
 
     private boolean startUnderPluginModel;
 
@@ -60,7 +61,7 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot workspaceRoot = workspace.getRoot();
 
-        IResource perlRecs = workspaceRoot.findMember(PerlUtils.PERL_PROJECT_NAME);
+        IResource perlRecs = workspaceRoot.findMember(PERL_PROJECT_NAME);
         if (perlRecs != null && perlRecs.getType() == IResource.PROJECT) {
             IProject perlProject = (IProject) perlRecs;
             try {

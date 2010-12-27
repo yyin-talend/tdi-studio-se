@@ -30,11 +30,11 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor;
-import org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor;
 import org.talend.designer.core.ui.wizards.SaveAsRoutineWizard;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -114,14 +114,18 @@ public class SaveAsRoutineAction extends Action {
                     page.openEditor(routineEditorInput, StandAloneTalendJavaEditor.ID, true);
                     break;
                 case PERL:
-                    page.openEditor(routineEditorInput, StandAloneTalendPerlEditor.ID, true);
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                        IDesignerPerlService perlService = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerPerlService.class);
+                        page.openEditor(routineEditorInput, perlService.getStandAloneTalendPerlEditorID(), true);
+                    }
                     break;
                 default:
                 }
 
             } catch (Exception e) {
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Routine could not be saved" + " : "
-                        + e.getMessage());
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error",
+                        "Routine could not be saved" + " : " + e.getMessage());
                 ExceptionHandler.process(e);
             }
         }

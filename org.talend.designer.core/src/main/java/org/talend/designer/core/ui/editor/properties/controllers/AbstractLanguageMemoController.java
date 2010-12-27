@@ -47,14 +47,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
-import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
@@ -227,16 +228,16 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 if (isNeedToAddCodeGenerateButton()) {
                     addCodeGenerateButton(b);
                 }
-
-                if (elem instanceof INode) {
-                    viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
-                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true, (INode) elem);
-                } else {
-
-                    viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
-                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+                    ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
+                            ICorePerlService.class);
+                    if (elem instanceof INode) {
+                        viewer = service.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true,
+                                (INode) elem);
+                    } else {
+                        viewer = service.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
+                    }
                 }
-
                 text = viewer.getTextWidget();
 
                 Process process = null;
@@ -405,14 +406,14 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 newTransfers[transfers.length] = LocalSelectionTransfer.getTransfer();
                 dropTarget.setTransfer(newTransfers);
             }
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer, getParameterName(viewer
-                    .getTextWidget()), elem, getCommandStack());
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer,
+                    getParameterName(viewer.getTextWidget()), elem, getCommandStack());
             dropTarget.addDropListener(dropLisenter);
 
         } else {
             int ops = DND.DROP_COPY | DND.DROP_MOVE;
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer, getParameterName(viewer
-                    .getTextWidget()), elem, getCommandStack());
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer,
+                    getParameterName(viewer.getTextWidget()), elem, getCommandStack());
             ((ReconcilerViewer) viewer)
                     .addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
         }

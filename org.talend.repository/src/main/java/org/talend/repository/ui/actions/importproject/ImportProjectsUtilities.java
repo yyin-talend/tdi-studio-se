@@ -350,37 +350,38 @@ public class ImportProjectsUtilities {
         Document doc = null;
         List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
         DemoProjectBean demoProject = null;
-
-        try {
-            doc = reader.read(getXMLFilePath());
-        } catch (DocumentException e) {
-            ExceptionHandler.process(e);
-            return null;
-        }
-
-        Element demoProjectsInfo = doc.getRootElement();
-
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        String[] availableLanguages = brandingService.getBrandingConfiguration().getAvailableLanguages();
-
-        for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) { //$NON-NLS-1$
-            Element demoProjectElement = (Element) i.next();
-            demoProject = new DemoProjectBean();
-            demoProject.setProjectName(demoProjectElement.attributeValue("name")); //$NON-NLS-1$
-            String language = demoProjectElement.attributeValue("language"); //$NON-NLS-1$
-
-            if (!ArrayUtils.contains(availableLanguages, language)) {
-                // if the language is not available in current branding, don't display this demo project
-                continue;
+        for (int t = 0; t < getXMLFilePath().size(); t++) {
+            try {
+                doc = reader.read(getXMLFilePath().get(t));
+            } catch (DocumentException e) {
+                ExceptionHandler.process(e);
+                return null;
             }
 
-            demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
-            String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType"); //$NON-NLS-1$
-            demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
-            demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
-            demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
-            demoProjectList.add(demoProject);
+            Element demoProjectsInfo = doc.getRootElement();
+
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            String[] availableLanguages = brandingService.getBrandingConfiguration().getAvailableLanguages();
+
+            for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) { //$NON-NLS-1$
+                Element demoProjectElement = (Element) i.next();
+                demoProject = new DemoProjectBean();
+                demoProject.setProjectName(demoProjectElement.attributeValue("name")); //$NON-NLS-1$
+                String language = demoProjectElement.attributeValue("language"); //$NON-NLS-1$
+
+                if (!ArrayUtils.contains(availableLanguages, language)) {
+                    // if the language is not available in current branding, don't display this demo project
+                    continue;
+                }
+
+                demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
+                String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType"); //$NON-NLS-1$
+                demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
+                demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
+                demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
+                demoProjectList.add(demoProject);
+            }
         }
         return demoProjectList;
     }
@@ -390,15 +391,24 @@ public class ImportProjectsUtilities {
      * 
      * @return String
      */
-    private static File getXMLFilePath() {
-        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-        URL url = null;
-        try {
-            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
+    private static List<File> getXMLFilePath() {
+        List<File> xmlListFile = new ArrayList<File>();
+        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl" };
+        for (int i = 0; i < pluginIDs.length; i++) {
+            Bundle bundle = Platform.getBundle(pluginIDs[i]);
+            if (bundle != null) {
+                URL url = null;
+                try {
+                    url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+
+                File xmlFilePath = new File(url.getPath());
+                xmlListFile.add(xmlFilePath);
+            }
         }
-        File xmlFilePath = new File(url.getPath());
-        return xmlFilePath;
+        return xmlListFile;
     }
+
 }

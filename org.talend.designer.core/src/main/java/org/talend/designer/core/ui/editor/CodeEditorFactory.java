@@ -13,8 +13,10 @@
 package org.talend.designer.core.ui.editor;
 
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.service.IDesignerPerlService;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -36,11 +38,20 @@ public final class CodeEditorFactory {
     public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language, IProcess2 process) {
         switch (language) {
         case PERL:
-            return new TalendPerlEditor(process);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                return service.createNewPerlEditor(process);
+            }
         case JAVA:
             return new TalendJavaEditor(process);
         default:
-            return new TalendPerlEditor(process);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                return service.createNewPerlEditor(process);
+            }
         }
+        return null;
     }
 }

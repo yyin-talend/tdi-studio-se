@@ -26,7 +26,9 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
  * ggu class global comment. Detailled comment
@@ -54,6 +56,10 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
         }
         try {
             ProcessItem item2 = (ProcessItem) item;
+            if (item2.getProcess().getParameters() == null || item2.getProcess().getParameters().getRoutinesParameter() == null) {
+                ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+                item2.getProcess().setParameters(parameterType);
+            }
             List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) item2.getProcess().getParameters()
                     .getRoutinesParameter();
 

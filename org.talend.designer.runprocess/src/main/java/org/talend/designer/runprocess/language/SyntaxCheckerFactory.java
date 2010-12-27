@@ -12,10 +12,11 @@
 // ============================================================================
 package org.talend.designer.runprocess.language;
 
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.runprocess.language.java.JavaCodeProblemsChecker;
-import org.talend.designer.runprocess.language.perl.PerlCodeProblemsChecker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -36,7 +37,12 @@ public class SyntaxCheckerFactory {
 
     public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         if (codeLanguage == ECodeLanguage.PERL) {
-            return (ICodeProblemsChecker) new PerlCodeProblemsChecker();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                return service.createPerlCodeProblemsChecker();
+            }
+            return null;
         } else if (codeLanguage == ECodeLanguage.JAVA) {
             return (ICodeProblemsChecker) new JavaCodeProblemsChecker();
         } else {

@@ -51,8 +51,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.epic.core.preferences.LabelFieldEditor;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.advanced.dataeditor.LabelFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -162,8 +162,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 { spanish, "es" }, { russian, "ru" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 { Locale.KOREA.getDisplayLanguage(Locale.KOREA), "kr" }, { "Turkish", "tr" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
                 { greek, "el" }, { "Hrvatski", "hr" }, { arabic, "ar" }, { serbian, "sr" }, { "Polski", "pl" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ /$NON-NLS-7$ 
-        languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Messages
-                .getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
+        languageSelectionEditor = new OneLineComboFieldEditor(ITalendCorePrefConstants.LANGUAGE_SELECTOR,
+                Messages.getString("I18nPreferencePage.needRestart"), entryNamesAndValues, getFieldEditorParent()); //$NON-NLS-1$
         addField(languageSelectionEditor);
 
         Composite composite = getFieldEditorParent();
@@ -189,8 +189,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                 if (selected != null) {
                     isBabiliButtonClicked = true;
                     runProgressMonitorDialog(selected);
-                    if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
-                            .getString("I18nPreferencePage.restart"), //$NON-NLS-1$
+                    if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                            Messages.getString("I18nPreferencePage.restart"), //$NON-NLS-1$
                             Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$
                         PlatformUI.getWorkbench().restart();
                 }
@@ -214,8 +214,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             public void widgetSelected(SelectionEvent e) {
                 isBabiliButtonClicked = true;
                 runProgressMonitorDialog(Messages.getString("I18nPreferencePage.restoreDefault")); //$NON-NLS-1$
-                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
-                        .getString("I18nPreferencePage.restart"), Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$ //$NON-NLS-2$
+                if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.getString("I18nPreferencePage.restart"), Messages.getString("I18nPreferencePage.restartButton"))) //$NON-NLS-1$ //$NON-NLS-2$
                     PlatformUI.getWorkbench().restart();
             }
         });
@@ -284,8 +284,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     if (currentFileToBak.toString().endsWith(".jar")) { //$NON-NLS-1$
                         ZipFileUtils.unZip(currentFileToBak, jarFolderPath + fs + currentFileToBak.getName());
                     } else {
-                        FileCopyUtils.copyFolder(currentFileToBak.getAbsolutePath(), jarFolderPath + fs
-                                + currentFileToBak.getName());
+                        FileCopyUtils.copyFolder(currentFileToBak.getAbsolutePath(),
+                                jarFolderPath + fs + currentFileToBak.getName());
                     }
                     File jarFiles = new File(jarFolderPath + fs + currentFileToBak.getName());
                     File[] jarSubFiles = jarFiles.listFiles();
@@ -379,7 +379,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             }
 
                         }// specific bug if .properties for components, since structure of babili resource is different
-                        // with local plugin
+                         // with local plugin
                         else {
                             if (subJarf.getName().equals("components")) { //$NON-NLS-1$
                                 File[] componentFiles = subJarf.listFiles();
@@ -571,8 +571,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             fin = new FileInputStream(iniFile);
             p.load(fin);
 
-            String languageType = CorePlugin.getDefault().getPluginPreferences().getString(
-                    ITalendCorePrefConstants.LANGUAGE_SELECTOR);
+            String languageType = CorePlugin.getDefault().getPluginPreferences()
+                    .getString(ITalendCorePrefConstants.LANGUAGE_SELECTOR);
 
             if (languageType.equals(p.getProperty(EclipseStarter.PROP_NL))) {
                 return;
@@ -613,8 +613,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
      * @return
      */
     public static String getCurrentTosVersion(boolean normalize) {
-        String version = (String) CorePlugin.getDefault().getBundle().getHeaders().get(
-                org.osgi.framework.Constants.BUNDLE_VERSION);
+        String version = (String) CorePlugin.getDefault().getBundle().getHeaders()
+                .get(org.osgi.framework.Constants.BUNDLE_VERSION);
         if (normalize) {
             version = normalizeVersion(version);
         }

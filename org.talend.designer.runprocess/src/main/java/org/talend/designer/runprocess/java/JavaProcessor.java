@@ -110,12 +110,12 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
-import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -186,7 +186,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         super(process);
         this.process = process;
         this.property = property;
-        
+
         if (property != null) {
             if (property.getItem() != null && property.getItem() instanceof ProcessItem) {
                 final ProcessItem processItem = (ProcessItem) property.getItem();
@@ -197,7 +197,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 }
             }
         }
-        
+
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
     }
@@ -272,8 +272,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     private String computeMethodSizeIfNeeded(String processCode) {
         // must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
-        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                "displayMethodSize")); //$NON-NLS-1$
+        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService()
+                .getPreferenceStore("displayMethodSize")); //$NON-NLS-1$
         if (displayMethodSize) {
             StringBuffer code = new StringBuffer(processCode);
             int fromIndex = 0;
@@ -1059,8 +1059,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
+                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
@@ -1084,8 +1084,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
+                    launchManager.generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);

@@ -46,8 +46,8 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
@@ -160,7 +160,7 @@ public class CodeView extends ViewPart {
         this.parent = parent;
         parent.setLayout(new FillLayout());
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
-        ISourceViewer viewer;
+        ISourceViewer viewer = null;
         final StyledText text;
         int styles = SWT.H_SCROLL | SWT.V_SCROLL;
         document = new Document();
@@ -178,8 +178,12 @@ public class CodeView extends ViewPart {
             document = viewer.getDocument();
             break;
         default: // PERL
-            viewer = TalendPerlSourceViewer.createViewer(parent, styles, false);
-            document = viewer.getDocument();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
+                        ICorePerlService.class);
+                viewer = service.createViewer(parent, styles, false);
+                document = viewer.getDocument();
+            }
         }
         viewer.setEditable(false);
         text = viewer.getTextWidget();

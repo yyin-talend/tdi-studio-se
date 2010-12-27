@@ -59,7 +59,7 @@ public class ChangeModelForRoutineParameterMigrationTask extends AbstractJobMigr
         try {
             ProcessItem item2 = (ProcessItem) item;
             List<ItemInforType> oldRoutinesDependencies = (List<ItemInforType>) item2.getProcess().getRoutinesDependencies();
-            if (item2.getProcess().getParameters().getRoutinesParameter() == null) {
+            if (item2.getProcess().getParameters() == null || item2.getProcess().getParameters().getRoutinesParameter() == null) {
                 ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
                 item2.getProcess().setParameters(parameterType);
             }

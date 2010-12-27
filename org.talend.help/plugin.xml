@@ -14,8 +14,6 @@
     <toc
           file="community_tools.xml"
           primary="true"/>   
-    <toc
-            file="perlfunc.xml"/>         
          
    </extension>
    
@@ -24,19 +22,5 @@
          <contexts file="context.xml"/>
    </extension>
    
-      	<extension
-		point="org.eclipse.ui.actionSets">
-   
-   		<actionSet
-			id="org.talend.help.perl"
-			label="%HelpAction.label"
-			visible="true">
-			<action 
-				id="org.talend.help.perl.OpenPerlHelpAction"
-				class="org.talend.help.perl.OpenPerlHelpAction"
-				menubarPath="help/additions"
-				label="%HelpAction.label"/>
-		</actionSet>
-   </extension>
   
 </plugin>

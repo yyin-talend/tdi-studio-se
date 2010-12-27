@@ -70,7 +70,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.rulers.IColumnSupport;
-import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -105,6 +104,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.repository.model.ResourceModelUtils;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.core.ui.ICreateXtextProcessService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
@@ -120,7 +120,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
-import org.talend.designer.core.ui.editor.TalendPerlEditor;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -545,7 +544,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (codeEditor instanceof TalendJavaEditor) {
                 ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName);
             } else {
-                ((TalendPerlEditor) codeEditor).placeCursorTo(nodeName);
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                    IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                            IDesignerPerlService.class);
+                    service.placeCursorTo(codeEditor, nodeName);
+                }
             }
         }
     }
@@ -612,7 +615,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 int index = addPage(codeEditor, createFileEditorInput());
                 // init Syntax Validation.
                 if (getCurrentLang() == ECodeLanguage.PERL) {
-                    PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                        IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerPerlService.class);
+                        service.setSyntaxValidationPreference(true);
+                    }
                 }
                 setPageText(index, "Code"); //$NON-NLS-1$
 

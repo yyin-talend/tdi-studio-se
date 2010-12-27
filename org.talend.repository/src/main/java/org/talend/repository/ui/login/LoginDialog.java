@@ -33,8 +33,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.epic.core.preferences.PerlMainPreferencePage;
-import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -46,6 +44,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -198,8 +197,11 @@ public class LoginDialog extends TrayDialog {
         if (project.getLanguage().equals(ECodeLanguage.PERL)) {
             IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
             String prelExecutableValue = store.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-            PerlEditorPlugin.getDefault().setExecutablePreference("\"" + prelExecutableValue + "\"");
-            PerlMainPreferencePage.refreshExecutableTextValue("\"" + prelExecutableValue + "\"");
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
+                        ICorePerlService.class);
+                service.setExecutablePreference(prelExecutableValue);
+            }
         }
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);

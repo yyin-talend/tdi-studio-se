@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.runprocess;
+package org.talend.designer.core.runprocess;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -41,12 +41,17 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.runprocess.IEclipseProcessor;
+import org.talend.designer.runprocess.IProcessMessageManager;
+import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: Processor.java 52559 2010-12-13 04:14:06Z nrousseau $
  * 
  * 
  */
@@ -140,8 +145,8 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
                 generateCode(statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     try {
-                        CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                                IncrementalProjectBuilder.AUTO_BUILD, null);
+                        CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                                .build(IncrementalProjectBuilder.AUTO_BUILD, null);
                     } catch (CoreException e) {
                         ExceptionHandler.process(e);
                     }

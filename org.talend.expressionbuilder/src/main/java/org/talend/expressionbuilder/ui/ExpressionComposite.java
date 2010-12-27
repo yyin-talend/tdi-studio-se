@@ -46,12 +46,13 @@ import org.eclipse.ui.IEditorPart;
 import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.service.ICorePerlService;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
-import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -235,8 +236,12 @@ public class ExpressionComposite extends Composite {
             viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
                     | SWT.H_SCROLL | SWT.WRAP, dataBean);
         } else {
-            viewer = TalendPerlSourceViewer.createViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
-                    | SWT.WRAP, true);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+                ICorePerlService service = (ICorePerlService) GlobalServiceRegister.getDefault().getService(
+                        ICorePerlService.class);
+                viewer = (ReconcilerViewer) service.createViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+                        | SWT.WRAP, true);
+            }
         }
 
         textControl = viewer.getTextWidget();

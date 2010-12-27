@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
-import org.epic.perleditor.editors.util.PerlValidator;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -34,6 +33,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -97,7 +97,11 @@ public class RoutineItemsCheck {
 
         try {
             String sourceCode = readSourceFile(file.getLocation().toOSString());
-            PerlValidator.instance().validate(file, sourceCode);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerPerlService.class);
+                service.perlValidator(file, sourceCode);
+            }
         } catch (IOException ex) {
             ExceptionHandler.process(ex);
         } catch (CoreException ex) {

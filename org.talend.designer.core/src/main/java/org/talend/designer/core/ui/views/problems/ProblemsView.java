@@ -46,7 +46,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
-import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -63,6 +62,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -332,8 +332,13 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                 ISourceViewer sourceViewer = null;
                 if (editor instanceof JavaEditor) {
                     sourceViewer = ((JavaEditor) editor).getViewer();
-                } else if (editor instanceof PerlEditor) {
-                    sourceViewer = ((PerlEditor) editor).getViewer();
+                } else {
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
+                        IDesignerPerlService service = (IDesignerPerlService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerPerlService.class);
+                        sourceViewer = service.getViewer(editor);
+                    }
+
                 }
                 if (sourceViewer != null) {
                     sourceViewer.setRangeIndication(start, length, true);
