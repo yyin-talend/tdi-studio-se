@@ -71,6 +71,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toPortableString());
+        // MOD by zshen for TDQ_INSTALL_DIR bug 17622
+        store.setDefault(TalendDesignerPrefConstants.PRODUCT_ROOT_DIR, Platform.getLocation().removeLastSegments(1)
+                .toPortableString());
         // see feature 7758 add project dir to COMP_DEFAULT_PROJECT_DIR.
         if (ProjectManager.getInstance().getCurrentProject() != null) {
             store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString()

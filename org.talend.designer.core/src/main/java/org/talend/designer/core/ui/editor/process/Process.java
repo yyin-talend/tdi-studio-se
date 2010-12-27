@@ -305,6 +305,18 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setReadOnly(true);
         addElementParameter(param);
 
+        // MOD by zshen for TDQ_INSTALL_DIR bug 17622
+        param = new ElementParameter(this);
+        param.setName(EParameterName.PRODUCT_ROOT_DIR.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.PRODUCT_ROOT_DIR.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(DesignerPlugin.getDefault().getPreferenceStore().getString(TalendDesignerPrefConstants.PRODUCT_ROOT_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
+
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
         param.setCategory(EComponentCategory.MAIN);
