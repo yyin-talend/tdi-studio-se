@@ -25,6 +25,7 @@ imports="
 	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 	
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	
@@ -71,6 +72,21 @@ imports="
 	<%if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     %>                
     try {
+    	<%	
+		if(useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+		%>
+			if ( batchSizeCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+		<%
+		} else if (!useExistingConn &&!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+		%>
+			if ( commitCounter_<%=cid%> > 0 ) { // do not commit empty batch, this is a jdbc error
+		<%
+		} else {
+		%>
+			{
+		<%
+		} 
+		%>
 			pstmt_<%=cid %>.executeBatch();                	
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
@@ -84,7 +100,8 @@ imports="
 	    	%>
 	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 	    	<%
-	    	}%>            	    
+	    	}%>  
+	    }          	    
     }catch (java.sql.BatchUpdateException e){
     	<%if(("true").equals(dieOnError)) {
     	%>

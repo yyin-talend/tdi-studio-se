@@ -968,6 +968,13 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%if ((rejectConnName==null && useBatchSize) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
+                	<%	
+					if(useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+					%>
+						if ( batchSizeCounter_<%=cid%> > 0 ) {
+					<%
+					}
+					%>
                 		pstmt_<%=cid %>.executeBatch();
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -981,7 +988,21 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
-            	    	}%>            	    
+            	    	}%>  
+            	    	<%
+	                	if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) { 
+	                	%>
+	                	batchSizeCounter_<%=cid%> = 0;  
+	                	<%
+	                	}
+	                	%>
+            	   <%	
+					if(useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+					%>
+						}
+					<%
+					}
+					%>          	    
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
