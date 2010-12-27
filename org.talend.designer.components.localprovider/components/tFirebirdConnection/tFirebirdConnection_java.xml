@@ -51,14 +51,14 @@
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
+    <!-- PARAMETER
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>"3050"</DEFAULT>
-    </PARAMETER>
+    </PARAMETER -->
     
     <PARAMETER
       NAME="TYPE"
@@ -75,7 +75,6 @@
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
-      SHOW="false"
     >
       <DEFAULT>"3050"</DEFAULT>
     </PARAMETER>

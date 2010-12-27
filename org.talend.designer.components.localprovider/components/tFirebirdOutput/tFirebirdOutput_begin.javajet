@@ -126,7 +126,7 @@ if(("true").equals(useExistingConn)) {
     <%
 } else {
     %>
-    String url_<%=cid %> ="jdbc:firebirdsql:" + <%=dbhost%> + <%if(dbport == null || "".equals(dbport)){%> "/" + <%=dbport%> <%}%> ":" +  <%=dbname%>;
+    String url_<%=cid %> ="jdbc:firebirdsql:" + <%=dbhost%> + <%if(!"".equals(dbport) && !"\"\"".equals(dbport)){%> "/" + <%=dbport%> + <%}%>":" +  <%=dbname%>;
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     java.lang.Class.forName("<%=javaDbDriver %>");
