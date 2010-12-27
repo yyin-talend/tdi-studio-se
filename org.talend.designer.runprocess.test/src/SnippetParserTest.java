@@ -18,7 +18,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.talend.designer.runprocess.SnippetParser;
+import org.talend.designer.core.runprocess.SnippetParser;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
