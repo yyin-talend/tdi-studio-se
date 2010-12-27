@@ -956,7 +956,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        elemParam.setPropertyValue(pType.getName(), value);
+                        if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
+                            if (value != null && value.length() > 2 && value.startsWith("\"") && value.endsWith("\"")) {
+                                elemParam.setPropertyValue(pType.getName(), value.substring(1, value.length() - 1));
+                            }
+                        } else {
+                            elemParam.setPropertyValue(pType.getName(), value);
+                        }
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
                         && "true".equals(pType.getValue()) //$NON-NLS-1$
