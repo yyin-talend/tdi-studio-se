@@ -19,7 +19,7 @@
 		</xsl:if>
 		<xsl:for-each select="$rootTable">
 			<b class="FONTSTYLE">
-				Mapper table for
+				<xsl:value-of select="/project/@i18n.mapper.table.for" />
 				<xsl:value-of select="/externalNode/@name" />
 				(
 				<xsl:value-of select="@type" />
@@ -34,7 +34,7 @@
 						<td width="15"></td>
 						<td>
 							<b class="FONTSTYLE">
-								Mapper table Properties(
+								<xsl:value-of select="/project/@i18n.mapper.table.properties" />
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -45,17 +45,17 @@
 								<tr>
 									<th align="left" width="30%"
 										class="TABLECOLUMNSTYLE">
-										Properties
+										<xsl:value-of select="/project/@i18n.job.properties" />
 									</th>
 									<th align="left"
 										class="TABLECOLUMNSTYLE">
-										Values
+										<xsl:value-of select="/project/@i18n.job.values" />
 									</th>
 								</tr>
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -65,7 +65,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Table Name
+										<xsl:value-of select="/project/@i18n.mapper.table.name" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -76,7 +76,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Alias
+										<xsl:value-of select="/project/@i18n.mapper.table.alias" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -86,7 +86,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Join Type
+										<xsl:value-of select="/project/@i18n.mapper.table.join.type" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -98,7 +98,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										isMinimized
+										<xsl:value-of select="/project/@i18n.mapper.table.isminimized" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -110,7 +110,7 @@
 							<br />
 							<br />
 							<b class="FONTSTYLE">
-								Metadata Table Entries(
+								<xsl:value-of select="/project/@i18n.mapper.table.metadata.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -122,19 +122,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Expression
+										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Operator
+										<xsl:value-of select="/project/@i18n.mapper.table.operator" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										isJoin
+										<xsl:value-of select="/project/@i18n.mapper.table.isJoin" />
 									</th>
 								</tr>
 								<xsl:for-each
@@ -161,7 +161,7 @@
 							</table>
 							<br />
 							<b class="FONTSTYLE">
-								Custom Conditions Entries(
+								<xsl:value-of select="/project/@i18n.mapper.table.condition.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -172,19 +172,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Expression
+										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Operator
+										<xsl:value-of select="/project/@i18n.mapper.table.operator" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										isJoin
+										<xsl:value-of select="/project/@i18n.mapper.table.isJoin" />
 									</th>
 								</tr>
 								<xsl:for-each

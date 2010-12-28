@@ -14,7 +14,7 @@
 			<br />
 		</xsl:if>
 		
-		<b class="FONTSTYLE">Component Parameters:</b>
+		<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.component.parameters" /></b>
 					<br />
 					<table class="cols" width="90%" border="1"
 						cellpadding="0" cellspacing="0"
@@ -23,11 +23,11 @@
 						<tr>
 							<th align="left" width="30%"
 								class="TABLECOLUMNSTYLE">
-								Properties
+								<xsl:value-of select="/project/@i18n.job.properties" />
 							</th>
 							<th align="left" width="70%"
 								class="TABLECOLUMNSTYLE">
-								Values
+								<xsl:value-of select="/project/@i18n.job.values" />
 							</th>
 						</tr>
 						<xsl:for-each select="/externalNode/parameters/column">
@@ -49,7 +49,7 @@
 		
 		
 		<b class="FONTSTYLE">
-			Row generator information for
+			<xsl:value-of select="/project/@i18n.rowgenerator.info.for" />
 			<xsl:value-of select="/externalNode/@name" />
 			:
 		</b>
@@ -57,16 +57,16 @@
 			style="border-collapse: collapse" bordercolor="#111111" frame="box"
 			summary="">
 			<tr class="profont">
-				<th class="TABLECOLUMNSTYLE">Column</th>
-				<th class="TABLECOLUMNSTYLE">Key</th>
-				<th class="TABLECOLUMNSTYLE">Type</th>
-				<th class="TABLECOLUMNSTYLE">Nullable</th>
-				<th class="TABLECOLUMNSTYLE">Length</th>
-				<th class="TABLECOLUMNSTYLE">Precision</th>
-				<th class="TABLECOLUMNSTYLE">Default</th>
-				<th class="TABLECOLUMNSTYLE">Comment</th>
-				<th class="TABLECOLUMNSTYLE">Functions</th>
-				<th class="TABLECOLUMNSTYLE">Parameters</th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.column" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.key" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.type" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.nullable" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.length" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.precision" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.rowgenerator.default" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.job.comment" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.rowgenerator.functions" /></th>
+				<th class="TABLECOLUMNSTYLE"><xsl:value-of select="/project/@i18n.rowgenerator.parameters" /></th>
 			</tr>
 			<xsl:for-each select="/externalNode/column">
 				<tr class="FONTSTYLE">

@@ -17,7 +17,7 @@
 			</div>
 		</xsl:if>
 		
-		<b class="FONTSTYLE">Component Parameters:</b>
+		<b class="FONTSTYLE"><xsl:value-of select="/project/@i18n.job.component.parameters" /></b>
 					<br />
 					<table class="cols" width="90%" border="1"
 						cellpadding="0" cellspacing="0"
@@ -26,11 +26,11 @@
 						<tr>
 							<th align="left" width="30%"
 								class="TABLECOLUMNSTYLE">
-								Properties
+								<xsl:value-of select="/project/@i18n.job.properties" />
 							</th>
 							<th align="left" width="70%"
 								class="TABLECOLUMNSTYLE">
-								Values
+								<xsl:value-of select="/project/@i18n.job.values" />
 							</th>
 						</tr>
 						<xsl:for-each select="/externalNode/parameters/column">
@@ -53,7 +53,7 @@
 		
 		<xsl:for-each select="$rootTable">
 			<b class="FONTSTYLE">
-				Mapper table for
+				<xsl:value-of select="/project/@i18n.mapper.table.for" />
 				<xsl:value-of select="/externalNode/@name" />
 				(
 				<xsl:value-of select="@type" />
@@ -67,7 +67,7 @@
 						<td width="15"></td>
 						<td>
 							<b class="FONTSTYLE">
-								Mapper table Properties(
+								<xsl:value-of select="/project/@i18n.mapper.table.properties" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -78,17 +78,17 @@
 								<tr>
 									<th align="left" width="30%"
 										class="TABLECOLUMNSTYLE">
-										Properties
+										<xsl:value-of select="/project/@i18n.job.properties" />
 									</th>
 									<th align="left"
 										class="TABLECOLUMNSTYLE">
-										Values
+										<xsl:value-of select="/project/@i18n.job.values" />
 									</th>
 								</tr>
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -98,7 +98,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										Matching-mode
+										<xsl:value-of select="/project/@i18n.tmap.matching.mode" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -109,7 +109,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										isMinimized
+										<xsl:value-of select="/project/@i18n.mapper.table.isminimized" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -120,7 +120,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										isReject
+										<xsl:value-of select="/project/@i18n.tmap.isreject" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -131,7 +131,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										isRejectInnerJoin
+										<xsl:value-of select="/project/@i18n.tmap.isrejectinnnerjoin" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -142,7 +142,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										isInnerJoin
+										<xsl:value-of select="/project/@i18n.tmap.isinnerjoin" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -153,7 +153,7 @@
 							</table>
 							<br />
 							<b class="FONTSTYLE">
-								Metadata Table Entries(
+								<xsl:value-of select="/project/@i18n.mapper.table.metadata.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -165,19 +165,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Type
+										<xsl:value-of select="/project/@i18n.job.type" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Expression
+										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										isNullable
+										<xsl:value-of select="/project/@i18n.tmap.isnullable" />
 									</th>
 								</tr>
 								<xsl:for-each
@@ -204,7 +204,7 @@
 							</table>
 							<br />
 							<b class="FONTSTYLE">
-								Constraint Table Entries(
+								<xsl:value-of select="/project/@i18n.tmap.constraint.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -215,19 +215,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Name
+										<xsl:value-of select="/project/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Type
+										<xsl:value-of select="/project/@i18n.job.type" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										Expression
+										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										isNullable
+										<xsl:value-of select="/project/@i18n.tmap.isnullable" />
 									</th>
 								</tr>
 								<xsl:for-each
