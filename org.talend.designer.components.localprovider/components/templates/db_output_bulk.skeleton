@@ -2478,6 +2478,111 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "\\\"";
         }
+        
+        public String generateSetStmt(String typeToGenerate, Column column, int index, 
+                String incomingConnName, String cid, int actionType) {
+            boolean isObject = false;
+            String prefix = null;
+            if(actionType == NORMAL_TYPE) {
+                prefix = "pstmt_";
+            } else if(actionType == INSERT_TYPE) {
+                prefix = "pstmtInsert_";
+            } else if(actionType == UPDATE_TYPE) {
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            if(typeToGenerate.equals("Character")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");                
+            } else if(typeToGenerate.equals("Date")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.TIMESTAMP);\r\n");                
+            } else if(typeToGenerate.equals("byte[]")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.ARRAY);\r\n");                
+            } else if(typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.INTEGER);\r\n");                
+            } else if(typeToGenerate.equals("String")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                
+            } else if(typeToGenerate.equals("Object")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                
+            } else if(typeToGenerate.equals("Boolean")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BOOLEAN);\r\n");                
+            } else if(typeToGenerate.equals("Double")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DOUBLE);\r\n");                
+            } else if(typeToGenerate.equals("Float")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.FLOAT);\r\n");                
+            }
+            if(isObject) {
+                setStmt.append("} else {");
+            }
+            typeToGenerate = getGenerateType(typeToGenerate);
+            if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                if(isObject) {
+                    setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
+                } else {
+                    setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
+                }
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append("}");
+            } else if(typeToGenerate.equals("Date")) {
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
+                setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.TIMESTAMP);\r\n");
+                setStmt.append("}\r\n");
+			} else if(typeToGenerate.equals("Geometry")) {
+            	setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
+                // Load geometry
+                setStmt.append(
+                                prefix +
+                                cid +
+                                ".setString(" + 
+                                    index +
+                                    ", ((org.talend.sdi.geometry.Geometry)(" +
+                                    incomingConnName + "." + column.getName() + ")).toString()" +
+                                    ");\r\n");
+                // TODO : should use forceCoordinate first, then getSRID method or -1 if it's null.
+                setStmt.append(
+                                prefix +
+                                cid +
+                                ".setInt(" + 
+                                    index + 
+                                    " + 1, ((org.talend.sdi.geometry.Geometry)(" + 
+                                    incomingConnName + "." + column.getName() + ")).getSRID()" +
+                                    ");\r\n");
+				setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + " + 1 , java.sql.Types.INTEGER);\r\n");
+                setStmt.append("}\r\n");    
+            } else {
+                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+            }
+            if(isObject) {
+                setStmt.append("}\r\n");
+            }
+            return setStmt.toString();
+        }
+        
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
