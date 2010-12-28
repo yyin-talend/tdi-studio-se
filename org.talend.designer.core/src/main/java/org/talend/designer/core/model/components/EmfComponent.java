@@ -225,6 +225,7 @@ public class EmfComponent implements IComponent {
             info.setUriString(uriString);
             info.setPathSource(pathSource);
             cache.getComponentEntryMap().put(getName(), info);
+            isAlreadyLoad = true;
         } else {
             info = (ComponentInfo) cache.getComponentEntryMap().get(getName());
             isLoaded = true;
