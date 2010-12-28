@@ -24,6 +24,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -205,6 +206,10 @@ public class CopyObjectAction {
                     }
                     if (newItem instanceof ProcessItem) {
                         RelationshipItemBuilder.getInstance().addOrUpdateItem((ProcessItem) newItem);
+                    }
+                    if (newItem instanceof ConnectionItem) {
+                        ConnectionItem connectionItem = (ConnectionItem) newItem;
+                        connectionItem.getConnection().getSupplierDependency().clear();
                     }
                     factory.save(newItem);
                 } catch (Exception e) {
