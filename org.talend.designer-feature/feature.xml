@@ -22,10 +22,6 @@
       <discovery label="Talend web site" url="http://www.talend.com"/>
    </url>
 
-   <includes
-         id="org.talend.designer.core.perl_feature"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.talend.commons"/>
       <import plugin="org.talend.core.runtime"/>

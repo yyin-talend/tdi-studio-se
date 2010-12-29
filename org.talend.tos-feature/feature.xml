@@ -22,11 +22,6 @@
    </url>
 
    <includes
-         id="org.epic_feature"
-         version="0.0.0"
-         search-location="self"/>
-
-   <includes
          id="org.eclipse.datatools_feature"
          version="0.0.0"
          search-location="self"/>
@@ -80,6 +75,10 @@
          id="org.talend.componentdesigner_feature"
          version="0.0.0"
          search-location="self"/>
+
+   <includes
+         id="org.talend.designer.core.perl_feature"
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
