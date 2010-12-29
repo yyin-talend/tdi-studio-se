@@ -48,6 +48,8 @@ import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
@@ -129,6 +131,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.routine.RoutineItemRecord;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
@@ -3121,6 +3124,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkNodeTableParameters();
     }
 
+    private void refreshAllContextView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view2 = page.findView(ContextsView.ID);
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).updateAllContextView(true);
+        }
+    }
+
     /**
      * DOC Administrator Comment method "updateProcess".
      * 
@@ -3132,6 +3143,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         elem.clear();
         nodes.clear();
         subjobContainers.clear();
+
+        contextManager.getListContext().clear();
+        loadContexts(processType);
+        refreshAllContextView();
+
         // ((ProcessItem) property.getItem()).setProcess(processType);
 
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();

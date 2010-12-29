@@ -243,6 +243,28 @@ public class ContextsView extends ViewPart {
         updateContextView(isBuildIn, false, true);
     }
 
+    public void updateAllContextView(boolean isBuildIn) {
+        updateAllContextView(isBuildIn, false, true);
+    }
+
+    public void updateAllContextView(boolean isBuildIn, boolean isDisposeAll, boolean refreshView) {
+        getPart();
+        if (part != null) {
+            boolean modified = updateContextFromRepository();
+            if (modified) {
+                part.getTalendEditor().setDirty(true);
+            }
+        }
+        contextComposite.setReadOnly(!isBuildIn);
+
+        if (refreshView) {
+            contextComposite.refreshTemplateTab();
+            contextComposite.refreshTableTab();
+            contextComposite.refreshTreeTab();
+        }
+
+    }
+
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll, boolean refreshView) {
         getPart();
         if (part != null) {
