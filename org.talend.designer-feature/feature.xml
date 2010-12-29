@@ -22,6 +22,10 @@
       <discovery label="Talend web site" url="http://www.talend.com"/>
    </url>
 
+   <includes
+         id="org.talend.designer.core.perl_feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.talend.commons"/>
       <import plugin="org.talend.core.runtime"/>
@@ -573,13 +577,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.epic.perleditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.update.scheduler"
          download-size="0"
          install-size="0"
@@ -693,13 +690,6 @@
 
    <plugin
          id="org.eclipse.jdt.launching"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.epic.debug"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1099,13 +1089,6 @@
 
    <plugin
          id="org.eclipse.help.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.epic.regexp"
          download-size="0"
          install-size="0"
          version="0.0.0"
