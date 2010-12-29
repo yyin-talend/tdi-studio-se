@@ -854,6 +854,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // it (this will prevent to overwrite the
                         // value)
                     }
+
                     String value = pType.getValue();
                     if (param.getFieldType().equals(EParameterFieldType.CHECK)
                             || param.getFieldType().equals(EParameterFieldType.RADIO)) {
@@ -972,8 +973,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // end of fix for bug 2193
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
-                            if (value != null && value.length() > 2 && value.startsWith("\"") && value.endsWith("\"")) {
-                                elemParam.setPropertyValue(pType.getName(), value.substring(1, value.length() - 1));
+                            if (value != null && value.length() > 2) {
+                                elemParam.setPropertyValue(pType.getName(), TalendTextUtils.removeQuotesIfExist(value)); // value.substring(1,
                             }
                         } else {
                             elemParam.setPropertyValue(pType.getName(), value);
@@ -990,6 +991,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     private void setDbVersion(IElementParameter elementParameter, String value) {
+        if (value == null) {
+            elementParameter.setValue(null);
+            return;
+        }
         if (value.indexOf("Access") != -1) {//$NON-NLS-1$
             elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
@@ -1234,9 +1239,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         ProcessType processType = getProcessType();
         EmfHelper.visitChilds(processType);
-        if (processType.getParameters() != null) {
-            loadElementParameters(this, processType.getParameters().getElementParameter());
-        }
+
         // loadRoutinesDependencies(processType);
 
         try {
@@ -3132,6 +3135,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
+    private void loadProjectParameters(ProcessType processType) {
+        ParametersType parameters = processType.getParameters();
+        if (parameters != null) {
+            loadElementParameters(this, parameters.getElementParameter());
+        }
+    }
+
     /**
      * DOC Administrator Comment method "updateProcess".
      * 
@@ -3144,9 +3154,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         nodes.clear();
         subjobContainers.clear();
 
+        // added for context
         contextManager.getListContext().clear();
         loadContexts(processType);
         refreshAllContextView();
+
+        // added for projectSetting
+        loadProjectParameters(processType);
 
         // ((ProcessItem) property.getItem()).setProcess(processType);
 
@@ -3163,6 +3177,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         loadConnections(processType, nodesHashtable);
 
+        // added for subjobs
         loadSubjobs(processType);
 
         setActivate(true);
