@@ -114,65 +114,71 @@ public class DeleteAction extends AContextualAction {
         return singleton;
     }
 
+    boolean needToUpdataPalette = false;
+
     @Override
     protected void doRun() {
-        ISelection selection = getSelection();
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        final ISelection selection = getSelection();
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         final DeleteActionCache deleteActionCache = DeleteActionCache.getInstance();
         deleteActionCache.setGetAlways(false);
         deleteActionCache.setDocRefresh(false);
         deleteActionCache.createRecords();
 
-        boolean needToUpdataPalette = false;
         final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
-        List<RepositoryNode> deletedFolder = new ArrayList<RepositoryNode>();
-        for (Object obj : ((IStructuredSelection) selection).toArray()) {
-            if (obj instanceof RepositoryNode) {
-                RepositoryNode node = (RepositoryNode) obj;
-                try {
+        final List<RepositoryNode> deletedFolder = new ArrayList<RepositoryNode>();
+        IRunnableWithProgress op = new IRunnableWithProgress() {
 
-                    if (this.containParent(node, (IStructuredSelection) selection)) {
-                        continue;
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask("Delete Running", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                for (Object obj : ((IStructuredSelection) selection).toArray()) {
+                    if (obj instanceof RepositoryNode) {
+                        RepositoryNode node = (RepositoryNode) obj;
+                        try {
+
+                            if (containParent(node, (IStructuredSelection) selection)) {
+                                continue;
+                            }
+
+                            if (isForbidNode(node)) {
+                                continue;
+                            }
+                            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                                if (isInDeletedFolder(deletedFolder, node.getParent())) {
+                                    continue;
+                                }
+
+                                boolean needReturn = deleteElements(factory, deleteActionCache, node);
+                                if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET) {
+                                    needToUpdataPalette = true;
+                                }
+                                if (needReturn) {
+                                    return;
+                                }
+                                types.add(node.getObjectType());
+                            } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
+                                types.add(node.getContentType());
+                                // fixed for the documentation deleted
+                                if (node.getContentType() == ERepositoryObjectType.PROCESS
+                                        || node.getContentType() == ERepositoryObjectType.JOBLET) {
+                                    types.add(ERepositoryObjectType.DOCUMENTATION);
+                                }
+                                deletedFolder.add(node);
+                                deleteFolder(node, factory, deleteActionCache);
+                            }
+                        } catch (PersistenceException e) {
+                            MessageBoxExceptionHandler.process(e);
+                        } catch (BusinessException e) {
+                            MessageBoxExceptionHandler.process(e);
+                        }
                     }
-
-                    if (isForbidNode(node)) {
-                        continue;
-                    }
-
-                    if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                        if (isInDeletedFolder(deletedFolder, node.getParent())) {
-                            continue;
-                        }
-
-                        boolean needReturn = deleteElements(factory, deleteActionCache, node);
-                        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET) {
-                            needToUpdataPalette = true;
-                        }
-                        if (needReturn) {
-                            return;
-                        }
-                        types.add(node.getObjectType());
-                    } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-
-                        types.add(node.getContentType());
-                        // fixed for the documentation deleted
-                        if (node.getContentType() == ERepositoryObjectType.PROCESS
-                                || node.getContentType() == ERepositoryObjectType.JOBLET) {
-                            types.add(ERepositoryObjectType.DOCUMENTATION);
-                        }
-                        deletedFolder.add(node);
-                        deleteFolder(node, factory, deleteActionCache);
-                    }
-                } catch (PersistenceException e) {
-                    MessageBoxExceptionHandler.process(e);
-                } catch (BusinessException e) {
-                    MessageBoxExceptionHandler.process(e);
                 }
             }
-        }
+        };
         try {
+            PlatformUI.getWorkbench().getProgressService().run(true, true, op);
             factory.saveProject(ProjectManager.getInstance().getCurrentProject());
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
             ExceptionHandler.process(e);
         }
 
@@ -217,129 +223,118 @@ public class DeleteAction extends AContextualAction {
     private void deleteFolder(final RepositoryNode node, final IProxyRepositoryFactory factory,
             final DeleteActionCache deleteActionCache) {
         FolderItem folderItem = (FolderItem) node.getObject().getProperty().getItem();
-        try {
-            if (folderItem.getState().isDeleted()) {
-                // if folder has been deleted already
+        if (folderItem.getState().isDeleted()) {
+            // if folder has been deleted already
+            try {
                 deleteElements(factory, deleteActionCache, node);
-                return;
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
-            IRunnableWithProgress op = new IRunnableWithProgress() {
-
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        monitor.beginTask("Delete Running", 100); //$NON-NLS-1$
-                        IPath path = RepositoryNodeUtilities.getPath(node);
-                        ERepositoryObjectType objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                        List<IRepositoryNode> repositoryList = node.getChildren();
-                        monitor.worked(10);
-                        int taskTotal = repositoryList.size();
-                        for (IRepositoryNode repositoryNode : repositoryList) {
-                            deleteRepositoryNode(repositoryNode, factory);
-                            monitor.worked(1 * 100 / taskTotal);
-                        }
-
-                        FolderItem folderItem = factory.getFolderItem(ProjectManager.getInstance().getCurrentProject(),
-                                objectType, path);
-                        folderItem.getState().setDeleted(true);
-
-                        String fullPath = "";
-                        FolderItem curItem = folderItem;
-
-                        while (curItem.getParent() instanceof FolderItem
-                                && ((Item) curItem.getParent()).getParent() instanceof FolderItem
-                                && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
-                            FolderItem parentFolder = (FolderItem) curItem.getParent();
-                            if ("".equals(fullPath)) {
-                                fullPath = parentFolder.getProperty().getLabel() + fullPath;
-                            } else {
-                                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
-                            }
-                            curItem = parentFolder;
-                        }
-                        if (!objectType.getKey().toString().startsWith("repository.metadata")
-                                && objectType != ERepositoryObjectType.SQLPATTERNS
-                                && objectType != ERepositoryObjectType.ROUTINES && objectType != ERepositoryObjectType.JOB_SCRIPT
-                                && curItem.getParent() instanceof FolderItem
-                                && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
-                            FolderItem parentFolder = (FolderItem) curItem.getParent();
-                            if ("".equals(fullPath)) {
-                                fullPath = parentFolder.getProperty().getLabel() + fullPath;
-                            } else {
-                                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
-                            }
-                            curItem = parentFolder;
-                        }
-                        if (objectType.getKey().toString().startsWith("repository.metadata")) {
-                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
-                                if ("".equals(fullPath)) {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
-                                } else {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
-                                }
-                                curItem = (FolderItem) curItem.getParent();
-                            }
-                        }
-                        if (objectType == ERepositoryObjectType.ROUTINES) {
-                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
-                                if ("".equals(fullPath)) {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
-                                } else {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
-                                }
-                                curItem = (FolderItem) curItem.getParent();
-                            }
-                        }
-
-                        if (objectType == ERepositoryObjectType.JOB_SCRIPT) {
-                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
-                                if ("".equals(fullPath)) {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
-                                } else {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
-                                }
-                                curItem = (FolderItem) curItem.getParent();
-                            }
-                        }
-
-                        if (objectType == ERepositoryObjectType.SQLPATTERNS) {
-                            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
-                                if ("".equals(fullPath)) {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
-                                } else {
-                                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
-                                }
-                                curItem = (FolderItem) curItem.getParent();
-                            }
-                            while (!((FolderItem) curItem.getParent()).getProperty().getLabel().equals("sqlPatterns")) {
-                                fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
-                                curItem = (FolderItem) curItem.getParent();
-                            }
-                        }
-                        folderItem.getState().setPath(fullPath);
-                        this.setChildFolderPath(folderItem);
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                    monitor.done();
-                }
-
-                private void setChildFolderPath(FolderItem folderItem) {
-                    EList childFoderList = folderItem.getChildren();
-                    for (Object o : childFoderList) {
-                        if (o instanceof FolderItem) {
-                            String parentPath = ((FolderItem) ((FolderItem) o).getParent()).getState().getPath();
-                            String parentName = ((FolderItem) ((FolderItem) o).getParent()).getProperty().getLabel();
-                            ((FolderItem) o).getState().setPath(parentPath + File.separator + parentName);
-                            setChildFolderPath((FolderItem) o);
-                        }
-                    }
-                }
-            };
-            PlatformUI.getWorkbench().getProgressService().run(true, true, op);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+            return;
+        }
+        IPath path = RepositoryNodeUtilities.getPath(node);
+        ERepositoryObjectType objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        List<IRepositoryNode> repositoryList = node.getChildren();
+        boolean success = true;
+        for (IRepositoryNode repositoryNode : repositoryList) {
+            try {
+                deleteRepositoryNode(repositoryNode, factory);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                success = false;
+            }
+        }
+        if (!success) {
+            return;
         }
 
+        folderItem = factory.getFolderItem(ProjectManager.getInstance().getCurrentProject(), objectType, path);
+        folderItem.getState().setDeleted(true);
+
+        String fullPath = "";
+        FolderItem curItem = folderItem;
+
+        while (curItem.getParent() instanceof FolderItem && ((Item) curItem.getParent()).getParent() instanceof FolderItem
+                && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
+            FolderItem parentFolder = (FolderItem) curItem.getParent();
+            if ("".equals(fullPath)) {
+                fullPath = parentFolder.getProperty().getLabel() + fullPath;
+            } else {
+                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
+            }
+            curItem = parentFolder;
+        }
+        if (!objectType.getKey().toString().startsWith("repository.metadata") && objectType != ERepositoryObjectType.SQLPATTERNS
+                && objectType != ERepositoryObjectType.ROUTINES && objectType != ERepositoryObjectType.JOB_SCRIPT
+                && curItem.getParent() instanceof FolderItem && ((Item) curItem.getParent()).getParent() instanceof FolderItem) {
+            FolderItem parentFolder = (FolderItem) curItem.getParent();
+            if ("".equals(fullPath)) {
+                fullPath = parentFolder.getProperty().getLabel() + fullPath;
+            } else {
+                fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
+            }
+            curItem = parentFolder;
+        }
+        if (objectType.getKey().toString().startsWith("repository.metadata")) {
+            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                if ("".equals(fullPath)) {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                } else {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                }
+                curItem = (FolderItem) curItem.getParent();
+            }
+        }
+        if (objectType == ERepositoryObjectType.ROUTINES) {
+            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                if ("".equals(fullPath)) {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                } else {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                }
+                curItem = (FolderItem) curItem.getParent();
+            }
+        }
+
+        if (objectType == ERepositoryObjectType.JOB_SCRIPT) {
+            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                if ("".equals(fullPath)) {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                } else {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                }
+                curItem = (FolderItem) curItem.getParent();
+            }
+        }
+
+        if (objectType == ERepositoryObjectType.SQLPATTERNS) {
+            while (((FolderItem) curItem.getParent()).getType().getValue() != FolderType.SYSTEM_FOLDER) {
+                if ("".equals(fullPath)) {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + fullPath;
+                } else {
+                    fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                }
+                curItem = (FolderItem) curItem.getParent();
+            }
+            while (!((FolderItem) curItem.getParent()).getProperty().getLabel().equals("sqlPatterns")) {
+                fullPath = ((FolderItem) curItem.getParent()).getProperty().getLabel() + "/" + fullPath;
+                curItem = (FolderItem) curItem.getParent();
+            }
+        }
+        folderItem.getState().setPath(fullPath);
+        this.setChildFolderPath(folderItem);
+    }
+
+    private void setChildFolderPath(FolderItem folderItem) {
+        EList childFoderList = folderItem.getChildren();
+        for (Object o : childFoderList) {
+            if (o instanceof FolderItem) {
+                String parentPath = ((FolderItem) ((FolderItem) o).getParent()).getState().getPath();
+                String parentName = ((FolderItem) ((FolderItem) o).getParent()).getProperty().getLabel();
+                ((FolderItem) o).getState().setPath(parentPath + File.separator + parentName);
+                setChildFolderPath((FolderItem) o);
+            }
+        }
     }
 
     private void deleteRepositoryNode(IRepositoryNode repositoryNode, IProxyRepositoryFactory factory)
@@ -348,8 +343,22 @@ public class DeleteAction extends AContextualAction {
             IPath path = RepositoryNodeUtilities.getPath((RepositoryNode) repositoryNode);
             ERepositoryObjectType objectType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
             List<IRepositoryNode> repositoryList = repositoryNode.getChildren();
+            PersistenceException pex = null;
+            BusinessException bex = null;
             for (IRepositoryNode repositoryNode2 : repositoryList) {
-                deleteRepositoryNode(repositoryNode2, factory);
+                try {
+                    deleteRepositoryNode(repositoryNode2, factory);
+                } catch (PersistenceException e) {
+                    pex = e;
+                } catch (BusinessException e) {
+                    bex = e;
+                }
+            }
+            if (pex != null) {
+                throw pex;
+            }
+            if (bex != null) {
+                throw bex;
             }
 
             FolderItem folderItem = factory.getFolderItem(ProjectManager.getInstance().getCurrentProject(), objectType, path);
@@ -655,8 +664,10 @@ public class DeleteAction extends AContextualAction {
         return deleteElements(factory, deleteActionCache, currentJobNode, null);
     }
 
+    boolean confirmFromDialog = false;
+
     private boolean deleteElements(IProxyRepositoryFactory factory, DeleteActionCache deleteActionCache,
-            RepositoryNode currentJobNode, Boolean confirm) throws PersistenceException, BusinessException {
+            final RepositoryNode currentJobNode, Boolean confirm) throws PersistenceException, BusinessException {
         boolean needReturn = false;
         IRepositoryViewObject objToDelete = currentJobNode.getObject();
 
@@ -690,34 +701,52 @@ public class DeleteAction extends AContextualAction {
         } else {
             if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
                 if (confirm == null) {
-                    String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                    String message = currentJobNode.getProperties(EProperties.LABEL)
-                            + " " + Messages.getString("DeleteAction.dialog.message0") + "\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                    confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+
+                            String message = currentJobNode.getProperties(EProperties.LABEL)
+                                    + " " + Messages.getString("DeleteAction.dialog.message0") + "\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+
+                            confirmFromDialog = MessageDialog.openQuestion(new Shell(), title, message);
+                        }
+                    });
+                    confirm = confirmFromDialog;
                 }
                 if (confirm) {
 
                     deleteActionCache.closeOpenedEditor(objToDelete);
                     if (currentJobNode.getType() == ENodeType.SIMPLE_FOLDER) {
+                        boolean success = true;
                         for (IRepositoryNode curNode : currentJobNode.getChildren()) {
-                            deleteElements(factory, deleteActionCache, (RepositoryNode) curNode, confirm);
+                            try {
+                                deleteElements(factory, deleteActionCache, (RepositoryNode) curNode, confirm);
+                            } catch (Exception e) {
+                                ExceptionHandler.process(e);
+                                success = false;
+                            }
                         }
-                        if (currentJobNode.getObject() != null && currentJobNode.getObject().getProperty() != null
-                                && currentJobNode.getObject().getProperty().getItem() != null) {
-                            Item fitem = currentJobNode.getObject().getProperty().getItem();
-                            if ((fitem instanceof FolderItem) && (((FolderItem) fitem).getType().getValue() == FolderType.FOLDER)) {
-                                factory.deleteFolder(currentJobNode.getContentType(),
-                                        RepositoryNodeUtilities.getFolderPath(currentJobNode.getObject().getProperty().getItem()));
+                        if (success) {
+                            if (currentJobNode.getObject() != null && currentJobNode.getObject().getProperty() != null
+                                    && currentJobNode.getObject().getProperty().getItem() != null) {
+                                Item fitem = currentJobNode.getObject().getProperty().getItem();
+                                if ((fitem instanceof FolderItem)
+                                        && (((FolderItem) fitem).getType().getValue() == FolderType.FOLDER)) {
+                                    factory.deleteFolder(
+                                            currentJobNode.getContentType(),
+                                            RepositoryNodeUtilities.getFolderPath(currentJobNode.getObject().getProperty()
+                                                    .getItem()));
+                                } else {
+                                    factory.deleteFolder(currentJobNode.getContentType(),
+                                            RepositoryNodeUtilities.getPath(currentJobNode));
+                                }
                             } else {
                                 factory.deleteFolder(currentJobNode.getContentType(),
                                         RepositoryNodeUtilities.getPath(currentJobNode));
                             }
-
-                        } else {
-                            factory.deleteFolder(currentJobNode.getContentType(), RepositoryNodeUtilities.getPath(currentJobNode));
                         }
-
                     } else {
                         factory.deleteObjectPhysical(objToDelete);
                         ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
@@ -899,4 +928,5 @@ public class DeleteAction extends AContextualAction {
         }
         return false;
     }
+
 }

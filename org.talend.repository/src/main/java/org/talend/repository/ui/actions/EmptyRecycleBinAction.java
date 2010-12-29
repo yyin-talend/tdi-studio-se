@@ -173,7 +173,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
                         deleteElements(factory, (RepositoryNode) curNode);
                     }
                     factory.deleteFolder(ProjectManager.getInstance().getCurrentProject(), currentNode.getContentType(),
-                            RepositoryNodeUtilities.getPath(currentNode), true);
+                            RepositoryNodeUtilities.getFolderPath(currentNode.getObject().getProperty().getItem()), true);
                 } else {
                     factory.deleteObjectPhysical(ProjectManager.getInstance().getCurrentProject(), objToDelete, null, true);
                 }
