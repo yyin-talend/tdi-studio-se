@@ -73,6 +73,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.i18n.Messages;
+import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
@@ -217,8 +218,8 @@ public class UIManager extends AbstractUIManager {
                 mapperManager.executeCommand(command);
             }
 
-            currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(), abstractDataMapTable
-                    .getTitle());
+            currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
+                    abstractDataMapTable.getTitle());
 
             currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
 
@@ -310,8 +311,8 @@ public class UIManager extends AbstractUIManager {
             metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
             dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
-            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
-                    dataMapTableViewer.getTable().getSelectionIndices());
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper()
+                    .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
             dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
 
             // disable highlight for other DataMapTableView and highlight selected DataMapTableView
@@ -430,8 +431,8 @@ public class UIManager extends AbstractUIManager {
             // metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
             metadataTVCreator.getSelectionHelper().removeAfterSelectionListener(previousSelectionChangedListener);
             if (previousSelectedTableView != null) {
-                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
-                        previousSelectionChangedListener);
+                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper()
+                        .removeAfterSelectionListener(previousSelectionChangedListener);
             }
         }
 
@@ -448,8 +449,8 @@ public class UIManager extends AbstractUIManager {
         }
         // metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
         metadataTVCreator.getSelectionHelper().addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
-        dataMapTableView.getTableViewerCreatorForColumns().getSelectionHelper().addAfterSelectionListener(
-                metadataEditorViewerSelectionChangedListener);
+        dataMapTableView.getTableViewerCreatorForColumns().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
         metadataTableEditor.addModifiedBeanListener(modifiedBeanListener);
 
         if (this.commonMetadataDisposeListener == null) {
@@ -659,8 +660,8 @@ public class UIManager extends AbstractUIManager {
         }
         if (metadataTableEditorView != null) {
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
-            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(
-                    selectionIndices);
+            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper()
+                    .setSelection(selectionIndices);
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
             metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
@@ -1746,8 +1747,8 @@ public class UIManager extends AbstractUIManager {
         } else {
             IDataMapTable dataMapTable = selectedOutputTableView.getDataMapTable();
             String tableName = dataMapTable.getName();
-            String sql = mapperManager.getComponent().getGenerationManager().buildSqlSelect(mapperManager.getComponent(),
-                    tableName);
+            DbGenerationManager generationMnager = mapperManager.getComponent().getGenerationManager();
+            String sql = generationMnager.buildSqlSelect(mapperManager.getComponent(), tableName);
             getTabFolderEditors().getItem(2).setText(
                     Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { tableName })); //$NON-NLS-1$
             getTabFolderEditors().getStyledSqlText().setText(sql);

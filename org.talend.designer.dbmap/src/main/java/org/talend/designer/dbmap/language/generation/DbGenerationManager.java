@@ -28,6 +28,10 @@ import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
@@ -247,7 +251,7 @@ public abstract class DbGenerationManager {
                     outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, metadataTable);
                 }
             }
-
+            sb.append("\""); //$NON-NLS-1$
             sb.append(DbMapSqlConstants.SELECT);
             sb.append(DbMapSqlConstants.NEW_LINE);
 
@@ -259,8 +263,8 @@ public abstract class DbGenerationManager {
                     String expression = dbMapEntry.getExpression();
                     for (IMetadataColumn column : columns) {
                         if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
-                            expression = expression.replaceFirst("." + dbMapEntry.getName(),
-                                    "." + column.getOriginalDbColumnName());
+                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
+                                    "." + column.getOriginalDbColumnName()); //$NON-NLS-1$
                             break;
                         }
                     }
@@ -457,8 +461,22 @@ public abstract class DbGenerationManager {
             }
         }
 
-        return sb.toString();
+        List<String> contextList = getContextList(component);
+        String sqlQuery = sb.toString();
+        for (String context : contextList) {
+            if (sqlQuery.contains(context)) {
+                sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        if (!sqlQuery.trim().endsWith("\"")) { //$NON-NLS-1$
+            sqlQuery = sqlQuery + "\""; //$NON-NLS-1$
+        } else {
+            if (sqlQuery.trim().endsWith("+ \"")) { //$NON-NLS-1$
+                sqlQuery = sqlQuery.substring(0, sqlQuery.lastIndexOf("+ \"")); //$NON-NLS-1$
+            }
+        }
 
+        return sqlQuery;
     }
 
     private boolean containWith(String expression, String pattern, boolean start) {
@@ -476,6 +494,17 @@ public abstract class DbGenerationManager {
             }
         }
         return false;
+    }
+
+    private List<String> getContextList(DbMapComponent component) {
+        List<String> contextList = new ArrayList<String>();
+        IProcess process = component.getProcess();
+        IContext context = process.getContextManager().getDefaultContext();
+        List<IContextParameter> paraList = context.getContextParameterList();
+        for (IContextParameter para : paraList) {
+            contextList.add(ContextParameterUtils.JAVA_NEW_CONTEXT_PREFIX + para.getName());
+        }
+        return contextList;
     }
 
     /**

@@ -35,6 +35,7 @@
 						<td>
 							<b class="FONTSTYLE">
 								<xsl:value-of select="/project/@i18n.mapper.table.properties" />
+								(
 								<xsl:value-of select="@name" />
 								):
 							</b>

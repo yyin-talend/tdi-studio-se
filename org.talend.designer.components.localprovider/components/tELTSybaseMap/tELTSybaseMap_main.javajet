@@ -11,8 +11,6 @@
 	org.talend.designer.dbmap.external.data.ExternalDbMapData
 	org.talend.designer.dbmap.external.data.ExternalDbMapTable
 	org.talend.designer.dbmap.language.IDbLanguage
-	org.talend.designer.dbmap.sybase.SybaseMapperComponent
-	org.talend.designer.dbmap.sybase.language.SybaseGenerationManager
 	org.talend.designer.dbmap.DbMapComponent
 
 	java.util.HashMap
@@ -26,12 +24,12 @@
 
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	SybaseMapperComponent node = (SybaseMapperComponent) codeGenArgument.getArgument();
+	DbMapComponent node = (DbMapComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics(); 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-        SybaseGenerationManager gm = new SybaseGenerationManager();
+       org.talend.designer.dbmap.language.generation.GenericDbGenerationManager gm = new org.talend.designer.dbmap.language.generation.GenericDbGenerationManager();
         String uniqueNameComponent = null;
         IDbLanguage currentLanguage = gm.getLanguage();
 

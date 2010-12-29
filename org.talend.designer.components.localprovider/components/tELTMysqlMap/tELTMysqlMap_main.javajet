@@ -11,8 +11,6 @@
 	org.talend.designer.dbmap.external.data.ExternalDbMapData
 	org.talend.designer.dbmap.external.data.ExternalDbMapTable
 	org.talend.designer.dbmap.language.IDbLanguage
-	org.talend.designer.dbmap.mysql.MysqlMapperComponent
-	org.talend.designer.dbmap.mysql.language.MysqlGenerationManager
 	org.talend.designer.dbmap.DbMapComponent
 
 	java.util.HashMap
@@ -26,12 +24,12 @@
 
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	MysqlMapperComponent node = (MysqlMapperComponent) codeGenArgument.getArgument();
+	DbMapComponent node = (DbMapComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics(); 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-        MysqlGenerationManager gm = new MysqlGenerationManager();
+        org.talend.designer.dbmap.language.mysql.MysqlGenerationManager gm = new org.talend.designer.dbmap.language.mysql.MysqlGenerationManager();
         String uniqueNameComponent = null;
         IDbLanguage currentLanguage = gm.getLanguage();
         
@@ -65,7 +63,7 @@
 
 				globalMap.put(
 					"<%=uniqueNameComponent %>"+"QUERY" + "<%= connection.getUniqueName() %>",
-					"<%= sqlQuery.replaceAll("[\r\n]", " ") %>"
+					<%= sqlQuery.replaceAll("[\r\n]", " ") %>
 				);
 				<%
 				if(!tablesProcessed.contains(outputTable.getTableName())) {

@@ -14,7 +14,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
     STARTABLE="true"
-     EXTENSION="org.talend.designer.dbmap.oracle" 
+     EXTENSION="org.talend.designer.dbmap" 
      SCHEMA_AUTO_PROPAGATE="false" 
      DATA_AUTO_PROPAGATE="false" 
      HAS_CONDITIONAL_OUTPUTS="true"

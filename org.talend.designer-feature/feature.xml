@@ -378,21 +378,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.dbmap.oracle"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.designer.dbmap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.dbmap.mysql"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1427,35 +1413,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.dbmap.sybase"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.designer.hl7"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.dbmap.mssql"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.dbmap.postgresql"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.dbmap.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
