@@ -135,7 +135,7 @@ public class HL7MultiSchemaUI extends HL7UI {
             initMappingMap(segments);
         }
         final Combo combo = metaTableViewer.getCombo();
-        if (tables == null || tables.size() > 1) {
+        if (tables == null || tables.size() == 0) {
             combo.select(0);
         } else {
             IMetadataTable table = tables.get(0);
