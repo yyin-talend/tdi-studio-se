@@ -92,6 +92,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IJobletProviderService;
@@ -3139,7 +3140,28 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         ParametersType parameters = processType.getParameters();
         if (parameters != null) {
             loadElementParameters(this, parameters.getElementParameter());
+            loadRoutinesParameters(processType);
         }
+    }
+
+    private void loadRoutinesParameters(ProcessType processType) {
+        ParametersType parameters = processType.getParameters();
+        if (parameters == null || parameters.getRoutinesParameter() == null) {
+            List<RoutinesParameterType> dependenciesInPreference;
+            try {
+                dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+                ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+                parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
+                processType.setParameters(parameterType);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        } else {
+            ProcessItem item = (ProcessItem) this.getProperty().getItem();
+            ProcessType process = item.getProcess();
+            process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
+        }
+
     }
 
     /**
