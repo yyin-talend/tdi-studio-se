@@ -281,7 +281,7 @@ public class ExternalNodeChangeCommand extends Command {
         List<IMetadataTable> cloneNewMetadata = new ArrayList<IMetadataTable>();
         if (newMetaDataList != null) {
             for (IMetadataTable t : newMetaDataList) {
-                cloneNewMetadata.add(t.clone());
+                cloneNewMetadata.add(t.clone(true));
             }
         }
         node.setMetadataList(cloneNewMetadata);
