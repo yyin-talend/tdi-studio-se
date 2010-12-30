@@ -30,6 +30,7 @@ imports="
 			
 			String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
 			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+			String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");
 %>
             	String url_<%=cid%> = null;
 <%
@@ -45,7 +46,11 @@ imports="
             	    %>
             	    url_<%=cid %> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
 <%
-            	}
+            	}else if(("ORACLE_WALLET").equals(connectionType)) {
+%>
+	    			url_<%=cid%> = <%=jdbcURL%>;
+<%
+				}
 %>
 
 <%
@@ -63,13 +68,18 @@ imports="
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+	 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 %>
 			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 			<%this.setURL(node);%>
 	        String dbUser_<%=cid %> = <%=dbuser%>;
 	        String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
-			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+			if(("ORACLE_WALLET").equals(connectionType)) {
+%>
+			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+<%
+			}else if (dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%

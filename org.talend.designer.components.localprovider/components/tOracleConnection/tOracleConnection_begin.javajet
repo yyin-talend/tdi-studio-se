@@ -14,6 +14,7 @@ imports="
 %>
 <%
     		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");    
+			String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");    
     		String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
 			if(("ORACLE_SID").equals(connectionType)) {
 %>
@@ -27,6 +28,10 @@ imports="
 %>
         String url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
 <%
+			}else if(("ORACLE_WALLET").equals(connectionType)){
+			%>
+			String url_<%=cid%>=<%=jdbcURL%>;
+			<%
 			}
 %>
     	globalMap.put("connectionType_" + "<%=cid%>", "<%=connectionType%>");
@@ -36,12 +41,42 @@ imports="
 		public String getDirverClassName(INode node){
 			return "oracle.jdbc.driver.OracleDriver";
 		}	
+	
+		
+		
+		public void useShareConnection(INode node) {
+		String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__"); 
+%>
+		String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;			
+<%
+			if(("ORACLE_WALLET").equals(connectionType)) {
+%>
+			conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,sharedConnectionName_<%=cid%>);	
+			
+<%
+			} else {
+%>
+<%
+%>
+				conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=this.getDirverClassName(node)%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> , sharedConnectionName_<%=cid%>);
+
+<%
+			}
+%>
+<%
+		}
 		
 		public void createConnection(INode node) {
 		//dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__"); 
 %>
 <%
-			if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+			if(("ORACLE_WALLET").equals(connectionType)) {
+%>
+			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>);
+<%
+			} else if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,userName_<%=cid%>,password_<%=cid%>);
 <%
