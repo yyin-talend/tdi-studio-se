@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Uniserv
+Bundle-SymbolicName: org.talend.libraries.uniserv
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.talend.libraries.uniserv.UniservPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/uniserv.jar,
+ lib/talendUniservAPI.jar,
+ lib/talend_file_enhanced_20070724.jar
+Export-Package: 
+ org.talend.fileprocess,
+ org.talend.fileprocess.delimited,
+ org.talend.uniserv,
+ uniserv.cliserv,
+ uniserv.cliserv.mail,
+ uniserv.cliserv.post
