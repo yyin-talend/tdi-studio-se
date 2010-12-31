@@ -299,6 +299,15 @@ public class ConnectionManager {
             return false;
         }
 
+        // to avoid different db elt input link to map.
+        if (newTarget.isELTComponent() && newTarget.getComponent().getName().endsWith("Map")) {
+            String targetName = newTarget.getComponent().getOriginalFamilyName();
+            String sourceName = processStartNode.getComponent().getOriginalFamilyName();
+            if (!targetName.equals(sourceName)) {
+                return false;
+            }
+        }
+
         // fix bug 0004935: Error on job save
         if (checkCircle(source, newTarget)) {
             return false;

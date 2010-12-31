@@ -278,15 +278,15 @@ public class ConnectionCreateAction extends SelectionAction {
                     //                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
                 }
             }
-            if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
-                if (getDefaultSchemaName() != null) {
-                    String temp = removeQuotes.toString();
-                    removeQuotes.append(getDefaultSchemaName());
-                    removeQuotes.append(".");
-                    removeQuotes.append(temp);
-                    //                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes; //$NON-NLS-1$
-                }
-            }
+            //            if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
+            // if (getDefaultSchemaName() != null) {
+            // String temp = removeQuotes.toString();
+            // removeQuotes.append(getDefaultSchemaName());
+            // removeQuotes.append(".");
+            // removeQuotes.append(temp);
+            //                    //                    removeQuotes = getDefaultSchemaName() + "." + removeQuotes; //$NON-NLS-1$
+            // }
+            // }
         }
         return removeQuotes.toString();
     }
