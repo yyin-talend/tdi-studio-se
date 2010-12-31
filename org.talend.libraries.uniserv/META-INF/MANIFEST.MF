@@ -3,10 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Uniserv
 Bundle-SymbolicName: org.talend.libraries.uniserv
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.talend.libraries.uniserv.UniservPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/uniserv.jar,
  lib/talendUniservAPI.jar,
