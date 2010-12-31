@@ -66,7 +66,7 @@ import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.utils.AbstractResourceChangesService;
-import org.talend.core.repository.utils.ResourceChangesServiceRegister;
+import org.talend.core.repository.utils.TDQServiceRegister;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
@@ -682,7 +682,7 @@ public class DeleteAction extends AContextualAction {
         Item item = objToDelete.getProperty().getItem();
         AbstractResourceChangesService resChangeService = null;
         if (item instanceof ConnectionItem) {
-            resChangeService = ResourceChangesServiceRegister.getInstance().getResourceChangeService(
+            resChangeService = TDQServiceRegister.getInstance().getResourceChangeService(
                     AbstractResourceChangesService.class);
             if (resChangeService != null) {
                 if (!resChangeService.handleResourceChange(((ConnectionItem) item).getConnection())) {

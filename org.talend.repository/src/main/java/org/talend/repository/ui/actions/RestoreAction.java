@@ -38,7 +38,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.AbstractResourceChangesService;
-import org.talend.core.repository.utils.ResourceChangesServiceRegister;
+import org.talend.core.repository.utils.TDQServiceRegister;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -119,7 +119,7 @@ public class RestoreAction extends AContextualAction {
                     }
                 }
                 // MOD qiongli 2010-10-11,bug 15674
-                AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
+                AbstractResourceChangesService resChangeService = TDQServiceRegister.getInstance()
                         .getResourceChangeService(AbstractResourceChangesService.class);
                 Item item = node.getObject().getProperty().getItem();
                 if (item instanceof ConnectionItem && resChangeService != null) {

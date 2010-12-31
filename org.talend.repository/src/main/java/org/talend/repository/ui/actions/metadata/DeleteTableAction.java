@@ -44,7 +44,7 @@ import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.utils.AbstractResourceChangesService;
-import org.talend.core.repository.utils.ResourceChangesServiceRegister;
+import org.talend.core.repository.utils.TDQServiceRegister;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -122,7 +122,7 @@ public class DeleteTableAction extends AContextualAction {
                     }
                     boolean isSave = true;
                     if (item instanceof ConnectionItem) {
-                        AbstractResourceChangesService resChangeService = ResourceChangesServiceRegister.getInstance()
+                        AbstractResourceChangesService resChangeService = TDQServiceRegister.getInstance()
                                 .getResourceChangeService(AbstractResourceChangesService.class);
                         if (resChangeService != null) {
                             isSave = resChangeService.handleResourceChange(((ConnectionItem) item).getConnection());
