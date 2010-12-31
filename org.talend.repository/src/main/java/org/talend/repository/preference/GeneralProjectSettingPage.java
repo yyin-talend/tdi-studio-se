@@ -68,7 +68,11 @@ public class GeneralProjectSettingPage extends ProjectSettingPage {
 
     protected void updateContent() {
         nameText.setText(pro.getLabel());
-        descriptionText.setText(pro.getEmfProject().getDescription());
+        String description = "";
+        if (pro.getEmfProject().getDescription() != null) {
+            description = pro.getEmfProject().getDescription();
+        }
+        descriptionText.setText(description);
     }
 
     /*
