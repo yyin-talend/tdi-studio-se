@@ -33,7 +33,7 @@
 	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 		NUM_ROW="10">
 		<TABLE READONLY="false">
-			<COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true"/>
+			<COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 		</TABLE>
 	</PARAMETER>
 		
