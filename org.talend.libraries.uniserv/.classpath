@@ -3,7 +3,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/talend_file_enhanced_20070724.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/talendUniservAPI.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/uniserv.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
