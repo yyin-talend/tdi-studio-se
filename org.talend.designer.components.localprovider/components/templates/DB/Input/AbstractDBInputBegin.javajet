@@ -73,6 +73,7 @@ imports="
 		    if(isDynamic){
 		    %>
 		    routines.system.Dynamic dcg_<%=cid%> =  new routines.system.Dynamic();
+		    dcg_<%=cid%>.setDbmsId("<%=dbms %>");
 		    List<String> listSchema_<%=cid%>=new java.util.ArrayList<String>();
 		    for(int i_<%=cid %>=1; i_<%=cid %><<%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
 		    	listSchema_<%=cid%>.add(rsmd_<%=cid%>.getColumnName(i_<%=cid %>).toUpperCase());
