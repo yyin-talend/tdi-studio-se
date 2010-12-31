@@ -29,16 +29,12 @@
       <import plugin="org.talend.resources"/>
       <import plugin="org.talend.librariesmanager"/>
       <import plugin="org.talend.commons.ui"/>
-      <import plugin="org.talend.libraries.dom4j-jaxen"/>
-      <import plugin="org.epic.perleditor"/>
       <import plugin="org.talend.utils"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.talend.migrationTool"/>
-      <import plugin="org.talend.libraries"/>
       <import plugin="org.eclipse.gef"/>
-      <import plugin="org.eclipse.m2m.atl.core"/>
       <import plugin="org.talend.model.migration"/>
-      <import plugin="org.talend.libraries.apache"/>
+      <import plugin="org.eclipse.m2m.atl.core"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.talend.commons"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
@@ -159,11 +155,9 @@
       <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.talend.common.ui.runtime"/>
-      <import plugin="org.talend.libraries.jdbc.mysql"/>
-      <import plugin="org.talend.libraries.jdbc.jtds"/>
-      <import plugin="org.talend.core.repository" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.talend.metadata.managment" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.talend.registration" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.talend.metadata.managment.ui"/>
+      <import plugin="org.talend.libraries.jexcel"/>
+      <import plugin="org.talend.libraries.jdom"/>
    </requires>
 
    <plugin
@@ -802,13 +796,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.libraries"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.libraries.apache"
          download-size="0"
          install-size="0"
@@ -833,5 +820,18 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.talend.libraries.jdom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.talend.libraries.jexcel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

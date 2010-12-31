@@ -34,8 +34,9 @@ Require-Bundle: javax.xml.rpc,
  org.talend.metadata.managment,
  org.talend.metadata.managment.ui,
  org.apache.log4j,
- org.talend.libraries,
- org.eclipse.gef
+ org.eclipse.gef,
+ org.talend.libraries.jexcel,
+ org.talend.model.migration
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,
@@ -81,7 +82,5 @@ Export-Package: org.talend.repository,
  org.talend.repository.ui.wizards.sqlpattern,
  org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
-Import-Package: org.eclipse.emf.ecore.xmi,
- org.eclipse.m2m.atl.core,
- org.talend.model.migration
+Import-Package: org.eclipse.m2m.atl.core
 
