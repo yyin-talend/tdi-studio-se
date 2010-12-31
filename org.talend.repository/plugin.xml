@@ -1288,6 +1288,12 @@
             class="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
             id="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
             name="Reset the field value of tInfiniteLoop">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
+            id="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
+            name="UpgrateDatabaseTypeForSybaseConnection">
       </projecttask>      
    </extension>
    
