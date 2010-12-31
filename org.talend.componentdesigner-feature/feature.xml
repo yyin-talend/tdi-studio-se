@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <url>
-      <update label="TOS Talend update site for milestones" url="http://talendforge.org/core/updatesite/testing/"/>
-   </url>
-
    <includes
          id="org.eclipse.rcp"
          version="0.0.0"/>
@@ -808,13 +804,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="2.5.0.v200806031605"
          unpack="false"/>
 
    <plugin
