@@ -59,3 +59,4 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
   }
 }
 %>
+globalMap.put("<%=cid %>_NB_LINE_ROWS", iRows_<%=cid%>);
