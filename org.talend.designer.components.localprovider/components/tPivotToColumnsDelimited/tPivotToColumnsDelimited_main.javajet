@@ -245,9 +245,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%=columnTypeValue%> sum<%=cid%> ;
 
                 if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])){
-                	
-                	<%if(("BigDecimal").equals(columnType) || ("Double").equals(columnType)||("Float").equals(columnType)){
-						if(advancedSeparator){%>
+                
+                	<%
+                	if(("BigDecimal").equals(columnType)) {
+                	%>
+                		sum<%=cid%> = new java.math.BigDecimal(<%=inConnName%>.<%=aggColumn%>.toPlainString());
+                	<%
+                		if(advancedSeparator){%>
+                		aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = FormatterUtils.format_Number(sum<%=cid%>.toPlainString(),<%=thousandsSeparator%>,<%=decimalSeparator%>);
+                	<%
+                		} else {%>
+                		aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = sum<%=cid%>.toPlainString();
+                		<%
+                		}
+					} else if(("Double").equals(columnType)||("Float").equals(columnType)){
+						if(advancedSeparator){
+						%>
 					
 						  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
 	                    
