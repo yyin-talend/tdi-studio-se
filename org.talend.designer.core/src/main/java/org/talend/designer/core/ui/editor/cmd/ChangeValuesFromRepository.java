@@ -284,7 +284,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
-                        if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                        if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                             String dbVersion = "";
                             if (connection instanceof DatabaseConnection) {
                                 dbVersion = ((DatabaseConnection) connection).getDbVersionString();
@@ -387,8 +388,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         String selectedContext = contextItem.getDefaultContext();
                                         final ContextType contextTypeByName = ContextUtils.getContextTypeByName(contextItem,
                                                 selectedContext, true);
-                                        filePath = ConnectionContextHelper.getOriginalValue(contextTypeByName, objectValue
-                                                .toString());
+                                        filePath = ConnectionContextHelper.getOriginalValue(contextTypeByName,
+                                                objectValue.toString());
                                     }
                                 } else {
 
@@ -579,8 +580,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 if (isNotSim) {
                                     if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null) {
                                         if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
-                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                                    EmfComponent.REPOSITORY);
+                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                                                    .setValue(EmfComponent.REPOSITORY);
                                             IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
                                             // repositoryTableMap.get(repositoryTable);
                                             if (table != null) {
@@ -598,12 +599,33 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                             }
                                         }
                                     }
-                                } else if (!isMdmOutput()) {
+                                } else if (isMdmOutput()) {
+                                    if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                            && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() > 0) {
+                                        if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
+                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                                                    .setValue(EmfComponent.REPOSITORY);
+                                            IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                            // repositoryTableMap.get(repositoryTable);
+                                            if (table != null) {
+                                                table = table.clone();
+                                                setDBTableFieldValue(node, table.getTableName(), null);
+                                                setSAPFunctionName(node, table.getLabel());
+                                                table.setTableName(node.getMetadataList().get(0).getTableName());
+                                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table,
+                                                        param);
+                                                cmd.setConnection(connection);
+                                                cmd.setRepositoryMode(true);
+                                                cmd.execute(true);
+                                            }
+                                        }
+                                    }
+                                } else {
                                     if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
                                             && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
                                         if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
-                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                                    EmfComponent.REPOSITORY);
+                                            param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                                                    .setValue(EmfComponent.REPOSITORY);
                                             IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
                                             // repositoryTableMap.get(repositoryTable);
                                             if (table != null) {
@@ -632,8 +654,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                                 repositorySchemaTypeParameter.setValue(repositoryTable);
                                             }
                                             if (repositoryTable != null && !"".equals(repositoryTable)) { //$NON-NLS-1$
-                                                param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                                        EmfComponent.REPOSITORY);
+                                                param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                                                        .setValue(EmfComponent.REPOSITORY);
 
                                                 IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
                                                 if (table != null) {
@@ -694,8 +716,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         cmd.execute(true);
                                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
                                         if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
-                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
-                                                    .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
+                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
+                                                    sourceNode.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
                                         }
                                     }
                                 }
@@ -705,8 +727,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
 
-            IElementParameter queryParam = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE, currentParam
-                    .getCategory());
+            IElementParameter queryParam = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE,
+                    currentParam.getCategory());
             IElementParameter queryStoreType = null;
             if (queryParam != null) {
                 queryStoreType = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
@@ -767,8 +789,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         if (query != null) {
-            IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, queryParam
-                    .getCategory());
+            IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL,
+                    queryParam.getCategory());
             String queryStr = QueryUtil.checkAndAddQuotes(query.getValue());
             memoSqlParam.setValue(queryStr);
             memoSqlParam.setRepositoryValueUsed(true);
@@ -858,8 +880,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 currentParam.setValue(EmfComponent.REPOSITORY);
             } else {
                 currentParam.setValue(EmfComponent.BUILTIN);
-                IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE, currentParam
-                        .getCategory());
+                IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE,
+                        currentParam.getCategory());
                 if (schemaParam != null) {
                     IElementParameter schemaType = schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                     schemaType.setValue(EmfComponent.BUILTIN);
