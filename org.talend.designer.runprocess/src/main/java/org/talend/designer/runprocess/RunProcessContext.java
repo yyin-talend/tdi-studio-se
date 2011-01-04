@@ -174,8 +174,8 @@ public class RunProcessContext {
         setMonitorTrace(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
         setWatchAllowed(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN));
         setSaveBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSAVEBEFORERUN));
-        setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
+        setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore()
+                .getBoolean(RunProcessPrefsConstants.ISCLEARBEFORERUN));
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -490,7 +490,7 @@ public class RunProcessContext {
                                                 // before launching
                                                 if (!JobErrorsChecker.hasErrors(shell)) {
                                                     ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
-                                                            progressMonitor, processMessageManager);
+                                                            progressMonitor, processMessageManager, isSaveBeforeRun());
                                                 }
 
                                                 if (ps != null && !progressMonitor.isCanceled()) {
@@ -502,8 +502,7 @@ public class RunProcessContext {
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
-                                                    String welcomeMsg = mf
-                                                            .format(new Object[] { process.getLabel(), new Date() });
+                                                    String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
                                                     processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT,
                                                             welcomeMsg + "\r\n")); //$NON-NLS-1$
                                                     processMonitorThread = new Thread(psMonitor);
