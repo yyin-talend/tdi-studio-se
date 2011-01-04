@@ -29,17 +29,19 @@
 				}
 			}
 %>
-
+	globalMap.put("<%=cid %>_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
     <%
     if(isRunInMultiThread ){
     %>
-        ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=code %>)); 
+        ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=code %>));
+        globalMap.put("<%=cid %>_ERROR_CODE", < new Integer(<%=code %>));
     <%
         }else {
     %>
         errorCode = new Integer(<%=code %>);
+        globalMap.put("<%=cid %>_ERROR_CODE", errorCode);
     <%
         }
     %>
