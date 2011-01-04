@@ -131,6 +131,19 @@
                 unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
             }            
         } 
+		
+        //This function is used for Extract file from the path    
+		  public String getEntryName(String fileEntry){    
+		         if(fileEntry != null && !fileEntry.equals("")){    
+		        	 for(int i=fileEntry.length()-1; i>0; i--){    
+		             if(fileEntry.charAt(i)=='/'|| fileEntry.charAt(i) == '\\'){    
+		                fileEntry = fileEntry.substring(i+1, fileEntry.length());    
+		               break;    
+		       }    
+		     }    
+		   }    
+		      return fileEntry;    
+		  }  
        
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         
@@ -173,7 +186,15 @@
 			}
             String filename_<%=cid %> =  entry_<%=cid %>.getName();
             util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);			
-		}
+            
+            <% if (extractPath == true) {%>    
+                 java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);    
+                 f.setLastModified(entry_<%=cid %>.getModTime().getTime());    
+                   <%} else {%>    
+                java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));    
+              unzippedFile.setLastModified(entry_<%=cid %>.getModTime().getTime());    
+                  <% }%>   
+        }
 		zip_<%=cid %>.close();
 
 	} else if (tmpFileURL_<%=cid %>.endsWith(".tar")){ 
@@ -190,7 +211,15 @@
                 is_<%=cid %> = zip_<%=cid %>;
 			}
             String filename_<%=cid %> =  entry_<%=cid %>.getName();
-            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);            
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>); 
+            <% if (extractPath == true) {%>    
+                 java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);    
+                 f.setLastModified(entry_<%=cid %>.getModTime().getTime());    
+                 <%} else {%>    
+                 java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));    
+                  unzippedFile.setLastModified(entry_<%=cid %>.getModTime().getTime());    
+             <% }%>   
+             }  
 		}
 		zip_<%=cid %>.close();
   	}else if (tmpFileURL_<%=cid %>.endsWith(".gz")){ 
@@ -234,6 +263,13 @@
 			            String filename_<%=cid %> =  entry_<%=cid %>.getName();
 			           
 			            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
+			             <% if (extractPath == true) {%>    
+			                        java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);    
+			                        f.setLastModified(entry_<%=cid %>.getTime());    
+			                        <%} else {%>    
+			                        java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));    
+			                        unzippedFile.setLastModified(entry_<%=cid %>.getTime());    
+			             <% }%>  
 			 }
 			 System.out.println();
 			 System.out.println("Process finished"); 
@@ -260,32 +296,38 @@
 			java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
 			java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
 			
-	 		//org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
-	 		java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
-	 		java.util.zip.ZipEntry entry_<%=cid%> ; 
-	        //   java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+//	 		java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
+//	 		java.util.zip.ZipEntry entry_<%=cid%> ; 
+	        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
 	        java.io.InputStream is_<%=cid %> = null;
 	        	
-	        //  while (enuFiles_<%=cid %>.hasMoreElements()) {
-	        while ((entry_<%=cid%> = zipInputStream_<%=cid%>.getNextEntry()) != null) {  
-	            //org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	        while (enuFiles_<%=cid %>.hasMoreElements()) {
+	       // while ((entry_<%=cid%> = zipInputStream_<%=cid%>.getNextEntry()) != null) {  
+	            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
 	        	<% if(needPrintout) {%>
 	        	System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
 	        	<%}%>
 	            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
-	           // if (!isDirectory_<%=cid%> ) {
+	            if (!isDirectory_<%=cid%> ) {
 	                //get the input stream
-	                //is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
-				//}
+	                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+				}
 	            String filename_<%=cid %> =  entry_<%=cid %>.getName();
 	            
-	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, zipInputStream_<%=cid%>);
-	            
+	          //  util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, zipInputStream_<%=cid%>);
+	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>); 
+	            <% if (extractPath == true) {%>    
+	            java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);    
+	           f.setLastModified(entry_<%=cid %>.getTime());    
+	            <%} else {%>    
+	                 java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));    
+	                 unzippedFile.setLastModified(entry_<%=cid %>.getTime());    
+	            <% }%> 
 	        }
-	         bufferedStream_<%=cid%>.close();
-	         zipInputStream_<%=cid%>.close();
-	         System.out.println();
-			 System.out.println("Process finished"); 
+	        zip_<%=cid %>.close();
+	        System.out.println();
+			System.out.println("Process finished"); 
 			 
 		<%} %>
 	}
