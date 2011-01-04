@@ -612,12 +612,16 @@ public class DeleteAction extends AContextualAction {
                 && (nodeObject.getProperty().getItem().getState().isLocked() || RepositoryManager
                         .isOpenedItemInEditor(nodeObject)) && !(DELETE_FOREVER_TITLE.equals(getText()))) {
 
-            String title = Messages.getString("DeleteAction.error.title"); //$NON-NLS-1$
-            String message = Messages.getString("DeleteAction.error.lockedOrOpenedObject.message");//$NON-NLS-1$
-            MessageDialog dialog = new MessageDialog(new Shell(), title, null, message, MessageDialog.ERROR,
-                    new String[] { IDialogConstants.YES_LABEL }, 0);//$NON-NLS-1$
-            dialog.open();
+            final String title = Messages.getString("DeleteAction.error.title"); //$NON-NLS-1$
+            final String message = Messages.getString("DeleteAction.error.lockedOrOpenedObject.message");//$NON-NLS-1$
+            Display.getDefault().syncExec(new Runnable() {
 
+                public void run() {
+                    MessageDialog dialog = new MessageDialog(new Shell(), title, null, message, MessageDialog.ERROR,
+                            new String[] { IDialogConstants.YES_LABEL }, 0);//$NON-NLS-1$
+                    dialog.open();
+                }
+            });
             return true;
         }
 
@@ -669,21 +673,26 @@ public class DeleteAction extends AContextualAction {
     private boolean deleteElements(IProxyRepositoryFactory factory, DeleteActionCache deleteActionCache,
             final RepositoryNode currentJobNode, Boolean confirm) throws PersistenceException, BusinessException {
         boolean needReturn = false;
-        IRepositoryViewObject objToDelete = currentJobNode.getObject();
+        final IRepositoryViewObject objToDelete = currentJobNode.getObject();
 
-        List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, deleteActionCache, currentJobNode);
+        final List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, deleteActionCache,
+                currentJobNode);
         if (checkRepository.size() > 0) {
-            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), objToDelete, checkRepository);
-            dialog.open();
+            Display.getDefault().syncExec(new Runnable() {
+
+                public void run() {
+                    JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                            .getShell(), objToDelete, checkRepository);
+                    dialog.open();
+                }
+            });
             return true;
         }
 
         Item item = objToDelete.getProperty().getItem();
         AbstractResourceChangesService resChangeService = null;
         if (item instanceof ConnectionItem) {
-            resChangeService = TDQServiceRegister.getInstance().getResourceChangeService(
-                    AbstractResourceChangesService.class);
+            resChangeService = TDQServiceRegister.getInstance().getResourceChangeService(AbstractResourceChangesService.class);
             if (resChangeService != null) {
                 if (!resChangeService.handleResourceChange(((ConnectionItem) item).getConnection())) {
                     return true;
