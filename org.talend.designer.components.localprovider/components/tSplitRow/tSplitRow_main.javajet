@@ -29,22 +29,20 @@ outConn = outConns.get(0);
 if (!inConn.isActivate() || !outConn.isActivate()){
   return "";
 }
-String inConnName = null, outConnName = null;
-inConnName = inConn.getName();
-outConnName = outConn.getName();
+String inConnName = inConn.getName();
+String outConnName = outConn.getName();
 
 if (!inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
       || !outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) ){
   return "";
 }
 List<IMetadataColumn> outColumns = outConn.getMetadataTable().getListColumns();
-List<IMetadataColumn> inColumns = inConn.getMetadataTable().getListColumns();
 List<Map<String, String>> listColMapping = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__COL_MAPPING__");
 
 if (listColMapping != null && !listColMapping.isEmpty()){
   int rowNumber = listColMapping.size();
   %>
-  List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<%=outConnName%>Struct>(<%=rowNumber%>);
+  java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<%=outConnName%>Struct>(<%=rowNumber%>);
   <%=outConnName%>Struct rowTmp_<%=cid%> = null;
 
   // cache output rows for the loop
@@ -58,7 +56,6 @@ if (listColMapping != null && !listColMapping.isEmpty()){
       rowTmp_<%=cid%>.<%=columnName%> = <%=value%>;
     <%}%>
     rows_<%=cid%>.add(rowTmp_<%=cid%>);
-    
     nb_line_<%=cid%>++;
   <%}%>
 
