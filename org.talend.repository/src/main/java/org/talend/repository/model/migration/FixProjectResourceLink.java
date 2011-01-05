@@ -65,7 +65,7 @@ public class FixProjectResourceLink extends AbstractItemMigrationTask {
             }
         }
         try {
-            factory.save(item.getProperty());
+            factory.save(item, true);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }

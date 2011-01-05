@@ -1280,7 +1280,7 @@
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.FixProjectResourceLink"
-            id="FixProjectResourceLink"
+            id="org.talend.repository.model.migration.FixProjectResourceLink"
             name="Fix a problem of project resources linked to items">
       </projecttask>
       <projecttask
