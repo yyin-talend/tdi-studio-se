@@ -41,6 +41,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String endDate = ElementParameterParser.getValue(node, "__END_DATETIME__");
 			String starRanking = ElementParameterParser.getValue(node, "__STAR_RANKING__");
 			String limit = ElementParameterParser.getValue(node,"__LIMIT__");
+			String status = ElementParameterParser.getValue(node,"__STATUS__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
     		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 			
@@ -76,7 +77,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					endXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(endDate_<%=cid%>);
 				}
 				
-				java.util.List<org.talend.datastewardship.server.ws.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>);
+				java.util.List<org.talend.datastewardship.server.ws.StringArray> tasksResult_<%=cid%> = TDSCWS_<%=cid%>.searchTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
 				for(org.talend.datastewardship.server.ws.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
 					java.util.List<String> taskCols_<%=cid%> = taskResult_<%=cid%>.getItem();
 					
