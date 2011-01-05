@@ -1329,7 +1329,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
-            note.setText(noteType.getText());
+            String text = noteType.getText();
+            if (text != null && text.length() > 2 && (text.contains(";") || text.contains("-") || text.contains(" "))
+                    && text.startsWith("\"") && text.endsWith("\"")) {
+                text = text.substring(1, text.length() - 1);
+            }
+            note.setText(text);
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
@@ -3146,7 +3151,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private void loadRoutinesParameters(ProcessType processType) {
         ParametersType parameters = processType.getParameters();
-        if (parameters == null || parameters.getRoutinesParameter() == null) {
+        EList<RoutinesParameterType> routinesParameter2 = parameters.getRoutinesParameter();
+        if (parameters == null || routinesParameter2 == null) {
             List<RoutinesParameterType> dependenciesInPreference;
             try {
                 dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
@@ -3159,9 +3165,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         } else {
             ProcessItem item = (ProcessItem) this.getProperty().getItem();
             ProcessType process = item.getProcess();
-            process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
-        }
+            @SuppressWarnings("unchecked")
+            EList<RoutinesParameterType> routinesParameter = process.getParameters().getRoutinesParameter();
 
+            if (routinesParameter != null && !(routinesParameter.size() > 0)) {
+                routinesParameter.addAll(routinesParameter2);
+            }
+        }
     }
 
     /**
@@ -3174,6 +3184,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         elem.clear();
         nodes.clear();
+        notes.clear();
         subjobContainers.clear();
 
         // added for context
@@ -3198,6 +3209,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         repositoryId = processType.getRepositoryContextId();
 
         loadConnections(processType, nodesHashtable);
+
+        // added for notes
+        loadNotes(processType);
 
         // added for subjobs
         loadSubjobs(processType);
