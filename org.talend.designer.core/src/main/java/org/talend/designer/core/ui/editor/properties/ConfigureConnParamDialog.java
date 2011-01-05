@@ -47,11 +47,11 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.EConnectionParameterName;
 import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.EConnectionParameterName;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

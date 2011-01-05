@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.FileDialog;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -48,7 +49,6 @@ import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**

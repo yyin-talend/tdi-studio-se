@@ -21,6 +21,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -28,7 +29,6 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

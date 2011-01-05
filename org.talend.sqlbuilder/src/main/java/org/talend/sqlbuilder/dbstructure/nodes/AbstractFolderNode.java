@@ -15,8 +15,8 @@ package org.talend.sqlbuilder.dbstructure.nodes;
 import net.sourceforge.sqlexplorer.SQLAlias;
 
 import org.eclipse.swt.graphics.Image;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.ImageUtil;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>

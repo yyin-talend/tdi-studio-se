@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.ui.editor.properties;
+package org.talend.sqlbuilder.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,18 +28,18 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
-import org.talend.designer.core.i18n.Messages;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.ui.progress.OpenSQLBuilderDialogProgress;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**

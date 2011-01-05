@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
@@ -31,7 +32,6 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SqlEditDialog;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 

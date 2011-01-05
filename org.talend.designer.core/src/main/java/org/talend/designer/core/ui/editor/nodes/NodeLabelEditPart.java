@@ -32,13 +32,14 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlTextEditManager;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * Graphical part of the node label of Gef. <br/>
@@ -125,8 +126,14 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             // set the new size to update the node container
             ((NodeLabel) getModel()).setLabelSize(((SimpleHtmlFigure) figure).getPreferredSize());
             NodeLabel label = (NodeLabel) getModel();
-            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode()
-                    .getUniqueName());
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ISQLBuilderService.class)) {
+                ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                        ISQLBuilderService.class);
+                service.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode()
+                        .getUniqueName());
+
+            }
 
             getParent().refresh();
 

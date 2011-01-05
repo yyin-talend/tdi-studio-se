@@ -22,6 +22,8 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.QueryRepositoryObject;
@@ -30,8 +32,6 @@ import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

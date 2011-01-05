@@ -20,9 +20,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.CodeView;
@@ -30,7 +32,6 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * Track the active Process being edited. <br/>
@@ -187,7 +188,11 @@ public class ActiveProcessTracker implements IPartListener {
                     }
                     currentProcess = null;
                 }
-                UIUtils.closeSqlBuilderDialogs(process.getName());
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ISQLBuilderService.class)) {
+                    ISQLBuilderService sqlBuilderService = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                            ISQLBuilderService.class);
+                    sqlBuilderService.closeSqlBuilderDialogs(process.getName());
+                }
             }
             mpte.beforeDispose();
         } else if (part instanceof IEditorPart) {

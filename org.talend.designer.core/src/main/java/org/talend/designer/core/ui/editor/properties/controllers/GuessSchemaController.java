@@ -48,6 +48,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -73,6 +74,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.KeywordsValidator;
@@ -84,8 +86,6 @@ import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.ui.utils.ColumnNameValidator;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
  * DOC zqin class global comment. Detailled comment
@@ -320,8 +320,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private void runShadowProcess(final Property property, final Node inputNode, final IContext selectContext,
             final IElementParameter switchParam) {
-        SQLBuilderRepositoryNodeManager sqlManager = new SQLBuilderRepositoryNodeManager();
-        DatabaseConnection connt = sqlManager.createConnection(connParameters);
+        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        DatabaseConnection connt = service.createConnection(connParameters);
         String dbmsId = connt.getDbmsId();
 
         GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
@@ -687,12 +687,12 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
         final Shell parentShell = this.composite.getShell();
         final Node inputNode = (Node) this.curParameter.getElement();
-        SQLBuilderRepositoryNodeManager sqlManager = new SQLBuilderRepositoryNodeManager();
         if (connParameters == null) {
             initConnectionParameters();
         }
         final String tmpMemoSql = this.memoSQL;
-        final DatabaseConnection connt = sqlManager.createConnection(connParameters);
+        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        final DatabaseConnection connt = service.createConnection(connParameters);
 
         IMetadataConnection iMetadataConnection = null;
         boolean isStatus = false;
@@ -742,7 +742,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 Display.getDefault().asyncExec(new Runnable() {
 
                     public void run() {
-                        String pid = SqlBuilderPlugin.PLUGIN_ID;
+                        String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                         String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
                         ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                 composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
@@ -864,12 +864,13 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         columns.clear();
                     }
                     monitor.beginTask(Messages.getString("GuessSchemaController.waitOpenDatabase"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
                     if (connParameters == null) {
                         initConnectionParameters();
                     }
 
-                    DatabaseConnection connt = manager.createConnection(connParameters);
+                    ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                            ISQLBuilderService.class);
+                    DatabaseConnection connt = service.createConnection(connParameters);
                     IMetadataConnection iMetadataConnection = null;
                     boolean isStatus = false;
                     if (connt != null) {
@@ -913,7 +914,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                 Display.getDefault().asyncExec(new Runnable() {
 
                                     public void run() {
-                                        String pid = SqlBuilderPlugin.PLUGIN_ID;
+                                        String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                                         String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
                                         ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                                 composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());

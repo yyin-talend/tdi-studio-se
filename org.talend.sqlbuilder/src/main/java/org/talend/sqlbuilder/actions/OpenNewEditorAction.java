@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
@@ -28,8 +30,6 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * This class is responsible for opening new editor. <br/>

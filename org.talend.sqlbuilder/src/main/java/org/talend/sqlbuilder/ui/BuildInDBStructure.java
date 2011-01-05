@@ -47,10 +47,10 @@ import org.talend.core.model.metadata.MetadataConnection;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.Messages;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

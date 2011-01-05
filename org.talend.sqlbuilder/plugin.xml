@@ -64,4 +64,11 @@
             parentId="org.eclipse.ui.contexts.window">
       </context>
    </extension>
+   <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.sqlbuilder.SQLBuilderService"
+            serviceId="ISQLBuilderService">
+      </Service>
+   </extension>
 </plugin>

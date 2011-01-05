@@ -50,26 +50,30 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.TextUtil;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -124,8 +128,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String query = (String) elem.getPropertyValue(propertyName);
         ECodeLanguage lang = LanguageManager.getCurrentLanguage();
         if ((!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfHasSpecialEscapeValue(query) || QueryUtil
-                .checkIfIsNoQuotesAtAll(query))
-                && (lang == ECodeLanguage.JAVA)) {// if
+                .checkIfIsNoQuotesAtAll(query)) && (lang == ECodeLanguage.JAVA)) {// if
             // the input query is in context mode in java
             // String pid = SqlBuilderPlugin.PLUGIN_ID;
             // String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
@@ -420,11 +423,22 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setQuery(query.getValue());
 
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
-        SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(composite.getShell());
+
+        String processName = null;
+        if (elem instanceof IProcess) {
+            processName = ((IProcess) elem).getName();
+        } else if (elem instanceof INode) {
+            processName = ((INode) elem).getProcess().getName();
+        } else if (elem instanceof IConnection) {
+            processName = ((IConnection) elem).getSource().getProcess().getName();
+        }
 
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
-        sqlBuilder.setConnParameters(connParameters);
+        ISQLBuilderService sqlBuilderService = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                ISQLBuilderService.class);
+        Dialog sqlBuilder = sqlBuilderService.openSQLBuilderDialog(composite.getShell(), processName, connParameters);
+
         String sql = null;
 
         if (Window.OK == sqlBuilder.open()) {

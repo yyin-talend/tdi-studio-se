@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>

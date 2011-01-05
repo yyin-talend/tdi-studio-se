@@ -39,6 +39,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -49,7 +50,6 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.proposal.SQLEditorLabelProvider;
 import org.talend.sqlbuilder.ui.proposal.SQLEditorProposalAdapter;
 import org.talend.sqlbuilder.ui.proposal.SQLEditorProposalProvider;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * This class is responsible for creating editor composite.<br/>

@@ -50,6 +50,7 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -67,6 +68,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject.ObjectType;
@@ -78,9 +81,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -277,10 +277,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
             }
 
-            SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
             DatabaseConnection connection = getExistConnection();
             if (connection == null) {
-                connection = manager.createConnection(connParameters);
+                ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                        ISQLBuilderService.class);
+                connection = service.createConnection(connParameters);
             }
             boolean isStatus = false;
 
@@ -302,7 +303,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
-                    String pid = SqlBuilderPlugin.PLUGIN_ID;
+                    String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
                     ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(composite
                             .getShell(), pid, mainMsg, connParameters.getConnectionComment());
@@ -462,13 +463,14 @@ public class DbTableController extends AbstractElementPropertySectionController 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
                 monitor.beginTask(Messages.getString("DbTableController.waitingForOpen"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
                 DatabaseConnection existConnection = getExistConnection();
                 if (existConnection == null) {
                     if (connParameters == null) {
                         initConnectionParameters();
                     }
-                    existConnection = manager.createConnection(connParameters);
+                    ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                            ISQLBuilderService.class);
+                    existConnection = service.createConnection(connParameters);
                 }
                 final DatabaseConnection con = existConnection;
                 IMetadataConnection iMetadataConnection = null;
@@ -547,7 +549,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    String pid = SqlBuilderPlugin.PLUGIN_ID;
+                                    String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
                                     ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                             composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());

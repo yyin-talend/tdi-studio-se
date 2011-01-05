@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -55,7 +56,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -67,6 +67,7 @@ import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
@@ -103,6 +104,10 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.core.sqlbuilder.util.EConnectionParameterName;
+import org.talend.core.sqlbuilder.util.TextUtil;
+import org.talend.core.ui.ISQLBuilderService;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -116,7 +121,6 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
-import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
@@ -130,11 +134,6 @@ import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.EConnectionParameterName;
-import org.talend.sqlbuilder.util.TextUtil;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -147,7 +146,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
-    private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
+    private Map<String, Dialog> sqlbuilers = new HashMap<String, Dialog>();
 
     protected IDynamicProperty dynamicProperty;
 
@@ -1311,12 +1310,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
-        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
-                getCommandStack(), this);
-        IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
-                IWorkbenchSiteProgressService.class);
-        siteps.showInDialog(composite.getShell(), openDialogJob);
-        openDialogJob.schedule();
+        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        service.openSQLBuilderDialog(connParameters, composite, elem, propertyName, getCommandStack(), this, part);
     }
 
     protected ConnectionParameters connParameters;
@@ -1794,7 +1789,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
             key += repositoryName2;
 
-            final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
+            final Dialog builderDialog = sqlbuilers.get(key);
             if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
                     && !builderDialog.getShell().isDisposed()) {
                 builderDialog.getShell().setActive();
@@ -1810,12 +1805,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
                 TextUtil.setDialogTitle(processName, nodeLabel, elem.getElementName());
 
-                SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
-                UIUtils.addSqlBuilderDialog(processName, sqlBuilder);
+                ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                        ISQLBuilderService.class);
 
                 connParameters.setQuery(query);
 
-                sqlBuilder.setConnParameters(connParameters);
+                Dialog sqlBuilder = service.openSQLBuilderDialog(parentShell, processName, connParameters);
+
                 sqlbuilers.put(key, sqlBuilder);
                 if (Window.OK == sqlBuilder.open()) {
                     if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {

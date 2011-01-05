@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -37,7 +38,6 @@ import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * qzhang class global comment. Detailled comment <br/>

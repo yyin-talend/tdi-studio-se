@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.CloseSQLResultTabAction;
 import org.talend.sqlbuilder.actions.IResultDisplayer;
 import org.talend.sqlbuilder.sqlcontrol.AbstractSQLExecution;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>

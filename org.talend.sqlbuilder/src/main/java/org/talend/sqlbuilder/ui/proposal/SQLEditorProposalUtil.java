@@ -25,13 +25,13 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.QueryTokenizer;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * dev class global comment. Detailled comment <br/>

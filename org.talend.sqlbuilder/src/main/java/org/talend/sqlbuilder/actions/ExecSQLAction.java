@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -30,7 +31,6 @@ import org.talend.sqlbuilder.sqlcontrol.SQLExecution;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.QueryTokenizer;
-import org.talend.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**

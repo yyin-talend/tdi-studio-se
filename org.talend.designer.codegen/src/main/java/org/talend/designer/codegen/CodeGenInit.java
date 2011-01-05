@@ -45,6 +45,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.utils.ProjectHelper;
+import org.talend.core.service.ICorePerlService;
 import org.talend.designer.codegen.i18n.Messages;
 
 /***/
@@ -57,8 +58,10 @@ public class CodeGenInit implements IApplication {
         String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         CommonsPlugin.setHeadless(true);
         initLocalRepository();
-        // need generate code for java after perl
-        init(ECodeLanguage.PERL);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+            // need generate code for java after perl
+            init(ECodeLanguage.PERL);
+        }
         init(ECodeLanguage.JAVA);
 
         removeLinkedResources();

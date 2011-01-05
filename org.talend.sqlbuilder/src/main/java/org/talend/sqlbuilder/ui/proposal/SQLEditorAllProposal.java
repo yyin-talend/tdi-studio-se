@@ -15,8 +15,8 @@ package org.talend.sqlbuilder.ui.proposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.ImageUtil;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * dev class global comment. Detailled comment <br/>
