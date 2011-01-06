@@ -1114,15 +1114,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             nType.setSizeY(node.getSize().height);
         }
         if (node.getExternalNode() != null) {
-            if (node.getExternalData() != null) {
-                nType.setNodeData(node.getExternalNode().saveExternalData());
+            nType.setNodeData(node.getExternalNode().saveExternalData());
 
-                // if (node.getExternalData() != null) {
-                // Data data = (Data) node.getExternalBytesData();
-                // nType.setBinaryData(data.getBytesData());
-                // nType.setStringData(data.getStringData());
-                // }
-            }
+            // if (node.getExternalData() != null) {
+            // Data data = (Data) node.getExternalBytesData();
+            // nType.setBinaryData(data.getBytesData());
+            // nType.setStringData(data.getStringData());
+            // }
         }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
