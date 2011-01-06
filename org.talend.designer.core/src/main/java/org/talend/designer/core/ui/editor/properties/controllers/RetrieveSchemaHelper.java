@@ -14,12 +14,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
@@ -36,9 +34,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.uniserv.AutoApi;
-
-import uniserv.cliserv.GatewayInternalException;
-import uniserv.cliserv.NoSuchArgException;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -169,15 +164,7 @@ public class RetrieveSchemaHelper {
             de = (DefaultElement) document
                     .selectObject("//Job//Lines//Line//Steps//Output//Targets//Target//Format//FileInfo//FileLocation");
             node.getElementParameter("OUT_MODE").setValue(de.attribute("Mode").getValue());
-        } catch (DocumentException e) {
-            ExceptionHandler.process(e);
-        } catch (UnknownHostException e) {
-            ExceptionHandler.process(e);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        } catch (NoSuchArgException e) {
-            ExceptionHandler.process(e);
-        } catch (GatewayInternalException e) {
+        } catch (Exception e) {
             ExceptionHandler.process(e);
         }
         CompoundCommand cc = new CompoundCommand();
