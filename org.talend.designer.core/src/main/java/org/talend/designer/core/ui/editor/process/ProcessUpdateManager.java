@@ -1340,6 +1340,25 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             } else {
                                                 sameValues = false;
                                             }
+                                        } else
+                                        // fix 18011 :after change the jars in wizard, the update manager can't detect
+                                        // it in jobs
+                                        if (param.getName().equals("DRIVER_JAR") && oldList != null) {
+                                            List objectList = (List) objectValue;
+                                            if (oldList.size() != objectList.size()) {
+                                                sameValues = false;
+                                            } else {
+                                                for (int i = 0; i < oldList.size(); i++) {
+                                                    Map<String, Object> oldMap = oldList.get(i);
+                                                    Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
+                                                    if (oldMap.get("JAR_NAME").equals(objectMap.get("JAR_NAME"))) { //$NON-NLS-1$
+                                                        sameValues = true;
+                                                    } else {
+                                                        sameValues = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
                                         }
                                     } else
                                     // check the value
@@ -1379,7 +1398,6 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     } else if (value instanceof Boolean && objectValue instanceof Boolean) {
                                         sameValues = ((Boolean) value).equals((Boolean) objectValue);
                                     }
-
                                 }
                             } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
                                     && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {

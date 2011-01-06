@@ -232,8 +232,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (service != null) {
                                         try {
                                             List<IRepositoryViewObject> all;
-                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
-                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                                    .getAll(ERepositoryObjectType.METADATA_CONNECTIONS);
                                             for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
@@ -301,7 +301,11 @@ public class UpdateNodeParameterCommand extends Command {
                                                     }
                                                 }
                                             }
-                                            //
+                                        } else
+                                        // fix 18011 :after change the jars in wizard, the update manager can't detect
+                                        // it in jobs
+                                        if (param.getName().equals("DRIVER_JAR") && objectValue instanceof List) {
+                                            param.setValue(objectValue);
                                         }
                                     } else {
                                         node.setPropertyValue(param.getName(), objectValue);
