@@ -16,7 +16,6 @@
       [Enter License Description here.]
    </license>
 
-
    <plugin
          id="org.talend.designer.components.localprovider"
          download-size="0"
@@ -163,9 +162,23 @@
          install-size="0"
          version="0.0.0"/>
 
-
    <plugin
          id="org.talend.designer.components.ecosystem.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.expressionbuilder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.expressionbuilder.nl"
          download-size="0"
          install-size="0"
          version="0.0.0"
