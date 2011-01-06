@@ -1661,10 +1661,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (nc.getMetadataFromConnector(table.getAttachedConnector()) == null) {
                 // if there is any new connector, then add the table to the
                 // list.
-                String baseSchema = nc.getConnectorFromName(table.getAttachedConnector()).getBaseSchema();
-                IMetadataTable metadataFromConnector = nc.getMetadataFromConnector(baseSchema);
-                if (!table.getAttachedConnector().equals(baseSchema) && metadataFromConnector != null) {
-                    MetadataTool.copyTable(metadataFromConnector, table);
+                INodeConnector nodeC = nc.getConnectorFromName(table.getAttachedConnector());
+                if (nodeC != null) {
+                    String baseSchema = nc.getConnectorFromName(table.getAttachedConnector()).getBaseSchema();
+                    IMetadataTable metadataFromConnector = nc.getMetadataFromConnector(baseSchema);
+                    if (!table.getAttachedConnector().equals(baseSchema) && metadataFromConnector != null) {
+                        MetadataTool.copyTable(metadataFromConnector, table);
+                    }
                 }
                 nc.getMetadataList().add(table);
             }
