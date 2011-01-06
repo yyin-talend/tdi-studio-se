@@ -27,6 +27,7 @@ boolean ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__")
 String keystoreFile = ElementParameterParser.getValue(node, "__KEYSTORE_FILE__");
 String keystorePass = ElementParameterParser.getValue(node, "__KEYSTORE_PASS__");
 String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
 
 if (useProxy) {
 %>  
@@ -127,7 +128,17 @@ if (!sftp && !ftps) { // *** ftp *** //
     sslSocketFactory = sslContext.getSocketFactory();
     ftp_<%=cid %> = new it.sauronsoftware.ftp4j.FTPClient();
     ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory);
-    ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+<%
+    if("IMPLICIT".equals(securityMode)){
+%>
+    	ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPS);
+<%
+    }else if("EXPLICIT".equals(securityMode)){
+%>
+    	ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+<%
+    }
+%>
     ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
     ftp_<%=cid %>.login(<%=user %>, <%=pass %>);
   } catch (java.lang.IllegalStateException e) {

@@ -37,6 +37,7 @@ String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 boolean bPrintMsg = "true".equals(ElementParameterParser.getValue(node, "__PRINT_MESSAGE__"));
+String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
 boolean sftp = false;
 boolean ftps = false;
 
@@ -582,7 +583,17 @@ if (sftp) { // *** sftp *** //
       sslSocketFactory = sslContext.getSocketFactory();
       ftp_<%=cid %> = new it.sauronsoftware.ftp4j.FTPClient();
       ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory);
-      ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+<%
+	if("IMPLICIT".equals(securityMode)){
+%>
+		ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPS);
+<%
+	}else if("EXPLICIT".equals(securityMode)){
+%>
+    	ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+<%
+    }
+%>
       ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
       ftp_<%=cid %>.login(<%=user %>, <%=pass %>);
     <%  
