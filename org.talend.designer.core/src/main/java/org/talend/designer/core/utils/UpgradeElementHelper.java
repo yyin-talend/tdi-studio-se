@@ -55,8 +55,10 @@ public final class UpgradeElementHelper {
 
         // see bug 4733 & 5167
         for (IElementParameter param : element.getElementParameters()) {
-            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName()) /* || isSQLQueryParameter(param) */
-                    || isJavaRowCodeParameter(element, param)) {
+            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
+                /* || isSQLQueryParameter(param) */
+                // bug 17979 modify: tJavaRow in Joblet
+                /* || isJavaRowCodeParameter(element, param) ) { */
                 continue;
             }
             ParameterValueUtil.renameValues(param, oldName, newName);
