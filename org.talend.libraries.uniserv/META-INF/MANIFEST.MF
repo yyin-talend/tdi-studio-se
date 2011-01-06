@@ -6,13 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ClassPath: .,
- lib/uniserv.jar,
  lib/talendUniservAPI.jar,
  lib/talend_file_enhanced_20070724.jar
 Export-Package: 
  org.talend.fileprocess,
  org.talend.fileprocess.delimited,
- org.talend.uniserv,
- uniserv.cliserv,
- uniserv.cliserv.mail,
- uniserv.cliserv.post
+ org.talend.uniserv
