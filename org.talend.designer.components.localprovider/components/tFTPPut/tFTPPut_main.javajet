@@ -81,6 +81,12 @@ try{
 						int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 						<%}%>
 						try{
+							<%if(("overwrite").equals(sftpoverwrite) || ("append").equals(sftpoverwrite)){%> 
+								if((c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null) && (c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getUId() == 0)){
+									System.err.println("File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
+									continue;
+								}
+							<%}%>
 		    				c_<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
 		    				 
 		    				// add info to list will return
