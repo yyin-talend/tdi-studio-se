@@ -67,11 +67,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%}%>
 			String fileName_<%=cid%> = <%=fileName%>;
 			String file_<%=cid%> = "";
-
-			if (fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/")).lastIndexOf(".") > 0) {
-				file_<%=cid %> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
+			
+			if (fileName_<%=cid%>.indexOf("/") < 0) {
+				throw new IllegalArgumentException("not a correct file name.");				
 			} else {
-				file_<%=cid %> = fileName_<%=cid %>;
+				String tail_<%=cid%> = fileName_<%=cid %>.substring(fileName_<%=cid %>.lastIndexOf("/"));
+				file_<%=cid %> = tail_<%=cid%>.lastIndexOf(".") > 0 ? fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf(".")) : fileName_<%=cid%>;
 			}
 			java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 
