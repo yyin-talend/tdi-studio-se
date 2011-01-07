@@ -35,8 +35,6 @@ import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlTextEditManager;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ui.ISQLBuilderService;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -198,8 +196,8 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     protected void refreshVisuals() {
-        Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-
+        Node node = ((NodeLabel) getModel()).getNode();
+        // Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
         String text = ((NodeLabel) getModel()).getLabelText();
         SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
         htmlFig.setText(text);

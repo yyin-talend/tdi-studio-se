@@ -113,6 +113,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeContainerType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -123,6 +124,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -597,6 +599,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             for (Object obj : conns) {
                 IConnection con = (IConnection) obj;
                 INode target = con.getTarget();
+                if (target.getJobletNode() != null) {
+                    target = target.getJobletNode();
+                }
                 if (!res.contains(target)) {
                     res.add(target);
                     findTargetAll(res, target);
@@ -678,6 +683,31 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             for (String key : param.getChildParameters().keySet()) {
                 saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
             }
+            // accept only one level of child parameters.
+        }
+    }
+
+    private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
+            EList listParamType, NodeType process) {
+        IElementParameter param;
+        ElementParameterType pType;
+        for (int j = 0; j < paramList.size(); j++) {
+            param = paramList.get(j);
+            pType = fileFact.createElementParameterType();
+            pType.setName(param.getName());
+            Object value = param.getValue();
+            if (value instanceof Boolean) {
+                pType.setValue(((Boolean) value).toString());
+            } else {
+                if (value instanceof String) {
+                    pType.setValue((String) value);
+                }
+            }
+            listParamType.add(pType);
+            // saveElementParameter(param, process, fileFact, paramList, listParamType);
+            // for (String key : param.getChildParameters().keySet()) {
+            // saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
+            // }
             // accept only one level of child parameters.
         }
     }
@@ -1114,13 +1144,22 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             nType.setSizeY(node.getSize().height);
         }
         if (node.getExternalNode() != null) {
-            nType.setNodeData(node.getExternalNode().saveExternalData());
+            if (node.getExternalData() != null) {
+                nType.setNodeData(node.getExternalNode().saveExternalData());
 
-            // if (node.getExternalData() != null) {
-            // Data data = (Data) node.getExternalBytesData();
-            // nType.setBinaryData(data.getBytesData());
-            // nType.setStringData(data.getStringData());
-            // }
+                // if (node.getExternalData() != null) {
+                // Data data = (Data) node.getExternalBytesData();
+                // nType.setBinaryData(data.getBytesData());
+                // nType.setStringData(data.getStringData());
+                // }
+            }
+        }
+        if (node.getNodeContainer() != null) {
+            NodeContainerType ncType = createNodeContainerType(fileFact);
+            nType.setNodeContainer(ncType);
+            EList ncParaType = ncType.getElementParameter();
+            List<? extends IElementParameter> ncParaist = node.getNodeContainer().getElementParameters();
+            saveElementParameters(fileFact, ncParaist, ncParaType, nType);
         }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
@@ -1141,12 +1180,76 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 connList.add((Connection) connection);
             }
         }
+        // if (node.isJoblet()) {
+        // JobletContainer jCon = (JobletContainer) node.getNodeContainer();
+        // if (!jCon.isCollapsed()) {
+        // Set<IConnection> outSet = jCon.getOutputs();
+        // Set<IConnection> inSet = jCon.getInputs();
+        // Iterator<IConnection> outIterator = outSet.iterator();
+        // while (outIterator.hasNext()) {
+        // connec = (Connection) outIterator.next();
+        // cType = fileFact.createConnectionType();
+        // cType.setSource(node.getUniqueName());
+        // cType.setTarget(connec.getTarget().getUniqueName());
+        // cType.setLabel(connec.getName());
+        // cType.setLineStyle(connec.getLineStyleId());
+        // cType.setConnectorName(connec.getConnectorName());
+        // cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x);
+        // cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y);
+        // cType.setMetaname(connec.getMetaName());
+        // int id = connec.getOutputId();
+        // if (id >= 0) {
+        // cType.setOutputId(id);
+        // }
+        // if (connec.getTarget().getComponent().useMerge()) {
+        // cType.setMergeOrder(connec.getInputId());
+        // }
+        // listParamType = cType.getElementParameter();
+        // paramList = connec.getElementParameters();
+        // saveElementParameters(fileFact, paramList, listParamType, process);
+        // cList.add(cType);
+        // }
+        //
+        // Iterator<IConnection> inIterator = inSet.iterator();
+        // // while (inIterator.hasNext()) {
+        // // connec = (Connection) inIterator.next();
+        // // cType = fileFact.createConnectionType();
+        // // cType.setSource(node.getUniqueName());
+        // // cType.setTarget(connec.getTarget().getUniqueName());
+        // // cType.setLabel(connec.getName());
+        // // cType.setLineStyle(connec.getLineStyleId());
+        // // cType.setConnectorName(connec.getConnectorName());
+        // // cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x);
+        // // cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y);
+        // // cType.setMetaname(connec.getMetaName());
+        // // int id = connec.getOutputId();
+        // // if (id >= 0) {
+        // // cType.setOutputId(id);
+        // // }
+        // // if (connec.getTarget().getComponent().useMerge()) {
+        // // cType.setMergeOrder(connec.getInputId());
+        // // }
+        // // listParamType = cType.getElementParameter();
+        // // paramList = connec.getElementParameters();
+        // // saveElementParameters(fileFact, paramList, listParamType, process);
+        // // cList.add(cType);
+        // // }
+        // }
+        // }
         // connList = (List<Connection>) outgoingConnections;
         for (int j = 0; j < connList.size(); j++) {
             connec = connList.get(j);
             cType = fileFact.createConnectionType();
             cType.setSource(node.getUniqueName());
-            cType.setTarget(connec.getTarget().getUniqueName());
+            INode jTarget = connec.getTarget();
+            String targetUniqueName = jTarget.getUniqueName();
+            if (jTarget instanceof Node) {
+                Node jn = (Node) jTarget.getJobletNode();
+                if (jn != null) {
+                    targetUniqueName = jn.getUniqueName();
+                }
+            }
+            cType.setTarget(targetUniqueName);
             cType.setLabel(connec.getName());
             cType.setLineStyle(connec.getLineStyleId());
             cType.setConnectorName(connec.getConnectorName());
@@ -1157,7 +1260,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (id >= 0) {
                 cType.setOutputId(id);
             }
-            if (connec.getTarget().getComponent().useMerge()) {
+            INode connTarget = connec.getTarget();
+            if (connTarget.getJobletNode() != null) {
+                connTarget = connTarget.getJobletNode();
+            }
+            if (connTarget.getComponent().useMerge()) {
                 cType.setMergeOrder(connec.getInputId());
             }
             listParamType = cType.getElementParameter();
@@ -1214,6 +1321,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return nType;
     }
 
+    protected NodeContainerType createNodeContainerType(TalendFileFactory fileFact) {
+        NodeContainerType ncType;
+        ncType = fileFact.createNodeContainerType();
+        return ncType;
+    }
+
     protected ProcessType getProcessType() {
         ProcessItem item = (ProcessItem) property.getItem();
         ProcessType processType = item.getProcess();
@@ -1251,10 +1364,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         repositoryId = processType.getRepositoryContextId();
 
         loadConnections(processType, nodesHashtable);
+
         loadContexts(processType);
         // feature 7410
         loadNotes(processType);
         loadSubjobs(processType);
+
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
@@ -1262,6 +1377,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkNodeTableParameters();
         // bug 16351
         checkProjectsettingParameters();
+
+        loadNodeContainer(processType);
         // bug 6158
         this.updateManager.retrieveRefInformation();
     }
@@ -1327,12 +1444,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
-            String text = noteType.getText();
-            if (text != null && text.length() > 2 && (text.contains(";") || text.contains("-") || text.contains(" "))
-                    && text.startsWith("\"") && text.endsWith("\"")) {
-                text = text.substring(1, text.length() - 1);
-            }
-            note.setText(text);
+            note.setText(noteType.getText());
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
@@ -1424,7 +1536,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (nType.isSetSizeX()) {
             nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
         }
-        addNodeContainer(new NodeContainer(nc));
+
+        NodeContainer nodec = null;
+        if (nc.isJoblet()) {
+            nodec = new JobletContainer(nc);
+        } else {
+            nodec = new NodeContainer(nc);
+        }
+        addNodeContainer(nodec);
         nodesHashtable.put(nc.getUniqueName(), nc);
         return nc;
     }
@@ -1476,8 +1595,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         loadSchema(nc, nType);
 
         loadColumnsBasedOnSchema(nc, listParamType);
+        NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
+        if (nc.isJoblet()) {
+            nodeContainer = new JobletContainer(nc);
+        } else {
+            nodeContainer = new NodeContainer(nc);
+        }
 
-        addNodeContainer(new NodeContainer(nc));
+        addNodeContainer(nodeContainer);
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
 
@@ -1490,6 +1615,42 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         nc.setNeedLoadLib(false);
         return nc;
+    }
+
+    private void loadNodeContainer(ProcessType processType) {
+        EList nodeList = processType.getNode();
+        NodeType nType;
+        for (int i = 0; i < nodeList.size(); i++) {
+            nType = (NodeType) nodeList.get(i);
+            EList paras = nType.getElementParameter();
+            String uniquateName = null;
+            for (Object obj : paras) {
+                ElementParameterType para = (ElementParameterType) obj;
+                if (para.getName().equals("UNIQUE_NAME")) {
+                    uniquateName = para.getValue();
+                    break;
+                }
+            }
+            List<? extends INode> nodes = this.getGraphicalNodes();
+            for (INode node : nodes) {
+                if (((Node) node).isJoblet() && uniquateName != null && node.getUniqueName().equals(uniquateName)) {
+                    NodeContainer nodeContainer = ((Node) node).getNodeContainer();
+                    NodeContainerType nodeContainerType = nType.getNodeContainer();
+                    if (nodeContainerType != null) {
+                        EList listParamType = nodeContainerType.getElementParameter();
+                        loadElementParameters(nodeContainer, listParamType);
+                        break;
+                    }
+                }
+            }
+
+        }
+        // NodeContainerType nodeContainerType = nType.getNodeContainer();
+        // if (nodeContainerType != null) {
+        // EList listParamType = nodeContainerType.getElementParameter();
+        // loadElementParameters(nodeContainer, listParamType);
+        // }
+        // return nodeContainer;
     }
 
     private void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
@@ -2365,7 +2526,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                             || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)
                             || connec.getLineStyle().equals(EConnectionType.ITERATE)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
-                        refLink = isThereLinkWithHash(connec.getTarget(), checkedNode);
+                        INode nodeTarget = connec.getTarget();
+                        if (nodeTarget.getJobletNode() != null) {
+                            nodeTarget = nodeTarget.getJobletNode();
+                        }
+                        refLink = isThereLinkWithHash(nodeTarget, checkedNode);
                     }
                 }
             }
@@ -3152,8 +3317,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private void loadRoutinesParameters(ProcessType processType) {
         ParametersType parameters = processType.getParameters();
-        EList<RoutinesParameterType> routinesParameter2 = parameters.getRoutinesParameter();
-        if (parameters == null || routinesParameter2 == null) {
+        if (parameters == null || parameters.getRoutinesParameter() == null) {
             List<RoutinesParameterType> dependenciesInPreference;
             try {
                 dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
@@ -3166,13 +3330,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         } else {
             ProcessItem item = (ProcessItem) this.getProperty().getItem();
             ProcessType process = item.getProcess();
-            @SuppressWarnings("unchecked")
-            EList<RoutinesParameterType> routinesParameter = process.getParameters().getRoutinesParameter();
-
-            if (routinesParameter != null && !(routinesParameter.size() > 0)) {
-                routinesParameter.addAll(routinesParameter2);
-            }
+            process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
         }
+
     }
 
     /**
@@ -3185,7 +3345,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         elem.clear();
         nodes.clear();
-        notes.clear();
         subjobContainers.clear();
 
         // added for context
@@ -3210,9 +3369,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         repositoryId = processType.getRepositoryContextId();
 
         loadConnections(processType, nodesHashtable);
-
-        // added for notes
-        loadNotes(processType);
 
         // added for subjobs
         loadSubjobs(processType);

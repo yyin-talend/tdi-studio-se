@@ -26,6 +26,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -56,6 +57,9 @@ public class DeleteNodeContainerCommand extends Command {
         process.setActivate(false);
 
         for (INode node : nodeList) {
+            if (node.getJobletNode() != null) {
+                continue;
+            }
             NodeContainer nodeContainer = ((Node) node).getNodeContainer();
 
             ((Process) process).removeNodeContainer(nodeContainer);
@@ -71,6 +75,15 @@ public class DeleteNodeContainerCommand extends Command {
                 }
 
                 INode prevNode = connection.getSource();
+                if ((prevNode instanceof Node) && ((Node) prevNode).getJobletNode() != null) {
+                    Node jobletnode = (Node) prevNode.getJobletNode();
+                    ((JobletContainer) jobletnode.getNodeContainer()).getOutputs().remove(connection);
+                    if (!nodeList.contains(jobletnode)) {
+                        jobletnode.removeOutput(connection);
+                        if (!jobletnode.getComponent().getName().equals("tMap") && !jobletnode.isELTComponent())
+                            process.removeUniqueConnectionName(connection.getUniqueName());
+                    }
+                }
                 if (!nodeList.contains(prevNode)) {
                     // see bug 0004577
                     // INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
@@ -84,6 +97,15 @@ public class DeleteNodeContainerCommand extends Command {
             }
             for (IConnection connection : outputList) {
                 INode nextNode = connection.getTarget();
+                if ((nextNode instanceof Node) && ((Node) nextNode).getJobletNode() != null) {
+                    Node jobletnode = (Node) nextNode.getJobletNode();
+                    ((JobletContainer) jobletnode.getNodeContainer()).getInputs().remove(connection);
+                    if (!nodeList.contains(jobletnode)) {
+                        jobletnode.removeInput(connection);
+                        if (!jobletnode.getComponent().getName().equals("tMap") && !jobletnode.isELTComponent())
+                            process.removeUniqueConnectionName(connection.getUniqueName());
+                    }
+                }
                 if (!nodeList.contains(nextNode)) {
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() - 1);
@@ -126,6 +148,9 @@ public class DeleteNodeContainerCommand extends Command {
     public void undo() {
         process.setActivate(false);
         for (INode node : nodeList) {
+            if (node.getJobletNode() != null) {
+                continue;
+            }
             NodeContainer nodeContainer = ((Node) node).getNodeContainer();
             this.process.addUniqueNodeName(node.getUniqueName());
             ((Process) process).addNodeContainer(nodeContainer);
@@ -142,6 +167,15 @@ public class DeleteNodeContainerCommand extends Command {
                 }
 
                 INode prevNode = connection.getSource();
+                if ((prevNode instanceof Node) && ((Node) prevNode).getJobletNode() != null) {
+                    Node jobletnode = (Node) prevNode.getJobletNode();
+                    ((JobletContainer) jobletnode.getNodeContainer()).getOutputs().add(connection);
+                    // if (!nodeList.contains(jobletnode)) {
+                    // jobletnode.addOutput(connection);
+                    // if (!jobletnode.getComponent().getName().equals("tMap") && !jobletnode.isELTComponent())
+                    // process.addUniqueConnectionName(connection.getUniqueName());
+                    // }
+                }
                 if (!nodeList.contains(prevNode)) {
                     prevNode.addOutput(connection);
                     // see bug 0005635: Undo after delete, doesn't set back correctly the number of connections linked.
@@ -160,6 +194,15 @@ public class DeleteNodeContainerCommand extends Command {
             }
             for (IConnection connection : outputList) {
                 INode nextNode = connection.getTarget();
+                if ((nextNode instanceof Node) && ((Node) nextNode).getJobletNode() != null) {
+                    Node jobletnode = (Node) nextNode.getJobletNode();
+                    ((JobletContainer) jobletnode.getNodeContainer()).getInputs().add(connection);
+                    // if (!nodeList.contains(jobletnode)) {
+                    // jobletnode.addInput(connection);
+                    // if (!jobletnode.getComponent().getName().equals("tMap") && !jobletnode.isELTComponent())
+                    // process.addUniqueConnectionName(connection.getUniqueName());
+                    // }
+                }
                 if (!nodeList.contains(nextNode)) {
                     nextNode.addInput(connection);
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());

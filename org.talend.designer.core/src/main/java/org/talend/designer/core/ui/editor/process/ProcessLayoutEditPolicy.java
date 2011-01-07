@@ -26,6 +26,7 @@ import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNoteCommand;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -139,11 +140,16 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
 
         Command command = null;
         if (Note.class.equals(request.getNewObjectType())) {
-            command = new CreateNoteCommand((Process) getHost().getModel(), (Note) request.getNewObject(), constraint
-                    .getLocation());
+            command = new CreateNoteCommand((Process) getHost().getModel(), (Note) request.getNewObject(),
+                    constraint.getLocation());
         } else if (request.getNewObject() instanceof Node) {
-            command = new CreateNodeContainerCommand((Process) getHost().getModel(), new NodeContainer((Node) request
-                    .getNewObject()), constraint.getLocation());
+            NodeContainer nodeContainer = null;
+            if (((Node) request.getNewObject()).isJoblet()) {
+                nodeContainer = new JobletContainer((Node) request.getNewObject());
+            } else {
+                nodeContainer = new NodeContainer((Node) request.getNewObject());
+            }
+            command = new CreateNodeContainerCommand((Process) getHost().getModel(), nodeContainer, constraint.getLocation());
         }
 
         return command;

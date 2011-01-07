@@ -13,6 +13,7 @@
 package org.talend.designer.core.model.process.statsandlogs;
 
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.process.IProcess;
 
 /**
  * This class will create a virtual component that will create the logs for the job. It's not used at all in the
@@ -45,6 +46,11 @@ public class JobStatsComponent extends AbstractStatsLogsComponent {
      */
     public EComponentType getComponentType() {
         return EComponentType.JOB_STATS;
+    }
+
+    public IProcess getProcess() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -22,6 +22,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.utils.ResourceDisposeUtil;
 
 /**
@@ -64,20 +65,44 @@ public class ConnectionFigure extends PolylineConnection {
 
     @Override
     public void paint(Graphics graphics) {
-        if (((Node) linkedNode).getNodeContainer().getSubjobContainer() != null
-                && ((Node) linkedNode).getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
-                && !connection.isSubjobConnection()) {
+        if (((Node) linkedNode).getJobletNode() != null) {
+            Node jnode = (Node) ((Node) linkedNode).getJobletNode();
+            SubjobContainer subjobCon = jnode.getNodeContainer().getSubjobContainer();
+            if (subjobCon != null && subjobCon.isCollapsed() && connection != null && !connection.isSubjobConnection()) {
 
-            Node subjobStartNode = ((Node) linkedNode).getNodeContainer().getSubjobContainer().getSubjobStartNode();
-            // only dependency links will be drawn
-            if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
-                return;
+                Node subjobStartNode = jnode.getNodeContainer().getSubjobContainer().getSubjobStartNode();
+                if (subjobStartNode.equals(jnode) && ((Node) connection.getTarget()).getJobletNode() != null) {
+                    // do nothing
+                } else {
+                    // only dependency links will be drawn
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                        return;
+                    }
+                    if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
+                        return;
+                    }
+                    if (connection.getTarget().getDesignSubjobStartNode().equals(subjobStartNode)) {
+                        return;
+                    }
+                }
+
             }
-            if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
-                return;
-            }
-            if (connection.getTarget().getDesignSubjobStartNode().equals(subjobStartNode)) {
-                return;
+        } else {
+            if (((Node) linkedNode).getNodeContainer().getSubjobContainer() != null
+                    && ((Node) linkedNode).getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
+                    && !connection.isSubjobConnection()) {
+
+                Node subjobStartNode = ((Node) linkedNode).getNodeContainer().getSubjobContainer().getSubjobStartNode();
+                // only dependency links will be drawn
+                if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                    return;
+                }
+                if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
+                    return;
+                }
+                if (connection.getTarget().getDesignSubjobStartNode().equals(subjobStartNode)) {
+                    return;
+                }
             }
         }
 

@@ -49,8 +49,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -108,6 +111,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command;
@@ -120,6 +124,8 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.dialog.mergeorder.ChooseJobletDialog;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
@@ -128,6 +134,8 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -295,7 +303,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     protected void handleDrop() {
         updateTargetRequest();
         updateTargetEditPart();
-
+        // getCurrentEvent()
         // if drop a node on the job, create new component,
         // else just update the schema or something of the target component.
 
@@ -306,16 +314,57 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // iei
         // EditPart ep = getTargetEditPart();
 
-        if (fromPalette && getTargetRequest() instanceof CreateRequest && getTargetEditPart() instanceof ProcessPart) {
-            // for palette dnd, feature 6457
-            Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
-            if (newObject != null) {
-                Command command = getCommand();
-                if (command != null) {
-                    execCommandStack(command);
+        if (fromPalette && getTargetRequest() instanceof CreateRequest) {
+            if (getTargetEditPart() instanceof ProcessPart) {
+                // for palette dnd, feature 6457
+                Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                if (newObject != null) {
+                    Command command = getCommand();
+                    if (command != null) {
+                        execCommandStack(command);
+                    }
                 }
+                return;
+            } else if (getTargetEditPart() instanceof JobletContainerPart) {
+                Shell shell = Display.getCurrent().getActiveShell();
+                ChooseJobletDialog dialog = new ChooseJobletDialog(new Shell(shell), getDropLocation());
+                if (dialog.open() == dialog.OK) {
+                    EditPart part = getTargetEditPart();
+                    if (dialog.addToJoblet()) {
+                        AbstractMultiPageTalendEditor openEditor = getJobletPart((JobletContainerPart) part);
+                        part = openEditor.getDesignerEditor().getProcessPart();
+                        // editor = openEditor.getTalendEditor();
+                        setTargetEditPart(part);
+                        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                        if (newObject != null) {
+                            Command command = getCommand();
+                            if (command != null) {
+                                CommandStack commandStack = (CommandStack) openEditor.getAdapter(CommandStack.class);
+                                if (commandStack != null) {
+                                    commandStack.execute(command);
+                                } else {
+                                    command.execute();
+                                }
+                            }
+                        }
+                        return;
+                    } else {
+                        part = getParentPart(part);
+                        setTargetEditPart(part);
+                        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                        if (newObject != null) {
+                            Command command = getCommand();
+                            if (command != null) {
+                                execCommandStack(command);
+                            }
+                        }
+                        return;
+                    }
+
+                }
+
             }
-            return;
+
         }
 
         List<Object> sources = getSelectSource();
@@ -685,8 +734,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                 }
                 processSpecificDBTypeIfSameProduct(store.componentName, node);
+                NodeContainer nc = null;
+                if (node.isJoblet()) {
+                    nc = new JobletContainer(node);
+                } else {
+                    nc = new NodeContainer(node);
+                }
 
-                NodeContainer nc = new NodeContainer(node);
                 // create the node on the design sheet
                 execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
                 // initialize the propertiesView
@@ -1381,6 +1435,28 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     public void setEditor(AbstractTalendEditor editor) {
         this.editor = editor;
     }
+
+    public EditPart getParentPart(EditPart part) {
+        EditPart parent = part.getParent();
+        if (!(parent instanceof ProcessPart)) {
+            parent = getParentPart(parent);
+        }
+        return parent;
+    }
+
+    public AbstractMultiPageTalendEditor getJobletPart(JobletContainerPart part) {
+        AbstractMultiPageTalendEditor openEditor = null;
+        Node jobletNode = ((JobletContainer) part.getModel()).getNode();
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                openEditor = (AbstractMultiPageTalendEditor) service.openJobletEditor(jobletNode, page);
+            }
+        }
+        return openEditor;
+    }
 }
 
 /**
@@ -1436,4 +1512,5 @@ class ComponentChooseDialog extends ListDialog {
     public IComponent getResultComponent() {
         return (IComponent) getResult()[0];
     }
+
 }

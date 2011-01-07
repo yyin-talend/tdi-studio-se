@@ -228,10 +228,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
                             nbMain++;
                         }
                     }
-
-                    int maxFlowInput = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-                    if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
-                        multipleInput = true;
+                    INodeConnector nodeConnector = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName());
+                    if (nodeConnector != null) {
+                        int maxFlowInput = nodeConnector.getMaxLinkInput();
+                        if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
+                            multipleInput = true;
+                        }
                     }
 
                 }

@@ -33,6 +33,8 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -221,8 +223,14 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
         for (NodeContainer container : nodeContainers) {
-            Rectangle curRect = container.getNodeContainerRectangle();
-            if (collapsed && container.getNode().isDesignSubjobStartNode()) {
+            Rectangle curRect = null;
+            if (container instanceof JobletContainer) {
+                curRect = ((JobletContainer) container).getJobletContainerRectangle();
+            } else {
+                curRect = container.getNodeContainerRectangle();
+            }
+
+            if (collapsed && totalRectangle == null) {// container.getNode().isDesignSubjobStartNode()) {
                 totalRectangle = curRect.getCopy();
             } else if (!collapsed) {
                 if (totalRectangle == null) {
@@ -266,6 +274,35 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return totalRectangle;
     }
 
+    public void refreshNodesLocation(boolean jobletCollapsed, Rectangle nodeRec, int changewidth, int changeheight) {
+        JobletUtil util = new JobletUtil();
+        for (NodeContainer container : nodeContainers) {
+            Point nodePoint = container.getNode().getLocation().getCopy();
+            Rectangle jRec = util.getExpandRectangle(nodeRec);
+            Rectangle pointrec = util.getExpandRectangle(container.getNodeContainerRectangle());
+            jRec.width = jRec.width + changewidth;
+            jRec.height = jRec.height + changeheight;
+            if (pointrec.contains(jRec) || jRec.contains(pointrec)) {
+                if (!jobletCollapsed) {
+                    if (nodePoint.x > nodeRec.x) {
+                        nodePoint.x = nodePoint.x + changewidth;
+                    }
+                    if (nodePoint.y > nodeRec.y) {
+                        nodePoint.y = nodePoint.y + changeheight;
+                    }
+                } else {
+                    if (nodePoint.x > nodeRec.x && nodePoint.x > changewidth) {
+                        nodePoint.x = nodePoint.x - changewidth;
+                    }
+                    if (nodePoint.y > nodeRec.y && nodePoint.y > changeheight) {
+                        nodePoint.y = nodePoint.y - changeheight;
+                    }
+                }
+            }
+            container.getNode().setLocation(nodePoint);
+        }
+    }
+
     /**
      * Getter for collapsed.
      * 
@@ -305,8 +342,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
-        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobRGB(
-                DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
+        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node,
+                DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
         setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobRGB(
                 DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
 

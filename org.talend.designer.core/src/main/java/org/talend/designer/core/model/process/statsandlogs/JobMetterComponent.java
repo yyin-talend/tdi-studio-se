@@ -13,6 +13,7 @@
 package org.talend.designer.core.model.process.statsandlogs;
 
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.process.IProcess;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -44,6 +45,11 @@ public class JobMetterComponent extends AbstractStatsLogsComponent {
      */
     public EComponentType getComponentType() {
         return EComponentType.JOB_METTER;
+    }
+
+    public IProcess getProcess() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -729,10 +729,16 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public INode getTarget() {
+        // if (this.target.getJobletNode() != null) {
+        // return this.target.getJobletNode();
+        // }
         return this.target;
     }
 
     public INode getSource() {
+        // if (this.source.getJobletNode() != null) {
+        // return this.source.getJobletNode();
+        // }
         return this.source;
     }
 
@@ -774,7 +780,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && getSourceNodeConnector().isMultiSchema())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-                if (source.getProcess().checkValidConnectionName(uniqueName)) {
+                if (target.getProcess().checkValidConnectionName(uniqueName)) {
+                    target.getProcess().addUniqueConnectionName(uniqueName);
+                } else if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }
             }

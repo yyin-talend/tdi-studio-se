@@ -52,6 +52,7 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -485,6 +486,13 @@ public class NodesPasteCommand extends Command {
                         }
                     }
                 }
+            }
+
+            NodeContainer nc = null;
+            if (((Node) pastedNode).isJoblet()) {
+                nc = new JobletContainer((Node) pastedNode);
+            } else {
+                nc = new NodeContainer((Node) pastedNode);
             }
             nodeContainerList.add(new NodeContainer((Node) pastedNode));
         }

@@ -44,7 +44,9 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
     @Override
     protected void unregisterVisuals() {
         super.unregisterVisuals();
-        ((NodeContainerFigure) getFigure()).disposeColors();
+        if (getFigure() instanceof NodeContainerFigure) {
+            ((NodeContainerFigure) getFigure()).disposeColors();
+        }
     }
 
     @Override

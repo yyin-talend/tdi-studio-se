@@ -31,6 +31,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 
@@ -505,6 +506,11 @@ public class DummyComponent implements IComponent {
     }
 
     public String getCombine() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
     }

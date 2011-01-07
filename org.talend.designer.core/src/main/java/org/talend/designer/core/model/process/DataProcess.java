@@ -58,6 +58,7 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -882,6 +883,9 @@ public class DataProcess {
         }
         checkRefList.add(graphicalNode);
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+            if (connection.getTarget().getJobletNode() != null && connection.getSource().getJobletNode() != null) {
+                continue;
+            }
             if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
 
                 boolean runAfter = true;
@@ -1922,7 +1926,14 @@ public class DataProcess {
         copyElementParametersValue(graphicalNode, newGraphicalNode);
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
-        ((Process) process).addNodeContainer(new NodeContainer(newGraphicalNode));
+        NodeContainer nc = null;
+        if (newGraphicalNode.isJoblet()) {
+            nc = new JobletContainer(newGraphicalNode);
+        } else {
+            nc = new NodeContainer(newGraphicalNode);
+        }
+
+        ((Process) process).addNodeContainer(nc);
         buildGraphicalMap.put(graphicalNode, newGraphicalNode);
 
         IConnection dataConnec;
@@ -1930,7 +1941,11 @@ public class DataProcess {
             if (!connection.isActivate()) {
                 continue;
             }
-            INode target = buildNodeFromNode(connection.getTarget(), process);
+            INode connTarget = connection.getTarget();
+            if (connTarget.getJobletNode() != null) {
+                connTarget = connTarget.getJobletNode();
+            }
+            INode target = buildNodeFromNode(connTarget, process);
 
             dataConnec = new Connection(newGraphicalNode, target, connection.getLineStyle(), connection.getConnectorName(),
                     connection.getMetaName(), connection.getName(), connection.getUniqueName(), connection.isMonitorConnection());

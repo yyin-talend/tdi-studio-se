@@ -67,7 +67,10 @@ public class ConnectionManager {
                     nbMain++;
                 }
             }
-            int maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+            int maxFlowInput = 0;
+            if (target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()) != null) {
+                maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+            }
             if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
                 // if the component accept several connections on the input, all inputs must come from the same process
                 boolean isExtensionComponent = false;

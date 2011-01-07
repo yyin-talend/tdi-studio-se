@@ -30,13 +30,16 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ActivateElementAction;
 import org.talend.designer.core.ui.action.ActivateSubjobAction;
 import org.talend.designer.core.ui.action.ActivateSubjobOneComponentAction;
+import org.talend.designer.core.ui.action.AddToJobletAction;
 import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
@@ -58,6 +61,7 @@ import org.talend.designer.core.ui.action.ShowBreakpointAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 import org.talend.designer.core.ui.action.TraceDisableAction;
 import org.talend.designer.core.ui.action.TraceEnableAction;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.hierarchy.OpenJobHierarchyAction;
 
 /**
@@ -248,6 +252,18 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 }
             }
 
+            subMenu = new MenuManager("Move to joblet"); //$NON-NLS-1$
+            menu.appendToGroup(GROUP_OTHER, subMenu);
+            action = getMoveToJobletAction(part, null);
+            ((AddToJobletAction) action).update();
+            List<Node> nodeList = ((AddToJobletAction) action).getJobletNodeList();
+            for (Node jobletNode : nodeList) {
+                action = getMoveToJobletAction(part, jobletNode);
+                ((AddToJobletAction) action).update();
+                action.setText(jobletNode.getLabel());
+                subMenu.add(action);
+            }
+
             subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Trigger")); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
 
@@ -368,6 +384,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     menu.appendToGroup(GEFActionConstants.GROUP_VIEW, selectionAction);
                 }
             }
+
         }
     }
 
@@ -407,5 +424,16 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
      */
     public static void setEnableContextMenu(boolean enableContextMenu) {
         TalendEditorContextMenuProvider.enableContextMenu = enableContextMenu;
+    }
+
+    public SelectionAction getMoveToJobletAction(IWorkbenchPart part, Node jobletNode) {
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                return service.getMoveToJobletAction(part, jobletNode);
+            }
+        }
+        return null;
     }
 }

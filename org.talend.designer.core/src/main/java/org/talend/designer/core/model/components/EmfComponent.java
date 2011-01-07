@@ -74,6 +74,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -3066,5 +3067,10 @@ public class EmfComponent implements IComponent {
             }
         }
         return compType.getHEADER().getCOMBINE();
+    }
+
+    public IProcess getProcess() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

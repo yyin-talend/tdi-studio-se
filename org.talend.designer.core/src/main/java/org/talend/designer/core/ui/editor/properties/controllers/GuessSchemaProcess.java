@@ -40,6 +40,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
@@ -55,8 +56,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class GuessSchemaProcess {
 
-    protected static final int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected static final int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
+            .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     private static final String DEFAULT_JOB_NAME = "Mock_job_for_Guess_schema"; //$NON-NLS-1$
 
@@ -116,7 +117,13 @@ public class GuessSchemaProcess {
                 if (module.isRequired()) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    process.addNodeContainer(new NodeContainer(libNode1));
+                    NodeContainer nc = null;
+                    if (libNode1.isJoblet()) {
+                        nc = new JobletContainer(libNode1);
+                    } else {
+                        nc = new NodeContainer(libNode1);
+                    }
+                    process.addNodeContainer(nc);
                 }
             }
         } else { // hywang add for 9594
@@ -245,8 +252,8 @@ public class GuessSchemaProcess {
 
         filename += CSV_EXT;
         IPath tempPath;
-        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.FILE_PATH_TEMP));
+        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
+                .getString(ITalendCorePrefConstants.FILE_PATH_TEMP));
         tempPath = tempPath.append(filename);
 
         return tempPath;

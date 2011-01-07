@@ -212,6 +212,10 @@ public class Node extends Element implements IGraphicalNode {
 
     private boolean generatedByJobscriptBool = false;
 
+    private Node jobletNode = null;
+
+    private String joblet_unique_name;
+
     public boolean isGeneratedByJobscriptBool() {
         return this.generatedByJobscriptBool;
     }
@@ -1258,7 +1262,13 @@ public class Node extends Element implements IGraphicalNode {
      * @return List of Connection
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return this.inputs;
+        List<IConnection> jobletInputs = new ArrayList<IConnection>();
+        if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
+            jobletInputs.addAll(this.getNodeContainer().getInputs());
+        } else {
+            jobletInputs.addAll(this.inputs);
+        }
+        return jobletInputs;
     }
 
     public void setIncomingConnections(List<? extends IConnection> connections) {
@@ -1277,7 +1287,13 @@ public class Node extends Element implements IGraphicalNode {
      * @return List of Connection
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return this.outputs;
+        List<IConnection> jobletOutputs = new ArrayList<IConnection>();
+        if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
+            jobletOutputs.addAll(this.getNodeContainer().getOutputs());
+        } else {
+            jobletOutputs.addAll(this.outputs);
+        }
+        return jobletOutputs;
     }
 
     /**
@@ -1749,7 +1765,7 @@ public class Node extends Element implements IGraphicalNode {
 
     public IMetadataTable getMetadataFromConnector(String connector) {
         for (IMetadataTable table : metadataList) {
-            if (table.getAttachedConnector() != null) {
+            if (table != null && table.getAttachedConnector() != null) {
                 if (table.getAttachedConnector().equals(connector)) {
                     return table;
                 }
@@ -1789,14 +1805,22 @@ public class Node extends Element implements IGraphicalNode {
         if (!withConditions) {
             // if there is the dummy state, we know we're still in the same subjob as the previous node.
             boolean found = false;
-            for (IConnection connection : inputs) {
-                if ((connection.getSource().isActivate() == connection.getTarget().isActivate())
+            for (IConnection connection : getIncomingConnections()) {
+                INode source = connection.getSource();
+                if (source.getJobletNode() != null) {
+                    source = source.getJobletNode();
+                }
+                INode target = connection.getTarget();
+                if (target.getJobletNode() != null) {
+                    target = target.getJobletNode();
+                }
+                if ((source.isActivate() == target.isActivate())
                         && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                     found = true;
                     break;
                 }
-                if (((Node) connection.getSource()).isDummy() || isDummy()) {
-                    return connection.getSource().getSubProcessStartNode(withConditions);
+                if (((Node) source).isDummy() || isDummy()) {
+                    return source.getSubProcessStartNode(withConditions);
                 }
             }
             if (!found) {
@@ -1804,13 +1828,21 @@ public class Node extends Element implements IGraphicalNode {
             }
         } else {
             boolean found = false;
-            for (IConnection connection : inputs) {
-                if ((connection.getSource().isActivate() == connection.getTarget().isActivate())) {
+            for (IConnection connection : getIncomingConnections()) {
+                INode source = connection.getSource();
+                if (source.getJobletNode() != null) {
+                    source = source.getJobletNode();
+                }
+                INode target = connection.getTarget();
+                if (target.getJobletNode() != null) {
+                    target = target.getJobletNode();
+                }
+                if ((source.isActivate() == target.isActivate())) {
                     found = true;
                     break;
                 }
-                if (((Node) connection.getSource()).isDummy() || isDummy()) {
-                    return connection.getSource().getSubProcessStartNode(withConditions);
+                if (((Node) source).isDummy() || isDummy()) {
+                    return source.getSubProcessStartNode(withConditions);
                 }
             }
             if (!found) {
@@ -1822,7 +1854,11 @@ public class Node extends Element implements IGraphicalNode {
         for (int j = 0; j < getIncomingConnections().size(); j++) {
             connec = getIncomingConnections().get(j);
             if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
-                return connec.getSource().getSubProcessStartNode(withConditions);
+                INode source = connec.getSource();
+                if (source.getJobletNode() != null) {
+                    source = source.getJobletNode();
+                }
+                return source.getSubProcessStartNode(withConditions);
             }
         }
         return null;
@@ -1837,16 +1873,19 @@ public class Node extends Element implements IGraphicalNode {
         Node targetWithRef = null;
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
-            Node nodeTmp = (Node) connection.getTarget();
+            INode nodeTmp = connection.getTarget();
+            if (nodeTmp.getJobletNode() != null) {
+                nodeTmp = nodeTmp.getJobletNode();
+            }
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH) || nodeTmp.isELTComponent()) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
-                targetWithRef = nodeTmp;
+                targetWithRef = (Node) nodeTmp;
             } else {
                 if (this.process.isThereLinkWithHash(nodeTmp)) {
                     // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                     // from:" + this);
-                    targetWithRef = nodeTmp;
+                    targetWithRef = (Node) nodeTmp;
                 }
             }
         }
@@ -2549,6 +2588,9 @@ public class Node extends Element implements IGraphicalNode {
             if (getMetadataList() != null) {
                 for (IMetadataTable meta : getMetadataList()) {
                     // count how many Dynamic Type there is, normally there should be only one.
+                    if (meta == null) {
+                        continue;
+                    }
                     int nbDynamic = 0;
                     int indexOfDynamicField = 0;
                     int lastNotCustom = 0;
@@ -2608,41 +2650,46 @@ public class Node extends Element implements IGraphicalNode {
         if ((component.isSchemaAutoPropagated() || getComponent().getComponentType() == EComponentType.JOBLET)
                 && (getMetadataList().size() != 0)) {
             IConnection inputConnecion = null;
-            int maxFlowInput = getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-            // if there is one only one input maximum or if the component use a lookup, that means
-            if (maxFlowInput <= 1 || getComponent().useLookup() || isELTComponent()) {
-                IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
-                for (IConnection connection : inputs) {
-                    if (connection.isActivate()
-                            && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
-                                    EConnectionType.TABLE))) {
-                        inputMeta = connection.getMetadataTable();
-                        inputConnecion = connection;
+            INodeConnector nodeConn = getConnectorFromName(EConnectionType.FLOW_MAIN.getName());
+            if (nodeConn != null) {
+                int maxFlowInput = nodeConn.getMaxLinkInput();
+                // if there is one only one input maximum or if the component use a lookup, that means
+                if (maxFlowInput <= 1 || getComponent().useLookup() || isELTComponent()) {
+                    IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
+                    for (IConnection connection : inputs) {
+                        if (connection.isActivate()
+                                && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
+                                        .equals(EConnectionType.TABLE))) {
+                            inputMeta = connection.getMetadataTable();
+                            inputConnecion = connection;
+                        }
                     }
-                }
 
-                if (inputMeta != null) {
-                    INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                    if (connector != null
-                            && ((connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() != 0) || getComponent()
-                                    .getComponentType() == EComponentType.JOBLET_INPUT_OUTPUT)
-                            && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
-                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
-                        if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
-                                && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
-                            String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
-                                    inputConnecion.getName());
-                            Problems.add(ProblemStatus.WARNING, this, warningMessage);
-                        } else {
-                            schemaSynchronized = false;
-                            String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    if (inputMeta != null) {
+                        INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
+                        if (connector != null
+                                && ((connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() != 0) || getComponent()
+                                        .getComponentType() == EComponentType.JOBLET_INPUT_OUTPUT)
+                                && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                    && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                                String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                        inputConnecion.getName());
+                                Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                            } else {
+                                schemaSynchronized = false;
+                                String errorMessage = Messages.getString(
+                                        "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
                         }
                     }
                 }
+
             } else {
                 // for each schema in the component, check if for the connector there is the option INPUT_LINK_SELECTION
                 // if there is, check that the schema of the link selection is the same
@@ -2942,6 +2989,10 @@ public class Node extends Element implements IGraphicalNode {
      */
     public List<? extends INodeConnector> getListConnector() {
         return listConnector;
+    }
+
+    public void setListConnector(List<? extends INodeConnector> listConnector) {
+        this.listConnector = listConnector;
     }
 
     /**
@@ -3260,6 +3311,34 @@ public class Node extends Element implements IGraphicalNode {
     public void setNeedLoadLib(boolean isNeedLib) {
         // TODO Auto-generated method stub
         this.needlibrary = isNeedLib;
+    }
+
+    public boolean isJoblet() {
+        boolean isJoblet = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent(this)) {
+                isJoblet = true;
+            }
+        }
+        return isJoblet;
+    }
+
+    public INode getJobletNode() {
+        return jobletNode;
+    }
+
+    public void setJobletnode(Node jobletNode) {
+        this.jobletNode = jobletNode;
+    }
+
+    public String getJoblet_unique_name() {
+        return joblet_unique_name;
+    }
+
+    public void setJoblet_unique_name(String joblet_unique_name) {
+        this.joblet_unique_name = joblet_unique_name;
     }
 
 }

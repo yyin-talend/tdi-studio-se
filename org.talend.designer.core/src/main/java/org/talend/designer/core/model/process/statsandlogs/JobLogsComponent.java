@@ -19,6 +19,7 @@ import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.ElementParameter;
 
 /**
@@ -103,6 +104,11 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
      */
     public EComponentType getComponentType() {
         return EComponentType.JOB_LOGS;
+    }
+
+    public IProcess getProcess() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

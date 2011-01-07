@@ -26,6 +26,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerFigure;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -99,6 +102,11 @@ public class GEFDeleteAction extends DeleteAction {
         for (Object o : objects) {
             if (o instanceof NodePart) {
                 others.remove(o);
+                Node model = (Node) ((NodePart) o).getModel();
+                if (model.getJobletNode() != null) {
+                    continue;
+                }
+
                 nodeParts.add(o);
             } else if (o instanceof NoteEditPart) {
                 noteParts.add(o);
@@ -109,6 +117,14 @@ public class GEFDeleteAction extends DeleteAction {
 
                 for (Iterator iterator = subjob.getChildren().iterator(); iterator.hasNext();) {
                     NodeContainerPart nodeContainerPart = (NodeContainerPart) iterator.next();
+                    if (nodeContainerPart instanceof JobletContainerPart) {
+                        JobletContainer jobletCon = (JobletContainer) ((JobletContainerPart) nodeContainerPart).getModel();
+                        JobletContainerFigure jobletFigure = (JobletContainerFigure) ((JobletContainerPart) nodeContainerPart)
+                                .getFigure();
+                        if (!jobletCon.isCollapsed()) {
+                            jobletFigure.doCollapse();
+                        }
+                    }
                     NodePart nodePart = nodeContainerPart.getNodePart();
                     if (nodePart != null) {
                         nodeParts.add(nodePart);

@@ -24,6 +24,7 @@ import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeLabelCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNoteCommand;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -93,7 +94,8 @@ public class SubjobContainerLayoutEditPolicy extends XYLayoutEditPolicy {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
+     * @see
+     * org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
      * java.lang.Object)
      */
     protected Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
@@ -147,8 +149,13 @@ public class SubjobContainerLayoutEditPolicy extends XYLayoutEditPolicy {
         if (Note.class.equals(request.getNewObjectType())) {
             command = new CreateNoteCommand(linkedProcess, (Note) request.getNewObject(), constraint.getLocation());
         } else if (request.getNewObject() instanceof Node) {
-            command = new CreateNodeContainerCommand(linkedProcess, new NodeContainer((Node) request.getNewObject()), constraint
-                    .getLocation());
+            NodeContainer nodeContainer = null;
+            if (((Node) request.getNewObject()).isJoblet()) {
+                nodeContainer = new JobletContainer((Node) request.getNewObject());
+            } else {
+                nodeContainer = new NodeContainer((Node) request.getNewObject());
+            }
+            command = new CreateNodeContainerCommand(linkedProcess, nodeContainer, constraint.getLocation());
         }
 
         return command;

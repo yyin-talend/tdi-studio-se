@@ -24,6 +24,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.IGraphicalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -84,13 +86,25 @@ public class MoveNodeCommand extends Command {
     public void execute() {
         oldPos = this.node.getLocation();
         this.node.setLocation(newPos);
+        moveJobletNodes(node, oldPos);
     }
 
     public void undo() {
         this.node.setLocation(oldPos);
+        moveJobletNodes(node, newPos);
     }
 
     public void redo() {
         this.node.setLocation(newPos);
+        moveJobletNodes(node, oldPos);
+    }
+
+    private void moveJobletNodes(Node jobletNode, Point oldPos) {
+        if (jobletNode.isJoblet()) {
+            NodeContainer nodeContainer = jobletNode.getNodeContainer();
+            if (nodeContainer instanceof JobletContainer) {
+                ((JobletContainer) nodeContainer).transferLocation(oldPos);
+            }
+        }
     }
 }

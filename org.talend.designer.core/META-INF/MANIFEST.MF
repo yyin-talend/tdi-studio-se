@@ -132,6 +132,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.gef.ui.palette",
  org.talend.designer.core.ui.editor.cmd,
  org.talend.designer.core.ui.editor.connections,
+ org.talend.designer.core.ui.editor.jobletcontainer,
  org.talend.designer.core.ui.editor.nodecontainer,
  org.talend.designer.core.ui.editor.nodes,
  org.talend.designer.core.ui.editor.notes,

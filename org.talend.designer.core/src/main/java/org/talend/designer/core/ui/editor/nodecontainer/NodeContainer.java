@@ -13,7 +13,9 @@
 package org.talend.designer.core.ui.editor.nodecontainer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -23,8 +25,14 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -82,6 +90,10 @@ public class NodeContainer extends Element {
 
     private Rectangle errorMarkRectangle;
 
+    protected Set<IConnection> outputs = new HashSet<IConnection>();
+
+    protected Set<IConnection> inputs = new HashSet<IConnection>();
+
     public NodeContainer(Node node) {
         this.node = node;
         node.setNodeContainer(this);
@@ -111,6 +123,42 @@ public class NodeContainer extends Element {
             image = ImageProvider.getImage(EImage.Error_Mark);
             errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
         }
+
+        ElementParameter param = new ElementParameter(this);
+        param.setName(EParameterName.COLLAPSED.getName());
+        param.setValue(Boolean.TRUE);
+        param.setDisplayName(EParameterName.COLLAPSED.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(1);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SHOW_SUBJOB_TITLE.getName());
+        param.setValue(Boolean.TRUE);
+        param.setDisplayName(EParameterName.SHOW_SUBJOB_TITLE.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(2);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SUBJOB_TITLE.getName());
+        param.setValue(node.getLabel()); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(3);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'"); //$NON-NLS-1$
+        addElementParameter(param);
     }
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
@@ -421,5 +469,26 @@ public class NodeContainer extends Element {
     @Override
     public String toString() {
         return "NodeContainer{" + node.toString() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * Getter for collapsed.
+     * 
+     * @return the collapsed
+     */
+    public boolean isCollapsed() {
+        IElementParameter param = this.getElementParameter(EParameterName.COLLAPSED.getName());
+        if (param == null) {
+            return false;
+        }
+        return (Boolean) getPropertyValue(EParameterName.COLLAPSED.getName());
+    }
+
+    public Set<IConnection> getOutputs() {
+        return outputs;
+    }
+
+    public Set<IConnection> getInputs() {
+        return inputs;
     }
 }

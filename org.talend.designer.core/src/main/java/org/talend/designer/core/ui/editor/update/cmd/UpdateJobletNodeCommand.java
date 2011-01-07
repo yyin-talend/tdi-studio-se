@@ -38,6 +38,7 @@ import org.talend.core.model.update.UpdateResult;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
@@ -77,7 +78,7 @@ public class UpdateJobletNodeCommand extends Command {
                 PropertyChangeEvent evt = (PropertyChangeEvent) parameter;
                 updatePropertyChangeEvents(process, evt);
             } else {
-                // 
+                //
                 switch (result.getUpdateType()) {
                 case JOBLET_RENAMED:
                     if (!(parameter instanceof List)) {
@@ -101,6 +102,9 @@ public class UpdateJobletNodeCommand extends Command {
                                 continue;
                             }
                             reloadNode(node, newComponent);
+                            if (node.isJoblet()) {
+                                ((JobletContainer) node.getNodeContainer()).updateJobletNodes(true);
+                            }
                         }
                         process.checkProcess();
                     }
@@ -313,7 +317,8 @@ public class UpdateJobletNodeCommand extends Command {
                     }
                 } else {
                     for (IElementParameter param : node.getElementParameters()) {
-                        if (param.isShow(node.getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.isShow(node.getElementParameters())
+                                && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                             IMetadataTable table = node.getMetadataFromConnector(param.getContext());
                             IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
                             if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
@@ -350,8 +355,8 @@ public class UpdateJobletNodeCommand extends Command {
                                 newOutputTableList, metadataTable.getAttachedConnector());
                         if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
                             IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                            command = new ChangeMetadataCommand(target, elementParam, target
-                                    .getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
+                            command = new ChangeMetadataCommand(target, elementParam,
+                                    target.getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
                             command.execute(Boolean.FALSE);
                         }
                     }
