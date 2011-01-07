@@ -66,7 +66,8 @@ public class MetadataImportXmlCommandExt extends Command {
         } catch (ParserConfigurationException e) {
             ExceptionHandler.process(e);
         } catch (SAXException e) {
-            ExceptionHandler.process(e);
+            // bug 17654:import the xml file as the schema will throw error.
+            ExceptionHandler.processForSchemaImportXml(e);
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
