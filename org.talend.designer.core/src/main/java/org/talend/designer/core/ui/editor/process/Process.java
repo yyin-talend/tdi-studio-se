@@ -3345,6 +3345,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         elem.clear();
         nodes.clear();
+        notes.clear();
         subjobContainers.clear();
 
         // added for context
@@ -3370,6 +3371,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         loadConnections(processType, nodesHashtable);
 
+     // added for notes 
+                       loadNotes(processType); 
         // added for subjobs
         loadSubjobs(processType);
 
