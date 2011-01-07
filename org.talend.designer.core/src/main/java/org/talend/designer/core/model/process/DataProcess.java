@@ -120,11 +120,16 @@ public class DataProcess {
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
+        copyElementParametersValue(sourceElement, targetElement, -1);
+    }
+
+    private void copyElementParametersValue(IElement sourceElement, IElement targetElement, int executionOrder) {
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
             IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
             if (targetParam != null) {
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
+                targetParam.setNumRow(executionOrder);
                 if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
                     targetParam.setListItemsValue(sourceParam.getListItemsValue());
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
@@ -1094,8 +1099,8 @@ public class DataProcess {
         boolean needCreateTELTNode = false;
         boolean loopEnd = dataNode == null || !ELTNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
 
-        Set<INode> progressBarList = null;
         DataNode eltNode = null, oldFsNode = null;
+        int executionOrder = 1;
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
@@ -1105,17 +1110,10 @@ public class DataProcess {
                 needCreateTELTNode = needCreateNewEltNode(eltNode, dataNode);
                 oldFsNode = eltNode;
             }
-            INode originalGraphicNode = null;
-            if (buildGraphicalMap.getKey(currentComponent) != null) {
-                originalGraphicNode = (INode) buildGraphicalMap.getKey(currentComponent);
-            }
 
             // add the tELTNode component if this one is not already added to the list.
             if (eltNode == null || needCreateTELTNode) {
-                if (originalGraphicNode != null) {
-                    progressBarList = originalGraphicNode.fsComponentsInProgressBar();
-                    progressBarList.clear();
-                }
+                executionOrder = 1;
                 // Create the new elt component
                 IComponent component = ComponentsFactoryProvider.getInstance().get(ELTNODE_COMPONENT_NAME);
                 if (component == null) {
@@ -1142,16 +1140,14 @@ public class DataProcess {
                 // bug15885, add metadatas of connector
                 eltNode.getMetadataList().addAll(currentComponent.getMetadataList());
             }
-            if (progressBarList != null && originalGraphicNode != null) {
-                progressBarList.add(originalGraphicNode);
-            }
 
-            copyElementParametersValue(dataNode, eltNode);
+            copyElementParametersValue(dataNode, eltNode, executionOrder);
+            executionOrder++;
 
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
                 loopEnd = true;
             } else {
-                loopEnd = !FSNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
+                loopEnd = !ELTNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
             }
 
             setReplacedNodeConnections(eltNode, dataNode, oldFsNode, needCreateTELTNode, loopEnd);
@@ -1179,50 +1175,51 @@ public class DataProcess {
         if (param != null) {
             if (!param.getValue().equals(fsNodeParam.getValue())) {
                 needCreateTFSNode = true;
-            } else {
-                IElementParameter eltdbParam = eltNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
-                IElementParameter dbParam = dataNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
-                if (dbParam != null) {
-                    if (!dbParam.getValue().equals(eltdbParam.getValue())) {
-                        needCreateTFSNode = true;
-                        // can check if the two node connect to the same database ,if yes no need to create a
-                        // new node
-                        //
-                    } else {
-                        IElementParameter eltSourcetableParam = eltNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
-                        // for tELTMerge
-                        if (eltSourcetableParam == null) {
-                            eltSourcetableParam = eltNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
-                        }
-                        IElementParameter sourceTableParam = dataNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
-                        // for tELTMerge
-                        if (sourceTableParam == null) {
-                            sourceTableParam = dataNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
-                        }
-
-                        if (sourceTableParam != null && eltSourcetableParam != null) {
-                            if (!sourceTableParam.getValue().equals(eltSourcetableParam.getValue())) {
-                                needCreateTFSNode = true;
-                            }
-                        }
-                        IElementParameter eltTargetTableParam = eltNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
-                        if (eltTargetTableParam == null) {
-                            eltTargetTableParam = eltNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
-                        }
-                        IElementParameter targetTableParam = dataNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
-                        if (targetTableParam == null) {
-                            targetTableParam = dataNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
-                        }
-
-                        if (targetTableParam != null && eltTargetTableParam != null) {
-                            if (!targetTableParam.getValue().equals(eltTargetTableParam.getValue())) {
-                                needCreateTFSNode = true;
-                            }
-                        }
-
-                    }
-                }
             }
+            // else {
+            //                IElementParameter eltdbParam = eltNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
+            //                IElementParameter dbParam = dataNode.getElementParameter("COMPONENT_" + param.getValue()); //$NON-NLS-1$
+            // if (dbParam != null) {
+            // if (!dbParam.getValue().equals(eltdbParam.getValue())) {
+            // needCreateTFSNode = true;
+            // // can check if the two node connect to the same database ,if yes no need to create a
+            // // new node
+            // //
+            // } else {
+            //                        IElementParameter eltSourcetableParam = eltNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
+            // // for tELTMerge
+            // if (eltSourcetableParam == null) {
+            //                            eltSourcetableParam = eltNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
+            // }
+            //                        IElementParameter sourceTableParam = dataNode.getElementParameter("TABLE_NAME"); //$NON-NLS-1$
+            // // for tELTMerge
+            // if (sourceTableParam == null) {
+            //                            sourceTableParam = dataNode.getElementParameter("SOURCE_TABLE"); //$NON-NLS-1$
+            // }
+            //
+            // if (sourceTableParam != null && eltSourcetableParam != null) {
+            // if (!sourceTableParam.getValue().equals(eltSourcetableParam.getValue())) {
+            // needCreateTFSNode = true;
+            // }
+            // }
+            //                        IElementParameter eltTargetTableParam = eltNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
+            // if (eltTargetTableParam == null) {
+            //                            eltTargetTableParam = eltNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
+            // }
+            //                        IElementParameter targetTableParam = dataNode.getElementParameter("TABLE_NAME_TARGET"); //$NON-NLS-1$
+            // if (targetTableParam == null) {
+            //                            targetTableParam = dataNode.getElementParameter("TARGET_TABLE"); //$NON-NLS-1$
+            // }
+            //
+            // if (targetTableParam != null && eltTargetTableParam != null) {
+            // if (!targetTableParam.getValue().equals(eltTargetTableParam.getValue())) {
+            // needCreateTFSNode = true;
+            // }
+            // }
+            //
+            // }
+            // }
+            // }
         }
 
         return needCreateTFSNode;
@@ -1287,6 +1284,7 @@ public class DataProcess {
 
         Set<INode> progressBarList = null;
         DataNode fsNode = null, oldFsNode = null;
+        int executionOrder = 1;
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
@@ -1318,6 +1316,7 @@ public class DataProcess {
 
             // add the fs component if this one is not already added to the list.
             if (fsNode == null || needCreateTFSNode) {
+                executionOrder = 1;
                 if (originalGraphicNode != null) {
                     progressBarList = originalGraphicNode.fsComponentsInProgressBar();
                     progressBarList.clear();
@@ -1354,7 +1353,8 @@ public class DataProcess {
                 progressBarList.add(originalGraphicNode);
             }
 
-            copyElementParametersValue(dataNode, fsNode);
+            copyElementParametersValue(dataNode, fsNode, executionOrder);
+            executionOrder++;
 
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
                 loopEnd = true;
