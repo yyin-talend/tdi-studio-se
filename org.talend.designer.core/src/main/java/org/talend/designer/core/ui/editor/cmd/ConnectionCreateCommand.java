@@ -64,6 +64,8 @@ public class ConnectionCreateCommand extends Command {
 
     private boolean insertTMap;
 
+    private boolean isReconnect;
+
     /**
      * Initialisation of the creation of the connection with a source and style of connection.
      * 
@@ -87,6 +89,18 @@ public class ConnectionCreateCommand extends Command {
         this.metaName = (String) listArgs.get(0);
         this.connectionName = (String) listArgs.get(1);
         this.insertTMap = insertTMap;
+        newMetadata = (IMetadataTable) listArgs.get(2);
+    }
+
+    public ConnectionCreateCommand(Node nodeSource, String connectorName, List<Object> listArgs, boolean isReconnect,
+            boolean insertTMap) {
+        setLabel(Messages.getString("ConnectionCreateCommand.Label")); //$NON-NLS-1$
+        this.source = nodeSource;
+        this.connectorName = connectorName;
+        this.metaName = (String) listArgs.get(0);
+        this.connectionName = (String) listArgs.get(1);
+        this.insertTMap = insertTMap;
+        this.isReconnect = isReconnect;
         newMetadata = (IMetadataTable) listArgs.get(2);
     }
 
@@ -180,7 +194,8 @@ public class ConnectionCreateCommand extends Command {
         IElementParameter elementTableParam = source.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
         IElementParameter elementSchemaParam = source.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
         String schemaName = null;
-        if (source.isELTComponent() && elementTableParam != null && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
+        if (source.isELTComponent() && elementTableParam != null
+                && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             if (elementSchemaParam != null && elementSchemaParam.getFieldType().equals(EParameterFieldType.TEXT)) {
                 schemaName = elementSchemaParam.getValue().toString();
                 String name2 = elementTableParam.getValue().toString();
@@ -203,7 +218,8 @@ public class ConnectionCreateCommand extends Command {
 
         // check if the target got the ELT Table parameter, if yes, take the name by default
         elementTableParam = target.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
-        if (target.isELTComponent() && elementTableParam != null && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
+        if (target.isELTComponent() && elementTableParam != null
+                && elementTableParam.getFieldType().equals(EParameterFieldType.TEXT)) {
             String name2 = elementTableParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
@@ -233,7 +249,8 @@ public class ConnectionCreateCommand extends Command {
 
         if (target != null) {
             if (!ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(connectorName)
-                    .getDefaultConnectionType(), connectorName, connectionName)) {
+                    .getDefaultConnectionType(), connectorName, connectionName)
+                    && !isReconnect) {
                 creatingConnection = false;
                 return false;
             }
@@ -274,8 +291,9 @@ public class ConnectionCreateCommand extends Command {
                     newMetadata.setLabel(connectionName);
                     newMetadata.setAttachedConnector(connectorName);
                     if ((connecType.equals(EConnectionType.TABLE) || source.getProcess().checkValidConnectionName(connectionName))
-                            && ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(
-                                    connectorName).getDefaultConnectionType(), connectorName, connectionName)) {
+                            && (ConnectionManager.canConnectToTarget(source, null, target,
+                                    source.getConnectorFromName(connectorName).getDefaultConnectionType(), connectorName,
+                                    connectionName) || isReconnect)) {
                         connectionOk = true;
                     } else {
                         String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", //$NON-NLS-1$

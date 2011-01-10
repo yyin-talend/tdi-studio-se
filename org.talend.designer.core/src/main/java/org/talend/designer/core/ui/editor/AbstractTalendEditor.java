@@ -55,9 +55,11 @@ import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
@@ -67,7 +69,10 @@ import org.eclipse.gef.internal.ui.palette.editparts.ToolEntryEditPart;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.gef.tools.CreationTool;
+import org.eclipse.gef.tools.TargetingTool;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
@@ -151,8 +156,11 @@ import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
 import org.talend.designer.core.ui.action.ToggleSubjobsAction;
+import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
+import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -162,9 +170,11 @@ import org.talend.designer.core.ui.editor.palette.TalendFlyoutPaletteComposite;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteHelper;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
+import org.talend.designer.core.ui.editor.process.CreateComponentOnLinkHelper;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
@@ -1333,9 +1343,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
             TalendEditorContextMenuProvider.setEnableContextMenu(true);
             createConnection = false;
+            boolean flag = false;
             if (viewer.getSelectionManager() instanceof TalendSelectionManager) {
                 Point point = new Point(mouseEvent.x, mouseEvent.y);
                 ((TalendSelectionManager) viewer.getSelectionManager()).setSelectPoint(point);
+                flag = true;
             }
             if (mouseEvent.button == 2) {
                 getEditor().setCursor(Cursors.HAND);
@@ -1356,6 +1368,68 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 super.mouseDown(mouseEvent, viewer);
             } else {
                 super.mouseDown(mouseEvent, viewer);
+                if (flag && getActiveTool() instanceof CreationTool) {
+                    CreationTool tool = (CreationTool) getActiveTool();
+                    updateNodeOnLink(tool);
+                }
+            }
+        }
+
+        private void execCommandStack(Command command) {
+            CommandStack cs = getCommandStack();
+            if (cs != null) {
+                cs.execute(command);
+            } else {
+                command.execute();
+            }
+        }
+
+        private void updateNodeOnLink(CreationTool tool) {
+            try {
+                Class toolClass = TargetingTool.class;
+                Field targetRequestField = toolClass.getDeclaredField("targetRequest"); //$NON-NLS-1$
+                Field targetEditpartField = toolClass.getDeclaredField("targetEditPart"); //$NON-NLS-1$
+                targetRequestField.setAccessible(true);
+                targetEditpartField.setAccessible(true);
+                Request request = (Request) targetRequestField.get(tool);
+                EditPart editPart = (EditPart) targetEditpartField.get(tool);
+
+                if (request instanceof CreateRequest && editPart instanceof SubjobContainerPart) {
+                    Object object = ((CreateRequest) request).getNewObject();
+                    if (object instanceof Node) {
+                        Node node = (Node) object;
+                        Point point = ((CreateRequest) request).getLocation();
+                        List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionPart(
+                                (SubjobContainerPart) editPart, point);
+                        org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
+                                .getTargetConnection(connectionParts);
+                        boolean canConnect = CreateComponentOnLinkHelper.canCreateNodeOnLink(targetConnection, node);
+                        if (canConnect) {
+                            NodeContainer nodeContainer = new NodeContainer(node);
+                            if (getProcess() instanceof Process) {
+                                execCommandStack(new CreateNodeContainerCommand((Process) getProcess(), nodeContainer, point));
+                                // reconnect the node
+                                Node originalTarget = (Node) targetConnection.getTarget();
+                                targetConnection.reconnect(targetConnection.getSource(), node, targetConnection.getLineStyle());
+                                INodeConnector targetConnector = targetConnection.getTargetNodeConnector();
+                                List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
+                                ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
+                                        nodeArgs, true, false);
+                                nodeCmd.setTarget(originalTarget);
+                                execCommandStack(nodeCmd);
+                            }
+                        }
+                    }
+                }
+
+            } catch (SecurityException e) {
+                ExceptionHandler.process(e);
+            } catch (NoSuchFieldException e) {
+                ExceptionHandler.process(e);
+            } catch (IllegalArgumentException e) {
+                ExceptionHandler.process(e);
+            } catch (IllegalAccessException e) {
+                ExceptionHandler.process(e);
             }
         }
 

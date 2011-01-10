@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.emf.common.util.EList;
@@ -29,6 +30,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.palette.ToolEntry;
@@ -88,6 +90,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
@@ -129,17 +132,20 @@ import org.talend.designer.core.ui.dialog.mergeorder.ChooseJobletDialog;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
+import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
+import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -323,6 +329,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (command != null) {
                         execCommandStack(command);
                     }
+                }
+                return;
+            } else if (getTargetEditPart() instanceof SubjobContainerPart) {
+                CreateRequest req = ((CreateRequest) getTargetRequest());
+                Object o = req.getNewObject();
+                Point location = req.getLocation();
+                if (o instanceof Node) {
+                    createComponentOnLink((Node) o, location);
                 }
                 return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
@@ -741,8 +755,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     nc = new NodeContainer(node);
                 }
 
-                // create the node on the design sheet
-                execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
+                // create component on link
+                boolean executed = false;
+                if (getSelection().size() == 1 && getTargetEditPart() instanceof SubjobContainerPart) {
+                    executed = createComponentOnLink(node, draw2dPosition);
+                }
+
+                if (!executed) {
+                    // create the node on the design sheet
+                    execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
+                }
                 // initialize the propertiesView
 
                 List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
@@ -1387,6 +1409,43 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             cs.execute(command);
         } else {
             command.execute();
+        }
+    }
+
+    private boolean createComponentOnLink(Node node, Point point) {
+        boolean executed = false;
+        CompoundCommand command = new CompoundCommand();
+        SubjobContainerPart ep = (SubjobContainerPart) getTargetEditPart();
+        List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionPart(ep, point);
+        org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
+                .getTargetConnection(connectionParts);
+        boolean canConnect = CreateComponentOnLinkHelper.canCreateNodeOnLink(targetConnection, node);
+        if (canConnect) {
+            NodeContainer nodeContainer = new NodeContainer(node);
+            IProcess2 p = editor.getProcess();
+            if (p instanceof Process) {
+                Process process = (Process) p;
+                execCommandStack(new CreateNodeContainerCommand(process, nodeContainer, point));
+                // reconnect the node
+                updateConnectionCommand(targetConnection, node, command);
+                execCommandStack(command);
+                executed = true;
+            }
+        }
+
+        return executed;
+    }
+
+    private void updateConnectionCommand(org.talend.designer.core.ui.editor.connections.Connection connection, Node node,
+            CompoundCommand command) {
+        if (connection != null || node != null) {
+            Node originalTarget = (Node) connection.getTarget();
+            connection.reconnect(connection.getSource(), node, connection.getLineStyle());
+            INodeConnector targetConnector = connection.getTargetNodeConnector();
+            List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(connection, node);
+            ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, true, false);
+            nodeCmd.setTarget(originalTarget);
+            command.add(nodeCmd);
         }
     }
 
