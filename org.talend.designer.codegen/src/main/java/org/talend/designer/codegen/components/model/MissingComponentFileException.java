@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.model;
+package org.talend.designer.codegen.components.model;
 
 import org.talend.commons.exception.BusinessException;
 
@@ -20,20 +20,12 @@ import org.talend.commons.exception.BusinessException;
  * $Id$
  * 
  */
-public class MalformedMainXMLComponentFileException extends BusinessException {
+public class MissingComponentFileException extends BusinessException {
 
-    private static final long serialVersionUID = 4796381477072619536L;
+    private static final long serialVersionUID = -4188249286691560999L;
 
-    public MalformedMainXMLComponentFileException(String message) {
+    public MissingComponentFileException(String message) {
         super(message);
-    }
-
-    public MalformedMainXMLComponentFileException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MalformedMainXMLComponentFileException(Throwable cause) {
-        super(cause);
     }
 
 }

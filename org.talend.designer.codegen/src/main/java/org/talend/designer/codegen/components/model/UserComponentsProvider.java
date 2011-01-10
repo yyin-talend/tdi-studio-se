@@ -10,11 +10,13 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.model;
+package org.talend.designer.codegen.components.model;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
@@ -27,8 +29,8 @@ import org.talend.core.i18n.Messages;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.components.ComponentsLocalProviderPlugin;
-import org.talend.designer.components.ui.IComponentPreferenceConstant;
+import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.components.ui.IComponentPreferenceConstant;
 import org.talend.repository.ProjectManager;
 
 /***/
@@ -41,7 +43,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
     }
 
     protected File getExternalComponentsLocation() {
-        IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore prefStore = CodeGeneratorActivator.getDefault().getPreferenceStore();
         String path = prefStore.getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));
     }
@@ -50,7 +52,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         if (path == null) {
             path = ""; //$NON-NLS-1$
         }
-        IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore prefStore = CodeGeneratorActivator.getDefault().getPreferenceStore();
         File userPath = new File(path.trim());
         if (userPath.exists()) {
             prefStore.setValue(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, path);

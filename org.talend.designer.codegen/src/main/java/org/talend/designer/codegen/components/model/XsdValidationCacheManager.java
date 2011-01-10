@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.model;
+package org.talend.designer.codegen.components.model;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -31,8 +31,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.talend.core.model.components.ComponentCompilations;
-import org.talend.designer.components.ComponentsLocalProviderPlugin;
-import org.talend.designer.components.i18n.Messages;
+import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.i18n.Messages;
 
 /**
  * tfeng class global comment. Detailled comment <br/>
@@ -62,9 +62,9 @@ public class XsdValidationCacheManager {
         try {
             deserializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, ComponentsLocalProviderPlugin.PLUGIN_ID,
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
                     Messages.getString("XsdValidationCacheManager.unableLoadxsd"), e); //$NON-NLS-1$
-            ComponentsLocalProviderPlugin.getDefault().getLog().log(status);
+            CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
 
@@ -72,9 +72,9 @@ public class XsdValidationCacheManager {
         try {
             serializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, ComponentsLocalProviderPlugin.PLUGIN_ID,
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
                     Messages.getString("XsdValidationCacheManager.unableSavexsd"), e); //$NON-NLS-1$
-            ComponentsLocalProviderPlugin.getDefault().getLog().log(status);
+            CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
 

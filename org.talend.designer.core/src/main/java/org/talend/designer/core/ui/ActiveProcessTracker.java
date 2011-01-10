@@ -25,6 +25,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.ui.ISQLBuilderService;
+import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.CodeView;
@@ -248,7 +249,9 @@ public class ActiveProcessTracker implements IPartListener {
                 existedJobOpened = true;
             }
         } else {
-            CorePlugin.getDefault().getDiagramModelService().handleNewEditorAction(part);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDiagramModelService.class)) {
+                CorePlugin.getDefault().getDiagramModelService().handleNewEditorAction(part);
+            }
         }
         IProcess2 process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process && lastProcessOpened != process) {

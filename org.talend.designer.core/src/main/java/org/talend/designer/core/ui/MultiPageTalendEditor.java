@@ -29,6 +29,7 @@ import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.ISVNProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -139,8 +140,14 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         if (process2 != null) {
             Item item = process2.getProperty().getItem();
             if (item instanceof JobletProcessItem) {
-                title = title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
+                title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
             }
+        }
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            title = "MultiPageTalendEditor.Route";
         }
         if (revisionNumStr != null) {
             setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr);

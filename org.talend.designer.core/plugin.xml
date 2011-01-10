@@ -15,14 +15,6 @@
             name="Designer">
       </editor>
       <editor
-            class="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
-            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
-            extensions="pl, ipl, pm, cgi, epl"
-            icon="icons/epic.gif"
-            id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
-            name="Epic Perl Editor">
-      </editor>
-      <editor
             class="org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"
             extensions="java"
             icon="icons/java.gif"

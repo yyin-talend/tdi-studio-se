@@ -59,6 +59,8 @@ public class JobScriptsManagerFactory {
                 manager = new JobJavaScriptESBManager();
             } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_PETALSESB)) {
                 manager = new PetalsJobJavaScriptsManager();
+            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_ROUTE)) {
+                manager = new JobJavaScriptsManager();
             }
 
         } else if (language == ECodeLanguage.PERL) {

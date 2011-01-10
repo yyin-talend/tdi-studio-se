@@ -102,8 +102,7 @@ Export-Package: ca.uhn.hl7v2,
  org.jdom.transform,
  org.jdom.xpath,
  org.talend.designer.components,
- org.talend.designer.components.lookup.common,
- org.talend.designer.components.ui
+ org.talend.designer.components.lookup.common
 Bundle-ClassPath: .,
  components/tAdvancedHash/jboss-serialization.jar,
  components/tHL7Input/commons-cli-1.0.1.jar,

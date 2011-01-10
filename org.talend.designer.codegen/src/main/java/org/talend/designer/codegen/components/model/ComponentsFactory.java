@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.model;
+package org.talend.designer.codegen.components.model;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -34,7 +33,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -68,7 +66,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.designer.components.i18n.Messages;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -84,7 +82,7 @@ import org.xml.sax.SAXParseException;
 /**
  * Component factory that look for each component and load their information. <br/>
  * 
- * $Id$
+ * $Id: ComponentsFactory.java 52892 2010-12-20 05:52:17Z nrousseau $
  */
 public class ComponentsFactory implements IComponentsFactory {
 
@@ -272,13 +270,7 @@ public class ComponentsFactory implements IComponentsFactory {
             cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
         }
         XsdValidationCacheManager.getInstance().load();
-        // 1. Load system components:
-        if (!isCreated) {
-            loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        }
-        // TimeMeasure.step("initComponents", "loadComponents");
-
-        // 2.Load Component from extension point: components_provider
+        // 1.Load Component from extension point: components_provider
         if (!isCreated) {
             loadComponentsFromComponentsProviderExtension();
         }
@@ -291,7 +283,7 @@ public class ComponentsFactory implements IComponentsFactory {
                 ExceptionHandler.process(e);
             }
         }
-        // 3.Load Component from extension point: component_definition
+        // 2.Load Component from extension point: component_definition
         loadComponentsFromExtensions();
         // TimeMeasure.step("initComponents", "loadComponentsFromExtension[joblets?]");
 
@@ -362,7 +354,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setTechnical(true);
             }
             if (!componentList.contains(currentComp)) {
-                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getPathSource()));
+                ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getPathSource(),
+                        componentsProviderManager.loadUserComponentsProvidersFromExtension()));
 
                 File currentFile = new File(pathFile.getAbsoluteFile() + info.getUriString());
                 loadIcons(currentFile.getParentFile(), currentComp);
@@ -481,7 +475,7 @@ public class ComponentsFactory implements IComponentsFactory {
         AbstractProcessProvider.loadComponentsFromProviders();
     }
 
-    private void loadComponentsFromFolder(String pathSource, AbstractComponentsProvider... provider) {
+    private void loadComponentsFromFolder(String pathSource, AbstractComponentsProvider provider) {
 
         if (pathSource != null) {
             Path userComponent = new Path(pathSource);
@@ -494,11 +488,9 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         boolean isCustom = false;
-        if (provider != null && provider.length == 1) {
-            if ("org.talend.designer.components.model.UserComponentsProvider".equals(provider[0].getId())
-                    || "org.talend.designer.components.ecosystem.EcosystemComponentsProvider".equals(provider[0].getId())) {
-                isCustom = true;
-            }
+        if ("org.talend.designer.components.model.UserComponentsProvider".equals(provider.getId())
+                || "org.talend.designer.components.ecosystem.EcosystemComponentsProvider".equals(provider.getId())) {
+            isCustom = true;
         }
 
         File source = getComponentsLocation(pathSource);
@@ -588,9 +580,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         continue;
                     }
 
-                    if (provider.length == 1) {
-                        componentToProviderMap.put(currentComp, provider[0]);
-                    }
+                    componentToProviderMap.put(currentComp, provider);
 
                     // if the component is not needed in the current branding,
                     // and that this one IS a specific component for code generation,
@@ -606,7 +596,7 @@ public class ComponentsFactory implements IComponentsFactory {
                     if (componentList.contains(currentComp)) {
                         log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
-                        currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
+                        currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource, provider));
                         loadIcons(currentFolder, currentComp);
                         componentList.add(currentComp);
                         if (isCustom) {
@@ -672,37 +662,19 @@ public class ComponentsFactory implements IComponentsFactory {
         return file;
     }
 
-    /**
-     * 
-     * 
-     * Needs to create our own class loader in order to clear the cache for a ResourceBundle. Without using a new class
-     * loader each time the values would not be reread from the .properties file
-     * 
-     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4212439
-     * 
-     * yzhang ComponentsFactory class global comment. Detailled comment <br/>
-     * 
-     * $Id$
-     * 
-     */
-    private static class ResClassLoader extends ClassLoader {
-
-        ResClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-    }
-
-    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source) {
+    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, AbstractComponentsProvider provider) {
         String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
-        // String pluginFullName = currentComp.getPluginFullName();
-        // System.out.println(pluginFullName);
-        // Bundle bundle = Platform.getBundle(pluginFullName);
-        // ClassLoader classLoader = bundle.getClass().getClassLoader();
+        // Bundle bundle4 = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+        // Class eclass = null;
+        // try {
+        // eclass = bundle4.loadClass("org.talend.designer.components.ComponentsLocalProviderPlugin");
+        // } catch (ClassNotFoundException e) {
+        // ExceptionHandler.process(e);
+        // }
         // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
-
-        ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(getClass()
-                .getClassLoader()));
-
+        // ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new
+        // ResClassLoader(getClass().getClassLoader()))
+        ResourceBundle bundle = provider.getResourceBundle(label);
         return bundle;
     }
 

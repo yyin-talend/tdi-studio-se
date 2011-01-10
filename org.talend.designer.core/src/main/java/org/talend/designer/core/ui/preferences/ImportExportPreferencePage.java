@@ -20,8 +20,11 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 
 public class ImportExportPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -46,8 +49,15 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage implem
     @Override
     protected void createFieldEditors() {
         // TODO Auto-generated method stub
-        isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE,
-                "Use recent file name to save, When export job script.", getFieldEditorParent());
+        String text = "ImportExportPreferencePage.exportJobScript";
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            text = "ImportExportPreferencePage.exportRouteScript";
+        }
+        isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE, Messages.getString(text),
+                getFieldEditorParent());
         addField(isUsedCheckButton);
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 

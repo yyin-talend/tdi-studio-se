@@ -53,12 +53,12 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.ui.dialog.PastSelectorDialog;
 
@@ -145,8 +145,9 @@ public class DuplicateAction extends AContextualAction {
 
         Property updatedProperty = null;
         try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+            updatedProperty = ProxyRepositoryFactory.getInstance()
+                    .getLastVersion(new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                    .getProperty();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
@@ -439,6 +440,7 @@ public class DuplicateAction extends AContextualAction {
             protected void run() throws LoginException, PersistenceException {
                 try {
                     final Item newItem = factory.copy(item, path, true);
+
                     newItem.getProperty().setLabel(newName);
                     // qli modified to fix the bug 5400 and 6185.
                     if (newItem instanceof RoutineItem) {

@@ -10,9 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.model;
-
-import org.talend.commons.exception.BusinessException;
+package org.talend.designer.codegen.components.model;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -20,11 +18,11 @@ import org.talend.commons.exception.BusinessException;
  * $Id$
  * 
  */
-public class MissingComponentFileException extends BusinessException {
+public class MissingMainXMLComponentFileException extends MissingComponentFileException {
 
-    private static final long serialVersionUID = -4188249286691560999L;
+    private static final long serialVersionUID = 2516129467628501142L;
 
-    public MissingComponentFileException(String message) {
+    public MissingMainXMLComponentFileException(String message) {
         super(message);
     }
 

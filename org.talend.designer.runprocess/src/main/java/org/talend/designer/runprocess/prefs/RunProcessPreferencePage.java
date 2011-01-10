@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -192,8 +193,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeStatsPort1.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
         compositeStatsPort1.setLayout(gridLayout);
-        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, Messages
-                .getString("prefs.clientStatsPortBound1"), compositeStatsPort1); //$NON-NLS-1$
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1,
+                Messages.getString("prefs.clientStatsPortBound1"), compositeStatsPort1); //$NON-NLS-1$
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("runProcessRemote.clientStatInvalidRange")); //$NON-NLS-1$
@@ -202,8 +203,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeStatsPort2.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
         compositeStatsPort2.setLayout(gridLayout);
-        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, Messages
-                .getString("prefs.clientStatsPortBound2"), compositeStatsPort2); //$NON-NLS-1$
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2,
+                Messages.getString("prefs.clientStatsPortBound2"), compositeStatsPort2); //$NON-NLS-1$
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange")); //$NON-NLS-1$
@@ -221,8 +222,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeTracePorts1.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
         compositeTracePorts1.setLayout(gridLayout);
-        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, Messages
-                .getString("prefs.clientTracePortBound1"), compositeTracePorts1); //$NON-NLS-1$
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1,
+                Messages.getString("prefs.clientTracePortBound1"), compositeTracePorts1); //$NON-NLS-1$
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange")); //$NON-NLS-1$
@@ -231,8 +232,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeTracePort2.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
         compositeTracePort2.setLayout(gridLayout);
-        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, Messages
-                .getString("prefs.clientTracePortBound2"), compositeTracePort2); //$NON-NLS-1$
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2,
+                Messages.getString("prefs.clientTracePortBound2"), compositeTracePort2); //$NON-NLS-1$
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange")); //$NON-NLS-1$
@@ -247,8 +248,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
         compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
-        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, Messages
-                .getString("RunProcessPreferencePage.save"), SWT.NONE, //$NON-NLS-1$
+        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN,
+                Messages.getString("RunProcessPreferencePage.save"), SWT.NONE, //$NON-NLS-1$
                 compositeSaveBeforeRun);
         addField(onSavebeforeField);
 
@@ -256,8 +257,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeClearBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutClearBeforeRun = new GridLayout(1, true);
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
-        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, Messages
-                .getString("RunProcessPreferencePage.clear"), SWT.NONE, //$NON-NLS-1$
+        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN,
+                Messages.getString("RunProcessPreferencePage.clear"), SWT.NONE, //$NON-NLS-1$
                 compositeClearBeforeRun);
 
         addField(onClearbeforeField);
@@ -265,8 +266,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeExecTimeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutExecTimeRun = new GridLayout(1, true);
         compositeExecTimeRun.setLayout(gridLayoutExecTimeRun);
-        onExecTimeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISEXECTIMERUN, Messages
-                .getString("RunProcessPreferencePage.execTime"), SWT.NONE, //$NON-NLS-1$
+        onExecTimeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISEXECTIMERUN,
+                Messages.getString("RunProcessPreferencePage.execTime"), SWT.NONE, //$NON-NLS-1$
                 compositeExecTimeRun);
         addField(onExecTimeField);
 
@@ -274,8 +275,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeStatisticsRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutStatisticsRun = new GridLayout(1, true);
         compositeStatisticsRun.setLayout(gridLayoutStatisticsRun);
-        onStatisticsField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSTATISTICSRUN, Messages
-                .getString("RunProcessPreferencePage.statistics"), SWT.NONE, //$NON-NLS-1$
+        onStatisticsField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSTATISTICSRUN,
+                Messages.getString("RunProcessPreferencePage.statistics"), SWT.NONE, //$NON-NLS-1$
                 compositeStatisticsRun);
         addField(onStatisticsField);
 
@@ -283,16 +284,16 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeTracesRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutTracesRun = new GridLayout(1, false);
         compositeTracesRun.setLayout(gridLayoutTracesRun);
-        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, Messages
-                .getString("RunProcessPreferencePage.traces"), SWT.NONE, compositeTracesRun); //$NON-NLS-1$
+        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN,
+                Messages.getString("RunProcessPreferencePage.traces"), SWT.NONE, compositeTracesRun); //$NON-NLS-1$
         addField(onTracesField);
 
         Composite compositeTracesTime = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeTracesTime.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutTracesTime = new GridLayout(1, false);
         compositeTracesTime.setLayout(gridLayoutTracesTime);
-        tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, Messages
-                .getString("RunProcessPreferencePage.pauseTime"), compositeTracesTime); //$NON-NLS-1$
+        tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME,
+                Messages.getString("RunProcessPreferencePage.pauseTime"), compositeTracesTime); //$NON-NLS-1$
         addField(tracesTime);
 
         // 0004895: Font size of the output console are very small
@@ -302,8 +303,14 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutArguments = new GridLayout(1, false);
         argumentsComposite.setLayout(gridLayoutArguments);
-        VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, Messages
-                .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+        String text = "RunProcessPreferencePage.vmArgument";
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            text = "RunProcessPreferencePage.RouteVmArgument";
+        }
+        VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, Messages.getString(text), //$NON-NLS-1$
                 argumentsComposite);
         addField(argumentsViewer);
         manager = ProcessManager.getInstance();

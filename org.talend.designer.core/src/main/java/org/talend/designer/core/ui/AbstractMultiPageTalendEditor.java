@@ -332,7 +332,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             revisionChanged = true;
         }
         if (processEditorInput.getItem() instanceof ProcessItem) {
-            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+            if (ERepositoryObjectType.getItemType(processEditorInput.getItem()) == ERepositoryObjectType.ROUTES) {
+                RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
+            } else {
+                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+            }
         } else {
             RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         }
@@ -839,7 +843,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
             if (processEditorInput.getItem() instanceof ProcessItem) {
-                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+                if (ERepositoryObjectType.getItemType(processEditorInput.getItem()) == ERepositoryObjectType.ROUTES) {
+                    RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
+                } else {
+                    RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+                }
             } else {
                 RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
             }
@@ -1347,6 +1355,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         } else {
             RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+            RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
         }
         processEditorInput.setLoadedProcess(null);
 

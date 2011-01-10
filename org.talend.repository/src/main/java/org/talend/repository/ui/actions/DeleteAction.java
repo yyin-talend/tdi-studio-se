@@ -43,6 +43,7 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
@@ -68,6 +69,7 @@ import org.talend.core.repository.model.repositoryObject.MetadataTableRepository
 import org.talend.core.repository.utils.AbstractResourceChangesService;
 import org.talend.core.repository.utils.TDQServiceRegister;
 import org.talend.cwm.helper.SubItemHelper;
+import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
@@ -193,7 +195,9 @@ public class DeleteAction extends AContextualAction {
                 RepositoryManager.getRepositoryView().refresh();
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 for (IEditorReference editors : page.getEditorReferences()) {
-                    CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDiagramModelService.class)) {
+                        CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+                    }
                 }
 
                 if (!deleteActionCache.isDocRefresh()) { // not refresh in JobDeleteListener

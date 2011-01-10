@@ -113,6 +113,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private RepositoryNode refProject;
 
+    private RepositoryNode routesNode;
+
     private boolean mergeRefProject;
 
     public static boolean refProjectBool = false;
@@ -316,228 +318,238 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // 0. Recycle bin
         recBinNode = new BinRepositoryNode(this);
         nodes.add(recBinNode);
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            routesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            routesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTES);
+            routesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTES);
+            nodes.add(routesNode);
+        } else {
+            // 1. Business process
+            businessProcessNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            businessProcessNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BUSINESS_PROCESS);
+            businessProcessNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BUSINESS_PROCESS);
+            nodes.add(businessProcessNode);
 
-        // 1. Business process
-        businessProcessNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        businessProcessNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BUSINESS_PROCESS);
-        businessProcessNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BUSINESS_PROCESS);
-        nodes.add(businessProcessNode);
+            // 2. Process
+            processNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            processNode.setProperties(EProperties.LABEL, ERepositoryObjectType.PROCESS);
+            processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
+            nodes.add(processNode);
 
-        // 2. Process
-        processNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        processNode.setProperties(EProperties.LABEL, ERepositoryObjectType.PROCESS);
-        processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
-        nodes.add(processNode);
-
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            // 2.1 Joblet
-            jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
-            jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
-            nodes.add(jobletNode);
-        }
-
-        // 3. Context
-        contextNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        contextNode.setProperties(EProperties.LABEL, ERepositoryObjectType.CONTEXT);
-        contextNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.CONTEXT);
-        nodes.add(contextNode);
-
-        // 4. Code
-        codeNode = new StableRepositoryNode(this,
-                Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
-        codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
-        nodes.add(codeNode);
-
-        // 4.1. Routines
-        routineNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        routineNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTINES);
-        routineNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
-        codeNode.getChildren().add(routineNode);
-
-        // 4.2 jobscripts
-        if (PluginChecker.isMetalanguagePluginLoaded()) {
-            jobscriptsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            jobscriptsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOB_SCRIPT);
-            jobscriptsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOB_SCRIPT);
-            codeNode.getChildren().add(jobscriptsNode);
-        }
-
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
-            IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault().getService(
-                    IHeaderFooterProviderService.class);
-            if (service.isVisible()) {
-                // Metadata Datacert connections
-                metadataHeaderFooterConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                metadataHeaderFooterConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                metadataHeaderFooterConnectionNode.setProperties(EProperties.CONTENT_TYPE,
-                        ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                codeNode.getChildren().add(metadataHeaderFooterConnectionNode);
+            if (PluginChecker.isJobLetPluginLoaded()) {
+                // 2.1 Joblet
+                jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
+                jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
+                nodes.add(jobletNode);
             }
-        }
 
-        // 4.2. Snippets
-        // if (PluginChecker.isSnippetsPluginLoaded()) {
-        // snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        // snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
-        // snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
-        // codeNode.getChildren().add(snippetsNode);
-        // }
+            // 3. Context
+            contextNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            contextNode.setProperties(EProperties.LABEL, ERepositoryObjectType.CONTEXT);
+            contextNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.CONTEXT);
+            nodes.add(contextNode);
 
-        // 5. Sql patterns
-        sqlPatternNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
-        sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
-        nodes.add(sqlPatternNode);
+            // 4. Code
+            codeNode = new StableRepositoryNode(this,
+                    Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
+            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+            nodes.add(codeNode);
 
-        // 6. Documentation
-        docNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        docNode.setProperties(EProperties.LABEL, ERepositoryObjectType.DOCUMENTATION);
-        docNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.DOCUMENTATION);
-        nodes.add(docNode);
+            // 4.1. Routines
+            routineNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            routineNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTINES);
+            routineNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+            codeNode.getChildren().add(routineNode);
 
-        // 7. Metadata
-        metadataNode = new RepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
-        metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
-        metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
-        nodes.add(metadataNode);
-
-        // 7.1. Metadata connections
-        metadataConNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
-        metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
-        metadataNode.getChildren().add(metadataConNode);
-
-        // 7.2. Metadata file delimited
-        metadataFileNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFileNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_DELIMITED);
-        metadataFileNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_DELIMITED);
-        metadataNode.getChildren().add(metadataFileNode);
-
-        // 7.3. Metadata file positional
-        metadataFilePositionalNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-        metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-        metadataNode.getChildren().add(metadataFilePositionalNode);
-
-        // 7.4. Metadata file regexp
-        metadataFileRegexpNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFileRegexpNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_REGEXP);
-        metadataFileRegexpNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_REGEXP);
-        metadataNode.getChildren().add(metadataFileRegexpNode);
-
-        // 7.5. Metadata file xml
-        metadataFileXmlNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
-        metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
-        metadataNode.getChildren().add(metadataFileXmlNode);
-
-        // 7.6. Metadata file ldif
-        metadataFileLdifNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
-        metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
-        metadataNode.getChildren().add(metadataFileLdifNode);
-
-        // 7.7. Metadata file Excel
-        metadataFileExcelNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataFileExcelNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EXCEL);
-        metadataFileExcelNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EXCEL);
-        metadataNode.getChildren().add(metadataFileExcelNode);
-
-        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
-        if (codeLanguage != ECodeLanguage.PERL) {
-            // 7.8. LDAP schemas
-            metadataLDAPSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-            metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-            metadataNode.getChildren().add(metadataLDAPSchemaNode);
-        }
-        // 7.9. Generic schemas
-        metadataGenericSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
-        metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
-        metadataNode.getChildren().add(metadataGenericSchemaNode);
-        // 7.10 WSDL
-        metadataWSDLSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
-        metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
-        metadataNode.getChildren().add(metadataWSDLSchemaNode);
-
-        // 7.11 Salesforce
-
-        if (codeLanguage != ECodeLanguage.PERL) {
-            metadataSalesforceSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataSalesforceSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
-            metadataSalesforceSchemaNode
-                    .setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
-            metadataNode.getChildren().add(metadataSalesforceSchemaNode);
-        }
-
-        // 7.12 SAP
-        if (PluginChecker.isTIS() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            metadataSAPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataSAPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
-            metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
-            metadataNode.getChildren().add(metadataSAPConnectionNode);
-        }
-
-        if (PluginChecker.isHL7PluginLoaded()) {
-            metadataHL7ConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataHL7ConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_HL7);
-            metadataHL7ConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_HL7);
-            metadataNode.getChildren().add(metadataHL7ConnectionNode);
-        }
-
-        if (PluginChecker.isFTPPluginLoaded()) {
-            metadataFTPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataFTPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_FTP);
-            metadataFTPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_FTP);
-            metadataNode.getChildren().add(metadataFTPConnectionNode);
-        }
-
-        // 7.13 EBCDIC
-        if (PluginChecker.isEBCDICPluginLoaded()) {
-            metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-            metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-            metadataNode.getChildren().add(metadataEbcdicConnectionNode);
-        }
-
-        if (PluginChecker.isMDMPluginLoaded()) {
-            metadataMDMConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataMDMConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_MDMCONNECTION);
-            metadataMDMConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_MDMCONNECTION);
-            metadataNode.getChildren().add(metadataMDMConnectionNode);
-        }
-        if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
-            StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
-                    Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
-                    ECoreImage.METADATA_RULES_ICON);
-            baseRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
-            metadataNode.getChildren().add(baseRulesNode);
-
-            if (PluginChecker.isBRMSPluginLoaded()) {
-                metadataBRMSConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                metadataBRMSConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_BRMS);
-                metadataBRMSConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_BRMS);
-                baseRulesNode.getChildren().add(metadataBRMSConnectionNode);
+            // 4.2 jobscripts
+            if (PluginChecker.isMetalanguagePluginLoaded()) {
+                jobscriptsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                jobscriptsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOB_SCRIPT);
+                jobscriptsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOB_SCRIPT);
+                codeNode.getChildren().add(jobscriptsNode);
             }
-            // 7.14 RULES
-            if (PluginChecker.isRulesPluginLoaded() && codeLanguage != ECodeLanguage.PERL) {
-                metadataRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                metadataRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_RULES);
-                metadataRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_RULES);
-                baseRulesNode.getChildren().add(metadataRulesNode);
-            }
-        }
 
-        // Reference Projects
-        if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject()
-                && project.getEmfProject().getReferencedProjects().size() > 0) {
-            refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
-            refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
-            nodes.add(refProject);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+                IHeaderFooterProviderService service = (IHeaderFooterProviderService) GlobalServiceRegister.getDefault()
+                        .getService(IHeaderFooterProviderService.class);
+                if (service.isVisible()) {
+                    // Metadata Datacert connections
+                    metadataHeaderFooterConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    metadataHeaderFooterConnectionNode.setProperties(EProperties.LABEL,
+                            ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                    metadataHeaderFooterConnectionNode.setProperties(EProperties.CONTENT_TYPE,
+                            ERepositoryObjectType.METADATA_HEADER_FOOTER);
+                    codeNode.getChildren().add(metadataHeaderFooterConnectionNode);
+                }
+            }
+
+            // 4.2. Snippets
+            // if (PluginChecker.isSnippetsPluginLoaded()) {
+            // snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            // snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
+            // snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
+            // codeNode.getChildren().add(snippetsNode);
+            // }
+
+            // 5. Sql patterns
+            sqlPatternNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
+            sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
+            nodes.add(sqlPatternNode);
+
+            // 6. Documentation
+            docNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            docNode.setProperties(EProperties.LABEL, ERepositoryObjectType.DOCUMENTATION);
+            docNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.DOCUMENTATION);
+            nodes.add(docNode);
+
+            // 7. Metadata
+            metadataNode = new RepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
+            metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
+            metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
+            nodes.add(metadataNode);
+
+            // 7.1. Metadata connections
+            metadataConNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
+            metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
+            metadataNode.getChildren().add(metadataConNode);
+
+            // 7.2. Metadata file delimited
+            metadataFileNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFileNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_DELIMITED);
+            metadataFileNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_DELIMITED);
+            metadataNode.getChildren().add(metadataFileNode);
+
+            // 7.3. Metadata file positional
+            metadataFilePositionalNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+            metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+            metadataNode.getChildren().add(metadataFilePositionalNode);
+
+            // 7.4. Metadata file regexp
+            metadataFileRegexpNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFileRegexpNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_REGEXP);
+            metadataFileRegexpNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_REGEXP);
+            metadataNode.getChildren().add(metadataFileRegexpNode);
+
+            // 7.5. Metadata file xml
+            metadataFileXmlNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataNode.getChildren().add(metadataFileXmlNode);
+
+            // 7.6. Metadata file ldif
+            metadataFileLdifNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataNode.getChildren().add(metadataFileLdifNode);
+
+            // 7.7. Metadata file Excel
+            metadataFileExcelNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataFileExcelNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EXCEL);
+            metadataFileExcelNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EXCEL);
+            metadataNode.getChildren().add(metadataFileExcelNode);
+
+            ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+            if (codeLanguage != ECodeLanguage.PERL) {
+                // 7.8. LDAP schemas
+                metadataLDAPSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+                metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+                metadataNode.getChildren().add(metadataLDAPSchemaNode);
+            }
+            // 7.9. Generic schemas
+            metadataGenericSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+            metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+            metadataNode.getChildren().add(metadataGenericSchemaNode);
+            // 7.10 WSDL
+            metadataWSDLSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+            metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+            metadataNode.getChildren().add(metadataWSDLSchemaNode);
+
+            // 7.11 Salesforce
+
+            if (codeLanguage != ECodeLanguage.PERL) {
+                metadataSalesforceSchemaNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataSalesforceSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+                metadataSalesforceSchemaNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+                metadataNode.getChildren().add(metadataSalesforceSchemaNode);
+            }
+
+            // 7.12 SAP
+            if (PluginChecker.isTIS() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                metadataSAPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataSAPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
+                metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
+                metadataNode.getChildren().add(metadataSAPConnectionNode);
+            }
+
+            if (PluginChecker.isHL7PluginLoaded()) {
+                metadataHL7ConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataHL7ConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_HL7);
+                metadataHL7ConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_HL7);
+                metadataNode.getChildren().add(metadataHL7ConnectionNode);
+            }
+
+            if (PluginChecker.isFTPPluginLoaded()) {
+                metadataFTPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataFTPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_FTP);
+                metadataFTPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_FTP);
+                metadataNode.getChildren().add(metadataFTPConnectionNode);
+            }
+
+            // 7.13 EBCDIC
+            if (PluginChecker.isEBCDICPluginLoaded()) {
+                metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+                metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+                metadataNode.getChildren().add(metadataEbcdicConnectionNode);
+            }
+
+            if (PluginChecker.isMDMPluginLoaded()) {
+                metadataMDMConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataMDMConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_MDMCONNECTION);
+                metadataMDMConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_MDMCONNECTION);
+                metadataNode.getChildren().add(metadataMDMConnectionNode);
+            }
+            if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
+                StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
+                        Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
+                        ECoreImage.METADATA_RULES_ICON);
+                baseRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
+                metadataNode.getChildren().add(baseRulesNode);
+
+                if (PluginChecker.isBRMSPluginLoaded()) {
+                    metadataBRMSConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    metadataBRMSConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_BRMS);
+                    metadataBRMSConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_BRMS);
+                    baseRulesNode.getChildren().add(metadataBRMSConnectionNode);
+                }
+                // 7.14 RULES
+                if (PluginChecker.isRulesPluginLoaded() && codeLanguage != ECodeLanguage.PERL) {
+                    metadataRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    metadataRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_RULES);
+                    metadataRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_RULES);
+                    baseRulesNode.getChildren().add(metadataRulesNode);
+                }
+            }
+
+            // Reference Projects
+            if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject()
+                    && project.getEmfProject().getReferencedProjects().size() > 0) {
+                refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
+                refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+                nodes.add(refProject);
+            }
         }
         // hide hidden nodes;
         hideHiddenNodes();
@@ -589,6 +601,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
             } else if (parent == processNode) {
                 convert(newProject, factory.getProcess(newProject, true), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+            } else if (parent == routesNode) {
+                convert(newProject, factory.getCamelProcess(newProject, true), routesNode, ERepositoryObjectType.ROUTES,
+                        recBinNode);
             } else if (parent == jobletNode) {
                 convert(newProject, factory.getJoblets(newProject, true), jobletNode, ERepositoryObjectType.JOBLET, recBinNode);
             } else if (parent == routineNode) {
@@ -1823,6 +1838,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.businessProcessNode;
         case PROCESS:
             return this.processNode;
+        case ROUTES:
+            return this.routesNode;
         case CONTEXT:
             return this.contextNode;
         case ROUTINES:

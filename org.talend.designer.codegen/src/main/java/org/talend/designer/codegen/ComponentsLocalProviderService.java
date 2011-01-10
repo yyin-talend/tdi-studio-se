@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components;
+package org.talend.designer.codegen;
 
 import java.io.File;
 
@@ -23,10 +23,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.designer.components.i18n.Messages;
-import org.talend.designer.components.model.ComponentFileChecker;
-import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
-import org.talend.designer.components.ui.IComponentPreferenceConstant;
+import org.talend.designer.codegen.components.model.ComponentFileChecker;
+import org.talend.designer.codegen.components.ui.ComponenttRunJobPreferencePage;
+import org.talend.designer.codegen.components.ui.IComponentPreferenceConstant;
+import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.components.IComponentsLocalProviderService;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -42,13 +43,11 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#isAvoidToShowJobAfterDoubleClick()
      */
     public boolean isAvoidToShowJobAfterDoubleClick() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore()
-                .getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
+        return CodeGeneratorActivator.getDefault().getPreferenceStore().getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
     }
 
     public boolean isAvoidToShowJobletAfterDoubleClick() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getBoolean(
-                IComponentPreferenceConstant.IS_AVOID_JOBLET);
+        return CodeGeneratorActivator.getDefault().getPreferenceStore().getBoolean(IComponentPreferenceConstant.IS_AVOID_JOBLET);
     }
 
     /*
@@ -57,7 +56,7 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#getPreferenceStore()
      */
     public IPreferenceStore getPreferenceStore() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
+        return CodeGeneratorActivator.getDefault().getPreferenceStore();
     }
 
     public void setPreferenceStoreValue(String key, Object value) {
@@ -80,7 +79,7 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#getPlugin()
      */
     public AbstractUIPlugin getPlugin() {
-        return ComponentsLocalProviderPlugin.getDefault();
+        return CodeGeneratorActivator.getDefault();
     }
 
     public boolean validateComponent(String componentFolder, ECodeLanguage language) {
@@ -95,8 +94,8 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
                     Display.getDefault().syncExec(new Runnable() {
 
                         public void run() {
-                            Status status = new Status(IStatus.ERROR, ComponentsLocalProviderPlugin.PLUGIN_ID, 1, tempE
-                                    .getMessage(), tempE.getCause());
+                            Status status = new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, 1, tempE.getMessage(),
+                                    tempE.getCause());
                             ErrorDialog dlg = new ErrorDialog(
                                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                                     Messages.getString("ComponentsLocalProviderService.talendExchangeError"), Messages.getString("ComponentsLocalProviderService.componentLoadError"), status, IStatus.ERROR); //$NON-NLS-1$ //$NON-NLS-2$

@@ -27,6 +27,14 @@
       <Service 
       		serviceId="ICodeGeneratorService"
       		class="org.talend.designer.codegen.CodeGeneratorService"/>
+      <Service
+            class="org.talend.designer.codegen.ComponentsLocalProviderService"
+            serviceId="ComponentsLocalProviderService">
+      </Service>
+      <Service
+            class="org.talend.designer.codegen.components.model.ComponentsService"
+            serviceId="IComponentsService">
+      </Service>
    </extension>
    <extension
          id="CodeGenInit"
@@ -36,6 +44,35 @@
                class="org.talend.designer.codegen.CodeGenInit">
          </run>
       </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.codegen.components.ui.ComponentsPreferencePage"
+            id="org.talend.designer.codegen.components.localprovider.page1"
+            name="%components">
+      </page>
+      <page
+            category="org.talend.designer.codegen.components.localprovider.page1"
+            class="org.talend.designer.components.preference.labelformat.ComponentsFormatPreferencePage"
+            id="org.talend.designer.codegen.components.localprovider.page1"
+            name="%format">
+      </page>
+   </extension>
+   <extension
+         point="org.talend.core.components_provider">
+      <ComponentsProvider
+            class="org.talend.designer.codegen.components.model.UserComponentsProvider"
+            folderName="user"
+            id="org.talend.designer.components.model.UserComponentsProvider">
+      </ComponentsProvider>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.designer.codegen.components.ui.ComponentPreferenceInitializer">
+      </initializer>
    </extension>
    
 </plugin>

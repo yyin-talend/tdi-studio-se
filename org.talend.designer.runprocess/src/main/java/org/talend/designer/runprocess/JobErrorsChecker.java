@@ -37,6 +37,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.service.IDesignerPerlService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
@@ -144,9 +145,18 @@ public class JobErrorsChecker {
             List<JobErrorEntry> input = builder.createTreeInput(errors, jobNames);
             if (input.size() > 0) {
                 String label = ((JobErrorEntry) input.get(0)).getLabel();
-                MessageDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
-                        Messages.getString("JobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
+                IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+                if (!processLabel.equals("Routes")) {
+                    MessageDialog.openError(Display.getDefault().getActiveShell(),
+                            Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
+                            Messages.getString("JobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
+                } else {
+                    MessageDialog.openError(Display.getDefault().getActiveShell(),
+                            Messages.getString("CamelJobErrorsChecker_compile_errors"), //$NON-NLS-1$
+                            Messages.getString("CamelJobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
+                }
                 return true;
             }
 

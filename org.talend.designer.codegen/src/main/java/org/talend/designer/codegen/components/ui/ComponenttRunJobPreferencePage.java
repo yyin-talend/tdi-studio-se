@@ -10,14 +10,14 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.ui;
+package org.talend.designer.codegen.components.ui;
 
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.designer.components.ComponentsLocalProviderPlugin;
-import org.talend.designer.components.i18n.Messages;
+import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.i18n.Messages;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -37,7 +37,7 @@ public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage im
 
     public ComponenttRunJobPreferencePage() {
         super(TITLE, GRID);
-        setPreferenceStore(ComponentsLocalProviderPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(CodeGeneratorActivator.getDefault().getPreferenceStore());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage im
      */
     public boolean performOk() {
         boolean ok = super.performOk();
-        ComponentsLocalProviderPlugin.getDefault().savePluginPreferences();
+        CodeGeneratorActivator.getDefault().savePluginPreferences();
         return ok;
     }
 

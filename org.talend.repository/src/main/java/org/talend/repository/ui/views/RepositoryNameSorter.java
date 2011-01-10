@@ -16,9 +16,9 @@ import java.util.Comparator;
 
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * Name sorter for the repository view.<br/>
@@ -51,6 +51,8 @@ public class RepositoryNameSorter extends ViewerSorter {
             case BUSINESS_PROCESS:
                 return 0;
             case PROCESS:
+                return 5;
+            case ROUTES:
                 return 5;
             case JOBLET:
                 return 6;

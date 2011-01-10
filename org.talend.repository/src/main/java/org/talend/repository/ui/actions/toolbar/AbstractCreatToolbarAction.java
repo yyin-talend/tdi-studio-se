@@ -153,6 +153,10 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
             addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
             addSeparator(menu);
         }
+        if (repositoryView.containsRepositoryType(ERepositoryObjectType.ROUTES)) {
+            addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
+            // addSeparator(menu);
+        }
         if (repositoryView.containsRepositoryType(ERepositoryObjectType.BUSINESS_PROCESS)) {
             addToMenu(menu, CorePlugin.getDefault().getDiagramModelService().getCreateDiagramAction(true), -1);
             addSeparator(menu);
@@ -309,8 +313,8 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
     }
 
     private IRepositoryView getRepositoryView() {
-        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
         return (IRepositoryView) findView;
     }
 

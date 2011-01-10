@@ -79,6 +79,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXPORTTYPE_POJO = "Autonomous Job"; //$NON-NLS-1$
 
+    public static final String EXPORTTYPE_ROUTE = "Autonomous Route";
+
     public static final String EXPORTTYPE_WSWAR = "Axis WebService (WAR)"; //$NON-NLS-1$
 
     public static final String EXPORTTYPE_WSZIP = "Axis WebService (ZIP)"; //$NON-NLS-1$

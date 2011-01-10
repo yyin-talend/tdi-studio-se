@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.ui;
+package org.talend.designer.codegen.components.ui;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -43,9 +43,9 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.components.ComponentsLocalProviderPlugin;
-import org.talend.designer.components.i18n.Messages;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -104,7 +104,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     public ComponentsPreferencePage() {
         super(GRID);
-        setPreferenceStore(ComponentsLocalProviderPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(CodeGeneratorActivator.getDefault().getPreferenceStore());
     }
 
     public void createFieldEditors2(Composite composite) {
@@ -117,8 +117,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
             strComboValues[i][1] = linkStyles[i].getName();
         }
 
-        ComboFieldEditor dbTypeField = new ComboFieldEditor(IComponentPreferenceConstant.LINK_STYLE, Messages
-                .getString("ComponentsPreferencePage.configuration.LINK_STYLE"), strComboValues, composite); //$NON-NLS-1$
+        ComboFieldEditor dbTypeField = new ComboFieldEditor(IComponentPreferenceConstant.LINK_STYLE,
+                Messages.getString("ComponentsPreferencePage.configuration.LINK_STYLE"), strComboValues, composite); //$NON-NLS-1$
         addField(dbTypeField);
     }
 
@@ -217,8 +217,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     protected void addFontAndColorFieldsForDataViewer(Composite composite) {
-        IntegerFieldEditor rowLimit = new IntegerFieldEditor(IComponentPreferenceConstant.LIMIT, Messages
-                .getString("ComponentsPreferencePage.rowLimit"), composite);//$NON-NLS-1$ 
+        IntegerFieldEditor rowLimit = new IntegerFieldEditor(IComponentPreferenceConstant.LIMIT,
+                Messages.getString("ComponentsPreferencePage.rowLimit"), composite);//$NON-NLS-1$ 
         addField(rowLimit);
         Text textControl = rowLimit.getTextControl(composite);
         GridData layoutData = new GridData();
@@ -231,8 +231,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     protected void addFontAndColorFieldsFortRunJob(Composite composite) {
-        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IComponentPreferenceConstant.IS_AVOID, Messages
-                .getString("ComponenttRunJobPreferencePage.label"), composite); //$NON-NLS-1$
+        doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IComponentPreferenceConstant.IS_AVOID,
+                Messages.getString("ComponenttRunJobPreferencePage.label"), composite); //$NON-NLS-1$
         addField(doNotShowJobAfterDoubleClickCheckBoxField);
     }
 
@@ -244,8 +244,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     public void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
-        filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER, Messages
-                .getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
+        filePathTemp = new DirectoryFieldEditor(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER,
+                Messages.getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
                 parent);
         addField(filePathTemp);
 
@@ -279,8 +279,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     public void propertyChangeForComponents(PropertyChangeEvent event) {
-        MessageDialog warningMessageDialog = new MessageDialog(getFieldEditorParent().getShell(), Messages
-                .getString("ComponentsPreferencePage.WarningTitle"), null, //$NON-NLS-1$
+        MessageDialog warningMessageDialog = new MessageDialog(getFieldEditorParent().getShell(),
+                Messages.getString("ComponentsPreferencePage.WarningTitle"), null, //$NON-NLS-1$
                 Messages.getString("ComponentsPreferencePage.WarningMsg"), MessageDialog.WARNING, //$NON-NLS-1$
                 new String[] { Messages.getString("ComponentsPreferencePage.ButtonLabel0") }, 0); //$NON-NLS-1$
         warningMessageDialog.open();
@@ -293,8 +293,8 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public boolean performOk() {
         boolean flag = super.performOk();
-        String newPath = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getString(
-                IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
+        String newPath = CodeGeneratorActivator.getDefault().getPreferenceStore()
+                .getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
         if (this.oldPath != newPath) {
 
             final IRunnableWithProgress runnable = new IRunnableWithProgress() {
