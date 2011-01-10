@@ -39,11 +39,12 @@ if(priority.equals("1")){
 %>
 	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
 	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-	globalMap.put("<%=cid %>_WARN_MESSAGES", <%=ElementParameterParser.getValue(node, "__MESSAGE__")%>); 
-	globalMap.put("<%=cid %>_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
-	globalMap.put("<%=cid %>_WARN_CODE", <%=ElementParameterParser.getValue(node, "__CODE__") %>);
 <%
 					}
 				}
 			}
 %>
+globalMap.put("<%=cid %>_WARN_MESSAGES", <%=ElementParameterParser.getValue(node, "__MESSAGE__")%>); 
+globalMap.put("<%=cid %>_WARN_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
+globalMap.put("<%=cid %>_WARN_CODE", <%=ElementParameterParser.getValue(node, "__CODE__") %>);
+

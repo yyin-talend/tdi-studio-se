@@ -29,21 +29,21 @@
 				}
 			}
 %>
-	globalMap.put("<%=cid %>_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
+	globalMap.put("<%=cid %>_DIE_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
-	globalMap.put("<%=cid %>_MESSAGE", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+	globalMap.put("<%=cid %>_DIE_MESSAGE", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
     <%
     if(isRunInMultiThread ){
     %>
     	errorCode = new Integer(<%=code %>);
         ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=code %>));
-        globalMap.put("<%=cid %>_ERROR_CODE", errorCode);
+        globalMap.put("<%=cid %>_DIE_CODE", errorCode);
     <%
         }else {
     %>
         errorCode = new Integer(<%=code %>);
-        globalMap.put("<%=cid %>_ERROR_CODE", errorCode);
+        globalMap.put("<%=cid %>_DIE_CODE", errorCode);
     <%
         }
     %>
