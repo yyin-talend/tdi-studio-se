@@ -644,7 +644,14 @@ public class ComponentsFactory implements IComponentsFactory {
      */
 
     private File getComponentsLocation(String folder) {
-        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        }
+        Bundle b = Platform.getBundle(componentsPath);
 
         File file = null;
         try {

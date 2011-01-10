@@ -28,27 +28,7 @@ public class LocalProviderService implements ILocalProviderService {
      * @see org.talend.designer.core.ILocalProviderService#getResourceBundle(java.lang.String)
      */
     public ResourceBundle getResourceBundle(String label) {
-        // TODO Auto-generated method stub
         return ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(getClass().getClassLoader()));
     }
 
-    /**
-     * 
-     * 
-     * Needs to create our own class loader in order to clear the cache for a ResourceBundle. Without using a new class
-     * loader each time the values would not be reread from the .properties file
-     * 
-     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4212439
-     * 
-     * yzhang ComponentsFactory class global comment. Detailled comment <br/>
-     * 
-     * $Id: ComponentsFactory.java 52892 2010-12-20 05:52:17Z nrousseau $
-     * 
-     */
-    public static class ResClassLoader extends ClassLoader {
-
-        public ResClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-    }
 }
