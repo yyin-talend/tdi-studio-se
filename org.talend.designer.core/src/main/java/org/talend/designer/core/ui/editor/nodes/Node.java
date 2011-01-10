@@ -76,6 +76,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -453,7 +454,14 @@ public class Node extends Element implements IGraphicalNode {
         }
         setHasValidationRule(hasValidationRule);
         pluginFullName = newComponent.getPluginFullName();
-        if (!pluginFullName.equals(IComponentsFactory.COMPONENTS_LOCATION)) {
+        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        }
+        if (!pluginFullName.equals(componentsPath)) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }
 

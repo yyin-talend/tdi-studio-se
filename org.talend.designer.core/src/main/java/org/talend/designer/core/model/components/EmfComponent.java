@@ -44,6 +44,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -52,7 +53,6 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
@@ -85,6 +85,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -112,9 +113,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -259,8 +258,14 @@ public class EmfComponent implements IComponent {
     }
 
     private String getComponentsLocation(String folder) {
-        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-
+        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        }
+        Bundle b = Platform.getBundle(componentsPath);
         File file = null;
         try {
             URL url = FileLocator.find(b, new Path(folder), null);
@@ -2303,18 +2308,25 @@ public class EmfComponent implements IComponent {
     }
 
     public String getPluginFullName() {
+        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        }
         String pluginFullName = null;
         if (!isAlreadyLoad) {
             pluginFullName = compType.getHEADER().getEXTENSION();
             if (pluginFullName == null) {
-                pluginFullName = IComponentsFactory.COMPONENTS_LOCATION;
+                pluginFullName = componentsPath;
             }
             info.setPluginFullName(pluginFullName);
         } else {
             if (info != null) {
                 pluginFullName = info.getPluginFullName();
             } else {
-                pluginFullName = IComponentsFactory.COMPONENTS_LOCATION;
+                pluginFullName = componentsPath;
             }
         }
         // cache.get

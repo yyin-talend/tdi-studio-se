@@ -761,7 +761,14 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getComponentPath()
      */
     public URL getComponentPath() throws IOException {
-        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
+        if (processLabel.equals("Routes")) {
+            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        }
+        Bundle b = Platform.getBundle(componentsPath);
         URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
