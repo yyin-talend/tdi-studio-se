@@ -1,0 +1,25 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode    
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser 
+		" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String operation = ElementParameterParser.getValue(node, "__OPERATION__");
+	boolean deDupenabled = ("true").equals(ElementParameterParser.getValue(node,"__DE_DUPENABLED__"));
+%> 
+<%
+			if("syncMultipleLeads".equals(operation)){
+%>
+				if(leadRecordList_<%=cid%>.size()>0){
+					com.marketo.www.mktows.LeadRecord[] leadRecords_<%=cid%> = leadRecordList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadRecord[leadRecordList_<%=cid%>.size()]);
+					client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
+					leadRecordList_<%=cid%>.clear();
+				}
+<%				
+			}
+%>
