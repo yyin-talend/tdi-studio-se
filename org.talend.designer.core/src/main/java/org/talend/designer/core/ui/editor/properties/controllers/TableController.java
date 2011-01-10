@@ -712,13 +712,21 @@ public class TableController extends AbstractElementPropertySectionController {
     public static boolean isNeedAddAllButton(IElementParameter param) {
         Object[] itemsValue = param.getListItemsValue();
         IElementParameter tmpParam;
-
-        if (itemsValue.length == 0 || itemsValue[0] == null) {
-            return false;
+        // enable the "add all" button works when the COLUMN_LIST in the table no matter its position is the first or
+        // not
+        if (itemsValue.length > 0) {
+            boolean b = false;
+            for (int i = 0; i < itemsValue.length; i++) {
+                tmpParam = (IElementParameter) itemsValue[i];
+                if (tmpParam != null) {
+                    b = tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST;
+                    if (b) {
+                        return true;
+                    }
+                }
+            }
         }
+        return false;
 
-        tmpParam = (IElementParameter) itemsValue[0];
-
-        return tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST;
     }
 }
