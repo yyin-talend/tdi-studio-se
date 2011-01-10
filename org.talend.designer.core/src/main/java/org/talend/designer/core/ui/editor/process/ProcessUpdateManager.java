@@ -46,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -722,12 +723,53 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             case NODE_SAP_IDOC:
                 nodesResults.addAll(checkNodeSAPIDocFromRepository(node, onlySimpleShow));
                 break;
+            case NODE_VALIDATION_RULE:
+                nodesResults.addAll(checkNodeValidationRuleFromRepository(node, onlySimpleShow));
+                break;
             default:
                 return Collections.emptyList();
             }
         }
         getSchemaRenamedMap().clear();
         return nodesResults;
+    }
+
+    /**
+     * DOC ycbai Comment method "checkNodeValidationRuleFromRepository".
+     * 
+     * @param node
+     * @param onlySimpleShow
+     * @return
+     */
+    private List<UpdateResult> checkNodeValidationRuleFromRepository(final Node node, boolean onlySimpleShow) {
+        if (node == null || !isFromRepository()) {
+            return Collections.emptyList();
+        }
+        boolean same = true;
+        IElementParameter isCheckparam = node.getElementParameter(EParameterName.VALIDATION_RULES.getName());
+        if (isCheckparam != null && isCheckparam.getValue() != null && (Boolean) isCheckparam.getValue() == true) {
+            List<UpdateResult> queryResults = new ArrayList<UpdateResult>();
+            String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName());
+            ConnectionItem connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(propertyValue);
+            ValidationRulesConnection connection = null;
+            if (connectionItem != null) {
+                connection = (ValidationRulesConnection) connectionItem.getConnection();
+                if (connection != null) {
+                    same = false;
+                }
+            }
+            if (!same || onlySimpleShow) {
+                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                UpdateCheckResult result = new UpdateCheckResult(node);
+                result.setResult(EUpdateItemType.NODE_VALIDATION_RULE, EUpdateResult.UPDATE, connection, source);
+                result.setJob(getProcess());
+                setConfigrationForReadOnlyJob(result);
+                queryResults.add(result);
+                return queryResults;
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     private List<UpdateResult> checkNodeSAPIDocFromRepository(final Node node, boolean onlySimpleShow) {
@@ -1918,6 +1960,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case NODE_QUERY:
         case NODE_SAP_IDOC:
         case NODE_SAP_FUNCTION:
+        case NODE_VALIDATION_RULE:
             tmpResults = checkNodesParameters(type, onlySimpleShow);
             break;
         case JOB_PROPERTY_EXTRA:

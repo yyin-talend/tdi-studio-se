@@ -78,6 +78,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     case NODE_QUERY:
                     case NODE_SAP_IDOC:
                     case NODE_SAP_FUNCTION:
+                    case NODE_VALIDATION_RULE:
                     case JOBLET_SCHEMA:
                     case JOBLET_RENAMED:
                     case RELOAD:
@@ -103,6 +104,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     image = ECoreImage.METADATA_TABLE_ICON;
                     break;
                 case NODE_PROPERTY:
+                case NODE_VALIDATION_RULE:
                 case JOB_PROPERTY_EXTRA:
                 case JOB_PROPERTY_STATS_LOGS:
                     ERepositoryObjectType type = RepositoryUpdateManager.getTypeFromSource(item.getRemark());

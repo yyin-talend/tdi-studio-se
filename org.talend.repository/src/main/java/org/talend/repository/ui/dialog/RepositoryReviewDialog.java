@@ -102,6 +102,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     private boolean isHeaderButton;
 
+    private ViewerFilter[] additionalFilters;
+
     private DatabaseTypeFilter dbSupportFilter;
 
     ViewerTextFilter textFilter = new ViewerTextFilter();
@@ -147,6 +149,20 @@ public class RepositoryReviewDialog extends Dialog {
         this.repositoryType = repositoryType;
         this.dbSupportFilter = new DatabaseTypeFilter(itemFilter);
         typeProcessor = createTypeProcessor();
+    }
+
+    /**
+     * DOC ycbai RepositoryReviewDialog constructor comment.
+     * 
+     * @param parentShell
+     * @param type
+     * @param repositoryType
+     * @param additionalFilter
+     */
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, String repositoryType,
+            ViewerFilter[] additionalFilters) {
+        this(parentShell, type, repositoryType);
+        this.additionalFilters = additionalFilters;
     }
 
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, Boolean isHeaderButton, String repositoryType) {
@@ -228,6 +244,10 @@ public class RepositoryReviewDialog extends Dialog {
             return new HeaderFooterTypeProcessor(repositoryType);
         }
 
+        if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
+            return new ValidationRuleTypeProcessor(repositoryType);
+        }
+
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
 
@@ -282,6 +302,9 @@ public class RepositoryReviewDialog extends Dialog {
         repositoryView.addFilter(textFilter);
         if (dbSupportFilter != null) {
             repositoryView.addFilter(dbSupportFilter);
+        }
+        if (additionalFilters != null) {
+            repositoryView.addFilter(additionalFilters);
         }
         ProjectRepositoryNode.refProjectBool = false;
         repositoryView.refresh(needInitialize);
@@ -440,6 +463,14 @@ class FakeRepositoryView extends RepositoryView {
     public void addFilter(ViewerFilter filter) {
         if (filter != null) {
             getViewer().addFilter(filter);
+        }
+    }
+
+    public void addFilter(ViewerFilter[] filters) {
+        if (filters != null) {
+            for (ViewerFilter filter : filters) {
+                addFilter(filter);
+            }
         }
     }
 
@@ -935,6 +966,14 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 }
                 if (provider instanceof ProjectRepositoryNode) {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataRulesNode();
+                }
+            }
+            if (repositoryType.equals(ERepositoryCategoryType.VALIDATIONRULES.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataValidationRulesNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataValidationRulesNode();
                 }
             }
         }
@@ -1566,6 +1605,80 @@ class QueryTypeProcessor implements ITypeProcessor {
                     return false;
                 }
                 return true;
+            }
+        };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+}
+
+/**
+ * DOC ycbai class global comment. Detailled comment
+ */
+class ValidationRuleTypeProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * DOC ycbai ValidationRuleTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public ValidationRuleTypeProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        RepositoryNode validationRulesNode = contentProvider
+                .getRootRepositoryNode(ERepositoryObjectType.METADATA_VALIDATION_RULES);
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<IRepositoryNode> nodesList = new ArrayList<IRepositoryNode>();
+
+                for (IRepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    newProject.getChildren().add(refProject.getMetadataValidationRulesNode());
+
+                    nodesList.add(newProject);
+                }
+                validationRulesNode.getChildren().addAll(nodesList);
+            }
+        }
+        return validationRulesNode;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObjectType() == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getContentType() == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
+                    return true;
+                }
+                return false;
             }
         };
     }

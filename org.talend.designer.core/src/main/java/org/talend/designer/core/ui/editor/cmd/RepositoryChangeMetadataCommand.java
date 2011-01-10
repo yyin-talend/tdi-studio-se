@@ -102,6 +102,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
                 IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                if (lastVersion == null) {
+                    return;
+                }
                 Item item = lastVersion.getProperty().getItem();
                 if (item instanceof ConnectionItem) {
                     for (IElementParameter param : node.getElementParameters()) {

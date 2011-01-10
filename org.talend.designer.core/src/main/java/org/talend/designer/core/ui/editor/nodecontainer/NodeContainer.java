@@ -60,6 +60,8 @@ public class NodeContainer extends Element {
 
     private NodePerformance nodePerformance;
 
+    private SubjobContainer subjobContainer;
+
     private Point breakpointLocation = new Point();
 
     private Point warningLocation = new Point();
@@ -72,9 +74,9 @@ public class NodeContainer extends Element {
 
     private Point markLocation = new Point();
 
-    private SubjobContainer subjobContainer;
-
     private Point errorMarkLocation = new Point();
+
+    private Point validationRuleLocation = new Point();
 
     private Dimension breakpointSize;
 
@@ -87,6 +89,8 @@ public class NodeContainer extends Element {
     private Dimension parallelSize;
 
     private Dimension errorMarkSize;
+
+    private Dimension validationRuleSize;
 
     private Rectangle errorMarkRectangle;
 
@@ -122,6 +126,8 @@ public class NodeContainer extends Element {
             parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.Error_Mark);
             errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.LOCK_ICON);
+            validationRuleSize = new Dimension(image.getImageData().width, image.getImageData().height);
         }
 
         ElementParameter param = new ElementParameter(this);
@@ -163,7 +169,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle, errorMarkRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle, errorMarkRectangle, validationRuleRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -184,6 +190,11 @@ public class NodeContainer extends Element {
         infoLocation.y = nodeLocation.y - infoSize.height;
         infoRectangle = new Rectangle(infoLocation, infoSize);
         statusRectangle.union(infoRectangle);
+
+        validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
+        validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
+        validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
+        statusRectangle.union(validationRuleRectangle);
 
         markLocation.x = statusRectangle.x;
         markLocation.y = statusRectangle.y;
@@ -205,7 +216,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareCleanStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, errorMarkRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, errorMarkRectangle, validationRuleRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -226,6 +237,11 @@ public class NodeContainer extends Element {
         infoLocation.y = nodeLocation.y - infoSize.height;
         infoRectangle = new Rectangle(infoLocation, infoSize);
         statusRectangle.union(infoRectangle);
+
+        validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
+        validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
+        validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
+        statusRectangle.union(validationRuleRectangle);
 
         markLocation.x = statusRectangle.x;
         markLocation.y = statusRectangle.y;
@@ -441,6 +457,15 @@ public class NodeContainer extends Element {
      */
     public Point getMarkLocation() {
         return this.markLocation;
+    }
+
+    /**
+     * Getter for markLocation validationRuleLocation.
+     * 
+     * @return
+     */
+    public Point getValidationRuleLocation() {
+        return this.validationRuleLocation;
     }
 
     /**

@@ -68,6 +68,8 @@ public class NodeContainerFigure extends Figure {
 
     private ImageFigure markFigure;
 
+    private ImageFigure validationRuleFigure;
+
     public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
     private LabelCenter parallelFigure;
@@ -125,6 +127,12 @@ public class NodeContainerFigure extends Figure {
         infoFigure.setSize(infoFigure.getPreferredSize());
         this.add(infoFigure);
 
+        validationRuleFigure = new ImageFigure();
+        validationRuleFigure.setImage(ImageProvider.getImage(EImage.LOCK_ICON));
+        validationRuleFigure.setVisible(false);
+        validationRuleFigure.setSize(validationRuleFigure.getPreferredSize());
+        this.add(validationRuleFigure);
+
         markFigure = new ImageFigure();
         markFigure.setImage(errorMarkImage);
         this.add(markFigure, null, 0);
@@ -168,6 +176,10 @@ public class NodeContainerFigure extends Figure {
     public void updateErrorFlag(boolean flag) {
         rectFig.setVisible(flag);
         markFigure.setVisible(flag);
+    }
+
+    public void updateValidationRuleFigure(boolean isShow) {
+        validationRuleFigure.setVisible(isShow);
     }
 
     public void updateStatus(int status, boolean showInfoFlag) {
@@ -234,6 +246,15 @@ public class NodeContainerFigure extends Figure {
         }
 
         updateParallelFigure(status);
+
+        updateValidationRuleFigure();
+    }
+
+    private void updateValidationRuleFigure() {
+        IElementParameter param = nodeContainer.getNode().getElementParameter(EParameterName.VALIDATION_RULES.getName());
+        if (param != null && param.getValue() != null && param.getValue() instanceof Boolean) {
+            updateValidationRuleFigure((Boolean) param.getValue());
+        }
     }
 
     /**
@@ -279,6 +300,7 @@ public class NodeContainerFigure extends Figure {
         }
         rectFig.setLocation(nodeContainer.getMarkLocation());
         markFigure.setLocation(nodeContainer.getErrorMarkLocation());
+        validationRuleFigure.setLocation(nodeContainer.getValidationRuleLocation());
 
         super.paint(graphics);
     }

@@ -184,6 +184,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return root.getMetadataFileXmlNode();
     }
 
+    public RepositoryNode getMetadataValidationRulesNode() {
+        return root.getMetadataValidationRulesNode();
+    }
+
     /**
      * Getter for metadataFileLdifNode.
      * 

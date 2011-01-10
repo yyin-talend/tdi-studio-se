@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.IDataConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 
 /**

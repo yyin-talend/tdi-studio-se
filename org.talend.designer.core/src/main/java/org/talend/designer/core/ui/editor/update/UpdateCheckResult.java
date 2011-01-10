@@ -84,6 +84,7 @@ public class UpdateCheckResult extends UpdateResult {
         case NODE_PROPERTY:
         case NODE_QUERY:
         case JOBLET_SCHEMA:
+        case NODE_VALIDATION_RULE:
             break;
         case JOB_PROPERTY_EXTRA:
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.EXTRA.getTitle());
@@ -187,6 +188,7 @@ public class UpdateCheckResult extends UpdateResult {
         case NODE_PROPERTY:
         case NODE_SCHEMA:
         case NODE_QUERY:
+        case NODE_VALIDATION_RULE:
         case JOBLET_SCHEMA:
             if (getUpdateObject() != null) {
                 if (getUpdateObject() instanceof Node) {
@@ -271,8 +273,8 @@ public class UpdateCheckResult extends UpdateResult {
                 jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((org.talend.core.model.properties.Item) getJob())
                         .getProperty());
             } else if (getJob() instanceof IProcess) {
-                ProcessItem item = ItemCacheManager.getProcessItem(((IProcess) getJob()).getId(), ((IProcess) getJob())
-                        .getVersion());
+                ProcessItem item = ItemCacheManager.getProcessItem(((IProcess) getJob()).getId(),
+                        ((IProcess) getJob()).getVersion());
                 jobInfor = RepositoryUpdateManager.getUpdateJobInfor(item.getProperty());
             }
             String others = null;

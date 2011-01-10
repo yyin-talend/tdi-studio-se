@@ -103,7 +103,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
-            metadataHeaderFooterConnectionNode, jobscriptsNode, metadataBRMSConnectionNode;
+            metadataHeaderFooterConnectionNode, jobscriptsNode, metadataBRMSConnectionNode, metadataValidationRulesNode;
 
     private RepositoryNode jobletNode;
 
@@ -257,6 +257,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 break;
             case METADATA_FILE_RULES:
                 this.metadataRulesNode = null;
+                break;
+            case METADATA_VALIDATION_RULES:
+                this.metadataValidationRulesNode = null;
                 break;
             case REFERENCED_PROJECTS:
                 this.refProject = null;
@@ -551,6 +554,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 nodes.add(refProject);
             }
         }
+
+        // Metadata validation rules
+        if (PluginChecker.isValidationrulesPluginLoaded()) {
+            metadataValidationRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataValidationRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_VALIDATION_RULES);
+            metadataValidationRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_VALIDATION_RULES);
+            metadataNode.getChildren().add(metadataValidationRulesNode);
+        }
+
         // hide hidden nodes;
         hideHiddenNodes();
     }
@@ -682,7 +694,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataHeaderFooterConnectionNode) { // feature 6484 added
                 convert(newProject, factory.getMetadataHeaderFooter(newProject, true), metadataHeaderFooterConnectionNode,
                         ERepositoryObjectType.METADATA_HEADER_FOOTER, recBinNode);
-            } else if (parent == refProject) {
+            } else if (parent == metadataValidationRulesNode) {
+                convert(newProject, factory.getMetadataValidationRules(newProject, true), metadataValidationRulesNode,
+                        ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode);
+            }
+
+            else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
                 }
@@ -1908,6 +1925,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_FILE_RULES:
         case METADATA_FILE_LINKRULES:
             return this.metadataRulesNode;
+        case METADATA_VALIDATION_RULES:
+            return this.metadataValidationRulesNode;
         case REFERENCED_PROJECTS:
             return this.refProject;
         case JOBLET:
@@ -1950,6 +1969,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     public RepositoryNode getMetadataRulesNode() {
         return this.metadataRulesNode;
+    }
+
+    public RepositoryNode getMetadataValidationRulesNode() {
+        return this.metadataValidationRulesNode;
     }
 
     public RepositoryNode getDocNode() {

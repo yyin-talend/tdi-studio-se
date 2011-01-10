@@ -30,6 +30,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -71,6 +73,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
@@ -96,6 +99,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Object that describes the node. All informations on nodes are stored in this class. <br/>
@@ -202,6 +206,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private boolean compareFlag;
 
+    private boolean hasValidationRule;
+
     private String errorInfo;
 
     private boolean checkProperty;
@@ -262,6 +268,15 @@ public class Node extends Element implements IGraphicalNode {
 
     public void setErrorInfo(String errorInfo) {
         this.errorInfo = errorInfo;
+    }
+
+    public boolean isHasValidationRule() {
+        return this.hasValidationRule;
+    }
+
+    public void setHasValidationRule(boolean hasValidationRule) {
+        this.hasValidationRule = hasValidationRule;
+        firePropertyChange(EParameterName.VALIDATION_RULES.getName(), null, null);
     }
 
     /**
@@ -385,8 +400,9 @@ public class Node extends Element implements IGraphicalNode {
                 .getElementParameters());
 
         for (IMetadataTable table : metadataList) {
-            if (table.getAttachedConnector().equals(EConnectionType.FLOW_MAIN.getName())
-                    || table.getAttachedConnector().equals(EConnectionType.TABLE.getName())) {
+            if (table.getAttachedConnector() != null
+                    && (table.getAttachedConnector().equals(EConnectionType.FLOW_MAIN.getName()) || table.getAttachedConnector()
+                            .equals(EConnectionType.TABLE.getName()))) {
                 table.setTableName(uniqueName2);
             } else {
                 table.setTableName(table.getAttachedConnector());
@@ -402,7 +418,7 @@ public class Node extends Element implements IGraphicalNode {
                 if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext() != null
                         && param.getContext().equals(table.getAttachedConnector())) {
                     if (param.getValue() instanceof IMetadataTable) {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
@@ -423,6 +439,8 @@ public class Node extends Element implements IGraphicalNode {
                     hintToParse = (String) obj;
                 } else if (param.getName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
                     connectionToParse = (String) obj;
+                } else if (param.getName().equals(EParameterName.VALIDATION_RULES.getName())) {
+                    hasValidationRule = (Boolean) obj;
                 }
             }
         }
@@ -431,7 +449,9 @@ public class Node extends Element implements IGraphicalNode {
             setPropertyValue(EParameterName.HINT.getName(), hintToParse);
             setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
             setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
+            setPropertyValue(EParameterName.VALIDATION_RULES.getName(), hasValidationRule);
         }
+        setHasValidationRule(hasValidationRule);
         pluginFullName = newComponent.getPluginFullName();
         if (!pluginFullName.equals(IComponentsFactory.COMPONENTS_LOCATION)) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
@@ -1436,7 +1456,9 @@ public class Node extends Element implements IGraphicalNode {
         IElementParameter parameter = getElementParameter(id);
         if (id.contains(EParameterName.SCHEMA_TYPE.getName()) || id.contains(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.contains(EParameterName.PROPERTY_TYPE.getName())
-                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.contains(EParameterName.VALIDATION_RULES.getName())
+                || id.contains(EParameterName.VALIDATION_RULE_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
         if (parameter == null) { // in case we try to set a value to a
@@ -1466,6 +1488,10 @@ public class Node extends Element implements IGraphicalNode {
 
         if (id.equals(EParameterName.DUMMY.getName())) {
             setDummy((Boolean) value);
+        }
+
+        if (id.equals(EParameterName.VALIDATION_RULES.getName())) {
+            setHasValidationRule((Boolean) value);
         }
 
         if (id.equals(EParameterName.HINT.getName())) {
@@ -2216,6 +2242,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             }
+            checkValidationRule(param);
         }
 
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
@@ -2223,6 +2250,38 @@ public class Node extends Element implements IGraphicalNode {
             boolean x = (Boolean) enableParallelizeParameter.getValue();
             if (x) {
                 addStatus(Process.PARALLEL_STATUS);
+            }
+        }
+    }
+
+    /**
+     * DOC ycbai Comment method "checkValidationRule".
+     * 
+     * @param param
+     */
+    private void checkValidationRule(IElementParameter param) {
+        if (EParameterName.VALIDATION_RULES.getName().equals(param.getName())) {
+            final IElementParameter paramValidation = getElementParameter(EParameterName.VALIDATION_RULES.getName());
+            if (paramValidation != null && paramValidation.getValue() != null && paramValidation.getValue() instanceof Boolean
+                    && (Boolean) paramValidation.getValue()) {
+                final IElementParameter elementParameter = getElementParameter(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE
+                        .getName());
+                String vItemId = String.valueOf(elementParameter.getValue());
+                String errorMessage;
+                if (StringUtils.trimToNull(vItemId) == null) {
+                    errorMessage = "Must set the validation rule item id.";
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                } else {
+                    IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
+                    try {
+                        if (factory.getLastVersion(vItemId) == null) {
+                            errorMessage = "Validation rule: \"" + vItemId + "\" is not exsist.";
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
             }
         }
     }

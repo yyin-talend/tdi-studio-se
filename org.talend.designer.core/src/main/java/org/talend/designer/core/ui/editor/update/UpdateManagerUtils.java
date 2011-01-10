@@ -172,8 +172,8 @@ public final class UpdateManagerUtils {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow) {
-        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(Messages
-                .getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
+        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
+                Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
@@ -225,10 +225,10 @@ public final class UpdateManagerUtils {
                     progress.executeProcess();
                 } catch (InvocationTargetException e) {
                     ExceptionHandler.process(e);
-                    // 
+                    //
                 } catch (InterruptedException e) {
                     ExceptionHandler.process(e);
-                    // 
+                    //
                 }
                 return !results.isEmpty();
             }
@@ -356,6 +356,7 @@ public final class UpdateManagerUtils {
             case NODE_QUERY:
             case NODE_SAP_IDOC:
             case NODE_SAP_FUNCTION:
+            case NODE_VALIDATION_RULE:
                 command = new UpdateNodeParameterCommand(result);
                 break;
             case JOB_PROPERTY_EXTRA:
@@ -465,8 +466,8 @@ public final class UpdateManagerUtils {
     }
 
     private static void upadateJobletReferenceInfor() {
-        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
-                RepositoryUpdateManager.getEditors());
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService()
+                .getOpenedProcess(RepositoryUpdateManager.getEditors());
 
         for (IProcess2 proc : openedProcessList) {
             proc.getUpdateManager().retrieveRefInformation();

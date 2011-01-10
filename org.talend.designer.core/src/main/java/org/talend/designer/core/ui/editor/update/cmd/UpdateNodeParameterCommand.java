@@ -31,6 +31,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
@@ -97,6 +98,9 @@ public class UpdateNodeParameterCommand extends Command {
             break;
         case NODE_SAP_IDOC:
             updateSAPIDocParameters();
+            break;
+        case NODE_VALIDATION_RULE:
+            updateValidationRule();
             break;
         default:
             return;
@@ -167,6 +171,27 @@ public class UpdateNodeParameterCommand extends Command {
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 for (IElementParameter param : node.getElementParameters()) {
                     SAPParametersUtils.setNoRepositoryParams(param);
+                }
+            }
+        }
+
+    }
+
+    private void updateValidationRule() {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
+        }
+        if (updateObject instanceof Node) {
+            Node node = (Node) updateObject;
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                if (result.isChecked()) {
+                    if (result.getParameter() instanceof ValidationRulesConnection) {
+                        ValidationRulesConnection connection = (ValidationRulesConnection) result.getParameter();
+                        if (connection != null) {
+                            node.setPropertyValue(EParameterName.VALIDATION_RULE_TYPE.getName(), EmfComponent.REPOSITORY);
+                        }
+                    }
                 }
             }
         }

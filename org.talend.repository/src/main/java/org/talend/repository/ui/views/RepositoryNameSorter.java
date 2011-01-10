@@ -85,9 +85,19 @@ public class RepositoryNameSorter extends ViewerSorter {
             case METADATA_SALESFORCE_SCHEMA:
                 return 56;
             case METADATA_GENERIC_SCHEMA:
+                return 58;
+            case METADATA_MDMCONNECTION:
+                return 59;
+            case METADATA_RULES_MANAGEMENT:
                 return 60;
             case METADATA_HEADER_FOOTER:
                 return 61;
+            case METADATA_FILE_EBCDIC:
+                return 62;
+            case METADATA_WSDL_SCHEMA:
+                return 63;
+            case METADATA_VALIDATION_RULES:
+                return 64;
             case DOCUMENTATION:
                 return 65;
             case JOBS:

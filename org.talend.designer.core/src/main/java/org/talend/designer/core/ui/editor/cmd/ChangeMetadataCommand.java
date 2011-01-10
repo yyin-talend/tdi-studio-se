@@ -228,8 +228,8 @@ public class ChangeMetadataCommand extends Command {
             if (returnIfNull != null) {
                 return returnIfNull;
             }
-            propagate = MessageDialog.openQuestion(new Shell(), Messages
-                    .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+            propagate = MessageDialog.openQuestion(new Shell(),
+                    Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
                     Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ 
         }
         return propagate;
@@ -441,21 +441,24 @@ public class ChangeMetadataCommand extends Command {
             }
 
         }
-
         if (inputSchemaParam != null
-                && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue().equals(
-                        EmfComponent.REPOSITORY)) {
+                && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()) != null
+                && EmfComponent.REPOSITORY.equals(inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                        .getValue())) {
             // add by wzhang to fix bug 7898.
             IElementParameter elementParameter = node.getElementParameter(EParameterName.MAPPING.getName());
             if (elementParameter != null) {
                 if (elementParameter.getValue() instanceof String) {
                     String value = (String) elementParameter.getValue();
                     if (!isDBComponent(value)) {
-                        schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                EmfComponent.REPOSITORY);
-                        schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
-                                inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
-                                        .getValue());
+                        schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName())
+                                .setValue(EmfComponent.REPOSITORY);
+                        schemaParam
+                                .getChildParameters()
+                                .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                                .setValue(
+                                        inputSchemaParam.getChildParameters()
+                                                .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue());
                     }
                 }
             }

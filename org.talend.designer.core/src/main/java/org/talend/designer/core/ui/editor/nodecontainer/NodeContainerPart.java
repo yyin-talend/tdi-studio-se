@@ -133,6 +133,11 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent changeEvent) {
+        if (changeEvent.getPropertyName().equals(EParameterName.VALIDATION_RULES.getName())) {
+            Node node = ((NodeContainer) getModel()).getNode();
+            ((NodeContainerFigure) this.getFigure()).updateValidationRuleFigure(node.isHasValidationRule());
+            refreshVisuals();
+        }
         if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
             Node node = ((NodeContainer) getModel()).getNode();
             ((NodeContainerFigure) figure).setInfoHint(node.getShowHintText());

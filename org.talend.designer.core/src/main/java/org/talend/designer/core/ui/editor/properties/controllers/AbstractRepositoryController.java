@@ -303,7 +303,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
-    private ConnectionItem lastItemUsed;
+    protected ConnectionItem lastItemUsed;
 
     private FileItem lastFileItemUsed; // hywang add for 6484
 
@@ -468,7 +468,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
     }
 
-    private void fastInitializeRepositoryNames() {
+    protected void fastInitializeRepositoryNames() {
         lastItemUsed = null;
 
         fastRepositoryUpdateProperty();

@@ -191,6 +191,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     public static final int INFO_STATUS = 16;
 
+    public static final int VALIDATION_RULE_STATUS = 32;
+
     public static final int PARALLEL_STATUS = 8;
 
     private Property property;
@@ -726,6 +728,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                 || param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
+                || param.getFieldType().equals(EParameterFieldType.VALIDATION_RULE_TYPE)
                 || param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName())) {
             return;
         }
@@ -743,6 +746,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
                     // save conenction value
                 } else if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
+                    return;
+                }
+            }
+            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.VALIDATION_RULE_TYPE)) {
+                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.VALIDATION_RULE_TYPE.getName());
+                if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
                     return;
                 }
             }

@@ -123,6 +123,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                     case METADATA_SAPCONNECTIONS:
                     case METADATA_FILE_EBCDIC:
                     case METADATA_FILE_HL7:
+                    case METADATA_VALIDATION_RULES:
                     case METADATA_FILE_FTP:
                     case METADATA_FILE_BRMS:
                     case METADATA_MDMCONNECTION:

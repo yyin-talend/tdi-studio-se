@@ -126,21 +126,21 @@ public enum EParameterName {
     USE_TRANSACTION("use_transaction"), //$NON-NLS-1$
 
     // feature 13940
-    HEADERFOOTER_HEADERID("headerfooter_headerid"),
-    HEADER_ENABLED("header_enabled"),
-    HEADER_CODE("header_code"),
-    HEADER_IMPORT("header_import"),
-    HEADER_LIBRARY("header_library"),
-    HEADERFOOTER_FOOTERID("headerfooter_footerid"),
-    FOOTER_ENABLED("footer_enabled"),
-    FOOTER_CODE("footer_code"),
-    FOOTER_IMPORT("footer_import"),
-    FOOTER_LIBRARY("footer_library"),
+    HEADERFOOTER_HEADERID("headerfooter_headerid"), //$NON-NLS-1$
+    HEADER_ENABLED("header_enabled"), //$NON-NLS-1$
+    HEADER_CODE("header_code"), //$NON-NLS-1$
+    HEADER_IMPORT("header_import"), //$NON-NLS-1$
+    HEADER_LIBRARY("header_library"), //$NON-NLS-1$
+    HEADERFOOTER_FOOTERID("headerfooter_footerid"), //$NON-NLS-1$
+    FOOTER_ENABLED("footer_enabled"), //$NON-NLS-1$
+    FOOTER_CODE("footer_code"), //$NON-NLS-1$
+    FOOTER_IMPORT("footer_import"), //$NON-NLS-1$
+    FOOTER_LIBRARY("footer_library"), //$NON-NLS-1$
 
     RESUMING_CHECKPOINT("Recovery Checkpoint"), //$NON-NLS-1$
     RESUMLABEL("Label"), //$NON-NLS-1$
     FAILURE_INSTRUCTIONS("Failure instructions"), //$NON-NLS-1$
-    ACTIVEBREAKPOINT("Activate conditional breakpoint"),
+    ACTIVEBREAKPOINT("Activate conditional breakpoint"), //$NON-NLS-1$
     // hywang add for feature7373
     COLUMNINDEX(Messages.getString("EParameterName.columnIndex")), //$NON-NLS-1$
     CDC_TYPE_MODE("CDC Type Mode"), //$NON-NLS-1$
@@ -287,7 +287,12 @@ public enum EParameterName {
     BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"), //$NON-NLS-1$
     KEEP_CDC_DATAS(Messages.getString("EParameterName.KeepCDCDatasTitle")), //$NON-NLS-1$
     VALUES("VALUES"), //$NON-NLS-1$
-    JAVA_LIBRARY_PATH("JAVA_LIBRARY_PATH"); //$NON-NLS-1$
+    JAVA_LIBRARY_PATH("JAVA_LIBRARY_PATH"), //$NON-NLS-1$
+
+    // for validation rule
+    VALIDATION_RULES(Messages.getString("EParameterName.validationRules")), //$NON-NLS-1$
+    VALIDATION_RULE_TYPE(Messages.getString("EParameterName.validationRuleType")), //$NON-NLS-1$
+    REPOSITORY_VALIDATION_RULE_TYPE("Repository"); //$NON-NLS-1$ Hidden parameter so no translation needed
 
     private String displayName;
 

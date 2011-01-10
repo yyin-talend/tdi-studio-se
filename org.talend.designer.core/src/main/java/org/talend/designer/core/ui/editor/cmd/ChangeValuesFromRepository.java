@@ -270,6 +270,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                             param.getCategory());
+                    if (relatedPropertyParam == null) {
+                        continue;
+                    }
                     if (!relatedPropertyParam.getCategory().equals(currentCategory) && !repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                         continue;
                     }

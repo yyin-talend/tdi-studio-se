@@ -514,6 +514,11 @@
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaCommandGenerator"
            mapping="JAVA_COMMAND"
            name="Java Command">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.ValidationRuleTypeGenerator"
+           mapping="VALIDATION_RULE_TYPE"
+           name="Validation Rule Type">
      </generator>     
 	 
    </extension>

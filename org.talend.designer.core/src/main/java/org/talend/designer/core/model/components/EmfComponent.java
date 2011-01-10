@@ -52,6 +52,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
@@ -65,6 +66,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -110,7 +112,9 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -320,6 +324,7 @@ public class EmfComponent implements IComponent {
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
         addSqlPatternParameters(listParam, node);
+        addValidationRulesParameters(listParam, node);
         return listParam;
     }
 
@@ -478,6 +483,78 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(true);
         listParam.add(param);
+    }
+
+    /**
+     * DOC ycbai Comment method "addValidationRulesParameters".
+     * 
+     * @param listParam
+     * @param node
+     */
+    private void addValidationRulesParameters(final List<ElementParameter> listParam, INode node) {
+        ElementParameter param;
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.VALIDATION_RULES.getName());
+        param.setValue(new Boolean(false));
+        param.setDisplayName(EParameterName.VALIDATION_RULES.getDisplayName());
+        param.setFieldType(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.VALIDATION_RULES);
+        param.setNumRow(1);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        listParam.add(param);
+
+        listParam.add(addValidationRuleType(node, 3));
+    }
+
+    private ElementParameter addValidationRuleType(INode node, int rowNb) {
+        String context = "FLOW"; //$NON-NLS-1$
+        ElementParameter parentParam = new ElementParameter(node);
+        parentParam.setName(EParameterName.VALIDATION_RULE_TYPE.getName());
+        parentParam.setDisplayName(EParameterName.VALIDATION_RULE_TYPE.getDisplayName());
+        parentParam.setFieldType(EParameterFieldType.VALIDATION_RULE_TYPE);
+        parentParam.setCategory(EComponentCategory.VALIDATION_RULES);
+        parentParam.setNumRow(rowNb);
+        parentParam.setReadOnly(false);
+        parentParam.setShow(true);
+        parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$ //$NON-NLS-2$
+        parentParam.setContext(context);
+        parentParam.setRepositoryValue(ERepositoryCategoryType.VALIDATIONRULES.getName());
+        parentParam.setValue("");
+
+        ElementParameter newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.VALIDATION_RULES);
+        newParam.setName(EParameterName.VALIDATION_RULE_TYPE.getName());
+        newParam.setDisplayName(EParameterName.VALIDATION_RULE_TYPE.getDisplayName());
+        newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+        newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+        newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+        newParam.setValue(BUILTIN);
+        newParam.setNumRow(rowNb);
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setShow(true);
+        newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        newParam.setReadOnly(false);
+        newParam.setContext(context);
+        newParam.setParentParameter(parentParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setCategory(EComponentCategory.VALIDATION_RULES);
+        newParam.setName(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName());
+        newParam.setDisplayName(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getDisplayName());
+        newParam.setListItemsDisplayName(new String[] {});
+        newParam.setListItemsValue(new String[] {});
+        newParam.setNumRow(rowNb);
+        newParam.setFieldType(EParameterFieldType.TECHNICAL);
+        newParam.setValue(""); //$NON-NLS-1$
+        newParam.setShow(false);
+        newParam.setRequired(true);
+        newParam.setContext(context);
+        newParam.setParentParameter(parentParam);
+
+        return parentParam;
     }
 
     private void addSqlPatternParameters(final List<ElementParameter> listParam, INode node) {
@@ -1819,6 +1896,9 @@ public class EmfComponent implements IComponent {
                 case RULE_TYPE: // hywang add for feature 6484
                     newParam.setFieldType(EParameterFieldType.RULE_TYPE);
                     break;
+                // case VALIDATION_RULE_TYPE:
+                // newParam.setFieldType(EParameterFieldType.VALIDATION_RULE_TYPE);
+                // break;
                 default: // TEXT by default
                     newParam.setFieldType(EParameterFieldType.TEXT);
                     if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
