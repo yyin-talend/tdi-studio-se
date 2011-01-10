@@ -36,8 +36,9 @@
     <%
     if(isRunInMultiThread ){
     %>
+    	errorCode = new Integer(<%=code %>);
         ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=code %>));
-        globalMap.put("<%=cid %>_ERROR_CODE", <%=new Integer(<%=code %>));
+        globalMap.put("<%=cid %>_ERROR_CODE", errorCode);
     <%
         }else {
     %>
