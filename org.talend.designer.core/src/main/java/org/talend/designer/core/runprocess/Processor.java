@@ -127,7 +127,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
      * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
      */
     public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
-            IProcessMessageManager processMessageManager, boolean... isSaveBeforeRun) throws ProcessorException {
+            IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }

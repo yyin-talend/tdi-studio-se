@@ -1484,6 +1484,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             SaveJobBeforeRunAction action = new SaveJobBeforeRunAction(processContext.getProcess());
             action.run();
         }
+        if (!processContext.isSaveBeforeRun()) {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getWorkbench().saveAllEditors(true);
+        }
     }
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {

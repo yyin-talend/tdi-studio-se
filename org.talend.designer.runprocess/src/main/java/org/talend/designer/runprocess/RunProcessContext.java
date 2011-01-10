@@ -490,7 +490,7 @@ public class RunProcessContext {
                                                 // before launching
                                                 if (!JobErrorsChecker.hasErrors(shell)) {
                                                     ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
-                                                            progressMonitor, processMessageManager, isSaveBeforeRun());
+                                                            progressMonitor, processMessageManager);
                                                 }
 
                                                 if (ps != null && !progressMonitor.isCanceled()) {
