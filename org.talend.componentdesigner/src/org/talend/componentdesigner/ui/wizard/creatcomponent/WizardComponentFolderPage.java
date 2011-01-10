@@ -32,6 +32,8 @@ import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.enumtype.LanguageType;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.service.ICorePerlService;
 
 /**
  * @author rli
@@ -47,12 +49,17 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
 
     private Text componentFolderText;
 
+    private boolean isUsePerl = true;
+
     /**
      * @param pageName
      * @param componentPref
      */
     public WizardComponentFolderPage(String pageName, ComponentPref componentPref) {
         super(pageName, componentPref);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+            isUsePerl = false;
+        }
     }
 
     @Override
@@ -85,22 +92,28 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
                     componentPref.setLongName(componentLongName.getText());
                 }
 
-            });    
+            });
             this.setPageComplete(validatePage());
         } else {
             this.componentFolderText.setText(componentPref.getName());
             this.componentFolderText.setEnabled(false);
             switch (componentPref.getLanguageType()) {
             case PERLLANGUAGETYPE:
-                this.usePerlLangButton.setSelection(true);
+                if (isUsePerl) {
+                    this.usePerlLangButton.setSelection(true);
+                }
                 this.useJavaLangButton.setSelection(false);
                 break;
             case JAVALANGUAGETYPE:
-                this.usePerlLangButton.setSelection(false);
+                if (isUsePerl) {
+                    this.usePerlLangButton.setSelection(false);
+                }
                 this.useJavaLangButton.setSelection(true);
                 break;
             case BOTHLANGUAGETYPE:
-                this.usePerlLangButton.setSelection(true);
+                if (isUsePerl) {
+                    this.usePerlLangButton.setSelection(true);
+                }
                 this.useJavaLangButton.setSelection(true);
                 break;
             default:
@@ -153,26 +166,34 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
 
         useJavaLangButton = new Button(languageGroup, SWT.CHECK | SWT.RIGHT);
         useJavaLangButton.setText(Messages.getString("WizardComponentFolderPage.Java")); //$NON-NLS-1$
-        usePerlLangButton = new Button(languageGroup, SWT.CHECK | SWT.RIGHT);
-        usePerlLangButton.setText(Messages.getString("WizardComponentFolderPage.Perl")); //$NON-NLS-1$
-
+        if (isUsePerl) {
+            usePerlLangButton = new Button(languageGroup, SWT.CHECK | SWT.RIGHT);
+            usePerlLangButton.setText(Messages.getString("WizardComponentFolderPage.Perl")); //$NON-NLS-1$
+        }
         SelectionListener listener = new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 setPageComplete(validatePage());
-                LanguageType type = LanguageType.find(useJavaLangButton.getSelection(), usePerlLangButton.getSelection());
+                LanguageType type;
+                if (isUsePerl) {
+                    type = LanguageType.find(useJavaLangButton.getSelection(), false);
+                } else {
+                    type = LanguageType.find(useJavaLangButton.getSelection(), usePerlLangButton.getSelection());
+                }
                 componentPref.setLanguageType(type);
                 // propertyChangeBean.firePropertyChange(PluginConstant.LANGUAGE_PROPERTY, null, type);
             }
         };
         useJavaLangButton.addSelectionListener(listener);
-        usePerlLangButton.addSelectionListener(listener);
+        if (isUsePerl) {
+            usePerlLangButton.addSelectionListener(listener);
+        }
     }
 
     @Override
     protected boolean validatePage() {
-        if (useJavaLangButton != null && usePerlLangButton != null) {
+        if (useJavaLangButton != null || usePerlLangButton != null) {
             if (!(useJavaLangButton.getSelection() || usePerlLangButton.getSelection())) {
                 setErrorMessage(Messages.getString("WizardComponentFolderPage.ErrMSG1")); //$NON-NLS-1$
                 return false;
@@ -212,6 +233,7 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
     public String getComponentFolderName() {
         return componentFolderText.getText();
     }
+
     /**
      * Getter for componentLongName.
      * 
