@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
@@ -73,6 +74,10 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class DataProcess {
 
+    private static final String COMBINED_COMPONENT = "COMBINED_COMPONENT"; //$NON-NLS-1$
+
+    private static final String COMBINED_PARAMETERS = "COMBINED_PARAMETERS"; //$NON-NLS-1$
+
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
     private static final String FSNODE_COMPONENT_NAME = "tFSNode"; //$NON-NLS-1$
@@ -121,18 +126,13 @@ public class DataProcess {
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
-        copyElementParametersValue(sourceElement, targetElement, -1);
-    }
-
-    private void copyElementParametersValue(IElement sourceElement, IElement targetElement, int executionOrder) {
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
             IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
             if (targetParam != null) {
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
-                targetParam.setNumRow(executionOrder);
                 if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
-                    targetParam.setListItemsValue(sourceParam.getListItemsValue());
+                    targetParam.setListItemsValue(ArrayUtils.clone(sourceParam.getListItemsValue()));
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
                 }
                 for (String name : targetParam.getChildParameters().keySet()) {
@@ -145,6 +145,36 @@ public class DataProcess {
                     }
                 }
             }
+        }
+    }
+
+    private void combineElementParameters(IElement sourceElement, IElement targetElement) {
+        IElementParameter combinedParameters = targetElement.getElementParameter(COMBINED_PARAMETERS);
+        if (combinedParameters == null) {
+            combinedParameters = new ElementParameter(targetElement);
+            combinedParameters.setName(COMBINED_PARAMETERS);
+            combinedParameters.setDisplayName(COMBINED_PARAMETERS);
+            combinedParameters.setFieldType(EParameterFieldType.TECHNICAL);
+            combinedParameters.setCategory(EComponentCategory.SQL_PATTERN);
+            combinedParameters.setReadOnly(false);
+            combinedParameters.setRequired(false);
+            combinedParameters.setShow(false);
+            combinedParameters.setValue(new ArrayList<IElementParameter>());
+            ((List<IElementParameter>) targetElement.getElementParameters()).add(combinedParameters);
+        }
+        IElementParameter combinedComponent = new ElementParameter(targetElement);
+        combinedComponent.setName(COMBINED_COMPONENT);
+        combinedComponent.setDisplayName(COMBINED_PARAMETERS);
+        combinedComponent.setFieldType(EParameterFieldType.TECHNICAL);
+        combinedComponent.setCategory(EComponentCategory.SQL_PATTERN);
+        combinedComponent.setReadOnly(false);
+        combinedComponent.setRequired(false);
+        combinedComponent.setShow(false);
+        combinedComponent.setValue(((AbstractNode) sourceElement).getComponent().getName());
+        ((List<IElementParameter>) combinedParameters.getValue()).add(combinedComponent);
+
+        for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
+            combinedComponent.getChildParameters().put(sourceParam.getName(), sourceParam);
         }
     }
 
@@ -1104,20 +1134,18 @@ public class DataProcess {
         boolean loopEnd = dataNode == null || !ELTNODE_COMPONENT_NAME.equals(currentComponent.getComponent().getCombine());
 
         DataNode eltNode = null, oldFsNode = null;
-        int executionOrder = 1;
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
             dataNodeList.remove(dataNode);
             buildCheckMap.remove(currentComponent);
             if (eltNode != null) {
-                needCreateTELTNode = needCreateNewEltNode(eltNode, dataNode);
+                needCreateTELTNode = false;// needCreateNewEltNode(eltNode, dataNode);
                 oldFsNode = eltNode;
             }
 
             // add the tELTNode component if this one is not already added to the list.
             if (eltNode == null || needCreateTELTNode) {
-                executionOrder = 1;
                 // Create the new elt component
                 IComponent component = ComponentsFactoryProvider.getInstance().get(ELTNODE_COMPONENT_NAME);
                 if (component == null) {
@@ -1145,8 +1173,7 @@ public class DataProcess {
                 eltNode.getMetadataList().addAll(currentComponent.getMetadataList());
             }
 
-            copyElementParametersValue(dataNode, eltNode, executionOrder);
-            executionOrder++;
+            combineElementParameters(dataNode, eltNode);
 
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
                 loopEnd = true;
@@ -1273,11 +1300,6 @@ public class DataProcess {
             return;
         }
 
-        // String[] fsNodeNeedReplace = new String[] {
-        //                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-        // String[] fsNodeNeedReplace = new String[] {
-        //                "tFSFilterRows", "tFSFilterColumns", "tFSSort", "tFSUnique", "tFSTransform", "tFSCheck", "tFSCode", "tFSPartition", "tFSJoin" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-
         INode currentComponent = graphicalNode;
         AbstractNode dataNode;
 
@@ -1288,7 +1310,6 @@ public class DataProcess {
 
         Set<INode> progressBarList = null;
         DataNode fsNode = null, oldFsNode = null;
-        int executionOrder = 1;
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
@@ -1320,7 +1341,6 @@ public class DataProcess {
 
             // add the fs component if this one is not already added to the list.
             if (fsNode == null || needCreateTFSNode) {
-                executionOrder = 1;
                 if (originalGraphicNode != null) {
                     progressBarList = originalGraphicNode.fsComponentsInProgressBar();
                     progressBarList.clear();
@@ -1357,8 +1377,10 @@ public class DataProcess {
                 progressBarList.add(originalGraphicNode);
             }
 
-            copyElementParametersValue(dataNode, fsNode, executionOrder);
-            executionOrder++;
+            // copy to remove once combine parameters is used in FS components
+            copyElementParametersValue(dataNode, fsNode);
+
+            combineElementParameters(dataNode, fsNode);
 
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
                 loopEnd = true;
