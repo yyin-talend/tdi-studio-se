@@ -40,18 +40,22 @@ import orgomg.cwm.objectmodel.core.Package;
  */
 public class MetadataTableRepositoryObject extends MetadataTable implements ISubRepositoryObject {
 
-    private final IRepositoryViewObject repObj;
+    private final IRepositoryViewObject viewObject;
+
+    public IRepositoryViewObject getViewObject() {
+        return this.viewObject;
+    }
 
     private org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
     public MetadataTableRepositoryObject(IRepositoryViewObject repObj,
             org.talend.core.model.metadata.builder.connection.MetadataTable table) {
-        this.repObj = repObj;
+        this.viewObject = repObj;
         this.table = table;
     }
 
     public Property getProperty() {
-        Property property = repObj.getProperty();
+        Property property = viewObject.getProperty();
         // update table
         updataTable(property);
         return property;
@@ -59,7 +63,7 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
 
     // @Override
     public String getVersion() {
-        return repObj.getVersion();
+        return viewObject.getVersion();
     }
 
     @Override
@@ -159,51 +163,51 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
     }
 
     public User getAuthor() {
-        return repObj.getAuthor();
+        return viewObject.getAuthor();
     }
 
     public List<IRepositoryViewObject> getChildren() {
-        return repObj.getChildren();
+        return viewObject.getChildren();
     }
 
     public Date getCreationDate() {
-        return repObj.getCreationDate();
+        return viewObject.getCreationDate();
     }
 
     public String getDescription() {
-        return repObj.getDescription();
+        return viewObject.getDescription();
     }
 
     public ERepositoryStatus getInformationStatus() {
-        return repObj.getInformationStatus();
+        return viewObject.getInformationStatus();
     }
 
     public Date getModificationDate() {
-        return repObj.getModificationDate();
+        return viewObject.getModificationDate();
     }
 
     public String getPath() {
-        return repObj.getPath();
+        return viewObject.getPath();
     }
 
     public String getProjectLabel() {
-        return repObj.getProjectLabel();
+        return viewObject.getProjectLabel();
     }
 
     public String getPurpose() {
-        return repObj.getPurpose();
+        return viewObject.getPurpose();
     }
 
     public IRepositoryNode getRepositoryNode() {
-        return repObj.getRepositoryNode();
+        return viewObject.getRepositoryNode();
     }
 
     public ERepositoryStatus getRepositoryStatus() {
-        return repObj.getRepositoryStatus();
+        return viewObject.getRepositoryStatus();
     }
 
     public String getStatusCode() {
-        return repObj.getStatusCode();
+        return viewObject.getStatusCode();
     }
 
     public ERepositoryObjectType getRepositoryObjectType() {
@@ -215,7 +219,7 @@ public class MetadataTableRepositoryObject extends MetadataTable implements ISub
     }
 
     public void setRepositoryNode(IRepositoryNode node) {
-        repObj.setRepositoryNode(node);
+        viewObject.setRepositoryNode(node);
     }
 
 }
