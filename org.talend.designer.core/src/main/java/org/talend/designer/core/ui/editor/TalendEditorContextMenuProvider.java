@@ -255,13 +255,19 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             subMenu = new MenuManager("Move to joblet"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_OTHER, subMenu);
             action = getMoveToJobletAction(part, null);
-            ((AddToJobletAction) action).update();
-            List<Node> nodeList = ((AddToJobletAction) action).getJobletNodeList();
-            for (Node jobletNode : nodeList) {
-                action = getMoveToJobletAction(part, jobletNode);
+            if (action != null) {
                 ((AddToJobletAction) action).update();
-                action.setText(jobletNode.getLabel());
-                subMenu.add(action);
+                List<Node> nodeList = ((AddToJobletAction) action).getJobletNodeList();
+                if (nodeList != null) {
+                    for (Node jobletNode : nodeList) {
+                        action = getMoveToJobletAction(part, jobletNode);
+                        if (action != null) {
+                            ((AddToJobletAction) action).update();
+                            action.setText(jobletNode.getLabel());
+                            subMenu.add(action);
+                        }
+                    }
+                }
             }
 
             subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Trigger")); //$NON-NLS-1$
