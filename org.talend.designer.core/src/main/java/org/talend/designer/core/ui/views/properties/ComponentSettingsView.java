@@ -579,8 +579,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
             }
             EComponentCategory[] categories = EElementType.ADVANCED_NODE.getCategories();
-            // TODO: add the condition of displaying the validation rule tab.
-            if (true) { // show
+            // TODO: add the condition of displaying the validation rule tab in tis.
+            if (PluginChecker.isValidationrulesPluginLoaded()) { // show
                 EComponentCategory[] newCategories = new EComponentCategory[categories.length + 1];
                 System.arraycopy(categories, 0, newCategories, 0, categories.length);
                 newCategories[categories.length] = EComponentCategory.VALIDATION_RULES;
