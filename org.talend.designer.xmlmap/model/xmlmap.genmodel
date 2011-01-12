@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.talend.designer.xmlmap/src/main/java"
+    modelPluginID="org.talend.designer.xmlmap" modelName="Xmlmap" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false" usedGenPackages="../../org.talend.model/model/TalendFile.genmodel#//talendfile">
+  <foreignModel>xmlmap.ecore</foreignModel>
+  <genPackages prefix="Xmlmap" basePackage="org.talend.designer.xmlmap.model.emf"
+      resource="XML" disposableProviderFactory="true" ecorePackage="xmlmap.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="xmlmap.ecore#//NodeType">
+      <genEnumLiterals ecoreEnumLiteral="xmlmap.ecore#//NodeType/ELEMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="xmlmap.ecore#//NodeType/ATTRIBUT"/>
+      <genEnumLiterals ecoreEnumLiteral="xmlmap.ecore#//NodeType/NAME_SPACE"/>
+    </genEnums>
+    <genClasses ecoreClass="xmlmap.ecore#//XmlMapData">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/inputTrees"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/outputTrees"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//InputXmlTree">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//InputXmlTree/nodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/lookup"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//OutputXmlTree">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputXmlTree/nodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputXmlTree/name"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//TreeNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/children"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/expression"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/nullable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/xpath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/loop"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/outgoingConnections"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/nodeType"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/group"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputTreeNode/incomingConnections"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//Connection">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//Connection/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//Connection/target"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
