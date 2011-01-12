@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -115,13 +116,31 @@ public abstract class AbstractScdDialog extends TrayDialog {
      * Prompt the user for saving before closing the dialog.
      */
     protected void showWarningDialog() {
-        boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
-                Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$
-        if (!isNotSaveSetting) {
-            setReturnCode(OK);
-            saveState();
-        }
-        close();
+
+        // unmodified
+        //    boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
+        //                Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$
+        // if (!isNotSaveSetting) {
+        // setReturnCode(OK);
+        // saveState();
+        // }
+        // close();
+
+        // fixed 0018156: can not close a dialog of tOracleSCD.
+        Display.getCurrent().asyncExec(new Runnable() {
+
+            public void run() {
+                boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
+                        Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$
+                if (!isNotSaveSetting) {
+                    setReturnCode(OK);
+                    saveState();
+                } else {
+                    setReturnCode(CANCEL);
+                }
+                close();
+            }
+        });
     }
 
     abstract Control createScdContents(Composite container);
@@ -208,7 +227,8 @@ public abstract class AbstractScdDialog extends TrayDialog {
     @Override
     protected void handleShellCloseEvent() {
         showWarningDialog();
-        super.handleShellCloseEvent();
+        // fixed 0018156: can not close a dialog of tOracleSCD.
+        // super.handleShellCloseEvent();
     }
 
     public abstract void saveState();
