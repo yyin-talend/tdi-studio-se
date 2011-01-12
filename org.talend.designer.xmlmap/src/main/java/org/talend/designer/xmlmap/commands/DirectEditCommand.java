@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.commands;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.MatchResult;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.PatternMatcherInput;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.gef.commands.Command;
@@ -32,13 +28,13 @@ public class DirectEditCommand extends Command {
 
     private String expression;
 
-    private static Perl5Matcher matcher = new Perl5Matcher();
+    private Perl5Matcher matcher = new Perl5Matcher();
 
-    private static Perl5Compiler compiler = new Perl5Compiler();
+    private Perl5Compiler compiler = new Perl5Compiler();
 
     private final String REGEX_PATTERN = "\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*";
 
-    private static final String REGEX_PATTERN_TREE = "^\\[\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\:\\s*(\\w+)\\s*\\]$";
+    private final String REGEX_PATTERN_TREE = "^\\[\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\:\\s*(\\w+)\\s*\\]$";
 
     public DirectEditCommand(TreeNode model, String expression) {
         this.model = model;
@@ -62,23 +58,6 @@ public class DirectEditCommand extends Command {
 
     private XmlMapData getMapperData(TreeNode treeNode) {
         return null;
-    }
-
-    public static void main(String[] args) {
-        try {
-            Pattern pattern = compiler.compile(REGEX_PATTERN_TREE);
-            matcher.setMultiline(true);
-            PatternMatcherInput patternMatcherInput = new PatternMatcherInput("[row1.newColumn:/root/person/city]");
-            while (matcher.contains(patternMatcherInput, pattern)) {
-                MatchResult matchResult = matcher.getMatch();
-                matchResult.groups();
-                matchResult.group(0);
-            }
-        } catch (MalformedPatternException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
 }

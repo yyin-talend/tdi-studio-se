@@ -175,6 +175,11 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                         // getModel()).getExpression());
                     }
 
+                } else if (getFigure() instanceof XmlTreeBranch) {
+                    ExpressionFigure expressionFigure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
+                    if (expressionFigure != null) {
+                        expressionFigure.setText(((TreeNode) getModel()).getExpression());
+                    }
                 }
                 break;
             }

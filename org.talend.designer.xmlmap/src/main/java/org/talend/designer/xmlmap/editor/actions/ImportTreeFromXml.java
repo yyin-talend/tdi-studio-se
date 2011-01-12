@@ -53,12 +53,11 @@ public class ImportTreeFromXml extends Action {
         String file = f.open();
         if (file != null) {
             list = TreeUtil.getFoxTreeNodes(file);
+            detachConnectionsTarget(parentNode);
+            parentNode.getChildren().clear();
+            prepareEmfTreeNode(list, parentNode);
         }
 
-        detachConnectionsTarget(parentNode);
-        parentNode.getChildren().clear();
-
-        prepareEmfTreeNode(list, parentNode);
     }
 
     private void detachConnectionsTarget(TreeNode parentNode) {
