@@ -123,7 +123,7 @@ public class MapperUI {
             inputMetaEditorView.setMetadataTableEditor(editor);
         }
 
-        if (!ioDataComponents.getInputs().isEmpty()) {
+        if (!ioDataComponents.getOuputs().isEmpty()) {
             IODataComponent ioDataComponent = ioDataComponents.getOuputs().get(0);
             IMetadataTable table = ioDataComponent.getTable();
             MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
@@ -176,6 +176,10 @@ public class MapperUI {
     }
 
     private void prepareModelInputs(List<IODataComponent> inputConn) {
+        if (inputConn == null || inputConn.isEmpty()) {
+            copyOfMapData.getInputTrees().clear();
+            return;
+        }
         for (IODataComponent inData : inputConn) {
             String name = inData.getName();
             InputXmlTree inputTree = null;
@@ -251,6 +255,10 @@ public class MapperUI {
     }
 
     private void prepareModelOutputs(List<IODataComponent> outputConn, List<IMetadataTable> outputMetadataTables) {
+        if (outputConn == null || outputConn.isEmpty()) {
+            copyOfMapData.getOutputTrees().clear();
+            return;
+        }
         for (IODataComponent outData : outputConn) {
             String name = outData.getName();
             OutputXmlTree outputTree = null;
