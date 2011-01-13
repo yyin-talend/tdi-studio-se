@@ -14,6 +14,7 @@ package org.talend.designer.rowgenerator.ui.editor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,6 +36,8 @@ public class MetadataImportXmlCommandExt extends Command {
     private File file;
 
     private ExtendedTableModel extendedTableModel;
+
+    private List<IMetadataColumn> removed;
 
     /**
      * amaumont MetadataPasteCommand constructor comment.
@@ -59,6 +62,10 @@ public class MetadataImportXmlCommandExt extends Command {
     @Override
     public void execute() {
         try {
+            // load the schema
+            removed = new ArrayList<IMetadataColumn>(extendedTableModel.getBeansList());
+            extendedTableModel.removeAll(removed);
+
             MetadataSchemaExt ext = new MetadataSchemaExt();
             List<IMetadataColumn> metadataColumns = ext.initializeAllColumns(file);
             extendedTableModel.addAll(metadataColumns);
