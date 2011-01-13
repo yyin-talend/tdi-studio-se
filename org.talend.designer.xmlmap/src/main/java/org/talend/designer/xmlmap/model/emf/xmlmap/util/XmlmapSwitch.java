@@ -108,9 +108,22 @@ public class XmlmapSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case XmlmapPackage.VAR_TABLE: {
+                VarTable varTable = (VarTable)theEObject;
+                T result = caseVarTable(varTable);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.ABSTRACT_NODE: {
+                AbstractNode abstractNode = (AbstractNode)theEObject;
+                T result = caseAbstractNode(abstractNode);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case XmlmapPackage.TREE_NODE: {
                 TreeNode treeNode = (TreeNode)theEObject;
                 T result = caseTreeNode(treeNode);
+                if (result == null) result = caseAbstractNode(treeNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -118,6 +131,14 @@ public class XmlmapSwitch<T> {
                 OutputTreeNode outputTreeNode = (OutputTreeNode)theEObject;
                 T result = caseOutputTreeNode(outputTreeNode);
                 if (result == null) result = caseTreeNode(outputTreeNode);
+                if (result == null) result = caseAbstractNode(outputTreeNode);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.VAR_NODE: {
+                VarNode varNode = (VarNode)theEObject;
+                T result = caseVarNode(varNode);
+                if (result == null) result = caseAbstractNode(varNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -177,6 +198,36 @@ public class XmlmapSwitch<T> {
     }
 
     /**
+     * Returns the result of interpreting the object as an instance of '<em>Var Table</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Var Table</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseVarTable(VarTable object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract Node</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract Node</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseAbstractNode(AbstractNode object) {
+        return null;
+    }
+
+    /**
      * Returns the result of interpreting the object as an instance of '<em>Tree Node</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -203,6 +254,21 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseOutputTreeNode(OutputTreeNode object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Var Node</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Var Node</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseVarNode(VarNode object) {
         return null;
     }
 

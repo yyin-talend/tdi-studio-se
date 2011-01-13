@@ -54,7 +54,7 @@ public class SetLoopAction extends SelectionAction {
         // remove old loop
         if (model instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) model;
-            OutputTreeNode outputDocumentRoot = XmlMapUtil.getOutputDocumentRoot(outputNode);
+            OutputTreeNode outputDocumentRoot = XmlMapUtil.getOutputTreeNodeRoot(outputNode);
             if (outputDocumentRoot != null) {
                 cleanSubLoop(outputDocumentRoot);
                 XmlMapUtil.cleanSubGroup(outputNode);
@@ -64,7 +64,7 @@ public class SetLoopAction extends SelectionAction {
                 }
             }
         } else if (model instanceof TreeNode) {
-            TreeNode inputDocumentRoot = XmlMapUtil.getInputDocumentRoot(model);
+            TreeNode inputDocumentRoot = XmlMapUtil.getInputTreeNodeRoot(model);
             if (inputDocumentRoot != null) {
                 cleanSubLoop(inputDocumentRoot);
             }

@@ -86,12 +86,24 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createOutputXmlTreeAdapter();
             }
             @Override
+            public Adapter caseVarTable(VarTable object) {
+                return createVarTableAdapter();
+            }
+            @Override
+            public Adapter caseAbstractNode(AbstractNode object) {
+                return createAbstractNodeAdapter();
+            }
+            @Override
             public Adapter caseTreeNode(TreeNode object) {
                 return createTreeNodeAdapter();
             }
             @Override
             public Adapter caseOutputTreeNode(OutputTreeNode object) {
                 return createOutputTreeNodeAdapter();
+            }
+            @Override
+            public Adapter caseVarNode(VarNode object) {
+                return createVarNodeAdapter();
             }
             @Override
             public Adapter caseConnection(Connection object) {
@@ -164,6 +176,34 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable <em>Var Table</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
+     * @generated
+     */
+    public Adapter createVarTableAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode <em>Abstract Node</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode
+     * @generated
+     */
+    public Adapter createAbstractNodeAdapter() {
+        return null;
+    }
+
+    /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode <em>Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -188,6 +228,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createOutputTreeNodeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
+     * @generated
+     */
+    public Adapter createVarNodeAdapter() {
         return null;
     }
 

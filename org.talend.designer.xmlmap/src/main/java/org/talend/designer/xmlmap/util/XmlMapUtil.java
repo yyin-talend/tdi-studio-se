@@ -52,9 +52,7 @@ public class XmlMapUtil {
         if (xPath == null) {
             return xPath;
         }
-
         String[] split = xPath.split(XPATH_SEPARATOR);
-
         // normal column
         if (split.length == 2) {
             return xPath.replaceAll(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
@@ -75,20 +73,37 @@ public class XmlMapUtil {
 
     }
 
-    public static TreeNode getInputDocumentRoot(TreeNode model) {
+    /*
+     * convert from output expression to xpath
+     */
+    public static String convertToXpath(String expression) {
+        if (expression == null) {
+            return expression;
+        }
+        if (expression.indexOf(EXPRESSION_LEFT) == 0 && expression.indexOf(EXPRESSION_RIGHT) == expression.length() - 1
+                && expression.indexOf(expression) != -1) {
+            expression = expression.substring(expression.indexOf(EXPRESSION_LEFT), expression.indexOf(EXPRESSION_RIGHT));
+            expression = expression.replaceAll("", CHILDREN_SEPARATOR);
+
+        }
+        return expression.replace(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
+
+    }
+
+    public static TreeNode getInputTreeNodeRoot(TreeNode model) {
         if (model.eContainer() instanceof InputXmlTree) {
             return model;
         } else if (model.eContainer() instanceof TreeNode) {
-            return getInputDocumentRoot((TreeNode) model.eContainer());
+            return getInputTreeNodeRoot((TreeNode) model.eContainer());
         }
         return null;
     }
 
-    public static OutputTreeNode getOutputDocumentRoot(OutputTreeNode model) {
+    public static OutputTreeNode getOutputTreeNodeRoot(OutputTreeNode model) {
         if (model.eContainer() instanceof OutputXmlTree) {
             return model;
         } else if (model.eContainer() instanceof OutputTreeNode) {
-            return getOutputDocumentRoot((OutputTreeNode) model.eContainer());
+            return getOutputTreeNodeRoot((OutputTreeNode) model.eContainer());
         }
         return null;
     }

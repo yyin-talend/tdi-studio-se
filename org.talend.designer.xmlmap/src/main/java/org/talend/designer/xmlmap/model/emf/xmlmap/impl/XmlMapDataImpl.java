@@ -24,6 +24,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.impl.AbstractExternal
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
@@ -36,6 +37,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getInputTrees <em>Input Trees</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getOutputTrees <em>Output Trees</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getVarTables <em>Var Tables</em>}</li>
  * </ul>
  * </p>
  *
@@ -61,6 +63,16 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * @ordered
      */
     protected EList<OutputXmlTree> outputTrees;
+
+    /**
+     * The cached value of the '{@link #getVarTables() <em>Var Tables</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getVarTables()
+     * @generated
+     * @ordered
+     */
+    protected EList<VarTable> varTables;
 
     /**
      * <!-- begin-user-doc -->
@@ -110,6 +122,18 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<VarTable> getVarTables() {
+        if (varTables == null) {
+            varTables = new EObjectContainmentEList<VarTable>(VarTable.class, this, XmlmapPackage.XML_MAP_DATA__VAR_TABLES);
+        }
+        return varTables;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -117,6 +141,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return ((InternalEList<?>)getInputTrees()).basicRemove(otherEnd, msgs);
             case XmlmapPackage.XML_MAP_DATA__OUTPUT_TREES:
                 return ((InternalEList<?>)getOutputTrees()).basicRemove(otherEnd, msgs);
+            case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
+                return ((InternalEList<?>)getVarTables()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -133,6 +159,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return getInputTrees();
             case XmlmapPackage.XML_MAP_DATA__OUTPUT_TREES:
                 return getOutputTrees();
+            case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
+                return getVarTables();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -154,6 +182,10 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 getOutputTrees().clear();
                 getOutputTrees().addAll((Collection<? extends OutputXmlTree>)newValue);
                 return;
+            case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
+                getVarTables().clear();
+                getVarTables().addAll((Collection<? extends VarTable>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -172,6 +204,9 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
             case XmlmapPackage.XML_MAP_DATA__OUTPUT_TREES:
                 getOutputTrees().clear();
                 return;
+            case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
+                getVarTables().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -188,6 +223,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return inputTrees != null && !inputTrees.isEmpty();
             case XmlmapPackage.XML_MAP_DATA__OUTPUT_TREES:
                 return outputTrees != null && !outputTrees.isEmpty();
+            case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
+                return varTables != null && !varTables.isEmpty();
         }
         return super.eIsSet(featureID);
     }

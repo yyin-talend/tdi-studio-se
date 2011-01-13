@@ -64,8 +64,11 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
             case XmlmapPackage.XML_MAP_DATA: return createXmlMapData();
             case XmlmapPackage.INPUT_XML_TREE: return createInputXmlTree();
             case XmlmapPackage.OUTPUT_XML_TREE: return createOutputXmlTree();
+            case XmlmapPackage.VAR_TABLE: return createVarTable();
+            case XmlmapPackage.ABSTRACT_NODE: return createAbstractNode();
             case XmlmapPackage.TREE_NODE: return createTreeNode();
             case XmlmapPackage.OUTPUT_TREE_NODE: return createOutputTreeNode();
+            case XmlmapPackage.VAR_NODE: return createVarNode();
             case XmlmapPackage.CONNECTION: return createConnection();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -137,6 +140,26 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
      * <!-- end-user-doc -->
      * @generated
      */
+    public VarTable createVarTable() {
+        VarTableImpl varTable = new VarTableImpl();
+        return varTable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractNode createAbstractNode() {
+        AbstractNodeImpl abstractNode = new AbstractNodeImpl();
+        return abstractNode;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public TreeNode createTreeNode() {
         TreeNodeImpl treeNode = new TreeNodeImpl();
         return treeNode;
@@ -150,6 +173,16 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
     public OutputTreeNode createOutputTreeNode() {
         OutputTreeNodeImpl outputTreeNode = new OutputTreeNodeImpl();
         return outputTreeNode;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public VarNode createVarNode() {
+        VarNodeImpl varNode = new VarNodeImpl();
+        return varNode;
     }
 
     /**

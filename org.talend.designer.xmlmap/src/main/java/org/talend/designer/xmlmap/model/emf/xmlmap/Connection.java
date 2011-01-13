@@ -35,24 +35,24 @@ public interface Connection extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
      * @return the value of the '<em>Source</em>' reference.
-     * @see #setSource(TreeNode)
+     * @see #setSource(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getConnection_Source()
      * @model
      * @generated
      */
-	TreeNode getSource();
+	AbstractNode getSource();
 
 	/**
      * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource <em>Source</em>}' reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Source</em>' reference.
      * @see #getSource()
      * @generated
      */
-	void setSource(TreeNode value);
+    void setSource(AbstractNode value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Target</b></em>' reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -61,12 +61,12 @@ public interface Connection extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
      * @return the value of the '<em>Target</em>' reference.
-     * @see #setTarget(OutputTreeNode)
+     * @see #setTarget(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getConnection_Target()
      * @model
      * @generated
      */
-	OutputTreeNode getTarget();
+	AbstractNode getTarget();
 
 	/**
      * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget <em>Target</em>}' reference.
@@ -76,6 +76,6 @@ public interface Connection extends EObject {
      * @see #getTarget()
      * @generated
      */
-    void setTarget(OutputTreeNode value);
+    void setTarget(AbstractNode value);
 
 } // Connection

@@ -38,8 +38,10 @@ public class DeleteTreeNodeCommand extends Command {
                 InputXmlTree inputTree = (InputXmlTree) toDelete.eContainer();
                 EList<Connection> outgoingConnections = toDelete.getOutgoingConnections();
                 for (Connection connection : outgoingConnections) {
-                    OutputTreeNode outputNode = connection.getTarget();
-                    outputNode.getIncomingConnections().remove(connection);
+                    if (connection.getTarget() instanceof OutputTreeNode) {
+                        OutputTreeNode outputNode = (OutputTreeNode) connection.getTarget();
+                        outputNode.getIncomingConnections().remove(connection);
+                    }
                 }
                 inputTree.getNodes().remove(toDelete);
             } else if (toDelete.eContainer() instanceof OutputXmlTree) {
@@ -47,8 +49,10 @@ public class DeleteTreeNodeCommand extends Command {
                 OutputTreeNode outputNode = (OutputTreeNode) toDelete;
                 EList<Connection> outgoingConnections = outputNode.getIncomingConnections();
                 for (Connection connection : outgoingConnections) {
-                    TreeNode inputNode = connection.getSource();
-                    inputNode.getOutgoingConnections().remove(connection);
+                    if (connection.getSource() instanceof TreeNode) {
+                        TreeNode inputNode = (TreeNode) connection.getSource();
+                        inputNode.getOutgoingConnections().remove(connection);
+                    }
                 }
 
                 outputTree.getNodes().remove(toDelete);
@@ -58,16 +62,20 @@ public class DeleteTreeNodeCommand extends Command {
                     OutputTreeNode outputNode = (OutputTreeNode) toDelete;
                     EList<Connection> outgoingConnections = outputNode.getIncomingConnections();
                     for (Connection connection : outgoingConnections) {
-                        TreeNode inputNode = connection.getSource();
-                        if (inputNode.getOutgoingConnections().contains(connection)) {
-                            inputNode.getOutgoingConnections().remove(connection);
+                        if (connection.getSource() instanceof TreeNode) {
+                            TreeNode inputNode = (TreeNode) connection.getSource();
+                            if (inputNode.getOutgoingConnections().contains(connection)) {
+                                inputNode.getOutgoingConnections().remove(connection);
+                            }
                         }
                     }
                 } else if (toDelete instanceof TreeNode) {
                     EList<Connection> outgoingConnections = toDelete.getOutgoingConnections();
                     for (Connection connection : outgoingConnections) {
-                        OutputTreeNode outputNode = connection.getTarget();
-                        outputNode.getIncomingConnections().remove(connection);
+                        if (connection.getTarget() instanceof OutputTreeNode) {
+                            OutputTreeNode outputNode = (OutputTreeNode) connection.getTarget();
+                            outputNode.getIncomingConnections().remove(connection);
+                        }
                     }
                 }
 

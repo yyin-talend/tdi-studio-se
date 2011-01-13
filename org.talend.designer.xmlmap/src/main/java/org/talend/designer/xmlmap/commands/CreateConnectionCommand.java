@@ -66,13 +66,13 @@ public class CreateConnectionCommand extends Command {
         connection.setTarget(target);
 
         // attachSource
-        EList<Connection> outgoingConnections = connection.getSource().getOutgoingConnections();
+        EList<Connection> outgoingConnections = source.getOutgoingConnections();
         if (!outgoingConnections.contains(connection)) {
             outgoingConnections.add(connection);
         }
 
         // attachTarget
-        EList<Connection> incomingConnections = connection.getTarget().getIncomingConnections();
+        EList<Connection> incomingConnections = target.getIncomingConnections();
         if (!incomingConnections.contains(connection)) {
             incomingConnections.add(connection);
         }

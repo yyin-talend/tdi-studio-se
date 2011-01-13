@@ -82,7 +82,7 @@ public class SetGroupAction extends SelectionAction {
     public void run() {
         OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
         OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-        OutputTreeNode outputDocumentRoot = XmlMapUtil.getOutputDocumentRoot(model);
+        OutputTreeNode outputDocumentRoot = XmlMapUtil.getOutputTreeNodeRoot(model);
         if (outputDocumentRoot != null) {
             XmlMapUtil.cleanSubGroup(outputDocumentRoot);
         }

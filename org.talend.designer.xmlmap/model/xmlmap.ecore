@@ -8,6 +8,8 @@
         eType="#//InputXmlTree" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outputTrees" upperBound="-1"
         eType="#//OutputXmlTree" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="varTables" upperBound="-1"
+        eType="#//VarTable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InputXmlTree">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -20,12 +22,19 @@
         eType="#//OutputTreeNode" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TreeNode">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
-        eType="#//TreeNode" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="VarTable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
+        eType="#//VarNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TreeNode" eSuperTypes="#//AbstractNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
+        eType="#//TreeNode" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="xpath" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="loop" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"/>
@@ -39,13 +48,19 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="incomingConnections" upperBound="-1"
         eType="#//Connection"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VarNode" eSuperTypes="#//AbstractNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incomingConnections" upperBound="-1"
+        eType="#//Connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outgoingConnections" upperBound="-1"
+        eType="#//Connection"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="NodeType">
     <eLiterals name="ELEMENT"/>
     <eLiterals name="ATTRIBUT" value="1"/>
     <eLiterals name="NAME_SPACE" value="2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connection">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//TreeNode"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//OutputTreeNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//AbstractNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractNode"/>
   </eClassifiers>
 </ecore:EPackage>

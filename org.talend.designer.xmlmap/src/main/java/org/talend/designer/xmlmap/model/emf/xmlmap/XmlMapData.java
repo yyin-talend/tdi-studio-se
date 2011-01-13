@@ -20,6 +20,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData#getInputTrees <em>Input Trees</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData#getOutputTrees <em>Output Trees</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData#getVarTables <em>Var Tables</em>}</li>
  * </ul>
  * </p>
  *
@@ -59,5 +60,21 @@ public interface XmlMapData extends AbstractExternalData {
      * @generated
      */
     EList<OutputXmlTree> getOutputTrees();
+
+    /**
+     * Returns the value of the '<em><b>Var Tables</b></em>' containment reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Var Tables</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Var Tables</em>' containment reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getXmlMapData_VarTables()
+     * @model containment="true"
+     * @generated
+     */
+    EList<VarTable> getVarTables();
 
 } // XmlMapData

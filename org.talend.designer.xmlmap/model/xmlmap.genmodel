@@ -15,6 +15,7 @@
     <genClasses ecoreClass="xmlmap.ecore#//XmlMapData">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/inputTrees"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/outputTrees"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/varTables"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//InputXmlTree">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//InputXmlTree/nodes"/>
@@ -25,11 +26,17 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputXmlTree/nodes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputXmlTree/name"/>
     </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//VarTable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarTable/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//VarTable/nodes"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//AbstractNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractNode/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractNode/expression"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractNode/type"/>
+    </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//TreeNode">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/children"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/expression"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/nullable"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/xpath"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/loop"/>
@@ -40,6 +47,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/group"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputTreeNode/incomingConnections"/>
+    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//VarNode">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//VarNode/incomingConnections"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//VarNode/outgoingConnections"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//Connection">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//Connection/source"/>

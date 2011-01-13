@@ -38,9 +38,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getChildren <em>Children</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getExpression <em>Expression</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getXpath <em>Xpath</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isLoop <em>Loop</em>}</li>
@@ -51,7 +48,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *
  * @generated
  */
-public class TreeNodeImpl extends EObjectImpl implements TreeNode {
+public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
     /**
      * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -61,66 +58,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
      * @ordered
      */
     protected EList<TreeNode> children;
-
-    /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
-    protected static final String NAME_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
-    protected String name = NAME_EDEFAULT;
-
-    /**
-     * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getExpression()
-     * @generated
-     * @ordered
-     */
-    protected static final String EXPRESSION_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getExpression()
-     * @generated
-     * @ordered
-     */
-    protected String expression = EXPRESSION_EDEFAULT;
-
-    /**
-     * The default value of the '{@link #getType() <em>Type</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getType()
-     * @generated
-     * @ordered
-     */
-    protected static final String TYPE_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getType()
-     * @generated
-     * @ordered
-     */
-    protected String type = TYPE_EDEFAULT;
 
     /**
      * The default value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
@@ -248,69 +185,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setName(String newName) {
-        String oldName = name;
-        name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__NAME, oldName, name));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public String getExpression() {
-        return expression;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setExpression(String newExpression) {
-        String oldExpression = expression;
-        expression = newExpression;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__EXPRESSION, oldExpression, expression));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setType(String newType) {
-        String oldType = type;
-        type = newType;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__TYPE, oldType, type));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public boolean isNullable() {
         return nullable;
     }
@@ -426,12 +300,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
         switch (featureID) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 return getChildren();
-            case XmlmapPackage.TREE_NODE__NAME:
-                return getName();
-            case XmlmapPackage.TREE_NODE__EXPRESSION:
-                return getExpression();
-            case XmlmapPackage.TREE_NODE__TYPE:
-                return getType();
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 return isNullable();
             case XmlmapPackage.TREE_NODE__XPATH:
@@ -458,15 +326,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 getChildren().clear();
                 getChildren().addAll((Collection<? extends TreeNode>)newValue);
-                return;
-            case XmlmapPackage.TREE_NODE__NAME:
-                setName((String)newValue);
-                return;
-            case XmlmapPackage.TREE_NODE__EXPRESSION:
-                setExpression((String)newValue);
-                return;
-            case XmlmapPackage.TREE_NODE__TYPE:
-                setType((String)newValue);
                 return;
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 setNullable((Boolean)newValue);
@@ -499,15 +358,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 getChildren().clear();
                 return;
-            case XmlmapPackage.TREE_NODE__NAME:
-                setName(NAME_EDEFAULT);
-                return;
-            case XmlmapPackage.TREE_NODE__EXPRESSION:
-                setExpression(EXPRESSION_EDEFAULT);
-                return;
-            case XmlmapPackage.TREE_NODE__TYPE:
-                setType(TYPE_EDEFAULT);
-                return;
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 setNullable(NULLABLE_EDEFAULT);
                 return;
@@ -537,12 +387,6 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
         switch (featureID) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 return children != null && !children.isEmpty();
-            case XmlmapPackage.TREE_NODE__NAME:
-                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case XmlmapPackage.TREE_NODE__EXPRESSION:
-                return EXPRESSION_EDEFAULT == null ? expression != null : !EXPRESSION_EDEFAULT.equals(expression);
-            case XmlmapPackage.TREE_NODE__TYPE:
-                return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 return nullable != NULLABLE_EDEFAULT;
             case XmlmapPackage.TREE_NODE__XPATH:
@@ -567,13 +411,7 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
-        result.append(name);
-        result.append(", expression: ");
-        result.append(expression);
-        result.append(", type: ");
-        result.append(type);
-        result.append(", nullable: ");
+        result.append(" (nullable: ");
         result.append(nullable);
         result.append(", xpath: ");
         result.append(xpath);

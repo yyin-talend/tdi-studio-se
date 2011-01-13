@@ -64,9 +64,11 @@ public class ImportTreeFromXml extends Action {
         EList<TreeNode> children = parentNode.getChildren();
         for (TreeNode treeNode : children) {
             for (Connection connection : treeNode.getOutgoingConnections()) {
-                OutputTreeNode target = connection.getTarget();
-                if (target.getIncomingConnections().contains(connection)) {
-                    target.getIncomingConnections().remove(connection);
+                if (connection.getTarget() instanceof OutputTreeNode) {
+                    OutputTreeNode target = (OutputTreeNode) connection.getTarget();
+                    if (target.getIncomingConnections().contains(connection)) {
+                        target.getIncomingConnections().remove(connection);
+                    }
                 }
             }
             if (!treeNode.getChildren().isEmpty()) {

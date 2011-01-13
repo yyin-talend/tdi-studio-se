@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -44,7 +45,7 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * @generated
      * @ordered
      */
-    protected TreeNode source;
+    protected AbstractNode source;
     /**
      * The cached value of the '{@link #getTarget() <em>Target</em>}' reference.
      * <!-- begin-user-doc -->
@@ -53,7 +54,7 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * @generated
      * @ordered
      */
-    protected OutputTreeNode target;
+    protected AbstractNode target;
 
     /**
      * <!-- begin-user-doc -->
@@ -79,10 +80,10 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 	 * <!-- end-user-doc -->
      * @generated
      */
-	public TreeNode getSource() {
+	public AbstractNode getSource() {
         if (source != null && source.eIsProxy()) {
             InternalEObject oldSource = (InternalEObject)source;
-            source = (TreeNode)eResolveProxy(oldSource);
+            source = (AbstractNode)eResolveProxy(oldSource);
             if (source != oldSource) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, XmlmapPackage.CONNECTION__SOURCE, oldSource, source));
@@ -96,8 +97,20 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * <!-- end-user-doc -->
      * @generated
      */
-    public TreeNode basicGetSource() {
+    public AbstractNode basicGetSource() {
         return source;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setSource(AbstractNode newSource) {
+        AbstractNode oldSource = source;
+        source = newSource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__SOURCE, oldSource, source));
     }
 
     /**
@@ -105,22 +118,10 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 	 * <!-- end-user-doc -->
      * @generated
      */
-	public void setSource(TreeNode newSource) {
-        TreeNode oldSource = source;
-        source = newSource;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__SOURCE, oldSource, source));
-    }
-
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public OutputTreeNode getTarget() {
+	public AbstractNode getTarget() {
         if (target != null && target.eIsProxy()) {
             InternalEObject oldTarget = (InternalEObject)target;
-            target = (OutputTreeNode)eResolveProxy(oldTarget);
+            target = (AbstractNode)eResolveProxy(oldTarget);
             if (target != oldTarget) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, XmlmapPackage.CONNECTION__TARGET, oldTarget, target));
@@ -134,7 +135,7 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * <!-- end-user-doc -->
      * @generated
      */
-    public OutputTreeNode basicGetTarget() {
+    public AbstractNode basicGetTarget() {
         return target;
     }
 
@@ -143,8 +144,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTarget(OutputTreeNode newTarget) {
-        OutputTreeNode oldTarget = target;
+    public void setTarget(AbstractNode newTarget) {
+        AbstractNode oldTarget = target;
         target = newTarget;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__TARGET, oldTarget, target));
@@ -177,10 +178,10 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 	public void eSet(int featureID, Object newValue) {
         switch (featureID) {
             case XmlmapPackage.CONNECTION__SOURCE:
-                setSource((TreeNode)newValue);
+                setSource((AbstractNode)newValue);
                 return;
             case XmlmapPackage.CONNECTION__TARGET:
-                setTarget((OutputTreeNode)newValue);
+                setTarget((AbstractNode)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -195,10 +196,10 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 	public void eUnset(int featureID) {
         switch (featureID) {
             case XmlmapPackage.CONNECTION__SOURCE:
-                setSource((TreeNode)null);
+                setSource((AbstractNode)null);
                 return;
             case XmlmapPackage.CONNECTION__TARGET:
-                setTarget((OutputTreeNode)null);
+                setTarget((AbstractNode)null);
                 return;
         }
         super.eUnset(featureID);
