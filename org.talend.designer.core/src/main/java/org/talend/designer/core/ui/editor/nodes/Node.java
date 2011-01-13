@@ -1200,9 +1200,11 @@ public class Node extends Element implements IGraphicalNode {
             /*
              * param.getChildParameters() .get(EParameterName.SCHEMA_TYPE.getName()).setValue( EmfComponent.REPOSITORY);
              */
-            param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
-                    .setValue(repositorySchemaParamTarget.getValue());
-            this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            if (param != null) {
+                param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                        .setValue(repositorySchemaParamTarget.getValue());
+                this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            }
         }
     }
 

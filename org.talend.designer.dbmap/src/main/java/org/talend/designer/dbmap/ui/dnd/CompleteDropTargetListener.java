@@ -369,8 +369,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
             } else {
                 String columnName = transferableEntry.getTableEntrySource().getName();
-                tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget, columnsBeingAdded
-                        .toArray(new String[0]));
+                tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget,
+                        columnsBeingAdded.toArray(new String[0]));
                 columnName = tableEntryLocationTarget.columnName;
                 if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
                     currentIndex = tableViewerCreatorTarget.getInputList().size();
@@ -531,6 +531,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
         for (ITableEntry tableEntry : refreshedTableEntriesList) {
             uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
+            uiManager.refreshBackground(false, false);
         }
 
     }

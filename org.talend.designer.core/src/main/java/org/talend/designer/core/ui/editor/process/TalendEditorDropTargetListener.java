@@ -109,6 +109,7 @@ import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -1178,7 +1179,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (!"".equals(etlSchema)) {
                     IElementParameter e = node.getElementParameter("ELT_SCHEMA_NAME");
                     if (e != null) {
-                        e.setValue(TalendTextUtils.addQuotes(etlSchema));
+                        if (connection.isContextMode() && ContextParameterUtils.isContainContextParam(etlSchema)) {
+                            e.setValue(etlSchema);
+                        } else {
+                            e.setValue(TalendTextUtils.addQuotes(etlSchema));
+                        }
                     }
                     // node.getElementParameter("ELT_SCHEMA_NAME").setValue("\"" + etlSchema + "\"");
                 }
