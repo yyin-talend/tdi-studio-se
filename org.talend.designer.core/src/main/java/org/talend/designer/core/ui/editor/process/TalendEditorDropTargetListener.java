@@ -139,7 +139,6 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
-import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -1421,11 +1420,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         boolean executed = false;
         CompoundCommand command = new CompoundCommand();
         SubjobContainerPart ep = (SubjobContainerPart) getTargetEditPart();
-        List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionPart(ep, point);
+        List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper.getConnection(
+                ep, point, node);
         org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
-                .getTargetConnection(connectionParts);
-        boolean canConnect = CreateComponentOnLinkHelper.canCreateNodeOnLink(targetConnection, node);
-        if (canConnect) {
+                .getTargetConnection(connections);
+        if (targetConnection != null) {
             NodeContainer nodeContainer = new NodeContainer(node);
             IProcess2 p = editor.getProcess();
             if (p instanceof Process) {

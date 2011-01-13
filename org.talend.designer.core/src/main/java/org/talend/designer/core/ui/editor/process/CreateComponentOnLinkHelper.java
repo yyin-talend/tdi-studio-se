@@ -40,9 +40,9 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
  */
 public class CreateComponentOnLinkHelper {
 
-    public static List<ConnectionPart> getConnectionPart(SubjobContainerPart containerPart, Point point) {
-        List<ConnectionPart> connectionList = new ArrayList<ConnectionPart>();
-        List<ConnectionPart> connList = new ArrayList<ConnectionPart>();
+    public static List<Connection> getConnection(SubjobContainerPart containerPart, Point point, Node node) {
+        List<Connection> connectionList = new ArrayList<Connection>();
+        List<Connection> connList = new ArrayList<Connection>();
         List children = containerPart.getChildren();
         for (int i = 0; i < children.size(); i++) {
             Object object = children.get(i);
@@ -56,13 +56,13 @@ public class CreateComponentOnLinkHelper {
                         if (connection instanceof ConnectionPart) {
                             ConnectionPart connPart = (ConnectionPart) connection;
                             Connection conn = (Connection) connPart.getModel();
-                            if (isFlowConnection(conn)) {
+                            if (canCreateNodeOnLink(conn, node)) {
                                 Rectangle bounds = ((ConnectionPart) connection).getFigure().getBounds();
                                 if (bounds.contains(point)) {
-                                    connectionList.add(connPart);
+                                    connectionList.add(conn);
                                 }
                                 if (containsPoint(bounds, point)) {
-                                    connList.add(connPart);
+                                    connList.add(conn);
                                 }
                             }
                         }
@@ -179,12 +179,11 @@ public class CreateComponentOnLinkHelper {
         return connArgs;
     }
 
-    public static org.talend.designer.core.ui.editor.connections.Connection getTargetConnection(List<ConnectionPart> connections) {
-        org.talend.designer.core.ui.editor.connections.Connection connection = null;
+    public static Connection getTargetConnection(List<Connection> connections) {
+        Connection connection = null;
         if (connections != null && !connections.isEmpty()) {
             if (connections.size() == 1) {
-                org.talend.designer.core.ui.editor.connections.Connection conn = (org.talend.designer.core.ui.editor.connections.Connection) connections
-                        .get(0).getModel();
+                Connection conn = (Connection) connections.get(0);
                 String name = conn.getName();
                 boolean flag = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Add component",
                         "Do you want to add the component on link \'" + name + "\'?");
@@ -198,8 +197,7 @@ public class CreateComponentOnLinkHelper {
                     LinkSelectDialog dialog = new LinkSelectDialog(Display.getDefault().getActiveShell(), connections);
                     dialog.setInitialSelections(new Object[] { connections.get(0) });
                     if (dialog.open() == IDialogConstants.OK_ID) {
-                        ConnectionPart selectLink = dialog.getSelectLink();
-                        connection = (org.talend.designer.core.ui.editor.connections.Connection) selectLink.getModel();
+                        connection = dialog.getSelectLink();
                     }
                 }
             }

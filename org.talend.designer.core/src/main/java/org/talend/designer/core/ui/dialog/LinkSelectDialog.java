@@ -21,14 +21,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 
 /**
  * wzhang class global comment. Detailled comment
  */
 public class LinkSelectDialog extends ListDialog {
 
-    public LinkSelectDialog(Shell parent, List<ConnectionPart> input) {
+    public LinkSelectDialog(Shell parent, List<Connection> input) {
         super(parent);
         setTitle("Choose Link");
         setMessage("Target reference several links, please choose one to create.");
@@ -38,8 +37,7 @@ public class LinkSelectDialog extends ListDialog {
 
             @Override
             public String getText(Object element) {
-                ConnectionPart connPart = (ConnectionPart) element;
-                Connection conn = (Connection) connPart.getModel();
+                Connection conn = (Connection) element;
                 return conn.getName();
             }
 
@@ -53,7 +51,7 @@ public class LinkSelectDialog extends ListDialog {
         return control;
     }
 
-    public ConnectionPart getSelectLink() {
-        return (ConnectionPart) getResult()[0];
+    public Connection getSelectLink() {
+        return (Connection) getResult()[0];
     }
 }

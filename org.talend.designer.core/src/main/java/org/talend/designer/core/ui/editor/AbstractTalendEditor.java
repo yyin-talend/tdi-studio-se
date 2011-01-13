@@ -159,6 +159,7 @@ import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -1399,12 +1400,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     if (object instanceof Node) {
                         Node node = (Node) object;
                         Point point = ((CreateRequest) request).getLocation();
-                        List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionPart(
-                                (SubjobContainerPart) editPart, point);
-                        org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
-                                .getTargetConnection(connectionParts);
-                        boolean canConnect = CreateComponentOnLinkHelper.canCreateNodeOnLink(targetConnection, node);
-                        if (canConnect) {
+                        List<Connection> connection = CreateComponentOnLinkHelper.getConnection((SubjobContainerPart) editPart,
+                                point, node);
+                        Connection targetConnection = CreateComponentOnLinkHelper.getTargetConnection(connection);
+                        if (targetConnection != null) {
                             NodeContainer nodeContainer = new NodeContainer(node);
                             if (getProcess() instanceof Process) {
                                 execCommandStack(new CreateNodeContainerCommand((Process) getProcess(), nodeContainer, point));
