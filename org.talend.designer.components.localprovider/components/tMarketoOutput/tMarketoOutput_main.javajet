@@ -103,8 +103,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 				if("syncLead".equals(operation)){
 %>
-				com.marketo.www.mktows.ResultSyncLead syncLead_<%=cid%> = client_<%=cid%>.syncLead(false,null,client_<%=cid%>.buildLead(leadAllAttrList_<%=cid%>));
-				com.marketo.www.mktows.SyncStatus syncStatus_<%=cid%> = syncLead_<%=cid%>.getSyncStatus();
+				boolean hasFault_<%=cid%> = false;
+				String errorMsg_<%=cid%> = null;
+				int marketoId_<%=cid%>;
+				try{
+					com.marketo.www.mktows.ResultSyncLead syncLead_<%=cid%> = client_<%=cid%>.syncLead(false,null,client_<%=cid%>.buildLead(leadAllAttrList_<%=cid%>));
+					com.marketo.www.mktows.SyncStatus syncStatus_<%=cid%> = syncLead_<%=cid%>.getSyncStatus();
+					if (!com.marketo.www.mktows.LeadSyncStatus.FAILED.equals(syncStatus_<%=cid%>.getStatus())) {
+						hasFault_<%=cid%> = false;
+						marketoId_<%=cid%> = syncStatus_<%=cid%>.getLeadId();
+					}else{
+						hasFault_<%=cid%> = true;
+						errorMsg_<%=cid%> = syncStatus_<%=cid%>.getError();
+						marketoId_<%=cid%> = syncStatus_<%=cid%>.getLeadId();
+					}
+				}catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
+					<%if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+					errorMsg_<%=cid%> = client_<%=cid%>.exceptionFilter(axisFault_<%=cid%>);
+					marketoId_<%=cid%> = <%=conn.getName() %>.Id;
+					hasFault_<%=cid%> = true;
+					<%}else{%>
+					throw(axisFault_<%=cid%>);
+					<%}%>
+				}
 <%				
 				}else if("syncMultipleLeads".equals(operation)){
 %>
@@ -120,7 +141,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 			if("syncLead".equals(operation)){
 %>
-				if (!com.marketo.www.mktows.LeadSyncStatus.FAILED.equals(syncStatus_<%=cid%>.getStatus())) {
+				if (!hasFault_<%=cid%>) {
 <%			
 				 for(IConnection outgoingConn : outgoingConns) {
                 	if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
@@ -128,7 +149,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 						<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
 						//<%=outgoingConn.getName() %>.SYNC_STATUS = syncStatus_<%=cid%>.getStatus().toString();
-						<%=outgoingConn.getName()%>.Id = syncStatus_<%=cid%>.getLeadId();
+						<%=outgoingConn.getName()%>.Id = marketoId_<%=cid%>;
 <%
 						for (IMetadataColumn column: metadata.getListColumns()) {
 							if("Id".equals(column.getLabel()))
@@ -146,8 +167,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 				if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
 %>
 						<%=rejectConnName %> = new <%=rejectConnName %>Struct();
-						<%=rejectConnName %>.Id = syncStatus_<%=cid%>.getLeadId();
-            			<%=rejectConnName %>.ERROR_MSG = syncStatus_<%=cid%>.getError();
+						<%=rejectConnName %>.Id = marketoId_<%=cid%>;
+            			<%=rejectConnName %>.ERROR_MSG = errorMsg_<%=cid%>;
 <%
 						for (IMetadataColumn column: metadata.getListColumns()) {
 							if("Id".equals(column.getLabel()))
