@@ -55,10 +55,10 @@ public class DirectEditCommand extends Command {
 
                 Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                         | Pattern.MULTILINE);
-                Matcher regexMatcher = regex.matcher("[row1.newColumn:/root/person/city] fdssdfs [row2.aa:/root/person/city]");
+                Matcher regexMatcher = regex.matcher(expression);
                 List<String> matched = new ArrayList<String>();
                 while (regexMatcher.find()) {
-                    matched.add(regexMatcher.group());
+                    matched.add(regexMatcher.group().trim());
                 }
                 EList<Connection> incomingConnections = ((OutputTreeNode) model).getIncomingConnections();
 
@@ -71,6 +71,7 @@ public class DirectEditCommand extends Command {
                             if (conn.getSource() instanceof TreeNode) {
                                 if (convertToXpath != null && convertToXpath.equals(((TreeNode) conn.getSource()).getXpath())) {
                                     found = true;
+                                    break;
                                 }
                             }
                         }
@@ -78,8 +79,16 @@ public class DirectEditCommand extends Command {
                             if (mapperData == null) {
                                 mapperData = getMapperData(model);
                             }
-
-                            Connection connection = XmlmapFactory.eINSTANCE.createConnection();
+                            if (mapperData != null) {
+                                TreeNode sourceNode = findConnectionSource(mapperData.getInputTrees(), convertToXpath);
+                                if (sourceNode != null) {
+                                    Connection connection = XmlmapFactory.eINSTANCE.createConnection();
+                                    connection.setSource(sourceNode);
+                                    connection.setTarget(outputNode);
+                                    sourceNode.getOutgoingConnections().add(connection);
+                                    outputNode.getIncomingConnections().add(connection);
+                                }
+                            }
                             // connection.setSource(value);
                         }
                     }
@@ -92,11 +101,52 @@ public class DirectEditCommand extends Command {
     }
 
     private XmlMapData getMapperData(TreeNode treeNode) {
+        TreeNode rootNode = null;
+        if (treeNode instanceof OutputTreeNode) {
+            rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) treeNode);
+        } else if (treeNode instanceof TreeNode) {
+            rootNode = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+        }
+        if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
+            return (XmlMapData) rootNode.eContainer().eContainer();
+        }
+        return null;
+    }
+
+    private TreeNode findConnectionSource(List<InputXmlTree> inputTrees, String xpath) {
+        if (xpath == null) {
+            return null;
+        }
+        int xPathLength = XmlMapUtil.getXPathLength(xpath);
+        TreeNode source = null;
+        for (InputXmlTree inputTree : inputTrees) {
+            for (TreeNode node : inputTree.getNodes()) {
+                if (xpath.equals(node.getXpath())) {
+                    return node;
+                } else if (xPathLength > XmlMapUtil.getXPathLength(node.getXpath())) {
+                    source = findConnectionSource(node, xpath, xPathLength);
+                    if (source != null) {
+                        return source;
+                    }
+                }
+            }
+        }
 
         return null;
     }
 
-    private TreeNode findSource(List<InputXmlTree> inputTrees, String xpath) {
+    private TreeNode findConnectionSource(TreeNode treeNode, String xpath, int xPathLength) {
+        TreeNode source = null;
+        for (TreeNode node : treeNode.getChildren()) {
+            if (xpath.equals(node.getXpath())) {
+                return node;
+            } else if (xPathLength > XmlMapUtil.getXPathLength(node.getXpath())) {
+                source = findConnectionSource(node, xpath, xPathLength);
+                if (source != null) {
+                    return source;
+                }
+            }
+        }
         return null;
     }
 

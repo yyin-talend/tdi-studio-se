@@ -69,7 +69,7 @@ public class XmlMapUtil {
             }
         }
 
-        return xPath.replaceAll(EXPRESSION_SEPARATOR, XPATH_SEPARATOR);
+        return xPath.replaceAll(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
 
     }
 
@@ -82,11 +82,11 @@ public class XmlMapUtil {
         }
         if (expression.indexOf(EXPRESSION_LEFT) == 0 && expression.indexOf(EXPRESSION_RIGHT) == expression.length() - 1
                 && expression.indexOf(expression) != -1) {
-            expression = expression.substring(expression.indexOf(EXPRESSION_LEFT), expression.indexOf(EXPRESSION_RIGHT));
-            expression = expression.replaceAll("", CHILDREN_SEPARATOR);
+            expression = expression.substring(expression.indexOf(EXPRESSION_LEFT) + 1, expression.indexOf(EXPRESSION_RIGHT));
+            expression = expression.replace(CHILDREN_SEPARATOR, "");
 
         }
-        return expression.replace(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
+        return expression.replace(EXPRESSION_SEPARATOR, XPATH_SEPARATOR);
 
     }
 

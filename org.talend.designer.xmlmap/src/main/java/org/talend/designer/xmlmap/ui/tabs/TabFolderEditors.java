@@ -43,6 +43,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
+import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -60,6 +61,10 @@ public class TabFolderEditors extends CTabFolder {
 
     private MetadataTableEditorView outputMetaEditor;
 
+    private XmlTreeSchemaTableView inputTreeSchemaEditor;
+
+    private XmlTreeSchemaTableView outputTreeSchemaEditor;
+
     public static final int INDEX_TAB_METADATA_EDITOR = 0;
 
     public static final int INDEX_TAB_EXPRESSION_EDITOR = 1;
@@ -74,9 +79,12 @@ public class TabFolderEditors extends CTabFolder {
 
     private RemovePushButtonForExtendedTable removeButton;
 
-    public TabFolderEditors(Composite parent, int style) {
+    private MapperManager mapperManage;
+
+    public TabFolderEditors(Composite parent, MapperManager mapperManager, int style) {
         super(parent, style);
         tabFolderEditors = this;
+        this.mapperManage = mapperManager;
         createComponents();
     }
 
@@ -105,6 +113,7 @@ public class TabFolderEditors extends CTabFolder {
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
         // outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+        Composite composite = new Composite(inOutMetaEditorContainer, SWT.NONE);
 
         addListenersToOutputButtons();
 
@@ -114,6 +123,18 @@ public class TabFolderEditors extends CTabFolder {
         // StyledText styledText = createStyledText(item);
 
         // this.styledTextHandler = new StyledTextHandler(styledText);
+
+        item = new CTabItem(tabFolderEditors, SWT.BORDER);
+        item.setText("Xml tree editor"); //$NON-NLS-1$
+
+        SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
+        xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
+        item.setControl(xmlTreeEditorContainer);
+        inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
+                xmlTreeEditorContainer);
+
+        // outputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
+        // xmlTreeEditorContainer);
 
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 

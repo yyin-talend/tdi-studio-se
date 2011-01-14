@@ -139,6 +139,12 @@ public class XmlMapEditor extends GraphicalEditor {
         initializeActionRegistry();
     }
 
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        if (listener != null) {
+            this.getGraphicalViewer().addSelectionChangedListener(listener);
+        }
+    }
+
     //
     // @Override
     // public void selectionChanged(IWorkbenchPart part, ISelection selection) {

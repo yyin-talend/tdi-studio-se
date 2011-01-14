@@ -22,7 +22,6 @@ import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IExternalData;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
-import org.talend.designer.xmlmap.ui.MapperUI;
 
 /**
  * wchen class global comment. Detailled comment
@@ -31,7 +30,7 @@ public class XmlMapComponent extends AbstractExternalNode {
 
     private XmlMapData emfMapData;
 
-    private MapperUI mapperUi;
+    private MapperMain mapprMain;
 
     public XmlMapComponent() {
     }
@@ -42,14 +41,13 @@ public class XmlMapComponent extends AbstractExternalNode {
         // TimeMeasure.display = false;
 
         Shell parentShell = display.getActiveShell();
-        mapperUi = new MapperUI(this);
+        mapprMain = new MapperMain(this);
 
         CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
 
         Shell shell = null;
         try {
-            mapperUi.prepareModel(getIODataComponents(), getMetadataList());
-            shell = mapperUi.createWindow(display);
+            mapprMain.createUI(display);
 
         } finally {
             parentShell.setCursor(null);
@@ -64,7 +62,7 @@ public class XmlMapComponent extends AbstractExternalNode {
             }
         }
 
-        return mapperUi.getMapperDialogResponse();
+        return mapprMain.getMapperDialogResponse();
     }
 
     public void initialize() {

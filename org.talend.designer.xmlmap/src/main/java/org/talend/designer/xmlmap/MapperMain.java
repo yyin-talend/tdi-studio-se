@@ -25,12 +25,14 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.ui.MapperUI;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -44,17 +46,25 @@ public class MapperMain {
 
     private MapperUI mapperUI;
 
+    private MapperManager mapperManager;
+
     public MapperMain(XmlMapComponent mapperComponent) {
         this.mapperComponent = mapperComponent;
+        prepareModel();
+        mapperManager = new MapperManager(mapperComponent, copyOfMapData);
     }
 
     public Shell createUI(Display display) {
-        MapperUI uiManager = new MapperUI(mapperComponent);
-        return uiManager.createWindow(display);
+        mapperUI = new MapperUI(mapperManager);
+        return mapperUI.createWindow(display);
     }
 
-    public void prepareModel(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables) {
-
+    private void prepareModel() {
+        if (mapperComponent == null) {
+            return;
+        }
+        IODataComponentContainer ioDataContainer = mapperComponent.getIODataComponents();
+        List<IMetadataTable> outputMetadataTables = mapperComponent.getMetadataList();
         if (mapperComponent.getEmfMapData() != null) {
             copyOfMapData = EcoreUtil.copy(mapperComponent.getEmfMapData());
         } else {
@@ -65,6 +75,10 @@ public class MapperMain {
     }
 
     private void prepareModelInputs(List<IODataComponent> inputConn) {
+        if (inputConn == null || inputConn.isEmpty()) {
+            copyOfMapData.getInputTrees().clear();
+            return;
+        }
         for (IODataComponent inData : inputConn) {
             String name = inData.getName();
             InputXmlTree inputTree = null;
@@ -110,6 +124,20 @@ public class MapperMain {
                         found.setXpath(inputTree.getName() + XmlMapUtil.XPATH_SEPARATOR + found.getName());
                         nodes.add(i, found);
                     }
+
+                    // add a default root for document
+                    if (XmlMapUtil.DOCUMENT.equals(found.getType())) {
+                        EList<TreeNode> children = found.getChildren();
+                        if (children.isEmpty()) {
+                            TreeNode treeRoot = XmlmapFactory.eINSTANCE.createTreeNode();
+                            treeRoot.setName("root");
+                            treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                            treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
+                            treeRoot.setNodeType(NodeType.ELEMENT);
+                            children.add(treeRoot);
+                        }
+                    }
+
                 }
 
                 if (nodes.size() > listColumns.size()) {
@@ -126,6 +154,10 @@ public class MapperMain {
     }
 
     private void prepareModelOutputs(List<IODataComponent> outputConn, List<IMetadataTable> outputMetadataTables) {
+        if (outputConn == null || outputConn.isEmpty()) {
+            copyOfMapData.getOutputTrees().clear();
+            return;
+        }
         for (IODataComponent outData : outputConn) {
             String name = outData.getName();
             OutputXmlTree outputTree = null;
@@ -170,6 +202,20 @@ public class MapperMain {
                         found.setXpath(outputTree.getName() + XmlMapUtil.XPATH_SEPARATOR + found.getName());
                         nodes.add(i, found);
                     }
+
+                    // add a default root for document
+                    if (XmlMapUtil.DOCUMENT.equals(found.getType())) {
+                        EList<TreeNode> children = found.getChildren();
+                        if (children.isEmpty()) {
+                            TreeNode treeRoot = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                            treeRoot.setName("root");
+                            treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                            treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
+                            treeRoot.setNodeType(NodeType.ELEMENT);
+                            children.add(treeRoot);
+                        }
+                    }
+
                 }
 
                 if (nodes.size() > listColumns.size()) {
@@ -183,6 +229,10 @@ public class MapperMain {
             }
             copyOfMapData.getOutputTrees().add(outputTree);
         }
+    }
+
+    public int getMapperDialogResponse() {
+        return mapperUI.getMapperDialogResponse();
     }
 
 }

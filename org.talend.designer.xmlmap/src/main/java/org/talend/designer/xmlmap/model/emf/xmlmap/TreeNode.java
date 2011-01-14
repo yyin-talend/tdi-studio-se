@@ -19,11 +19,12 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getChildren <em>Children</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getXpath <em>Xpath</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isLoop <em>Loop</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getNodeType <em>Node Type</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}</li>
  * </ul>
  * </p>
  *
@@ -49,32 +50,6 @@ public interface TreeNode extends AbstractNode {
     EList<TreeNode> getChildren();
 
     /**
-     * Returns the value of the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Nullable</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Nullable</em>' attribute.
-     * @see #setNullable(boolean)
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Nullable()
-     * @model
-     * @generated
-     */
-    boolean isNullable();
-
-    /**
-     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Nullable</em>' attribute.
-     * @see #isNullable()
-     * @generated
-     */
-    void setNullable(boolean value);
-
-    /**
      * Returns the value of the '<em><b>Xpath</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <p>
@@ -85,7 +60,7 @@ public interface TreeNode extends AbstractNode {
      * @return the value of the '<em>Xpath</em>' attribute.
      * @see #setXpath(String)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Xpath()
-     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model
      * @generated
      */
     String getXpath();
@@ -111,7 +86,7 @@ public interface TreeNode extends AbstractNode {
      * @return the value of the '<em>Loop</em>' attribute.
      * @see #setLoop(boolean)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Loop()
-     * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+     * @model
      * @generated
      */
     boolean isLoop();
@@ -170,5 +145,57 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setNodeType(NodeType value);
+
+    /**
+     * Returns the value of the '<em><b>Pattern</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Pattern</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Pattern</em>' attribute.
+     * @see #setPattern(String)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Pattern()
+     * @model
+     * @generated
+     */
+    String getPattern();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Pattern</em>' attribute.
+     * @see #getPattern()
+     * @generated
+     */
+    void setPattern(String value);
+
+    /**
+     * Returns the value of the '<em><b>Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Key</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Key</em>' attribute.
+     * @see #setKey(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Key()
+     * @model
+     * @generated
+     */
+    boolean isKey();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Key</em>' attribute.
+     * @see #isKey()
+     * @generated
+     */
+    void setKey(boolean value);
 
 } // TreeNode

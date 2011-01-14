@@ -266,13 +266,22 @@ public interface XmlmapPackage extends EPackage {
     int ABSTRACT_NODE__TYPE = 2;
 
     /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_NODE__NULLABLE = 3;
+
+    /**
      * The number of structural features of the '<em>Abstract Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE_FEATURE_COUNT = 3;
+    int ABSTRACT_NODE_FEATURE_COUNT = 4;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
@@ -312,6 +321,15 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__TYPE = ABSTRACT_NODE__TYPE;
 
     /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
+
+    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -321,22 +339,13 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__CHILDREN = ABSTRACT_NODE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TREE_NODE__NULLABLE = ABSTRACT_NODE_FEATURE_COUNT + 1;
-
-    /**
      * The feature id for the '<em><b>Xpath</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE__XPATH = ABSTRACT_NODE_FEATURE_COUNT + 2;
+    int TREE_NODE__XPATH = ABSTRACT_NODE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Loop</b></em>' attribute.
@@ -345,7 +354,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE__LOOP = ABSTRACT_NODE_FEATURE_COUNT + 3;
+    int TREE_NODE__LOOP = ABSTRACT_NODE_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
@@ -354,7 +363,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 4;
+    int TREE_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 3;
 
     /**
      * The feature id for the '<em><b>Node Type</b></em>' attribute.
@@ -363,7 +372,25 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE__NODE_TYPE = ABSTRACT_NODE_FEATURE_COUNT + 5;
+    int TREE_NODE__NODE_TYPE = ABSTRACT_NODE_FEATURE_COUNT + 4;
+
+    /**
+     * The feature id for the '<em><b>Pattern</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__PATTERN = ABSTRACT_NODE_FEATURE_COUNT + 5;
+
+    /**
+     * The feature id for the '<em><b>Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__KEY = ABSTRACT_NODE_FEATURE_COUNT + 6;
 
     /**
      * The number of structural features of the '<em>Tree Node</em>' class.
@@ -372,7 +399,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 6;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 7;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -412,15 +439,6 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__TYPE = TREE_NODE__TYPE;
 
     /**
-     * The feature id for the '<em><b>Children</b></em>' containment reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OUTPUT_TREE_NODE__CHILDREN = TREE_NODE__CHILDREN;
-
-    /**
      * The feature id for the '<em><b>Nullable</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -428,6 +446,15 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__NULLABLE = TREE_NODE__NULLABLE;
+
+    /**
+     * The feature id for the '<em><b>Children</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__CHILDREN = TREE_NODE__CHILDREN;
 
     /**
      * The feature id for the '<em><b>Xpath</b></em>' attribute.
@@ -464,6 +491,24 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__NODE_TYPE = TREE_NODE__NODE_TYPE;
+
+    /**
+     * The feature id for the '<em><b>Pattern</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__PATTERN = TREE_NODE__PATTERN;
+
+    /**
+     * The feature id for the '<em><b>Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__KEY = TREE_NODE__KEY;
 
     /**
      * The feature id for the '<em><b>Default Value</b></em>' attribute.
@@ -537,6 +582,15 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int VAR_NODE__TYPE = ABSTRACT_NODE__TYPE;
+
+    /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
 
     /**
      * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
@@ -807,6 +861,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getAbstractNode_Type();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Nullable</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable()
+     * @see #getAbstractNode()
+     * @generated
+     */
+    EAttribute getAbstractNode_Nullable();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode <em>Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -826,17 +891,6 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EReference getTreeNode_Children();
-
-    /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Nullable</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable()
-     * @see #getTreeNode()
-     * @generated
-     */
-    EAttribute getTreeNode_Nullable();
 
     /**
      * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getXpath <em>Xpath</em>}'.
@@ -881,6 +935,28 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getTreeNode_NodeType();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Pattern</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Pattern();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Key</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Key();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
@@ -1176,6 +1252,14 @@ public interface XmlmapPackage extends EPackage {
         EAttribute ABSTRACT_NODE__TYPE = eINSTANCE.getAbstractNode_Type();
 
         /**
+         * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_NODE__NULLABLE = eINSTANCE.getAbstractNode_Nullable();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1192,14 +1276,6 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference TREE_NODE__CHILDREN = eINSTANCE.getTreeNode_Children();
-
-        /**
-         * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute TREE_NODE__NULLABLE = eINSTANCE.getTreeNode_Nullable();
 
         /**
          * The meta object literal for the '<em><b>Xpath</b></em>' attribute feature.
@@ -1232,6 +1308,22 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute TREE_NODE__NODE_TYPE = eINSTANCE.getTreeNode_NodeType();
+
+        /**
+         * The meta object literal for the '<em><b>Pattern</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__PATTERN = eINSTANCE.getTreeNode_Pattern();
+
+        /**
+         * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__KEY = eINSTANCE.getTreeNode_Key();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.

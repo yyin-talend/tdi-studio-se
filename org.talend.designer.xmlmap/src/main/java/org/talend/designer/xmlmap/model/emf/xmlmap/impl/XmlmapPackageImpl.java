@@ -156,7 +156,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Initialize simple dependencies
         TalendFilePackage.eINSTANCE.eClass();
-        XMLTypePackage.eINSTANCE.eClass();
 
         // Create package meta-data objects
         theXmlmapPackage.createPackageContents();
@@ -340,6 +339,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getAbstractNode_Nullable() {
+        return (EAttribute)abstractNodeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getTreeNode() {
         return treeNodeEClass;
     }
@@ -358,7 +366,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getTreeNode_Nullable() {
+    public EAttribute getTreeNode_Xpath() {
         return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(1);
     }
 
@@ -367,7 +375,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getTreeNode_Xpath() {
+    public EAttribute getTreeNode_Loop() {
         return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(2);
     }
 
@@ -376,17 +384,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getTreeNode_Loop() {
-        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EReference getTreeNode_OutgoingConnections() {
-        return (EReference)treeNodeEClass.getEStructuralFeatures().get(4);
+        return (EReference)treeNodeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -395,7 +394,25 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     public EAttribute getTreeNode_NodeType() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getTreeNode_Pattern() {
         return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getTreeNode_Key() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -547,14 +564,16 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__NAME);
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__EXPRESSION);
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__TYPE);
+        createEAttribute(abstractNodeEClass, ABSTRACT_NODE__NULLABLE);
 
         treeNodeEClass = createEClass(TREE_NODE);
         createEReference(treeNodeEClass, TREE_NODE__CHILDREN);
-        createEAttribute(treeNodeEClass, TREE_NODE__NULLABLE);
         createEAttribute(treeNodeEClass, TREE_NODE__XPATH);
         createEAttribute(treeNodeEClass, TREE_NODE__LOOP);
         createEReference(treeNodeEClass, TREE_NODE__OUTGOING_CONNECTIONS);
         createEAttribute(treeNodeEClass, TREE_NODE__NODE_TYPE);
+        createEAttribute(treeNodeEClass, TREE_NODE__PATTERN);
+        createEAttribute(treeNodeEClass, TREE_NODE__KEY);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__DEFAULT_VALUE);
@@ -598,7 +617,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Obtain other dependent packages
         TalendFilePackage theTalendFilePackage = (TalendFilePackage)EPackage.Registry.INSTANCE.getEPackage(TalendFilePackage.eNS_URI);
-        XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
         // Create type parameters
 
@@ -633,14 +651,16 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getAbstractNode_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Expression(), ecorePackage.getEString(), "expression", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Type(), ecorePackage.getEString(), "type", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(treeNodeEClass, TreeNode.class, "TreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getTreeNode_Children(), this.getTreeNode(), null, "children", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getTreeNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getTreeNode_Xpath(), theXMLTypePackage.getString(), "xpath", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getTreeNode_Loop(), theXMLTypePackage.getBoolean(), "loop", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Xpath(), ecorePackage.getEString(), "xpath", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Loop(), ecorePackage.getEBoolean(), "loop", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_OutgoingConnections(), this.getConnection(), null, "outgoingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_NodeType(), this.getNodeType(), "nodeType", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Key(), ecorePackage.getEBoolean(), "key", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

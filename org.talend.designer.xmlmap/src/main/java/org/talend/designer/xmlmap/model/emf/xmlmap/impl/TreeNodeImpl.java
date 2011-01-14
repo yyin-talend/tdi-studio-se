@@ -38,11 +38,12 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getChildren <em>Children</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getXpath <em>Xpath</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isLoop <em>Loop</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getNodeType <em>Node Type</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getPattern <em>Pattern</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isKey <em>Key</em>}</li>
  * </ul>
  * </p>
  *
@@ -58,26 +59,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected EList<TreeNode> children;
-
-    /**
-     * The default value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #isNullable()
-     * @generated
-     * @ordered
-     */
-    protected static final boolean NULLABLE_EDEFAULT = false;
-
-    /**
-     * The cached value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #isNullable()
-     * @generated
-     * @ordered
-     */
-    protected boolean nullable = NULLABLE_EDEFAULT;
 
     /**
      * The default value of the '{@link #getXpath() <em>Xpath</em>}' attribute.
@@ -150,6 +131,46 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
     protected NodeType nodeType = NODE_TYPE_EDEFAULT;
 
     /**
+     * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPattern()
+     * @generated
+     * @ordered
+     */
+    protected static final String PATTERN_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPattern()
+     * @generated
+     * @ordered
+     */
+    protected String pattern = PATTERN_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isKey() <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isKey()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean KEY_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isKey() <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isKey()
+     * @generated
+     * @ordered
+     */
+    protected boolean key = KEY_EDEFAULT;
+
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -178,27 +199,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             children = new EObjectContainmentEList<TreeNode>(TreeNode.class, this, XmlmapPackage.TREE_NODE__CHILDREN);
         }
         return children;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public boolean isNullable() {
-        return nullable;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setNullable(boolean newNullable) {
-        boolean oldNullable = nullable;
-        nullable = newNullable;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__NULLABLE, oldNullable, nullable));
     }
 
     /**
@@ -281,6 +281,48 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getPattern() {
+        return pattern;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setPattern(String newPattern) {
+        String oldPattern = pattern;
+        pattern = newPattern;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__PATTERN, oldPattern, pattern));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean isKey() {
+        return key;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setKey(boolean newKey) {
+        boolean oldKey = key;
+        key = newKey;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__KEY, oldKey, key));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -300,8 +342,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         switch (featureID) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 return getChildren();
-            case XmlmapPackage.TREE_NODE__NULLABLE:
-                return isNullable();
             case XmlmapPackage.TREE_NODE__XPATH:
                 return getXpath();
             case XmlmapPackage.TREE_NODE__LOOP:
@@ -310,6 +350,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getOutgoingConnections();
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 return getNodeType();
+            case XmlmapPackage.TREE_NODE__PATTERN:
+                return getPattern();
+            case XmlmapPackage.TREE_NODE__KEY:
+                return isKey();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -327,9 +371,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 getChildren().clear();
                 getChildren().addAll((Collection<? extends TreeNode>)newValue);
                 return;
-            case XmlmapPackage.TREE_NODE__NULLABLE:
-                setNullable((Boolean)newValue);
-                return;
             case XmlmapPackage.TREE_NODE__XPATH:
                 setXpath((String)newValue);
                 return;
@@ -342,6 +383,12 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return;
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 setNodeType((NodeType)newValue);
+                return;
+            case XmlmapPackage.TREE_NODE__PATTERN:
+                setPattern((String)newValue);
+                return;
+            case XmlmapPackage.TREE_NODE__KEY:
+                setKey((Boolean)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -358,9 +405,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 getChildren().clear();
                 return;
-            case XmlmapPackage.TREE_NODE__NULLABLE:
-                setNullable(NULLABLE_EDEFAULT);
-                return;
             case XmlmapPackage.TREE_NODE__XPATH:
                 setXpath(XPATH_EDEFAULT);
                 return;
@@ -372,6 +416,12 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return;
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 setNodeType(NODE_TYPE_EDEFAULT);
+                return;
+            case XmlmapPackage.TREE_NODE__PATTERN:
+                setPattern(PATTERN_EDEFAULT);
+                return;
+            case XmlmapPackage.TREE_NODE__KEY:
+                setKey(KEY_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -387,8 +437,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         switch (featureID) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 return children != null && !children.isEmpty();
-            case XmlmapPackage.TREE_NODE__NULLABLE:
-                return nullable != NULLABLE_EDEFAULT;
             case XmlmapPackage.TREE_NODE__XPATH:
                 return XPATH_EDEFAULT == null ? xpath != null : !XPATH_EDEFAULT.equals(xpath);
             case XmlmapPackage.TREE_NODE__LOOP:
@@ -397,6 +445,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return outgoingConnections != null && !outgoingConnections.isEmpty();
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 return nodeType != NODE_TYPE_EDEFAULT;
+            case XmlmapPackage.TREE_NODE__PATTERN:
+                return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
+            case XmlmapPackage.TREE_NODE__KEY:
+                return key != KEY_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -411,14 +463,16 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (nullable: ");
-        result.append(nullable);
-        result.append(", xpath: ");
+        result.append(" (xpath: ");
         result.append(xpath);
         result.append(", loop: ");
         result.append(loop);
         result.append(", nodeType: ");
         result.append(nodeType);
+        result.append(", pattern: ");
+        result.append(pattern);
+        result.append(", key: ");
+        result.append(key);
         result.append(')');
         return result.toString();
     }

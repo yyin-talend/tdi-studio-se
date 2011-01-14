@@ -26,6 +26,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#isNullable <em>Nullable</em>}</li>
  * </ul>
  * </p>
  *
@@ -91,6 +92,26 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * @ordered
      */
     protected String type = TYPE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isNullable()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean NULLABLE_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isNullable()
+     * @generated
+     * @ordered
+     */
+    protected boolean nullable = NULLABLE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -179,6 +200,27 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setNullable(boolean newNullable) {
+        boolean oldNullable = nullable;
+        nullable = newNullable;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.ABSTRACT_NODE__NULLABLE, oldNullable, nullable));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -188,6 +230,8 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return getExpression();
             case XmlmapPackage.ABSTRACT_NODE__TYPE:
                 return getType();
+            case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
+                return isNullable();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -208,6 +252,9 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return;
             case XmlmapPackage.ABSTRACT_NODE__TYPE:
                 setType((String)newValue);
+                return;
+            case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
+                setNullable((Boolean)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -230,6 +277,9 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
             case XmlmapPackage.ABSTRACT_NODE__TYPE:
                 setType(TYPE_EDEFAULT);
                 return;
+            case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
+                setNullable(NULLABLE_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -248,6 +298,8 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return EXPRESSION_EDEFAULT == null ? expression != null : !EXPRESSION_EDEFAULT.equals(expression);
             case XmlmapPackage.ABSTRACT_NODE__TYPE:
                 return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+            case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
+                return nullable != NULLABLE_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -268,6 +320,8 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
         result.append(expression);
         result.append(", type: ");
         result.append(type);
+        result.append(", nullable: ");
+        result.append(nullable);
         result.append(')');
         return result.toString();
     }
