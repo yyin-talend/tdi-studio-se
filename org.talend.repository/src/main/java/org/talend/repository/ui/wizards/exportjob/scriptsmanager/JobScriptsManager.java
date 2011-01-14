@@ -718,7 +718,9 @@ public abstract class JobScriptsManager {
 
                 String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                         + typeFolderPath.toOSString();
-
+                if (itemPath != null && !"".equals(itemPath)) { //$NON-NLS-1$
+                    basePath = basePath + PATH_SEPARATOR + itemPath;
+                }
                 resource.addResources(basePath, metadataNameFileUrls);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
