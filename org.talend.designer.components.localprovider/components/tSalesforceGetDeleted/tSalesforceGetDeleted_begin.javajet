@@ -77,6 +77,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        
 	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
+			if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+				throw new RuntimeException("Get null connection from <%=connection %>");
+			}
 			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
 			<%}else{%>
 			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);

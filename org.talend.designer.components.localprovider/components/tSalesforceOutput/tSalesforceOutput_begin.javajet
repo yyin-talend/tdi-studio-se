@@ -32,6 +32,9 @@ imports="
 
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         <%if(useExistingConn){%>
+        if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+			throw new RuntimeException("Get null connection from <%=connection %>");
+		}
 		sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
 		<%}else{%>
         boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=endpoint %>,<%=username %>, <%=password %>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);

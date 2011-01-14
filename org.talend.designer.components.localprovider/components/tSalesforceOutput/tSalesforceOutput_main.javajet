@@ -15,6 +15,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();    	
 
 	boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
@@ -34,11 +35,11 @@ boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "
 <%
 if(useProxy){
 %>
-    java.util.Properties props = System.getProperties();
-    props.put("socksProxyHost",<%=proxyHost %>);  
-    props.put("socksProxyPort",<%=proxyPort %>);
-    props.put("java.net.socks.username", <%=proxyUsername %>);
-    props.put("java.net.socks.password", <%=proxyPassword %>); 
+    java.util.Properties props_<%=cid%> = System.getProperties();
+    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
     
 <%
 }
@@ -73,7 +74,6 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {//2
-        String cid = node.getUniqueName();
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4

@@ -45,11 +45,11 @@ if(bulkConnection){
 }else{
 	if(useProxy){
 %>
-    java.util.Properties props = System.getProperties();
-    props.put("socksProxyHost",<%=proxyHost %>);  
-    props.put("socksProxyPort",<%=proxyPort %>);
-    props.put("java.net.socks.username", <%=proxyUsername %>);
-    props.put("java.net.socks.password", <%=proxyPassword %>); 
+    java.util.Properties props_<%=cid%> = System.getProperties();
+    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
     
 <%
 	}
