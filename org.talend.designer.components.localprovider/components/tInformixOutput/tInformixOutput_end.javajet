@@ -114,8 +114,11 @@ imports="
 
             pstmt_<%=cid %>.close();
             
-        }        
-        <%
+        }
+    <% if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){ %>
+    	conn_<%=cid%>.commit();
+    <%}%>
+    <%
     }   
     %>
 <%
