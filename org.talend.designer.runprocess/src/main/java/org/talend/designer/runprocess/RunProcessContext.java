@@ -470,8 +470,9 @@ public class RunProcessContext {
                             processor.setContext(context);
                             ((IEclipseProcessor) processor).setTargetExecutionConfig(getSelectedTargetExecutionConfig());
 
-                            ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                    getTracesPort() != IProcessor.NO_TRACES && hasConnectionTrace(), true, progressMonitor);
+                            ProcessorUtilities.generateCode(processor, process, context,
+                                    getStatisticsPort() != IProcessor.NO_STATISTICS, getTracesPort() != IProcessor.NO_TRACES
+                                            && hasConnectionTrace(), true, progressMonitor);
                             final boolean[] refreshUiAndWait = new boolean[1];
                             refreshUiAndWait[0] = true;
                             final Display display = shell.getDisplay();
