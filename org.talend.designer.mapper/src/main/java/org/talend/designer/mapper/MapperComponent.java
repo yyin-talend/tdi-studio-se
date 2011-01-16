@@ -453,7 +453,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
     }
 
-    public AbstractExternalData saveExternalData() {
+    public AbstractExternalData getExternalEmfData() {
         final MapperData emfMapperData = MapperFactory.eINSTANCE.createMapperData();
         initMapperMain(false);
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,

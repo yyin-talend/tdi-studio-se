@@ -75,10 +75,10 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Key");
+        column.setToolTipHeader("Key");
         column.setId(ID_COLUMN_KEY);
+        column.setDisplayedValue(""); //$NON-NLS-1$
         column.setWeight(20);
-        column.setTableColumnSelectionListener(new CheckColumnSelectionListener(column, tableViewerCreator));
-        column.setImageHeader(ImageProvider.getImage(EImage.CHECKED_ICON));
         column.setModifiable(true);
         CheckboxTableEditorContent checkbox = new CheckboxTableEditorContent();
         column.setTableEditorContent(checkbox);
@@ -115,9 +115,8 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
                 bean.setType(value);
             }
         });
-        column.setModifiable(!isReadOnly());
+        column.setModifiable(true);
         column.setWeight(20);
-        column.setMinimumWidth(30);
         ComboBoxCellEditor typeComboEditor = new ComboBoxCellEditor(tableViewerCreator.getTable(), arrayTalendTypes,
                 SWT.READ_ONLY);
         CCombo typeCombo = (CCombo) typeComboEditor.getControl();
@@ -130,13 +129,15 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Nullable");
+        column.setToolTipHeader("Nullable");
         column.setId(ID_COLUMN_NULLABLE);
-        column.setWeight(20);
+        column.setBeanPropertyAccessors(getNullableAccessor());
+        column.setWidth(20);
+        column.setDisplayedValue(""); //$NON-NLS-1$
         column.setTableColumnSelectionListener(new CheckColumnSelectionListener(column, tableViewerCreator));
         column.setImageHeader(ImageProvider.getImage(EImage.CHECKED_ICON));
-        checkbox = new CheckboxTableEditorContent();
-        column.setTableEditorContent(checkbox);
-        column.setBeanPropertyAccessors(getNullableAccessor());
+        CheckboxTableEditorContent nullableCheckbox = new CheckboxTableEditorContent();
+        column.setTableEditorContent(nullableCheckbox);
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Pattern");
@@ -168,7 +169,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         return new IBeanPropertyAccessors<TreeSchemaTableEntry, Boolean>() {
 
             public Boolean get(TreeSchemaTableEntry bean) {
-                return bean.isNullable() ? Boolean.TRUE : Boolean.FALSE;
+                return bean.isNullable();
             }
 
             public void set(TreeSchemaTableEntry bean, Boolean value) {

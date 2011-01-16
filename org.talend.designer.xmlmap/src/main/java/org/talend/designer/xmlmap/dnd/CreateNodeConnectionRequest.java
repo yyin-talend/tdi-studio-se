@@ -20,14 +20,29 @@ import org.eclipse.gef.requests.CreateRequest;
  */
 public class CreateNodeConnectionRequest extends CreateRequest {
 
+    public static final int DROP_EXPRESSION = 0;
+
+    public static final int DROP_TREE = 1;
+
     private EditPart targetEditPart;
+
+    private int dropType;
 
     public CreateNodeConnectionRequest(EditPart targetEditPart) {
         this.targetEditPart = targetEditPart;
+        setDropType(DROP_TREE);
     }
 
     public EditPart getTargetEditPart() {
         return this.targetEditPart;
+    }
+
+    public void setDropType(int dropType) {
+        this.dropType = dropType;
+    }
+
+    public int getDropType() {
+        return dropType;
     }
 
 }

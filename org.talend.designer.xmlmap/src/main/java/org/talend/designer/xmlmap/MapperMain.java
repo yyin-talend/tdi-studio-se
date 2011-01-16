@@ -65,13 +65,11 @@ public class MapperMain {
         }
         IODataComponentContainer ioDataContainer = mapperComponent.getIODataComponents();
         List<IMetadataTable> outputMetadataTables = mapperComponent.getMetadataList();
-        if (mapperComponent.getEmfMapData() != null) {
-            copyOfMapData = EcoreUtil.copy(mapperComponent.getEmfMapData());
-        } else {
-            copyOfMapData = XmlmapFactory.eINSTANCE.createXmlMapData();
+        if (mapperComponent.getExternalEmfData() != null) {
+            copyOfMapData = EcoreUtil.copy((XmlMapData) mapperComponent.getExternalEmfData());
+            prepareModelInputs(ioDataContainer.getInputs());
+            prepareModelOutputs(ioDataContainer.getOuputs(), outputMetadataTables);
         }
-        prepareModelInputs(ioDataContainer.getInputs());
-        prepareModelOutputs(ioDataContainer.getOuputs(), outputMetadataTables);
     }
 
     private void prepareModelInputs(List<IODataComponent> inputConn) {

@@ -13,35 +13,37 @@
 package org.talend.designer.xmlmap.ui.tabs;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class MapperManager {
+public class MapperManager implements ISelectionChangedListener {
 
     private XmlMapComponent mapperComponent;
 
     private XmlMapData copyOfMapData;
 
+    private MapperUI mapperUI;
+
+    private InputXmlTree selectedInputTree;
+
     private List<TreeSchemaTableEntry> treeSchemaEntrys = new ArrayList<TreeSchemaTableEntry>();
-
-    private Map<InputXmlTree, ExtendedTableModel<TreeSchemaTableEntry>> inputTreeModelMap = new HashMap<InputXmlTree, ExtendedTableModel<TreeSchemaTableEntry>>();
-
-    private Map<OutputXmlTree, ExtendedTableModel<TreeSchemaTableEntry>> outputTreeModelMap = new HashMap<OutputXmlTree, ExtendedTableModel<TreeSchemaTableEntry>>();
 
     public MapperManager(XmlMapComponent mapperComponent, XmlMapData copyOfMapData) {
         this.mapperComponent = mapperComponent;
@@ -60,10 +62,9 @@ public class MapperManager {
         if (inputXmlTree == null && !copyOfMapData.getInputTrees().isEmpty()) {
             inputXmlTree = copyOfMapData.getInputTrees().get(0);
         }
-        ExtendedTableModel<TreeSchemaTableEntry> tableModel = inputTreeModelMap.get(inputXmlTree);
-        if (tableModel == null) {
-            tableModel = new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema", treeSchemaEntrys);
-        }
+        treeSchemaEntrys.clear();
+        ExtendedTableModel<TreeSchemaTableEntry> tableModel = new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema",
+                treeSchemaEntrys);
 
         if (inputXmlTree != null) {
             EList<TreeNode> nodes = inputXmlTree.getNodes();
@@ -71,28 +72,6 @@ public class MapperManager {
                 if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
                     addTreeSchemaEnties(tableModel, node.getChildren());
                 }
-            }
-            inputTreeModelMap.put(inputXmlTree, tableModel);
-        }
-        return tableModel;
-    }
-
-    public ExtendedTableModel<TreeSchemaTableEntry> getSelectedOutputTreeSchemaModel(OutputXmlTree outputXmlTree) {
-        if (outputXmlTree == null && !copyOfMapData.getInputTrees().isEmpty()) {
-            outputXmlTree = copyOfMapData.getOutputTrees().get(0);
-        }
-        ExtendedTableModel<TreeSchemaTableEntry> tableModel = outputTreeModelMap.get(outputXmlTree);
-        if (tableModel == null) {
-            tableModel = new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema", treeSchemaEntrys);
-        }
-
-        if (outputXmlTree != null) {
-            EList<OutputTreeNode> nodes = outputXmlTree.getNodes();
-            for (TreeNode node : nodes) {
-                if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
-                    addTreeSchemaEnties(tableModel, node.getChildren());
-                }
-                outputTreeModelMap.put(outputXmlTree, tableModel);
             }
         }
         return tableModel;
@@ -108,5 +87,49 @@ public class MapperManager {
             }
         }
 
+    }
+
+    public void setMapperUI(MapperUI mapperUI) {
+        this.mapperUI = mapperUI;
+    }
+
+    public void selectionChanged(SelectionChangedEvent event) {
+        if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
+            Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
+            if (firstElement instanceof TreeNodeEditPart) {
+                Object model = ((TreeNodeEditPart) firstElement).getModel();
+                if (model instanceof TreeNode && !(model instanceof OutputTreeNode)) {
+                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
+                    if (inputTreeNodeRoot != null) {
+                        InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+                        if (selectedInputTree != inputTree) {
+                            selectedInputTree = inputTree;
+                            ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(selectedInputTree);
+                            mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+                                    .setExtendedControlModel(selectedInputTreeSchemaModel);
+                            mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
+                        }
+                    }
+                }
+            }
+        } else {
+            ExtendedTableModel<TreeSchemaTableEntry> oldModel = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+                    .getExtendedTableModel();
+            if (oldModel != null && oldModel.getBeanCount() != 0) {
+                mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+                        .setExtendedControlModel(new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema", treeSchemaEntrys));
+                mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
+            }
+        }
+
+    }
+
+    public void refreshInputTreeSchemaEditor(InputXmlTree tree) {
+        if (tree == null) {
+            return;
+        }
+        ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(tree);
+        mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
+        mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
     }
 }

@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.dnd.TemplateTransfer;
@@ -19,12 +22,16 @@ import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
+import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
+
+    private IFigure targetFigure;
 
     public XmlDropTargetListener(EditPartViewer viewer) {
         super(viewer);
@@ -38,9 +45,27 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected Request createTargetRequest() {
         CreateNodeConnectionRequest request = new CreateNodeConnectionRequest(getTargetEditPart());
-
+        if (targetFigure instanceof ExpressionFigure) {
+            request.setDropType(CreateNodeConnectionRequest.DROP_EXPRESSION);
+        }
         request.setFactory(new NewNodeCreationFactory(TemplateTransfer.getInstance().getObject()));
         return request;
+    }
+
+    @Override
+    protected void updateTargetEditPart() {
+        super.updateTargetEditPart();
+        if (getViewer() instanceof XmlMapGraphicViewer) {
+            Point dropLocation = getDropLocation();
+            EditPartViewer.Conditional condition = new EditPartViewer.Conditional() {
+
+                public boolean evaluate(EditPart editpart) {
+                    return editpart.getTargetEditPart(getTargetRequest()) != null;
+                }
+            };
+            targetFigure = ((XmlMapGraphicViewer) getViewer()).findFigureAt(dropLocation.x, dropLocation.y, getExclusionSet(),
+                    condition);
+        }
     }
 
     public void dragEnter(DropTargetEvent event) {

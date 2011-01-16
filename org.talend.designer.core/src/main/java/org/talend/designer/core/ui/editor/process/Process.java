@@ -1154,15 +1154,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             nType.setSizeY(node.getSize().height);
         }
         if (node.getExternalNode() != null) {
-            if (node.getExternalData() != null) {
-                nType.setNodeData(node.getExternalNode().saveExternalData());
-
-                // if (node.getExternalData() != null) {
-                // Data data = (Data) node.getExternalBytesData();
-                // nType.setBinaryData(data.getBytesData());
-                // nType.setStringData(data.getStringData());
-                // }
-            }
+            nType.setNodeData(node.getExternalNode().getExternalEmfData());
         }
         if (node.getNodeContainer() != null) {
             NodeContainerType ncType = createNodeContainerType(fileFact);
@@ -3381,8 +3373,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         loadConnections(processType, nodesHashtable);
 
-     // added for notes 
-                       loadNotes(processType); 
+        // added for notes
+        loadNotes(processType);
         // added for subjobs
         loadSubjobs(processType);
 

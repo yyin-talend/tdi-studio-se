@@ -21,10 +21,8 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
-import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.actions.DeleteAction;
-import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
@@ -38,7 +36,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
 import org.talend.designer.xmlmap.dnd.XmlDropTargetListener;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
@@ -50,6 +47,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -59,9 +57,9 @@ public class XmlMapEditor extends GraphicalEditor {
 
     private RulerComposite rulerComp;
 
-    // public static final String ID = "org.rufus.gef.examples.tree.editors.XMLEditor";
-
     private KeyHandler sharedKeyHandler;
+
+    MapperManager mapperManager;
 
     public XmlMapEditor() {
         DefaultEditDomain defaultEditDomain = new DefaultEditDomain(this);
@@ -75,7 +73,13 @@ public class XmlMapEditor extends GraphicalEditor {
 
     protected void createGraphicalViewer(final Composite parent) {
         rulerComp = new RulerComposite(parent, SWT.BORDER);
-        super.createGraphicalViewer(rulerComp);
+        GraphicalViewer viewer = new XmlMapGraphicViewer();
+        viewer.createControl(rulerComp);
+        setGraphicalViewer(viewer);
+        configureGraphicalViewer();
+        hookGraphicalViewer();
+        initializeGraphicalViewer();
+        // super.createGraphicalViewer(rulerComp);
         rulerComp.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
     }
 
@@ -139,10 +143,15 @@ public class XmlMapEditor extends GraphicalEditor {
         initializeActionRegistry();
     }
 
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    public void setMapperManager(MapperManager listener) {
+        this.mapperManager = listener;
         if (listener != null) {
             this.getGraphicalViewer().addSelectionChangedListener(listener);
         }
+    }
+
+    public MapperManager getMapperManager() {
+        return this.mapperManager;
     }
 
     //
@@ -157,10 +166,11 @@ public class XmlMapEditor extends GraphicalEditor {
 
     protected KeyHandler getCommonKeyHandler() {
         if (sharedKeyHandler == null) {
-            sharedKeyHandler = new KeyHandler();
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 127, 0),
-                    getActionRegistry().getAction(ActionFactory.DELETE.getId()));
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+            // sharedKeyHandler = new KeyHandler();
+            // sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 127, 0),
+            // getActionRegistry().getAction(ActionFactory.DELETE.getId()));
+            // sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0),
+            // getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
         }
         return sharedKeyHandler;
     }
@@ -219,7 +229,10 @@ public class XmlMapEditor extends GraphicalEditor {
                     TreeNodeEditPart editPart = (TreeNodeEditPart) selectedEditParts.get(0);
                     TreeNode treeNode = (TreeNode) editPart.getModel();
                     if (treeNode.eContainer() instanceof InputXmlTree && XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
-                        menu.add(new ImportTreeFromXml(getGraphicalViewer().getControl().getShell(), treeNode));
+                        ImportTreeFromXml importAction = new ImportTreeFromXml(getGraphicalViewer().getControl().getShell(),
+                                treeNode);
+                        importAction.setMapperManager(getMapperManager());
+                        menu.add(importAction);
                     }
                     SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                     loopAction.update();

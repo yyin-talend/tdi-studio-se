@@ -369,7 +369,7 @@ public class DbMapComponent extends AbstractMapComponent {
     }
 
     @Override
-    public AbstractExternalData saveExternalData() {
+    public AbstractExternalData getExternalEmfData() {
         final DBMapData emfMapperData = DbmapFactory.eINSTANCE.createDBMapData();
         initMapperMain();
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,

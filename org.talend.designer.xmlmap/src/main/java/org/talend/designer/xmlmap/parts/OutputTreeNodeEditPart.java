@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
@@ -23,7 +25,6 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.OutputTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
@@ -33,6 +34,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.parts.directedit.ExpressionCellEditorLocator;
+import org.talend.designer.xmlmap.parts.directedit.ExpressionDirectEditManager;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -91,22 +94,28 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             expressionFigure.setTreeNodePart(childPart);
 
             treeBranch.setExpressionFigure(expressionFigure);
-
+            Map<TreeNode, Integer> nodeAndIndex = new HashMap<TreeNode, Integer>();
             int expressionIndex = getExpressionIndex((OutputTreeNode) childPart.getModel(),
-                    getModelTreeRoot((OutputTreeNode) childPart.getModel()), 0);
+                    getModelTreeRoot((OutputTreeNode) childPart.getModel()), 0, nodeAndIndex);
             rootOutputTreeNodeExpressionFigure.add(expressionFigure, expressionIndex);
+            getViewer().getVisualPartMap().put(expressionFigure, childEditPart);
         }
         super.addChildVisual(childEditPart, index);
     }
 
-    private int getExpressionIndex(OutputTreeNode treeNode, OutputTreeNode treeRoot, int index) {
+    private int getExpressionIndex(OutputTreeNode treeNode, OutputTreeNode treeRoot, int index,
+            Map<TreeNode, Integer> nodeAndIndex) {
         for (int i = 0; i < treeRoot.getChildren().size(); i++) {
             index++;
             TreeNode treeNode2 = treeRoot.getChildren().get(i);
+            nodeAndIndex.put(treeNode2, new Integer(index));
             if (treeNode == treeNode2) {
                 return index;
             } else if (!treeNode2.getChildren().isEmpty()) {
-                return getExpressionIndex(treeNode, (OutputTreeNode) treeNode2, index);
+                index = getExpressionIndex(treeNode, (OutputTreeNode) treeNode2, index, nodeAndIndex);
+                if (nodeAndIndex.get(treeNode) != null) {
+                    return index;
+                }
             }
 
         }
@@ -142,6 +151,7 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                     }
                 }
                 rootOutputTreeNodeNameFigure.getChildren().remove(expressionLabel);
+                getViewer().getVisualPartMap().remove(expressionLabel);
             }
         }
 
@@ -197,8 +207,7 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                     figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
                 }
                 if (figure != null) {
-                    directEditManager = new ExpressionDirectEditManager(this, TextCellEditor.class,
-                            new ExpressionCellEditorLocator(figure));
+                    directEditManager = new ExpressionDirectEditManager(this, new ExpressionCellEditorLocator(figure));
                 }
             }
             if (directEditManager != null) {

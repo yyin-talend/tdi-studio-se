@@ -10,13 +10,13 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.parts;
+package org.talend.designer.xmlmap.parts.directedit;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -30,7 +30,7 @@ public class ExpressionCellEditorLocator implements CellEditorLocator {
     }
 
     public void relocate(CellEditor celleditor) {
-        Text text = (Text) celleditor.getControl();
+        Composite text = (Composite) celleditor.getControl();
         Rectangle copy = figure.getBounds().getCopy();
         figure.translateToAbsolute(copy);
 

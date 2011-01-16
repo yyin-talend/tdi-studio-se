@@ -1,5 +1,7 @@
 package org.talend.designer.xmlmap.ui;
 
+import java.util.List;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
@@ -58,6 +60,7 @@ public class MapperUI {
         this.mapperManager = mapperManager;
         this.mapperComponent = mapperManager.getMapperComponent();
         this.copyOfMapData = mapperManager.getCopyOfMapData();
+        mapperManager.setMapperUI(this);
 
     }
 
@@ -92,9 +95,9 @@ public class MapperUI {
 
         datasViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
         XmlMapEditor editor = new XmlMapEditor();
-        // editor.addSelectionChangedListener(this);
         editor.createPartControl(datasViewSashForm);
         editor.setContent(copyOfMapData);
+        editor.setMapperManager(mapperManager);
         // editor.setContent(getContents());
 
         tabFolderEditors = new TabFolderEditors(mainSashForm, mapperManager, SWT.BORDER);
@@ -122,11 +125,12 @@ public class MapperUI {
             inputMetaEditorView.setMetadataTableEditor(editor);
         }
 
-        if (!ioDataComponents.getOuputs().isEmpty()) {
-            IODataComponent ioDataComponent = ioDataComponents.getOuputs().get(0);
-            IMetadataTable table = ioDataComponent.getTable();
+        List<IMetadataTable> metadataList = mapperComponent.getMetadataList();
+        if (!metadataList.isEmpty()) {
+            IMetadataTable table = metadataList.get(0);
             MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
             outputMetaEditorView.setMetadataTableEditor(editor);
+
         }
 
     }
@@ -161,6 +165,10 @@ public class MapperUI {
 
     public XmlMapComponent getMapperComponent() {
         return mapperComponent;
+    }
+
+    public TabFolderEditors getTabFolderEditors() {
+        return tabFolderEditors;
     }
 
 }

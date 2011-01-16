@@ -12,16 +12,20 @@
 // ============================================================================
 package org.talend.designer.xmlmap;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IExternalData;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 
 /**
  * wchen class global comment. Detailled comment
@@ -31,6 +35,8 @@ public class XmlMapComponent extends AbstractExternalNode {
     private XmlMapData emfMapData;
 
     private MapperMain mapprMain;
+
+    private List<IMetadataTable> metadataListOut;
 
     public XmlMapComponent() {
     }
@@ -47,7 +53,7 @@ public class XmlMapComponent extends AbstractExternalNode {
 
         Shell shell = null;
         try {
-            mapprMain.createUI(display);
+            shell = mapprMain.createUI(display);
 
         } finally {
             parentShell.setCursor(null);
@@ -103,6 +109,28 @@ public class XmlMapComponent extends AbstractExternalNode {
 
     }
 
+    // @Override
+    // public IExternalData getExternalData() {
+    // // ExternalData is no use for xmlmap , but need to return a no-null value
+    // return new IExternalData() {
+    //
+    // public List<String> getJoinedTableNames(String mainTable) {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
+    //
+    // public Map<IExternalMapTable, List<IExternalMapEntry>> getExpressionColumns(String expression,
+    // ExternalDataType... types) {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
+    //
+    // public IExternalData clone() throws CloneNotSupportedException {
+    // return null;
+    // }
+    // };
+    // }
+
     @Override
     public void buildExternalData(AbstractExternalData abstractData) {
         if (abstractData instanceof XmlMapData) {
@@ -111,12 +139,11 @@ public class XmlMapComponent extends AbstractExternalNode {
     }
 
     @Override
-    public AbstractExternalData saveExternalData() {
+    public AbstractExternalData getExternalEmfData() {
+        if (this.emfMapData == null) {
+            this.emfMapData = XmlmapFactory.eINSTANCE.createXmlMapData();
+        }
         return this.emfMapData;
-    }
-
-    public XmlMapData getEmfMapData() {
-        return emfMapData;
     }
 
     public void setEmfMapData(XmlMapData emfMapData) {

@@ -20,10 +20,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
@@ -39,6 +41,8 @@ public class ImportTreeFromXml extends Action {
     private Shell shell;
 
     private TreeNode parentNode;
+
+    private MapperManager mapperManager;
 
     public ImportTreeFromXml(Shell shell, TreeNode parentNode) {
         setText("Import Xml");
@@ -56,6 +60,9 @@ public class ImportTreeFromXml extends Action {
             detachConnectionsTarget(parentNode);
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
+            if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
+                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+            }
         }
 
     }
@@ -105,6 +112,10 @@ public class ImportTreeFromXml extends Action {
             }
         }
 
+    }
+
+    public void setMapperManager(MapperManager mapperManager) {
+        this.mapperManager = mapperManager;
     }
 
 }

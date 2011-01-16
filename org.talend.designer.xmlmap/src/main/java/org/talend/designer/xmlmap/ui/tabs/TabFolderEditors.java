@@ -113,7 +113,6 @@ public class TabFolderEditors extends CTabFolder {
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
         // outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
-        Composite composite = new Composite(inOutMetaEditorContainer, SWT.NONE);
 
         addListenersToOutputButtons();
 
@@ -133,6 +132,7 @@ public class TabFolderEditors extends CTabFolder {
         inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
 
+        Composite composite = new Composite(xmlTreeEditorContainer, SWT.NONE);
         // outputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
         // xmlTreeEditorContainer);
 
@@ -272,6 +272,14 @@ public class TabFolderEditors extends CTabFolder {
 
     public MetadataTableEditorView getOutputMetaEditorView() {
         return this.outputMetaEditor;
+    }
+
+    public XmlTreeSchemaTableView getInputTreeSchemaEditor() {
+        return inputTreeSchemaEditor;
+    }
+
+    public XmlTreeSchemaTableView getOutputTreeSchemaEditor() {
+        return outputTreeSchemaEditor;
     }
 
     // public StyledTextHandler getStyledTextHandler() {
