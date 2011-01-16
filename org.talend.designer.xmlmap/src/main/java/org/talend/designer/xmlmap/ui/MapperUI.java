@@ -1,7 +1,5 @@
 package org.talend.designer.xmlmap.ui;
 
-import java.util.List;
-
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
@@ -15,20 +13,17 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.components.IODataComponentContainer;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
-import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
@@ -101,7 +96,7 @@ public class MapperUI {
         // editor.setContent(getContents());
 
         tabFolderEditors = new TabFolderEditors(mainSashForm, mapperManager, SWT.BORDER);
-        refreshTabFolderEditors();
+        selectFirstInOutTree();
         mainSashForm.setWeights(new int[] { 70, 30 });
 
         FooterComposite footerComposite = new FooterComposite(mapperShell, this);
@@ -112,27 +107,15 @@ public class MapperUI {
 
     }
 
-    private void refreshTabFolderEditors() {
-        // refresh the edit with the first one, this one should be modified later
-        MetadataTableEditorView inputMetaEditorView = tabFolderEditors.getInputMetaEditorView();
-        MetadataTableEditorView outputMetaEditorView = tabFolderEditors.getOutputMetaEditorView();
-        IODataComponentContainer ioDataComponents = mapperComponent.getIODataComponents();
-
-        if (!ioDataComponents.getInputs().isEmpty()) {
-            IODataComponent ioDataComponent = ioDataComponents.getInputs().get(0);
-            IMetadataTable table = ioDataComponent.getTable();
-            MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
-            inputMetaEditorView.setMetadataTableEditor(editor);
+    private void selectFirstInOutTree() {
+        if (!copyOfMapData.getInputTrees().isEmpty()) {
+            InputXmlTree inputXmlTree = copyOfMapData.getInputTrees().get(0);
+            mapperManager.selectInputXmlTree(inputXmlTree);
         }
-
-        List<IMetadataTable> metadataList = mapperComponent.getMetadataList();
-        if (!metadataList.isEmpty()) {
-            IMetadataTable table = metadataList.get(0);
-            MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
-            outputMetaEditorView.setMetadataTableEditor(editor);
-
+        if (!copyOfMapData.getOutputTrees().isEmpty()) {
+            OutputXmlTree outputXmlTree = copyOfMapData.getOutputTrees().get(0);
+            mapperManager.selectOutputXmlTree(outputXmlTree);
         }
-
     }
 
     public void closeMapperDialog(int response) {

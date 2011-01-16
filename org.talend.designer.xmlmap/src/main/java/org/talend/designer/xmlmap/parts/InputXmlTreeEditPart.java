@@ -22,6 +22,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
  * wchen class global comment. Detailled comment
@@ -67,8 +68,23 @@ public class InputXmlTreeEditPart extends BaseEditPart {
 
     @Override
     public void notifyChanged(Notification notification) {
-        // TODO Auto-generated method stub
-        super.notifyChanged(notification);
+        int type = notification.getEventType();
+        int featureId = notification.getFeatureID(XmlmapPackage.class);
+        switch (type) {
+        case Notification.ADD:
+        case Notification.REMOVE:
+            switch (featureId) {
+            case XmlmapPackage.INPUT_XML_TREE__NODES:
+                refreshChildren();
+                break;
+            }
+
+        case Notification.SET:
+            switch (featureId) {
+            case XmlmapPackage.INPUT_XML_TREE__NODES:
+                refreshChildren();
+            }
+        }
     }
 
 }
