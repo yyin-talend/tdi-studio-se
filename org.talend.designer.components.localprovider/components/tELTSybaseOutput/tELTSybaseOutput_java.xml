@@ -79,14 +79,12 @@
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
-       
-       
-<!-- 
  		<ITEM NAME="UPDATE"           VALUE="UPDATE"/>
+        <ITEM NAME="DELETE"           VALUE="DELETE"/>
+ 		<!-- 
         <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
         <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
-        <ITEM NAME="DELETE"           VALUE="DELETE"/>
- -->        
+ 		-->        
   		
       </ITEMS>
     </PARAMETER>
@@ -99,11 +97,10 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-<!-- 
-    <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
+    <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8"
+    	SHOW_IF="(DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
--->
 
 	<PARAMETER
       NAME="ELT_TABLE_NAME"

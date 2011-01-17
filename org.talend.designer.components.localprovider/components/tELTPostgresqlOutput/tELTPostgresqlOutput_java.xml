@@ -60,12 +60,12 @@
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
-<!-- 
 		<ITEM NAME="UPDATE"           VALUE="UPDATE"/>
 		<ITEM NAME="DELETE"           VALUE="DELETE"/>
+		<!-- 
         <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
         <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
- -->        
+		 -->        
       </ITEMS>
     </PARAMETER>
 

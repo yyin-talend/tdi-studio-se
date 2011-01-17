@@ -65,6 +65,11 @@
 					"<%=uniqueNameComponent %>"+"QUERY" + "<%= connection.getUniqueName() %>",
 					<%= sqlQuery.replaceAll("[\r\n]", " ") %>
 				);
+				
+				globalMap.put(
+					"<%=uniqueNameComponent %>"+"QUERY_COLUMNS_NAME" + "<%= connection.getUniqueName() %>",
+					"<%= gm.getQueryColumnsName() %>"
+				);
 				<%
 				if(!tablesProcessed.contains(outputTable.getTableName())) {
 				%>

@@ -60,6 +60,8 @@ public abstract class DbGenerationManager {
 
     private Set<String> aliasAlreadyDeclared = new HashSet<String>();
 
+    protected String queryColumnsName = "";
+
     /**
      * DOC amaumont GenerationManager constructor comment.
      * 
@@ -131,6 +133,10 @@ public abstract class DbGenerationManager {
 
     public String indent(final int i) {
         return StringUtils.repeat("  ", i); //$NON-NLS-1$
+    }
+
+    public String getQueryColumnsName() {
+        return this.queryColumnsName;
     }
 
     /**
@@ -271,9 +277,13 @@ public abstract class DbGenerationManager {
                     if (i > 0) {
                         sb.append(DbMapSqlConstants.COMMA);
                         sb.append(DbMapSqlConstants.SPACE);
+
+                        queryColumnsName += DbMapSqlConstants.COMMA + DbMapSqlConstants.SPACE;
                     }
                     if (expression != null && expression.trim().length() > 0) {
                         sb.append(expression);
+
+                        queryColumnsName += expression;
                     } else {
                         sb.append(DbMapSqlConstants.LEFT_COMMENT);
                         String str = outputTable.getName() + DbMapSqlConstants.DOT + dbMapEntry.getName();

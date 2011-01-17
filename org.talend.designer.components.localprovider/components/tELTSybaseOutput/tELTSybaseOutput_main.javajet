@@ -36,6 +36,7 @@ imports="
 %>
 	String select_query = null;
 	String tableName_<%=cid%> = null;
+	String selectQueryColumnsName = null;
 <%
 	List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 	if(connections != null && connections.size() > 0 && connections.get(0) != null) {
@@ -46,6 +47,7 @@ imports="
 		uniqueNameConnection = connection.getUniqueName();
 %>
 		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
+		selectQueryColumnsName = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
 <%
 	}
 	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
@@ -285,23 +287,7 @@ imports="
 				}else{
 					insertColName.append(colStmt.getName()+suffix);
 					insertValueStmt.append(colStmt.getValue()+suffix);
-					if(!colStmt.getColumn().isKey()){
-						if(!firstNoneKey){
-							updateSetStmt.append(",");
-						}else{
-							firstNoneKey = false;
-						}
-						updateSetStmt.append(colStmt.getName());
-						updateSetStmt.append(colStmt.getSqlStmt());
-					}else{
-						if(!firstKey){
-							updateWhereStmt.append(" AND ");
-						}else{
-							firstKey = false;
-						}
-						updateWhereStmt.append(colStmt.getName());
-						updateWhereStmt.append(colStmt.getSqlStmt());
-					}
+					updateSetStmt.append(colStmt.getName()+"=(\"+select_query.replaceFirst(selectQueryColumnsName,selectQueryColumnsName.split(\",\")[ "+ counterOuter + "])+\")" +suffix);
 				}
 			}
 			counterOuter ++;
@@ -314,11 +300,11 @@ imports="
 <%
 		} else if (("UPDATE").equals(dataAction)) {
 %>
-		String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+		String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
+		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%
 			}
 %>
@@ -335,7 +321,7 @@ imports="
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
+		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%
 			}
 %>
@@ -349,7 +335,7 @@ imports="
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
+		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%
 			}
 %>
@@ -361,11 +347,11 @@ imports="
 <%
 		}else if (("DELETE").equals(dataAction)){
 %>
-		String deleteQuery = "DELETE  FROM ("+select_query+") "+tableName_<%=cid%>
+		String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+ select_query.replaceAll(selectQueryColumnsName, "*")+") " 
 <%
 			if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
+		+"  AND " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%
 			}
 %>

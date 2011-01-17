@@ -34,6 +34,7 @@ imports="
 	
 	%>
 	String select_query = null;
+	String selectQueryColumnsName = null;
 	<%
 	List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 	if(connections != null && connections.size() > 0 && connections.get(0) != null) {
@@ -44,6 +45,7 @@ imports="
 		uniqueNameConnection = connection.getUniqueName();
 		%>
 		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
+		selectQueryColumnsName = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
 		<%
 	}
 	
@@ -81,28 +83,6 @@ if(metadatas !=null && metadatas.size()>0){
 	if(metadata != null){
 		columnList = metadata.getListColumns();
 	}
-}
-%>
-
-
-<%
-if(!("INSERT").equals(dataAction))
-{
-    int keyCount = 0;
-    for(IMetadataColumn column:columnList)
-    {
-    	if(column.isKey())
-    	{
-    		keyCount++;
-    	}
-    }
-    %>
-    int keyCount_<%=cid%> = <%=keyCount%>;
-    if(keyCount_<%=cid%> < 1)
-    {
-    	throw new RuntimeException("For update or delete, Schema must have a key");
-    }
-<%
 }
 %>
 
@@ -259,23 +239,7 @@ for(Column colStmt:stmtStructure){
 		}else{
 			insertColName.append(colStmt.getName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
-			if(!colStmt.getColumn().isKey()){
-				if(!firstNoneKey){
-					updateSetStmt.append(",");
-				}else{
-					firstNoneKey = false;
-				}
-				updateSetStmt.append(colStmt.getName());
-				updateSetStmt.append(colStmt.getSqlStmt());
-			}else{
-				if(!firstKey){
-					updateWhereStmt.append(" AND ");
-				}else{
-					firstKey = false;
-				}
-				updateWhereStmt.append(colStmt.getName());
-				updateWhereStmt.append(colStmt.getSqlStmt());
-			}
+			updateSetStmt.append(colStmt.getName()+"= src\"+ selectQueryColumnsName.split(\",\")[ "+ counterOuter + "].substring(selectQueryColumnsName.split(\",\")["+ counterOuter + "].indexOf(\".\"))+\"" +suffix);
 		}
 		counterOuter ++;
 }
@@ -295,9 +259,9 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	}else if (("UPDATE").equals(dataAction)){
 	%>
 
-String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+String updateQuery = "UPDATE "+tableName_<%=cid%>+" FROM (" + select_query + ") src SET <%=updateSetStmt.toString()%> "
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -311,7 +275,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -322,7 +286,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -335,9 +299,9 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	}else if (("DELETE").equals(dataAction)){
 	%>
 	
-String deleteQuery = "DELETE  FROM ("+select_query+") "+tableName_<%=cid%>
+String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+select_query+") " 
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  AND " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
