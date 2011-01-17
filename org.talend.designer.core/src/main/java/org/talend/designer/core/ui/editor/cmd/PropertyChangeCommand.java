@@ -47,6 +47,7 @@ import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
@@ -203,6 +204,16 @@ public class PropertyChangeCommand extends Command {
                 currentParam.setValue(newValue);
             }
 
+        }
+        if (propName.equals(EParameterName.VALIDATION_RULES.getName())) {
+            if (elem instanceof INode) {
+                ValidationRulesUtil.createRejectConnector((INode) elem);
+                ValidationRulesUtil.updateRejectMetatable((INode) elem, null);
+                if (newValue != null && (!(Boolean) newValue)) {
+                    ValidationRulesUtil.removeRejectConnector((INode) elem);
+                    ValidationRulesUtil.removeRejectConnection((INode) elem);
+                }
+            }
         }
         String dbType = "";
         if (newValue instanceof String) {

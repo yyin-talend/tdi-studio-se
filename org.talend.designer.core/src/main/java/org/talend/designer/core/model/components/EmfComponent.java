@@ -2223,7 +2223,6 @@ public class EmfComponent implements IComponent {
             } else {
                 nodeConnector.setBaseSchema(nodeConnector.getName());
             }
-
             listConnector.add(nodeConnector);
             if (connType.getCTYPE().equals("FLOW")) { //$NON-NLS-1$
                 // if kind is "flow" (main type), then add the same for the lookup and merge.

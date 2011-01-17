@@ -349,7 +349,14 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     @Override
     protected void okPressed() {
         String expression = null;
-        String sub = nodeStyle.substring(nodeStyle.indexOf("-") + 2, nodeStyle.lastIndexOf("-") - 1); //$NON-NLS-1$ //$NON-NLS-2$
+        int startInx = nodeStyle.indexOf("-") + 2;//$NON-NLS-1$ 
+        int endInx = nodeStyle.lastIndexOf("-") - 1;//$NON-NLS-1$
+        String sub;
+        if (endInx - startInx > 0) {
+            sub = nodeStyle.substring(startInx, endInx);
+        } else {
+            sub = nodeStyle;
+        }
         if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
             expression = expressionComposite.getReplaceExpression();
             expressionForTable = expression; // hywang add for 9225

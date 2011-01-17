@@ -569,6 +569,7 @@ public class Node extends Element implements IGraphicalNode {
             }
             nbConn++;
         }
+
         return listConnectors;
     }
 
@@ -1028,7 +1029,6 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
                 String inputConnector = null;
-
                 IMetadataTable inputTable = connection.getMetadataTable();
                 // if current table has custom columns, input parameter used will be from currrent connector
                 // if no custom columns, it will use main connector, so it will allow to propagate repository
@@ -2269,7 +2269,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param param
      */
-    private void checkValidationRule(IElementParameter param) {
+    public boolean checkValidationRule(IElementParameter param) {
         if (EParameterName.VALIDATION_RULES.getName().equals(param.getName())) {
             final IElementParameter paramValidation = getElementParameter(EParameterName.VALIDATION_RULES.getName());
             if (paramValidation != null && paramValidation.getValue() != null && paramValidation.getValue() instanceof Boolean
@@ -2281,12 +2281,14 @@ public class Node extends Element implements IGraphicalNode {
                 if (StringUtils.trimToNull(vItemId) == null) {
                     errorMessage = "Must set the validation rule item id.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    return false;
                 } else {
                     IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
                     try {
                         if (factory.getLastVersion(vItemId) == null) {
                             errorMessage = "Validation rule: \"" + vItemId + "\" is not exsist.";
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            return false;
                         }
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
@@ -2294,6 +2296,7 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
         }
+        return true;
     }
 
     /**

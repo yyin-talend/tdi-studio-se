@@ -13,22 +13,33 @@
 package org.talend.designer.core.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -41,6 +52,9 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.NodeConnector;
+import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -340,5 +354,151 @@ public class ValidationRulesUtil {
             return true;
         }
         return false;
+    }
+
+    public static void removeRejectConnector(INode node) {
+        for (INodeConnector connector : node.getListConnector()) {
+            if ("REJECT".equals(connector.getName())) {
+                node.getListConnector().remove(connector);
+                return;
+            }
+        }
+    }
+
+    public static void removeRejectConnection(INode node) {
+        List<Connection> connectionList = new ArrayList<Connection>();
+        for (Iterator<? extends IConnection> iterator = node.getOutgoingConnections().iterator(); iterator.hasNext();) {
+            IConnection connection = iterator.next();
+            if ("REJECT".equals(connection.getConnectorName()) && connection instanceof Connection) { //$NON-NLS-1$
+                connectionList.add((Connection) connection);
+                break;
+            }
+        }
+        if (connectionList.size() > 0) {
+            new ConnectionDeleteCommand(connectionList).execute();
+        }
+    }
+
+    public static boolean isHasValidationRule(INode node) {
+        IElementParameter validationParam = node.getElementParameter(EParameterName.VALIDATION_RULES.getName());
+        if (validationParam != null && validationParam.getValue() != null && ((Boolean) validationParam.getValue())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static INodeConnector createRejectConnector(INode node) {
+        INodeConnector rejectConnector = null;
+        if (isHasValidationRule(node)) {
+            boolean isHas = false;
+            for (INodeConnector connector : node.getListConnector()) {
+                if ("REJECT".equals(connector.getName())) {//$NON-NLS-1$
+                    isHas = true;
+                }
+            }
+            if (!isHas) {
+                rejectConnector = new NodeConnector(node);
+                rejectConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
+                rejectConnector.setLinkName("Reject");//$NON-NLS-1$
+                rejectConnector.setMenuName("Reject");//$NON-NLS-1$
+                rejectConnector.setMaxLinkInput(-1);
+                rejectConnector.setMinLinkInput(0);
+                rejectConnector.setMaxLinkOutput(1);
+                rejectConnector.setMinLinkOutput(0);
+                rejectConnector.setBuiltIn(false);
+                rejectConnector.setMultiSchema(false);
+                rejectConnector.setMergeAllowDifferentSchema(false);
+                rejectConnector.setName("REJECT");//$NON-NLS-1$
+                rejectConnector.setMenuName("Reject");//$NON-NLS-1$
+                rejectConnector.setLinkName("Reject");//$NON-NLS-1$
+                RGB rgb = new RGB(243, 99, 0);
+                rejectConnector.addConnectionProperty(EConnectionType.FLOW_MAIN, rgb, 2);
+                rejectConnector.getConnectionProperty(EConnectionType.FLOW_MAIN).setRGB(rgb);
+                rejectConnector.setBaseSchema("FLOW");//$NON-NLS-1$
+                rejectConnector.addConnectionProperty(EConnectionType.FLOW_REF, rgb, 2);
+                rejectConnector.addConnectionProperty(EConnectionType.FLOW_MERGE, rgb, 2);
+
+                if (!node.getListConnector().contains(rejectConnector)) {
+                    ((List<INodeConnector>) node.getListConnector()).add(rejectConnector);
+                }
+            }
+        }
+
+        return rejectConnector;
+    }
+
+    public static void updateRejectMetatable(INode node, INode refNode) {
+        if (!isHasValidationRule(node)) {
+            return;
+        }
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if (metadatas != null && metadatas.size() > 0) {
+            IMetadataTable table = null;
+            boolean isHasRejectTable = false;
+            for (IMetadataTable metadataTable : metadatas) {
+                if ("REJECT".equals(metadataTable.getTableName())) {//$NON-NLS-1$
+                    isHasRejectTable = true;
+                    table = metadataTable;
+                    break;
+                }
+            }
+            if (!isHasRejectTable) {
+                table = new MetadataTable();
+            }
+            table.setAttachedConnector("REJECT");//$NON-NLS-1$
+            table.setTableName("REJECT");//$NON-NLS-1$
+            table.setReadOnly(true);
+
+            List<? extends IConnection> mainConnection = null;
+            if (refNode != null) {
+                mainConnection = refNode.getIncomingConnections(EConnectionType.FLOW_MAIN);
+            } else {
+                mainConnection = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+            }
+            IConnection connection = null;
+            if (mainConnection != null && mainConnection.size() > 0) {
+                table.getListColumns().clear();
+                connection = mainConnection.get(0);
+            } else {
+                List<? extends IConnection> outgoingConnections;
+                if (refNode != null) {
+                    outgoingConnections = refNode.getOutgoingConnections("FLOW");//$NON-NLS-1$
+                } else {
+                    outgoingConnections = node.getOutgoingConnections("FLOW");//$NON-NLS-1$
+                }
+                if (outgoingConnections != null && outgoingConnections.size() > 0) {
+                    connection = outgoingConnections.get(0);
+                }
+            }
+            if (connection != null) {
+                IMetadataTable inputTable = connection.getMetadataTable();
+                MetadataTool.copyTable(null, inputTable, table);
+            }
+            List<IMetadataColumn> listColumns = table.getListColumns();
+            boolean isHasErrorMsgCol = false;
+            for (IMetadataColumn metadataColumn : listColumns) {
+                if ("errorMessage".equals(metadataColumn.getLabel())) {//$NON-NLS-1$
+                    isHasErrorMsgCol = true;
+                    break;
+                }
+            }
+            if (!isHasErrorMsgCol) {
+                MetadataColumn column = new MetadataColumn();
+                column.setId("30");//$NON-NLS-1$
+                column.setKey(false);
+                column.setLabel("errorMessage");//$NON-NLS-1$
+                column.setLength(255);
+                column.setOriginalDbColumnName("errorMessage");//$NON-NLS-1$
+                column.setPrecision(0);
+                column.setCustom(true);
+                column.setReadOnly(true);
+                column.setNullable(true);
+                column.setTalendType("id_String"); //$NON-NLS-1$
+                table.getListColumns().add(column);
+                if (!isHasRejectTable) {
+                    node.getMetadataList().add(table);
+                }
+            }
+        }
     }
 }

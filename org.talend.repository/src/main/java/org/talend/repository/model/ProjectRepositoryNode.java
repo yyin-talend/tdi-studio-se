@@ -27,6 +27,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -56,6 +57,7 @@ import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.process.Problem;
@@ -73,6 +75,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -697,9 +700,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataValidationRulesNode) {
                 convert(newProject, factory.getMetadataValidationRules(newProject, true), metadataValidationRulesNode,
                         ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode);
-            }
-
-            else if (parent == refProject) {
+            } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
                 }
@@ -971,7 +972,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             RepositoryNode folder = null;
 
             String label = container.getLabel();
-            if (label.equals("bin") || label.startsWith(".")) {
+            if (label.equals("bin") || label.startsWith(".")) { //$NON-NLS-1$ //$NON-NLS-2$
                 continue;
             }
 
@@ -1045,13 +1046,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     addNode(parent, type, recBinNode, repositoryObject);
                 }
             } catch (Exception e) {
-                ExceptionHandler.log("Item not valid: [" + repositoryObject.getRepositoryObjectType() + "] "
+                ExceptionHandler.log(Messages.getString("ProjectRepositoryNode.3") + repositoryObject.getRepositoryObjectType() + Messages.getString("ProjectRepositoryNode.4") //$NON-NLS-1$ //$NON-NLS-2$
                         + repositoryObject.getLabel());
 
                 if (repositoryObject.getProperty().getInformations().isEmpty()) {
                     Information info = PropertiesFactory.eINSTANCE.createInformation();
                     info.setLevel(InformationLevel.ERROR_LITERAL);
-                    info.setText("Invalid item");
+                    info.setText(Messages.getString("ProjectRepositoryNode.6")); //$NON-NLS-1$
                     Property property = repositoryObject.getProperty();
                     property.getInformations().add(info);
                     try {
@@ -1296,6 +1297,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
         if (metadataTable.getColumns().size() > 0) {
             createColumns(recBinNode, tableNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_COLUMN);
+            createValidationRules(recBinNode, tableNode, repObj, metadataTable, ERepositoryObjectType.METADATA_VALIDATION_RULES);
         }
     }
 
@@ -1321,6 +1323,56 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             columnsNode.getChildren().add(columnNode);
 
         }
+    }
+
+    private void createValidationRules(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable,
+            ERepositoryObjectType repositoryObjectType) {
+        IRepositoryViewObject vo = node.getObject();
+        if (vo != null && vo.getProperty() != null) {
+            String schema = vo.getProperty().getId();
+            schema = schema + Messages.getString("ProjectRepositoryNode.5") + metadataTable.getName(); //$NON-NLS-1$
+            List<IRepositoryViewObject> objs = getValidationRuleObjsFromSchema(schema);
+            if (objs.size() > 0) {
+                int num = objs.size();
+                StringBuffer floderName = new StringBuffer();
+                floderName.append(Messages.getString("ProjectRepositoryNode.7")); //$NON-NLS-1$
+                floderName.append("(");//$NON-NLS-1$
+                floderName.append(num);
+                floderName.append(")");//$NON-NLS-1$
+                RepositoryNode validationRulesNode = new StableRepositoryNode(node, floderName.toString(),
+                        ECoreImage.FOLDER_CLOSE_ICON);
+                node.getChildren().add(validationRulesNode);
+                for (IRepositoryViewObject obj : objs) {
+                    addNode(validationRulesNode, ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode, obj);
+                }
+            }
+        }
+    }
+
+    private List<IRepositoryViewObject> getValidationRuleObjsFromSchema(String schema) {
+        List<IRepositoryViewObject> objs = new ArrayList<IRepositoryViewObject>();
+        try {
+            List<IRepositoryViewObject> members = factory.getMetadataValidationRules().getMembers();
+            if (members != null) {
+                for (IRepositoryViewObject member : members) {
+                    if (member != null && member.getProperty() != null) {
+                        Item item = member.getProperty().getItem();
+                        if (item != null && item instanceof ValidationRulesConnectionItem) {
+                            ValidationRulesConnectionItem validItem = (ValidationRulesConnectionItem) item;
+                            ValidationRulesConnection connection = (ValidationRulesConnection) validItem.getConnection();
+                            if (connection != null && schema.equals(connection.getBaseSchema()) && !objs.contains(member)) {
+                                objs.add(member);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return objs;
     }
 
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,

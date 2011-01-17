@@ -1683,11 +1683,11 @@ public class DataProcess {
     private void replaceValidationRules(ValidationRulesConnection rulesConnection, DataConnection connection, boolean isOutput,
             INode node) {
         if (rulesConnection.getType() == RuleType.BASIC) {
-            replaceBasicOrCustomValidationRules(connection, rulesConnection, false, isOutput);
+            replaceBasicOrCustomValidationRules(connection, rulesConnection, false, isOutput, node);
         } else if (rulesConnection.getType() == RuleType.REFERENCE) {
             replaceReferenceValidationRules(connection, rulesConnection, isOutput, node);
         } else if (rulesConnection.getType() == RuleType.CUSTOM) {
-            replaceBasicOrCustomValidationRules(connection, rulesConnection, true, isOutput);
+            replaceBasicOrCustomValidationRules(connection, rulesConnection, true, isOutput, node);
         }
     }
 
@@ -1702,6 +1702,7 @@ public class DataProcess {
     private void replaceReferenceValidationRules(IConnection connection, ValidationRulesConnection rulesConnection,
             boolean isOutput, INode graphicalNode) {
         INode node = getApplicableNode(connection, isOutput);
+        INode endNode = null;
         if (!checkTriggerAndDBSettings(node, rulesConnection, isOutput)) {
             return;
         }
@@ -1725,212 +1726,254 @@ public class DataProcess {
         IMetadataTable refMetadataTable = MetadataTool.getMetadataFromRepository(refSchema);
 
         AbstractNode nodeUseValidationRule = (AbstractNode) node;
+        endNode = nodeUseValidationRule;
         List<IConnection> validRuleConnections;
+        IMetadataTable rejectMetadataTable = null;
+        IConnection dataConnection;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
+            dataConnection = nodeUseValidationRule.getIncomingConnections("FLOW").get(0);//$NON-NLS-1$
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
+            dataConnection = nodeUseValidationRule.getOutgoingConnections("FLOW").get(0);//$NON-NLS-1$
         }
-        for (IConnection dataConnection : validRuleConnections) {
-            validRuleConnections.remove(dataConnection);
+        validRuleConnections.remove(dataConnection);
 
-            // Change from Input => Ouptut, to Input => tJoin (with ref link) => Output
+        // Change from Input => Ouptut, to Input => tJoin (with ref link) => Output
 
-            // create tJoin component
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tJoin"); //$NON-NLS-1$
-            String typeStr;
-            if (isOutput) {
-                typeStr = "output"; //$NON-NLS-1$
-            } else {
-                typeStr = "input"; //$NON-NLS-1$
+        // create tJoin component
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tJoin"); //$NON-NLS-1$
+        String typeStr;
+        if (isOutput) {
+            typeStr = "output"; //$NON-NLS-1$
+        } else {
+            typeStr = "input"; //$NON-NLS-1$
+        }
+        String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        DataNode joinNode = new DataNode(component, uniqueName);
+        joinNode.setActivate(dataConnection.isActivate());
+        joinNode.setStart(false);
+        joinNode.setDesignSubjobStartNode(null);
+        IMetadataTable newMetadata = dataConnection.getMetadataTable().clone();
+        newMetadata.setTableName(uniqueName);
+        joinNode.getMetadataList().remove(0);
+        joinNode.getMetadataList().add(newMetadata);
+        joinNode.setSubProcessStart(false);
+        joinNode.setProcess(node.getProcess());
+        joinNode.setElementParameters(component.createElementParameters(joinNode));
+        updateJoinParametersWithValidRuleConnection(joinNode, rulesConnection);
+        List<IConnection> tJoin_outgoingConnections = new ArrayList<IConnection>();
+        List<IConnection> tJoin_incomingConnections = new ArrayList<IConnection>();
+        joinNode.setIncomingConnections(tJoin_incomingConnections);
+        joinNode.setOutgoingConnections(tJoin_outgoingConnections);
+        addDataNode(joinNode);
+
+        List<? extends INodeConnector> connectors = nodeUseValidationRule.getListConnector();
+        INodeConnector rejectConnector = null;
+        for (INodeConnector connector : connectors) {
+            if ("REJECT".equals(connector.getName())) {//$NON-NLS-1$
+                rejectConnector = connector;
+                break;
             }
-            String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-            DataNode joinNode = new DataNode(component, uniqueName);
-            joinNode.setActivate(dataConnection.isActivate());
-            joinNode.setStart(false);
-            joinNode.setDesignSubjobStartNode(null);
-            IMetadataTable newMetadata = dataConnection.getMetadataTable().clone();
-            newMetadata.setTableName(uniqueName);
-            joinNode.getMetadataList().remove(0);
-            joinNode.getMetadataList().add(newMetadata);
-            joinNode.setSubProcessStart(false);
-            joinNode.setProcess(node.getProcess());
-            joinNode.setElementParameters(component.createElementParameters(joinNode));
-            updateJoinParametersWithValidRuleConnection(joinNode, rulesConnection);
-            List<IConnection> tJoin_outgoingConnections = new ArrayList<IConnection>();
-            List<IConnection> tJoin_incomingConnections = new ArrayList<IConnection>();
-            joinNode.setIncomingConnections(tJoin_incomingConnections);
-            joinNode.setOutgoingConnections(tJoin_outgoingConnections);
-            addDataNode(joinNode);
+        }
+        ((List<INodeConnector>) joinNode.getListConnector()).add(rejectConnector);
+        List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
-            // set incomming or outgoing connection of the tJoin. add the current link
-            if (isOutput) {
-                tJoin_incomingConnections.add(dataConnection);
-                ((DataConnection) dataConnection).setTarget(joinNode);
-            } else {
-                tJoin_outgoingConnections.add(dataConnection);
-                ((DataConnection) dataConnection).setSource(joinNode);
+        for (IMetadataTable metadataTable : metadataList) {
+            if ("REJECT".equals(metadataTable.getTableName()) && !joinNode.getMetadataList().contains(metadataTable)) {//$NON-NLS-1$
+                rejectMetadataTable = metadataTable;
+                joinNode.getMetadataList().add(metadataTable);
+                break;
             }
+        }
 
-            // create new link for output or input of tJoin.
-            DataConnection dataConnec = new DataConnection();
-            dataConnec.setActivate(connection.isActivate());
-            dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
-            dataConnec.setTraceConnection(connection.isTraceConnection());
-            dataConnec.setTracesCondition(connection.getTracesCondition());
-            dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-            dataConnec.setMonitorConnection(connection.isMonitorConnection());
-            dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
-            if (!nodeUseValidationRule.getMetadataList().isEmpty()) {
-                dataConnec.setMetadataTable(nodeUseValidationRule.getMetadataList().get(0));
-            }
-            if (isOutput) {
-                dataConnec.setName("before_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setSource(joinNode);
-                dataConnec.setTarget(nodeUseValidationRule);
-                tJoin_outgoingConnections.add(dataConnec);
-            } else {
-                dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setSource(nodeUseValidationRule);
-                dataConnec.setTarget(joinNode);
-                tJoin_incomingConnections.add(dataConnec);
-            }
-            validRuleConnections.add(dataConnec);
+        // set incomming or outgoing connection of the tJoin. add the current link
+        if (isOutput) {
+            tJoin_incomingConnections.add(dataConnection);
+            ((DataConnection) dataConnection).setTarget(joinNode);
+        } else {
+            tJoin_outgoingConnections.add(dataConnection);
+            ((DataConnection) dataConnection).setSource(joinNode);
+        }
 
-            // create tInput component to load the referential data
-            uniqueName = inputComponent.getName() + "_" + joinNode.getUniqueName(); //$NON-NLS-1$
-            DataNode inputNode = new DataNode(inputComponent, uniqueName);
-            inputNode.setActivate(true);
-            inputNode.setStart(true);
-            inputNode.setDesignSubjobStartNode(null);
-            inputNode.getMetadataList().remove(0);
-            inputNode.getMetadataList().add(refMetadataTable);
-            inputNode.setSubProcessStart(true);
-            inputNode.setProcess(node.getProcess());
-            inputNode.setElementParameters(inputComponent.createElementParameters(inputNode));
-
-            // temporary :
-            String query = TalendTextUtils.addQuotes("select * from " + tabName + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            // to change to:
-            // String query = TextUtil.addSqlQuots(DBTYPE, QUERY_WITH_ALL_COLUMNS!, refSchema);
-
-            inputNode.getElementParameter("QUERY").setValue(query); //$NON-NLS-1$
-
-            updateInputParametersWithDBConnection(inputNode, dbConnection);
-            addDataNode(inputNode);
-            List<IConnection> inputNode_outgoingConnections = new ArrayList<IConnection>();
-            inputNode.setOutgoingConnections(inputNode_outgoingConnections);
-            List<IConnection> inputNode_incomingConnections = new ArrayList<IConnection>();
-            inputNode.setIncomingConnections(inputNode_incomingConnections);
-
-            DataConnection ref_dataConnec = new DataConnection();
-            ref_dataConnec.setActivate(connection.isActivate());
-            ref_dataConnec.setLineStyle(EConnectionType.FLOW_REF);
-            ref_dataConnec.setMetadataTable(refMetadataTable);
-            ref_dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());
-            ref_dataConnec.setSource(inputNode);
-            ref_dataConnec.setTarget(joinNode);
-            ref_dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
-
-            tJoin_incomingConnections.add(ref_dataConnec);
-            inputNode_outgoingConnections.add(ref_dataConnec);
-
-            // retrieve the starts node of each current nodes to add a before link
-            INode subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
-
-            // input node from validation rules (reference)
-            AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
-
-            // first component in the subprocess (where is applied the validation rules)
-            AbstractNode subDataNodeStartTarget = inputNode;
-
-            if (subDataNodeStartSource == null) {
-                // means the graphic process is not complete, so ignore it.
-                continue;
-            }
-
-            // if (subDataNodeStartSource.getMetadataList().isEmpty()) {
-            // continue;
-            // }
-
-            List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
-            // create a link before between the two subprocess
-            dataConnec = new DataConnection();
-            dataConnec.setActivate(connection.isActivate());
-            dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
-            dataConnec.setTraceConnection(connection.isTraceConnection());
-            dataConnec.setTracesCondition(connection.getTracesCondition());
-            dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-            dataConnec.setMonitorConnection(connection.isMonitorConnection());
-            // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
-            if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
-                dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
-            }
-            dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-            // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
-            dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
-            dataConnec.setSource(subDataNodeStartSource);
-            // dataConnec.setSource(subDataNodeStartTarget);
-            dataConnec.setTarget(subDataNodeStartTarget);
-            // dataConnec.setTarget(subDataNodeStartSource);
-
-            // the target component can't be start in all case, so no matter where it has been defined, remove
-            // the start state.
-            subDataNodeStartTarget.setStart(false);
-
-            inputNode_incomingConnections.add(dataConnec);
-            outgoingConnections.add(dataConnec);
-
-            // add a new hash node
-            // (to replace by a Node maybe that will take the informations of an IComponent)
-            String baseConnector = inputNode.getConnectorFromName(connection.getConnectorName()).getBaseSchema();
-            INodeConnector connector = joinNode.getConnectorFromName(baseConnector);
-            String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
-
-            if (hashComponent == null) {
-                uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
-                component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
-            } else {
-                uniqueName = hashComponent + "_" + connection.getName(); //$NON-NLS-1$
-                component = ComponentsFactoryProvider.getInstance().get(hashComponent);
-            }
-            if (component == null) {
-                continue;
-            }
-            DataNode hashNode = new DataNode(component, uniqueName);
-            hashNode.setActivate(connection.isActivate());
-            hashNode.setStart(false);
-            hashNode.setDesignSubjobStartNode(null);
-            IMetadataTable hashMetadata = inputNode.getMetadataList().get(0).clone();
-            hashMetadata.setTableName(uniqueName);
-            hashNode.getMetadataList().remove(0);
-            hashNode.getMetadataList().add(hashMetadata);
-            hashNode.setSubProcessStart(false);
-            hashNode.setProcess(node.getProcess());
-            List<IConnection> hash_outgoingConnections = new ArrayList<IConnection>();
-            List<IConnection> hash_incomingConnections = new ArrayList<IConnection>();
-            hashNode.setIncomingConnections(hash_incomingConnections);
-            hashNode.setOutgoingConnections(hash_outgoingConnections);
-            addDataNode(hashNode);
-
-            // create a link flow_main between the node that had ref and the hash file
-            dataConnec = new DataConnection();
-            dataConnec.setActivate(connection.isActivate());
-            dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
-            dataConnec.setMetadataTable(hashMetadata);
-            dataConnec.setTraceConnection(connection.isTraceConnection());
-            dataConnec.setMonitorConnection(connection.isMonitorConnection());
-            dataConnec.setTracesCondition(connection.getTracesCondition());
-            dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-            dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());
+        // create new link for output or input of tJoin.
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+        dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
+        if (!nodeUseValidationRule.getMetadataList().isEmpty()) {
+            dataConnec.setMetadataTable(nodeUseValidationRule.getMetadataList().get(0));
+        }
+        if (isOutput) {
+            dataConnec.setName("before_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
             dataConnec.setSource(joinNode);
-            dataConnec.setTarget(hashNode);
-            dataConnec.setLinkNodeForHash((AbstractNode) buildCheckMap.get(connection.getTarget()));
-            dataConnec.setConnectorName(connection.getConnectorName());
+            dataConnec.setTarget(nodeUseValidationRule);
+            tJoin_outgoingConnections.add(dataConnec);
+        } else {
+            dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
+            dataConnec.setSource(nodeUseValidationRule);
+            dataConnec.setTarget(joinNode);
+            tJoin_incomingConnections.add(dataConnec);
+        }
+        validRuleConnections.add(dataConnec);
 
-            inputNode_outgoingConnections.add(dataConnec);
-            hash_incomingConnections.add(dataConnec);
+        // create tInput component to load the referential data
+        uniqueName = inputComponent.getName() + "_" + joinNode.getUniqueName(); //$NON-NLS-1$
+        DataNode inputNode = new DataNode(inputComponent, uniqueName);
+        inputNode.setActivate(true);
+        inputNode.setStart(true);
+        inputNode.setDesignSubjobStartNode(null);
+        inputNode.getMetadataList().remove(0);
+        inputNode.getMetadataList().add(refMetadataTable);
+        inputNode.setSubProcessStart(true);
+        inputNode.setProcess(node.getProcess());
+        inputNode.setElementParameters(inputComponent.createElementParameters(inputNode));
+
+        // temporary :
+        String query = TalendTextUtils.addQuotes("select * from " + tabName + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // to change to:
+        // String query = TextUtil.addSqlQuots(DBTYPE, QUERY_WITH_ALL_COLUMNS!, refSchema);
+
+        inputNode.getElementParameter("QUERY").setValue(query); //$NON-NLS-1$
+
+        updateInputParametersWithDBConnection(inputNode, dbConnection);
+        addDataNode(inputNode);
+        List<IConnection> inputNode_outgoingConnections = new ArrayList<IConnection>();
+        inputNode.setOutgoingConnections(inputNode_outgoingConnections);
+        List<IConnection> inputNode_incomingConnections = new ArrayList<IConnection>();
+        inputNode.setIncomingConnections(inputNode_incomingConnections);
+
+        DataConnection ref_dataConnec = new DataConnection();
+        ref_dataConnec.setActivate(connection.isActivate());
+        ref_dataConnec.setLineStyle(EConnectionType.FLOW_REF);
+        ref_dataConnec.setMetadataTable(refMetadataTable);
+        ref_dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());
+        ref_dataConnec.setSource(inputNode);
+        ref_dataConnec.setTarget(joinNode);
+        ref_dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
+
+        tJoin_incomingConnections.add(ref_dataConnec);
+        inputNode_outgoingConnections.add(ref_dataConnec);
+
+        // retrieve the starts node of each current nodes to add a before link
+        INode subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
+
+        // input node from validation rules (reference)
+        AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
+
+        // first component in the subprocess (where is applied the validation rules)
+        AbstractNode subDataNodeStartTarget = inputNode;
+
+        if (subDataNodeStartSource == null) {
+            // means the graphic process is not complete, so ignore it.
+            return;
+        }
+
+        // if (subDataNodeStartSource.getMetadataList().isEmpty()) {
+        // continue;
+        // }
+
+        List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
+        // create a link before between the two subprocess
+        dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+        // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+        if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
+            dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+        }
+        dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
+        // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+        dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+        dataConnec.setSource(subDataNodeStartSource);
+        // dataConnec.setSource(subDataNodeStartTarget);
+        dataConnec.setTarget(subDataNodeStartTarget);
+        // dataConnec.setTarget(subDataNodeStartSource);
+
+        // the target component can't be start in all case, so no matter where it has been defined, remove
+        // the start state.
+        subDataNodeStartTarget.setStart(false);
+
+        inputNode_incomingConnections.add(dataConnec);
+        outgoingConnections.add(dataConnec);
+
+        // add a new hash node
+        // (to replace by a Node maybe that will take the informations of an IComponent)
+        String baseConnector = inputNode.getConnectorFromName(connection.getConnectorName()).getBaseSchema();
+        INodeConnector connector = joinNode.getConnectorFromName(baseConnector);
+        String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
+
+        if (hashComponent == null) {
+            uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
+            component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+        } else {
+            uniqueName = hashComponent + "_" + connection.getName(); //$NON-NLS-1$
+            component = ComponentsFactoryProvider.getInstance().get(hashComponent);
+        }
+        if (component == null) {
+            return;
+        }
+        DataNode hashNode = new DataNode(component, uniqueName);
+        hashNode.setActivate(connection.isActivate());
+        hashNode.setStart(false);
+        hashNode.setDesignSubjobStartNode(null);
+        IMetadataTable hashMetadata = inputNode.getMetadataList().get(0).clone();
+        hashMetadata.setTableName(uniqueName);
+        hashNode.getMetadataList().remove(0);
+        hashNode.getMetadataList().add(hashMetadata);
+        hashNode.setSubProcessStart(false);
+        hashNode.setProcess(node.getProcess());
+        List<IConnection> hash_outgoingConnections = new ArrayList<IConnection>();
+        List<IConnection> hash_incomingConnections = new ArrayList<IConnection>();
+        hashNode.setIncomingConnections(hash_incomingConnections);
+        hashNode.setOutgoingConnections(hash_outgoingConnections);
+        addDataNode(hashNode);
+
+        // create a link flow_main between the node that had ref and the hash file
+        dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnec.setMetadataTable(hashMetadata);
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+        dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());//$NON-NLS-1$
+        dataConnec.setSource(joinNode);
+        dataConnec.setTarget(hashNode);
+        dataConnec.setLinkNodeForHash((AbstractNode) buildCheckMap.get(connection.getTarget()));
+        dataConnec.setConnectorName(connection.getConnectorName());
+
+        inputNode_outgoingConnections.add(dataConnec);
+        hash_incomingConnections.add(dataConnec);
+
+        // handle reject link.
+        if (endNode.getOutgoingConnections("REJECT") != null && endNode.getOutgoingConnections("REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
+            IConnection conn = endNode.getOutgoingConnections("REJECT").get(0);//$NON-NLS-1$
+            INode targetNode = conn.getTarget();
+            List<IConnection> outputconns = (List<IConnection>) endNode.getOutgoingConnections();
+            List<IConnection> inputconnns = (List<IConnection>) targetNode.getIncomingConnections();
+            outputconns.remove(conn);
+            inputconnns.remove(conn);
+            DataConnection rejectLink = new DataConnection();
+            rejectLink.setActivate(connection.isActivate());
+            rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
+            rejectLink.setMetadataTable(rejectMetadataTable);
+            rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
+            rejectLink.setName(joinNode.getUniqueName() + "_reject"); //$NON-NLS-1$
+            rejectLink.setSource(joinNode);
+            rejectLink.setTarget(targetNode);
+            ((List<IConnection>) joinNode.getOutgoingConnections()).add(rejectLink);
+            ((List<IConnection>) targetNode.getIncomingConnections()).add(rejectLink);
         }
     }
 
@@ -1943,83 +1986,129 @@ public class DataProcess {
      * @param isOutput
      */
     private void replaceBasicOrCustomValidationRules(IConnection connection, ValidationRulesConnection rulesConnection,
-            boolean isCustom, boolean isOutput) {
+            boolean isCustom, boolean isOutput, INode graphicalNode) {
         INode node = getApplicableNode(connection, isOutput);
+        INode endNode = null;
+
         if (!checkTriggerAndDBSettings(node, rulesConnection, isOutput)) {
             return;
         }
-        AbstractNode nodeUseValidationRule = (AbstractNode) node;
+        DataNode nodeUseValidationRule = (DataNode) node;
+        endNode = nodeUseValidationRule;
+        DataNode filterNode = null;
         List<IConnection> validRuleConnections;
+        IMetadataTable rejectMetadataTable = null;
+        IConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
+            dataConnection = nodeUseValidationRule.getIncomingConnections("FLOW").get(0);//$NON-NLS-1$
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
+            dataConnection = nodeUseValidationRule.getOutgoingConnections("FLOW").get(0);//$NON-NLS-1$
         }
-        for (IConnection dataConnection : validRuleConnections) {
-            validRuleConnections.remove(dataConnection);
+        validRuleConnections.remove(dataConnection);
 
-            // create tFilterRow
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow"); //$NON-NLS-1$
-            String typeStr;
-            if (isOutput) {
-                typeStr = "output"; //$NON-NLS-1$
-            } else {
-                typeStr = "input"; //$NON-NLS-1$
-            }
-            String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-            DataNode filterNode = new DataNode(component, uniqueName);
-            filterNode.setActivate(dataConnection.isActivate());
-            filterNode.setStart(false);
-            filterNode.setDesignSubjobStartNode(null);
+        // create tFilterRow
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow"); //$NON-NLS-1$
+        String typeStr;
+        if (isOutput) {
+            typeStr = "output"; //$NON-NLS-1$
+        } else {
+            typeStr = "input"; //$NON-NLS-1$
+        }
+        String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        filterNode = new DataNode(component, uniqueName);
+        filterNode.setActivate(dataConnection.isActivate());
+        filterNode.setStart(false);
+        filterNode.setDesignSubjobStartNode(null);
+        if (dataConnection.getMetadataTable() != null) {
             IMetadataTable newMetadata = dataConnection.getMetadataTable().clone();
             newMetadata.setTableName(uniqueName);
             filterNode.getMetadataList().remove(0);
             filterNode.getMetadataList().add(newMetadata);
-            filterNode.setSubProcessStart(false);
-            filterNode.setProcess(node.getProcess());
-            filterNode.setElementParameters(component.createElementParameters(filterNode));
-            updateFilterParametersWithValidRuleConnection(filterNode, rulesConnection, isCustom);
-            List<IConnection> outgoingConnections = new ArrayList<IConnection>();
-            List<IConnection> incomingConnections = new ArrayList<IConnection>();
-            filterNode.setIncomingConnections(incomingConnections);
-            filterNode.setOutgoingConnections(outgoingConnections);
-            addDataNode(filterNode);
+        }
+        filterNode.setSubProcessStart(false);
+        filterNode.setProcess(node.getProcess());
+        filterNode.setElementParameters(component.createElementParameters(filterNode));
+        updateFilterParametersWithValidRuleConnection(filterNode, rulesConnection, isCustom);
+        List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        filterNode.setIncomingConnections(incomingConnections);
+        filterNode.setOutgoingConnections(outgoingConnections);
+        addDataNode(filterNode);
+        List<? extends INodeConnector> connectors = nodeUseValidationRule.getListConnector();
+        INodeConnector rejectConnector = null;
+        for (INodeConnector connector : connectors) {
+            if ("REJECT".equals(connector.getName())) {
+                rejectConnector = connector;
+                break;
+            }
+        }
+        ((List<INodeConnector>) filterNode.getListConnector()).add(rejectConnector);
+        List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
-            // set incomming or outgoing connection of the tFilterRow. add the current link
-            if (isOutput) {
-                incomingConnections.add(dataConnection);
-                ((DataConnection) dataConnection).setTarget(filterNode);
-            } else {
-                outgoingConnections.add(dataConnection);
-                ((DataConnection) dataConnection).setSource(filterNode);
-                ((DataConnection) dataConnection).setConnectorName("FILTER"); //$NON-NLS-1$
+        for (IMetadataTable metadataTable : metadataList) {
+            if ("REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) {
+                rejectMetadataTable = metadataTable;
+                filterNode.getMetadataList().add(metadataTable);
+                break;
             }
+        }
 
-            // create new link for output or input of tFilterRow.
-            DataConnection dataConnec = new DataConnection();
-            dataConnec.setActivate(connection.isActivate());
-            dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
-            dataConnec.setTraceConnection(connection.isTraceConnection());
-            dataConnec.setTracesCondition(connection.getTracesCondition());
-            dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-            dataConnec.setMonitorConnection(connection.isMonitorConnection());
-            if (!nodeUseValidationRule.getMetadataList().isEmpty()) {
-                dataConnec.setMetadataTable(nodeUseValidationRule.getMetadataList().get(0));
-            }
-            if (isOutput) {
-                dataConnec.setConnectorName("FILTER"); //$NON-NLS-1$
-                dataConnec.setName("before_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setSource(filterNode);
-                dataConnec.setTarget(nodeUseValidationRule);
-                outgoingConnections.add(dataConnec);
-            } else {
-                dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
-                dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setSource(nodeUseValidationRule);
-                dataConnec.setTarget(filterNode);
-                incomingConnections.add(dataConnec);
-            }
-            validRuleConnections.add(dataConnec);
+        // set incomming or outgoing connection of the tFilterRow. add the current link
+        if (isOutput) {
+            incomingConnections.add(dataConnection);
+            ((DataConnection) dataConnection).setTarget(filterNode);
+        } else {
+            outgoingConnections.add(dataConnection);
+            ((DataConnection) dataConnection).setSource(filterNode);
+            ((DataConnection) dataConnection).setConnectorName("FILTER"); //$NON-NLS-1$
+        }
+
+        // create new link for output or input of tFilterRow.
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+        if (!nodeUseValidationRule.getMetadataList().isEmpty()) {
+            dataConnec.setMetadataTable(nodeUseValidationRule.getMetadataList().get(0));
+        }
+        if (isOutput) {
+            dataConnec.setConnectorName("FILTER"); //$NON-NLS-1$
+            dataConnec.setName("before_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
+            dataConnec.setSource(filterNode);
+            dataConnec.setTarget(nodeUseValidationRule);
+            outgoingConnections.add(dataConnec);
+        } else {
+            dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
+            dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
+            dataConnec.setSource(nodeUseValidationRule);
+            dataConnec.setTarget(filterNode);
+            incomingConnections.add(dataConnec);
+        }
+        validRuleConnections.add(dataConnec);
+
+        // handle reject link.
+        if (endNode.getOutgoingConnections("REJECT") != null && endNode.getOutgoingConnections("REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
+            IConnection conn = endNode.getOutgoingConnections("REJECT").get(0);//$NON-NLS-1$
+            INode targetNode = conn.getTarget();
+            List<IConnection> outputconns = (List<IConnection>) endNode.getOutgoingConnections();
+            List<IConnection> inputconnns = (List<IConnection>) targetNode.getIncomingConnections();
+            outputconns.remove(conn);
+            inputconnns.remove(conn);
+            DataConnection rejectLink = new DataConnection();
+            rejectLink.setActivate(connection.isActivate());
+            rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
+            rejectLink.setMetadataTable(rejectMetadataTable);
+            rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
+            rejectLink.setName(filterNode.getUniqueName() + "_reject"); //$NON-NLS-1$
+            rejectLink.setSource(filterNode);
+            rejectLink.setTarget(targetNode);
+            ((List<IConnection>) filterNode.getOutgoingConnections()).add(rejectLink);
+            ((List<IConnection>) targetNode.getIncomingConnections()).add(rejectLink);
         }
 
     }
@@ -2537,6 +2626,9 @@ public class DataProcess {
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
         newGraphicalNode.setDummy(graphicalNode.isDummy());
+
+        ValidationRulesUtil.createRejectConnector(newGraphicalNode);
+        ValidationRulesUtil.updateRejectMetatable(newGraphicalNode, graphicalNode);
 
         NodeContainer nc = null;
         if (newGraphicalNode.isJoblet()) {

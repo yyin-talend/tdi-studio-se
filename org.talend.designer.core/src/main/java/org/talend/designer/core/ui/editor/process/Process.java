@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -138,6 +139,7 @@ import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
+import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
@@ -1367,6 +1369,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         loadConnections(processType, nodesHashtable);
 
+        loadRejectConnector(nodesHashtable);
+
         loadContexts(processType);
         // feature 7410
         loadNotes(processType);
@@ -1383,6 +1387,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         loadNodeContainer(processType);
         // bug 6158
         this.updateManager.retrieveRefInformation();
+    }
+
+    private void loadRejectConnector(Hashtable<String, Node> nodesHashtable) {
+        Collection<Node> nodes = nodesHashtable.values();
+        for (Node node : nodes) {
+            ValidationRulesUtil.updateRejectMetatable(node, null);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1596,6 +1607,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         loadSchema(nc, nType);
 
+        // add a reject connector if the node has validation rule.
+        ValidationRulesUtil.createRejectConnector(nc);
+
         loadColumnsBasedOnSchema(nc, listParamType);
         NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
         if (nc.isJoblet()) {
@@ -1616,6 +1630,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             externalInnerContents.add(innerContent);
         }
         nc.setNeedLoadLib(false);
+        //
         return nc;
     }
 
