@@ -9,7 +9,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20101029A"
     STARTABLE="false"
-    SCHEMA_AUTO_PROPAGATE="ture"
+    SCHEMA_AUTO_PROPAGATE="true"
     DATA_AUTO_PROPAGATE="false"
     EXTENSION="org.talend.designer.scd"
   >
