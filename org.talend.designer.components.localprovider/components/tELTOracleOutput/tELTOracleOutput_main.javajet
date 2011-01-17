@@ -471,9 +471,9 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	}else if (("DELETE").equals(dataAction)){
 	%>
 	
-String deleteQuery = "DELETE  FROM ("+select_query+") " + tableName_<%=cid%>
+String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+select_query+") " 
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
++"  AND " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 <%
