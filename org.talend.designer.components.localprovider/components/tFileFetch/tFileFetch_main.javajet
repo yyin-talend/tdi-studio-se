@@ -47,7 +47,7 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
   boolean addHeader = "true".equals(ElementParameterParser.getValue(node,"__ADD_HEADER__"));
   if ("https".equals(protocol)){
 %>
-    class MyProtocolSocketFactory implements org.apache.commons.httpclient.protocol.ProtocolSocketFactory {
+    class MyProtocolSocketFactory_<%=cid%> implements org.apache.commons.httpclient.protocol.ProtocolSocketFactory {
       private javax.net.ssl.SSLContext sslcontext = null;
       private javax.net.ssl.SSLContext createSSLContext() {
           javax.net.ssl.SSLContext sslcontext = null;
@@ -111,25 +111,25 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
       }
     }
     if ((<%=uri %>).toLowerCase().startsWith("https://")){
-      org.apache.commons.httpclient.protocol.Protocol myhttps = new org.apache.commons.httpclient.protocol.Protocol("https", new MyProtocolSocketFactory(), 443);
+      org.apache.commons.httpclient.protocol.Protocol myhttps = new org.apache.commons.httpclient.protocol.Protocol("https", new MyProtocolSocketFactory_<%=cid%>(), 443);
       org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https", myhttps);
     }
   <%}%>
   org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
   client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
 <%if(readCookie){%>
-	List<org.apache.commons.httpclient.Cookie> cookieList = null;
-	java.io.FileInputStream fis = null;
-	java.io.ObjectInputStream is = null;
+	List<org.apache.commons.httpclient.Cookie> cookieList_<%=cid%> = null;
+	java.io.FileInputStream fis_<%=cid%> = null;
+	java.io.ObjectInputStream is_<%=cid%> = null;
     try {
-	    cookieList = new java.util.ArrayList<org.apache.commons.httpclient.Cookie>();
-        fis = new java.io.FileInputStream(new java.io.File(<%=cookieDir%>));
-        is = new java.io.ObjectInputStream(fis);
-        Object obj = is.readObject();
+	    cookieList_<%=cid%> = new java.util.ArrayList<org.apache.commons.httpclient.Cookie>();
+        fis_<%=cid%> = new java.io.FileInputStream(new java.io.File(<%=cookieDir%>));
+        is_<%=cid%> = new java.io.ObjectInputStream(fis_<%=cid%>);
+        Object obj = is_<%=cid%>.readObject();
         while (obj != null) {
-            cookieList.add((org.apache.commons.httpclient.Cookie) obj);
+            cookieList_<%=cid%>.add((org.apache.commons.httpclient.Cookie) obj);
             try {
-                obj = is.readObject();
+                obj = is_<%=cid%>.readObject();
             } catch (java.io.IOException e) {
                 obj = null;
             }
@@ -141,13 +141,13 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
     } catch (java.lang.ClassNotFoundException e) {
         e.printStackTrace();
     } finally {
-    	if(is != null)
-        	is.close();
-        if(fis != null)
-        	fis.close();
+    	if(is_<%=cid%> != null)
+        	is_<%=cid%>.close();
+        if(fis_<%=cid%> != null)
+        	fis_<%=cid%>.close();
     }
-    if(cookieList != null)
-    	client_<%=cid %>.getState().addCookies(cookieList.toArray(new org.apache.commons.httpclient.Cookie[0]));
+    if(cookieList_<%=cid%> != null)
+    	client_<%=cid %>.getState().addCookies(cookieList_<%=cid%>.toArray(new org.apache.commons.httpclient.Cookie[0]));
 <%}%>
   <%if(useProxy){%> 
     client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
@@ -222,7 +222,7 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
 		}
 	}
 %>
-	boolean isContinue = true;
+	boolean isContinue_<%=cid%> = true;
 	int status_<%=cid%>;
 	String finalURL_<%=cid%> = <%=uri%>;
   	try{
@@ -260,14 +260,14 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
 <%
 	if(saveCookie){
 %>
-		org.apache.commons.httpclient.Cookie[] cookies = client_<%=cid %>.getState().getCookies();
-	    java.io.FileOutputStream fos = new java.io.FileOutputStream(new java.io.File(<%=cookieDir%>));
-	    java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fos);
-	    for (org.apache.commons.httpclient.Cookie c : cookies) {
-	        os.writeObject(c);
+		org.apache.commons.httpclient.Cookie[] cookies_<%=cid%> = client_<%=cid %>.getState().getCookies();
+	    java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(new java.io.File(<%=cookieDir%>));
+	    java.io.ObjectOutputStream os_<%=cid%> = new java.io.ObjectOutputStream(fos_<%=cid%>);
+	    for (org.apache.commons.httpclient.Cookie c : cookies_<%=cid%>) {
+	        os_<%=cid%>.writeObject(c);
 	    }
-	    os.close();
-	    fos.close();
+	    os_<%=cid%>.close();
+	    fos_<%=cid%>.close();
 <%
 	}
 	if(!redirect){
@@ -286,16 +286,16 @@ if(("http").equals(protocol) || ("https").equals(protocol)){
 <%
 		}else{
 %>   
-			System.err.println("There is an exception on: " + <%=uri %>);
+			System.err.println("There isContinue_<%=cid%> an exception on: " + <%=uri %>);
 			e.printStackTrace();
 			System.out.println("\r\n");
-			isContinue = false;
+			isContinue_<%=cid%> = false;
 <%
 		}
 %>
 	}
   
-  if (isContinue){   
+  if (isContinue_<%=cid%>){   
     <%if(printResponse){%>
       System.out.println("Status Line: " + method_<%=cid%>.getStatusLine());  
       //write out the response headers
