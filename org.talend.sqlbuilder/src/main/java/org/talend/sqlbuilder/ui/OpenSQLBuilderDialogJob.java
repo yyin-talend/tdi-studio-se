@@ -27,10 +27,9 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
-import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -109,7 +108,7 @@ public class OpenSQLBuilderDialogJob extends Job {
         Object obj = controller.getDynamicProperty().getPart();
         Process p = null;
         if (obj instanceof IMultiPageTalendEditor) {
-            p = (Process) ((AbstractMultiPageTalendEditor) obj).getTalendEditor().getProcess();
+            p = (Process) ((IMultiPageTalendEditor) obj).getProcess();
         } else {
             throw new RuntimeException(Messages.getString("OpenSQLBuilderDialogJob.typeRequried")); //$NON-NLS-1$
         }

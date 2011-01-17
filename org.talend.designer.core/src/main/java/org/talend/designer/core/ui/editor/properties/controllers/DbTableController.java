@@ -111,7 +111,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             if (part == null) {
                 createListTablesCommand((Button) e.getSource(), new EmptyContextManager());
             } else {
-                createListTablesCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+                createListTablesCommand((Button) e.getSource(), part.getProcess().getContextManager());
             }
         }
     };
@@ -126,7 +126,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             if (part == null) {
                 createOpenSQLCommand((Button) e.getSource(), new EmptyContextManager());
             } else {
-                createOpenSQLCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+                createOpenSQLCommand((Button) e.getSource(), part.getProcess().getContextManager());
             }
 
         }
@@ -308,7 +308,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(composite
                             .getShell(), pid, mainMsg, connParameters.getConnectionComment());
                     if (dialog.getCodeOfButton() == Window.OK) {
-                        openParamemerDialog(btn, part.getTalendEditor().getProcess().getContextManager());
+                        openParamemerDialog(btn, part.getProcess().getContextManager());
                     }
                 }
             });
@@ -554,8 +554,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                     ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                             composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
                                     if (dialog.getCodeOfButton() == Window.OK) {
-                                        openParamemerDialog(openListTable, part.getTalendEditor().getProcess()
-                                                .getContextManager());
+                                        openParamemerDialog(openListTable, part.getProcess().getContextManager());
                                     }
 
                                 }

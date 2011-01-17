@@ -43,6 +43,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
+import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -60,7 +61,6 @@ import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
-import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IJobSettingsView;
@@ -176,7 +176,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             try {
 
-                RepositoryEditorInput input = CorePlugin.getDefault().getDiagramModelService()
+                IRepositoryEditorInput input = CorePlugin.getDefault().getDiagramModelService()
                         .getBusinessDiagramEditorInput(businessPart);
 
                 if (input != null) {

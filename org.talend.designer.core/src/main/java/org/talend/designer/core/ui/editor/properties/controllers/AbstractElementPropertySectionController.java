@@ -102,7 +102,6 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.EConnectionParameterName;
@@ -112,6 +111,7 @@ import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -156,7 +156,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected IElement elem;
 
-    protected AbstractMultiPageTalendEditor part;
+    protected IMultiPageTalendEditor part;
 
     protected EComponentCategory section;
 
@@ -448,7 +448,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         elem = dp.getElement();
         Object obj = dp.getPart();
         if (obj instanceof IMultiPageTalendEditor) {
-            part = (AbstractMultiPageTalendEditor) obj;
+            part = (IMultiPageTalendEditor) obj;
         } else {
             // throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
         }
@@ -1113,7 +1113,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (part == null) {
             return null;
         }
-        Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
+        Object adapter = part.getAdapter(CommandStack.class);
         return (CommandStack) adapter;
     }
 
@@ -1727,11 +1727,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
                 if (!isUseExistingConnection()) {
-                    initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
-                            .getDefaultContext());
+                    initConnectionParametersWithContext(elem, part.getProcess().getContextManager().getDefaultContext());
                 } else {
-                    initConnectionParametersWithContext(connectionNode, part.getTalendEditor().getProcess().getContextManager()
-                            .getDefaultContext());
+                    initConnectionParametersWithContext(connectionNode, part.getProcess().getContextManager().getDefaultContext());
                 }
             }
 
@@ -1928,7 +1926,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return null;
     }
 
-    protected IProcess getProcess(final IElement elem, final AbstractMultiPageTalendEditor part) {
+    protected IProcess getProcess(final IElement elem, final IMultiPageTalendEditor part) {
         IProcess process = null;
         if (part == null) {
             // achen modify to fix 0005991 part is null
@@ -1936,7 +1934,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 process = ((INode) elem).getProcess();
             }
         } else {
-            process = part.getTalendEditor().getProcess();
+            process = part.getProcess();
         }
         return process;
     }

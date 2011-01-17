@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
 import org.talend.designer.business.diagram.custom.actions.DeleteAssignmentAction;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
@@ -48,7 +49,6 @@ import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
-import org.talend.repository.editor.RepositoryEditorInput;
 
 /**
  * DOC qian class global comment. An implementation of the IRunProcessService. <br/>
@@ -79,7 +79,7 @@ public class DiagramModelService implements IDiagramModelService {
 
     }
 
-    public RepositoryEditorInput getBusinessDiagramEditorInput(IEditorPart editor) {
+    public IRepositoryEditorInput getBusinessDiagramEditorInput(IEditorPart editor) {
         if (editor instanceof BusinessDiagramEditor) {
             BusinessDiagramEditor businessEditor = (BusinessDiagramEditor) editor;
             return businessEditor.getDiagramEditorInput();
@@ -181,8 +181,8 @@ public class DiagramModelService implements IDiagramModelService {
         if (editor instanceof BusinessDiagramEditor) {
             BusinessDiagramEditor diagrmEditor = (BusinessDiagramEditor) editor;
             if (diagrmEditor.isAlreadyOpened()) {
-                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditors(
-                        diagrmEditor.getEditorInput(), diagrmEditor.getEditorID(), IWorkbenchPage.MATCH_INPUT);
+                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .findEditors(diagrmEditor.getEditorInput(), diagrmEditor.getEditorID(), IWorkbenchPage.MATCH_INPUT);
                 IEditorPart editorPart = ref[0].getEditor(false);
                 editorPart.doSave(new NullProgressMonitor());
                 ((BusinessDiagramEditor) editorPart).setKeepPropertyLocked(true);

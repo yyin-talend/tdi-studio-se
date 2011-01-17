@@ -52,11 +52,6 @@
             level="18"
             name="Metadata/Read table"/>
       <Action
-            class="org.talend.repository.ui.actions.metadata.DeleteTableAction"
-            id="org.talend.repository.actions.deletetable"
-            level="40"
-            name="Metadata/Delete table"/>
-      <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction"
             id="org.talend.repository.actions.createfiledelimited"
             isEditAction="true"
@@ -106,20 +101,6 @@
             level="10"
             name="Metadata/Create Salesforce"/>
       <Action
-            class="org.talend.repository.ui.actions.DeleteAction"
-            id="org.talend.repository.actions.delete"
-            level="40"
-            name="Delete"/>
-      <Action
-            class="org.talend.repository.ui.actions.RestoreAction"
-            id="org.talend.repository.actions.restore"
-            level="40"
-            name="Restore"/>
-      <Action
-            class="org.talend.repository.ui.actions.EmptyRecycleBinAction"
-            id="org.talend.repository.actions.emptyrecyclebin"
-            name="Empty recycle bin"/>
-      <Action
             class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
             id="org.talend.repository.actions.createdocumentation"
             level="10"
@@ -147,16 +128,6 @@
             id="org.talend.repository.actions.expand"
             level="39"
             name="ExpandAll"/>
-      <Action
-            class="org.talend.repository.ui.actions.CopyAction"
-            id="org.talend.repository.actions.copy"
-            level="50"
-            name="Copy"/>
-      <Action
-            class="org.talend.repository.ui.actions.PasteAction"
-            id="org.talend.repository.actions.paste"
-            level="55"
-            name="Paste"/>
       <Action
             class="org.talend.repository.ui.actions.routines.EditRoutineAction"
             id="org.talend.repositorys.actions.editroutine"
@@ -259,12 +230,6 @@
              name="Generate Doc as HTML">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.DuplicateAction"
-             id="org.talend.repository.actions.duplicate"
-             level="50"
-             name="Duplicate">
-       </Action>
-       <Action
              class="org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction"
              id="org.talend.repository.ui.actions.sqlpattern.createsqlpatternaction"
              level="13"
@@ -287,12 +252,14 @@
             class="org.talend.repository.ui.actions.importexport.ImportItemAction"
             id="org.talend.repository.localprovider.ui.actions.ImportItemAction"
             isEditAction="false"
-            isReadAction="false"/>
+            isReadAction="false"
+            name="Import Items"/>
       <Action
             class="org.talend.repository.ui.actions.importexport.ExportItemAction"
             id="org.talend.repository.localprovider.ui.actions.ExportItemAction"
             isEditAction="false"
-            isReadAction="false"/>
+            isReadAction="false"
+            name="Export Items"/>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

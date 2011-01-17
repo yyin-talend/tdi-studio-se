@@ -56,6 +56,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
@@ -103,15 +104,7 @@ public class DesignerCoreService implements IDesignerCoreService {
     private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
 
     public List<IProcess2> getOpenedProcess(IEditorReference[] reference) {
-        List<IProcess2> list = new ArrayList<IProcess2>();
-        for (IEditorReference er : reference) {
-            IEditorPart part = er.getEditor(false);
-            if (part instanceof AbstractMultiPageTalendEditor) {
-                AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
-                list.add(editor.getProcess());
-            }
-        }
-        return list;
+        return RepositoryManagerHelper.getOpenedProcess(reference);
     }
 
     public Item getProcessItem(MultiPageEditorPart talendEditor) {

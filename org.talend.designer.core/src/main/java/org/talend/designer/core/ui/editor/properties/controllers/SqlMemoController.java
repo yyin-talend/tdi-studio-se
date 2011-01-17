@@ -150,7 +150,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         // if the input query isn't contextmode or it's a standard query in perl
         query = this.removeStrInQuery(query);
         initConnectionParametersWithContext(elem, part == null ? new EmptyContextManager().getDefaultContext() : part
-                .getTalendEditor().getProcess().getContextManager().getDefaultContext());
+                .getProcess().getContextManager().getDefaultContext());
         String sql = openSQLBuilder(repositoryType, propertyName, query);
         if (sql != null) {
             queryText.setText(sql);

@@ -182,7 +182,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             if (part == null) {
                 cmd = createButtonCommand((Button) e.getSource(), new EmptyContextManager());
             } else {
-                cmd = createButtonCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+                cmd = createButtonCommand((Button) e.getSource(), part.getProcess().getContextManager());
             }
 
             executeCommand(cmd);
@@ -747,7 +747,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                 composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
                         if (dialog.getCodeOfButton() == Window.OK) {
-                            openParamemerDialog(composite.getShell(), part.getTalendEditor().getProcess().getContextManager());
+                            openParamemerDialog(composite.getShell(), part.getProcess().getContextManager());
                         }
                     }
                 });
@@ -919,8 +919,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                         ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                                 composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
                                         if (dialog.getCodeOfButton() == Window.OK) {
-                                            openParamemerDialog(composite.getShell(), part.getTalendEditor().getProcess()
-                                                    .getContextManager());
+                                            openParamemerDialog(composite.getShell(), part.getProcess().getContextManager());
                                         }
                                     }
                                 });

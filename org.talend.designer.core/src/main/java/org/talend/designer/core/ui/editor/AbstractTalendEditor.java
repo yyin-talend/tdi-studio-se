@@ -144,6 +144,7 @@ import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.NodePartKeyHander;
@@ -192,7 +193,7 @@ import org.talend.repository.model.RepositoryConstants;
  * DOC qzhang class global comment. Detailled comment
  */
 public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPalette implements
-        ITabbedPropertySheetPageContributor, IJobResourceProtection {
+        ITabbedPropertySheetPageContributor, IJobResourceProtection, ITalendEditor {
 
     private static Logger log = Logger.getLogger(AbstractTalendEditor.class);
 

@@ -203,7 +203,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         updateTableValues(param);
 
-        tableEditorModel.setData(elem, param, (Process) part.getTalendEditor().getProcess());
+        tableEditorModel.setData(elem, param, (Process) part.getProcess());
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 subComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
