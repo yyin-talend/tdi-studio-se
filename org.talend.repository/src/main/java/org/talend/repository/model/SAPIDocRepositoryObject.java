@@ -25,6 +25,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ISubRepositoryObject;
+import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * DOC zli class global comment. Detailled comment
@@ -130,4 +131,9 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
         }
 
     }
+
+    public ModelElement getModelElement() {
+        return this.iDocUnit;
+    }
+
 }

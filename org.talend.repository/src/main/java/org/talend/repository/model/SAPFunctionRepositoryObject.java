@@ -25,6 +25,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ISubRepositoryObject;
+import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -150,4 +151,9 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
         }
 
     }
+
+    public ModelElement getModelElement() {
+        return this.functionUnit;
+    }
+
 }
