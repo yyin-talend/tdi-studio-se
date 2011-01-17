@@ -37,14 +37,6 @@
    </requires>
 
    <plugin
-         id="org.talend.designer.dbmap.mysql.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.dataquality.matching.test"
          download-size="0"
          install-size="0"
@@ -110,14 +102,6 @@
 
    <plugin
          id="org.talend.core.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.dbmap.oracle.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
