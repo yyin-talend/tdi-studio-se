@@ -130,9 +130,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                 } else {
                     monitorWrap = new NullProgressMonitor();
                 }
+                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY);
+                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
 
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
                         .getInstance();
+                templatesFactory.setCurrentLanguage(codeLanguage);
                 templatesFactory.init();
 
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
@@ -141,9 +145,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                 componentsFactory.getComponents();
 
                 long startTime = System.currentTimeMillis();
-                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY);
-                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
 
                 defaultTemplate = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + EInternalTemplate.DEFAULT_TEMPLATE
                         + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT;

@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.additionaljet.AbstractJetFileProvider;
 import org.talend.designer.codegen.additionaljet.CustomizeJetFilesProviderManager;
@@ -39,6 +40,8 @@ import org.talend.designer.codegen.config.TemplateUtil;
 public class CodeGeneratorInternalTemplatesFactory {
 
     private List<TemplateUtil> templates;
+
+    private ECodeLanguage language;
 
     /**
      * Constructor.
@@ -91,8 +94,19 @@ public class CodeGeneratorInternalTemplatesFactory {
 
     private void loadSystemFrame() {
         for (EInternalTemplate utilTemplate : EInternalTemplate.values()) {
-            TemplateUtil template = new TemplateUtil(utilTemplate);
-            templates.add(template);
+            URL url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null);
+            File file;
+            try {
+                file = new File(FileLocator.toFileURL(url).getPath() + utilTemplate.getTemplateName() + TemplateUtil.EXT_SEP
+                        + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+                if (file.exists()) {
+                    TemplateUtil template = new TemplateUtil(utilTemplate);
+                    templates.add(template);
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
         }
     }
 
@@ -114,5 +128,9 @@ public class CodeGeneratorInternalTemplatesFactory {
      */
     public List<TemplateUtil> getTemplates() {
         return templates;
+    }
+
+    public void setCurrentLanguage(ECodeLanguage language) {
+        this.language = language;
     }
 }
