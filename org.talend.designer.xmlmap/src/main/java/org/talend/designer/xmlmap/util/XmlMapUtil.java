@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.util;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -40,6 +41,13 @@ public class XmlMapUtil {
 
     public static final String XPATH_NAMESPACE = "xmlns";
 
+    /**
+     * 
+     * DOC talend Comment method "getXPathLength".
+     * 
+     * @param xPath
+     * @return if return >2 , TreeNode is a child of document node.
+     */
     public static int getXPathLength(String xPath) {
         if (xPath == null) {
             return 0;
@@ -120,10 +128,24 @@ public class XmlMapUtil {
 
     }
 
-    public static void main(String[] args) {
+    public static void detachConnectionsTarget(TreeNode treeNode) {
+        for (Connection connection : treeNode.getOutgoingConnections()) {
+            if (connection.getTarget() instanceof OutputTreeNode) {
+                OutputTreeNode target = (OutputTreeNode) connection.getTarget();
+                if (target.getIncomingConnections().contains(connection)) {
+                    target.getIncomingConnections().remove(connection);
+                }
+            }
+        }
+    }
 
-        String a = "row1/xml/cf/dd/e/f";
-        convertToExpression(a);
+    public static void detachConnectionsSouce(OutputTreeNode treeNode) {
+        for (Connection connection : treeNode.getIncomingConnections()) {
+            TreeNode source = (TreeNode) connection.getSource();
+            if (source.getOutgoingConnections().contains(connection)) {
+                source.getOutgoingConnections().remove(connection);
+            }
+        }
     }
 
 }

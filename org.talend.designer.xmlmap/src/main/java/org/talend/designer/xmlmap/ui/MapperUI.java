@@ -89,11 +89,9 @@ public class MapperUI {
         mainSashForm.setLayoutData(mainSashFormGridData);
 
         datasViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
-        XmlMapEditor editor = new XmlMapEditor();
+        XmlMapEditor editor = new XmlMapEditor(mapperManager);
         editor.createPartControl(datasViewSashForm);
         editor.setContent(copyOfMapData);
-        editor.setMapperManager(mapperManager);
-        // editor.setContent(getContents());
 
         tabFolderEditors = new TabFolderEditors(mainSashForm, mapperManager, SWT.BORDER);
         selectFirstInOutTree();

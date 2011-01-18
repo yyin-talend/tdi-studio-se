@@ -78,7 +78,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         column.setToolTipHeader("Key");
         column.setId(ID_COLUMN_KEY);
         column.setDisplayedValue(""); //$NON-NLS-1$
-        column.setWeight(20);
+        column.setWeight(10);
         column.setModifiable(true);
         CheckboxTableEditorContent checkbox = new CheckboxTableEditorContent();
         column.setTableEditorContent(checkbox);
@@ -132,8 +132,9 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         column.setToolTipHeader("Nullable");
         column.setId(ID_COLUMN_NULLABLE);
         column.setBeanPropertyAccessors(getNullableAccessor());
-        column.setWidth(20);
+        column.setWeight(20);
         column.setDisplayedValue(""); //$NON-NLS-1$
+        column.setModifiable(true);
         column.setTableColumnSelectionListener(new CheckColumnSelectionListener(column, tableViewerCreator));
         column.setImageHeader(ImageProvider.getImage(EImage.CHECKED_ICON));
         CheckboxTableEditorContent nullableCheckbox = new CheckboxTableEditorContent();
@@ -153,8 +154,6 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
                 bean.setPattern(value);
             }
         });
-
-        column = new TableViewerCreatorColumn(tableViewerCreator);
         JavaSimpleDateFormatProposalProvider proposalProvider = new JavaSimpleDateFormatProposalProvider();
         TextCellEditorWithProposal patternCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), column);
         ContentProposalAdapterExtended contentProposalAdapter = patternCellEditor.getContentProposalAdapter();

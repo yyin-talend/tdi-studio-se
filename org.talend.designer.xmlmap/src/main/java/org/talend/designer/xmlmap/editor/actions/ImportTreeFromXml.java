@@ -16,15 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.action.Action;
+import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
@@ -36,18 +37,21 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeU
 /**
  * wchen class global comment. Detailled comment
  */
-public class ImportTreeFromXml extends Action {
-
-    private Shell shell;
+public class ImportTreeFromXml extends SelectionAction {
 
     private TreeNode parentNode;
 
     private MapperManager mapperManager;
 
-    public ImportTreeFromXml(Shell shell, TreeNode parentNode) {
-        setText("Import Xml");
+    private Shell shell;
+
+    public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml";
+
+    public ImportTreeFromXml(IWorkbenchPart part, Shell shell) {
+        super(part);
         this.shell = shell;
-        this.parentNode = parentNode;
+        setId(ID);
+        setText("Import Xml");
     }
 
     @Override
@@ -70,14 +74,7 @@ public class ImportTreeFromXml extends Action {
     private void detachConnectionsTarget(TreeNode parentNode) {
         EList<TreeNode> children = parentNode.getChildren();
         for (TreeNode treeNode : children) {
-            for (Connection connection : treeNode.getOutgoingConnections()) {
-                if (connection.getTarget() instanceof OutputTreeNode) {
-                    OutputTreeNode target = (OutputTreeNode) connection.getTarget();
-                    if (target.getIncomingConnections().contains(connection)) {
-                        target.getIncomingConnections().remove(connection);
-                    }
-                }
-            }
+            XmlMapUtil.detachConnectionsTarget(treeNode);
             if (!treeNode.getChildren().isEmpty()) {
                 detachConnectionsTarget(treeNode);
             }
@@ -118,4 +115,24 @@ public class ImportTreeFromXml extends Action {
         this.mapperManager = mapperManager;
     }
 
+    @Override
+    protected boolean calculateEnabled() {
+        if (getSelectedObjects().isEmpty()) {
+            return false;
+        } else {
+            Object object = getSelectedObjects().get(0);
+            if (object instanceof TreeNodeEditPart) {
+                TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
+                parentNode = (TreeNode) parentPart.getModel();
+                if (parentNode.eContainer() instanceof InputXmlTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void update() {
+        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
+    }
 }

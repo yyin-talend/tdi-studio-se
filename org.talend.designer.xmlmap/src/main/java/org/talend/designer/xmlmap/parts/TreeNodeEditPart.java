@@ -197,6 +197,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 break;
             }
         case Notification.ADD:
+        case Notification.ADD_MANY:
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
@@ -209,12 +210,15 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 break;
             }
         case Notification.REMOVE:
+        case Notification.REMOVE_MANY:
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
             case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
+                refreshTargetConnections();
 
             }
 

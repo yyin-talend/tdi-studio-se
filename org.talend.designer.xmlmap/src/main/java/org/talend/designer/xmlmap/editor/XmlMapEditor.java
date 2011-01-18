@@ -32,19 +32,17 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
 import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
 import org.talend.designer.xmlmap.dnd.XmlDropTargetListener;
+import org.talend.designer.xmlmap.editor.actions.CreateAttributeAction;
+import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -61,14 +59,10 @@ public class XmlMapEditor extends GraphicalEditor {
 
     MapperManager mapperManager;
 
-    public XmlMapEditor() {
+    public XmlMapEditor(MapperManager mapperManager) {
         DefaultEditDomain defaultEditDomain = new DefaultEditDomain(this);
         setEditDomain(defaultEditDomain);
-    }
-
-    public Control getGraphicalControl() {
-        rulerComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-        return rulerComp;
+        this.mapperManager = mapperManager;
     }
 
     protected void createGraphicalViewer(final Composite parent) {
@@ -95,7 +89,23 @@ public class XmlMapEditor extends GraphicalEditor {
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#createActions()
      */
     protected void createActions() {
-        IAction deleteAction = new DeleteTreeNodeAction(this);
+        ImportTreeFromXml importAction = new ImportTreeFromXml(this, getGraphicalViewer().getControl().getShell());
+        importAction.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(importAction);
+        getSelectionActions().add(importAction.getId());
+
+        CreateAttributeAction createAttribute = new CreateAttributeAction(this);
+        createAttribute.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(createAttribute);
+        getSelectionActions().add(createAttribute.getId());
+
+        CreateElementAction createElement = new CreateElementAction(this);
+        createElement.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(createElement);
+        getSelectionActions().add(createElement.getId());
+
+        DeleteTreeNodeAction deleteAction = new DeleteTreeNodeAction(this);
+        deleteAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
 
@@ -139,6 +149,7 @@ public class XmlMapEditor extends GraphicalEditor {
             }
 
         });
+        getGraphicalViewer().addSelectionChangedListener(mapperManager);
         getGraphicalViewer().setContextMenu(new MenueProvider(getGraphicalViewer()));
         initializeActionRegistry();
     }
@@ -212,6 +223,16 @@ public class XmlMapEditor extends GraphicalEditor {
                 if (selectedEditParts.get(0) instanceof OutputTreeNodeEditPart) {
                     OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) selectedEditParts.get(0)).getModel();
                     if (XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
+                        CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
+                                CreateElementAction.ID);
+                        createElement.update();
+                        menu.add(createElement);
+
+                        CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
+                                CreateAttributeAction.ID);
+                        createAttribute.update();
+                        menu.add(createAttribute);
+
                         DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(DeleteAction.ID);
                         action.update();
                         menu.add(action);
@@ -226,14 +247,28 @@ public class XmlMapEditor extends GraphicalEditor {
                     }
 
                 } else if (selectedEditParts.get(0) instanceof TreeNodeEditPart) {
-                    TreeNodeEditPart editPart = (TreeNodeEditPart) selectedEditParts.get(0);
-                    TreeNode treeNode = (TreeNode) editPart.getModel();
-                    if (treeNode.eContainer() instanceof InputXmlTree && XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
-                        ImportTreeFromXml importAction = new ImportTreeFromXml(getGraphicalViewer().getControl().getShell(),
-                                treeNode);
-                        importAction.setMapperManager(getMapperManager());
-                        menu.add(importAction);
-                    }
+                    ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
+                    importAction.update();
+                    menu.add(importAction);
+
+                    CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
+                            CreateElementAction.ID);
+                    createElement.setInput(true);
+                    createElement.update();
+                    menu.add(createElement);
+
+                    CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
+                            CreateAttributeAction.ID);
+                    createAttribute.setInput(true);
+                    createAttribute.update();
+                    menu.add(createAttribute);
+
+                    DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
+                            DeleteTreeNodeAction.ID);
+                    deleteAction.setInput(true);
+                    deleteAction.update();
+                    menu.add(deleteAction);
+
                     SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                     loopAction.update();
                     menu.add(loopAction);

@@ -24,6 +24,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 
 /**
@@ -88,6 +90,12 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
         } else {
             if (!(getTargetEditPart() instanceof OutputTreeNodeEditPart)) {
                 event.detail = DND.DROP_NONE;
+            } else {
+                OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
+                OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+                if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
+                    event.detail = DND.DROP_NONE;
+                }
             }
         }
     }

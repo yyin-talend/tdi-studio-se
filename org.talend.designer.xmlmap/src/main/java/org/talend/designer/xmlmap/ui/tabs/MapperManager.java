@@ -115,13 +115,7 @@ public class MapperManager implements ISelectionChangedListener {
                     TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
                     if (inputTreeNodeRoot != null) {
                         InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
-                        if (selectedInputTree != inputTree) {
-                            selectedInputTree = inputTree;
-                            ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(selectedInputTree);
-                            mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
-                                    .setExtendedControlModel(selectedInputTreeSchemaModel);
-                            mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
-                        }
+                        selectInputXmlTree(inputTree);
                     }
                 }
             }
@@ -214,6 +208,8 @@ public class MapperManager implements ISelectionChangedListener {
 
                 inputMetaEditorView.setMetadataTableEditor(editor);
             }
+
+            refreshInputTreeSchemaEditor(inputTree);
         }
 
     }
