@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
-import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.notation.Node;
@@ -88,7 +87,7 @@ public class DiagramModelService implements IDiagramModelService {
 
     }
 
-    public DiagramEditPart getBusinessEditorProcess() {
+    public Object getBusinessEditorProcess() {
         BusinessDiagramEditor editor = (BusinessDiagramEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
         return editor.getDiagramEditPart();
