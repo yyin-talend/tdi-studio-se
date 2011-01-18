@@ -68,7 +68,8 @@ public class DisplaySubjobAction extends SelectionAction {
                     // if the subjobs are not displayed, no need to display this action.
                     return false;
                 }
-                if (node.getNodeContainer().getSubjobContainer().isDisplayed()) {
+                if (node.getNodeContainer().getSubjobContainer() != null
+                        && node.getNodeContainer().getSubjobContainer().isDisplayed()) {
                     setText(TEXT_HIDE_SUBJOB);
                 } else {
                     setText(TEXT_DISPLAY_SUBJOB);

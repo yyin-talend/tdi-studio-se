@@ -494,7 +494,7 @@ public class NodesPasteCommand extends Command {
             } else {
                 nc = new NodeContainer((Node) pastedNode);
             }
-            nodeContainerList.add(new NodeContainer((Node) pastedNode));
+            nodeContainerList.add(nc);
         }
         ((Process) process).setCopyPasteSubjobMappings(mapping);
         Map<String, String> oldToNewConnVarMap = new HashMap<String, String>();
