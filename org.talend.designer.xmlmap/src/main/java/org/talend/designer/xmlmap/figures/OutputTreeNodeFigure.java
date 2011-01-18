@@ -17,6 +17,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
@@ -33,6 +34,8 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
 
     private OutputTreeNode treeNode;
 
+    private Label nameLabel;
+
     public OutputTreeNodeFigure(OutputTreeNodeEditPart treeNodePart) {
         this.treeNodePart = treeNodePart;
         this.treeNode = (OutputTreeNode) treeNodePart.getModel();
@@ -46,12 +49,12 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
             columnExpressionFigure.setText(treeNode.getExpression());
             columnExpressionFigure.setBorder(new LineBorder());
 
-            Label valueLabel = new Label();
-            valueLabel.setText(treeNode.getName());
-            valueLabel.setBorder(new LineBorder());
+            nameLabel = new Label();
+            nameLabel.setText(treeNode.getName());
+            nameLabel.setBorder(new LineBorder());
 
             this.add(columnExpressionFigure);
-            this.add(valueLabel);
+            this.add(nameLabel);
         }
         // xml root
         else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof OutputXmlTree) {
@@ -103,4 +106,19 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
         return treeBranch;
     }
 
+    public void updateNameFigure() {
+        if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+            nameLabel.setText(treeNode.getName());
+        } else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof InputXmlTree) {
+            ((TreeBranchFigure) treeBranch.getElement()).updataNameFigure();
+        }
+    }
+
+    /**
+     * used to change figure if talend type switched form Document to others
+     */
+    public void refreshChildren() {
+        this.getChildren().clear();
+        createContent();
+    }
 }

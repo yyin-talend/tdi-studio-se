@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -28,9 +30,11 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -156,6 +160,62 @@ public class MapperManager implements ISelectionChangedListener {
             if (table != null) {
                 MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
                 editor.setModifiedBeanListenable(inputMetaEditorView.getTableViewerCreator());
+                IModifiedBeanListener<IMetadataColumn> columnListener = new IModifiedBeanListener<IMetadataColumn>() {
+
+                    public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
+                        if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
+                            if (event.index < inputTree.getNodes().size()) {
+                                TreeNode treeNode = inputTree.getNodes().get(event.index);
+                                if (treeNode != null) {
+                                    treeNode.setName((String) event.newValue);
+                                }
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
+                            if (event.index < inputTree.getNodes().size()) {
+                                TreeNode treeNode = inputTree.getNodes().get(event.index);
+                                if (treeNode != null) {
+                                    String oldType = treeNode.getType();
+
+                                    if (XmlMapUtil.DOCUMENT.equals(oldType)) {
+                                        detachConnectionsTarget(treeNode);
+                                        treeNode.getChildren().clear();
+                                    }
+                                    treeNode.setType((String) event.newValue);
+
+                                    if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
+                                        TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                                        createTreeNode.setName("root");
+                                        createTreeNode.setXpath(treeNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                                + createTreeNode.getName());
+                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                        createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        treeNode.getChildren().add(createTreeNode);
+                                    }
+
+                                }
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
+                            if (event.index < inputTree.getNodes().size()) {
+                                TreeNode treeNode = inputTree.getNodes().get(event.index);
+                                treeNode.setKey((Boolean) event.newValue);
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_PATTERN.equals(event.column.getId())) {
+                            if (event.index < inputTree.getNodes().size()) {
+                                TreeNode treeNode = inputTree.getNodes().get(event.index);
+                                treeNode.setPattern((String) event.newValue);
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
+                            if (event.index < inputTree.getNodes().size()) {
+                                TreeNode treeNode = inputTree.getNodes().get(event.index);
+                                treeNode.setNullable((Boolean) event.newValue);
+                            }
+                        }
+
+                    }
+
+                };
+                editor.addModifiedBeanListener(columnListener);
+
                 editor.addAfterOperationListListener(new IListenableListListener() {
 
                     public void handleEvent(ListenableListEvent event) {
@@ -214,6 +274,18 @@ public class MapperManager implements ISelectionChangedListener {
 
     }
 
+    private void detachConnectionsTarget(TreeNode parentNode) {
+        EList<TreeNode> children = parentNode.getChildren();
+        for (TreeNode treeNode : children) {
+            XmlMapUtil.detachConnectionsTarget(treeNode);
+            if (!treeNode.getChildren().isEmpty()) {
+                detachConnectionsTarget(treeNode);
+            }
+
+        }
+
+    }
+
     public void selectOutputXmlTree(final OutputXmlTree outputTree) {
         if (outputTree != oldSelectedOut) {
             oldSelectedOut = outputTree;
@@ -230,6 +302,63 @@ public class MapperManager implements ISelectionChangedListener {
                 MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
                 outputMetaEditorView.setMetadataTableEditor(editor);
                 editor.setModifiedBeanListenable(outputMetaEditorView.getTableViewerCreator());
+
+                IModifiedBeanListener<IMetadataColumn> columnListener = new IModifiedBeanListener<IMetadataColumn>() {
+
+                    public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
+                        if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
+                            if (event.index < outputTree.getNodes().size()) {
+                                TreeNode treeNode = outputTree.getNodes().get(event.index);
+                                if (treeNode != null) {
+                                    treeNode.setName((String) event.newValue);
+                                }
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
+                            if (event.index < outputTree.getNodes().size()) {
+                                TreeNode treeNode = outputTree.getNodes().get(event.index);
+                                if (treeNode != null) {
+                                    String oldType = treeNode.getType();
+
+                                    if (XmlMapUtil.DOCUMENT.equals(oldType)) {
+                                        detachConnectionsTarget(treeNode);
+                                        treeNode.getChildren().clear();
+                                    }
+                                    treeNode.setType((String) event.newValue);
+
+                                    if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
+                                        OutputTreeNode createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                        createTreeNode.setName("root");
+                                        createTreeNode.setXpath(treeNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                                + createTreeNode.getName());
+                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                        createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        treeNode.getChildren().add(createTreeNode);
+                                    }
+
+                                }
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
+                            if (event.index < outputTree.getNodes().size()) {
+                                TreeNode treeNode = outputTree.getNodes().get(event.index);
+                                treeNode.setKey((Boolean) event.newValue);
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_PATTERN.equals(event.column.getId())) {
+                            if (event.index < outputTree.getNodes().size()) {
+                                TreeNode treeNode = outputTree.getNodes().get(event.index);
+                                treeNode.setPattern((String) event.newValue);
+                            }
+                        } else if (AbstractMetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
+                            if (event.index < outputTree.getNodes().size()) {
+                                TreeNode treeNode = outputTree.getNodes().get(event.index);
+                                treeNode.setNullable((Boolean) event.newValue);
+                            }
+                        }
+
+                    }
+
+                };
+                editor.addModifiedBeanListener(columnListener);
+
                 editor.addAfterOperationListListener(new IListenableListListener() {
 
                     public void handleEvent(ListenableListEvent event) {
@@ -284,4 +413,5 @@ public class MapperManager implements ISelectionChangedListener {
         }
 
     }
+
 }

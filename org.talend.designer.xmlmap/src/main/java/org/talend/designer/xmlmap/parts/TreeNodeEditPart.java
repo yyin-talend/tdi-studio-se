@@ -30,11 +30,14 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.swt.SWT;
+import org.talend.commons.ui.swt.geftree.figure.TreeBranch;
 import org.talend.designer.xmlmap.figures.OutputTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.policy.CustomGraphicalNodeEditPolicy;
@@ -187,14 +190,30 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__LOOP:
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                if (treeBranchFigure != null) {
-                    if (treeBranchFigure.getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) treeBranchFigure.getElement();
+                if (getFigure() instanceof TreeBranch) {
+                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
+                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
                         branchFigure.updateStatus();
                     }
                 }
-
                 break;
+            case XmlmapPackage.TREE_NODE__NAME:
+                if (getFigure() instanceof TreeBranch) {
+                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
+                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
+                        branchFigure.updataNameFigure();
+                    }
+                } else if (getFigure() instanceof TreeNodeFigure) {
+                    ((TreeNodeFigure) getFigure()).updateNameFigure();
+                }
+                break;
+            case XmlmapPackage.TREE_NODE__TYPE:
+                TreeNode treeNode = (TreeNode) getModel();
+                if (treeNode.eContainer() instanceof InputXmlTree || treeNode.eContainer() instanceof OutputXmlTree) {
+                    if (figure instanceof TreeNodeFigure) {
+                        ((TreeNodeFigure) figure).refreshChildren();
+                    }
+                }
             }
         case Notification.ADD:
         case Notification.ADD_MANY:
@@ -328,15 +347,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         }
 
         public IFigure getOwner() {
-            // IFigure figure = getOwner();
-            // if (figure instanceof TreeNodeFigure) {
-            // if (((TreeNodeFigure) figure).getTreeBranch() != null) {
-            // return ((TreeNodeFigure) figure).getTreeBranch();
-            // } else {
-            // return figure;
-            // }
-            // }
-
             return super.getOwner();
         }
 

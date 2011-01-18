@@ -36,6 +36,8 @@ public class TreeNodeFigure extends ToolBarContainer {
 
     protected Label columnExpressionFigure;
 
+    private Label nameLabel;
+
     public TreeNodeFigure() {
 
     }
@@ -49,7 +51,7 @@ public class TreeNodeFigure extends ToolBarContainer {
     private void createContent() {
         // column
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
-            Label nameLabel = new Label();
+            nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
             nameLabel.setBorder(new LineBorder());
             this.add(nameLabel);
@@ -61,11 +63,6 @@ public class TreeNodeFigure extends ToolBarContainer {
             treeBranch.setBorder(new LineBorder());
             this.add(treeBranch);
         }
-        // Label nodeStatus = new Label();
-        // // nodeStatus.setText("element loop");
-        // nodeStatus.setBorder(new LineBorder());
-        // this.add(nodeStatus);
-
     }
 
     public IFigure getContentPane() {
@@ -88,4 +85,19 @@ public class TreeNodeFigure extends ToolBarContainer {
         return columnExpressionFigure;
     }
 
+    public void updateNameFigure() {
+        if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+            nameLabel.setText(treeNode.getName());
+        } else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof InputXmlTree) {
+            ((TreeBranchFigure) treeBranch.getElement()).updataNameFigure();
+        }
+    }
+
+    /**
+     * used to change figure if talend type switched form Document to others
+     */
+    public void refreshChildren() {
+        this.getChildren().clear();
+        createContent();
+    }
 }

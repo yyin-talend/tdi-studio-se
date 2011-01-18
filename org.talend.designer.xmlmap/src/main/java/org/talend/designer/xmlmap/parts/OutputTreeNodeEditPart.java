@@ -197,6 +197,12 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
     }
 
     @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+    }
+
+    @Override
     public void performRequest(Request req) {
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
             if (directEditManager == null) {
@@ -211,16 +217,13 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                 }
             }
             if (directEditManager != null) {
-                directEditManager.show();
+                OutputTreeNode outputTreeNode = (OutputTreeNode) getModel();
+                if (outputTreeNode.getChildren().isEmpty()) {
+                    directEditManager.show();
+                }
             }
         }
         super.performRequest(req);
-    }
-
-    @Override
-    protected void createEditPolicies() {
-        super.createEditPolicies();
-        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
     }
 
 }

@@ -38,8 +38,9 @@ public class DragAndDropEditPolicy extends AbstractEditPolicy {
     public Command getCommand(Request request) {
         if (request instanceof CreateNodeConnectionRequest) {
             CreateNodeConnectionRequest rq = (CreateNodeConnectionRequest) request;
-            boolean updateOrCreate = rq.getDropType() == CreateNodeConnectionRequest.DROP_EXPRESSION ? true : false;
-            return new CreateNodeAndConnectionCommand(rq.getNewObject(), rq.getTargetEditPart(), updateOrCreate);
+            // drop expression
+            boolean update = rq.getDropType() == CreateNodeConnectionRequest.DROP_EXPRESSION ? true : false;
+            return new CreateNodeAndConnectionCommand(rq.getNewObject(), rq.getTargetEditPart(), update);
         }
         return super.getCommand(request);
     }

@@ -166,4 +166,7 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
         statusFigure.setText(getStatus(node));
     }
 
+    public void updataNameFigure() {
+        nameFigure.setText(node.getName());
+    }
 }

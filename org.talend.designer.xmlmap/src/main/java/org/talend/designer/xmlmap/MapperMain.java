@@ -73,10 +73,27 @@ public class MapperMain {
     }
 
     private void prepareModelInputs(List<IODataComponent> inputConn) {
-        if (inputConn == null || inputConn.isEmpty()) {
-            copyOfMapData.getInputTrees().clear();
-            return;
+        // remove no used input tree
+        if (copyOfMapData.getInputTrees().size() != inputConn.size()) {
+            List treesToRemove = new ArrayList();
+            for (InputXmlTree inputTree : copyOfMapData.getInputTrees()) {
+                boolean found = false;
+                for (IODataComponent connection : inputConn) {
+                    if (inputTree.getName().equals(connection.getName())) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    for (TreeNode treeNode : inputTree.getNodes()) {
+                        detachConnectionsTarget(treeNode);
+                    }
+                    treesToRemove.add(inputTree);
+                }
+            }
+
+            copyOfMapData.getInputTrees().removeAll(treesToRemove);
         }
+
         for (IODataComponent inData : inputConn) {
             String name = inData.getName();
             InputXmlTree inputTree = null;
@@ -151,13 +168,25 @@ public class MapperMain {
 
     }
 
+    private void detachConnectionsTarget(TreeNode parentNode) {
+        EList<TreeNode> children = parentNode.getChildren();
+        for (TreeNode treeNode : children) {
+            XmlMapUtil.detachConnectionsTarget(treeNode);
+            if (!treeNode.getChildren().isEmpty()) {
+                detachConnectionsTarget(treeNode);
+            }
+
+        }
+
+    }
+
     private void prepareModelOutputs(List<IODataComponent> outputConn, List<IMetadataTable> outputMetadataTables) {
         if (outputConn == null || outputConn.isEmpty()) {
             copyOfMapData.getOutputTrees().clear();
             return;
         }
-        for (IODataComponent outData : outputConn) {
-            String name = outData.getName();
+        for (IMetadataTable meatadataTable : outputMetadataTables) {
+            String name = meatadataTable.getTableName();
             OutputXmlTree outputTree = null;
             for (OutputXmlTree out : copyOfMapData.getOutputTrees()) {
                 if (out.getName() != null && out.getName().equals(name)) {
@@ -171,8 +200,8 @@ public class MapperMain {
                 copyOfMapData.getOutputTrees().add(outputTree);
             }
 
-            List<IMetadataColumn> listColumns = outData.getTable().getListColumns();
-            if (outData.getTable() != null && listColumns != null) {
+            List<IMetadataColumn> listColumns = meatadataTable.getListColumns();
+            if (listColumns != null) {
                 EList<OutputTreeNode> nodes = outputTree.getNodes();
                 for (int i = 0; i < listColumns.size(); i++) {
                     IMetadataColumn column = listColumns.get(i);
@@ -219,7 +248,9 @@ public class MapperMain {
                 if (nodes.size() > listColumns.size()) {
                     List unUsed = new ArrayList();
                     for (int i = listColumns.size(); i < nodes.size(); i++) {
-                        unUsed.add(nodes.get(i));
+                        OutputTreeNode node = nodes.get(i);
+                        XmlMapUtil.detachConnectionsSouce(node);
+                        unUsed.add(node);
                     }
                     nodes.removeAll(unUsed);
                 }
