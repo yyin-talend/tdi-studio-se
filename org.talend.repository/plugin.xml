@@ -1261,7 +1261,14 @@
             class="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             id="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             name="UpgrateDatabaseTypeForSybaseConnection">
-      </projecttask>      
+      </projecttask> 
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
+            description="Rename ldap password parameter for bug18289 "
+            id="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
+            name="Rename ldap password parameter">
+      </projecttask>     
    </extension>
    
    <extension
