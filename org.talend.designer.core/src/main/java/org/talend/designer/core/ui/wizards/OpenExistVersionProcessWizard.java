@@ -98,7 +98,8 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     @Override
     public boolean performCancel() {
-        restoreVersion();
+        if (!getProperty().getVersion().equals(getOriginVersion()))
+            restoreVersion();
         return super.performCancel();
     }
 
