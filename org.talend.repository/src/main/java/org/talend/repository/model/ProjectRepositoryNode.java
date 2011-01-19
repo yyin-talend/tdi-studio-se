@@ -27,7 +27,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -327,7 +326,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-        if (processLabel.equals("Routes")) {
+        // PTODO need refactor later, this is not good, I think
+        if (processLabel.equals("Routes")) { //$NON-NLS-1$ 
             routesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             routesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTES);
             routesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTES);
@@ -556,14 +556,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 nodes.add(refProject);
             }
-        }
-
-        // Metadata validation rules
-        if (PluginChecker.isValidationrulesPluginLoaded()) {
-            metadataValidationRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataValidationRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_VALIDATION_RULES);
-            metadataValidationRulesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_VALIDATION_RULES);
-            metadataNode.getChildren().add(metadataValidationRulesNode);
+            // Metadata validation rules
+            if (PluginChecker.isValidationrulesPluginLoaded()) {
+                metadataValidationRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataValidationRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_VALIDATION_RULES);
+                metadataValidationRulesNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_VALIDATION_RULES);
+                metadataNode.getChildren().add(metadataValidationRulesNode);
+            }
         }
 
         // hide hidden nodes;
@@ -1046,8 +1046,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     addNode(parent, type, recBinNode, repositoryObject);
                 }
             } catch (Exception e) {
-                ExceptionHandler.log(Messages.getString("ProjectRepositoryNode.3") + repositoryObject.getRepositoryObjectType() + Messages.getString("ProjectRepositoryNode.4") //$NON-NLS-1$ //$NON-NLS-2$
-                        + repositoryObject.getLabel());
+                ExceptionHandler
+                        .log(Messages.getString("ProjectRepositoryNode.3") + repositoryObject.getRepositoryObjectType() + Messages.getString("ProjectRepositoryNode.4") //$NON-NLS-1$ //$NON-NLS-2$
+                                + repositoryObject.getLabel());
 
                 if (repositoryObject.getProperty().getInformations().isEmpty()) {
                     Information info = PropertiesFactory.eINSTANCE.createInformation();
