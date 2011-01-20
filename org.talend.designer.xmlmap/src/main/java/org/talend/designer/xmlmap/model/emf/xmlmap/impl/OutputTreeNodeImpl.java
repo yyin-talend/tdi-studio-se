@@ -35,7 +35,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#isGroup <em>Group</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#getIncomingConnections <em>Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -81,16 +80,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * @ordered
      */
     protected boolean group = GROUP_EDEFAULT;
-
-    /**
-     * The cached value of the '{@link #getIncomingConnections() <em>Incoming Connections</em>}' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getIncomingConnections()
-     * @generated
-     * @ordered
-     */
-    protected EList<Connection> incomingConnections;
 
     /**
      * <!-- begin-user-doc -->
@@ -158,18 +147,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EList<Connection> getIncomingConnections() {
-        if (incomingConnections == null) {
-            incomingConnections = new EObjectResolvingEList<Connection>(Connection.class, this, XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS);
-        }
-        return incomingConnections;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -177,8 +154,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
                 return getDefaultValue();
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
                 return isGroup();
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                return getIncomingConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -198,10 +173,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
                 setGroup((Boolean)newValue);
                 return;
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                getIncomingConnections().clear();
-                getIncomingConnections().addAll((Collection<? extends Connection>)newValue);
-                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -220,9 +191,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
                 setGroup(GROUP_EDEFAULT);
                 return;
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                getIncomingConnections().clear();
-                return;
         }
         super.eUnset(featureID);
     }
@@ -239,8 +207,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
                 return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
                 return group != GROUP_EDEFAULT;
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                return incomingConnections != null && !incomingConnections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

@@ -6,14 +6,21 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
@@ -27,6 +34,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getOutgoingConnections <em>Outgoing Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getIncomingConnections <em>Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,6 +121,26 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * @ordered
      */
     protected boolean nullable = NULLABLE_EDEFAULT;
+
+    /**
+     * The cached value of the '{@link #getOutgoingConnections() <em>Outgoing Connections</em>}' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getOutgoingConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<Connection> outgoingConnections;
+
+    /**
+     * The cached value of the '{@link #getIncomingConnections() <em>Incoming Connections</em>}' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getIncomingConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<Connection> incomingConnections;
 
     /**
      * <!-- begin-user-doc -->
@@ -221,6 +250,63 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<Connection> getOutgoingConnections() {
+        if (outgoingConnections == null) {
+            outgoingConnections = new EObjectWithInverseResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS, XmlmapPackage.CONNECTION__SOURCE);
+        }
+        return outgoingConnections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EList<Connection> getIncomingConnections() {
+        if (incomingConnections == null) {
+            incomingConnections = new EObjectWithInverseResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS, XmlmapPackage.CONNECTION__TARGET);
+        }
+        return incomingConnections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                return ((InternalEList<InternalEObject>)(InternalEList<?>)getOutgoingConnections()).basicAdd(otherEnd, msgs);
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                return ((InternalEList<InternalEObject>)(InternalEList<?>)getIncomingConnections()).basicAdd(otherEnd, msgs);
+        }
+        return super.eInverseAdd(otherEnd, featureID, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                return ((InternalEList<?>)getOutgoingConnections()).basicRemove(otherEnd, msgs);
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                return ((InternalEList<?>)getIncomingConnections()).basicRemove(otherEnd, msgs);
+        }
+        return super.eInverseRemove(otherEnd, featureID, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -232,6 +318,10 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return getType();
             case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
                 return isNullable();
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                return getOutgoingConnections();
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                return getIncomingConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -241,6 +331,7 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
@@ -255,6 +346,14 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return;
             case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
                 setNullable((Boolean)newValue);
+                return;
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                getOutgoingConnections().clear();
+                getOutgoingConnections().addAll((Collection<? extends Connection>)newValue);
+                return;
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                getIncomingConnections().clear();
+                getIncomingConnections().addAll((Collection<? extends Connection>)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -280,6 +379,12 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
             case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
                 setNullable(NULLABLE_EDEFAULT);
                 return;
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                getOutgoingConnections().clear();
+                return;
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                getIncomingConnections().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -300,6 +405,10 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
             case XmlmapPackage.ABSTRACT_NODE__NULLABLE:
                 return nullable != NULLABLE_EDEFAULT;
+            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
+                return outgoingConnections != null && !outgoingConnections.isEmpty();
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                return incomingConnections != null && !incomingConnections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

@@ -40,7 +40,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getXpath <em>Xpath</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isLoop <em>Loop</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getNodeType <em>Node Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isKey <em>Key</em>}</li>
@@ -99,16 +98,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected boolean loop = LOOP_EDEFAULT;
-
-    /**
-     * The cached value of the '{@link #getOutgoingConnections() <em>Outgoing Connections</em>}' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getOutgoingConnections()
-     * @generated
-     * @ordered
-     */
-    protected EList<Connection> outgoingConnections;
 
     /**
      * The default value of the '{@link #getNodeType() <em>Node Type</em>}' attribute.
@@ -248,18 +237,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EList<Connection> getOutgoingConnections() {
-        if (outgoingConnections == null) {
-            outgoingConnections = new EObjectResolvingEList<Connection>(Connection.class, this, XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS);
-        }
-        return outgoingConnections;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public NodeType getNodeType() {
         return nodeType;
     }
@@ -346,8 +323,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getXpath();
             case XmlmapPackage.TREE_NODE__LOOP:
                 return isLoop();
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                return getOutgoingConnections();
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 return getNodeType();
             case XmlmapPackage.TREE_NODE__PATTERN:
@@ -376,10 +351,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return;
             case XmlmapPackage.TREE_NODE__LOOP:
                 setLoop((Boolean)newValue);
-                return;
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                getOutgoingConnections().clear();
-                getOutgoingConnections().addAll((Collection<? extends Connection>)newValue);
                 return;
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 setNodeType((NodeType)newValue);
@@ -411,9 +382,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__LOOP:
                 setLoop(LOOP_EDEFAULT);
                 return;
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                getOutgoingConnections().clear();
-                return;
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 setNodeType(NODE_TYPE_EDEFAULT);
                 return;
@@ -441,8 +409,6 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return XPATH_EDEFAULT == null ? xpath != null : !XPATH_EDEFAULT.equals(xpath);
             case XmlmapPackage.TREE_NODE__LOOP:
                 return loop != LOOP_EDEFAULT;
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                return outgoingConnections != null && !outgoingConnections.isEmpty();
             case XmlmapPackage.TREE_NODE__NODE_TYPE:
                 return nodeType != NODE_TYPE_EDEFAULT;
             case XmlmapPackage.TREE_NODE__PATTERN:

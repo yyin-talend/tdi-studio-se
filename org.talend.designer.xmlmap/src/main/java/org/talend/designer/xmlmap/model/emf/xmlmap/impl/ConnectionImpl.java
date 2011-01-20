@@ -106,11 +106,33 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setSource(AbstractNode newSource) {
+    public NotificationChain basicSetSource(AbstractNode newSource, NotificationChain msgs) {
         AbstractNode oldSource = source;
         source = newSource;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__SOURCE, oldSource, source));
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__SOURCE, oldSource, newSource);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
+        }
+        return msgs;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setSource(AbstractNode newSource) {
+        if (newSource != source) {
+            NotificationChain msgs = null;
+            if (source != null)
+                msgs = ((InternalEObject)source).eInverseRemove(this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS, AbstractNode.class, msgs);
+            if (newSource != null)
+                msgs = ((InternalEObject)newSource).eInverseAdd(this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS, AbstractNode.class, msgs);
+            msgs = basicSetSource(newSource, msgs);
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__SOURCE, newSource, newSource));
     }
 
     /**
@@ -144,11 +166,69 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTarget(AbstractNode newTarget) {
+    public NotificationChain basicSetTarget(AbstractNode newTarget, NotificationChain msgs) {
         AbstractNode oldTarget = target;
         target = newTarget;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__TARGET, oldTarget, target));
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__TARGET, oldTarget, newTarget);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
+        }
+        return msgs;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setTarget(AbstractNode newTarget) {
+        if (newTarget != target) {
+            NotificationChain msgs = null;
+            if (target != null)
+                msgs = ((InternalEObject)target).eInverseRemove(this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS, AbstractNode.class, msgs);
+            if (newTarget != null)
+                msgs = ((InternalEObject)newTarget).eInverseAdd(this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS, AbstractNode.class, msgs);
+            msgs = basicSetTarget(newTarget, msgs);
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.CONNECTION__TARGET, newTarget, newTarget));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+            case XmlmapPackage.CONNECTION__SOURCE:
+                if (source != null)
+                    msgs = ((InternalEObject)source).eInverseRemove(this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS, AbstractNode.class, msgs);
+                return basicSetSource((AbstractNode)otherEnd, msgs);
+            case XmlmapPackage.CONNECTION__TARGET:
+                if (target != null)
+                    msgs = ((InternalEObject)target).eInverseRemove(this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS, AbstractNode.class, msgs);
+                return basicSetTarget((AbstractNode)otherEnd, msgs);
+        }
+        return super.eInverseAdd(otherEnd, featureID, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+            case XmlmapPackage.CONNECTION__SOURCE:
+                return basicSetSource(null, msgs);
+            case XmlmapPackage.CONNECTION__TARGET:
+                return basicSetTarget(null, msgs);
+        }
+        return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
     /**

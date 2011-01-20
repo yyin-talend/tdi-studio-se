@@ -100,13 +100,22 @@ public interface XmlmapPackage extends EPackage {
     int XML_MAP_DATA__VAR_TABLES = TalendFilePackage.ABSTRACT_EXTERNAL_DATA_FEATURE_COUNT + 2;
 
     /**
+     * The feature id for the '<em><b>Connections</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int XML_MAP_DATA__CONNECTIONS = TalendFilePackage.ABSTRACT_EXTERNAL_DATA_FEATURE_COUNT + 3;
+
+    /**
      * The number of structural features of the '<em>Xml Map Data</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int XML_MAP_DATA_FEATURE_COUNT = TalendFilePackage.ABSTRACT_EXTERNAL_DATA_FEATURE_COUNT + 3;
+    int XML_MAP_DATA_FEATURE_COUNT = TalendFilePackage.ABSTRACT_EXTERNAL_DATA_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
@@ -275,13 +284,31 @@ public interface XmlmapPackage extends EPackage {
     int ABSTRACT_NODE__NULLABLE = 3;
 
     /**
+     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_NODE__OUTGOING_CONNECTIONS = 4;
+
+    /**
+     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_NODE__INCOMING_CONNECTIONS = 5;
+
+    /**
      * The number of structural features of the '<em>Abstract Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE_FEATURE_COUNT = 4;
+    int ABSTRACT_NODE_FEATURE_COUNT = 6;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
@@ -330,6 +357,24 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
 
     /**
+     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE__OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__INCOMING_CONNECTIONS = ABSTRACT_NODE__INCOMING_CONNECTIONS;
+
+    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -357,22 +402,13 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__LOOP = ABSTRACT_NODE_FEATURE_COUNT + 2;
 
     /**
-     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TREE_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 3;
-
-    /**
      * The feature id for the '<em><b>Node Type</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE__NODE_TYPE = ABSTRACT_NODE_FEATURE_COUNT + 4;
+    int TREE_NODE__NODE_TYPE = ABSTRACT_NODE_FEATURE_COUNT + 3;
 
     /**
      * The feature id for the '<em><b>Pattern</b></em>' attribute.
@@ -381,7 +417,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE__PATTERN = ABSTRACT_NODE_FEATURE_COUNT + 5;
+    int TREE_NODE__PATTERN = ABSTRACT_NODE_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -390,7 +426,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE__KEY = ABSTRACT_NODE_FEATURE_COUNT + 6;
+    int TREE_NODE__KEY = ABSTRACT_NODE_FEATURE_COUNT + 5;
 
     /**
      * The number of structural features of the '<em>Tree Node</em>' class.
@@ -399,7 +435,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 7;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 6;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -448,6 +484,24 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__NULLABLE = TREE_NODE__NULLABLE;
 
     /**
+     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__OUTGOING_CONNECTIONS = TREE_NODE__OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__INCOMING_CONNECTIONS = TREE_NODE__INCOMING_CONNECTIONS;
+
+    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -473,15 +527,6 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__LOOP = TREE_NODE__LOOP;
-
-    /**
-     * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OUTPUT_TREE_NODE__OUTGOING_CONNECTIONS = TREE_NODE__OUTGOING_CONNECTIONS;
 
     /**
      * The feature id for the '<em><b>Node Type</b></em>' attribute.
@@ -529,22 +574,13 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__GROUP = TREE_NODE_FEATURE_COUNT + 1;
 
     /**
-     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OUTPUT_TREE_NODE__INCOMING_CONNECTIONS = TREE_NODE_FEATURE_COUNT + 2;
-
-    /**
      * The number of structural features of the '<em>Output Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 3;
+    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 2;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
@@ -593,22 +629,22 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
 
     /**
-     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int VAR_NODE__INCOMING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 0;
-
-    /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int VAR_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 1;
+    int VAR_NODE__OUTGOING_CONNECTIONS = ABSTRACT_NODE__OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_NODE__INCOMING_CONNECTIONS = ABSTRACT_NODE__INCOMING_CONNECTIONS;
 
     /**
      * The number of structural features of the '<em>Var Node</em>' class.
@@ -617,7 +653,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 2;
+    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
@@ -709,6 +745,17 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EReference getXmlMapData_VarTables();
+
+    /**
+     * Returns the meta object for the containment reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData#getConnections <em>Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData#getConnections()
+     * @see #getXmlMapData()
+     * @generated
+     */
+    EReference getXmlMapData_Connections();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree <em>Input Xml Tree</em>}'.
@@ -872,6 +919,28 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getAbstractNode_Nullable();
 
     /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Outgoing Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections()
+     * @see #getAbstractNode()
+     * @generated
+     */
+    EReference getAbstractNode_OutgoingConnections();
+
+    /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections <em>Incoming Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Incoming Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections()
+     * @see #getAbstractNode()
+     * @generated
+     */
+    EReference getAbstractNode_IncomingConnections();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode <em>Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -913,17 +982,6 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getTreeNode_Loop();
-
-    /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getOutgoingConnections <em>Outgoing Connections</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Outgoing Connections</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getOutgoingConnections()
-     * @see #getTreeNode()
-     * @generated
-     */
-    EReference getTreeNode_OutgoingConnections();
 
     /**
      * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getNodeType <em>Node Type</em>}'.
@@ -991,17 +1049,6 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getOutputTreeNode_Group();
 
     /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getIncomingConnections <em>Incoming Connections</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Incoming Connections</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getIncomingConnections()
-     * @see #getOutputTreeNode()
-     * @generated
-     */
-    EReference getOutputTreeNode_IncomingConnections();
-
-    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1010,28 +1057,6 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EClass getVarNode();
-
-    /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getIncomingConnections <em>Incoming Connections</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Incoming Connections</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getIncomingConnections()
-     * @see #getVarNode()
-     * @generated
-     */
-    EReference getVarNode_IncomingConnections();
-
-    /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getOutgoingConnections <em>Outgoing Connections</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Outgoing Connections</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getOutgoingConnections()
-     * @see #getVarNode()
-     * @generated
-     */
-    EReference getVarNode_OutgoingConnections();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
@@ -1130,6 +1155,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference XML_MAP_DATA__VAR_TABLES = eINSTANCE.getXmlMapData_VarTables();
+
+        /**
+         * The meta object literal for the '<em><b>Connections</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference XML_MAP_DATA__CONNECTIONS = eINSTANCE.getXmlMapData_Connections();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
@@ -1260,6 +1293,22 @@ public interface XmlmapPackage extends EPackage {
         EAttribute ABSTRACT_NODE__NULLABLE = eINSTANCE.getAbstractNode_Nullable();
 
         /**
+         * The meta object literal for the '<em><b>Outgoing Connections</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference ABSTRACT_NODE__OUTGOING_CONNECTIONS = eINSTANCE.getAbstractNode_OutgoingConnections();
+
+        /**
+         * The meta object literal for the '<em><b>Incoming Connections</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference ABSTRACT_NODE__INCOMING_CONNECTIONS = eINSTANCE.getAbstractNode_IncomingConnections();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1292,14 +1341,6 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute TREE_NODE__LOOP = eINSTANCE.getTreeNode_Loop();
-
-        /**
-         * The meta object literal for the '<em><b>Outgoing Connections</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference TREE_NODE__OUTGOING_CONNECTIONS = eINSTANCE.getTreeNode_OutgoingConnections();
 
         /**
          * The meta object literal for the '<em><b>Node Type</b></em>' attribute feature.
@@ -1352,14 +1393,6 @@ public interface XmlmapPackage extends EPackage {
         EAttribute OUTPUT_TREE_NODE__GROUP = eINSTANCE.getOutputTreeNode_Group();
 
         /**
-         * The meta object literal for the '<em><b>Incoming Connections</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference OUTPUT_TREE_NODE__INCOMING_CONNECTIONS = eINSTANCE.getOutputTreeNode_IncomingConnections();
-
-        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1368,22 +1401,6 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass VAR_NODE = eINSTANCE.getVarNode();
-
-        /**
-         * The meta object literal for the '<em><b>Incoming Connections</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference VAR_NODE__INCOMING_CONNECTIONS = eINSTANCE.getVarNode_IncomingConnections();
-
-        /**
-         * The meta object literal for the '<em><b>Outgoing Connections</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference VAR_NODE__OUTGOING_CONNECTIONS = eINSTANCE.getVarNode_OutgoingConnections();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.

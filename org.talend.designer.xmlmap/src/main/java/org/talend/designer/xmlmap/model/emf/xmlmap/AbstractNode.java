@@ -6,6 +6,7 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -20,6 +21,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getType <em>Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections <em>Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -131,5 +134,41 @@ public interface AbstractNode extends EObject {
      * @generated
      */
     void setNullable(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Outgoing Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
+     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource <em>Source</em>}'.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Outgoing Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Outgoing Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_OutgoingConnections()
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource
+     * @model opposite="source"
+     * @generated
+     */
+    EList<Connection> getOutgoingConnections();
+
+    /**
+     * Returns the value of the '<em><b>Incoming Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
+     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget <em>Target</em>}'.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Incoming Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Incoming Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_IncomingConnections()
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget
+     * @model opposite="target"
+     * @generated
+     */
+    EList<Connection> getIncomingConnections();
 
 } // AbstractNode

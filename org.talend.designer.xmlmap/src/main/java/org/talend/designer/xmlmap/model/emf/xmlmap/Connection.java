@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface Connection extends EObject {
 	/**
      * Returns the value of the '<em><b>Source</b></em>' reference.
+     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}'.
      * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Source</em>' reference isn't clear,
@@ -37,7 +38,8 @@ public interface Connection extends EObject {
      * @return the value of the '<em>Source</em>' reference.
      * @see #setSource(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getConnection_Source()
-     * @model
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections
+     * @model opposite="outgoingConnections"
      * @generated
      */
 	AbstractNode getSource();
@@ -54,6 +56,7 @@ public interface Connection extends EObject {
 
     /**
      * Returns the value of the '<em><b>Target</b></em>' reference.
+     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections <em>Incoming Connections</em>}'.
      * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Target</em>' reference isn't clear,
@@ -63,7 +66,8 @@ public interface Connection extends EObject {
      * @return the value of the '<em>Target</em>' reference.
      * @see #setTarget(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getConnection_Target()
-     * @model
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections
+     * @model opposite="incomingConnections"
      * @generated
      */
 	AbstractNode getTarget();

@@ -83,10 +83,9 @@ public class DirectEditCommand extends Command {
                                 TreeNode sourceNode = findConnectionSource(mapperData.getInputTrees(), convertToXpath);
                                 if (sourceNode != null) {
                                     Connection connection = XmlmapFactory.eINSTANCE.createConnection();
-                                    connection.setSource(sourceNode);
-                                    connection.setTarget(outputNode);
                                     sourceNode.getOutgoingConnections().add(connection);
                                     outputNode.getIncomingConnections().add(connection);
+                                    mapperData.getConnections().add(connection);
                                 }
                             }
                             // connection.setSource(value);

@@ -19,7 +19,6 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isGroup <em>Group</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getIncomingConnections <em>Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -79,21 +78,5 @@ public interface OutputTreeNode extends TreeNode {
      * @generated
      */
     void setGroup(boolean value);
-
-    /**
-     * Returns the value of the '<em><b>Incoming Connections</b></em>' reference list.
-     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Incoming Connections</em>' containment reference list isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Incoming Connections</em>' reference list.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputTreeNode_IncomingConnections()
-     * @model
-     * @generated
-     */
-    EList<Connection> getIncomingConnections();
 
 } // OutputTreeNode

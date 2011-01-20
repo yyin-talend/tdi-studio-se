@@ -24,6 +24,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -38,6 +39,8 @@ public class CreateNodeAndConnectionCommand extends Command {
     private Object newObjects;
 
     private EditPart targetEditPart;
+
+    private XmlMapData xmlMapData;
 
     /*
      * if true update expression,else create a new child
@@ -88,6 +91,12 @@ public class CreateNodeAndConnectionCommand extends Command {
             }
         }
 
+        OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parent);
+        if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() != null
+                && outputTreeNodeRoot.eContainer().eContainer() instanceof XmlMapData) {
+            xmlMapData = (XmlMapData) outputTreeNodeRoot.eContainer().eContainer();
+        }
+
         if (newObjects instanceof List) {
             for (Object o : (List) newObjects) {
                 if (o instanceof TreeNodeEditPart) {
@@ -104,10 +113,12 @@ public class CreateNodeAndConnectionCommand extends Command {
                             }
                             parent.setExpression(expression);
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
-                            conn.setSource(sourceNode);
-                            conn.setTarget(parent);
                             parent.getIncomingConnections().add(conn);
                             sourceNode.getOutgoingConnections().add(conn);
+                            if (xmlMapData != null) {
+                                xmlMapData.getConnections().add(conn);
+                            }
+
                         } else {
                             // add target node
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
@@ -125,11 +136,12 @@ public class CreateNodeAndConnectionCommand extends Command {
                             parent.getChildren().add(targetNode);
                             // add connection
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
-                            conn.setSource(sourceNode);
-                            conn.setTarget(targetNode);
                             // attach source and target
                             targetNode.getIncomingConnections().add(conn);
                             sourceNode.getOutgoingConnections().add(conn);
+                            if (xmlMapData != null) {
+                                xmlMapData.getConnections().add(conn);
+                            }
                         }
                     }
 

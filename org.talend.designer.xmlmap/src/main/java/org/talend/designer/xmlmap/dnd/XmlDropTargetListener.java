@@ -96,6 +96,9 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
                     event.detail = DND.DROP_NONE;
                 }
+                if (!model.getChildren().isEmpty() && targetFigure instanceof ExpressionFigure) {
+                    event.detail = DND.DROP_NONE;
+                }
             }
         }
     }

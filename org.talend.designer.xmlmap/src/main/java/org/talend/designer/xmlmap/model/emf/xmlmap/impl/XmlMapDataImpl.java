@@ -38,6 +38,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getInputTrees <em>Input Trees</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getOutputTrees <em>Output Trees</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getVarTables <em>Var Tables</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlMapDataImpl#getConnections <em>Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -73,6 +74,16 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * @ordered
      */
     protected EList<VarTable> varTables;
+
+    /**
+     * The cached value of the '{@link #getConnections() <em>Connections</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<Connection> connections;
 
     /**
      * <!-- begin-user-doc -->
@@ -134,6 +145,18 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<Connection> getConnections() {
+        if (connections == null) {
+            connections = new EObjectContainmentEList<Connection>(Connection.class, this, XmlmapPackage.XML_MAP_DATA__CONNECTIONS);
+        }
+        return connections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -143,6 +166,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return ((InternalEList<?>)getOutputTrees()).basicRemove(otherEnd, msgs);
             case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
                 return ((InternalEList<?>)getVarTables()).basicRemove(otherEnd, msgs);
+            case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
+                return ((InternalEList<?>)getConnections()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -161,6 +186,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return getOutputTrees();
             case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
                 return getVarTables();
+            case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
+                return getConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -186,6 +213,10 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 getVarTables().clear();
                 getVarTables().addAll((Collection<? extends VarTable>)newValue);
                 return;
+            case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
+                getConnections().clear();
+                getConnections().addAll((Collection<? extends Connection>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -207,6 +238,9 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
             case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
                 getVarTables().clear();
                 return;
+            case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
+                getConnections().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -225,6 +259,8 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return outputTrees != null && !outputTrees.isEmpty();
             case XmlmapPackage.XML_MAP_DATA__VAR_TABLES:
                 return varTables != null && !varTables.isEmpty();
+            case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
+                return connections != null && !connections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getChildren <em>Children</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getXpath <em>Xpath</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isLoop <em>Loop</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getNodeType <em>Node Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}</li>
@@ -100,22 +99,6 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setLoop(boolean value);
-
-    /**
-     * Returns the value of the '<em><b>Outgoing Connections</b></em>' reference list.
-     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Outgoing Connections</em>' containment reference list isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Outgoing Connections</em>' reference list.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_OutgoingConnections()
-     * @model
-     * @generated
-     */
-    EList<Connection> getOutgoingConnections();
 
     /**
      * Returns the value of the '<em><b>Node Type</b></em>' attribute.
