@@ -50,20 +50,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
 <%if(isMutiple){%>
-if(!listFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyType+<%=conn.getName()%>.ListKeyValue)){
-<%}else{%>
-//add first when not mutiple
-leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
-<%}%>
+	if(firstList_<%=cid%>){
+		listTypeFlag_<%=cid%> = <%=conn.getName()%>.ListKeyType;
+		listValueFlag_<%=cid%> = <%=conn.getName()%>.ListKeyValue;
+		firstList_<%=cid%> = false;
+	}
+	if(!listTypeFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyType) || !listValueFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyValue)){
+		resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",listTypeFlag_<%=cid%>,listValueFlag_<%=cid%>,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
+		leadKeyList_<%=cid%>.clear();
+		listTypeFlag_<%=cid%> = <%=conn.getName()%>.ListKeyType;
+		listValueFlag_<%=cid%> = <%=conn.getName()%>.ListKeyValue;
+	}
+	leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
+<%}else{%> 
+	leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
 	resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",<%=conn.getName()%>.ListKeyType,<%=conn.getName()%>.ListKeyValue,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
 	leadKeyList_<%=cid%>.clear();
-<%if(isMutiple){%>
-	listFlag_<%=cid%>=<%=conn.getName()%>.ListKeyType+<%=conn.getName()%>.ListKeyValue;
-}
-//add later when not mutiple
-leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
-<%}%>
-<%			
+<%}		
 	 for(IConnection outgoingConn : outgoingConns) {
        	if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
