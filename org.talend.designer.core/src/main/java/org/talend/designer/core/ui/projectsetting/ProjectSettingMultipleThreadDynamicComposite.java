@@ -12,19 +12,24 @@
 // ============================================================================
 package org.talend.designer.core.ui.projectsetting;
 
+import java.util.List;
+
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
@@ -86,7 +91,50 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
                     && !EmfComponent.BUILTIN.equals(elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue())) {
                 DatabaseConnection connection = null;
                 String id = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue();
-                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(id);
+                // bug 0018192
+                String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue();
+                ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+                IRepositoryViewObject lastVersion = null;
+                if (null != id && !"".equals(id)) {
+                    try {
+                        lastVersion = proxyRepositoryFactory.getLastVersion(id);
+                        if (null == lastVersion && propertyType.equals(EmfComponent.REPOSITORY)) {
+                            List<ConnectionItem> connectionItems = proxyRepositoryFactory.getMetadataConnectionsItem();
+                            if (connectionItems.isEmpty()) {
+                                elem.setPropertyValue("REPOSITORY_PROPERTY_TYPE", "");
+                                ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem,
+                                        null, parentParamName + ":" + "PROPERTY_TYPE", EmfComponent.REPOSITORY);
+                                changeValuesFromRepository1.execute();
+                            }
+                            for (ConnectionItem cItem : connectionItems) {
+                                if (cItem instanceof DatabaseConnectionItem) {
+                                    id = cItem.getProperty().getId();
+                                    lastVersion = proxyRepositoryFactory.getLastVersion(id);
+                                    elem.setPropertyValue("REPOSITORY_PROPERTY_TYPE", id);
+                                    break;
+                                }
+                            }
+
+                        }
+                    } catch (PersistenceException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        List<ConnectionItem> connectionItems = proxyRepositoryFactory.getMetadataConnectionsItem();
+                        for (ConnectionItem cItem : connectionItems) {
+                            if (cItem instanceof DatabaseConnectionItem) {
+                                lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(cItem.getProperty().getId());
+                                id = cItem.getProperty().getId();
+                                lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(id);
+                                elem.setPropertyValue("REPOSITORY_PROPERTY_TYPE", id);
+                                break;
+                            }
+                        }
+                    } catch (PersistenceException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (lastVersion != null && lastVersion.getProperty() != null) {
                     Item item = lastVersion.getProperty().getItem();
                     if (item instanceof DatabaseConnectionItem) {
@@ -136,12 +184,15 @@ public class ProjectSettingMultipleThreadDynamicComposite extends MultipleThread
                         connectionUpdated = true;
                     }
 
-                } else {
-                    // change to build in
-                    ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, null,
-                            parentParamName + ":" + "PROPERTY_TYPE", EmfComponent.BUILTIN);
-                    changeValuesFromRepository1.execute();
                 }
+                // bug 0018192
+                // else {
+                // change to build in
+                // ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem,
+                // null,
+                // parentParamName + ":" + "PROPERTY_TYPE", EmfComponent.BUILTIN);
+                // changeValuesFromRepository1.execute();
+                // }
 
             }
 
