@@ -22,6 +22,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 
 /**
  * wchen class global comment. Detailled comment
@@ -49,6 +50,13 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
             if (o instanceof TreeNodeEditPart && !(o instanceof OutputTreeNodeEditPart)) {
                 TreeNodeEditPart nodePart = ((TreeNodeEditPart) o);
                 if (nodePart.getModelChildren().isEmpty()) {
+                    toTransfer.add(nodePart);
+                } else {
+                    return null;
+                }
+            } else if (o instanceof VarNodeEditPart && !(o instanceof OutputTreeNodeEditPart)) {
+                VarNodeEditPart nodePart = ((VarNodeEditPart) o);
+                if (nodePart != null) {
                     toTransfer.add(nodePart);
                 } else {
                     return null;

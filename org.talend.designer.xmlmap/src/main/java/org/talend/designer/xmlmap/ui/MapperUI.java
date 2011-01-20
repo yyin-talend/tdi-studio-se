@@ -24,7 +24,9 @@ import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
@@ -91,6 +93,30 @@ public class MapperUI {
         datasViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
         XmlMapEditor editor = new XmlMapEditor(mapperManager);
         editor.createPartControl(datasViewSashForm);
+
+        // // *******************************************
+        // /* test for vartable */
+        // VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
+        // varTable1.setName("Var");
+        // VarNode varnode1 = XmlmapFactory.eINSTANCE.createVarNode();
+        // varnode1.setName("var1");
+        // varnode1.setType("String");
+        // varnode1.setExpression("xml/root/var1");
+        //
+        // VarNode varnode2 = XmlmapFactory.eINSTANCE.createVarNode();
+        // varnode2.setName("var2");
+        // varnode2.setType("String");
+        // varnode2.setExpression("xml/root/var2");
+        //
+        // varTable1.getNodes().add(varnode1);
+        // varTable1.getNodes().add(varnode2);
+        // copyOfMapData.getVarTables().add(varTable1);
+        // // *******************************************
+        if (copyOfMapData.getVarTables().isEmpty()) {
+            VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
+            varTable1.setName("Var");
+            copyOfMapData.getVarTables().add(varTable1);
+        }
         editor.setContent(copyOfMapData);
 
         tabFolderEditors = new TabFolderEditors(mainSashForm, mapperManager, SWT.BORDER);

@@ -19,12 +19,16 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.ConnectionEditPart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.parts.VarTableEditPart;
 import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 
 /**
@@ -40,10 +44,14 @@ public class XmlMapPartFactory implements EditPartFactory {
             part = new InputXmlTreeEditPart();
         } else if (model instanceof OutputXmlTree) {
             part = new OutputXmlTreeEditPart();
+        } else if (model instanceof VarTable) {
+            part = new VarTableEditPart();
         } else if (model instanceof OutputTreeNode) {
             part = new OutputTreeNodeEditPart();
         } else if (model instanceof TreeNode) {
             part = new TreeNodeEditPart();
+        } else if (model instanceof VarNode) {
+            part = new VarNodeEditPart();
         } else if (model instanceof Connection) {
             part = new ConnectionEditPart();
         }

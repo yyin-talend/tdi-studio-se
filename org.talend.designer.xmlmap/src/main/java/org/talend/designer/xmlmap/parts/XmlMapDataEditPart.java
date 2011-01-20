@@ -93,6 +93,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
         centerFigure.setBorder(new MarginBorder(5));
+
         scrollPane.getViewport().setContents(centerFigure);
         mainFigure.add(scrollPane);
 
@@ -124,6 +125,10 @@ public class XmlMapDataEditPart extends BaseEditPart {
             /* get third figure to put all output tables figures in */
             rightFigure.add(child);
         }
+        if (childEditPart instanceof VarTableEditPart) {
+            /* get third figure to put all output tables figures in */
+            centerFigure.add(child);
+        }
 
         // getContentPane().add(child, index);
     }
@@ -133,6 +138,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         List children = new ArrayList();
         children.addAll(((XmlMapData) getModel()).getInputTrees());
         children.addAll(((XmlMapData) getModel()).getOutputTrees());
+        children.addAll(((XmlMapData) getModel()).getVarTables());
         return children;
     }
 

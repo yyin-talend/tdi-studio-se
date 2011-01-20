@@ -16,12 +16,23 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class ConnectionEditPart extends AbstractConnectionEditPart {
+
+    @Override
+    public EditPart getSource() {
+        return super.getSource();
+    }
+
+    @Override
+    public EditPart getTarget() {
+        return super.getTarget();
+    }
 
     @Override
     protected void createEditPolicies() {

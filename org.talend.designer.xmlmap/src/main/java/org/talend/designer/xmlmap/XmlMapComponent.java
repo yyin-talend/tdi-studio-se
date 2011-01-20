@@ -111,7 +111,6 @@ public class XmlMapComponent extends AbstractExternalNode {
         }
     }
 
-    @Override
     public AbstractExternalData getExternalEmfData() {
         if (this.emfMapData == null) {
             this.emfMapData = XmlmapFactory.eINSTANCE.createXmlMapData();

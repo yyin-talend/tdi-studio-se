@@ -1,0 +1,87 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2009 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.xmlmap.figures;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+
+/**
+ * DOC Administrator class global comment. Detailled comment
+ */
+public class VarTableContainerFigure extends Figure {
+
+    protected Figure columnTitle;
+
+    protected Figure columnsContainer;
+
+    public VarTableContainerFigure() {
+        createContents();
+    }
+
+    /**
+     * DOC Administrator Comment method "createContents".
+     */
+    protected void createContents() {
+        this.setLayoutManager(new ToolbarLayout());
+        Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
+        columnTitle = new ToolBarContainer();
+        columnTitle.setOpaque(true);
+        // columnTitle.setBackgroundColor(ColorConstants.tooltipBackground);
+        // columnTitle.setBorder(new LineBorder());
+        columnTitle.setLayoutManager(new EqualWidthLayout());
+        Label expression = new Label();
+        expression.setOpaque(true);
+        expression.setBackgroundColor(ColorConstants.menuBackground);
+        expression.setText("Expression");
+        expression.setBorder(new LineBorder());
+        expression.setFont(cFont);
+        Label type = new Label();
+        type.setOpaque(true);
+        type.setBackgroundColor(ColorConstants.menuBackground);
+        type.setText("Type");
+        type.setFont(cFont);
+        type.setBorder(new LineBorder());
+        Label varriable = new Label();
+        varriable.setText("Varriable");
+        varriable.setOpaque(true);
+        varriable.setBackgroundColor(ColorConstants.menuBackground);
+        varriable.setFont(cFont);
+        varriable.setBorder(new LineBorder());
+        columnTitle.add(expression);
+        columnTitle.add(type);
+        columnTitle.add(varriable);
+
+        ToolbarLayout containerLayout = new ToolbarLayout();
+        containerLayout.setVertical(true);
+        columnsContainer = new Figure();
+        // columnsContainer.setBorder(new LineBorder());
+        columnsContainer.setLayoutManager(containerLayout);
+        this.add(columnTitle);
+        this.add(columnsContainer);
+    }
+
+    public Figure getColumnTitle() {
+        return this.columnTitle;
+    }
+
+    public Figure getColumnsContainer() {
+        return this.columnsContainer;
+    }
+
+}
