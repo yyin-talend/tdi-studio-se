@@ -362,8 +362,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     }
 
                                 } else {
-                                    paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
-                                    // paramEncoding.setRepositoryValueUsed(true);
+                                    if (objectValue instanceof String) {
+                                        String str = TalendTextUtils.removeQuotes((String) objectValue);
+                                        if (str.equals(EmfComponent.ENCODING_TYPE_UTF_8)) {
+                                            paramEncoding.setValue(EmfComponent.ENCODING_TYPE_UTF_8);
+                                        } else if (str.equals(EmfComponent.ENCODING_TYPE_ISO_8859_15)) {
+                                            paramEncoding.setValue(EmfComponent.ENCODING_TYPE_ISO_8859_15);
+                                        } else {
+                                            paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                            // paramEncoding.setRepositoryValueUsed(true);
+                                        }
+                                    }
                                 }
 
                             } else if (repositoryValue.equals("CSV_OPTION")) { //$NON-NLS-1$
