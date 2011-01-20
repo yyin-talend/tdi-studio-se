@@ -1,0 +1,95 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map		
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+    
+	String operation = ElementParameterParser.getValue(node, "__OPERATION__");
+	boolean mutipleOperation = ("true").equals(ElementParameterParser.getValue(node,"__MUTIPLE_OPERATION__"));
+	boolean isMutiple = false;
+	if(mutipleOperation&&!operation.equals("ISMEMBEROFLIST")){
+		isMutiple = true;
+	}
+	boolean strict = ("true").equals(ElementParameterParser.getValue(node,"__STRICT__"));
+	
+	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+	if(outgoingConns!=null){
+		for (int i=0;i<outgoingConns.size();i++) {
+	    IConnection outgoingConn = outgoingConns.get(i);
+	    	if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	%>
+	
+		<%=outgoingConn.getName() %> = null;			
+	<%
+	    	}
+	    }
+	} 
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    
+    if (metadata!=null) {//2
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+%>
+<%if(isMutiple){%>
+if(!listFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyType+<%=conn.getName()%>.ListKeyValue)){
+<%}else{%>
+//add first when not mutiple
+leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
+<%}%>
+	resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",<%=conn.getName()%>.ListKeyType,<%=conn.getName()%>.ListKeyValue,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
+	leadKeyList_<%=cid%>.clear();
+<%if(isMutiple){%>
+	listFlag_<%=cid%>=<%=conn.getName()%>.ListKeyType+<%=conn.getName()%>.ListKeyValue;
+}
+//add later when not mutiple
+leadKeyList_<%=cid%>.add(client_<%=cid%>.getLeadKey(<%=conn.getName()%>.LeadKeyType,<%=conn.getName()%>.LeadKeyValue));
+<%}%>
+<%			
+	 for(IConnection outgoingConn : outgoingConns) {
+       	if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+			<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+			<%if(!isMutiple){%>
+			<%=outgoingConn.getName()%>.Success = resultListOperation_<%=cid%>.isSuccess();
+			<%}%>
+<%
+			for (IMetadataColumn column: metadata.getListColumns()) {
+				if(!isMutiple){
+					if("Success".equals(column.getLabel()))
+						continue;
+				}
+%>			
+   			<%=outgoingConn.getName()%>.<%=column.getLabel() %> = <%=conn.getName() %>.<%=column.getLabel() %>; 			
+<% 					 
+			}
+		}
+	}
+%>
+
+<% 
+			}//4
+		}//3
+	}//2
+}//1
+%>
+
+
