@@ -27,7 +27,7 @@ import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -94,6 +94,10 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             } else if (getTargetEditPart() instanceof OutputTreeNodeEditPart) {
                 OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
                 OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+                if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
+                    event.detail = DND.DROP_NONE;
+                }
+
                 if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
                     event.detail = DND.DROP_NONE;
                 }

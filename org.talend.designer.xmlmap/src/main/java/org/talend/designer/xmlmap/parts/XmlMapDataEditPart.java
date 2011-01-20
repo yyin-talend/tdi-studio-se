@@ -27,6 +27,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.ui.color.ColorInfo;
+import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
@@ -110,7 +112,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         mainFigure.add(scrollPane);
 
         mainFigure.setOpaque(true);
-        mainFigure.setBackgroundColor(ColorConstants.menuBackground);
+        mainFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE));
         return mainFigure;
     }
 

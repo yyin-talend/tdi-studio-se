@@ -101,8 +101,11 @@ public class ImportTreeFromXml extends SelectionAction {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
                 createTreeNode.setXpath(xPath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_NAMESPACE + foxNode.getLabel());
             }
-
-            createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+            if (foxNode.getDataType() != null) {
+                createTreeNode.setType(foxNode.getDataType());
+            } else {
+                createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+            }
             parent.getChildren().add(createTreeNode);
             if (foxNode.getChildren() != null && !foxNode.getChildren().isEmpty()) {
                 prepareEmfTreeNode(foxNode.getChildren(), createTreeNode);

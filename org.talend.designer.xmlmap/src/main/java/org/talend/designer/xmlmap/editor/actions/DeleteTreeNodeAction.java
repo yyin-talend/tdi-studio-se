@@ -57,6 +57,12 @@ public class DeleteTreeNodeAction extends SelectionAction {
                     if (xPathLength <= 2) {
                         enable = false;
                     }
+                    // can't delete root
+                    if (treeNode.eContainer() instanceof TreeNode
+                            && XmlMapUtil.DOCUMENT.equals(((TreeNode) treeNode.eContainer()).getType())) {
+                        enable = false;
+                    }
+
                 } else {
                     enable = false;
                 }

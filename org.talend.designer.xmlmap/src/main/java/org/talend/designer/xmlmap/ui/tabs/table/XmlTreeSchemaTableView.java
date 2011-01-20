@@ -32,7 +32,10 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.CheckColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
+import org.talend.commons.ui.swt.tableviewer.data.AccessorUtils;
+import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.MetadataTalendType;
@@ -211,7 +214,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapterExtended.PROPOSAL_INSERT);
         patternCellEditor.setContentProposalProvider(proposalProvider);
         column.setCellEditor(patternCellEditor, CellEditorValueAdapterFactory.getNullToEmptyStringTextAdapater());
-
+        tableViewerCreator.setCellModifier(new XmlCellModifier(tableViewerCreator));
     }
 
     private IBeanPropertyAccessors<TreeSchemaTableEntry, Boolean> getNullableAccessor() {
@@ -228,9 +231,10 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
     }
 
     public String validateXPath(String newValue, int beanPosition) {
+        isValidName = true;
         if (newValue == null || "".equals(newValue)) {
             isValidName = false;
-            return "Name can't be";
+            return "Name can't be null";
         }
         if (getExtendedTableModel() != null) {
             for (int i = 0; i < getExtendedTableModel().getBeansList().size(); i++) {
@@ -247,4 +251,46 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         return null;
     }
 
+    class XmlCellModifier extends DefaultCellModifier {
+
+        private TableViewerCreator tableViewerCreator;
+
+        public XmlCellModifier(TableViewerCreator tableViewerCreator) {
+            super(tableViewerCreator);
+            this.tableViewerCreator = tableViewerCreator;
+        }
+
+        @Override
+        public Object getValue(Object bean, String idColumn) {
+            if (!ID_COLUMN_XPATH.equals(idColumn)) {
+                return super.getValue(bean, idColumn);
+            } else {
+                TableViewerCreatorColumn column = tableViewerCreator.getColumn(idColumn);
+                ModifiedObjectInfo modifiedObjectInfo = this.tableViewerCreator.getModifiedObjectInfo();
+                modifiedObjectInfo.setCurrentModifiedBean(bean);
+                modifiedObjectInfo.setCurrentModifiedColumn(column);
+                modifiedObjectInfo.setCurrentModifiedIndex(this.tableViewerCreator.getInputList().indexOf(bean));
+
+                Object returnValue = null;
+                if (column.getColumnCellModifier() != null) {
+                    returnValue = column.getColumnCellModifier().getValue(bean);
+                }
+                if (returnValue == null) {
+                    Object value = AccessorUtils.get(bean, column);
+
+                    if (column.getCellEditorValueAdapter() != null) {
+                        returnValue = column.getCellEditorValueAdapter().getCellEditorTypedValue(column.getCellEditor(), value);
+                    } else {
+                        returnValue = value;
+                    }
+                    if (returnValue == null && column.getDefaultInternalValue() != null) {
+                        returnValue = column.getDefaultInternalValue();
+                    }
+                }
+                modifiedObjectInfo.setOriginalPropertyBeanValue(returnValue);
+                modifiedObjectInfo.setPreviousPropertyBeanValue(returnValue);
+                return returnValue;
+            }
+        }
+    }
 }

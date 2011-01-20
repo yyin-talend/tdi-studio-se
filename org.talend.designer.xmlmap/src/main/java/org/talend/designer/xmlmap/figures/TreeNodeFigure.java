@@ -15,7 +15,7 @@ package org.talend.designer.xmlmap.figures;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -53,14 +53,14 @@ public class TreeNodeFigure extends ToolBarContainer {
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
-            nameLabel.setBorder(new LineBorder());
+            nameLabel.setBorder(new RowBorder());
             this.add(nameLabel);
         }
         // xml root
         else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof InputXmlTree) {
             String status = treeNode.isLoop() ? String.valueOf(treeNode.isLoop()) : "";
             treeBranch = new XmlTreeRoot(new TreeBranchFigure(treeNode), XmlTreeBranch.STYLE_ROW_HANGING);
-            treeBranch.setBorder(new LineBorder());
+            treeBranch.setBorder(new RowBorder());
             this.add(treeBranch);
         }
     }
@@ -100,4 +100,5 @@ public class TreeNodeFigure extends ToolBarContainer {
         this.getChildren().clear();
         createContent();
     }
+
 }

@@ -22,6 +22,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.ui.color.ColorInfo;
+import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
@@ -41,9 +43,8 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
     protected void createContents() {
         setLayoutManager(new ToolbarLayout());
-        this.setBorder(new LineBorder());
+        this.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
         Label tableName = new Label();
-        tableName.setBorder(new LineBorder(ColorConstants.black));
         tableName.setText(xmlTree.getName());
         Font erFont = new Font(null, "Arial", 9, SWT.BOLD); //$NON-NLS-1$
         tableName.setFont(erFont);
@@ -74,17 +75,18 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
             Label expression = new Label();
             expression.setText("Expression");
-            expression.setBorder(new LineBorder());
             Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
             expression.setFont(cFont);
             this.add(expression);
 
             Label column1 = new Label();
             column1.setText("Column");
-            column1.setBorder(new LineBorder());
             column1.setFont(cFont);
             this.add(column1);
             this.setLayoutManager(new EqualWidthLayout());
+
+            setBackgroundColor(ColorConstants.menuBackground);
+            setOpaque(true);
         }
 
     }

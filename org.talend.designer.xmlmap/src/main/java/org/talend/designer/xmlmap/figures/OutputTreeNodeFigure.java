@@ -16,6 +16,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -47,7 +48,7 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
             columnExpressionFigure = new Label();
             columnExpressionFigure.setText(treeNode.getExpression());
-            columnExpressionFigure.setBorder(new LineBorder());
+            columnExpressionFigure.setBorder(new RowBorder());
 
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
@@ -65,7 +66,7 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
             ExpressionFigure figure = new ExpressionFigure();
 
             // label.setText(((OutputTreeNode) childPart.getModel()).getExpression());
-            figure.setBorder(new LineBorder());
+            figure.setBorder(new RowBorder());
             treeNodeExpressionFigure.add(figure, 0);
             // outputTreeNodeExpressionFigure.setOpaque(true);
             // outputTreeNodeExpressionFigure.setBackgroundColor(ColorConstants.red);
