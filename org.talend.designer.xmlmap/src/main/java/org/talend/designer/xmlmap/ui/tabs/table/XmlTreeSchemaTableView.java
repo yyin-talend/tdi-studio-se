@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.ui.tabs.table;
 
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
@@ -26,15 +27,20 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.CheckColumnSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
+import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -51,6 +57,8 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
 
     private static final String ID_COLUMN_PATTERN = "pattern";
 
+    private boolean isValidName = true;
+
     public XmlTreeSchemaTableView(ExtendedTableModel<TreeSchemaTableEntry> extendedTableModel, Composite parent) {
         super(extendedTableModel, parent);
         // TODO Auto-generated constructor stub
@@ -62,6 +70,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         column.setTitle("XPath");
         column.setId(ID_COLUMN_XPATH);
         column.setWeight(20);
+        column.setModifiable(true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, Object>() {
 
             public Object get(TreeSchemaTableEntry bean) {
@@ -69,7 +78,48 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
             }
 
             public void set(TreeSchemaTableEntry bean, Object value) {
-                // do nothing
+                if (isValidName) {
+                    bean.setName((String) value);
+                    String xPath = bean.getXPath();
+                    xPath = xPath.substring(0, xPath.lastIndexOf(XmlMapUtil.XPATH_SEPARATOR) + 1);
+                    NodeType nodeType = bean.getTreeNode().getNodeType();
+                    String typedValue = null;
+                    if (NodeType.ATTRIBUT.equals(nodeType)) {
+                        typedValue = xPath + XmlMapUtil.XPATH_ATTRIBUTE + bean.getName();
+                    } else if (NodeType.NAME_SPACE.equals(nodeType)) {
+                        typedValue = xPath + XmlMapUtil.XPATH_NAMESPACE + bean.getName();
+                    } else {
+                        typedValue = xPath + bean.getName();
+                    }
+                    bean.setXPath(typedValue);
+                }
+            }
+        });
+        final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
+        cellEditor.addListener(new DialogErrorForCellEditorListener(cellEditor, column) {
+
+            @Override
+            public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
+            }
+
+            @Override
+            public String validateValue(String newValue, int beanPosition) {
+                return validateXPath(newValue, beanPosition);
+            }
+
+        });
+        column.setCellEditor(cellEditor);
+        column.setColumnCellModifier(new ColumnCellModifier(column) {
+
+            @Override
+            public Object getValue(Object bean) {
+                TreeSchemaTableEntry entry = (TreeSchemaTableEntry) bean;
+                return entry.getName();
+            }
+
+            @Override
+            public boolean modify(Object bean, Object value) {
+                return false;
             }
         });
 
@@ -176,4 +226,25 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
             }
         };
     }
+
+    public String validateXPath(String newValue, int beanPosition) {
+        if (newValue == null || "".equals(newValue)) {
+            isValidName = false;
+            return "Name can't be";
+        }
+        if (getExtendedTableModel() != null) {
+            for (int i = 0; i < getExtendedTableModel().getBeansList().size(); i++) {
+                if (i == beanPosition) {
+                    continue;
+                }
+                TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
+                if (entry.getName() != null && entry.getName().equals(newValue)) {
+                    isValidName = false;
+                    return "Name alrady existed";
+                }
+            }
+        }
+        return null;
+    }
+
 }

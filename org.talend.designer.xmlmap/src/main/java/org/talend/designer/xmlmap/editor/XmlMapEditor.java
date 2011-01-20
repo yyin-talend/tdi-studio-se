@@ -22,7 +22,6 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
-import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
@@ -233,7 +232,8 @@ public class XmlMapEditor extends GraphicalEditor {
                         createAttribute.update();
                         menu.add(createAttribute);
 
-                        DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(DeleteAction.ID);
+                        DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
+                                DeleteTreeNodeAction.ID);
                         action.update();
                         menu.add(action);
 

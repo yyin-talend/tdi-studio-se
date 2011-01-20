@@ -29,6 +29,10 @@ public class TreeSchemaTableEntry {
         return treeNode.getXpath();
     }
 
+    public void setXPath(String xPath) {
+        this.treeNode.setXpath(xPath);
+    }
+
     public boolean isKey() {
         return treeNode.isKey();
     }
@@ -59,5 +63,17 @@ public class TreeSchemaTableEntry {
 
     public void setPattern(String pattern) {
         this.treeNode.setPattern(pattern);
+    }
+
+    public String getName() {
+        return this.treeNode.getName();
+    }
+
+    public void setName(String name) {
+        this.treeNode.setName(name);
+    }
+
+    public TreeNode getTreeNode() {
+        return this.treeNode;
     }
 }

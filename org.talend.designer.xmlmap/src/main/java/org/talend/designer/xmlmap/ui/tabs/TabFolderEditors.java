@@ -124,7 +124,7 @@ public class TabFolderEditors extends CTabFolder {
         // this.styledTextHandler = new StyledTextHandler(styledText);
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Xml tree editor"); //$NON-NLS-1$
+        item.setText("Tree schema editor"); //$NON-NLS-1$
 
         SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
