@@ -76,11 +76,11 @@ public class CreateElementAction extends SelectionAction {
         if (canContinue) {
             if (input) {
 
-                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData());
+                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData(), false);
                 parent.getOutgoingConnections().clear();
             } else {
 
-                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData());
+                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData(), false);
                 ((OutputTreeNode) parent).getIncomingConnections().clear();
             }
 

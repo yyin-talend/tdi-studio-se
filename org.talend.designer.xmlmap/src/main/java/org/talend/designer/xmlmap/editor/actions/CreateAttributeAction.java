@@ -75,9 +75,9 @@ public class CreateAttributeAction extends SelectionAction {
 
         if (canContinue) {
             if (input) {
-                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData());
+                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData(), false);
             } else {
-                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData());
+                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData(), false);
             }
 
             InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);

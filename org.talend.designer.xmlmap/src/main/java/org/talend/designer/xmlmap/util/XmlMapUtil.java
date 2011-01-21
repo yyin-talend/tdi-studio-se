@@ -130,6 +130,10 @@ public class XmlMapUtil {
     }
 
     public static void detachConnectionsTarget(TreeNode treeNode, XmlMapData mappData) {
+        detachConnectionsTarget(treeNode, mappData, true);
+    }
+
+    public static void detachConnectionsTarget(TreeNode treeNode, XmlMapData mappData, boolean detachChildren) {
         for (Connection connection : treeNode.getOutgoingConnections()) {
             if (connection.getTarget() instanceof OutputTreeNode) {
                 OutputTreeNode target = (OutputTreeNode) connection.getTarget();
@@ -139,7 +143,7 @@ public class XmlMapUtil {
                 }
             }
         }
-        if (!treeNode.getChildren().isEmpty()) {
+        if (detachChildren && !treeNode.getChildren().isEmpty()) {
             for (int i = 0; i < treeNode.getChildren().size(); i++) {
                 TreeNode child = treeNode.getChildren().get(i);
                 detachConnectionsTarget(child, mappData);
@@ -148,6 +152,10 @@ public class XmlMapUtil {
     }
 
     public static void detachConnectionsSouce(OutputTreeNode treeNode, XmlMapData mappData) {
+        detachConnectionsSouce(treeNode, mappData, true);
+    }
+
+    public static void detachConnectionsSouce(OutputTreeNode treeNode, XmlMapData mappData, boolean detachChildren) {
         for (Connection connection : treeNode.getIncomingConnections()) {
             TreeNode source = (TreeNode) connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
@@ -155,7 +163,7 @@ public class XmlMapUtil {
                 mappData.getConnections().remove(connection);
             }
         }
-        if (!treeNode.getChildren().isEmpty()) {
+        if (detachChildren && !treeNode.getChildren().isEmpty()) {
             for (int i = 0; i < treeNode.getChildren().size(); i++) {
                 TreeNode child = treeNode.getChildren().get(i);
                 detachConnectionsSouce((OutputTreeNode) child, mappData);

@@ -13,7 +13,6 @@
 package org.talend.designer.xmlmap.ui.tabs;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -284,8 +283,9 @@ public class MapperManager implements ISelectionChangedListener {
                                 int orignal = listIndexOrignal.get(i);
                                 int target = listIndexTarget.get(i);
                                 if (orignal < inputTree.getNodes().size()) {
-                                    Collections.swap(inputTree.getNodes(), orignal, target);
-                                    System.out.println();
+                                    TreeNode tempTreeNode = inputTree.getNodes().get(orignal);
+                                    inputTree.getNodes().remove(orignal);
+                                    inputTree.getNodes().add(target, tempTreeNode);
                                 }
                             }
 
@@ -415,7 +415,9 @@ public class MapperManager implements ISelectionChangedListener {
                                 int orignal = listIndexOrignal.get(i);
                                 int target = listIndexTarget.get(i);
                                 if (orignal < outputTree.getNodes().size()) {
-
+                                    OutputTreeNode tempTreeNode = outputTree.getNodes().get(orignal);
+                                    outputTree.getNodes().remove(orignal);
+                                    outputTree.getNodes().add(target, tempTreeNode);
                                 }
                             }
 
