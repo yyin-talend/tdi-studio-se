@@ -682,7 +682,10 @@ public class RepositoryService implements IRepositoryService {
                     ExceptionHandler.process(e);
                 }
             }
-            return ((RepositoryView) view).getViewer();
+            if (view instanceof RepositoryView) {
+                return ((RepositoryView) view).getViewer();
+            }
+            return null;
         } else {
             return null;
         }

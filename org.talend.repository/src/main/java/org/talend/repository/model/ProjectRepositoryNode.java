@@ -707,13 +707,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == recBinNode) {
                 // List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
                 List<RepositoryNode> foldersList = new ArrayList<RepositoryNode>();
-                List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
-                for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
-                    // MOD qiongli 2011-1-21 filter TDQ root folder.
-                    if (ProjectNodeHelper.isTDQRootFolder(folder)) {
-                        continue;
+                if (newProject != null && newProject.getEmfProject() != null) {
+                    List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
+                    for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
+                        // MOD qiongli 2011-1-21 filter TDQ root folder.
+                        if (ProjectNodeHelper.isTDQRootFolder(folder)) {
+                            continue;
+                        }
+                        addItemToRecycleBin(recBinNode, folder, foldersList);
                     }
-                    addItemToRecycleBin(recBinNode, folder, foldersList);
                 }
             }
         } catch (PersistenceException e) {
@@ -962,7 +964,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private void convert(org.talend.core.model.general.Project newProject, Container fromModel, RepositoryNode parent,
             ERepositoryObjectType type, RepositoryNode recBinNode) {
 
-        if (parent == null) {
+        if (parent == null || fromModel == null) {
             return;
         }
 

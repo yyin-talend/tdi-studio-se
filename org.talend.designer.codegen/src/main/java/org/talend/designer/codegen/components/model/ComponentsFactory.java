@@ -150,9 +150,13 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private List<ComponentSetting> getComponentsFromProject() {
         // TODO check components used from ref projects.
-        List<ComponentSetting> components = (List<ComponentSetting>) ProjectManager.getInstance().getCurrentProject()
-                .getEmfProject().getComponentsSettings();
-        return components;
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        if (currentProject != null && currentProject.getEmfProject() != null) {
+
+            List<ComponentSetting> components = (List<ComponentSetting>) currentProject.getEmfProject().getComponentsSettings();
+            return components;
+        }
+        return null;
     }
 
     private boolean isComponentVisible(String componentName) {
