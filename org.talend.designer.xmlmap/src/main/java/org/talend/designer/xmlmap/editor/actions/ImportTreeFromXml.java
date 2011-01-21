@@ -15,7 +15,6 @@ package org.talend.designer.xmlmap.editor.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -61,24 +60,14 @@ public class ImportTreeFromXml extends SelectionAction {
         String file = f.open();
         if (file != null) {
             list = TreeUtil.getFoxTreeNodes(file);
-            detachConnectionsTarget(parentNode);
+            TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(parentNode);
+
+            XmlMapUtil.detachConnectionsTarget(treeNodeRoot, mapperManager.getCopyOfMapData());
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
             if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
             }
-        }
-
-    }
-
-    private void detachConnectionsTarget(TreeNode parentNode) {
-        EList<TreeNode> children = parentNode.getChildren();
-        for (TreeNode treeNode : children) {
-            XmlMapUtil.detachConnectionsTarget(treeNode);
-            if (!treeNode.getChildren().isEmpty()) {
-                detachConnectionsTarget(treeNode);
-            }
-
         }
 
     }

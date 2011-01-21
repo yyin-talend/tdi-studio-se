@@ -225,16 +225,19 @@ public class XmlMapEditor extends GraphicalEditor {
                         CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                                 CreateElementAction.ID);
                         createElement.update();
+                        createElement.setInput(false);
                         menu.add(createElement);
 
                         CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
                                 CreateAttributeAction.ID);
                         createAttribute.update();
+                        createAttribute.setInput(false);
                         menu.add(createAttribute);
 
                         DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
                                 DeleteTreeNodeAction.ID);
                         action.update();
+                        action.setInput(false);
                         menu.add(action);
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);

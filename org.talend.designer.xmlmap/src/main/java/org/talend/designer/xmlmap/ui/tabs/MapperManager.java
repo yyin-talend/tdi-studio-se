@@ -94,12 +94,30 @@ public class MapperManager implements ISelectionChangedListener {
         return tableModel;
     }
 
+    public ExtendedTableModel<TreeSchemaTableEntry> getSelectedOutputTreeSchemaModel(OutputXmlTree outputXmlTree) {
+        if (outputXmlTree == null && !copyOfMapData.getOutputTrees().isEmpty()) {
+            outputXmlTree = copyOfMapData.getOutputTrees().get(0);
+        }
+        treeSchemaEntrys.clear();
+        ExtendedTableModel<TreeSchemaTableEntry> tableModel = new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema",
+                treeSchemaEntrys);
+
+        if (outputXmlTree != null) {
+            EList<OutputTreeNode> nodes = outputXmlTree.getNodes();
+            for (TreeNode node : nodes) {
+                if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
+                    addTreeSchemaEnties(tableModel, node.getChildren());
+                }
+            }
+        }
+        return tableModel;
+    }
+
     private void addTreeSchemaEnties(ExtendedTableModel<TreeSchemaTableEntry> tableModel, EList<TreeNode> nodes) {
         for (TreeNode node : nodes) {
-            if (node.getChildren().isEmpty()) {
-                TreeSchemaTableEntry entry = new TreeSchemaTableEntry(node);
-                tableModel.add(entry);
-            } else {
+            TreeSchemaTableEntry entry = new TreeSchemaTableEntry(node);
+            tableModel.add(entry);
+            if (!node.getChildren().isEmpty()) {
                 addTreeSchemaEnties(tableModel, node.getChildren());
             }
         }
@@ -142,6 +160,18 @@ public class MapperManager implements ISelectionChangedListener {
         ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(tree);
         mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
         mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
+        mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().getInputList();
+    }
+
+    public void refreshOutputTreeSchemaEditor(OutputXmlTree tree) {
+        if (tree == null) {
+            return;
+        }
+        ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedOutputTreeSchemaModel(tree);
+        if (mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor() != null) {
+            mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
+            mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().getTableViewerCreator().refresh();
+        }
     }
 
     public void selectInputXmlTree(final InputXmlTree inputTree) {
@@ -174,12 +204,9 @@ public class MapperManager implements ISelectionChangedListener {
                             if (event.index < inputTree.getNodes().size()) {
                                 TreeNode treeNode = inputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
-                                    String oldType = treeNode.getType();
 
-                                    if (XmlMapUtil.DOCUMENT.equals(oldType)) {
-                                        detachConnectionsTarget(treeNode);
-                                        treeNode.getChildren().clear();
-                                    }
+                                    XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
+                                    treeNode.getChildren().clear();
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
@@ -243,6 +270,7 @@ public class MapperManager implements ISelectionChangedListener {
                             for (IMetadataColumn column : metadataColumns) {
                                 for (TreeNode node : inputTree.getNodes()) {
                                     if (node.getName() != null && node.getName().equals(column.getLabel())) {
+                                        XmlMapUtil.detachConnectionsTarget(node, copyOfMapData);
                                         treeNodeToRemove.add(node);
                                     }
                                 }
@@ -270,18 +298,6 @@ public class MapperManager implements ISelectionChangedListener {
             }
 
             refreshInputTreeSchemaEditor(inputTree);
-        }
-
-    }
-
-    private void detachConnectionsTarget(TreeNode parentNode) {
-        EList<TreeNode> children = parentNode.getChildren();
-        for (TreeNode treeNode : children) {
-            XmlMapUtil.detachConnectionsTarget(treeNode);
-            if (!treeNode.getChildren().isEmpty()) {
-                detachConnectionsTarget(treeNode);
-            }
-
         }
 
     }
@@ -319,10 +335,8 @@ public class MapperManager implements ISelectionChangedListener {
                                 if (treeNode != null) {
                                     String oldType = treeNode.getType();
 
-                                    if (XmlMapUtil.DOCUMENT.equals(oldType)) {
-                                        detachConnectionsTarget(treeNode);
-                                        treeNode.getChildren().clear();
-                                    }
+                                    XmlMapUtil.detachConnectionsSouce((OutputTreeNode) treeNode, copyOfMapData);
+                                    treeNode.getChildren().clear();
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
@@ -387,6 +401,7 @@ public class MapperManager implements ISelectionChangedListener {
                             for (IMetadataColumn column : metadataColumns) {
                                 for (TreeNode node : outputTree.getNodes()) {
                                     if (node.getName() != null && node.getName().equals(column.getLabel())) {
+                                        XmlMapUtil.detachConnectionsSouce((OutputTreeNode) node, copyOfMapData);
                                         treeNodeToRemove.add(node);
                                     }
                                 }
@@ -410,8 +425,8 @@ public class MapperManager implements ISelectionChangedListener {
 
                 });
             }
+            refreshOutputTreeSchemaEditor(outputTree);
         }
 
     }
-
 }

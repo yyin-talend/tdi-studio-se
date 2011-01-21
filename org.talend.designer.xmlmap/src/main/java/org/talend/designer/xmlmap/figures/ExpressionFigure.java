@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Label;
+import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 /**
@@ -25,7 +28,7 @@ public class ExpressionFigure extends Label {
     private TreeNodeEditPart treeNodePart;
 
     public ExpressionFigure() {
-
+        setBorder(new CompoundBorder(new RowBorder(), new ColumnBorder()));
     }
 
     public XmlTreeBranch getTreeBranch() {

@@ -23,6 +23,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -74,10 +75,12 @@ public class CreateElementAction extends SelectionAction {
 
         if (canContinue) {
             if (input) {
-                XmlMapUtil.detachConnectionsTarget(parent);
+
+                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData());
                 parent.getOutgoingConnections().clear();
             } else {
-                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent);
+
+                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData());
                 ((OutputTreeNode) parent).getIncomingConnections().clear();
             }
 
@@ -96,6 +99,11 @@ public class CreateElementAction extends SelectionAction {
                     TreeNode docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
                         mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
+                    }
+                } else {
+                    TreeNode docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
+                    if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
+                        mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
                     }
                 }
 

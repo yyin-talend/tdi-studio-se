@@ -4,6 +4,8 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
@@ -27,6 +29,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
@@ -125,6 +128,14 @@ public class MapperUI {
 
         FooterComposite footerComposite = new FooterComposite(mapperShell, this);
         footerComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        mapperShell.addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+                ColorProviderMapper.releaseColors();
+            }
+
+        });
 
         mapperShell.open();
         return mapperShell;

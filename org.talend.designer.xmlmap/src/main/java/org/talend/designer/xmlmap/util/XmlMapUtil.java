@@ -17,6 +17,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 
 /**
  * wchen class global comment. Detailled comment
@@ -128,22 +129,36 @@ public class XmlMapUtil {
 
     }
 
-    public static void detachConnectionsTarget(TreeNode treeNode) {
+    public static void detachConnectionsTarget(TreeNode treeNode, XmlMapData mappData) {
         for (Connection connection : treeNode.getOutgoingConnections()) {
             if (connection.getTarget() instanceof OutputTreeNode) {
                 OutputTreeNode target = (OutputTreeNode) connection.getTarget();
                 if (target.getIncomingConnections().contains(connection)) {
                     target.getIncomingConnections().remove(connection);
+                    mappData.getConnections().remove(connection);
                 }
+            }
+        }
+        if (!treeNode.getChildren().isEmpty()) {
+            for (int i = 0; i < treeNode.getChildren().size(); i++) {
+                TreeNode child = treeNode.getChildren().get(i);
+                detachConnectionsTarget(child, mappData);
             }
         }
     }
 
-    public static void detachConnectionsSouce(OutputTreeNode treeNode) {
+    public static void detachConnectionsSouce(OutputTreeNode treeNode, XmlMapData mappData) {
         for (Connection connection : treeNode.getIncomingConnections()) {
             TreeNode source = (TreeNode) connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
                 source.getOutgoingConnections().remove(connection);
+                mappData.getConnections().remove(connection);
+            }
+        }
+        if (!treeNode.getChildren().isEmpty()) {
+            for (int i = 0; i < treeNode.getChildren().size(); i++) {
+                TreeNode child = treeNode.getChildren().get(i);
+                detachConnectionsSouce((OutputTreeNode) child, mappData);
             }
         }
     }

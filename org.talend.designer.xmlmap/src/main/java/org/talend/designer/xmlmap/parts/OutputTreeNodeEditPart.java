@@ -18,8 +18,6 @@ import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -88,7 +86,6 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             Figure rootOutputTreeNodeExpressionFigure = rootOutputTreeNodeFigure.getTreeNodeExpressionFigure();
             ExpressionFigure expressionFigure = new ExpressionFigure();
             expressionFigure.setText(((OutputTreeNode) childPart.getModel()).getExpression());
-            expressionFigure.setBorder(new LineBorder());
             XmlTreeBranch treeBranch = (XmlTreeBranch) childPart.getFigure();
             expressionFigure.setTreeBranch(treeBranch);
             expressionFigure.setTreeNodePart(childPart);
@@ -140,18 +137,15 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
         if (rootOutputTreeNodeFigure != null) {
             Figure rootOutputTreeNodeNameFigure = rootOutputTreeNodeFigure.getTreeNodeExpressionFigure();
             if (rootOutputTreeNodeNameFigure.getChildren() != null) {
-                Label expressionLabel = null;
+                Figure expressionFigure = null;
                 for (Object figure : rootOutputTreeNodeNameFigure.getChildren()) {
-                    if (figure instanceof Label) {
-                        Label label = (Label) figure;
-                        if (label.getText().equals(((TreeNode) childPart.getModel()).getExpression())) {
-                            expressionLabel = label;
-                            break;
-                        }
+                    Object object = getViewer().getVisualPartMap().get(figure);
+                    if (object == childEditPart) {
+                        expressionFigure = (Figure) figure;
                     }
                 }
-                rootOutputTreeNodeNameFigure.getChildren().remove(expressionLabel);
-                getViewer().getVisualPartMap().remove(expressionLabel);
+                rootOutputTreeNodeNameFigure.getChildren().remove(expressionFigure);
+                getViewer().getVisualPartMap().remove(expressionFigure);
             }
         }
 

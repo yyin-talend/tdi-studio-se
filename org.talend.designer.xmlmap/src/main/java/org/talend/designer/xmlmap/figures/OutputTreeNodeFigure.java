@@ -12,10 +12,11 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
+import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -48,11 +49,13 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
             columnExpressionFigure = new Label();
             columnExpressionFigure.setText(treeNode.getExpression());
-            columnExpressionFigure.setBorder(new RowBorder());
+            CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+            columnExpressionFigure.setBorder(compoundBorder);
+            // columnExpressionFigure.setBorder(new RowBorder());
 
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
-            nameLabel.setBorder(new LineBorder());
+            nameLabel.setBorder(new RowBorder());
 
             this.add(columnExpressionFigure);
             this.add(nameLabel);
@@ -66,14 +69,14 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
             ExpressionFigure figure = new ExpressionFigure();
 
             // label.setText(((OutputTreeNode) childPart.getModel()).getExpression());
-            figure.setBorder(new RowBorder());
+            // figure.setBorder(new RowBorder());
             treeNodeExpressionFigure.add(figure, 0);
             // outputTreeNodeExpressionFigure.setOpaque(true);
             // outputTreeNodeExpressionFigure.setBackgroundColor(ColorConstants.red);
 
             /* column2, column */
             treeBranch = new XmlTreeRoot(new TreeBranchFigure(treeNode), XmlTreeBranch.STYLE_ROW_HANGING);
-            treeBranch.setBorder(new LineBorder());
+            treeBranch.setBorder(new RowBorder());
 
             figure.setTreeBranch(treeBranch);
             figure.setTreeNodePart(treeNodePart);

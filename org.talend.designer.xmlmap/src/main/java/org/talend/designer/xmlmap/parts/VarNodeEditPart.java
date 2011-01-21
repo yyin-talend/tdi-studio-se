@@ -30,7 +30,6 @@ import org.talend.designer.xmlmap.figures.VarNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.policy.CustomGraphicalNodeEditPolicy;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
@@ -49,7 +48,6 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
 
     @Override
     public void createEditPolicies() {
-        installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CustomGraphicalNodeEditPolicy());
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());

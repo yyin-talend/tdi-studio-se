@@ -85,7 +85,7 @@ public class MapperMain {
                 }
                 if (!found) {
                     for (TreeNode treeNode : inputTree.getNodes()) {
-                        detachConnectionsTarget(treeNode);
+                        XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
                     }
                     treesToRemove.add(inputTree);
                 }
@@ -158,24 +158,13 @@ public class MapperMain {
                 if (nodes.size() > listColumns.size()) {
                     List unUsed = new ArrayList();
                     for (int i = listColumns.size(); i < nodes.size(); i++) {
+                        XmlMapUtil.detachConnectionsTarget(nodes.get(i), copyOfMapData);
                         unUsed.add(nodes.get(i));
                     }
                     nodes.removeAll(unUsed);
                 }
 
             }
-        }
-
-    }
-
-    private void detachConnectionsTarget(TreeNode parentNode) {
-        EList<TreeNode> children = parentNode.getChildren();
-        for (TreeNode treeNode : children) {
-            XmlMapUtil.detachConnectionsTarget(treeNode);
-            if (!treeNode.getChildren().isEmpty()) {
-                detachConnectionsTarget(treeNode);
-            }
-
         }
 
     }
@@ -249,7 +238,7 @@ public class MapperMain {
                     List unUsed = new ArrayList();
                     for (int i = listColumns.size(); i < nodes.size(); i++) {
                         OutputTreeNode node = nodes.get(i);
-                        XmlMapUtil.detachConnectionsSouce(node);
+                        XmlMapUtil.detachConnectionsSouce(node, copyOfMapData);
                         unUsed.add(node);
                     }
                     nodes.removeAll(unUsed);

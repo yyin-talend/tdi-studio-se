@@ -76,8 +76,8 @@ public class InputXmlTreeFigure extends GenericFigure {
         public ColumnTitleFigure() {
             column1 = new Label();
             column1.setText("Column");
-            Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
-            column1.setFont(cFont);
+            // Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
+            // column1.setFont(cFont);
             this.add(column1);
             this.setLayoutManager(new ToolbarLayout());
             setBackgroundColor(ColorConstants.menuBackground);

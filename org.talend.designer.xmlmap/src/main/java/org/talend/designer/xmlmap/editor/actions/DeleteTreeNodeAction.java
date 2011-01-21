@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -73,59 +74,43 @@ public class DeleteTreeNodeAction extends SelectionAction {
 
     @Override
     public void run() {
-        TreeNode docRoot = null;
-        for (Object obj : getSelectedObjects()) {
-            TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
-            TreeNode treeNode = (TreeNode) nodePart.getModel();
-            if (treeNode.eContainer() instanceof TreeNode) {
-                TreeNode parent = (TreeNode) treeNode.eContainer();
-                if (input) {
-                    // find root before remove
-                    if (docRoot == null) {
-                        docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
+        try {
+            TreeNode docRoot = null;
+            for (Object obj : getSelectedObjects()) {
+                TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
+                TreeNode treeNode = (TreeNode) nodePart.getModel();
+                if (treeNode.eContainer() instanceof TreeNode) {
+                    TreeNode parent = (TreeNode) treeNode.eContainer();
+                    if (input) {
+                        // find root before remove
+                        if (docRoot == null) {
+                            docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
+                        }
+                        XmlMapUtil.detachConnectionsTarget(treeNode, mapperManager.getCopyOfMapData());
+                    } else {
+                        docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
+                        XmlMapUtil.detachConnectionsSouce((OutputTreeNode) treeNode, mapperManager.getCopyOfMapData());
                     }
-                    detachConnectionsTarget(treeNode);
+                    parent.getChildren().remove(treeNode);
+                }
+
+            }
+            if (mapperManager != null) {
+                if (input) {
+                    if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
+                        mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
+                    }
                 } else {
-                    detachConnectionsSoruce((OutputTreeNode) treeNode);
+                    if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
+                        mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
+                    }
                 }
-                parent.getChildren().remove(treeNode);
+
             }
-
-        }
-        if (mapperManager != null) {
-            if (input) {
-                Object model = ((TreeNodeEditPart) getSelectedObjects().get(0)).getModel();
-                TreeNode node = (TreeNode) model;
-
-                if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
-                    mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
-                }
-            }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    }
-
-    private void detachConnectionsSoruce(OutputTreeNode treeNode) {
-        if (treeNode.getChildren().isEmpty()) {
-            XmlMapUtil.detachConnectionsSouce(treeNode);
-        } else {
-            for (int i = 0; i < treeNode.getChildren().size(); i++) {
-                TreeNode child = treeNode.getChildren().get(i);
-                detachConnectionsSoruce((OutputTreeNode) child);
-            }
-        }
-    }
-
-    private void detachConnectionsTarget(TreeNode treeNode) {
-        if (treeNode.getChildren().isEmpty()) {
-            XmlMapUtil.detachConnectionsTarget(treeNode);
-        } else {
-            for (int i = 0; i < treeNode.getChildren().size(); i++) {
-                TreeNode child = treeNode.getChildren().get(i);
-                detachConnectionsTarget(child);
-            }
-        }
     }
 
     public boolean isInput() {

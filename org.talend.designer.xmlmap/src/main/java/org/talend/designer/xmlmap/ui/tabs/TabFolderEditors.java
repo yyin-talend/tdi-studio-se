@@ -43,6 +43,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
+import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 
 /**
@@ -63,7 +64,7 @@ public class TabFolderEditors extends CTabFolder {
 
     private XmlTreeSchemaTableView inputTreeSchemaEditor;
 
-    private XmlTreeSchemaTableView outputTreeSchemaEditor;
+    private OutputXmlTreeSchemaTableView outputTreeSchemaEditor;
 
     public static final int INDEX_TAB_METADATA_EDITOR = 0;
 
@@ -132,9 +133,8 @@ public class TabFolderEditors extends CTabFolder {
         inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
 
-        Composite composite = new Composite(xmlTreeEditorContainer, SWT.NONE);
-        // outputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
-        // xmlTreeEditorContainer);
+        outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
+                xmlTreeEditorContainer);
 
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
@@ -278,7 +278,7 @@ public class TabFolderEditors extends CTabFolder {
         return inputTreeSchemaEditor;
     }
 
-    public XmlTreeSchemaTableView getOutputTreeSchemaEditor() {
+    public OutputXmlTreeSchemaTableView getOutputTreeSchemaEditor() {
         return outputTreeSchemaEditor;
     }
 

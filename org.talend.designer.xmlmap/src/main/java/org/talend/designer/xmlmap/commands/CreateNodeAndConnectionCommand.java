@@ -75,6 +75,17 @@ public class CreateNodeAndConnectionCommand extends Command {
                 update = true;
             }
         }
+
+        if (parent != null) {
+            OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parent);
+            if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() != null
+                    && outputTreeNodeRoot.eContainer().eContainer() instanceof XmlMapData) {
+                xmlMapData = (XmlMapData) outputTreeNodeRoot.eContainer().eContainer();
+            }
+        } else if (targetVarNode != null) {
+            xmlMapData = (XmlMapData) targetVarNode.eContainer().eContainer();
+        }
+
         /* add a new ouputNode */
         if (!update && parent != null) {
             Shell shell = targetEditPart.getViewer().getControl().getShell();
@@ -96,23 +107,13 @@ public class CreateNodeAndConnectionCommand extends Command {
                 boolean canContinue = MessageDialog.openConfirm(null, "Warning",
                         "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
                 if (canContinue) {
-                    XmlMapUtil.detachConnectionsSouce(parent);
+                    XmlMapUtil.detachConnectionsSouce(parent, xmlMapData);
                     parent.getIncomingConnections().clear();
                     parent.setExpression("");
                 } else {
                     return;
                 }
             }
-        }
-
-        if (parent != null) {
-            OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parent);
-            if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() != null
-                    && outputTreeNodeRoot.eContainer().eContainer() instanceof XmlMapData) {
-                xmlMapData = (XmlMapData) outputTreeNodeRoot.eContainer().eContainer();
-            }
-        } else if (targetVarNode != null) {
-            xmlMapData = (XmlMapData) targetVarNode.eContainer().eContainer();
         }
 
         if (newObjects instanceof List) {

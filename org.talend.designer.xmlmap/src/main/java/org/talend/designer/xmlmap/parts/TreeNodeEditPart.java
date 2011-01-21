@@ -40,7 +40,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.policy.CustomGraphicalNodeEditPolicy;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.TreeExpandSupportEditPolicy;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -96,7 +95,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
 
     @Override
     protected void createEditPolicies() {
-        installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CustomGraphicalNodeEditPolicy());
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
         installEditPolicy(TreeExpandSupportEditPolicy.EXPAND_SUPPORT, new TreeExpandSupportEditPolicy());
