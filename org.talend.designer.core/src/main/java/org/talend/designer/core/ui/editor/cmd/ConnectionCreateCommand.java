@@ -64,8 +64,6 @@ public class ConnectionCreateCommand extends Command {
 
     private boolean insertTMap;
 
-    private boolean isReconnect;
-
     /**
      * Initialisation of the creation of the connection with a source and style of connection.
      * 
@@ -89,18 +87,6 @@ public class ConnectionCreateCommand extends Command {
         this.metaName = (String) listArgs.get(0);
         this.connectionName = (String) listArgs.get(1);
         this.insertTMap = insertTMap;
-        newMetadata = (IMetadataTable) listArgs.get(2);
-    }
-
-    public ConnectionCreateCommand(Node nodeSource, String connectorName, List<Object> listArgs, boolean isReconnect,
-            boolean insertTMap) {
-        setLabel(Messages.getString("ConnectionCreateCommand.Label")); //$NON-NLS-1$
-        this.source = nodeSource;
-        this.connectorName = connectorName;
-        this.metaName = (String) listArgs.get(0);
-        this.connectionName = (String) listArgs.get(1);
-        this.insertTMap = insertTMap;
-        this.isReconnect = isReconnect;
         newMetadata = (IMetadataTable) listArgs.get(2);
     }
 
@@ -249,8 +235,7 @@ public class ConnectionCreateCommand extends Command {
 
         if (target != null) {
             if (!ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(connectorName)
-                    .getDefaultConnectionType(), connectorName, connectionName)
-                    && !isReconnect) {
+                    .getDefaultConnectionType(), connectorName, connectionName)) {
                 creatingConnection = false;
                 return false;
             }
@@ -293,7 +278,7 @@ public class ConnectionCreateCommand extends Command {
                     if ((connecType.equals(EConnectionType.TABLE) || source.getProcess().checkValidConnectionName(connectionName))
                             && (ConnectionManager.canConnectToTarget(source, null, target,
                                     source.getConnectorFromName(connectorName).getDefaultConnectionType(), connectorName,
-                                    connectionName) || isReconnect)) {
+                                    connectionName))) {
                         connectionOk = true;
                     } else {
                         String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", //$NON-NLS-1$

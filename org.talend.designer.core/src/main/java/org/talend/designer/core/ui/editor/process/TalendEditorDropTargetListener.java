@@ -1444,11 +1444,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             CompoundCommand command) {
         if (connection != null || node != null) {
             Node originalTarget = (Node) connection.getTarget();
-            connection.reconnect(connection.getSource(), node, connection.getLineStyle());
             INodeConnector targetConnector = connection.getTargetNodeConnector();
+            connection.reconnect(connection.getSource(), node, connection.getLineStyle());
+            INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
+            nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
             List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(connection, node);
-            ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, true, false);
+            ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, false);
             nodeCmd.setTarget(originalTarget);
+            INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnector.getName());
+            originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
             command.add(nodeCmd);
         }
     }

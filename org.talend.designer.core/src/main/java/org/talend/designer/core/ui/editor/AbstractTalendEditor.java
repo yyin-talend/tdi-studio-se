@@ -1410,12 +1410,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 execCommandStack(new CreateNodeContainerCommand((Process) getProcess(), nodeContainer, point));
                                 // reconnect the node
                                 Node originalTarget = (Node) targetConnection.getTarget();
-                                targetConnection.reconnect(targetConnection.getSource(), node, targetConnection.getLineStyle());
                                 INodeConnector targetConnector = targetConnection.getTargetNodeConnector();
+                                targetConnection.reconnect(targetConnection.getSource(), node, targetConnection.getLineStyle());
+                                INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
+                                nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                                 List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
                                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
-                                        nodeArgs, true, false);
+                                        nodeArgs, false);
                                 nodeCmd.setTarget(originalTarget);
+                                INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnector
+                                        .getName());
+                                originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
                                 execCommandStack(nodeCmd);
                             }
                         }
