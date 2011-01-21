@@ -710,10 +710,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 if (newProject != null && newProject.getEmfProject() != null) {
                     List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
                     for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
-                        // MOD qiongli 2011-1-21 filter TDQ root folder.
-                        if (ProjectNodeHelper.isTDQRootFolder(folder)) {
-                            continue;
-                        }
                         addItemToRecycleBin(recBinNode, folder, foldersList);
                     }
                 }
@@ -778,6 +774,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         RepositoryNode currentParentNode = parentNode;
         if (item instanceof FolderItem) {
             itemType = getFolderContentType((FolderItem) item);
+            // MOD qiongli 2011-1-21 filter TDQ root folder.
+            if (itemType != null && itemType.isDQItemType()) {
+                return;
+            }// ~
             if (item.getState().isDeleted()) {
                 // need to display this folder in the recycle bin.
                 Folder folder = new Folder(item.getProperty(), itemType);
