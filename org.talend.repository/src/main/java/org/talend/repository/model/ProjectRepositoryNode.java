@@ -709,6 +709,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 List<RepositoryNode> foldersList = new ArrayList<RepositoryNode>();
                 List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
                 for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
+                    // MOD qiongli 2011-1-21 filter TDQ root folder.
+                    if (ProjectNodeHelper.isTDQRootFolder(folder)) {
+                        continue;
+                    }
                     addItemToRecycleBin(recBinNode, folder, foldersList);
                 }
             }
