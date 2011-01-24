@@ -71,20 +71,7 @@ imports="
                 %>                
                 try {
                 	if (pstmt_<%=cid %> != null) { 
-						pstmt_<%=cid %>.executeBatch();                	
-            	    	<%if (("INSERT").equals(dataAction)) {
-            	    	%>
-            	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
-            	    	<%
-            	    	}else if (("UPDATE").equals(dataAction)) {
-            	    	%>
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
-            	    	<%
-            	    	}else if (("DELETE").equals(dataAction)) {
-            	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
-            	    	<%
-            	    	}%>
+						pstmt_<%=cid %>.executeBatch();    
             	    }          	    
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
@@ -96,7 +83,22 @@ imports="
                 	System.out.println(e.getMessage());
                 	<%
                 	}%>                	
-            	}                                  
+            	}
+            	tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();            	
+    	    	<%if (("INSERT").equals(dataAction)) {
+    	    	%>
+    	    		insertedCount_<%=cid%> 
+    	    	<%
+    	    	}else if (("UPDATE").equals(dataAction)) {
+    	    	%>
+    	    		updatedCount_<%=cid%>
+    	    	<%
+    	    	}else if (("DELETE").equals(dataAction)) {
+    	    	%>
+    	    	    deletedCount_<%=cid%>
+    	    	<%
+    	    	}%>
+    	    	+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);                                  
                 <%
                 }%>        
         if(pstmt_<%=cid %> != null) {            
