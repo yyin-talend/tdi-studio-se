@@ -18,6 +18,8 @@ import java.util.List;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.impl.ConnectionFactoryImpl;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.ui.metadata.extended.command.MetadataPasteCommand;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -43,6 +45,7 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
     @Override
     public List createPastableBeansList(ExtendedTableModel extendedTable, List copiedObjectsList) {
         ArrayList list = new ArrayList();
+        ArrayList countList = new ArrayList();
         for (Object current : copiedObjectsList) {
             if (current instanceof IMetadataColumn) {
                 IMetadataColumn copy = ((IMetadataColumn) current).clone();
@@ -55,6 +58,38 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
                             metadataColumnExt.getTalendType()));
                     list.add(metadataColumnExt);
                 }
+            } else if (current instanceof org.talend.core.model.metadata.builder.connection.MetadataColumn) {
+                MetadataTableEditor tableEditor = (MetadataTableEditor) extendedTable;
+                org.talend.core.model.metadata.builder.connection.MetadataColumn metadataColumn = (org.talend.core.model.metadata.builder.connection.MetadataColumn) current;
+                String nextGeneratedColumnName = metadataColumn.getLabel();
+                String tempNewColumnName = ""; //$NON-NLS-1$
+                boolean iMetaColumnUnique = false;
+                boolean metaColumnUnique = false;
+                while (iMetaColumnUnique == false || metaColumnUnique == false) {
+                    nextGeneratedColumnName = tableEditor.getNextGeneratedColumnName(nextGeneratedColumnName, null);
+                    iMetaColumnUnique = true;
+                    metaColumnUnique = false;
+                    if (list.size() == 0)
+                        metaColumnUnique = true;
+                    else {
+                        tempNewColumnName = this.getUniqueString(list, nextGeneratedColumnName);
+                        if (tempNewColumnName.equals(nextGeneratedColumnName))
+                            metaColumnUnique = true;
+                        else {
+                            metaColumnUnique = false;
+                            nextGeneratedColumnName = tempNewColumnName;
+                        }
+                    }
+                }
+                org.talend.core.model.metadata.builder.connection.MetadataColumn newColumnCopy = new ConnectionFactoryImpl()
+                        .copy(metadataColumn, nextGeneratedColumnName);
+                IMetadataColumn copy = (ConvertionHelper.convertToIMetaDataColumn(newColumnCopy)).clone();
+                copy.setLabel(nextGeneratedColumnName);
+                MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
+                metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
+                        metadataColumnExt.getTalendType()));
+                list.add(metadataColumnExt);
+                countList.add(nextGeneratedColumnName);
             }
         }
         return list;
