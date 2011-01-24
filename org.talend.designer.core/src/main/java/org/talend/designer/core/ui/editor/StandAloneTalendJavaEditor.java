@@ -212,6 +212,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (PersistenceException e) {
             // e.printStackTrace();
             ExceptionHandler.process(e);
+        } catch (LoginException e) {
+            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
         if (repositoryNode != null) {

@@ -1349,6 +1349,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
+        } catch (LoginException e) {
+            ExceptionHandler.process(e);
         }
 
         if (AbstractProcessProvider.isExtensionProcessForJoblet(getProcess())) {

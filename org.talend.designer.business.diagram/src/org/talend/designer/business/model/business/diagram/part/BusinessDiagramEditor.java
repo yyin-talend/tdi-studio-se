@@ -40,6 +40,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.internal.WorkbenchPage;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -273,6 +274,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             repFactory.unlock(repositoryEditorInput.getItem());
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
+        } catch (LoginException e) {
+            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
         if (repositoryNode == null) {
@@ -471,11 +474,11 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 ERepositoryObjectType type = ERepositoryObjectType.BUSINESS_PROCESS;
 
                 if (state != null && state.getPath() != null) {
-                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
-                            item.getProperty().getId(), state.getPath(), type);
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getAllVersion(item.getProperty().getId(), state.getPath(), type);
                 } else {
-                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAllVersion(
-                            item.getProperty().getId());
+                    allVersion = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getAllVersion(item.getProperty().getId());
                 }
                 if (allVersion == null || allVersion.isEmpty()) {
                     return false;
