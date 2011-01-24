@@ -669,6 +669,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
             IMetadataTable originaleMetadataTable = getMetadataTableFromXml(node);
             // check if the outputMetadata is readonly
             IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
+            if ("tUniservBTGeneric".equals(node.getComponent().getName())) {
+                originaleOutputTable = node.getMetadataTable("OUTPUT_SCHEMA");
+            }
             IMetadataTable outputMetaCopy = originaleOutputTable.clone(true);
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
                 IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
@@ -902,9 +905,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     if (currentValRuleObj != null) {
                         List<IRepositoryViewObject> valRuleObjs = ValidationRulesUtil.getRelatedValidationRuleObjs(value);
                         if (!ValidationRulesUtil.isCurrentValRuleObjInList(valRuleObjs, currentValRuleObj)) {
-                            if (!MessageDialog
-                                    .openConfirm(button.getShell(), Messages.getString("SchemaTypeController.0"), //$NON-NLS-1$
-                                            Messages.getString("SchemaTypeController.3"))) { //$NON-NLS-1$
+                            if (!MessageDialog.openConfirm(button.getShell(), Messages.getString("SchemaTypeController.0"), //$NON-NLS-1$
+                                    Messages.getString("SchemaTypeController.3"))) { //$NON-NLS-1$
                                 return null;
                             } else {
                                 isValRulesLost = true;
