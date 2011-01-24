@@ -15,19 +15,22 @@ package org.talend.repository.plugin.integration;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC yzhang class global comment. Detailled comment
  */
-public class BootTalendAction implements IWorkbenchWindowActionDelegate {
+public class BootTalendAction extends AContextualAction implements IWorkbenchWindowActionDelegate {
 
     public final static String TALEND_PERSPECTIVE_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
@@ -39,11 +42,11 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
      * yzhang BootTalendAction constructor comment.
      */
     public BootTalendAction() {
+
         store = CorePlugin.getDefault().getPreferenceStore();
     }
 
     public void dispose() {
-
     }
 
     public void init(IWorkbenchWindow window) {
@@ -52,12 +55,12 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
 
     public void run(IAction action) {
 
-        if (store.getInt(LOGIN_COUNTER) > 1) {
-            PlatformUI.getWorkbench().restart();
-        }
-
-        int counter = store.getInt(LOGIN_COUNTER);
-        store.setValue(LOGIN_COUNTER, ++counter);
+        // if (store.getInt(LOGIN_COUNTER) > 1) {
+        // PlatformUI.getWorkbench().restart();
+        // }
+        //
+        // int counter = store.getInt(LOGIN_COUNTER);
+        // store.setValue(LOGIN_COUNTER, ++counter);
 
         IPerspectiveDescriptor pDescriptor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .getPerspective();
@@ -95,6 +98,28 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
             }
         }
         throw new RuntimeException(Messages.getString("BootTalendAction.pluginNotLoaded")); //$NON-NLS-1$
+    }
+
+    /*
+     * (non-Jsdoc)
+     * 
+     * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
+     * org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    public void init(TreeViewer viewer, IStructuredSelection selection) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Jsdoc)
+     * 
+     * @see org.talend.repository.ui.actions.AContextualAction#doRun()
+     */
+    @Override
+    protected void doRun() {
+        // TODO Auto-generated method stub
+
     }
 
 }

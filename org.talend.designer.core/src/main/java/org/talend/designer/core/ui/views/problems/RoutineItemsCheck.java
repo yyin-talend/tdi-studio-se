@@ -29,6 +29,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -52,8 +53,16 @@ public class RoutineItemsCheck {
      */
     public void addAllRoutineProblem() {
         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        if (repositoryContext == null) {
+            return;
+        }
+        Project project = repositoryContext.getProject();
+        if (project == null) {
+            return;
+        }
+        language = project.getLanguage();
         if (language == null) {
             return;
         }

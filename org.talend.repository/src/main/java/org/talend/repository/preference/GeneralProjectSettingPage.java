@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
+import org.talend.core.model.properties.Project;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -69,8 +70,9 @@ public class GeneralProjectSettingPage extends ProjectSettingPage {
     protected void updateContent() {
         nameText.setText(pro.getLabel());
         String description = "";
-        if (pro.getEmfProject().getDescription() != null) {
-            description = pro.getEmfProject().getDescription();
+        Project emfProject = pro.getEmfProject();
+        if (emfProject != null && emfProject.getDescription() != null) {
+            description = emfProject.getDescription();
         }
         descriptionText.setText(description);
     }

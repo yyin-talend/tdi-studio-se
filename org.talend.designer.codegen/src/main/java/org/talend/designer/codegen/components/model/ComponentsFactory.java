@@ -173,7 +173,8 @@ public class ComponentsFactory implements IComponentsFactory {
         // (technical components will always loaded by default as they're not saved in componentSettings)
         // to avoid any problem, we also load by default the category named "Technical".
         for (ComponentSetting componentSetting : getComponentsFromProject()) {
-            if (componentSetting.getName().equals(componentName)) {
+            String name = componentSetting.getName();
+            if (name != null && name.equals(componentName)) {
                 settingsFromCompName.add(componentSetting);
                 // if (componentSetting.isHidden()) {
                 // // hide component only if hidden in all projects

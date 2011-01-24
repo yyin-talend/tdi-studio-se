@@ -1404,7 +1404,7 @@
       <actionSet
             id="org.talend.repository.bootTalendActionSet"
             label="label"
-            visible="false">
+            visible="true">
          <action
                class="org.talend.repository.plugin.integration.BootTalendAction"
                icon="icons/newProject.png"
