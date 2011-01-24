@@ -509,7 +509,10 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 	
 		"<%=mergeCondition%>" + ")" ;
 		
-		<%if (useMergeUpdate) {
+		<%
+		if(!useMergeUpdate)
+			useUpdateWhere =false;
+		if (useMergeUpdate) {
 		boolean isfirstUpdateSet = true; 
 			for(Map<String, String> keyColumn:updateColumns){
 				if (keyColumn.get("UPDATE").equals("true")) {
@@ -525,19 +528,33 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 			mergeQuery += " WHEN MATCHED THEN UPDATE SET <%=mergeUpdate%> " ;	
 			<%if (useUpdateWhere) { 
 				String useUpdateWhereString = ElementParameterParser.getValue(node,"__MERGE_UPDATE_WHERE_STRING__");
+				if(useUpdateWhereString == null || useUpdateWhereString.length() == 0){
+					
 			%>
-				mergeQuery += "WHERE " + <%=useUpdateWhereString%> ;
+				mergeQuery += "WHERE " + "";
 			<%
+				}
+				else {
+					mergeQuery += "WHERE " + <%=useUpdateWhereString%>;
+			<%	}
 			}%>
 			<%if (useUpdateDeleteWhere) { 
 				String useUpdateDeleteWhereString = ElementParameterParser.getValue(node,"__MERGE_UPDATE_DELETE_WHERE_STRING__");
+				if(useUpdateDeleteWhereString == null || useUpdateDeleteWhereString.length() == 0){
 			%>
-				mergeQuery += "DELETE WHERE " + <%=useUpdateDeleteWhereString%> ;
+					mergeQuery += " DELETE WHERE " + "" ;
 			<%
+				}
+				else {%>
+					mergeQuery += " DELETE WHERE " + <%=useUpdateDeleteWhereString%> ;
+		  <%	}
 			}%>
 		<%
 		}%>
-		<%if (useMergeInsert) {
+		<%
+		if(!useMergeInsert)
+			useInsertWhere = false;
+		if (useMergeInsert) {
 		    boolean isfirstInsertWhere = true;
 			for(Map<String, String> keyColumn:insertColumns){
 				if (isfirstInsertWhere) {
@@ -558,9 +575,13 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 			}
 			if (useInsertWhere) {
 			String useInsertWhereString = ElementParameterParser.getValue(node,"__MERGE_INSERT_WHERE_STRING__");
+			if(useInsertWhereString == null || useInsertWhereString.length() == 0){
 			%>
-				mergeQuery += " WHERE " + <%=useInsertWhereString%> ;
+				mergeQuery += " WHERE " + "";
 			<%
+			} else {%>
+				mergeQuery += " WHERE " + <%=useInsertWhereString%> ;
+			<%}
 			}
 			%>	
  			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(mergeQuery);
