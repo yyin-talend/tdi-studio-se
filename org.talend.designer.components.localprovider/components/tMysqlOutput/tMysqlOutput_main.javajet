@@ -290,7 +290,7 @@ if(columnList != null && columnList.size() > 0) {
 <%
 					} else {
 %>
-	      			    insertColName<%=cid%> = DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>");
+	      			insertColName<%=cid%> = DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>");
 				    insertColValue<%=cid%> =  DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>); 
 <%
 					}
@@ -303,7 +303,7 @@ if(columnList != null && columnList.size() > 0) {
 %>
 	            	int rowCount<%=cid%> = 0;	 
 <%
-		    }
+		        }
 			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
@@ -1318,7 +1318,9 @@ if(columnList != null && columnList.size() > 0) {
                         throw(e);
                         <%
                     } else {
-                        if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                        if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                        <%
                             for(IMetadataColumn column : columnList) {
                                 %>
                                 <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
