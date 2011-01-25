@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
@@ -59,7 +60,7 @@ public class XmlMapComponent extends AbstractExternalNode {
                     display.sleep();
                 }
             } catch (Throwable e) {
-
+                ExceptionHandler.process(e);
             }
         }
 

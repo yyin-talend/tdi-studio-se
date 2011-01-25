@@ -16,7 +16,9 @@ import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
@@ -24,21 +26,32 @@ import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.eclipse.gef.requests.DirectEditRequest;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.VarNodeFigure;
+import org.talend.designer.xmlmap.figures.VariableContainerFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * DOC hywang class global comment. Detailled comment
  */
 public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
 
     private VarNodeFigure varNodeFigure;
+
+    private XmlMapNodeDirectEditManager directEditManager;
 
     @Override
     protected IFigure createFigure() {
@@ -51,6 +64,31 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+    }
+
+    @Override
+    public void performRequest(Request req) {
+        IFigure figure = null;
+        Figure selectedFigure = null;
+        if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
+            DirectEditRequest drequest = (DirectEditRequest) req;
+            Point figureLocation = drequest.getLocation();
+            if (getFigure() instanceof VarNodeFigure) {
+                figure = ((VarNodeFigure) getFigure()).findFigureAt(figureLocation);
+            }
+            // if (directEditManager == null) {
+            if (figure != null) {
+                if (figure instanceof VariableContainerFigure) {
+                    figure = ((VariableContainerFigure) figure).getVariableLabel();
+                }
+                selectedFigure = (Figure) figure;
+                String[] items = JavaTypesManager.getJavaTypesLabels();
+                directEditManager = new XmlMapNodeDirectEditManager(this, ComboBoxCellEditor.class, new XmlMapNodeCellEditorLocator(
+                        selectedFigure), items);
+            }
+            // }
+            directEditManager.show();
+        }
     }
 
     @Override
@@ -111,6 +149,18 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
                 varNodeFigure.getExpression().setText(((VarNode) getModel()).getExpression());
                 break;
             case XmlmapPackage.VAR_NODE__NULLABLE:
+                boolean newBoolean = notification.getNewBooleanValue();
+                ImageFigure checkImage = ((VarNodeFigure) getFigure()).getVariable().getCheckImage();
+                if (newBoolean) {
+                    checkImage.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
+                } else if (!newBoolean) {
+                    checkImage.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+                }
+                break;
+            case XmlmapPackage.VAR_NODE__VARIABLE:
+                String newString = notification.getNewStringValue();
+                ((VarNodeFigure) getFigure()).getVariable().getVariableLabel().setText(newString);
+                break;
             case XmlmapPackage.VAR_NODE__TYPE:
                 varNodeFigure.getType().setText(((VarNode) getModel()).getType());
                 refreshChildren();

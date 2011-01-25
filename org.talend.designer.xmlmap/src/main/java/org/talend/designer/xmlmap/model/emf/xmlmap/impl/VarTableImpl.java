@@ -35,6 +35,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl#getNodes <em>Nodes</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl#isMinimized <em>Minimized</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,6 +71,26 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
      * @ordered
      */
     protected EList<VarNode> nodes;
+
+    /**
+     * The default value of the '{@link #isMinimized() <em>Minimized</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isMinimized()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean MINIMIZED_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isMinimized() <em>Minimized</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isMinimized()
+     * @generated
+     * @ordered
+     */
+    protected boolean minimized = MINIMIZED_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -128,6 +149,27 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isMinimized() {
+        return minimized;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setMinimized(boolean newMinimized) {
+        boolean oldMinimized = minimized;
+        minimized = newMinimized;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.VAR_TABLE__MINIMIZED, oldMinimized, minimized));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -149,6 +191,8 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
                 return getName();
             case XmlmapPackage.VAR_TABLE__NODES:
                 return getNodes();
+            case XmlmapPackage.VAR_TABLE__MINIMIZED:
+                return isMinimized();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -169,6 +213,9 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
                 getNodes().clear();
                 getNodes().addAll((Collection<? extends VarNode>)newValue);
                 return;
+            case XmlmapPackage.VAR_TABLE__MINIMIZED:
+                setMinimized((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -187,6 +234,9 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
             case XmlmapPackage.VAR_TABLE__NODES:
                 getNodes().clear();
                 return;
+            case XmlmapPackage.VAR_TABLE__MINIMIZED:
+                setMinimized(MINIMIZED_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -203,6 +253,8 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case XmlmapPackage.VAR_TABLE__NODES:
                 return nodes != null && !nodes.isEmpty();
+            case XmlmapPackage.VAR_TABLE__MINIMIZED:
+                return minimized != MINIMIZED_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -219,6 +271,8 @@ public class VarTableImpl extends EObjectImpl implements VarTable {
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (name: ");
         result.append(name);
+        result.append(", minimized: ");
+        result.append(minimized);
         result.append(')');
         return result.toString();
     }

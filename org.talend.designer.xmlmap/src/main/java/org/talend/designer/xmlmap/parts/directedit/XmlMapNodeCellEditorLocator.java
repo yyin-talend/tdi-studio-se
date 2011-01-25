@@ -12,30 +12,41 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts.directedit;
 
-import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class ExpressionCellEditorLocator implements CellEditorLocator {
+public class XmlMapNodeCellEditorLocator implements CellEditorLocator {
 
-    private IFigure figure;
+    private Figure figure;
 
-    public ExpressionCellEditorLocator(IFigure figure) {
+    public XmlMapNodeCellEditorLocator(Figure figure) {
         this.figure = figure;
     }
 
     public void relocate(CellEditor celleditor) {
-        Composite text = (Composite) celleditor.getControl();
+        Control control = celleditor.getControl();
         Rectangle copy = figure.getBounds().getCopy();
         figure.translateToAbsolute(copy);
+        if (control instanceof Text) {
+            Text text = (Text) control;
+            text.setBounds(copy.x, copy.y, copy.width, copy.height);
+        } else {
+            Composite text = (Composite) control;
+            text.setBounds(copy.x, copy.y, copy.width, copy.height);
+        }
 
-        text.setBounds(copy.x, copy.y, copy.width, copy.height);
+    }
 
+    public Figure getFigure() {
+        return this.figure;
     }
 
 }

@@ -312,6 +312,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getVarTable_Minimized() {
+        return (EAttribute)varTableEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getAbstractNode() {
         return abstractNodeEClass;
     }
@@ -471,6 +480,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
     /**
      * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getVarNode_Variable() {
+        return (EAttribute)varNodeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
@@ -551,6 +569,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         varTableEClass = createEClass(VAR_TABLE);
         createEAttribute(varTableEClass, VAR_TABLE__NAME);
         createEReference(varTableEClass, VAR_TABLE__NODES);
+        createEAttribute(varTableEClass, VAR_TABLE__MINIMIZED);
 
         abstractNodeEClass = createEClass(ABSTRACT_NODE);
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__NAME);
@@ -573,6 +592,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__GROUP);
 
         varNodeEClass = createEClass(VAR_NODE);
+        createEAttribute(varNodeEClass, VAR_NODE__VARIABLE);
 
         connectionEClass = createEClass(CONNECTION);
         createEReference(connectionEClass, CONNECTION__SOURCE);
@@ -637,6 +657,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(varTableEClass, VarTable.class, "VarTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getVarTable_Nodes(), this.getVarNode(), null, "nodes", null, 0, -1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getVarTable_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(abstractNodeEClass, AbstractNode.class, "AbstractNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getAbstractNode_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -659,6 +680,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getOutputTreeNode_Group(), ecorePackage.getEBoolean(), "group", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getVarNode_Variable(), ecorePackage.getEString(), "variable", null, 0, 1, VarNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(connectionEClass, Connection.class, "Connection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getConnection_Source(), this.getAbstractNode(), this.getAbstractNode_OutgoingConnections(), "source", null, 0, 1, Connection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

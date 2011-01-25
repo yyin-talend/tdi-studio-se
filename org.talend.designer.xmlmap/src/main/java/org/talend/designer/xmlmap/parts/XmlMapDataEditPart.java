@@ -90,6 +90,8 @@ public class XmlMapDataEditPart extends BaseEditPart {
         scrollPane = new ScrollPane();
         centerFigure = new RectangleFigure();
         centerFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
+        // GridLayout centerLayout = new GridLayout();
+        // centerFigure.setLayoutManager(centerLayout);
         subManager = new ToolbarLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
@@ -129,6 +131,13 @@ public class XmlMapDataEditPart extends BaseEditPart {
         }
         if (childEditPart instanceof VarTableEditPart) {
             /* get third figure to put all output tables figures in */
+            // GridData gridData = new GridData(GridData.CENTER);
+            // gridData.horizontalIndent = 75;
+            // gridData.widthHint = 300;
+            // if (child instanceof CenterVarFigure) {
+            // GridLayout centerLayout = (GridLayout) centerFigure.getLayoutManager();
+            // centerLayout.setConstraint((IFigure) child, gridData);
+            // }
             centerFigure.add(child);
         }
 

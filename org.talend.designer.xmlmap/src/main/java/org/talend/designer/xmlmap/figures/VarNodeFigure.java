@@ -26,7 +26,11 @@ public class VarNodeFigure extends ToolBarContainer {
 
     private VarNode varNode;
 
-    protected Label expression, type;
+    protected Label expression;
+
+    protected VarNodeTypeLabel type;
+
+    // protected Label expression, type;
 
     protected VariableContainerFigure variable;
 
@@ -44,7 +48,7 @@ public class VarNodeFigure extends ToolBarContainer {
         expression.setOpaque(true);
         expression.setText(varNode.getExpression());
         expression.setBorder(new LineBorder());
-        type = new Label();
+        type = new VarNodeTypeLabel();
         type.setOpaque(true);
         type.setText(varNode.getType());
         type.setBorder(new LineBorder());
@@ -90,8 +94,12 @@ public class VarNodeFigure extends ToolBarContainer {
         return this.expression;
     }
 
-    public Label getType() {
+    public VarNodeTypeLabel getType() {
         return this.type;
+    }
+
+    public VariableContainerFigure getVariable() {
+        return this.variable;
     }
 
 }

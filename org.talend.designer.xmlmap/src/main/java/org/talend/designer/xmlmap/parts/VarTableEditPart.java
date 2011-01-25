@@ -15,8 +15,13 @@ package org.talend.designer.xmlmap.parts;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ImageFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.xmlmap.figures.CenterVarFigure;
+import org.talend.designer.xmlmap.image.ImageInfo;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
@@ -26,6 +31,14 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 public class VarTableEditPart extends BaseEditPart {
 
     private CenterVarFigure centerVarFigure;
+
+    private Image restorImage = ImageProvider.getImage(ImageInfo.RESTORE_ICON);
+
+    private Image miniImage = ImageProvider.getImage(ImageInfo.MINIMIZE_ICON);
+
+    private static Label minitooltip = new Label("Minimize");
+
+    private static Label restoretooltip = new Label("Restore");
 
     @Override
     protected IFigure createFigure() {
@@ -69,8 +82,31 @@ public class VarTableEditPart extends BaseEditPart {
             switch (featureId) {
             case XmlmapPackage.VAR_TABLE__NODES:
                 refreshChildren();
+                break;
+            case XmlmapPackage.VAR_TABLE__MINIMIZED:
+                Boolean newStateIsMinimized = notification.getNewBooleanValue();
+                ImageFigure minisize = ((CenterVarFigure) getFigure()).getImageButtonsFigure().getMiniSize();
+                if (newStateIsMinimized) {
+                    minisize.setImage(restorImage);
+                    minisize.setToolTip(restoretooltip);
+                } else {
+                    minisize.setImage(miniImage);
+                    minisize.setToolTip(minitooltip);
+
+                }
+                // refreshChildren();
+                // refreshVisuals();
+                // refresh();
             }
         }
     }
+    // @Override
+    // protected void refreshVisuals() {
+    // // super.refreshVisuals();
+    // // this.getFigure().validate();
+    // for (IFigure child : (List<IFigure>) this.getFigure().getChildren()) {
+    // child.validate();
+    // }
+    // }
 
 }

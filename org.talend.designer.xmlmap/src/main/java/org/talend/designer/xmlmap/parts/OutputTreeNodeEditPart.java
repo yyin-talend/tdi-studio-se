@@ -32,8 +32,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.parts.directedit.ExpressionCellEditorLocator;
-import org.talend.designer.xmlmap.parts.directedit.ExpressionDirectEditManager;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -42,7 +42,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class OutputTreeNodeEditPart extends TreeNodeEditPart {
 
-    private ExpressionDirectEditManager directEditManager;
+    private XmlMapNodeDirectEditManager directEditManager;
 
     @Override
     protected IFigure createFigure() {
@@ -207,7 +207,7 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                     figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
                 }
                 if (figure != null) {
-                    directEditManager = new ExpressionDirectEditManager(this, new ExpressionCellEditorLocator(figure));
+                    directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure));
                 }
             }
             if (directEditManager != null) {

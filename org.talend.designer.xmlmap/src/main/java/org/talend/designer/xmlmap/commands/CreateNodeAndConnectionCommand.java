@@ -173,6 +173,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                                 expression = "";
                             }
                             expression = expression + " " + XmlMapUtil.convertToExpression(sourceNode.getXpath());
+                            targetNode.setName(expression);
                             targetNode.setExpression(expression);
                             targetNode.setNullable(sourceNode.isNullable());
                             targetNode.setType(sourceNode.getType());
@@ -227,7 +228,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                         } else {
                             // add target node
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-                            targetNode.setName(sourceNode.getName());
+                            targetNode.setName(sourceNode.getVariable());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             if (NodeType.ATTRIBUT.equals(nodeType)) {
                                 targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE

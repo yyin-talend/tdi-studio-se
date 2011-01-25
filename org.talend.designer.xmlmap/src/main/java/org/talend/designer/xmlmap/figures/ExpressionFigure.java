@@ -21,7 +21,7 @@ import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class ExpressionFigure extends Label {
+public class ExpressionFigure extends Label implements IExpressionBuilderCell {
 
     private XmlTreeBranch treeBranch;
 

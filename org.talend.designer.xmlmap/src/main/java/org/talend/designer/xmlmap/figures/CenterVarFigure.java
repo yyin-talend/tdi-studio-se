@@ -69,7 +69,12 @@ public class CenterVarFigure extends Figure {
         header.setVarText(varText);
         header.add(imageButtonsFigure);
         header.setToolbar(imageButtonsFigure);
-        VarTableContainerFigure = new VarTableContainerFigure();
+        VarTableContainerFigure = new VarTableContainerFigure(table);
+        // if (table.isIsMinimized()) {
+        // VarTableContainerFigure.setPreferredSize(imageButtonsFigure.getPreferredSize().width, 0);
+        // } else {
+        // VarTableContainerFigure.setPreferredSize(imageButtonsFigure.getPreferredSize().width, 30);
+        // }
         this.add(header);
         this.add(VarTableContainerFigure);
         // this.add(columnTitle);
@@ -86,6 +91,10 @@ public class CenterVarFigure extends Figure {
 
     public List<VarNode> getSelectionNodes() {
         return this.selectionNodes;
+    }
+
+    public ButtonsImageToolBarFigure getImageButtonsFigure() {
+        return this.imageButtonsFigure;
     }
 
 }

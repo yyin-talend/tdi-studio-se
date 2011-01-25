@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#getNodes <em>Nodes</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#isMinimized <em>Minimized</em>}</li>
  * </ul>
  * </p>
  *
@@ -69,5 +70,31 @@ public interface VarTable extends EObject {
      * @generated
      */
     EList<VarNode> getNodes();
+
+    /**
+     * Returns the value of the '<em><b>Minimized</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Minimized</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Minimized</em>' attribute.
+     * @see #setMinimized(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getVarTable_Minimized()
+     * @model
+     * @generated
+     */
+    boolean isMinimized();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#isMinimized <em>Minimized</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Minimized</em>' attribute.
+     * @see #isMinimized()
+     * @generated
+     */
+    void setMinimized(boolean value);
 
 } // VarTable

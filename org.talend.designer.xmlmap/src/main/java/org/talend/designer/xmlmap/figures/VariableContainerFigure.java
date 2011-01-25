@@ -13,23 +13,22 @@
 package org.talend.designer.xmlmap.figures;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.ToolbarLayout;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class VariableContainerFigure extends Figure {
+public class VariableContainerFigure extends ToolBarContainer {
 
     protected ToolBarButtonImageFigure checkImage;
 
-    protected Label nameLabel;
+    protected VarNodeTextLabel variableLabel;
 
     private VarNode varNode;
 
@@ -42,15 +41,19 @@ public class VariableContainerFigure extends Figure {
      * DOC Administrator Comment method "createContents".
      */
     protected void createContents() {
-        this.setLayoutManager(new ToolbarLayout(true));
+        this.setLayoutManager(new EqualWidthLayout());
         // if(varNode.)
-        checkImage = new CheckButtonImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
         Label nullableToolTip = new Label("Nullable");
+        if (!varNode.isNullable()) {
+            checkImage = new CheckButtonImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+        } else if (varNode.isNullable()) {
+            checkImage = new CheckButtonImageFigure(ImageProvider.getImage(EImage.CHECKED_ICON));
+        }
         checkImage.setToolTip(nullableToolTip);
-        nameLabel = new Label();
-        nameLabel.setText(varNode.getName());
+        variableLabel = new VarNodeTextLabel();
+        variableLabel.setText(varNode.getVariable());
         this.add(checkImage);
-        this.add(nameLabel);
+        this.add(variableLabel);
         addCheckListener();
     }
 
@@ -64,12 +67,7 @@ public class VariableContainerFigure extends Figure {
 
             public void mousePressed(MouseEvent me) {
                 boolean isCheck = checkImage.getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON)) ? true : false;
-                if (isCheck) {
-                    checkImage.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
-
-                } else {
-                    checkImage.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
-                }
+                varNode.setNullable(!isCheck);
                 // varNode.setNUllable();
                 checkImage.setBackgroundColor(ColorConstants.buttonDarkest);
 
@@ -80,4 +78,13 @@ public class VariableContainerFigure extends Figure {
             }
         });
     }
+
+    public VarNodeTextLabel getVariableLabel() {
+        return this.variableLabel;
+    }
+
+    public ToolBarButtonImageFigure getCheckImage() {
+        return this.checkImage;
+    }
+
 }

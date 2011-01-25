@@ -229,13 +229,22 @@ public interface XmlmapPackage extends EPackage {
     int VAR_TABLE__NODES = 1;
 
     /**
+     * The feature id for the '<em><b>Minimized</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_TABLE__MINIMIZED = 2;
+
+    /**
      * The number of structural features of the '<em>Var Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int VAR_TABLE_FEATURE_COUNT = 2;
+    int VAR_TABLE_FEATURE_COUNT = 3;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl <em>Abstract Node</em>}' class.
@@ -647,13 +656,22 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE__INCOMING_CONNECTIONS = ABSTRACT_NODE__INCOMING_CONNECTIONS;
 
     /**
+     * The feature id for the '<em><b>Variable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_NODE__VARIABLE = ABSTRACT_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Var Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 0;
+    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
@@ -865,6 +883,17 @@ public interface XmlmapPackage extends EPackage {
     EReference getVarTable_Nodes();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#isMinimized <em>Minimized</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Minimized</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarTable#isMinimized()
+     * @see #getVarTable()
+     * @generated
+     */
+    EAttribute getVarTable_Minimized();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode <em>Abstract Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1059,6 +1088,17 @@ public interface XmlmapPackage extends EPackage {
     EClass getVarNode();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getVariable <em>Variable</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Variable</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getVariable()
+     * @see #getVarNode()
+     * @generated
+     */
+    EAttribute getVarNode_Variable();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1251,6 +1291,14 @@ public interface XmlmapPackage extends EPackage {
         EReference VAR_TABLE__NODES = eINSTANCE.getVarTable_Nodes();
 
         /**
+         * The meta object literal for the '<em><b>Minimized</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute VAR_TABLE__MINIMIZED = eINSTANCE.getVarTable_Minimized();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl <em>Abstract Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1401,6 +1449,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass VAR_NODE = eINSTANCE.getVarNode();
+
+        /**
+         * The meta object literal for the '<em><b>Variable</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute VAR_NODE__VARIABLE = eINSTANCE.getVarNode_Variable();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.

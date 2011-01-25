@@ -19,6 +19,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.xmlmap.image.ImageInfo;
@@ -33,12 +34,21 @@ public class ButtonsImageToolBarFigure extends Figure {
 
     protected ImageFigure add, remove, move_up, move_down, miniSize;
 
-    protected boolean newStateIsMinimized = true;
+    protected boolean newStateIsMinimized;
 
     private VarTable parentTable;
 
+    private Image restorImage = ImageProvider.getImage(ImageInfo.RESTORE_ICON);
+
+    private Image miniImage = ImageProvider.getImage(ImageInfo.MINIMIZE_ICON);
+
+    private static Label minitooltip = new Label("Minimize");
+
+    private static Label restoretooltip = new Label("Restore");
+
     public ButtonsImageToolBarFigure(VarTable parentTable) {
         this.parentTable = parentTable;
+        newStateIsMinimized = parentTable.isMinimized();
         createToolbar();
     }
 
@@ -57,9 +67,9 @@ public class ButtonsImageToolBarFigure extends Figure {
         move_down = new MoveDownButtonImageFigure(ImageProvider.getImage(EImage.DOWN_ICON));
         move_down.setEnabled(false);
         if (newStateIsMinimized) {
-            miniSize = new MinisizeButtonImageFigure(ImageProvider.getImage(ImageInfo.RESTORE_ICON));
+            miniSize = new MinisizeButtonImageFigure(restorImage);
         } else if (!newStateIsMinimized) {
-            miniSize = new MinisizeButtonImageFigure(ImageProvider.getImage(ImageInfo.MINIMIZE_ICON));
+            miniSize = new MinisizeButtonImageFigure(miniImage);
         }
         setToolTips();
         this.add(add);
@@ -84,6 +94,16 @@ public class ButtonsImageToolBarFigure extends Figure {
                 add.setBackgroundColor(ColorConstants.buttonDarkest);
                 VarNode newNode = XmlmapFactory.eINSTANCE.createVarNode();
                 parentTable.getNodes().add(newNode);
+                parentTable.setMinimized(false);
+                // VarTableContainerFigure varTableContainerFigure = ((CenterVarFigure)
+                // ButtonsImageToolBarFigure.this.getParent()
+                // .getParent()).getVarTableContainerFigure();
+                // int tableContainerHeight = varTableContainerFigure.getPreferredSize().height;
+                // for (IFigure current : (List<IFigure>) varTableContainerFigure.getChildren()) {
+                // tableContainerHeight = tableContainerHeight + current.getPreferredSize().height;
+                // }
+                // varTableContainerFigure.setPreferredSize(width, tableContainerHeight);
+                // varTableContainerFigure.validate();
                 if (!remove.isEnabled()) {
                     remove.setEnabled(true);
                 }
@@ -117,6 +137,79 @@ public class ButtonsImageToolBarFigure extends Figure {
 
             }
         });
+
+        miniSize.addMouseListener(new MouseListener() {
+
+            public void mousePressed(MouseEvent me) {
+                boolean isMini = parentTable.isMinimized();
+                if (isMini) {
+                    parentTable.setMinimized(false);
+                    // miniSize.setImage(miniImage);
+                    // miniSize.setToolTip(minitooltip);
+                }
+                if (!isMini) {
+                    parentTable.setMinimized(true);
+                    // miniSize.setImage(restorImage);
+                    // miniSize.setToolTip(restoretooltip);
+                }
+            }
+
+            public void mouseReleased(MouseEvent me) {
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+
+            }
+
+        });
+
+        move_up.addMouseListener(new MouseListener() {
+
+            public void mouseReleased(MouseEvent me) {
+
+            }
+
+            public void mousePressed(MouseEvent me) {
+                // VarNode selectionNode = (VarNode) me.getSource();
+                // EList<VarNode> children = parentTable.getNodes();
+                // int oldPosition = children.indexOf(children);
+                // int oldPrevPosition = oldPosition - 1;
+                // VarNode copiedNode = EcoreUtil.copy(selectionNode);
+                // VarNode copiedPrevNode = EcoreUtil.copy(children.get(oldPrevPosition));
+                // children.remove(oldPosition);
+                // children.remove(oldPrevPosition);
+                // children.add(oldPrevPosition, copiedNode);
+                // children.add(oldPosition, copiedPrevNode);
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+
+            }
+        });
+
+        move_down.addMouseListener(new MouseListener() {
+
+            public void mouseReleased(MouseEvent me) {
+
+            }
+
+            public void mousePressed(MouseEvent me) {
+                // VarNode selectionNode = (VarNode) me.getSource();
+                // EList<VarNode> children = parentTable.getNodes();
+                // int oldPosition = children.indexOf(children);
+                // int oldPrevPosition = oldPosition - 1;
+                // VarNode copiedNode = EcoreUtil.copy(selectionNode);
+                // VarNode copiedPrevNode = EcoreUtil.copy(children.get(oldPrevPosition));
+                // children.remove(oldPosition);
+                // children.remove(oldPrevPosition);
+                // children.add(oldPrevPosition, copiedNode);
+                // children.add(oldPosition, copiedPrevNode);
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+
+            }
+        });
     }
 
     private void setToolTips() {
@@ -132,14 +225,55 @@ public class ButtonsImageToolBarFigure extends Figure {
         tooltip = new Label();
         tooltip.setText("Move down selected variable(s)");
         move_down.setToolTip(tooltip);
-        tooltip = new Label();
         if (newStateIsMinimized) {
-            tooltip.setText("Restore");
-            miniSize.setToolTip(tooltip);
+            miniSize.setToolTip(restoretooltip);
         } else if (!newStateIsMinimized) {
-            tooltip.setText("Minimize");
-            miniSize.setToolTip(tooltip);
+            miniSize.setToolTip(minitooltip);
         }
+    }
+
+    public ImageFigure getAdd() {
+        return this.add;
+    }
+
+    public ImageFigure getRemove() {
+        return this.remove;
+    }
+
+    public ImageFigure getMove_up() {
+        return this.move_up;
+    }
+
+    public ImageFigure getMove_down() {
+        return this.move_down;
+    }
+
+    public ImageFigure getMiniSize() {
+        return this.miniSize;
+    }
+
+    public boolean isNewStateIsMinimized() {
+        return this.newStateIsMinimized;
+    }
+
+    public VarTable getParentTable() {
+        return this.parentTable;
+    }
+
+    public Image getRestorImage() {
+        return this.restorImage;
+    }
+
+    public Image getMiniImage() {
+        return this.miniImage;
+    }
+
+    public static Label getMinitooltip() {
+        return minitooltip;
+    }
+
+    public static Label getRestoretooltip() {
+        return restoretooltip;
     }
 
 }

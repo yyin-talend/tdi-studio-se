@@ -117,7 +117,8 @@ public class MapperUI {
         // // *******************************************
         if (copyOfMapData.getVarTables().isEmpty()) {
             VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
-            varTable1.setName("Var");
+            varTable1.setName("Var"); //$NON-NLS-N$
+            varTable1.setMinimized(true);
             copyOfMapData.getVarTables().add(varTable1);
         }
         editor.setContent(copyOfMapData);

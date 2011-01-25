@@ -12,14 +12,20 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import java.util.List;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -30,7 +36,10 @@ public class VarTableContainerFigure extends Figure {
 
     protected Figure columnsContainer;
 
-    public VarTableContainerFigure() {
+    private VarTable vartable;
+
+    public VarTableContainerFigure(VarTable vartable) {
+        this.vartable = vartable;
         createContents();
     }
 
@@ -38,7 +47,25 @@ public class VarTableContainerFigure extends Figure {
      * DOC Administrator Comment method "createContents".
      */
     protected void createContents() {
-        this.setLayoutManager(new ToolbarLayout());
+        this.setLayoutManager(new ToolbarLayout() {
+
+            @Override
+            protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
+                container.validate();
+                List children = container.getChildren();
+                Rectangle result = new Rectangle().setLocation(container.getClientArea().getLocation());
+                boolean isMinimized = vartable.isMinimized();
+                if (isMinimized) {
+                    result.setSize(wHint, 0);
+                } else if (!isMinimized) {
+                    for (int i = 0; i < children.size(); i++)
+                        result.union(((IFigure) children.get(i)).getBounds());
+                    result.resize(container.getInsets().getWidth(), container.getInsets().getHeight());
+                }
+                return result.getSize();
+            }
+
+        });
         Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
         columnTitle = new ToolBarContainer();
         columnTitle.setOpaque(true);
@@ -66,7 +93,6 @@ public class VarTableContainerFigure extends Figure {
         columnTitle.add(expression);
         columnTitle.add(type);
         columnTitle.add(varriable);
-
         ToolbarLayout containerLayout = new ToolbarLayout();
         containerLayout.setVertical(true);
         columnsContainer = new Figure();
@@ -83,5 +109,4 @@ public class VarTableContainerFigure extends Figure {
     public Figure getColumnsContainer() {
         return this.columnsContainer;
     }
-
 }
