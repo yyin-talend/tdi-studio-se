@@ -24,7 +24,7 @@ if (inConns != null && !inConns.isEmpty()) {
     columnsName.add(column.getLabel());
   }
   
-  if (columnsName.contains("value") && columnsName.contains("serie") && columnsName.contains("category")) {
+  if (columnsName.contains("value") && columnsName.contains("series") && columnsName.contains("category")) {
   %>
     org.jfree.data.category.DefaultCategoryDataset dataset_<%=cid%> = new org.jfree.data.category.DefaultCategoryDataset();
   <%} else {%>

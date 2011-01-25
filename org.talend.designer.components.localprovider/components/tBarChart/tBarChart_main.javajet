@@ -24,9 +24,9 @@ if (inConns != null && !inConns.isEmpty()) {
     columnsName.add(column.getLabel());
   }
   
-  if (columnsName.contains("value") && columnsName.contains("serie") && columnsName.contains("category")) {
+  if (columnsName.contains("value") && columnsName.contains("series") && columnsName.contains("category")) {
   %>
-    dataset_<%=cid%>.setValue(<%=sInConnName%>.value, <%=sInConnName%>.serie, <%=sInConnName%>.category);
+    dataset_<%=cid%>.setValue(<%=sInConnName%>.value, <%=sInConnName%>.series, <%=sInConnName%>.category);
   <%}
 }
 %>

@@ -34,7 +34,7 @@
 <PARAMETERS>
   <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
     <TABLE READONLY="false">
-      <COLUMN NAME="serie" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+      <COLUMN NAME="series" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       <COLUMN NAME="category" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       <COLUMN NAME="value" TYPE="id_Integer" READONLY="true" CUSTOM="true"/>
     </TABLE>

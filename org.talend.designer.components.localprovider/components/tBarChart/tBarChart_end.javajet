@@ -26,7 +26,7 @@ if (inConns != null && !inConns.isEmpty()) {
     columnsName.add(column.getLabel());
   }
   
-  if (columnsName.contains("value") && columnsName.contains("serie") && columnsName.contains("category")) {
+  if (columnsName.contains("value") && columnsName.contains("series") && columnsName.contains("category")) {
   
     boolean bThreeDFormat = "true".equals(ElementParameterParser.getValue(node, "__3D_FORMAT__"));
     String sChartTitle = ElementParameterParser.getValue(node, "__CHART_TITLE__");
