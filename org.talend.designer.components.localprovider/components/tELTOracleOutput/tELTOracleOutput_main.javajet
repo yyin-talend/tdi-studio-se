@@ -534,8 +534,8 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 				mergeQuery += "WHERE " + "";
 			<%
 				}
-				else {
-					mergeQuery += "WHERE " + <%=useUpdateWhereString%>;
+				else {%>
+					mergeQuery += "WHERE " + <%=useUpdateWhereString %>;
 			<%	}
 			}%>
 			<%if (useUpdateDeleteWhere) { 
