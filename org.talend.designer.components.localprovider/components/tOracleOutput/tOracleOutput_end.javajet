@@ -84,23 +84,25 @@ imports="
                 	<%
                 	}%>                	
             	}
-            	tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();            	
-    	    	<%if (("INSERT").equals(dataAction)) {
-    	    	%>
-    	    		insertedCount_<%=cid%> 
-    	    	<%
-    	    	}else if (("UPDATE").equals(dataAction)) {
-    	    	%>
-    	    		updatedCount_<%=cid%>
-    	    	<%
-    	    	}else if (("DELETE").equals(dataAction)) {
-    	    	%>
-    	    	    deletedCount_<%=cid%>
-    	    	<%
-    	    	}%>
-    	    	+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);                                  
-                <%
-                }%>        
+            	if (pstmt_<%=cid %> != null) { 
+	            	tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();            	
+	    	    	<%if (("INSERT").equals(dataAction)) {
+	    	    	%>
+	    	    		insertedCount_<%=cid%> 
+	    	    	<%
+	    	    	}else if (("UPDATE").equals(dataAction)) {
+	    	    	%>
+	    	    		updatedCount_<%=cid%>
+	    	    	<%
+	    	    	}else if (("DELETE").equals(dataAction)) {
+	    	    	%>
+	    	    	    deletedCount_<%=cid%>
+	    	    	<%
+	    	    	}%>
+	    	    	+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);                                  
+	                <%
+	                }%>        
+                }
         if(pstmt_<%=cid %> != null) {            
 <%
 //to fixed: bug8422
