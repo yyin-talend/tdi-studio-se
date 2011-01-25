@@ -14,7 +14,9 @@ package org.talend.repository.plugin.integration;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
 import org.talend.core.CorePlugin;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -36,6 +38,8 @@ public class SwitchProjectAction extends Action {
 
     @Override
     public void run() {
+        IRepositoryService repositoryService = CorePlugin.getDefault().getRepositoryService();
+        repositoryService.openLoginDialog(Display.getDefault().getActiveShell(), false);
 
     }
 }

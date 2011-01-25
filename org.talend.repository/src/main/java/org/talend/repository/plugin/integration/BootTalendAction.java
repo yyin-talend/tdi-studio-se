@@ -13,11 +13,15 @@
 package org.talend.repository.plugin.integration;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -55,19 +59,33 @@ public class BootTalendAction extends AContextualAction implements IWorkbenchWin
 
     public void run(IAction action) {
 
-        // if (store.getInt(LOGIN_COUNTER) > 1) {
-        // PlatformUI.getWorkbench().restart();
-        // }
-        //
-        // int counter = store.getInt(LOGIN_COUNTER);
-        // store.setValue(LOGIN_COUNTER, ++counter);
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        if (store.getInt(LOGIN_COUNTER) > 1) {
+            boolean openConfirm = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Confirm",
+                    "Are you want to switch to another project");
+            if (!openConfirm) {
+                return;
+            }
 
-        IPerspectiveDescriptor pDescriptor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .getPerspective();
+            // workbench.restart();
+        }
+
+        int counter = store.getInt(LOGIN_COUNTER);
+        store.setValue(LOGIN_COUNTER, ++counter);
+
+        IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow == null) {
+            return;
+        }
+        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+        if (activePage == null) {
+            return;
+        }
+        IPerspectiveDescriptor pDescriptor = activePage.getPerspective();
 
         if (!pDescriptor.getId().equals(TALEND_PERSPECTIVE_ID)) {
             pDescriptor = getPerspective(TALEND_PERSPECTIVE_ID);
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(pDescriptor);
+            activePage.setPerspective(pDescriptor);
         }
 
         SwitchProjectAction switchAction = new SwitchProjectAction();

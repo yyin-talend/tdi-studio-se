@@ -549,7 +549,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             }
 
             // Reference Projects
-            if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject()
+            if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject() && project != null
                     && project.getEmfProject().getReferencedProjects().size() > 0) {
                 refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
                 refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
