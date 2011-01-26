@@ -99,10 +99,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 <%
 			if("getLead".equals(operation)){
 %>
-			com.marketo.www.mktows.ResultGetLead leads_<%=cid%> = client_<%=cid%>.getLead("<%=leadKeyType%>",<%=leadKeyValue%>);
-			com.marketo.www.mktows.LeadRecord[] records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
-			for (int i_<%=cid%> = 0; i_<%=cid%> < leads_<%=cid%>.getCount(); i_<%=cid%>++) {
-            	java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readLead(records_<%=cid%>[i_<%=cid%>]);
+			com.marketo.www.mktows.ResultGetLead leads_<%=cid%> = null;
+			com.marketo.www.mktows.LeadRecord[] records_<%=cid%> = null;
+			try{
+				leads_<%=cid%> = client_<%=cid%>.getLead("<%=leadKeyType%>",<%=leadKeyValue%>);
+				records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
+			}catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
+				client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+			}
+			if(leads_<%=cid%> != null && records_<%=cid%>!=null){
+				for (int i_<%=cid%> = 0; i_<%=cid%> < leads_<%=cid%>.getCount(); i_<%=cid%>++) {
+	            	java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readLead(records_<%=cid%>[i_<%=cid%>]);
 <%			
 			}else if("getMutipleLeads".equals(operation)){
 %>
@@ -125,10 +132,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 %>
 			com.marketo.www.mktows.StreamPosition streamPosition_<%=cid%> = null;
 			while(true){
-                com.marketo.www.mktows.LeadActivityList activities_<%=cid%> = client_<%=cid%>.getLeadActivity("<%=leadKeyType%>",<%=leadKeyValue%>, <%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>,streamPosition_<%=cid%>);
-                com.marketo.www.mktows.ActivityRecord[] activityRecords_<%=cid%> = activities_<%=cid%>.getActivityRecordList();
-                for (int i_<%=cid%> = 0; i_<%=cid%> < activities_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
-                    java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readActivity(activityRecords_<%=cid%>[i_<%=cid%>]);
+				com.marketo.www.mktows.LeadActivityList activities_<%=cid%> = null;
+				com.marketo.www.mktows.ActivityRecord[] activityRecords_<%=cid%> = null;
+                try{
+	                activities_<%=cid%> = client_<%=cid%>.getLeadActivity("<%=leadKeyType%>",<%=leadKeyValue%>, <%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>,streamPosition_<%=cid%>);
+	                activityRecords_<%=cid%> = activities_<%=cid%>.getActivityRecordList();
+	            }catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
+					client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+				}
+				if(activities_<%=cid%> != null && activityRecords_<%=cid%> != null){
+	                for (int i_<%=cid%> = 0; i_<%=cid%> < activities_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
+	                    java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readActivity(activityRecords_<%=cid%>[i_<%=cid%>]);
 <%
 			}else if("getLeadChanges".equals(operation)){
 %>

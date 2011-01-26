@@ -119,7 +119,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 					}
 				}catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
 					<%if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
-					errorMsg_<%=cid%> = client_<%=cid%>.exceptionFilter(axisFault_<%=cid%>);
+					errorMsg_<%=cid%> = client_<%=cid%>.outputExceptionFilter(axisFault_<%=cid%>);
 					marketoId_<%=cid%> = <%=conn.getName() %>.Id;
 					hasFault_<%=cid%> = true;
 					<%}else{%>

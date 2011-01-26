@@ -29,6 +29,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 
 				if("getLead".equals(operation)){
 %>		
+						}
 					}	
 <%			
 				}else if("getMutipleLeads".equals(operation)){
@@ -43,13 +44,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 <%
 				}else if("getLeadActivity".equals(operation)){
 %>
-            			}
-                        if (activities_<%=cid%>.getRemainingCount() != 0) {
-                            streamPosition_<%=cid%> = activities_<%=cid%>.getNewStartPosition();
-                        } else {
-                            break;
-                        }
-                    }
+	            			}
+	                        if (activities_<%=cid%>.getRemainingCount() != 0) {
+	                            streamPosition_<%=cid%> = activities_<%=cid%>.getNewStartPosition();
+	                        } else {
+	                            break;
+	                        }
+                    	}else{
+                    		break;
+                    	}
+                  	}
 <%
 				}else if("getLeadChanges".equals(operation)){
 %>
