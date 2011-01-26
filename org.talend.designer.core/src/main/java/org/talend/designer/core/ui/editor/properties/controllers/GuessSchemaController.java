@@ -49,6 +49,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -86,6 +87,7 @@ import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.wizards.metadata.connection.database.MappingFileSelectDialog;
 
 /**
  * DOC zqin class global comment. Detailled comment
@@ -323,6 +325,15 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
         DatabaseConnection connt = service.createConnection(connParameters);
         String dbmsId = connt.getDbmsId();
+
+        if (dbmsId == null) {
+            Shell shell = Display.getCurrent().getActiveShell();
+            MessageDialog.openError(shell, "No info about DB found !",
+                    "Please choose the correct mapping file.\n Note: This is normal when using JDBC component");
+            MappingFileSelectDialog dialog = new MappingFileSelectDialog(shell);
+            dialog.open();
+            dbmsId = dialog.getSelectId();
+        }
 
         GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
         try {
@@ -703,10 +714,17 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             }
 
             if (isStatus) {
+                if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(iMetadataConnection.getDbType())) {
+                    info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                            iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
+                            iMetadataConnection.getUrl(), iMetadataConnection.getDriverClass(),
+                            iMetadataConnection.getDriverJarPath(), iMetadataConnection.getAdditionalParams());
+                } else {
+                    info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                            iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
+                            iMetadataConnection.getUrl(), iMetadataConnection.getDriverJarPath());
+                }
 
-                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
-                        iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
-                        iMetadataConnection.getUrl(), iMetadataConnection.getDriverJarPath());
                 final Property property = (Property) GuessSchemaProcess.getNewmockProperty();
                 List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 

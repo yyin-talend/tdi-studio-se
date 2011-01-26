@@ -271,10 +271,8 @@ public class GuessSchemaProcess {
         StringBuffer buffer = new StringBuffer();
         ProcessStreamTrashReaderUtil.readAndForget(executeprocess, buffer);
         final String errorMessage = buffer.toString();
-        boolean errorReturn = false;
         if (!"".equals(buffer.toString())) {
             try {
-                errorReturn = true;
                 throw new PersistenceException(errorMessage) {
 
                     /*
@@ -306,9 +304,6 @@ public class GuessSchemaProcess {
 
         try {
             CsvArray array = new CsvArray();
-            if (errorReturn) {
-                return array;
-            }
             array = array.createFrom(previousFile, currentProcessEncoding);
             return array;
         } catch (IOException ioe) {

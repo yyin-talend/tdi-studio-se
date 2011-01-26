@@ -1396,7 +1396,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
             }
 
-            connParameters.setDbType(dbTypeByClassName);
+            if (dbTypeByClassName != null) {
+                connParameters.setDbType(dbTypeByClassName);
+            }
         }
 
         String jdbcProps = getValueFromRepositoryName(element, EConnectionParameterName.PROPERTIES_STRING.getName());
@@ -1643,7 +1645,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         } else {
-            setAllConnectionParameters(null, elem);
+            setAllConnectionParameters(EDatabaseTypeName.GENERAL_JDBC.getXmlName(), elem);
         }
 
         if (connectionNode != null) {

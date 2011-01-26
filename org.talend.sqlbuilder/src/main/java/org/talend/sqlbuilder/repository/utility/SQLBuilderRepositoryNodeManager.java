@@ -678,8 +678,10 @@ public class SQLBuilderRepositoryNodeManager {
         }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
         connection.setProductId(product);
-        final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
-        connection.setDbmsId(mapping);
+        if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
+            final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+            connection.setDbmsId(mapping);
+        }
 
         if (!isSchemaInValid && isNeedSchema) {
             schema = schema.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$

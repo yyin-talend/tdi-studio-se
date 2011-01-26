@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
@@ -831,19 +832,27 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                                 boolean check = managerConnection.check(metadataConnection);
                                 List<String> itemTableName = null;
                                 // modified by nma, open schema editor even failed to connect
-                                if (check != false) {
-                                    itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+                                boolean noTableExistInDB = false;
+                                boolean skipStep = true;
+                                try {
+                                    if (check != false) {
+                                        itemTableName = ExtractMetaDataFromDataBase
+                                                .returnTablesFormConnection(metadataConnection);
+                                    }
+                                    noTableExistInDB = noTableExistInDB(check, itemTableName);
+                                } catch (Exception e) {
+                                    ExceptionHandler.process(e);
+                                    skipStep = false;
                                 }
-                                boolean noTableExistInDB = noTableExistInDB(check, itemTableName);
 
                                 if (noTableExistInDB) {
                                     MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                                             Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
                                             Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
                                 } else {
-
-                                    final boolean skipStep = checkConnectStatus(check, itemTableName);
-
+                                    if (skipStep) {
+                                        skipStep = checkConnectStatus(check, itemTableName);
+                                    }
                                     DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
                                             creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
                                             managerConnection, metadataConnection);
