@@ -1330,6 +1330,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else
                 type = "ORACLE_SID"; //$NON-NLS-1$
         }
+        if (type == null || "".equals(type)) { // JDBC by default
+            type = EDatabaseTypeName.GENERAL_JDBC.getXmlName();
+        }
         connParameters.setDbType(type);
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
@@ -1640,12 +1643,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     }
                 }
                 if (connectionNode != null) {
-
                     setAllConnectionParameters(type, connectionNode);
                 }
             }
         } else {
-            setAllConnectionParameters(EDatabaseTypeName.GENERAL_JDBC.getXmlName(), elem);
+            setAllConnectionParameters(null, elem);
         }
 
         if (connectionNode != null) {

@@ -89,6 +89,7 @@ public class DbInfo {
         this.driverClassName = driverClassName;
         this.driverJarPath = driverJarPath;
         this.trueDBTypeForJDBC = dbType;
+        this.additionalParams = additionalParams;
         getConnFromNode();
     }
 
