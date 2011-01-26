@@ -1015,161 +1015,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        // if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
-                        // if (value != null && value.length() > 2) {
-                        // elemParam.setPropertyValue(pType.getName(), TalendTextUtils.removeQuotesIfExist(value)); //
-                        // value.substring(1,
-                        // }
-                        // } else {
-                        elemParam.setPropertyValue(pType.getName(), value);
-                        // }
-                    }
-                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
-                        && "true".equals(pType.getValue()) //$NON-NLS-1$
-                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) { //$NON-NLS-1$
-                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
-                    UpdateTheJobsActionsOnTable.isClear = false;
-                }
-            }
-        }
-    }
-
-    private void loadElementParametersForScripts(Element elemParam, EList listParamType) {
-        ElementParameterType pType;
-
-        for (int j = 0; j < listParamType.size(); j++) {
-            pType = (ElementParameterType) listParamType.get(j);
-            if (pType != null) {
-                IElementParameter param = elemParam.getElementParameter(pType.getName());
-                if (param != null) {
-                    if (pType.isSetContextMode()) {
-                        param.setContextMode(pType.isContextMode());
-                    } else {
-                        param.setContextMode(false);
-                    }
-                    if (param.isReadOnly()
-                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
-                                    EParameterName.VERSION.getName()))) {
-                        continue; // if the parameter is read only, don't load
-                        // it (this will prevent to overwrite the
-                        // value)
-                    }
-
-                    String value = pType.getValue();
-                    value = TalendTextUtils.removeQuotesIfExist(value);
-                    if (value != null && value.contains("\\")) {
-                        value = value.replace("\\", "");
-                    }
-                    if (param.getFieldType().equals(EParameterFieldType.CHECK)
-                            || param.getFieldType().equals(EParameterFieldType.RADIO)) {
-                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
-                            Boolean boolean1 = new Boolean(value);
-                            elemParam.setPropertyValue(pType.getName(), boolean1);
+                        if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
+                            if (value != null && value.length() > 2) {
+                                elemParam.setPropertyValue(pType.getName(), TalendTextUtils.removeQuotesIfExist(value)); // value.substring(1,
+                            }
                         } else {
                             elemParam.setPropertyValue(pType.getName(), value);
                         }
-                        // if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
-                        // if ((elemParam instanceof Node) && !boolean1) {
-                        // ((Node) elemParam).setDummy(!boolean1);
-                        // }
-                        // }
-                    } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
-                        boolean valueSet = false;
-                        if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
-                            if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
-                                valueSet = true;
-                                int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), value);
-                                elemParam.setPropertyValue(pType.getName(), param.getListItemsValue()[index]);
-                            }
-                        }
-                        if (!valueSet) {
-                            elemParam.setPropertyValue(pType.getName(), value);
-                        }
-                        if (param.getName().equals(EParameterName.DB_TYPE.getName())) {
-                            IElementParameter elementParameter = elemParam.getElementParameter(EParameterName.DB_VERSION
-                                    .getName());
-                            setDbVersion(elementParameter, value);
-                            IElementParameter elementParameter2 = elemParam.getElementParameter(EParameterName.SCHEMA_DB
-                                    .getName());
-                            DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
-                        } else if (param.getName().equals(
-                                JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
-                            IElementParameter elementParameter = elemParam.getElementParameter(JobSettingsConstants
-                                    .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-                            setDbVersion(elementParameter, value);
-                            IElementParameter elementParameter2 = elemParam.getElementParameter(JobSettingsConstants
-                                    .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
-                            DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
-                        }
-                    } else if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
-                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                        String[] codeList = param.getListItemsDisplayCodeName();
-                        Map<String, Object> lineValues = null;
-                        for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
-                            boolean found = false;
-                            for (int i = 0; i < codeList.length && !found; i++) {
-                                if (codeList[i].equals(elementValue.getElementRef())) {
-                                    found = true;
-                                }
-                            }
-                            if (found) {
-                                if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
-                                    lineValues = new HashMap<String, Object>();
-                                    tableValues.add(lineValues);
-                                }
-                                boolean needRemoveQuotes = false;
-                                for (Object o : param.getListItemsValue()) {
-                                    if (o instanceof IElementParameter) {
-                                        IElementParameter tableParam = (IElementParameter) o;
-                                        if (tableParam.getName().equals(elementValue.getElementRef())
-                                                && (tableParam.getFieldType() == EParameterFieldType.CONNECTION_LIST)) {
-                                            needRemoveQuotes = true;
-                                        }
-                                    }
-                                }
-
-                                String value2 = elementValue.getValue();
-                                if (needRemoveQuotes) {
-                                    lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(value2));
-                                } else {
-                                    value2 = TalendTextUtils.removeQuotesIfExist(value2);
-                                    lineValues.put(elementValue.getElementRef(), value2);
-                                }
-                                if (elementValue.getType() != null) {
-                                    lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
-                                            elementValue.getType());
-                                }
-                            }
-                        }
-                        // check missing codes in the table to have the default values.
-                        for (Map<String, Object> line : tableValues) {
-                            for (int i = 0; i < codeList.length; i++) {
-                                if (!line.containsKey(codeList[i])) {
-                                    IElementParameter itemParam = (IElementParameter) param.getListItemsValue()[i];
-                                    line.put(codeList[i], itemParam.getValue());
-                                }
-                            }
-                        }
-
-                        elemParam.setPropertyValue(pType.getName(), tableValues);
-                    } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
-                        String pTypeValue = TalendTextUtils.removeQuotesIfExist(pType.getValue());
-                        if (pTypeValue != null) {
-                            if (value.equals(pTypeValue) && !pTypeValue.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")) {
-                                elemParam.setPropertyValue(pType.getName(), value);
-                            } else if (!pType.getName().endsWith(EParameterName.ENCODING_TYPE.getName())
-                                    && pTypeValue.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")
-                                    && value.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")) {
-                                String substring = value.substring(value.indexOf(":") + 1, value.length());
-                                substring = TalendTextUtils.removeQuotesIfExist(substring);
-                                elemParam.setPropertyValue(pType.getName() + ":" + EParameterName.ENCODING_TYPE.getName(),
-                                        substring);
-                            } else {
-                                elemParam.setPropertyValue(pType.getName(), value);
-                            }
-                        }
-                    } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        elemParam.setPropertyValue(pType.getName(), value);
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
                         && "true".equals(pType.getValue()) //$NON-NLS-1$
@@ -1598,24 +1450,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void loadSubjobsForScripts(ProcessType processType) {
-        for (Iterator iter = processType.getSubjob().iterator(); iter.hasNext();) {
-            SubjobType subjobType = (SubjobType) iter.next();
-
-            SubjobContainer subjobContainer = new SubjobContainer(this);
-            loadElementParametersForScripts(subjobContainer, subjobType.getElementParameter());
-            // look for the related node
-            Node subjobStartNode = subjobContainer.getSubjobStartNode();
-            if (subjobStartNode != null) {
-                subjobContainer.addNodeContainer(subjobStartNode.getNodeContainer());
-                subjobContainers.add(subjobContainer);
-                elem.remove(subjobStartNode.getNodeContainer());
-                elem.add(subjobContainer);
-                mapSubjobStarts.put(subjobStartNode, subjobContainer);
-            }
-        }
-    }
-
     private void loadNotes(ProcessType process) {
         for (Iterator iter = process.getNote().iterator(); iter.hasNext();) {
             NoteType noteType = (NoteType) iter.next();
@@ -1626,20 +1460,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setText(noteType.getText());
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
-            addNote(note);
-        }
-    }
-
-    private void loadNotesForJobscripts(ProcessType process) {
-        for (Iterator iter = process.getNote().iterator(); iter.hasNext();) {
-            NoteType noteType = (NoteType) iter.next();
-            Note note = new Note();
-            note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
-            note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
-            note.setOpaque(noteType.isOpaque());
-            note.setText(TalendTextUtils.removeQuotesIfExist(noteType.getText()));
-            note.setProcess(this);
-            loadElementParametersForScripts(note, noteType.getElementParameter());
             addNote(note);
         }
     }
@@ -1719,35 +1539,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    protected void loadNodesForScripts(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
-        EList nodeList;
-        NodeType nType;
-        nodeList = process.getNode();
-        Node nc;
-
-        EList listParamType;
-
-        unloadedNode = new ArrayList<NodeType>();
-        for (int i = 0; i < nodeList.size(); i++) {
-            nType = (NodeType) nodeList.get(i);
-            listParamType = nType.getElementParameter();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(
-                    TalendTextUtils.removeQuotesIfExist(nType.getComponentName()));
-            if (component == null) {
-                unloadedNode.add(nType);
-                continue;
-            }
-
-            nc = loadNodeForScripts(nType, component, nodesHashtable, listParamType);
-            // nc = loadNode(nType, component, nodesHashtable, listParamType);
-
-        }
-
-        for (int i = 0; i < unloadedNode.size(); i++) {
-            createDummyNode(unloadedNode.get(i), nodesHashtable);
-        }
-    }
-
     protected Node createDummyNode(NodeType nType, Hashtable<String, Node> nodesHashtable) {
         DummyComponent component = new DummyComponent(nType);
         Node nc;
@@ -1788,73 +1579,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         loadElementParameters(nc, listParamType);
-
-        // update the value of process type
-        IElementParameter processParam = nc.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
-
-        if (processParam != null) {
-            IElementParameter processIdParam = processParam.getChildParameters().get(
-                    EParameterName.PROCESS_TYPE_PROCESS.getName());
-            IElementParameter processVersionParam = processParam.getChildParameters().get(
-                    EParameterName.PROCESS_TYPE_VERSION.getName());
-            ProcessItem processItem = null;
-            if (processVersionParam != null) {
-                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(),
-                        (String) processVersionParam.getValue());
-            } else {
-                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue());
-            }
-            if (processItem != null) {
-                nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
-            }
-        }
-        // nc.setData(nType.getBinaryData(), nType.getStringData());
-        if (nc.getExternalNode() != null && nType.getNodeData() != null) {
-            nc.getExternalNode().buildExternalData(nType.getNodeData());
-            nc.setExternalData(nc.getExternalNode().getExternalData());
-        }
-
-        loadSchema(nc, nType);
-
-        // add a reject connector if the node has validation rule.
-        ValidationRulesUtil.createRejectConnector(nc);
-
-        loadColumnsBasedOnSchema(nc, listParamType);
-        NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
-        if (nc.isJoblet()) {
-            nodeContainer = new JobletContainer(nc);
-        } else {
-            nodeContainer = new NodeContainer(nc);
-        }
-
-        addNodeContainer(nodeContainer);
-        nodesHashtable.put(nc.getUniqueName(), nc);
-        updateAllMappingTypes();
-
-        if (loadScreenshots) {
-            byte[] innerContent = nType.getScreenshot();
-            if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
-                nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
-            }
-            externalInnerContents.add(innerContent);
-        }
-        nc.setNeedLoadLib(false);
-        //
-        return nc;
-    }
-
-    protected Node loadNodeForScripts(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable,
-            EList listParamType) {
-        Node nc;
-        nc = new Node(component, this);
-        nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
-        Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
-        nc.getNodeLabel().setOffset(offset);
-        if (nType.isSetSizeX()) {
-            nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
-        }
-
-        loadElementParametersForScripts(nc, listParamType);
 
         // update the value of process type
         IElementParameter processParam = nc.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
@@ -2086,26 +1810,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if a schema exist in node,won't add it again
             if (!listNames.contains(metadataTable.getTableName())) {
                 listNames.add(metadataTable.getTableName());
-                String attachedConnector = TalendTextUtils.removeQuotesIfExist(metadataTable.getAttachedConnector());
-                metadataTable.setAttachedConnector(attachedConnector);
-
-                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
-                for (int i = 0; i < listColumns.size(); i++) {
-                    IMetadataColumn iMetadataColumn = listColumns.get(i);
-                    iMetadataColumn.setId(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getId()));
-                    iMetadataColumn.setLabel(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getLabel()));
-                    iMetadataColumn.setOriginalDbColumnName(TalendTextUtils.removeQuotesIfExist(iMetadataColumn
-                            .getOriginalDbColumnName()));
-                    iMetadataColumn.setTalendType(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getTalendType()));
-                    iMetadataColumn.setType(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getType()));
-                    iMetadataColumn.setComment(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getComment()));
-                    iMetadataColumn.setPattern(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getPattern()));
-                    iMetadataColumn.setDefault(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getDefault()));
-                    iMetadataColumn.setType(TalendTextUtils.removeQuotesIfExist(iMetadataColumn.getType()));
-                    listColumns.set(i, iMetadataColumn);
-                }
-                metadataTable.setListColumns(listColumns);
-
                 listMetaData.add(metadataTable);
                 if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
                         && checkValidConnectionName(metadataTable.getTableName())) {
@@ -2251,126 +1955,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             connectionsHashtable.put(cType, connec);
             listParamType = cType.getElementParameter();
             loadElementParameters(connec, listParamType);
-
-            Point offset = new Point(cType.getOffsetLabelX(), cType.getOffsetLabelY());
-            INodeConnector nodeConnectorSource = connec.getSourceNodeConnector();
-            nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
-            INodeConnector nodeConnectorTarget = connec.getTargetNodeConnector();
-            nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
-            connec.getConnectionLabel().setOffset(offset);
-        }
-
-        for (INode node : nodes) {
-            if (node.getComponent().useMerge()) {
-                for (int i = 0; i < connecList.size(); i++) {
-                    cType = (ConnectionType) connecList.get(i);
-                    if (cType.getTarget().equals(node.getUniqueName())) {
-                        if (cType.isSetMergeOrder()) {
-                            Connection connection = connectionsHashtable.get(cType);
-                            connection.setInputId(cType.getMergeOrder());
-                            connection.updateName();
-                        }
-                    }
-                }
-            }
-        }
-
-        if (connectionsProblems.size() > 0) {
-            String message = Messages.getString("Process.errorLoadingConnectionMessage"); //$NON-NLS-1$
-            for (int i = 0; i < connectionsProblems.size(); i++) {
-                message += connectionsProblems.get(i);
-                if (i < (connectionsProblems.size() - 1)) {
-                    message += ","; //$NON-NLS-1$
-                }
-            }
-            if (!CommonsPlugin.isHeadless()) {
-                MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
-                mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
-                mb.setMessage(message);
-                mb.open();
-            } else {
-                IStatus status = new Status(IStatus.WARNING, DesignerPlugin.ID, message);
-                DesignerPlugin.getDefault().getLog().log(status);
-            }
-        }
-    }
-
-    private void loadConnectionsForScripts(ProcessType process, Hashtable<String, Node> nodesHashtable) {
-        EList listParamType;
-        EList connecList;
-        ConnectionType cType;
-        connecList = process.getConnection();
-        Connection connec;
-        Node source, target;
-
-        List<String> connectionsProblems = new ArrayList<String>();
-
-        Hashtable<ConnectionType, Connection> connectionsHashtable = new Hashtable<ConnectionType, Connection>();
-
-        for (int i = 0; i < connecList.size(); i++) {
-            cType = (ConnectionType) connecList.get(i);
-
-            source = nodesHashtable.get(TalendTextUtils.removeQuotesIfExist(cType.getSource()));
-            target = nodesHashtable.get(TalendTextUtils.removeQuotesIfExist(cType.getTarget()));
-            // see the feature 6294
-            // qli
-            if (source == null || target == null) {
-                continue;
-            }
-            Integer lineStyleId = new Integer(cType.getLineStyle());
-            String connectorName = TalendTextUtils.removeQuotesIfExist(cType.getConnectorName());
-            boolean connectionTypeFound = false;
-            if (connectorName != null) {
-                // check if the connector exists and if the line style is
-                // correct
-                // (used for automatic component upgrade, to avoid migration
-                // each time)
-                if (source.getConnectorFromName(connectorName) != null
-                        && (source.getConnectorFromName(connectorName).getConnectionProperty(
-                                EConnectionType.getTypeFromId(lineStyleId)) != null)) {
-                    connectionTypeFound = true;
-                }
-            }
-
-            // fix to correct the bug of the metaname after renaming the output of a tMap
-            String metaname = TalendTextUtils.removeQuotesIfExist(cType.getMetaname());
-            if ((source.getComponent().getName().equals("tMap")) && (source.getMetadataTable(metaname) == null)) { //$NON-NLS-1$
-                metaname = cType.getLabel();
-                // the label should be the original name of the metadata
-                if (source.getMetadataTable(metaname) == null) {
-                    // this problem should never appear, just in case.
-                    if (source.getMetadataList().size() > 0) {
-                        metaname = source.getMetadataList().get(0).getTableName();
-                    }
-                    connectionsProblems.add(cType.getLabel());
-                }
-            }
-            // end of fix
-
-            boolean monitorConnection = getConnectionMonitorProperty(cType);
-            if (connectionTypeFound) {
-                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, metaname,
-                        TalendTextUtils.removeQuotesIfExist(cType.getLabel()), TalendTextUtils.removeQuotesIfExist(cType
-                                .getMetaname()), monitorConnection);
-            } else {
-                if (PluginChecker.isJobLetPluginLoaded()) { // bug 12764
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
-                    if (service != null && service.isJobletComponent(source)) {
-                        continue;
-                    }
-                }
-                EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
-                        TalendTextUtils.removeQuotesIfExist(cType.getLabel()), TalendTextUtils.removeQuotesIfExist(cType
-                                .getMetaname()), monitorConnection);
-            }
-            // if ((!source.isActivate()) || (!target.isActivate())) {
-            // connec.setActivate(false);
-            // }
-            connectionsHashtable.put(cType, connec);
-            listParamType = cType.getElementParameter();
-            loadElementParametersForScripts(connec, listParamType);
 
             Point offset = new Point(cType.getOffsetLabelX(), cType.getOffsetLabelY());
             INodeConnector nodeConnectorSource = connec.getSourceNodeConnector();
@@ -3740,18 +3324,17 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void loadProjectParametersForScripts(ProcessType processType) {
+    private void loadProjectParameters(ProcessType processType) {
         ParametersType parameters = processType.getParameters();
         if (parameters != null) {
-            loadElementParametersForScripts(this, parameters.getElementParameter());
+            loadElementParameters(this, parameters.getElementParameter());
             loadRoutinesParameters(processType);
         }
     }
 
     private void loadRoutinesParameters(ProcessType processType) {
         ParametersType parameters = processType.getParameters();
-        EList routinesParameter = parameters.getRoutinesParameter();
-        if (parameters == null || routinesParameter == null) {
+        if (parameters == null || parameters.getRoutinesParameter() == null) {
             List<RoutinesParameterType> dependenciesInPreference;
             try {
                 dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
@@ -3762,32 +3345,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 ExceptionHandler.process(e);
             }
         } else {
-            for (int i = 0; i < routinesParameter.size(); i++) {
-                RoutinesParameterType object = (RoutinesParameterType) routinesParameter.get(i);
-                String name = object.getName();
-                String id = object.getId();
-                name = removeQuoteForValue(name);
-                id = removeQuoteForValue(id);
-                object.setId(id);
-                object.setName(name);
-                routinesParameter.set(i, object);
-            }
             ProcessItem item = (ProcessItem) this.getProperty().getItem();
             ProcessType process = item.getProcess();
-            process.getParameters().getRoutinesParameter().addAll(routinesParameter);
+            process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
         }
 
-    }
-
-    public String removeQuoteForValue(String text) {
-        return text = TalendTextUtils.removeQuotesIfExist(text);
-    }
-
-    public String removeDoubleQuote(String text) {
-        if (text != null && text.startsWith("\"\\\"") && text.endsWith(" \"\\\"")) {
-            TalendTextUtils.removeQuotes(text);
-        }
-        return text;
     }
 
     /**
@@ -3809,15 +3371,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         refreshAllContextView();
 
         // added for projectSetting
-        loadProjectParametersForScripts(processType);
+        loadProjectParameters(processType);
 
         // ((ProcessItem) property.getItem()).setProcess(processType);
 
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
         try {
-            loadNodesForScripts(processType, nodesHashtable);
-            // loadNodes(processType, nodesHashtable);
+            loadNodes(processType, nodesHashtable);
         } catch (PersistenceException e) {
             // there are some components unloaded.
             return;
@@ -3825,13 +3386,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         repositoryId = processType.getRepositoryContextId();
 
-        loadConnectionsForScripts(processType, nodesHashtable);
+        loadConnections(processType, nodesHashtable);
 
         // added for notes
-        // loadNotes(processType);
-        loadNotesForJobscripts(processType);
+        loadNotes(processType);
         // added for subjobs
-        loadSubjobsForScripts(processType);
+        loadSubjobs(processType);
 
         setActivate(true);
         checkStartNodes();
