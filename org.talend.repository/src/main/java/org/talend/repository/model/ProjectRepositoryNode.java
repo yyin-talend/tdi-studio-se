@@ -1411,7 +1411,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             /* only refresh and show tables in current schema or catalog,see bug 0015769 */
             Set<org.talend.core.model.metadata.builder.connection.MetadataTable> allTables = ProjectNodeHelper
                     .getTablesFromSpecifiedDataPackage(dbconn);
-
+            /*
+             * bug 18514,if the schema is imported from file for sas databaseconnection,need retrieve again from all
+             * datapackages
+             */
+            if (allTables.isEmpty() && dbconn.getDatabaseType().equals(EDatabaseTypeName.SAS.getDisplayName())) {
+                allTables = ConnectionHelper.getTables(dbconn);
+            }
             Iterator metadataTables = allTables.iterator();
 
             // Iterator metadataTables = ConnectionHelper.getTables(metadataConnection).iterator();
