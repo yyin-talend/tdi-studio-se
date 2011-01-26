@@ -1128,11 +1128,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                     }
                                 }
 
+                                String value2 = elementValue.getValue();
                                 if (needRemoveQuotes) {
-                                    lineValues.put(elementValue.getElementRef(),
-                                            TalendTextUtils.removeQuotes(elementValue.getValue()));
+                                    lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(value2));
                                 } else {
-                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                    value2 = TalendTextUtils.removeQuotesIfExist(value2);
+                                    lineValues.put(elementValue.getElementRef(), value2);
                                 }
                                 if (elementValue.getType() != null) {
                                     lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
@@ -1152,38 +1153,23 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
                         elemParam.setPropertyValue(pType.getName(), tableValues);
                     } else if (param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
-                        // fix for bug 2193
-                        boolean setToCustom = false;
-                        if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) { //$NON-NLS-1$
-                            setToCustom = true;
-                        }
-                        String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
-                                .getValue();
-                        if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                            tempValue = TalendTextUtils.addQuotes(tempValue);
-                            if (!tempValue.equals(value)) {
-                                setToCustom = true;
+                        String pTypeValue = TalendTextUtils.removeQuotesIfExist(pType.getValue());
+                        if (pTypeValue != null) {
+                            if (value.equals(pTypeValue) && !pTypeValue.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")) {
+                                elemParam.setPropertyValue(pType.getName(), value);
+                            } else if (!pType.getName().endsWith(EParameterName.ENCODING_TYPE.getName())
+                                    && pTypeValue.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")
+                                    && value.startsWith(EParameterName.ENCODING_TYPE.getName() + ":")) {
+                                String substring = value.substring(value.indexOf(":") + 1, value.length());
+                                substring = TalendTextUtils.removeQuotesIfExist(substring);
+                                elemParam.setPropertyValue(pType.getName() + ":" + EParameterName.ENCODING_TYPE.getName(),
+                                        substring);
+                            } else {
+                                elemParam.setPropertyValue(pType.getName(), value);
                             }
                         }
-
-                        if (setToCustom) {
-                            param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
-                                    .setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
-                        }
-                        elemParam.setPropertyValue(pType.getName(), value);
-                        // end of fix for bug 2193
                     } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        // if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
-                        // if (value != null && value.length() > 2) {
-                        // elemParam.setPropertyValue(pType.getName(), TalendTextUtils.removeQuotesIfExist(value)); //
-                        // value.substring(1,
-                        // }
-                        // } else {
                         elemParam.setPropertyValue(pType.getName(), value);
-                        // }
                     }
                 } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
                         && "true".equals(pType.getValue()) //$NON-NLS-1$
@@ -1651,7 +1637,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
-            note.setText(noteType.getText());
+            note.setText(TalendTextUtils.removeQuotesIfExist(noteType.getText()));
             note.setProcess(this);
             loadElementParametersForScripts(note, noteType.getElementParameter());
             addNote(note);
@@ -2100,6 +2086,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // if a schema exist in node,won't add it again
             if (!listNames.contains(metadataTable.getTableName())) {
                 listNames.add(metadataTable.getTableName());
+                String attachedConnector = TalendTextUtils.removeQuotesIfExist(metadataTable.getAttachedConnector());
+                metadataTable.setAttachedConnector(attachedConnector);
 
                 List<IMetadataColumn> listColumns = metadataTable.getListColumns();
                 for (int i = 0; i < listColumns.size(); i++) {
@@ -3793,6 +3781,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     public String removeQuoteForValue(String text) {
         return text = TalendTextUtils.removeQuotesIfExist(text);
+    }
+
+    public String removeDoubleQuote(String text) {
+        if (text != null && text.startsWith("\"\\\"") && text.endsWith(" \"\\\"")) {
+            TalendTextUtils.removeQuotes(text);
+        }
+        return text;
     }
 
     /**
