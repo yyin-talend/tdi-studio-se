@@ -67,8 +67,8 @@ imports="
         <%
     } else { // dataAction equals "INSERT" or "UPDATE" or "DELETE" 
         %>
-                <%if ((rejectConnName==null && isUseBatchByDBVersion && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
-                %>                
+            <%if ((rejectConnName==null && isUseBatchByDBVersion && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+            %>                
                 try {
                 	if (pstmt_<%=cid %> != null) { 
 						pstmt_<%=cid %>.executeBatch();    
@@ -100,9 +100,9 @@ imports="
 	    	    	<%
 	    	    	}%>
 	    	    	+= (tmp_batchUpdateCount_<%=cid%>!=-1?tmp_batchUpdateCount_<%=cid%>:0);                                  
-	                <%
-	                }%>        
                 }
+            <%
+            }%>        
         if(pstmt_<%=cid %> != null) {            
 <%
 //to fixed: bug8422
