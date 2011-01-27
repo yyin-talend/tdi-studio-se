@@ -30,7 +30,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
  */
 public class XmlMapComponent extends AbstractExternalNode {
 
-    private XmlMapData emfMapData;
+    private AbstractExternalData emfMapData;
 
     private MapperMain mapprMain;
 
@@ -119,7 +119,8 @@ public class XmlMapComponent extends AbstractExternalNode {
         return this.emfMapData;
     }
 
-    public void setEmfMapData(XmlMapData emfMapData) {
+    public void setExternalEmfData(AbstractExternalData emfMapData) {
         this.emfMapData = emfMapData;
     }
+
 }

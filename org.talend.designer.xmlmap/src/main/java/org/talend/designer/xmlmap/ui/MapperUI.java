@@ -157,7 +157,7 @@ public class MapperUI {
     public void closeMapperDialog(int response) {
         mapperResponse = response;
         if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
-            mapperComponent.setEmfMapData(copyOfMapData);
+            mapperComponent.setExternalEmfData(copyOfMapData);
             if (response == SWT.APPLICATION_MODAL) {
                 IExternalNode externalNode = mapperComponent;
                 IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
