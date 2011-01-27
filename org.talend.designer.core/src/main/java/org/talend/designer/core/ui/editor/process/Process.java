@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -81,6 +82,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
@@ -1091,10 +1093,33 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (element instanceof SubjobContainer) {
                 saveSubjob(fileFact, processType, (SubjobContainer) element);
                 for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
-                    saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
+                    if (container instanceof JobletContainer) {
+                        JobletContainer jobletCon = (JobletContainer) container;
+                        saveNode(fileFact, processType, nList, cList, ((NodeContainer) container).getNode(), factory);
+                        if (!jobletCon.isCollapsed()) {
+
+                            boolean needUpdate = checkModify(jobletCon);
+                            if (needUpdate) {
+                                saveJobletNode(jobletCon);
+                            }
+
+                            addNewJobletNode(jobletCon);
+                        }
+                    } else {
+                        saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
+                    }
                 }
             }
-            if (element instanceof NodeContainer) {
+            if (element instanceof JobletContainer) {
+                JobletContainer jobletCon = (JobletContainer) element;
+                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
+                if (!jobletCon.isCollapsed()) {
+                    boolean needUpdate = checkModify(jobletCon);
+                    if (needUpdate) {
+                        saveJobletNode(jobletCon);
+                    }
+                }
+            } else if (element instanceof NodeContainer) {
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
             } else if (element instanceof Note) {
                 saveNote(fileFact, processType, (Note) element);
@@ -1158,13 +1183,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         if (node.getExternalNode() != null) {
             nType.setNodeData(node.getExternalNode().getExternalEmfData());
         }
-        if (node.getNodeContainer() != null) {
-            NodeContainerType ncType = createNodeContainerType(fileFact);
-            nType.setNodeContainer(ncType);
-            EList ncParaType = ncType.getElementParameter();
-            List<? extends IElementParameter> ncParaist = node.getNodeContainer().getElementParameters();
-            saveElementParameters(fileFact, ncParaist, ncParaType, nType);
-        }
+        // if (node.getNodeContainer() != null) {
+        // NodeContainerType ncType = createNodeContainerType(fileFact);
+        // nType.setNodeContainer(ncType);
+        // EList ncParaType = ncType.getElementParameter();
+        // List<? extends IElementParameter> ncParaist = node.getNodeContainer().getElementParameters();
+        // saveElementParameters(fileFact, ncParaist, ncParaType, nType);
+        // }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
 
@@ -1184,63 +1209,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 connList.add((Connection) connection);
             }
         }
-        // if (node.isJoblet()) {
-        // JobletContainer jCon = (JobletContainer) node.getNodeContainer();
-        // if (!jCon.isCollapsed()) {
-        // Set<IConnection> outSet = jCon.getOutputs();
-        // Set<IConnection> inSet = jCon.getInputs();
-        // Iterator<IConnection> outIterator = outSet.iterator();
-        // while (outIterator.hasNext()) {
-        // connec = (Connection) outIterator.next();
-        // cType = fileFact.createConnectionType();
-        // cType.setSource(node.getUniqueName());
-        // cType.setTarget(connec.getTarget().getUniqueName());
-        // cType.setLabel(connec.getName());
-        // cType.setLineStyle(connec.getLineStyleId());
-        // cType.setConnectorName(connec.getConnectorName());
-        // cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x);
-        // cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y);
-        // cType.setMetaname(connec.getMetaName());
-        // int id = connec.getOutputId();
-        // if (id >= 0) {
-        // cType.setOutputId(id);
-        // }
-        // if (connec.getTarget().getComponent().useMerge()) {
-        // cType.setMergeOrder(connec.getInputId());
-        // }
-        // listParamType = cType.getElementParameter();
-        // paramList = connec.getElementParameters();
-        // saveElementParameters(fileFact, paramList, listParamType, process);
-        // cList.add(cType);
-        // }
-        //
-        // Iterator<IConnection> inIterator = inSet.iterator();
-        // // while (inIterator.hasNext()) {
-        // // connec = (Connection) inIterator.next();
-        // // cType = fileFact.createConnectionType();
-        // // cType.setSource(node.getUniqueName());
-        // // cType.setTarget(connec.getTarget().getUniqueName());
-        // // cType.setLabel(connec.getName());
-        // // cType.setLineStyle(connec.getLineStyleId());
-        // // cType.setConnectorName(connec.getConnectorName());
-        // // cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x);
-        // // cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y);
-        // // cType.setMetaname(connec.getMetaName());
-        // // int id = connec.getOutputId();
-        // // if (id >= 0) {
-        // // cType.setOutputId(id);
-        // // }
-        // // if (connec.getTarget().getComponent().useMerge()) {
-        // // cType.setMergeOrder(connec.getInputId());
-        // // }
-        // // listParamType = cType.getElementParameter();
-        // // paramList = connec.getElementParameters();
-        // // saveElementParameters(fileFact, paramList, listParamType, process);
-        // // cList.add(cType);
-        // // }
-        // }
-        // }
-        // connList = (List<Connection>) outgoingConnections;
         for (int j = 0; j < connList.size(); j++) {
             connec = connList.get(j);
             cType = fileFact.createConnectionType();
@@ -1384,7 +1352,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // bug 16351
         checkProjectsettingParameters();
 
-        loadNodeContainer(processType);
+        // loadNodeContainer(processType);
         // bug 6158
         this.updateManager.retrieveRefInformation();
     }
@@ -3396,6 +3364,125 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         setActivate(true);
         checkStartNodes();
         fireStructureChange(NEED_UPDATE_JOB, elem);
+    }
+
+    private void saveJobletNode(JobletContainer jobletContainer) {
+        INode jobletNode = jobletContainer.getNode();
+        IProcess jobletProcess = jobletNode.getComponent().getProcess();
+        if (jobletProcess instanceof IProcess2) {
+            Item item = ((IProcess2) jobletProcess).getProperty().getItem();
+            if (item instanceof JobletProcessItem) {
+                JobletProcessItem jobletItem = ((JobletProcessItem) item);
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    service.checkAddNodes(jobletContainer);
+                    service.checkDeleteNodes(jobletContainer);
+                    service.saveJobletNode(jobletItem, jobletContainer);
+                }
+            }
+        }
+
+    }
+
+    private void addNewJobletNode(JobletContainer jobletContainer) {
+        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                IJobletProviderService.class);
+        if (service != null) {
+            service.checkAddNodes(jobletContainer);
+            service.checkDeleteNodes(jobletContainer);
+        }
+
+    }
+
+    private boolean checkModify(JobletContainer jobletContainer) {
+        IProcess process = jobletContainer.getNode().getComponent().getProcess();
+        List<? extends INode> nodeList = process.getGraphicalNodes();
+        List<NodeContainer> containerList = jobletContainer.getNodeContainers();
+        for (NodeContainer nodeCon : containerList) {
+            Node node = nodeCon.getNode();
+            String jobletUnique = node.getJoblet_unique_name();
+            if (jobletUnique == null || "".equals(jobletUnique)) {
+                continue;
+            }
+            for (INode nodeOra : nodeList) {
+                if (nodeOra.getUniqueName().equals(jobletUnique)) {
+                    List<? extends IElementParameter> paras = node.getElementParameters();
+                    for (IElementParameter para : paras) {
+                        if (para == null) {
+                            continue;
+                        }
+                        String paraName = para.getName();
+                        if (paraName != null) {
+                            if (paraName.equals(EParameterName.UNIQUE_NAME.getName())) {
+                                continue;
+                            }
+                            if (paraName.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
+                                continue;
+                            }
+                            IElementParameter paraOra = nodeOra.getElementParameter(paraName);
+                            if (paraOra == null || para == null) {
+                                continue;
+                            }
+
+                            if (para.getValue() != null) {
+                                if (paraOra.getValue() != null) {
+                                    if (!para.getValue().equals(paraOra.getValue())) {
+                                        return true;
+                                    }
+                                } else {
+                                    return true;
+                                }
+                            } else {
+                                if (paraOra.getValue() != null) {
+                                    return true;
+                                }
+                            }
+
+                            if (paraOra.getChildParameters() != null && para.getChildParameters() != null) {
+                                Map<String, IElementParameter> paraChild = para.getChildParameters();
+                                Map<String, IElementParameter> paraOraChild = paraOra.getChildParameters();
+                                Iterator<Entry<String, IElementParameter>> ite = paraChild.entrySet().iterator();
+                                while (ite.hasNext()) {
+                                    Entry<String, IElementParameter> entry = ite.next();
+                                    String key = entry.getKey();
+                                    IElementParameter c = entry.getValue();
+                                    if (key != null && c != null) {
+                                        IElementParameter oc = paraOraChild.get(key);
+
+                                        if (oc != null) {
+                                            if (c.getValue() != null) {
+                                                if (oc.getValue() != null) {
+                                                    if (!oc.getValue().equals(c.getValue())) {
+                                                        return true;
+                                                    }
+                                                } else {
+                                                    return true;
+                                                }
+                                            } else {
+                                                if (oc.getValue() != null) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    List<IMetadataTable> nodeTables = node.getMetadataList();
+                    List<IMetadataTable> oraTables = nodeOra.getMetadataList();
+                    if (nodeTables.size() != oraTables.size()) {
+                        return true;
+                    }
+
+                }
+            }
+        }
+        return false;
     }
 
 }

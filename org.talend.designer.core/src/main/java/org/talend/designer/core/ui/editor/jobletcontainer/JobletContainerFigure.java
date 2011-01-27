@@ -72,23 +72,11 @@ public class JobletContainerFigure extends Figure {
     }
 
     public void doCollapse() {
-        // if (jobletContainer.isCollapsed()) {
-        // jobletContainer.getElementParameter(EParameterName.COLLAPSED.getName()).setValue(false);
-        // } else {
-        // jobletContainer.getElementParameter(EParameterName.COLLAPSED.getName()).setValue(true);
-        // }
-        // if (!jobletContainer.canCollapse()) {
-        // return;
-        // }
         if (jobletContainer != null && !jobletContainer.isReadOnly()) {
             PropertyChangeCommand ppc = new PropertyChangeCommand(jobletContainer, EParameterName.COLLAPSED.getName(),
                     !jobletContainer.isCollapsed());
             IProcess ipro = jobletContainer.getNode().getProcess();
-            if (ipro instanceof IProcess2 && ((IProcess2) ipro).getCommandStack() != null) {
-                ((IProcess2) ipro).getCommandStack().execute(ppc);
-            } else {
-                ppc.execute();
-            }
+            ppc.execute();
             reSelection();
         }
     }

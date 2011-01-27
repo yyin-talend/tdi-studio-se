@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.graphics.Point;
@@ -29,7 +30,12 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -37,6 +43,8 @@ import org.talend.designer.core.ui.editor.cmd.MultiplePasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -200,6 +208,13 @@ public class GEFPasteAction extends SelectionAction {
                             return;
                         }
                     }
+
+                    if (copiedNode.getJobletNode() != null) {
+                        boolean canP = canPasteJobletNode(editor.getProcess(), copiedNode);
+                        if (!canP) {
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -276,5 +291,31 @@ public class GEFPasteAction extends SelectionAction {
                 }
             }
         }
+    }
+
+    private boolean canPasteJobletNode(IProcess2 curNodeProcess, Node copiedNode) {
+        Item temIten = curNodeProcess.getProperty().getItem();
+        if (!(temIten instanceof JobletProcessItem)) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                if (service.isJobletInOutComponent(copiedNode)) {
+                    MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Paste Error",
+                            "Can not paste joblet component in job!");
+                    return false;
+                }
+            }
+        }
+        Node jobletNode = (Node) copiedNode.getJobletNode();
+        JobletContainer jnc = (JobletContainer) jobletNode.getNodeContainer();
+        List<NodeContainer> ncs = jnc.getNodeContainers();
+        if (ncs != null) {
+            for (NodeContainer nc : ncs) {
+                if (nc.getNode() == copiedNode) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -162,7 +162,10 @@ public class HL7UI {
         initTableViewer();
         initlinkers();
 
-        final boolean jobReadOnly = externalNode.getProcess().isReadOnly();
+        boolean jobReadOnly = externalNode.getProcess().isReadOnly();
+        if (externalNode.getOriginalNode().getJobletNode() != null) {
+            jobReadOnly = externalNode.getOriginalNode().isReadOnly();
+        }
         if (jobReadOnly || isRepository) {
             hl7SchemaEditorView.setReadOnly(true);
         }
@@ -379,8 +382,8 @@ public class HL7UI {
             }
         }
         for (linkMapPropertis linkProp : allLinkProp) {
-            linker.addLinks(linkProp.getSource(), linkProp.getSource().getData(), this.linker.getTarget(), linkProp
-                    .getTargetData());
+            linker.addLinks(linkProp.getSource(), linkProp.getSource().getData(), this.linker.getTarget(),
+                    linkProp.getTargetData());
         }
     }
 

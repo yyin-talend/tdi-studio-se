@@ -58,6 +58,8 @@ public class JobletContainer extends NodeContainer {
 
     private boolean hasChange;
 
+    private Boolean needLock = null;
+
     protected List<IElement> jobletElements = new ArrayList<IElement>();
 
     public JobletContainer(Node node) {
@@ -97,7 +99,7 @@ public class JobletContainer extends NodeContainer {
     public Rectangle getJobletContainerRectangle() {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
-        if (!collapsed) {
+        if (!collapsed && nodeContainers.size() > 0) {
             Rectangle jobletNodeRec = this.node.getNodeContainer().getNodeContainerRectangle();
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
@@ -188,6 +190,20 @@ public class JobletContainer extends NodeContainer {
             for (IConnection conn : node.getIncomingConnections()) {
                 inputs.add(conn);
             }
+            if (!((Boolean) value)) {
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    needLock = service.lockJoblet(this.getNode());
+                }
+            } else {
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    service.unlockJoblet(node);
+                    needLock = null;
+                }
+            }
 
             refreshJobletNodes(false, (Boolean) value);
             if (!canCollapse()) {
@@ -223,56 +239,64 @@ public class JobletContainer extends NodeContainer {
             IProcess jobletProcess = this.getNode().getComponent().getProcess();
             Set<IConnection> conns = new HashSet<IConnection>();
             List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
-            List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
-            boolean canAdd = false;
-            boolean canRemove = false;
+            // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
+            for (NodeContainer nc : nodeContainers) {
+                if (this.node.getProcess() instanceof IProcess2) {
+                    ((IProcess2) this.node.getProcess()).removeUniqueNodeName(nc.getNode().getUniqueName());
+                }
+            }
+            nodeContainers.clear();
+            jobletElements.clear();
+
+            // boolean canAdd = false;
+            // boolean canRemove = false;
             for (INode inode : jobletNodes) {
-                canAdd = util.canAdd(temList, inode);
+                // canAdd = util.canAdd(temList, inode);
                 if ((inode instanceof Node)) {
                     Node temNode = (Node) inode;
-                    if (canAdd) {
-                        conns.addAll(temNode.getIncomingConnections());
-                        conns.addAll(temNode.getOutgoingConnections());
-                        Node jnode = util.cloneNode(temNode, this.node.getProcess());
-                        NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
-                        jnode.setJobletnode(this.node);
-                        jnode.setJoblet_unique_name(temNode.getUniqueName());
-                        this.nodeContainers.add(nodeContainer);
-                        this.jobletElements.add(jnode);
-                        this.jobletElements.add(jnode.getNodeLabel());
-                        this.jobletElements.add(jnode.getNodeError());
-                        this.jobletElements.add(jnode.getNodeProgressBar());
-                    } else if (update) {
-                        for (NodeContainer nodeC : nodeContainers) {
-                            if (nodeC.getNode().getJoblet_unique_name().equals(temNode.getUniqueName())) {
-                                util.updateNode(nodeC.getNode(), temNode);
-                                break;
-                            }
-                        }
-                    }
+                    // if (canAdd) {
+                    conns.addAll(temNode.getIncomingConnections());
+                    conns.addAll(temNode.getOutgoingConnections());
+                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), needLock);
+                    NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
+                    jnode.setJobletnode(this.node);
+                    jnode.setJoblet_unique_name(temNode.getUniqueName());
+                    this.nodeContainers.add(nodeContainer);
+                    this.jobletElements.add(jnode);
+                    this.jobletElements.add(jnode.getNodeLabel());
+                    this.jobletElements.add(jnode.getNodeError());
+                    this.jobletElements.add(jnode.getNodeProgressBar());
+                    // } else if (update) {
+                    // for (NodeContainer nodeC : nodeContainers) {
+                    // if (nodeC.getNode().getJoblet_unique_name().equals(temNode.getUniqueName())) {
+                    // util.updateNode(nodeC.getNode(), temNode);
+                    // break;
+                    // }
+                    // }
+                    // }
 
                 }
             }
-            temList = new ArrayList<NodeContainer>(nodeContainers);
-            for (NodeContainer nodeCon : temList) {
-                Node temNode = nodeCon.getNode();
-                canRemove = util.canDelete(jobletNodes, temNode);
-                if (canRemove) {
-                    this.nodeContainers.remove(nodeCon);
-                    this.jobletElements.remove(temNode);
-                    this.jobletElements.remove(temNode.getNodeError());
-                    this.jobletElements.remove(temNode.getNodeLabel());
-                    this.jobletElements.remove(temNode.getNodeProgressBar());
-                    List<? extends IConnection> inCons = new ArrayList<IConnection>(temNode.getIncomingConnections());
-                    for (IConnection con : inCons) {
-                        con.getTarget().removeInput(con);
-                    }
-                    List<? extends IConnection> outCons = new ArrayList<IConnection>(temNode.getOutgoingConnections());
-                    for (IConnection con : outCons) {
-                        con.getTarget().removeOutput(con);
-                    }
-                }
-            }
+            // temList = new ArrayList<NodeContainer>(nodeContainers);
+            // for (NodeContainer nodeCon : temList) {
+            // Node temNode = nodeCon.getNode();
+            // canRemove = util.canDelete(jobletNodes, temNode);
+            // if (canRemove) {
+            // this.nodeContainers.remove(nodeCon);
+            // this.jobletElements.remove(temNode);
+            // this.jobletElements.remove(temNode.getNodeError());
+            // this.jobletElements.remove(temNode.getNodeLabel());
+            // this.jobletElements.remove(temNode.getNodeProgressBar());
+            // List<? extends IConnection> inCons = new ArrayList<IConnection>(temNode.getIncomingConnections());
+            // for (IConnection con : inCons) {
+            // con.getTarget().removeInput(con);
+            // }
+            // List<? extends IConnection> outCons = new ArrayList<IConnection>(temNode.getOutgoingConnections());
+            // for (IConnection con : outCons) {
+            // con.getTarget().removeOutput(con);
+            // }
+            // }
+            // }
             for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
                 IConnection con = iter.next();
                 String sourceName = con.getSource().getUniqueName();
@@ -300,13 +324,18 @@ public class JobletContainer extends NodeContainer {
     private void transferLocation(boolean update) {
         if (update) {
             // do nothing
-        } else if (this.isCollapsed() == true) {
+        }
+        if (this.isCollapsed() == true) {
             return;
-        } else if (hasChange) {
+        }
+        if (this.nodeContainers.size() <= 0) {
             return;
         }
         Point oragPoint = this.getNode().getLocation();
         Node startNode = getJobletStartNode();
+        if (startNode == null) {
+            return;
+        }
         Point stratPoint = startNode.getLocation();
         int withe_x = oragPoint.x - stratPoint.x;
         int hight_y = oragPoint.y - stratPoint.y;
@@ -327,8 +356,14 @@ public class JobletContainer extends NodeContainer {
         if (this.isCollapsed() == true) {
             return;
         }
+        if (this.nodeContainers.size() <= 0) {
+            return;
+        }
         Point oragPoint = this.getNode().getLocation();
         Node startNode = getJobletStartNode();
+        if (startNode == null) {
+            return;
+        }
         // Point stratPoint = startNode.getLocation();
         int withe_x = oragPoint.x - oldPos.x;
         int hight_y = oragPoint.y - oldPos.y;
@@ -460,7 +495,7 @@ public class JobletContainer extends NodeContainer {
 
     @Override
     public List getElements() {
-        if (isCollapsed()) {
+        if (isCollapsed() || this.jobletElements.size() <= 0) {
             return super.getElements();
         } else {
             return this.jobletElements;
@@ -493,10 +528,15 @@ public class JobletContainer extends NodeContainer {
         Iterator<IConnection> ite = inputs.iterator();
         while (ite.hasNext()) {
             IConnection conn = ite.next();
-            if (conn.getConnectorName().equals("FLOW")) {
+            if (!conn.getConnectorName().equals("SUBJOB_OK") && !conn.getConnectorName().equals("SUBJOB_ERROR")
+                    && !conn.getConnectorName().equals("COMPONENT_OK") && !conn.getConnectorName().equals("COMPONENT_ERROR")) {
                 finputs.add(conn);
             }
         }
         return finputs;
+    }
+
+    public Boolean isNeedLock() {
+        return needLock;
     }
 }

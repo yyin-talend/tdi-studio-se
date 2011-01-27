@@ -64,6 +64,9 @@ public class DisplaySubjobAction extends SelectionAction {
             if (o instanceof NodePart) {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
+                if (node.getJobletNode() != null) {
+                    node = (Node) node.getJobletNode();
+                }
                 if (!isDisplayWholeSubjob()) {
                     // if the subjobs are not displayed, no need to display this action.
                     return false;
@@ -107,6 +110,9 @@ public class DisplaySubjobAction extends SelectionAction {
             if (o instanceof NodePart) {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
+                if (node.getJobletNode() != null) {
+                    node = (Node) node.getJobletNode();
+                }
                 DisplaySubjobCommand displaySubjobCommand = new DisplaySubjobCommand(node.getNodeContainer().getSubjobContainer());
                 execute(displaySubjobCommand);
             } else if (o instanceof SubjobContainerPart) {

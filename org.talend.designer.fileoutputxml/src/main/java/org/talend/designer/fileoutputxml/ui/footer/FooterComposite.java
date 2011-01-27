@@ -117,6 +117,9 @@ public class FooterComposite extends Composite {
         // see bug 7087
         if (foxManager != null) {
             boolean canModify = foxManager.getFoxComponent().getProcess().isReadOnly();
+            if (foxManager.getFoxComponent().getOriginalNode().getJobletNode() != null) {
+                canModify = foxManager.getFoxComponent().isReadOnly();
+            }
             if (canModify) {
                 autoMapButton.setEnabled(false);
             }

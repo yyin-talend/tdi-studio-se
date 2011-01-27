@@ -159,6 +159,9 @@ public class FOXUI {
         xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
         canModify = externalNode.getProcess().isReadOnly();
+        if (externalNode.getOriginalNode().getJobletNode() != null) {
+            canModify = externalNode.getOriginalNode().isReadOnly();
+        }
         IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE");
         if (elem != null) {
             String value = (String) elem.getValue();

@@ -105,6 +105,9 @@ public class FooterComposite extends Composite {
         Button autoMapButton = new Button(this, SWT.NONE);
         if (hl7Manager != null) {
             boolean canModify = hl7Manager.getHl7Component().getProcess().isReadOnly();
+            if (hl7Manager.getHl7Component().getOriginalNode().getJobletNode() != null) {
+                canModify = hl7Manager.getHl7Component().getOriginalNode().isReadOnly();
+            }
             if (canModify) {
                 autoMapButton.setEnabled(false);
             }

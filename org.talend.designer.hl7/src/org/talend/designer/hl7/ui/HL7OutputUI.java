@@ -156,6 +156,9 @@ public class HL7OutputUI extends HL7UI {
         xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
         canModify = externalNode.getProcess().isReadOnly();
+        if (externalNode.getOriginalNode().getJobletNode() != null) {
+            canModify = externalNode.getOriginalNode().isReadOnly();
+        }
         IElementParameter propertyParam = externalNode.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
         if (propertyParam != null) {
             isRespo = propertyParam.getValue().equals("REPOSITORY");

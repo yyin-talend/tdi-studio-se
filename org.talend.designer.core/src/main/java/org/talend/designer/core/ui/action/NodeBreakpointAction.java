@@ -91,7 +91,9 @@ public class NodeBreakpointAction extends SelectionAction {
                 return false;
             }
             node = (Node) part.getModel();
-
+            if (node.getJobletNode() != null) {
+                return false;
+            }
             EditPart parentPart = part.getParent();
             while (!(parentPart instanceof ProcessPart)) {
                 parentPart = parentPart.getParent();

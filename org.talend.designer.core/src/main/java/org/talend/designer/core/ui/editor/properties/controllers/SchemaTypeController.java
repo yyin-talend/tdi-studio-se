@@ -551,6 +551,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     node = ((IConnection) elem).getSource();
                 }
                 boolean isReadOnly = node.getProcess().isReadOnly();
+                if (node.getJobletNode() != null) {
+                    isReadOnly = node.isReadOnly();
+                }
                 ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), ESelectionType.SCHEMA, isReadOnly);
                 stop = true;
                 if (modelSelect.open() == ModelSelectionDialog.OK) {

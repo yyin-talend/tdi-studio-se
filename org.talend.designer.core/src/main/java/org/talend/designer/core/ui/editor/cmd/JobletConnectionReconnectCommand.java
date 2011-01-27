@@ -148,6 +148,9 @@ public class JobletConnectionReconnectCommand extends Command {
         if ((newNode.getMetadataList() != null) && newNode.getMetadataList().get(0).getListColumns().size() == 0) {
             // only override if there is no schema defined in the component
             String sourceConnector = oldMetadataTable.getAttachedConnector();
+            if (oldMetadataTable == null) {
+                return;
+            }
             String baseConnector = oldNode.getConnectorFromName(sourceConnector).getBaseSchema();
             for (INodeConnector connector : newNode.getListConnector()) {
                 if (connector.getBaseSchema().equals(baseConnector)) {
@@ -155,8 +158,11 @@ public class JobletConnectionReconnectCommand extends Command {
                     if (meta == null) {
                         continue;
                     }
-                    meta.setComment(newSchema.getComment());
-                    MetadataTool.copyTable(newSchema, meta);
+                    if (newSchema != null) {
+                        meta.setComment(newSchema.getComment());
+                        MetadataTool.copyTable(newSchema, meta);
+                    }
+
                 }
             }
         }

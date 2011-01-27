@@ -252,7 +252,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 }
             }
 
-            subMenu = new MenuManager("Move to joblet"); //$NON-NLS-1$
+            subMenu = new MenuManager("Add to joblet"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_OTHER, subMenu);
             action = getMoveToJobletAction(part, null);
             if (action != null) {
@@ -267,6 +267,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                             subMenu.add(action);
                         }
                     }
+                }
+            }
+
+            action = getMoveToJobAction(part);
+            if (action != null) {
+                ((SelectionAction) action).update();
+                if (action.isEnabled()) {
+                    menu.appendToGroup(GROUP_OTHER, action);
                 }
             }
 
@@ -438,6 +446,17 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     IJobletProviderService.class);
             if (service != null) {
                 return service.getMoveToJobletAction(part, jobletNode);
+            }
+        }
+        return null;
+    }
+
+    public SelectionAction getMoveToJobAction(IWorkbenchPart part) {
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                return service.getMoveToJobAction(part);
             }
         }
         return null;

@@ -31,6 +31,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -390,6 +391,9 @@ public class NodeContainer extends Element {
     }
 
     public boolean isReadOnly() {
+        if (node.getJobletNode() != null) {
+            return node.isReadOnly();
+        }
         return node.getProcess().isReadOnly();
     }
 
@@ -515,5 +519,23 @@ public class NodeContainer extends Element {
 
     public Set<IConnection> getInputs() {
         return inputs;
+    }
+
+    public void refreshInConnections(IConnection conn, INode target) {
+        for (IConnection iconn : inputs) {
+            if (!iconn.getTarget().getUniqueName().equals(target.getUniqueName())) {
+                inputs.remove(iconn);
+            }
+        }
+        inputs.add(conn);
+    }
+
+    public void refreshOutConnections(IConnection conn, INode source) {
+        for (IConnection iconn : outputs) {
+            if (!iconn.getSource().getUniqueName().equals(source.getUniqueName())) {
+                outputs.remove(iconn);
+            }
+        }
+        outputs.add(conn);
     }
 }

@@ -115,6 +115,10 @@ public class ConnectionCreateAction extends SelectionAction {
                 return false;
             }
 
+            if (node.getJobletNode() != null) {
+                return false;
+            }
+
             if (connecType.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 if (!(Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())
                         || (!node.getProcessStartNode(false).equals(node))) {

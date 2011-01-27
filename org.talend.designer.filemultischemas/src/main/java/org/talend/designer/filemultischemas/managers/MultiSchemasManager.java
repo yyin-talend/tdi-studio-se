@@ -85,8 +85,8 @@ public class MultiSchemasManager {
 
     private static int DEFAULT_INDEX = 0;
 
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
+            .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     // hywang add for featture7373
     private int selectedColumnIndex = DEFAULT_INDEX;
@@ -126,6 +126,9 @@ public class MultiSchemasManager {
     }
 
     public boolean isReadOnly() {
+        if (getMultiSchemasComponent().getOriginalNode().getJobletNode() != null) {
+            return getMultiSchemasComponent().getOriginalNode().isReadOnly();
+        }
         return getMultiSchemasComponent().getProcess().isReadOnly();
     }
 
@@ -664,8 +667,8 @@ public class MultiSchemasManager {
                 } else {// only use context variable.
                     String varName = ContextParameterUtils.getVariableFromCode(value);
                     if (varName != null) {
-                        IContextParameter contextParameter = process.getContextManager().getDefaultContext().getContextParameter(
-                                varName);
+                        IContextParameter contextParameter = process.getContextManager().getDefaultContext()
+                                .getContextParameter(varName);
                         if (contextParameter != null) {
                             String value2 = contextParameter.getValue();
                             if (value2 != null) {

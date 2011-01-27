@@ -171,6 +171,22 @@ public final class UpdateManagerUtils {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static boolean executeUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
+        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
+                Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
+
+            @Override
+            protected void run() throws LoginException, PersistenceException {
+                result = doExecuteUpdates(results, currentProcess);
+            }
+
+        };
+        repositoryWorkUnit.setAvoidUnloadResources(true);
+        ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
+        return repositoryWorkUnit.getResult();
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
                 Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
@@ -236,6 +252,58 @@ public final class UpdateManagerUtils {
             results.clear();
         }
         return false;
+    }
+
+    private static boolean doExecuteUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
+        if (results == null || results.isEmpty()) {
+            return false;
+        }
+        try {
+            // UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(),
+            // results,
+            // onlySimpleShow);
+
+            // if (checkDialog.open() == IDialogConstants.OK_ID) {
+            // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
+            ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()) {
+
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.setCanceled(false);
+                    int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
+                    monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
+                    // execute
+                    executeUpdates(results, monitor);
+                    // save repository item
+                    saveModifiedItem(results, monitor);
+                    // update joblet reference
+                    upadateJobletReferenceInfor();
+
+                    // refresh
+                    refreshRelatedViewers(results);
+
+                    // hyWang add method checkandRefreshProcess for bug7248
+                    checkandRefreshProcess(results);
+
+                    monitor.worked(1 * UpdatesConstants.SCALE);
+                    monitor.done();
+                }
+
+            };
+            try {
+                progress.executeProcess();
+            } catch (InvocationTargetException e) {
+                ExceptionHandler.process(e);
+                //
+            } catch (InterruptedException e) {
+                ExceptionHandler.process(e);
+                //
+            }
+            return !results.isEmpty();
+            // }
+        } finally {
+            results.clear();
+        }
     }
 
     /**

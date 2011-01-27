@@ -1,7 +1,10 @@
 package org.talend.designer.core.ui.editor.jobletcontainer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -10,6 +13,7 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -186,33 +190,80 @@ public class JobletUtil {
         return cloneNodeContainer;
     }
 
-    public Node cloneNode(Node node, IProcess process) {
+    public Node cloneNode(Node node, IProcess process, Boolean lock) {
         NodePart nodePart = new NodePart();
         Node cloneNode = new Node(node.getComponent(), (IProcess2) process);
         nodePart.setModel(cloneNode);
+        if (lock == null) {
+            cloneNode.setReadOnly(true);
+        } else {
+            if (lock) {
+                cloneNode.setReadOnly(false);
+            } else {
+                cloneNode.setReadOnly(true);
+            }
+        }
+
         List<? extends IElementParameter> elementParas = node.getElementParameters();
         for (IElementParameter elementPara : elementParas) {
             if (elementPara.getName() != null && !elementPara.getName().equals("UNIQUE_NAME")) {
                 IElementParameter cloneElement = cloneNode.getElementParameter(elementPara.getName());
                 cloneElement.setValue(elementPara.getValue());
+
+                if (lock == null) {
+                    cloneElement.setReadOnly(true);
+                } else {
+                    if (lock) {
+                        cloneElement.setReadOnly(false);
+                    } else {
+                        cloneElement.setReadOnly(true);
+                    }
+                }
+
+                if (elementPara.getChildParameters() != null) {
+                    Map<String, IElementParameter> elementParaChild = elementPara.getChildParameters();
+                    Map<String, IElementParameter> cloneElementChild = cloneElement.getChildParameters();
+                    Iterator<Entry<String, IElementParameter>> ite = elementParaChild.entrySet().iterator();
+                    while (ite.hasNext()) {
+                        Entry<String, IElementParameter> entry = ite.next();
+                        String key = entry.getKey();
+                        IElementParameter c = entry.getValue();
+                        if (key != null && c != null) {
+                            IElementParameter cloneC = cloneElementChild.get(key);
+                            if (cloneC != null) {
+                                cloneC.setValue(c.getValue());
+                                if (lock == null) {
+                                    cloneC.setReadOnly(true);
+                                } else {
+                                    if (lock) {
+                                        cloneC.setReadOnly(false);
+                                    } else {
+                                        cloneC.setReadOnly(true);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
             }
 
         }
+
+        for (IElementParameter param : cloneNode.getElementParameters()) {
+            String repositoryValue = param.getRepositoryValue();
+            if (param.isShow(cloneNode.getElementParameters()) && (repositoryValue != null)
+                    && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                    && param.getFieldType() != EParameterFieldType.MEMO_SQL) {
+                param.setRepositoryValueUsed(true);
+                param.setReadOnly(true);
+            }
+        }
+
         cloneNode.setMetadataList(node.getMetadataList());
         cloneNode.setListConnector(node.getListConnector());
         cloneNode.setConnectionName(node.getConnectionName());
-        // cloneNode.setLabel(node.getLabel());
-        // cloneNode.setExternalData(node.getExternalData());
-        // cloneNode.setExternalNode(node.getExternalNode());
         cloneNode.setLocation(node.getLocation());
-        cloneNode.setReadOnly(true);
-        // cloneNode.setNodeContainer(node.getNodeContainer());
-        // IProcess process = node.getProcess();
-        // if (process instanceof Process) {
-        // String unique_name = node.getUniqueName();
-        // unique_name = ((Process) process).generateUniqueNodeName(cloneNode);
-        // cloneNode.getElementParameter("UNIQUE_NAME").setValue(unique_name);
-        // }
         return cloneNode;
     }
 
@@ -261,4 +312,5 @@ public class JobletUtil {
         Rectangle rec = new Rectangle(0, 0, width, height);
         return rec;
     }
+
 }

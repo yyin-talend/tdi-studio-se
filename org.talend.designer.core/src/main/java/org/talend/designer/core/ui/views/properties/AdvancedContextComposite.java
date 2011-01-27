@@ -113,7 +113,12 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         if (node.getProcess() instanceof IProcess2) {
             IProcess2 process = (IProcess2) node.getProcess();
             tableViewer.getExtendedTableViewer().setCommandStack(process.getCommandStack());
-            tableViewer.setReadOnly(process.isReadOnly());
+            if (node.getJobletNode() != null) {
+                tableViewer.setReadOnly(node.isReadOnly());
+            } else {
+                tableViewer.setReadOnly(process.isReadOnly());
+            }
+
         }
 
         FormData tableLayoutData = new FormData();

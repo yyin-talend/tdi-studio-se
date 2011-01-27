@@ -307,6 +307,9 @@ public class NodesPasteCommand extends Command {
             return false;
         }
         IProcess curNodeProcess = copiedNode.getProcess();
+        if (copiedNode.getJobletNode() != null) {
+            return true;
+        }
         if (curNodeProcess != null) {
             List<? extends INode> graphicalNodes = curNodeProcess.getGraphicalNodes();
             if (graphicalNodes != null) {

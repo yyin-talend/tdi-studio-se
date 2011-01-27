@@ -618,8 +618,8 @@ public class MapperManager extends AbstractMapperManager {
         metadataTable.setTableName(tableName);
         MetadataColumn errorMessageCol = new MetadataColumn();
         errorMessageCol.setLabel(ERROR_REJECT_MESSAGE);
-        errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
-                MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+        errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorMessageCol.setNullable(true);
         errorMessageCol.setOriginalDbColumnName(ERROR_REJECT_MESSAGE);
         errorMessageCol.setReadOnly(true);
@@ -628,8 +628,8 @@ public class MapperManager extends AbstractMapperManager {
 
         MetadataColumn errorStackTrace = new MetadataColumn();
         errorStackTrace.setLabel(ERROR_REJECT_STACK_TRACE);
-        errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore().getString(
-                MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+        errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
         errorStackTrace.setNullable(true);
         errorStackTrace.setOriginalDbColumnName(ERROR_REJECT_STACK_TRACE);
         errorStackTrace.setReadOnly(true);
@@ -717,8 +717,8 @@ public class MapperManager extends AbstractMapperManager {
 
         if (currentSelectedDataMapTableView != null) {
             String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
-            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
-                    .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
+            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(),
+                    Messages.getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
                     Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + " '" + append + "?")) { //$NON-NLS-1$ //$NON-NLS-2$
                 IProcess process = getAbstractMapComponent().getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
@@ -886,8 +886,8 @@ public class MapperManager extends AbstractMapperManager {
         for (IDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
             if (table instanceof AbstractInOutTable) {
-                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, ((AbstractInOutTable) table)
-                        .getExpressionFilter());
+                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table,
+                        ((AbstractInOutTable) table).getExpressionFilter());
             }
             for (IColumnEntry entry : columnEntries) {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
@@ -1035,6 +1035,9 @@ public class MapperManager extends AbstractMapperManager {
     }
 
     public boolean componentIsReadOnly() {
+        if (getAbstractMapComponent().getOriginalNode().getJobletNode() != null) {
+            return getAbstractMapComponent().isReadOnly() || getAbstractMapComponent().getOriginalNode().isReadOnly();
+        }
         return getAbstractMapComponent().isReadOnly() || getAbstractMapComponent().getProcess().isReadOnly();
     }
 
