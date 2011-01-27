@@ -72,6 +72,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
+import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -212,8 +213,13 @@ public class DataProcess {
             // mapper
             dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
             IExternalData externalData = graphicalNode.getExternalData();
+            IExternalNode externalNode = graphicalNode.getExternalNode();
             if (externalData != null) {
                 ((IExternalNode) dataNode).setExternalData(externalData);
+            }
+            // xmlmap
+            if (externalNode != null) {
+                ((IExternalNode) dataNode).setExternalEmfData(externalNode.getExternalEmfData());
             }
         }
         dataNode.setActivate(graphicalNode.isActivate());
@@ -2620,6 +2626,12 @@ public class DataProcess {
         // }
 
         IExternalData externalData = graphicalNode.getExternalData();
+
+        IExternalNode externalNode = graphicalNode.getExternalNode();
+        if (externalNode != null) {
+            AbstractExternalData externalEmfData = ((IExternalNode) externalNode).getExternalEmfData();
+            ((IExternalNode) newGraphicalNode.getExternalNode()).setExternalEmfData(externalEmfData);
+        }
         if (externalData != null) {
             newGraphicalNode.setExternalData(externalData);
         }
