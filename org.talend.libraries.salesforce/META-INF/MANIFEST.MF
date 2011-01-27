@@ -3,11 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Salesforce
 Bundle-SymbolicName: org.talend.libraries.salesforce
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.axis,
+ javax.xml.rpc,
+ org.talend.libraries.apache.axis2
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/salesforce_enterprise.jar,
- lib/salesforceCRMManagement.jar,
- .
+Bundle-ClassPath: .,
+ lib/salesforce_enterprise.jar,
+ lib/salesforceCRMManagement.jar
 Export-Package: com.salesforce.soap.partner,
  com.salesforce.soap.partner.fault,
  com.salesforce.soap.partner.sobject,

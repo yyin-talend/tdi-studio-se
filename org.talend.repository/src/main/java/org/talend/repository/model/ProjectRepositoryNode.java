@@ -497,14 +497,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
                 metadataNode.getChildren().add(metadataSAPConnectionNode);
             }
-
+            // 7.13 HL7
             if (PluginChecker.isHL7PluginLoaded()) {
                 metadataHL7ConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
                 metadataHL7ConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_HL7);
                 metadataHL7ConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_HL7);
                 metadataNode.getChildren().add(metadataHL7ConnectionNode);
             }
-
+            // 7.14 FTP
             if (PluginChecker.isFTPPluginLoaded()) {
                 metadataFTPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
                 metadataFTPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_FTP);
@@ -512,20 +512,21 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 metadataNode.getChildren().add(metadataFTPConnectionNode);
             }
 
-            // 7.13 EBCDIC
+            // 7.15 EBCDIC
             if (PluginChecker.isEBCDICPluginLoaded()) {
                 metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
                 metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
                 metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
                 metadataNode.getChildren().add(metadataEbcdicConnectionNode);
             }
-
+            // 7.16 MDM
             if (PluginChecker.isMDMPluginLoaded()) {
                 metadataMDMConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
                 metadataMDMConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_MDMCONNECTION);
                 metadataMDMConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_MDMCONNECTION);
                 metadataNode.getChildren().add(metadataMDMConnectionNode);
             }
+            // 7.17 Rules and BRMS
             if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
                 StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
                         Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
@@ -547,6 +548,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     baseRulesNode.getChildren().add(metadataRulesNode);
                 }
             }
+            // 7.18 validation rules
+            if (PluginChecker.isValidationrulesPluginLoaded()) {
+                metadataValidationRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataValidationRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_VALIDATION_RULES);
+                metadataValidationRulesNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_VALIDATION_RULES);
+                metadataNode.getChildren().add(metadataValidationRulesNode);
+            }
 
             // Reference Projects
             if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject() && project != null
@@ -555,14 +564,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
                 refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 nodes.add(refProject);
-            }
-            // Metadata validation rules
-            if (PluginChecker.isValidationrulesPluginLoaded()) {
-                metadataValidationRulesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                metadataValidationRulesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_VALIDATION_RULES);
-                metadataValidationRulesNode.setProperties(EProperties.CONTENT_TYPE,
-                        ERepositoryObjectType.METADATA_VALIDATION_RULES);
-                metadataNode.getChildren().add(metadataValidationRulesNode);
             }
         }
 
