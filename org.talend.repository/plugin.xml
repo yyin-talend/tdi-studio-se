@@ -1268,6 +1268,12 @@
             description="Rename ldap password parameter for bug18289 "
             id="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
             name="Rename ldap password parameter">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameFieldNameFortLineChart"
+            id="org.talend.repository.model.migration.RenameFieldNameFortLineChart"
+            name="Rename field name for tLineChart">
       </projecttask>     
    </extension>
    
