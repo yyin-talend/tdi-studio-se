@@ -31,6 +31,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
         boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+
+        boolean isUseTextEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
+		String textEnclosure = ElementParameterParser.getValue(node,"__FIELDS_ENCLOSURE__");
 %>
 		String fileName_<%=cid%> = (new java.io.File(<%=filename %>)).getAbsolutePath().replace("\\","/");
 <%
@@ -58,6 +61,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		final String OUT_DELIM_<%=cid %> = ",";
 		
 		final String OUT_DELIM_ROWSEP_<%=cid %> = "\n";
+		
+<%
+	if (isUseTextEnclosure) {
+%>				
+		final String OUT_FIELDS_ENCLOSURE_<%=cid %> = <%=textEnclosure%>;
+		
+<%
+	}
+%>		
 		
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(fileName_<%=cid%>, <%= isAppend%>),<%= encoding%>));

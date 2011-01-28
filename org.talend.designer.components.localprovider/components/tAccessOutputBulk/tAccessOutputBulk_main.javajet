@@ -1,6 +1,7 @@
 <%@ jet 
 	imports="
-		org.talend.core.model.process.INode 
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
@@ -20,6 +21,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	boolean isUseTextEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     			List<IMetadataColumn> columns = metadata.getListColumns();
@@ -34,7 +36,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
     				} 
     				%>
-    						out<%=cid %>.write(
+    				<%
+					if (isUseTextEnclosure) {
+					%>		
+						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_<%=cid %>);
+					<%
+					}
+					%>
+    					out<%=cid %>.write(
     				<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
@@ -57,6 +66,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 							);
 <%
+					if (isUseTextEnclosure) {
+					%>		
+						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_<%=cid %>);
+					<%
+					}
 					if(!isPrimitive) {
     				%>
 	    				} 
