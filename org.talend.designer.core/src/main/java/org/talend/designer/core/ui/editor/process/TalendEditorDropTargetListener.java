@@ -401,43 +401,46 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
                 return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
-                Shell shell = Display.getCurrent().getActiveShell();
-                ChooseJobletDialog dialog = new ChooseJobletDialog(new Shell(shell), getDropLocation());
-                if (dialog.open() == dialog.OK) {
-                    EditPart part = getTargetEditPart();
-                    if (dialog.addToJoblet()) {
-                        AbstractMultiPageTalendEditor openEditor = getJobletPart((JobletContainerPart) part);
-                        part = openEditor.getDesignerEditor().getProcessPart();
-                        // editor = openEditor.getTalendEditor();
-                        setTargetEditPart(part);
-                        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
-                        if (newObject != null) {
-                            Command command = getCommand();
-                            if (command != null) {
-                                CommandStack commandStack = (CommandStack) openEditor.getAdapter(CommandStack.class);
-                                if (commandStack != null) {
-                                    commandStack.execute(command);
-                                } else {
-                                    command.execute();
+                JobletContainerPart jobletPart = (JobletContainerPart) getTargetEditPart();
+                if (isLock(jobletPart)) {
+                    Shell shell = Display.getCurrent().getActiveShell();
+                    ChooseJobletDialog dialog = new ChooseJobletDialog(new Shell(shell), getDropLocation());
+                    if (dialog.open() == dialog.OK) {
+                        EditPart part = getTargetEditPart();
+                        if (dialog.addToJoblet()) {
+
+                            AbstractMultiPageTalendEditor openEditor = getJobletPart((JobletContainerPart) part);
+                            part = openEditor.getDesignerEditor().getProcessPart();
+                            // editor = openEditor.getTalendEditor();
+                            setTargetEditPart(part);
+                            Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                            if (newObject != null) {
+                                Command command = getCommand();
+                                if (command != null) {
+                                    CommandStack commandStack = (CommandStack) openEditor.getAdapter(CommandStack.class);
+                                    if (commandStack != null) {
+                                        commandStack.execute(command);
+                                    } else {
+                                        command.execute();
+                                    }
                                 }
                             }
-                        }
-                        return;
-                    } else {
-                        part = getParentPart(part);
-                        setTargetEditPart(part);
-                        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
-                        if (newObject != null) {
-                            Command command = getCommand();
-                            if (command != null) {
-                                execCommandStack(command);
+                            return;
+                        } else {
+                            part = getParentPart(part);
+                            setTargetEditPart(part);
+                            Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+                            if (newObject != null) {
+                                Command command = getCommand();
+                                if (command != null) {
+                                    execCommandStack(command);
+                                }
                             }
+                            return;
                         }
-                        return;
+
                     }
-
                 }
-
             }
 
         }
@@ -1599,6 +1602,19 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             parent = getParentPart(parent);
         }
         return parent;
+    }
+
+    private boolean isLock(JobletContainerPart part) {
+        INode jobletNode = ((JobletContainer) part.getModel()).getNode();
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                return service.isLock(jobletNode);
+            }
+        }
+
+        return false;
     }
 
     public AbstractMultiPageTalendEditor getJobletPart(JobletContainerPart part) {
