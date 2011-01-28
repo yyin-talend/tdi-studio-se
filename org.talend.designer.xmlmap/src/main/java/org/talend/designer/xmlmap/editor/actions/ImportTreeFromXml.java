@@ -73,7 +73,7 @@ public class ImportTreeFromXml extends SelectionAction {
     }
 
     private void prepareEmfTreeNode(List<FOXTreeNode> list, TreeNode parent) {
-        if (list == null && list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return;
         }
         String xPath = parent.getXpath();
