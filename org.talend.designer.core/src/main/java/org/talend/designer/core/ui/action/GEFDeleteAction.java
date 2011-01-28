@@ -59,13 +59,20 @@ public class GEFDeleteAction extends DeleteAction {
         }
         AbstractProcessProvider pProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
         if (pProvider != null) {
+            boolean allJobletnode = true;
             for (Object o : objects) {
                 if (o instanceof NodePart) {
                     Node no = (Node) ((NodePart) o).getModel();
+                    if (no.getJobletNode() == null) {
+                        allJobletnode = false;
+                    }
                     if (!pProvider.canDeleteNode(no)) {
                         return false;
                     }
                 }
+            }
+            if (allJobletnode) {
+                return false;
             }
         }
         return true;
@@ -103,9 +110,9 @@ public class GEFDeleteAction extends DeleteAction {
             if (o instanceof NodePart) {
                 others.remove(o);
                 Node model = (Node) ((NodePart) o).getModel();
-                if (model.getJobletNode() != null) {
-                    continue;
-                }
+                // if (model.getJobletNode() != null) {
+                // continue;
+                // }
 
                 nodeParts.add(o);
             } else if (o instanceof NoteEditPart) {
