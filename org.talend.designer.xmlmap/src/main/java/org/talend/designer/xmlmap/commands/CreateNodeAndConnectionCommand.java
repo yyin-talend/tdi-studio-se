@@ -20,6 +20,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.xmlmap.figures.CenterVarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -208,13 +209,14 @@ public class CreateNodeAndConnectionCommand extends Command {
                         if (update) {
                             // update expression
                             String expression = parent.getExpression();
+                            IFigure tableFigure = ((VarTableEditPart) sourceVarNode.getParent()).getFigure();
                             if (expression == null) {
-                                expression = XmlMapUtil.convertToExpression(sourceNode.getExpression());
+                                expression = ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
+                                        + sourceNode.getVariable();
                             } else {
-                                IFigure tableFigure = ((VarTableEditPart) sourceVarNode.getParent()).getFigure();
                                 expression = expression + " "
                                         + ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
-                                        + sourceNode.getName();
+                                        + sourceNode.getVariable();
                             }
                             parent.setExpression(expression);
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
@@ -236,8 +238,13 @@ public class CreateNodeAndConnectionCommand extends Command {
                             } else {
                                 targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + sourceNode.getName());
                             }
+                            String variable = sourceNode.getVariable();
                             targetNode.setNodeType(nodeType);
-                            targetNode.setExpression(sourceNode.getExpression());
+                            if (sourceNode.eContainer() instanceof VarTable) {
+                                VarTable container = (VarTable) sourceNode.eContainer();
+                                variable = container.getName() + TalendTextUtils.JAVA_END_STRING + variable;
+                            }
+                            targetNode.setExpression(variable);
 
                             parent.getChildren().add(targetNode);
                             // add connection
