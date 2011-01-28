@@ -1630,42 +1630,36 @@ public class DataProcess {
         checkValidationList.add(node);
 
         AbstractNode dataNode = (AbstractNode) buildCheckMap.get(node);
-
         // if use validation continue, else return
-        IElementParameter param = dataNode.getElementParameter(EParameterName.VALIDATION_RULES.getName());
-        if (param != null && (Boolean) param.getValue()) {
-            param = dataNode.getElementParameter(EParameterFieldType.VALIDATION_RULE_TYPE.getName());
-            if (param != null) {
-                param = param.getChildParameters().get(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName());
-                if (param != null && param.getValue() != null) {
-                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                    String linkedRepository = (String) param.getValue();
-                    try {
-                        IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
-                        if (object != null) {
-                            Item item = object.getProperty().getItem();
-                            if (item != null && item instanceof ValidationRulesConnectionItem) {
-                                ValidationRulesConnectionItem valItem = (ValidationRulesConnectionItem) item;
-                                ValidationRulesConnection rulesConnection = (ValidationRulesConnection) valItem.getConnection();
-                                List<IConnection> inputs = (List<IConnection>) NodeUtil.getIncomingConnections(dataNode,
+        if (ValidationRulesUtil.isHasValidationRule(dataNode)) {
+            IElementParameter param = dataNode.getElementParameter(EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName());
+            if (param != null && param.getValue() != null) {
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                String linkedRepository = (String) param.getValue();
+                try {
+                    IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
+                    if (object != null && object.getProperty() != null) {
+                        Item item = object.getProperty().getItem();
+                        if (item != null && item instanceof ValidationRulesConnectionItem) {
+                            ValidationRulesConnectionItem valItem = (ValidationRulesConnectionItem) item;
+                            ValidationRulesConnection rulesConnection = (ValidationRulesConnection) valItem.getConnection();
+                            List<IConnection> inputs = (List<IConnection>) NodeUtil.getIncomingConnections(dataNode,
+                                    IConnectionCategory.DATA);
+                            if (inputs.size() > 0) {// only for output component (have data input)
+                                DataConnection connection = (DataConnection) inputs.get(0);
+                                replaceValidationRules(node, rulesConnection, connection, true);
+                            } else {// only for input component (have no data input)
+                                List<IConnection> outputs = (List<IConnection>) NodeUtil.getOutgoingConnections(dataNode,
                                         IConnectionCategory.DATA);
-                                // only for output component (have data input)
-                                if (inputs.size() > 0) {
-                                    DataConnection connection = (DataConnection) inputs.get(0);
-                                    replaceValidationRules(rulesConnection, connection, true, node);
-                                } else {// only for input component (have no data input)
-                                    List<IConnection> outputs = (List<IConnection>) NodeUtil.getOutgoingConnections(dataNode,
-                                            IConnectionCategory.DATA);
-                                    if (outputs.size() > 0) {
-                                        DataConnection connection = (DataConnection) outputs.get(0);
-                                        replaceValidationRules(rulesConnection, connection, false, node);
-                                    }
+                                if (outputs.size() > 0) {
+                                    DataConnection connection = (DataConnection) outputs.get(0);
+                                    replaceValidationRules(node, rulesConnection, connection, false);
                                 }
                             }
                         }
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
                     }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
                 }
             }
         }
@@ -1686,14 +1680,14 @@ public class DataProcess {
      * @param isOutput
      * @param node
      */
-    private void replaceValidationRules(ValidationRulesConnection rulesConnection, DataConnection connection, boolean isOutput,
-            INode node) {
+    private void replaceValidationRules(INode graphicalNode, ValidationRulesConnection rulesConnection,
+            DataConnection connection, boolean isOutput) {
         if (rulesConnection.getType() == RuleType.BASIC) {
-            replaceBasicOrCustomValidationRules(connection, rulesConnection, false, isOutput, node);
+            replaceBasicOrCustomValidationRules(graphicalNode, connection, rulesConnection, false, isOutput);
         } else if (rulesConnection.getType() == RuleType.REFERENCE) {
-            replaceReferenceValidationRules(connection, rulesConnection, isOutput, node);
+            replaceReferenceValidationRules(graphicalNode, connection, rulesConnection, isOutput);
         } else if (rulesConnection.getType() == RuleType.CUSTOM) {
-            replaceBasicOrCustomValidationRules(connection, rulesConnection, true, isOutput, node);
+            replaceBasicOrCustomValidationRules(graphicalNode, connection, rulesConnection, true, isOutput);
         }
     }
 
@@ -1705,8 +1699,8 @@ public class DataProcess {
      * @param isOutput
      * @param graphicalNode
      */
-    private void replaceReferenceValidationRules(IConnection connection, ValidationRulesConnection rulesConnection,
-            boolean isOutput, INode graphicalNode) {
+    private void replaceReferenceValidationRules(INode graphicalNode, IConnection connection,
+            ValidationRulesConnection rulesConnection, boolean isOutput) {
         INode node = getApplicableNode(connection, isOutput);
         INode endNode = null;
         if (!checkTriggerAndDBSettings(node, rulesConnection, isOutput)) {
@@ -1991,8 +1985,8 @@ public class DataProcess {
      * @param isCustom
      * @param isOutput
      */
-    private void replaceBasicOrCustomValidationRules(IConnection connection, ValidationRulesConnection rulesConnection,
-            boolean isCustom, boolean isOutput, INode graphicalNode) {
+    private void replaceBasicOrCustomValidationRules(INode graphicalNode, IConnection connection,
+            ValidationRulesConnection rulesConnection, boolean isCustom, boolean isOutput) {
         INode node = getApplicableNode(connection, isOutput);
         INode endNode = null;
 
@@ -2045,7 +2039,7 @@ public class DataProcess {
         List<? extends INodeConnector> connectors = nodeUseValidationRule.getListConnector();
         INodeConnector rejectConnector = null;
         for (INodeConnector connector : connectors) {
-            if ("REJECT".equals(connector.getName())) {
+            if ("REJECT".equals(connector.getName())) { //$NON-NLS-1$
                 rejectConnector = connector;
                 break;
             }
@@ -2054,7 +2048,7 @@ public class DataProcess {
         List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
         for (IMetadataTable metadataTable : metadataList) {
-            if ("REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) {
+            if ("REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) { //$NON-NLS-1$
                 rejectMetadataTable = metadataTable;
                 filterNode.getMetadataList().add(metadataTable);
                 break;

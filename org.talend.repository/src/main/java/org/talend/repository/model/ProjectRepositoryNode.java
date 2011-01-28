@@ -1269,6 +1269,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
                 if (metadataTable.getColumns().size() > 0) {
                     createColumns(recBinNode, tableNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_COLUMN);
+                    createValidationRules(recBinNode, tableNode, repObj, metadataTable,
+                            ERepositoryObjectType.METADATA_VALIDATION_RULES);
                 }
             } else if (currentTable instanceof Query) {
                 Query query = (Query) currentTable;
@@ -1339,7 +1341,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         IRepositoryViewObject vo = node.getObject();
         if (vo != null && vo.getProperty() != null) {
             String schema = vo.getProperty().getId();
-            schema = schema + Messages.getString("ProjectRepositoryNode.5") + metadataTable.getName(); //$NON-NLS-1$
+            schema = schema + " - " + metadataTable.getLabel(); //$NON-NLS-1$
             List<IRepositoryViewObject> objs = getValidationRuleObjsFromSchema(schema);
             if (objs.size() > 0) {
                 int num = objs.size();
@@ -1350,6 +1352,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 floderName.append(")");//$NON-NLS-1$
                 RepositoryNode validationRulesNode = new StableRepositoryNode(node, floderName.toString(),
                         ECoreImage.FOLDER_CLOSE_ICON);
+                validationRulesNode.setProperties(EProperties.CONTENT_TYPE,
+                        ERepositoryObjectType.METADATA_VALIDATIONS_RULES_FOLDER);
                 node.getChildren().add(validationRulesNode);
                 for (IRepositoryViewObject obj : objs) {
                     addNode(validationRulesNode, ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode, obj);
