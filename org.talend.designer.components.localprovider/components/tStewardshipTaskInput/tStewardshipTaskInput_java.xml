@@ -25,7 +25,7 @@
   </CONNECTORS>  
   <PARAMETERS> 
    	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" SHOW="true" REQUIRED="true" NUM_ROW="1">
-		<TABLE READONLY="false">
+		<TABLE READONLY="false" IF="TARGET_RECORD_ONLY=='true'">
 	        <COLUMN NAME="TASK_ID" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
 	        <COLUMN NAME="TASK_TYPE" TYPE="id_String" READONLY="true" LENGTH="20" CUSTOM="true" />
 	        <COLUMN NAME="TASK_CREATEDBY" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
@@ -33,6 +33,17 @@
 	        <COLUMN NAME="TASK_OWNER" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
 	        <COLUMN NAME="TASK_STATUS" TYPE="id_String" READONLY="true" LENGTH="20" CUSTOM="true" />
 	        <COLUMN NAME="TASK_STARS" TYPE="id_Integer" READONLY="true" LENGTH="20" CUSTOM="true" />
+	    </TABLE>
+	    <TABLE READONLY="false" IF="TARGET_RECORD_ONLY=='false'">
+	        <COLUMN NAME="TASK_ID" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
+	        <COLUMN NAME="TASK_TYPE" TYPE="id_String" READONLY="true" LENGTH="20" CUSTOM="true" />
+	        <COLUMN NAME="TASK_CREATEDBY" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
+	        <COLUMN NAME="TASK_CREATEDON" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" READONLY="true" LENGTH="20" CUSTOM="true" />
+	        <COLUMN NAME="TASK_OWNER" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true" />
+	        <COLUMN NAME="TASK_STATUS" TYPE="id_String" READONLY="true" LENGTH="20" CUSTOM="true" />
+	        <COLUMN NAME="TASK_STARS" TYPE="id_Integer" READONLY="true" LENGTH="20" CUSTOM="true" />
+	        <COLUMN NAME="TARGET" TYPE="id_Boolean" READONLY="true" CUSTOM="true" />
+	        <COLUMN NAME="SOURCE" TYPE="id_String" READONLY="true" LENGTH="255" CUSTOM="true" />
 	    </TABLE>
 	</PARAMETER>
 	<PARAMETER NAME="HOST" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
@@ -89,6 +100,9 @@
     <PARAMETER NAME="LIMIT" FIELD="TEXT" NUM_ROW="30" REQUIRED="true">
     	<DEFAULT>50</DEFAULT>
     </PARAMETER> 
+    <PARAMETER NAME="TARGET_RECORD_ONLY" FIELD="CHECK" NUM_ROW="40">
+    	<DEFAULT>true</DEFAULT>
+   	</PARAMETER> 
   </PARAMETERS>  
   
   <ADVANCED_PARAMETERS> 

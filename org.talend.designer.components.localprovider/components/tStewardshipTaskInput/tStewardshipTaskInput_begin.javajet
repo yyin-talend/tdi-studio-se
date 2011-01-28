@@ -44,6 +44,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			String status = ElementParameterParser.getValue(node,"__STATUS__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
     		String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+			boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 			
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -81,57 +82,93 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				for(org.talend.datastewardship.server.ws.StringArray taskResult_<%=cid%>:tasksResult_<%=cid%>){
 					java.util.List<String> taskCols_<%=cid%> = taskResult_<%=cid%>.getItem();
 					
-					<%=outgoingConn.getName()%>.TASK_ID = taskCols_<%=cid%>.get(0);
-					<%=outgoingConn.getName()%>.TASK_TYPE = taskCols_<%=cid%>.get(1);
-					<%=outgoingConn.getName()%>.TASK_CREATEDBY = taskCols_<%=cid%>.get(2);
-					<%=outgoingConn.getName()%>.TASK_CREATEDON = ParserUtils.parseTo_Date(taskCols_<%=cid%>.get(3),"yyyy-MM-dd HH:mm:ss");
-					<%=outgoingConn.getName()%>.TASK_OWNER = taskCols_<%=cid%>.get(4);
-					<%=outgoingConn.getName()%>.TASK_STATUS = taskCols_<%=cid%>.get(5);
-					<%=outgoingConn.getName()%>.TASK_STARS = Integer.valueOf(taskCols_<%=cid%>.get(6));
-					
-					java.util.List<org.talend.datastewardship.server.ws.StringArray> record_<%=cid%> = TDSCWS_<%=cid%>.getResolvedTgtRecord(taskCols_<%=cid%>.get(0));
-					for(org.talend.datastewardship.server.ws.StringArray tgtCols_<%=cid%>:record_<%=cid%>){
-						java.util.List<String> tgtCol_<%=cid%> = tgtCols_<%=cid%>.getItem();
-						if(tgtCol_<%=cid%>!=null && !tgtCol_<%=cid%>.isEmpty()){
-							
-<%
-				for( int i = 0; i < columnList.size(); i++) {
-					IMetadataColumn column = columnList.get(i);
-					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-					if(!"TASK_ID".equals(column.getLabel()) 
-						&& !"TASK_TYPE".equals(column.getLabel()) 
-						&& !"TASK_CREATEDBY".equals(column.getLabel()) 
-						&& !"TASK_CREATEDON".equals(column.getLabel()) 
-						&& !"TASK_OWNER".equals(column.getLabel()) 
-						&& !"TASK_STATUS".equals(column.getLabel()) 
-						&& !"TASK_STARS".equals(column.getLabel())){
-					
-%>		
-							if("<%=column.getLabel()%>".equals(tgtCol_<%=cid%>.get(0))){
-<%
-					if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
-%>
-								<%=outgoingConn.getName()%>.<%=column.getLabel()%> = tgtCol_<%=cid%>.get(3);
-<%
-					} else if(javaType == JavaTypesManager.DATE) { // Date
-%>
-								<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(tgtCol_<%=cid%>.get(3), <%= patternValue %>);
-<%					
-					}else{
-%>
-								<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(tgtCol_<%=cid%>.get(3));
-<%
-					}
-%>
+					java.util.List<java.util.Map<String,String>> records_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
+					java.util.Map<String,String> recordTmp_<%=cid%>  = null;
+					java.util.List<org.talend.datastewardship.server.ws.StringArray> tgtRecord_<%=cid%> = TDSCWS_<%=cid%>.getResolvedTgtRecord(taskCols_<%=cid%>.get(0));
+					recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
+					if(tgtRecord_<%=cid%> != null){
+						recordTmp_<%=cid%>.put("TARGET","true");
+						for(org.talend.datastewardship.server.ws.StringArray tgtCols_<%=cid%>:tgtRecord_<%=cid%>){
+							java.util.List<String> tgtCol_<%=cid%> = tgtCols_<%=cid%>.getItem();
+							if(tgtCol_<%=cid%>!=null && !tgtCol_<%=cid%>.isEmpty()){
+								 recordTmp_<%=cid%>.put(tgtCol_<%=cid%>.get(0),tgtCol_<%=cid%>.get(3));
 							}
-<%
-					}
-				}
-%>
 						}
-					}		
+					}
+					records_<%=cid%>.add(recordTmp_<%=cid%>);// out of if statement is for return task info.
+					
+					<%if(!targetRecordOnly){%>
+						java.util.List<org.talend.datastewardship.server.ws.StringArrayArray> srcRecords_<%=cid%> = TDSCWS_<%=cid%>.getResolvedSrcRecord(taskCols_<%=cid%>.get(0));
+			            for (org.talend.datastewardship.server.ws.StringArrayArray srcRecord_<%=cid%> : srcRecords_<%=cid%>) {
+			                java.util.List<org.talend.datastewardship.server.ws.StringArray> srcRecordItem_<%=cid%> = srcRecord_<%=cid%>.getItem();
+			                recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
+							recordTmp_<%=cid%>.put("TARGET","false");
+							String srcRecordName_<%=cid%> = "";
+			                for (org.talend.datastewardship.server.ws.StringArray srcCols_<%=cid%> : srcRecordItem_<%=cid%>) {
+			                    java.util.List<String> srcCol_<%=cid%> = srcCols_<%=cid%>.getItem();
+			                    if(srcCol_<%=cid%>!=null && !srcCol_<%=cid%>.isEmpty()){
+									 recordTmp_<%=cid%>.put(srcCol_<%=cid%>.get(0),srcCol_<%=cid%>.get(3));
+									 srcRecordName_<%=cid%> = srcCol_<%=cid%>.get(4);
+								}
+			                }
+			                recordTmp_<%=cid%>.put("SOURCE",srcRecordName_<%=cid%>);
+			                records_<%=cid%>.add(recordTmp_<%=cid%>);
+			            }
+		            <%}%>
+		            for(java.util.Map<String,String> record_<%=cid%> : records_<%=cid%>){
+		            
+		            	<%=outgoingConn.getName()%>.TASK_ID = taskCols_<%=cid%>.get(0);
+						<%=outgoingConn.getName()%>.TASK_TYPE = taskCols_<%=cid%>.get(1);
+						<%=outgoingConn.getName()%>.TASK_CREATEDBY = taskCols_<%=cid%>.get(2);
+						<%=outgoingConn.getName()%>.TASK_CREATEDON = ParserUtils.parseTo_Date(taskCols_<%=cid%>.get(3),"yyyy-MM-dd HH:mm:ss");
+						<%=outgoingConn.getName()%>.TASK_OWNER = taskCols_<%=cid%>.get(4);
+						<%=outgoingConn.getName()%>.TASK_STATUS = taskCols_<%=cid%>.get(5);
+						<%=outgoingConn.getName()%>.TASK_STARS = Integer.valueOf(taskCols_<%=cid%>.get(6));
+						<%if(!targetRecordOnly){%>
+							<%=outgoingConn.getName()%>.TARGET = Boolean.valueOf(record_<%=cid%>.get("TARGET"));
+							<%=outgoingConn.getName()%>.SOURCE = record_<%=cid%>.get("SOURCE");
+						<%}%>
+						
+						<%
+						for( int i = 0; i < columnList.size(); i++) {
+							IMetadataColumn column = columnList.get(i);
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+							
+							if(!"TASK_ID".equals(column.getLabel()) 
+								&& !"TASK_TYPE".equals(column.getLabel()) 
+								&& !"TASK_CREATEDBY".equals(column.getLabel()) 
+								&& !"TASK_CREATEDON".equals(column.getLabel()) 
+								&& !"TASK_OWNER".equals(column.getLabel()) 
+								&& !"TASK_STATUS".equals(column.getLabel()) 
+								&& !"TASK_STARS".equals(column.getLabel())
+								&& !"TARGET".equals(column.getLabel())
+								&& !"SOURCE".equals(column.getLabel())){
+								%>
+								if(record_<%=cid%>.get("<%=column.getLabel()%>")!=null){
+									<%
+									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+									%>
+										<%=outgoingConn.getName()%>.<%=column.getLabel()%> = record_<%=cid%>.get("<%=column.getLabel()%>");
+									<%
+									} else if(javaType == JavaTypesManager.DATE) { // Date
+									%>
+										<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(record_<%=cid%>.get("<%=column.getLabel()%>"), <%= patternValue %>);
+									<%						
+									}else{
+									%>
+										<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(record_<%=cid%>.get("<%=column.getLabel()%>"));
+									<%
+									}
+									%>
+								}else{
+				    				<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+				    			}
+							<%
+							}
+						}
+						%>
 <%
 			}
 		}
