@@ -110,9 +110,9 @@ public class GEFDeleteAction extends DeleteAction {
             if (o instanceof NodePart) {
                 others.remove(o);
                 Node model = (Node) ((NodePart) o).getModel();
-                // if (model.getJobletNode() != null) {
-                // continue;
-                // }
+                if (model.getJobletNode() != null) {
+                    continue;
+                }
 
                 nodeParts.add(o);
             } else if (o instanceof NoteEditPart) {
