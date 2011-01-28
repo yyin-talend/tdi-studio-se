@@ -129,10 +129,7 @@
     	
         String lastStr = "";
         for (String arg : args) {
-        	if (arg.toLowerCase().contains("--context=")) { 
-				contextStr = arg.substring(10);
-			} 
-			if (arg.equalsIgnoreCase("--context_param")) {
+        	if (arg.equalsIgnoreCase("--context_param")) {
                 lastStr = arg;
             } else if (lastStr.equals("")) {
                 evalParam(arg);
