@@ -1442,7 +1442,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     } else if (typeTable.equals("SYNONYM")) { //$NON-NLS-1$
                         createTable(recBinNode, synonymsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                     }
-
+                    // bug 0017782 ,db2's SYNONYM need to convert to ALIAS;
+                    else if (typeTable.equals("ALIAS")) { //$NON-NLS-1$
+                        createTable(recBinNode, synonymsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
+                    }
                     // else if (typeTable.equals("GENERIC_SCHEMA")) {
                     // //TODO not finished.
                     // createTable(recBinNode, tablesNode, repObj, metadataTable,
