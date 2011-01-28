@@ -54,7 +54,7 @@ public class CreateAutomaticConnectionApplication implements IApplication {
         try {
             String[] args = Platform.getApplicationArgs();
             ConnectionBean newconnection = splitParameters(args);
-            List<ConnectionBean> connectionList = new ArrayList<ConnectionBean>();
+            List<ConnectionBean> connectionList = ConnectionUserPerReader.getInstance().readConnections();
             connectionList.add(newconnection);
             ConnectionUserPerReader.getInstance().saveConnections(connectionList);
             return IApplication.EXIT_OK;
@@ -164,7 +164,7 @@ public class CreateAutomaticConnectionApplication implements IApplication {
         bean.setUser(argMap.get(userKey));
         bean.setRepositoryId(argMap.get(repositoryIdKey));
         bean.setWorkSpace(argMap.get(workspaceKey));
-        bean.getDynamicFields().put("URL", argMap.get(urlKey));
+        bean.getDynamicFields().put("url", argMap.get(urlKey));
         bean.setComplete(true);
         return bean;
     }
