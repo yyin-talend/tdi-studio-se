@@ -15,11 +15,18 @@ package org.talend.designer.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.model.emf.mapper.InputTable;
+import org.talend.designer.mapper.model.emf.mapper.MapperData;
+import org.talend.designer.mapper.model.emf.mapper.MapperFactory;
+import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
+import org.talend.designer.mapper.model.emf.mapper.OutputTable;
 import org.talend.designer.mapper.utils.MapperHelper;
 
 /**
@@ -122,4 +129,49 @@ public class DesignerMapperService implements IDesignerMapperService {
         return namesList;
     }
 
+    public void createAutoMappedNode(INode node, IConnection inputConnection, IConnection outputConnection) {
+        MapperData data = (MapperData) node.getExternalNode().getExternalEmfData();
+        data.setUiProperties(MapperFactory.eINSTANCE.createUiProperties());
+        data.getUiProperties().setShellMaximized(true);
+
+        InputTable inputTable = MapperFactory.eINSTANCE.createInputTable();
+        data.getInputTables().add(inputTable);
+        inputTable.setName(inputConnection.getName());
+
+        for (IMetadataColumn column : inputConnection.getMetadataTable().getListColumns()) {
+            MapperTableEntry tableEntry = MapperFactory.eINSTANCE.createMapperTableEntry();
+            tableEntry.setName(column.getLabel());
+            tableEntry.setType(column.getTalendType());
+            tableEntry.setNullable(column.isNullable());
+            inputTable.getMapperTableEntries().add(tableEntry);
+        }
+
+        OutputTable outputTable = MapperFactory.eINSTANCE.createOutputTable();
+        data.getOutputTables().add(outputTable);
+        outputTable.setName(outputConnection.getName());
+
+        for (IMetadataColumn column : outputConnection.getMetadataTable().getListColumns()) {
+            MapperTableEntry tableEntry = MapperFactory.eINSTANCE.createMapperTableEntry();
+            tableEntry.setName(column.getLabel());
+            tableEntry.setType(column.getTalendType());
+            tableEntry.setNullable(column.isNullable());
+            tableEntry.setExpression(inputConnection.getName() + "." + column.getLabel());
+            outputTable.getMapperTableEntries().add(tableEntry);
+        }
+
+        ((MapperComponent) node.getExternalNode()).buildExternalData(data);
+    }
+
+    public void updateLink(INode node, IConnection oldConnection, IConnection newConnection) {
+        // MapperData data = (MapperData) node.getExternalNode().getExternalEmfData();
+        //
+        // for (InputTable inputTable : data.getInputTables()) {
+        // if (inputTable.getName().equals(oldConnection.getName())) {
+        // inputTable.setName(newConnection.getName());
+        // }
+        // }
+        //
+        // ((MapperComponent) node.getExternalNode()).buildExternalData(data);
+        ((MapperComponent) node.getExternalNode()).renameInputConnection(oldConnection.getName(), newConnection.getName());
+    }
 }

@@ -176,6 +176,7 @@ import org.talend.designer.core.ui.editor.process.CreateComponentOnLinkHelper;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -1071,6 +1072,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
+        CreateComponentOnLinkHelper.setSelectedConnection(null);
         ProcessorUtilities.editorClosed(this);
         talendPaletteViewerProvider = null;
 
@@ -1400,28 +1402,60 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     Object object = ((CreateRequest) request).getNewObject();
                     if (object instanceof Node) {
                         Node node = (Node) object;
-                        Point point = ((CreateRequest) request).getLocation();
-                        List<Connection> connection = CreateComponentOnLinkHelper.getConnection((SubjobContainerPart) editPart,
-                                point, node);
-                        Connection targetConnection = CreateComponentOnLinkHelper.getTargetConnection(connection);
+                        Point originalPoint = ((CreateRequest) request).getLocation();
+
+                        RootEditPart rep = getViewer().getRootEditPart().getRoot();
+
+                        Point viewOriginalPosition = new Point();
+                        if (rep instanceof ScalableFreeformRootEditPart) {
+                            ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                            Viewport viewport = (Viewport) root.getFigure();
+                            viewOriginalPosition = viewport.getViewLocation();
+                        }
+                        Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y
+                                + viewOriginalPosition.y);
+
+                        Connection targetConnection = CreateComponentOnLinkHelper.getSelectedConnection();
+                        for (Object child : getProcessPart().getChildren()) {
+                            if (child instanceof SubjobContainerPart) {
+                                CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                            }
+                        }
+
                         if (targetConnection != null) {
                             NodeContainer nodeContainer = new NodeContainer(node);
                             if (getProcess() instanceof Process) {
                                 execCommandStack(new CreateNodeContainerCommand((Process) getProcess(), nodeContainer, point));
                                 // reconnect the node
                                 Node originalTarget = (Node) targetConnection.getTarget();
-                                INodeConnector targetConnector = targetConnection.getTargetNodeConnector();
-                                targetConnection.reconnect(targetConnection.getSource(), node, targetConnection.getLineStyle());
+                                INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
+                                for (INodeConnector connector : node.getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+                                    if (connector.getMaxLinkOutput() != 0) {
+                                        targetConnector = connector;
+                                        break;
+                                    }
+                                }
+                                ConnectionCreateCommand.setCreatingConnection(true);
+                                targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
                                 INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
                                 nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                                 List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
                                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
                                         nodeArgs, false);
                                 nodeCmd.setTarget(originalTarget);
-                                INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnector
-                                        .getName());
+                                INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnection
+                                        .getTargetNodeConnector().getName());
                                 originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
                                 execCommandStack(nodeCmd);
+                                if (node.getComponent().getName().equals("tMap")) {
+                                    CreateComponentOnLinkHelper.setupTMap(node);
+                                }
+                                if (originalTarget.getComponent().getName().equals("tMap")) {
+                                    CreateComponentOnLinkHelper.updateTMap(originalTarget, targetConnection, node
+                                            .getOutgoingConnections().get(0));
+                                }
+                                originalTarget.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0)
+                                        .getName());
                             }
                         }
                     }
@@ -1652,6 +1686,78 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             getViewer().getEditDomain().setActiveTool(myConnectTool);
             canvas.notifyListeners(3, event);
             TalendEditorContextMenuProvider.setEnableContextMenu(false);
+        }
+
+        @Override
+        public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
+            boolean flag = false;
+            if (viewer.getSelectionManager() instanceof TalendSelectionManager) {
+                flag = true;
+            }
+            if (flag && getActiveTool() instanceof CreationTool) {
+                CreationTool tool = (CreationTool) getActiveTool();
+                Class toolClass = TargetingTool.class;
+                Field targetRequestField;
+                Request request = null;
+                try {
+                    targetRequestField = toolClass.getDeclaredField("targetRequest");
+                    targetRequestField.setAccessible(true);
+                    request = (Request) targetRequestField.get(tool);
+                } catch (SecurityException e) {
+                    ExceptionHandler.process(e);
+                } catch (NoSuchFieldException e) {
+                    ExceptionHandler.process(e);
+                } catch (IllegalArgumentException e) {
+                    ExceptionHandler.process(e);
+                } catch (IllegalAccessException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (!(request instanceof CreateRequest)) {
+                    return;
+                }
+
+                Object node = ((CreateRequest) request).getNewObject();
+                RootEditPart rep = getViewer().getRootEditPart().getRoot();
+
+                Point viewOriginalPosition = new Point();
+                if (rep instanceof ScalableFreeformRootEditPart) {
+                    ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                    Viewport viewport = (Viewport) root.getFigure();
+                    viewOriginalPosition = viewport.getViewLocation();
+                }
+
+                org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(mouseEvent.x
+                        + viewOriginalPosition.x, mouseEvent.y + viewOriginalPosition.y);
+                SubjobContainerPart containerPart = null;
+
+                for (Object child : getProcessPart().getChildren()) {
+                    if (child instanceof SubjobContainerPart) {
+                        SubjobContainer container = (SubjobContainer) ((SubjobContainerPart) child).getModel();
+                        if (container.getSubjobContainerRectangle().contains(draw2dPosition)) {
+                            containerPart = (SubjobContainerPart) child;
+                        }
+                    }
+                }
+
+                if (containerPart != null) {
+                    List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
+                            .getConnection(containerPart, draw2dPosition, (Node) node);
+                    for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
+                        CreateComponentOnLinkHelper.selectConnection(connection, containerPart);
+                    }
+
+                    if (connections.isEmpty()) {
+                        CreateComponentOnLinkHelper.unselectAllConnections(containerPart);
+                    }
+                } else {
+                    for (Object child : getProcessPart().getChildren()) {
+                        if (child instanceof SubjobContainerPart) {
+                            CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                        }
+                    }
+                }
+            }
+            super.mouseMove(mouseEvent, viewer);
         }
 
     }

@@ -22,17 +22,20 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.AbstractEditPart;
+import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
@@ -85,11 +88,13 @@ import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.impl.BRMSConnectionImpl;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
@@ -145,6 +150,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -265,6 +271,61 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             if (!allowed) {
                 event.detail = DND.DROP_NONE;
+            }
+        } else {
+            CreateRequest req = ((CreateRequest) getTargetRequest());
+            Object o = null;
+            try {
+                o = req.getNewObject();
+            } catch (Exception e) {
+                return;
+            }
+            if (!(o instanceof Node)) {
+                return;
+            }
+
+            RootEditPart rep = editor.getViewer().getRootEditPart().getRoot();
+
+            Point viewOriginalPosition = new Point();
+            if (rep instanceof ScalableFreeformRootEditPart) {
+                ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                Viewport viewport = (Viewport) root.getFigure();
+                viewOriginalPosition = viewport.getViewLocation();
+            }
+
+            org.eclipse.swt.graphics.Point swtLocation = new org.eclipse.swt.graphics.Point(event.x + viewOriginalPosition.x,
+                    event.y + viewOriginalPosition.y);
+            Canvas canvas = (Canvas) editor.getViewer().getControl();
+            swtLocation = canvas.toControl(swtLocation);
+            // System.out.println("topLeft:" + topLeftpoint + " / event:" + swtLocation);
+            org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
+            SubjobContainerPart containerPart = (SubjobContainerPart) getTargetEditPart();
+
+            for (Object child : editor.getProcessPart().getChildren()) {
+                if (child instanceof SubjobContainerPart) {
+                    SubjobContainer container = (SubjobContainer) ((SubjobContainerPart) child).getModel();
+                    if (container.getSubjobContainerRectangle().contains(draw2dPosition)) {
+                        containerPart = (SubjobContainerPart) child;
+                    }
+                }
+            }
+
+            if (containerPart != null) {
+                List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
+                        .getConnection(containerPart, draw2dPosition, (Node) o);
+                for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
+                    CreateComponentOnLinkHelper.selectConnection(connection, containerPart);
+                }
+
+                if (connections.isEmpty()) {
+                    CreateComponentOnLinkHelper.unselectAllConnections(containerPart);
+                }
+            } else {
+                for (Object child : editor.getProcessPart().getChildren()) {
+                    if (child instanceof SubjobContainerPart) {
+                        CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                    }
+                }
             }
         }
     }
@@ -1416,14 +1477,27 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
     }
 
-    private boolean createComponentOnLink(Node node, Point point) {
+    private boolean createComponentOnLink(Node node, Point originalPoint) {
         boolean executed = false;
+
+        RootEditPart rep = editor.getViewer().getRootEditPart().getRoot();
+
+        Point viewOriginalPosition = new Point();
+        if (rep instanceof ScalableFreeformRootEditPart) {
+            ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+            Viewport viewport = (Viewport) root.getFigure();
+            viewOriginalPosition = viewport.getViewLocation();
+        }
+        Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y + viewOriginalPosition.y);
         CompoundCommand command = new CompoundCommand();
-        SubjobContainerPart ep = (SubjobContainerPart) getTargetEditPart();
-        List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper.getConnection(
-                ep, point, node);
+
         org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
-                .getTargetConnection(connections);
+                .getSelectedConnection();
+        for (Object child : editor.getProcessPart().getChildren()) {
+            if (child instanceof SubjobContainerPart) {
+                CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+            }
+        }
         if (targetConnection != null) {
             NodeContainer nodeContainer = new NodeContainer(node);
             IProcess2 p = editor.getProcess();
@@ -1431,8 +1505,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 Process process = (Process) p;
                 execCommandStack(new CreateNodeContainerCommand(process, nodeContainer, point));
                 // reconnect the node
+                INode targetNode = targetConnection.getTarget();
                 updateConnectionCommand(targetConnection, node, command);
                 execCommandStack(command);
+                if (node.getComponent().getName().equals("tMap")) {
+                    CreateComponentOnLinkHelper.setupTMap(node);
+                }
+                if (targetNode.getComponent().getName().equals("tMap")) {
+                    CreateComponentOnLinkHelper.updateTMap(targetNode, targetConnection, node.getOutgoingConnections().get(0));
+                }
+                targetNode.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0).getName());
                 executed = true;
             }
         }
@@ -1444,14 +1526,22 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             CompoundCommand command) {
         if (connection != null || node != null) {
             Node originalTarget = (Node) connection.getTarget();
-            INodeConnector targetConnector = connection.getTargetNodeConnector();
-            connection.reconnect(connection.getSource(), node, connection.getLineStyle());
+            INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
+            for (INodeConnector connector : node.getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+                if (connector.getMaxLinkOutput() != 0) {
+                    targetConnector = connector;
+                    break;
+                }
+            }
+            ConnectionCreateCommand.setCreatingConnection(true);
+            connection.reconnect(connection.getSource(), node, EConnectionType.FLOW_MAIN);
             INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
             nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
             List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(connection, node);
             ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, false);
             nodeCmd.setTarget(originalTarget);
-            INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnector.getName());
+            INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(connection.getTargetNodeConnector()
+                    .getName());
             originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
             command.add(nodeCmd);
         }
