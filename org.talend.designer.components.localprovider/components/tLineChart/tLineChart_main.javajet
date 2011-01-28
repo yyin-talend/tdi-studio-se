@@ -19,7 +19,7 @@ String cid = node.getUniqueName();
 	for (IConnection conn : conns){
 if( conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
 
-  String serieLabel<%=cid%> = <%=conn.getName() %>.serie;
+  String serieLabel<%=cid%> = <%=conn.getName() %>.series;
   org.jfree.data.xy.XYSeries serie<%=cid%>;
   if (series<%=cid%>.containsKey(serieLabel<%=cid%>)){
     serie<%=cid%>=series<%=cid%>.get(serieLabel<%=cid%>);
