@@ -168,7 +168,7 @@ public class DataProcess {
         }
     }
 
-    private void combineElementParameters(IElement sourceElement, IElement targetElement) {
+    private void combineElementParameters(INode sourceElement, INode targetElement) {
         IElementParameter combinedParameters = targetElement.getElementParameter(COMBINED_PARAMETERS);
         if (combinedParameters == null) {
             combinedParameters = new ElementParameter(targetElement);
@@ -194,6 +194,13 @@ public class DataProcess {
         ((List<IElementParameter>) combinedParameters.getValue()).add(combinedComponent);
 
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
+            if (sourceParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
+                if ("".equals(sourceParam.getContext()) || sourceParam.getContext() == null) {
+                    sourceParam.setValue(sourceElement.getMetadataList().get(0));
+                } else {
+                    sourceParam.setValue(sourceElement.getMetadataFromConnector(sourceParam.getContext()));
+                }
+            }
             combinedComponent.getChildParameters().put(sourceParam.getName(), sourceParam);
         }
     }
@@ -2220,7 +2227,6 @@ public class DataProcess {
                 node.getElementParameter("ADVANCED_COND").setValue(sqlCondition);//$NON-NLS-1$
             }
         }
-
     }
 
     /**
