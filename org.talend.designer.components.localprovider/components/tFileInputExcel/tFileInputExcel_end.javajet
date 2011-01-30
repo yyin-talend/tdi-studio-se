@@ -23,3 +23,14 @@
 			}
 		<%}%>
 			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+			} finally { 
+				<%if(!version07){%>
+					if(!(source_<%=cid %> instanceof java.io.InputStream)){
+						workbook_<%=cid %>.close();
+					}
+				<%}else{%>
+    				if(!(source_<%=cid %> instanceof java.io.InputStream)){
+    					workbook_<%=cid %>.getPackage().revert();
+    				}
+				<%}%>
+			}

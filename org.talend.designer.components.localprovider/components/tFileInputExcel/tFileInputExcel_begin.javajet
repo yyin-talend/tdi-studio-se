@@ -482,13 +482,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			workbook_<%=cid%> = null;
 			throw new Exception("The data source should be specified as Inputstream or File Path!");
 		}
+		try {
+		
 <%
 		if(isAllSheets){
 %>
-		java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> sheetList_<%= cid %> = new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
-		for(org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%=cid%>:workbook_<%=cid%>){
-			sheetList_<%= cid %>.add(sheet_<%=cid%>);
-		}
+    	java.util.List<org.apache.poi.xssf.usermodel.XSSFSheet> sheetList_<%= cid %> = new java.util.ArrayList<org.apache.poi.xssf.usermodel.XSSFSheet>();
+    	for(org.apache.poi.xssf.usermodel.XSSFSheet sheet_<%=cid%>:workbook_<%=cid%>){
+    		sheetList_<%= cid %>.add(sheet_<%=cid%>);
+    	}
 <%
 		}else{
 %>
@@ -501,8 +503,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		}
 %>
-		if(sheetList_<%= cid %>.size() <= 0){
-        	throw new RuntimeException("Special sheets not exist!");
+    	if(sheetList_<%= cid %>.size() <= 0){
+            throw new RuntimeException("Special sheets not exist!");
         }
 		
 		int nb_line_<%= cid %> = 0;            
