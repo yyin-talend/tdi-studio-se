@@ -1218,6 +1218,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * @return the process
      */
     public IProcess2 getProcess() {
+        if (designerEditor == null) {
+            return null;
+        }
         return designerEditor.getProcess();
     }
 
