@@ -945,6 +945,8 @@ class OracleManager extends Manager {
     private String connectionType;
     private boolean useExistingConnection;
     private String connection;
+    private String jdbcURL;
+    private String localServiceName;
     private String[] oracleKeyWords= {
     	"ACCESS" ,"AUDIT","COMPRESS","DESC" , 
     	"ADD","ACCESS","CONNECT","DISTINCT" ,
@@ -975,7 +977,7 @@ class OracleManager extends Manager {
 		"LOCK","ORDER","START","WHERE","WITH"
     	};
             
-    public OracleManager(String host, String port, String dbName, String tableName, String dbSchema, String useName, String password, String connectionType, boolean useExistingConnection, String connection, String cid) {
+    public OracleManager(String host, String port, String dbName, String tableName, String dbSchema, String useName, String password, String connectionType, boolean useExistingConnection, String connection, String cid,String jdbcURL,String localServiceName) {
         super(dbName, tableName, useName, password, cid);
         this.host = host;
         this.port = port;
@@ -983,6 +985,8 @@ class OracleManager extends Manager {
         this.connectionType = connectionType;
         this.useExistingConnection = useExistingConnection;
         this.connection = connection;
+        this.jdbcURL = jdbcURL;
+        this.localServiceName = localServiceName;
     }
     protected String getDriver() {
         return "oracle.jdbc.driver.OracleDriver";
@@ -994,6 +998,12 @@ class OracleManager extends Manager {
         } else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
             connectionURL = "\"jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\" + " + host + " + \")(port=\" + " + port + " + \"))(connect_data=(service_name=\" + " + dbName + " + \")))\"";
         }
+  		 else if(("ORACLE_OCI").equals(connectionType)) {
+         connectionURL = "\"jdbc:oracle:oci8:@\" + " + localServiceName ;
+        }
+        else if(("ORACLE_WALLET").equals(connectionType)) {
+         connectionURL = jdbcURL ;
+				}
         return connectionURL;
     }
     public String getConnection() {
@@ -1645,8 +1655,13 @@ class ManagerFactory {
             String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_ORACLE__"));
-            manager = new OracleManager(host, port, dbName, tableName, dbSchema, userName, password, connectionType, useExistingConnection, connection, cid);
-        } else if(("POSTGRE").equals(dbType)) {
+             String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");
+            String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
+              System.out.println("dbcURL"+jdbcURL);
+              System.out.println("localServiceName"+localServiceName);
+              System.out.println("password"+password);
+            manager = new OracleManager(host, port, dbName, tableName, dbSchema, userName, password, connectionType, useExistingConnection, connection,cid,jdbcURL,localServiceName);
+            } else if(("POSTGRE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
