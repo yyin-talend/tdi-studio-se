@@ -4,7 +4,6 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
@@ -150,7 +149,7 @@
       NUM_ROW="50"
       REPOSITORY_VALUE="SCHEMA"
       REQUIRED="false"
-      SHOW_IF="((USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET'))"
+      SHOW_IF="((USE_EXISTING_CONNECTION == 'false') "
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -267,7 +266,7 @@
       REQUIRED="true"
 	  SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_WALLET')"
     > 
-	<DEFAULT>"jdbc:oracle:thin:USER/MDP@server"</DEFAULT>
+	<DEFAULT>"jdbc:oracle:oci:/@talend"</DEFAULT>
 	 </PARAMETER>
    	
   </PARAMETERS>
