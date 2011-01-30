@@ -438,13 +438,31 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__KEY = ABSTRACT_NODE_FEATURE_COUNT + 5;
 
     /**
+     * The feature id for the '<em><b>Group</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__GROUP = ABSTRACT_NODE_FEATURE_COUNT + 6;
+
+    /**
+     * The feature id for the '<em><b>Main Node</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__MAIN_NODE = ABSTRACT_NODE_FEATURE_COUNT + 7;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 6;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 8;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -565,6 +583,24 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__KEY = TREE_NODE__KEY;
 
     /**
+     * The feature id for the '<em><b>Group</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__GROUP = TREE_NODE__GROUP;
+
+    /**
+     * The feature id for the '<em><b>Main Node</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__MAIN_NODE = TREE_NODE__MAIN_NODE;
+
+    /**
      * The feature id for the '<em><b>Default Value</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -574,22 +610,13 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__DEFAULT_VALUE = TREE_NODE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Group</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OUTPUT_TREE_NODE__GROUP = TREE_NODE_FEATURE_COUNT + 1;
-
-    /**
      * The number of structural features of the '<em>Output Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 2;
+    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
@@ -1046,6 +1073,28 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_Key();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup <em>Group</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Group</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Group();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Main Node</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_MainNode();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1065,17 +1114,6 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getOutputTreeNode_DefaultValue();
-
-    /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isGroup <em>Group</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Group</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isGroup()
-     * @see #getOutputTreeNode()
-     * @generated
-     */
-    EAttribute getOutputTreeNode_Group();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
@@ -1415,6 +1453,22 @@ public interface XmlmapPackage extends EPackage {
         EAttribute TREE_NODE__KEY = eINSTANCE.getTreeNode_Key();
 
         /**
+         * The meta object literal for the '<em><b>Group</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__GROUP = eINSTANCE.getTreeNode_Group();
+
+        /**
+         * The meta object literal for the '<em><b>Main Node</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__MAIN_NODE = eINSTANCE.getTreeNode_MainNode();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1431,14 +1485,6 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute OUTPUT_TREE_NODE__DEFAULT_VALUE = eINSTANCE.getOutputTreeNode_DefaultValue();
-
-        /**
-         * The meta object literal for the '<em><b>Group</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute OUTPUT_TREE_NODE__GROUP = eINSTANCE.getOutputTreeNode_Group();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.

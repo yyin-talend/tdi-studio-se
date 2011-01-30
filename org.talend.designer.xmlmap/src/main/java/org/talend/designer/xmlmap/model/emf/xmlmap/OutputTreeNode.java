@@ -18,7 +18,6 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getDefaultValue <em>Default Value</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isGroup <em>Group</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,31 +51,5 @@ public interface OutputTreeNode extends TreeNode {
      * @generated
      */
     void setDefaultValue(String value);
-
-    /**
-     * Returns the value of the '<em><b>Group</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Group</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Group</em>' attribute.
-     * @see #setGroup(boolean)
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputTreeNode_Group()
-     * @model
-     * @generated
-     */
-    boolean isGroup();
-
-    /**
-     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isGroup <em>Group</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Group</em>' attribute.
-     * @see #isGroup()
-     * @generated
-     */
-    void setGroup(boolean value);
 
 } // OutputTreeNode

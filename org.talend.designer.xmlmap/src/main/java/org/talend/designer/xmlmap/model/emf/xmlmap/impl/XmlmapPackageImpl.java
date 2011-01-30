@@ -447,6 +447,24 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getTreeNode_Group() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getTreeNode_MainNode() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(7);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getOutputTreeNode() {
         return outputTreeNodeEClass;
     }
@@ -458,15 +476,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      */
     public EAttribute getOutputTreeNode_DefaultValue() {
         return (EAttribute)outputTreeNodeEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EAttribute getOutputTreeNode_Group() {
-        return (EAttribute)outputTreeNodeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -586,10 +595,11 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(treeNodeEClass, TREE_NODE__NODE_TYPE);
         createEAttribute(treeNodeEClass, TREE_NODE__PATTERN);
         createEAttribute(treeNodeEClass, TREE_NODE__KEY);
+        createEAttribute(treeNodeEClass, TREE_NODE__GROUP);
+        createEAttribute(treeNodeEClass, TREE_NODE__MAIN_NODE);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__DEFAULT_VALUE);
-        createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__GROUP);
 
         varNodeEClass = createEClass(VAR_NODE);
         createEAttribute(varNodeEClass, VAR_NODE__VARIABLE);
@@ -674,10 +684,11 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getTreeNode_NodeType(), this.getNodeType(), "nodeType", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_Key(), ecorePackage.getEBoolean(), "key", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Group(), ecorePackage.getEBoolean(), "group", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_MainNode(), ecorePackage.getEBoolean(), "mainNode", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getOutputTreeNode_Group(), ecorePackage.getEBoolean(), "group", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarNode_Variable(), ecorePackage.getEString(), "variable", null, 0, 1, VarNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.util;
 
+import java.util.List;
+
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -168,6 +170,15 @@ public class XmlMapUtil {
                 TreeNode child = treeNode.getChildren().get(i);
                 detachConnectionsSouce((OutputTreeNode) child, mappData);
             }
+        }
+    }
+
+    public static void findParentsForLoopNode(TreeNode loopNode, List list) {
+        Object container = loopNode.eContainer();
+        if (container instanceof TreeNode) {
+            TreeNode parent = (TreeNode) container;
+            list.add(parent);
+            findParentsForLoopNode(parent, list);
         }
     }
 

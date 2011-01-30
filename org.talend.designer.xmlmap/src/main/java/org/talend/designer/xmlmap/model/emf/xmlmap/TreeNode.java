@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getNodeType <em>Node Type</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup <em>Group</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}</li>
  * </ul>
  * </p>
  *
@@ -180,5 +182,57 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setKey(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Group</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Group</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Group</em>' attribute.
+     * @see #setGroup(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Group()
+     * @model
+     * @generated
+     */
+    boolean isGroup();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup <em>Group</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Group</em>' attribute.
+     * @see #isGroup()
+     * @generated
+     */
+    void setGroup(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Main Node</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Main Node</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Main Node</em>' attribute.
+     * @see #setMainNode(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_MainNode()
+     * @model
+     * @generated
+     */
+    boolean isMainNode();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Main Node</em>' attribute.
+     * @see #isMainNode()
+     * @generated
+     */
+    void setMainNode(boolean value);
 
 } // TreeNode

@@ -32,6 +32,8 @@ public class DeleteTreeNodeAction extends SelectionAction {
 
     private MapperManager mapperManager;
 
+    // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
+
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction";
 
     public DeleteTreeNodeAction(IWorkbenchPart part) {
@@ -46,6 +48,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
+        // nodesNeedToChangeMainStatus.clear();
         if (getSelectedObjects().isEmpty()) {
             return false;
         } else {
@@ -91,6 +94,15 @@ public class DeleteTreeNodeAction extends SelectionAction {
                         docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
                         XmlMapUtil.detachConnectionsSouce((OutputTreeNode) treeNode, mapperManager.getCopyOfMapData());
                     }
+                    // if (treeNode.isLoop() && treeNode instanceof OutputTreeNode) {
+                    // OutputTreeNode selectedLoopOuputNode = (OutputTreeNode) treeNode;
+                    // XmlMapUtil.findParentsForLoopNode(selectedLoopOuputNode, nodesNeedToChangeMainStatus);
+                    // if (!nodesNeedToChangeMainStatus.isEmpty()) {
+                    // for (TreeNode mainNode : nodesNeedToChangeMainStatus) {
+                    // mainNode.setMainNode(false);
+                    // }
+                    // }
+                    // }
                     parent.getChildren().remove(treeNode);
                 }
 

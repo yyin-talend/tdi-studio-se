@@ -30,8 +30,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class TreeBranchFigure extends Figure implements ITreeAction {
 
-    private boolean selected;;
-
     private int alpha = 255;
 
     protected Label nameFigure;

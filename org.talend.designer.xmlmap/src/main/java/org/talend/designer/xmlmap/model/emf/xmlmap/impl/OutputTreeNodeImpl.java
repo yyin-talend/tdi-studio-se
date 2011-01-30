@@ -34,7 +34,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#getDefaultValue <em>Default Value</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#isGroup <em>Group</em>}</li>
  * </ul>
  * </p>
  *
@@ -60,26 +59,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * @ordered
      */
     protected String defaultValue = DEFAULT_VALUE_EDEFAULT;
-
-    /**
-     * The default value of the '{@link #isGroup() <em>Group</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #isGroup()
-     * @generated
-     * @ordered
-     */
-    protected static final boolean GROUP_EDEFAULT = false;
-
-    /**
-     * The cached value of the '{@link #isGroup() <em>Group</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #isGroup()
-     * @generated
-     * @ordered
-     */
-    protected boolean group = GROUP_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -126,34 +105,11 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public boolean isGroup() {
-        return group;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setGroup(boolean newGroup) {
-        boolean oldGroup = group;
-        group = newGroup;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_TREE_NODE__GROUP, oldGroup, group));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
                 return getDefaultValue();
-            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                return isGroup();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -170,9 +126,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
             case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
                 setDefaultValue((String)newValue);
                 return;
-            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                setGroup((Boolean)newValue);
-                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -188,9 +141,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
             case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
                 setDefaultValue(DEFAULT_VALUE_EDEFAULT);
                 return;
-            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                setGroup(GROUP_EDEFAULT);
-                return;
         }
         super.eUnset(featureID);
     }
@@ -205,8 +155,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
                 return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
-            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                return group != GROUP_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -223,8 +171,6 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (defaultValue: ");
         result.append(defaultValue);
-        result.append(", group: ");
-        result.append(group);
         result.append(')');
         return result.toString();
     }

@@ -1,5 +1,8 @@
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
@@ -15,6 +18,8 @@ public class SetGroupAction extends SelectionAction {
 
     private boolean isRemove;
 
+    private List<TreeNode> subGroupTraceNames = new ArrayList<TreeNode>();
+
     public SetGroupAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
@@ -23,6 +28,7 @@ public class SetGroupAction extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
+        subGroupTraceNames.clear();
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
@@ -30,7 +36,7 @@ public class SetGroupAction extends SelectionAction {
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
             if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
-                    || !(model.eContainer() instanceof TreeNode)) {
+                    || !(model.eContainer() instanceof TreeNode) || model.getName().equals("root")) { //$NON-NLS-N$
                 return false;
             }
             OutputTreeNode findDownLoopNode = findDownLoopNode(model);
@@ -53,15 +59,47 @@ public class SetGroupAction extends SelectionAction {
         return true;
     }
 
-    private static OutputTreeNode findDownLoopNode(OutputTreeNode treeNode) {
+    private OutputTreeNode findDownLoopNode(OutputTreeNode treeNode) {
 
         for (TreeNode child : treeNode.getChildren()) {
-            OutputTreeNode tmp = findDownLoopNode((OutputTreeNode) child);
-            if (tmp != null) {
-                return tmp;
+            if (child.isLoop() && child instanceof OutputTreeNode) {
+                findGroupNodeTrace(subGroupTraceNames, child);
+                return (OutputTreeNode) child;
+            } else {
+                OutputTreeNode findDownLoopNode = findDownLoopNode((OutputTreeNode) child);
+                if (findDownLoopNode != null) {
+                    return findDownLoopNode;
+                } else {
+                    continue;
+                }
             }
+
         }
         return null;
+    }
+
+    private void findGroupNodeTrace(List list, TreeNode loopNode) {
+        if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
+            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
+            OutputTreeNode selectedNode = (OutputTreeNode) nodePart.getModel();
+            OutputTreeNode rootNode = null;
+            if (loopNode instanceof OutputTreeNode) {
+                rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) loopNode);
+            }
+            Object parentNode = loopNode.eContainer();
+            if (parentNode instanceof OutputTreeNode && rootNode != null) {
+                OutputTreeNode parent = (OutputTreeNode) parentNode;
+                if (!parent.equals(rootNode)) {
+                    if (!parent.equals(selectedNode)) {
+                        list.add(parent);
+                        findGroupNodeTrace(list, parent);
+                    } else if (parent.equals(selectedNode)) {
+                        list.add(parent);
+                    }
+                }
+            }
+        }
+
     }
 
     public void update() {
@@ -71,6 +109,7 @@ public class SetGroupAction extends SelectionAction {
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
             if (!model.isGroup()) {
                 setText("As group element");
+                isRemove = false;
             } else {
                 setText("Remove group element");
                 isRemove = true;
@@ -88,8 +127,19 @@ public class SetGroupAction extends SelectionAction {
         }
         if (!isRemove) {
             model.setGroup(true);
+            if (!subGroupTraceNames.isEmpty()) {
+                for (TreeNode groupNode : subGroupTraceNames) {
+                    groupNode.setGroup(true);
+                }
+            }
         } else {
+            model.setMainNode(false);
             model.setGroup(false);
+            if (!subGroupTraceNames.isEmpty()) {
+                for (TreeNode groupNode : subGroupTraceNames) {
+                    groupNode.setGroup(false);
+                }
+            }
         }
     }
 

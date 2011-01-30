@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
@@ -65,7 +66,7 @@ public class MapperMain {
         IODataComponentContainer ioDataContainer = mapperComponent.getIODataComponents();
         List<IMetadataTable> outputMetadataTables = mapperComponent.getMetadataList();
         if (mapperComponent.getExternalEmfData() != null) {
-            copyOfMapData = (XmlMapData) mapperComponent.getExternalEmfData();
+            copyOfMapData = EcoreUtil.copy((XmlMapData) mapperComponent.getExternalEmfData());
             prepareModelInputs(ioDataContainer.getInputs());
             prepareModelOutputs(ioDataContainer.getOuputs(), outputMetadataTables);
         }

@@ -13,6 +13,8 @@ public class SetLoopAction extends SelectionAction {
 
     public static String ID = "xml map set as loop action";
 
+    // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
+
     public SetLoopAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
@@ -21,6 +23,7 @@ public class SetLoopAction extends SelectionAction {
 
     @Override
     protected boolean calculateEnabled() {
+        // nodesNeedToChangeMainStatus.clear();
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
