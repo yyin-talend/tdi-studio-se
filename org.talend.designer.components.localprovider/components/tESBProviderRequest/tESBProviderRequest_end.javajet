@@ -1,0 +1,55 @@
+<%@ jet
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String kListen = ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+%>
+            java.util.Map<String, String> esbResponseMap = globalMap.get("esbResponseMap"); 
+            String responseMessage_<%=cid%> = null;
+            if (esbResponseMap.containsKey("response")) {
+                Object esbProviderOutputXml_<%=cid%> = esbResponseMap.get("response");
+                System.out.println("--- [tESBProviderRequest] response: " + esbProviderOutputXml_<%=cid%>);
+                responseMessage_<%=cid%> = (String) esbProviderOutputXml_<%=cid%>;
+                System.out.println(" %%% sending response");
+                messagesExchange_<%=cid%>.serveOutputMessage(responseMessage_<%=cid%>);
+                System.out.println(" %%% response sent");
+            } else if (esbResponseMap.containsKey("fault")) {
+                Object esbProviderOutputXml_<%=cid%> = esbResponseMap.get("fault");
+                System.out.println("--- [tESBProviderRequest] fault: " + esbProviderOutputXml_<%=cid%>);
+                responseMessage_<%=cid%> = (String) esbProviderOutputXml_<%=cid%>;
+                System.out.println(" %%% sending fault");
+                messagesExchange_<%=cid%>.serveOutputFault(new Exception(responseMessage_<%=cid%>));
+                System.out.println(" %%% response sent");
+            } else {
+                 System.out.println("--- [tESBProviderRequest] empty response");
+            }
+            // clear for next cycle
+            globalMap.put("esbResponseMap", new java.util.HashMap<String,String>(2));
+			boolean keepListening_<%=cid%> = "true".equals("<%=kListen%>");
+			// Exit from this loop is made by the configuring "Keep listening"
+			// parameter to false. Then we will have a break before.
+			if (!keepListening_<%=cid%>) {
+				System.out.println("--- [tESBProviderRequest] 'keep listening' is FALSE - job will be stopped");
+				break;
+			}
+		} catch (Throwable e) {
+			messagesExchange_<%=cid%>.serveOutputFault(e);
+		} finally {
+			messagesExchange_<%=cid%>.release();
+		}
+		// This is the end of the ESB Service Provider loop
+	}
+} finally {
+	// for "keep listening" == false web service need a time to serve response
+	Thread.currentThread();
+	Thread.sleep(500);
+	// unsubscribe
+	esbHandler_<%=cid%>.unsubscribe();
+}

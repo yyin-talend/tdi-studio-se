@@ -1,0 +1,47 @@
+<%@ jet
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>
+
+System.out.println("--- [tESBProviderRequest] Initializing the component");
+
+Class<?> clazz_<%=cid%> = this.getClass();
+
+//*** ESB context initialization
+routines.esb.ESBContext esbContext_<%=cid%> =
+		new routines.esb.ESBContext(
+			<%= ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>
+		);
+//System.out.println("esb context: " + esbContext_<%=cid%>);
+//*** ESB context initialization finish
+
+//*** external processor(s) initialization
+routines.esb.Controller.initialize(clazz_<%=cid%>, "<%=cid%>", esbContext_<%=cid%>);
+//*** external processor(s) initialization finish
+
+routines.esb.ESBIntegration.ExternalHandler<String> esbHandler_<%=cid%>
+		= (routines.esb.ESBIntegration.ExternalHandler<String>) routines
+			.esb.ESBIntegration.getExternalHandler(clazz_<%=cid%>, "<%=cid%>");
+
+
+String result_<%=cid%> = null;
+//result_<%=cid%> = "uninitialized";
+
+int counter_<%=cid%> = 0;
+
+/*java.util.Map<String, String> esbResponseMap = new java.util.HashMap<String,String>(2);*/
+globalMap.put("esbResponseMap", new java.util.HashMap<String,String>(2)); //TODO
+
+try {
+	routines.esb.ESBIntegration.MessagesExchange<String> messagesExchange_<%=cid%> = null;
+	// This is a beginning of the ESB provider request component cycle
+	while(true) {
+		try {
