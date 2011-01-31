@@ -416,7 +416,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
                     }
                     // file xml
-                    if (ERepositoryCategoryType.XML.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.XML.getName().equals(repositoryValue)
+                    // bug 18012
+                            || repositoryValue.startsWith(ERepositoryCategoryType.XML.getName())) { //$NON-NLS-1$
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
                     }
