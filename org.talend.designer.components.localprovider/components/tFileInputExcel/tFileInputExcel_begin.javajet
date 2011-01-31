@@ -128,7 +128,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         	workbook_<%= cid %> = null;
         	throw new Exception("The data source should be specified as Inputstream or File Path!");
         }
-<%
+        try {
+<%      
 		if(isAllSheets){
 %>
 		java.util.List<jxl.Sheet> sheetList_<%= cid %> = java.util.Arrays.<jxl.Sheet> asList(workbook_<%= cid %>.getSheets());
