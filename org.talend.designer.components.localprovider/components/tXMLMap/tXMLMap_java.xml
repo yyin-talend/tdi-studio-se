@@ -10,7 +10,7 @@
     EXTENSION="org.talend.designer.xmlmap" 
     SCHEMA_AUTO_PROPAGATE="false" 
     DATA_AUTO_PROPAGATE="false" 
-    HAS_CONDITIONAL_OUTPUTS="true" 
+    HAS_CONDITIONAL_OUTPUTS="true"
     >
       <SIGNATURE></SIGNATURE>
    </HEADER>
@@ -35,7 +35,7 @@
       <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="1">
          <DEFAULT/>  
       </PARAMETER>
-      <PARAMETER
+<!--       <PARAMETER
         NAME="LINK_STYLE"
         FIELD="CLOSED_LIST"
         NUM_ROW="1"
@@ -46,16 +46,17 @@
           <ITEM NAME="LINE"   VALUE="LINE" />
         </ITEMS>
       </PARAMETER>
-   
+
       <PARAMETER NAME="TEMPORARY_DATA_DIRECTORY" FIELD="DIRECTORY"
 			NUM_ROW="2" GROUP="STORE_ON_DISK"
 	  >
-			<!--<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/temp"</DEFAULT>
-      --></PARAMETER>
-      
+			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/temp"</DEFAULT>
+      </PARAMETER>
+
       <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="4">
          <DEFAULT/>
       </PARAMETER>
+     
       
        <PARAMETER
       NAME="DIE_ON_ERROR"
@@ -65,7 +66,7 @@
    		 >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-      
+      -->      
       <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
 			REQUIRED="false" NUM_ROW="3"
@@ -82,15 +83,21 @@
    </PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
+<!-- 
       <PARAMETER NAME="ROWS_BUFFER_SIZE" FIELD="TEXT"
 			REQUIRED="true" NUM_ROW="1" SHOW="true" GROUP="STORE_ON_DISK"
 	  >
 			<DEFAULT>2000000</DEFAULT>
       </PARAMETER>
+ -->
 	</ADVANCED_PARAMETERS>
 
-   <CODEGENERATION>
-  </CODEGENERATION>
+	<CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar"
+				REQUIRED="true" />
+		</IMPORTS>
+	</CODEGENERATION>
   <RETURNS/>
 
 </COMPONENT>

@@ -327,7 +327,8 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             JetBean jetBean = new JetBean(componentsPath, templateURI, component.getName(), component.getVersion(),
                     codeLanguage.getName(), codePart.getName());
-
+            jetBean.addClassPath("EMF_ECORE", "org.eclipse.emf.ecore");
+            jetBean.addClassPath("EMF_COMMON", "org.eclipse.emf.common");
             jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$

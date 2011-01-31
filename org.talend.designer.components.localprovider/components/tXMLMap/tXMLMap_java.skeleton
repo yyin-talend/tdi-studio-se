@@ -1,0 +1,129 @@
+/**
+ * add by wliu
+ */
+public class CLASS {
+
+	class MatchXmlTreeExpr {
+		String cid = null;
+		java.util.Map<String, String> pathTypeMap = new java.util.HashMap<String, String>(); // Map<input table xpath, typeToGenerate>
+		java.util.Map<String, String> pathPatternMap = new java.util.HashMap<String, String>(); // Map<input table xpath, Pattern>
+		java.util.Map<String, String> pathTypeToGenMap = new java.util.HashMap<String, String>(); // Map<"/root/name","String">
+		
+		public MatchXmlTreeExpr(TreeNode node, String cid) {
+			this.cid = cid;
+			init(node);
+		}
+		
+		private void init(TreeNode node) {
+			if(node.getOutgoingConnections().size()>0){
+				String talendType = node.getType();
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, node.isNullable());
+				String patternValue = node.getPattern() == null || node.getPattern().trim().length() == 0 ? null : node.getPattern();
+				
+				pathTypeMap.put(node.getXpath(), talendType);
+				pathPatternMap.put(node.getXpath(), patternValue);
+				pathTypeToGenMap.put(node.getXpath(), typeToGenerate);
+			} else {
+	    		for(TreeNode tmpNode : node.getChildren()) {
+	    			init(tmpNode);
+	    		}
+			}
+		}
+		
+		String generateExprCode(String expression){
+			StringBuilder strBuilder = new StringBuilder();
+			if(expression==null || ("").equals(expression)) {
+				return "";
+			}
+//			System.out.println("expression=" + expression);
+			if(expression.indexOf("[")>-1 && (expression.indexOf(".") > expression.indexOf("[")) 
+				&& (expression.indexOf(".") < expression.indexOf(":")) && (expression.indexOf(":") < expression.indexOf("]")) ){
+				// has the input tree path expression: [row1.doc:/root/subRoot]
+				
+	// here we need to use a loop to query all the xpath in the expression
+				
+				int index_start = expression.indexOf("[");
+				int index_end = expression.indexOf("]", index_start+1);
+				String tmpXpath = expression.substring(index_start + 1, index_end );
+				if(index_start>0){
+					strBuilder.append(expression.substring(0,index_start-1));
+				}
+				if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
+					strBuilder.append("treeNodeAPI_"+cid+".get_String(\""+ tmpXpath + "\")");
+				} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
+					strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
+				} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
+					strBuilder.append("treeNodeAPI_"+cid+".get_Bytes(\""+ tmpXpath + "\")");
+				} else {
+					strBuilder.append("treeNodeAPI_"+cid+".get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+				}
+				if(index_end+1 < expression.length()) {
+					strBuilder.append(expression.substring(index_end+1));
+				}
+			} else { // there is no xpath in the expression
+				strBuilder.append(expression);
+			}
+			return strBuilder.toString();
+		}
+	}
+	
+	class FindNodeUtil{
+		
+		TreeNode findLoopPathNode(TreeNode node){
+			if(node == null){
+				return null;
+			}
+			if(node.isLoop()) {
+				return node;
+			}
+			for(TreeNode tmpNode : node.getChildren()) {
+				TreeNode resultNode = findLoopPathNode(tmpNode);
+				if(resultNode!=null){
+					return resultNode;
+				}
+			}
+			
+			return null;
+		}
+		
+		void findXpathArray(TreeNode node, String loopPath, List<String> resultList, java.util.Map<String, String> map) {
+			if(node.getOutgoingConnections().size()>0){
+				String xpath = node.getXpath();
+				String result = null;
+				if(xpath==null || ("").equals(xpath)){
+				} else if(xpath.equals(loopPath)){ // get the value in the loop elment
+					result = ".";
+				} else if(xpath.contains(loopPath)){ // find the loop path
+					result = xpath.substring(loopPath.length() + 1);
+				} else {
+					StringBuilder resultBuff = new StringBuilder();
+					String tmp = loopPath;
+					
+					while(!xpath.contains(tmp)){
+						int index = tmp.lastIndexOf("/");
+						if(index<0){ break; }
+						tmp = tmp.substring(0,index-1);
+						resultBuff.append("../");
+					}
+					if(tmp.lastIndexOf("/") < 0 ){
+						System.out.println("Loop Path is not set or loop Path is invalid");
+					}else{
+						resultBuff.append(xpath.substring(tmp.length() + 1));
+					}
+					result = resultBuff.toString();
+				}
+				resultList.add(result);
+				map.put(result, node.getXpath());
+			} else {
+    			for(TreeNode tmpNode : node.getChildren()) {
+    				findXpathArray(tmpNode, loopPath, resultList, map);
+    			}
+			}
+		}
+	}
+
+    public String generate(Object argument) {
+        return "";
+    }
+}
