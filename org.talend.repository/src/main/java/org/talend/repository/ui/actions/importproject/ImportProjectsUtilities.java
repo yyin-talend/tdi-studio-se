@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -76,7 +77,7 @@ public class ImportProjectsUtilities {
 
     public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
 
-    private static final String XML_FILE_PATH = "resources/demoprojects.xml"; //$NON-NLS-1$
+    private static final String XML_FILE_PATH = "resources/demoprojects/"; //$NON-NLS-1$
 
     public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -398,6 +399,7 @@ public class ImportProjectsUtilities {
             Bundle bundle = Platform.getBundle(pluginIDs[i]);
             if (bundle != null) {
                 URL url = null;
+
                 try {
                     url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
                 } catch (IOException e) {
@@ -405,10 +407,20 @@ public class ImportProjectsUtilities {
                 }
 
                 File xmlFilePath = new File(url.getPath());
-                xmlListFile.add(xmlFilePath);
+                if (xmlFilePath.exists()) {
+                    String files[] = xmlFilePath.list(new FilenameFilter() {
+
+                        public boolean accept(File arg0, String arg1) {
+                            return arg1.endsWith(".xml");
+                        }
+                    });
+                    for (String file : files) {
+                        File xml = new File(url.getPath() + "/" + file);
+                        xmlListFile.add(xml);
+                    }
+                }
             }
         }
         return xmlListFile;
     }
-
 }
