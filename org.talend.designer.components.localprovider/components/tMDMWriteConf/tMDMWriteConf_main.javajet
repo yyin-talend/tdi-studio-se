@@ -27,6 +27,10 @@ String sourceName = ElementParameterParser.getValue(node,"__SOURCE__");
 boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 String isUpdate = ElementParameterParser.getValue(node,"__ISUPDATE__");
 List<Map<String,String>> keysReturn = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RETURN_IDS__");
+
+boolean addTaskID = ("true").equals(ElementParameterParser.getValue(node,"__ADD_TASKID__"));
+String taskID = ElementParameterParser.getValue(node,"__TASKID__");
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 
 if (destination != null && !"".equals(destination)) {
@@ -79,14 +83,24 @@ if (metadatas != null && metadatas.size()>0) {
         org.talend.mdm.webservice.WSPutItemWithReport itemReport_<%=cid %> = new org.talend.mdm.webservice.WSPutItemWithReport(item_<%=cid %>,<%=sourceName %>,<%=needCheck %>);
 
         <%if (isMassInsert) {%>
+        	<%if(addTaskID){%>
+        		taskIDs_<%=cid%>.add(<%=taskID%>);
+        	<%}%>
           miList_<%=cid %>.add(itemReport_<%=cid %>);
 
           if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {
-            xtentisWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[<%=numMassInsert %>]));
+            wspks_<%=cid %> = xtentisWS_<%=cid %>.putItemWithReportArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItemWithReport[<%=numMassInsert %>]));
             miList_<%=cid %>.clear();
+            <%if(addTaskID){%>
+            	xtentisWS_<%=cid %>.updateItemArrayMetadata(util_<%=cid%>. makeUpdateMeteItms(taskIDs_<%=cid%>,wspks_<%=cid %>));
+            	taskIDs_<%=cid%>.clear();
+            <%}%>
           }
         <%} else {%>
           wspk_<%=cid %> = xtentisWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
+          	<%if(addTaskID){%>
+            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=taskID%>,wspk_<%=cid %>));
+            <%}%>
         <%
         }
 
@@ -103,16 +117,25 @@ if (metadatas != null && metadatas.size()>0) {
       
         if (isMassInsert) {
         %>
+        	<%if(addTaskID){%>
+        		taskIDs_<%=cid%>.add(<%=taskID%>);
+        	<%}%>
           miList_<%=cid %>.add(item_<%=cid %>);
 
           if (miList_<%=cid %>.size() >= <%=numMassInsert %>) {
-            xtentisWS_<%=cid %>.putItemArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItem[<%=numMassInsert %>]));
+            wspks_<%=cid %> = xtentisWS_<%=cid %>.putItemArray(miList_<%=cid %>.toArray(new org.talend.mdm.webservice.WSPutItem[<%=numMassInsert %>]));
             miList_<%=cid %>.clear();
+            <%if(addTaskID){%>
+            	xtentisWS_<%=cid %>.updateItemArrayMetadata(util_<%=cid%>. makeUpdateMeteItms(taskIDs_<%=cid%>,wspks_<%=cid %>));
+            	taskIDs_<%=cid%>.clear();
+            <%}%>
           }
         <%
         } else {%>
           wspk_<%=cid %> = xtentisWS_<%=cid %>.putItem(item_<%=cid %>);
-
+			<%if(addTaskID){%>
+            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=taskID%>,wspk_<%=cid %>));
+            <%}%>
           <%
           if (outConnName !=null && !isMassInsert && keysReturn.size() > 0) {
             for (int i = 0; i < keysReturn.size(); i++){

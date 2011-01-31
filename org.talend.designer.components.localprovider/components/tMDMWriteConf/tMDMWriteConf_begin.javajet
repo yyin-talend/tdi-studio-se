@@ -23,15 +23,40 @@ imports="
 	
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
+	
+	boolean addTaskID = ("true").equals(ElementParameterParser.getValue(node,"__ADD_TASKID__"));
 %>       
 int nb_line_<%=cid %> = 0;
 
+class Util_<%=cid%>{
+	public org.talend.mdm.webservice.WSUpdateMetadataItem makeUpdateMeteItm(String taskID,org.talend.mdm.webservice.WSItemPK wspk){
+		org.talend.mdm.webservice.WSUpdateMetadataItem wsUpdateMetadataItem = new org.talend.mdm.webservice.WSUpdateMetadataItem();
+        wsUpdateMetadataItem.setTaskId(taskID);
+        wsUpdateMetadataItem.setWsItemPK(wspk);
+        return wsUpdateMetadataItem;
+	}
+	public org.talend.mdm.webservice.WSUpdateMetadataItem[] makeUpdateMeteItms(java.util.List<String> taskIDs,org.talend.mdm.webservice.WSItemPK[] wspks){
+		java.util.List<org.talend.mdm.webservice.WSUpdateMetadataItem> wsUpdateMetadataItems = new java.util.ArrayList<org.talend.mdm.webservice.WSUpdateMetadataItem>();
+		int i = 0;
+        for(org.talend.mdm.webservice.WSItemPK wspk : wspks){
+        	wsUpdateMetadataItems.add(makeUpdateMeteItm(taskIDs.get(i),wspk));
+        	i++;
+        }
+        return wsUpdateMetadataItems.toArray(new org.talend.mdm.webservice.WSUpdateMetadataItem[wsUpdateMetadataItems.size()]);
+	}
+}
+Util_<%=cid%> util_<%=cid%> = new Util_<%=cid%>();
 <%if(isMassInsert){
 	if(withReport){%>
 java.util.List <org.talend.mdm.webservice.WSPutItemWithReport> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItemWithReport>();
 <%	}else{%>
 java.util.List <org.talend.mdm.webservice.WSPutItem> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItem>();
 <%
+	}
+	if(addTaskID){
+%>
+		java.util.List<String> taskIDs_<%=cid%> = new java.util.ArrayList<String>();
+<%	
 	}
 }%>
 org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
@@ -51,6 +76,8 @@ org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend
 org.talend.mdm.webservice.WSDataModelPK dataModel_<%=cid %> = new org.talend.mdm.webservice.WSDataModelPK(<%=dataModule %>);
 
 String input_<%=cid %>;
+
+org.talend.mdm.webservice.WSItemPK[] wspks_<%=cid %>;
 
 List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
 
