@@ -30,6 +30,7 @@
     <genClasses ecoreClass="xmlmap.ecore#//VarTable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarTable/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//VarTable/nodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarTable/minimized"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//AbstractNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractNode/name"/>
@@ -46,12 +47,15 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/nodeType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/pattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/group"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/main"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/group"/>
     </genClasses>
-    <genClasses ecoreClass="xmlmap.ecore#//VarNode"/>
+    <genClasses ecoreClass="xmlmap.ecore#//VarNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarNode/variable"/>
+    </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//Connection">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//Connection/source"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//Connection/target"/>

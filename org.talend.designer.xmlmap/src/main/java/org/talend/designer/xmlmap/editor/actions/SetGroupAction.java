@@ -133,7 +133,7 @@ public class SetGroupAction extends SelectionAction {
                 }
             }
         } else {
-            model.setMainNode(false);
+            model.setMain(false);
             model.setGroup(false);
             if (!subGroupTraceNames.isEmpty()) {
                 for (TreeNode groupNode : subGroupTraceNames) {

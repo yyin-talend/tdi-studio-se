@@ -456,7 +456,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getTreeNode_MainNode() {
+    public EAttribute getTreeNode_Main() {
         return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(7);
     }
 
@@ -596,7 +596,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(treeNodeEClass, TREE_NODE__PATTERN);
         createEAttribute(treeNodeEClass, TREE_NODE__KEY);
         createEAttribute(treeNodeEClass, TREE_NODE__GROUP);
-        createEAttribute(treeNodeEClass, TREE_NODE__MAIN_NODE);
+        createEAttribute(treeNodeEClass, TREE_NODE__MAIN);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__DEFAULT_VALUE);
@@ -685,7 +685,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getTreeNode_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_Key(), ecorePackage.getEBoolean(), "key", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_Group(), ecorePackage.getEBoolean(), "group", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getTreeNode_MainNode(), ecorePackage.getEBoolean(), "mainNode", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Main(), ecorePackage.getEBoolean(), "main", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

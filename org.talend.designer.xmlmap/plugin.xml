@@ -28,13 +28,5 @@
             class="org.talend.designer.xmlmap.XmlMapComponent"></ExternalComponent>
    </extension>
    
-   <extension
-         point="org.talend.core.java_type">
-      <JavaType
-            Name="Document"
-            displayInContext="false"
-            nullableClass="org.talend.designer.xmlmap.talendtype.Document">
-      </JavaType>
-   </extension>
 
 </plugin>

@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup <em>Group</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMain <em>Main</em>}</li>
  * </ul>
  * </p>
  *
@@ -210,29 +210,29 @@ public interface TreeNode extends AbstractNode {
     void setGroup(boolean value);
 
     /**
-     * Returns the value of the '<em><b>Main Node</b></em>' attribute.
+     * Returns the value of the '<em><b>Main</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <p>
-     * If the meaning of the '<em>Main Node</em>' attribute isn't clear,
+     * If the meaning of the '<em>Main</em>' attribute isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * @return the value of the '<em>Main Node</em>' attribute.
-     * @see #setMainNode(boolean)
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_MainNode()
+     * @return the value of the '<em>Main</em>' attribute.
+     * @see #setMain(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Main()
      * @model
      * @generated
      */
-    boolean isMainNode();
+    boolean isMain();
 
     /**
-     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}' attribute.
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMain <em>Main</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Main Node</em>' attribute.
-     * @see #isMainNode()
+     * @param value the new value of the '<em>Main</em>' attribute.
+     * @see #isMain()
      * @generated
      */
-    void setMainNode(boolean value);
+    void setMain(boolean value);
 
 } // TreeNode

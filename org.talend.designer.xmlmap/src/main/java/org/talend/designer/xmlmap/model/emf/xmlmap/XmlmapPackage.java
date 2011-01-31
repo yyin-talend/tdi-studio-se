@@ -447,13 +447,13 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__GROUP = ABSTRACT_NODE_FEATURE_COUNT + 6;
 
     /**
-     * The feature id for the '<em><b>Main Node</b></em>' attribute.
+     * The feature id for the '<em><b>Main</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE__MAIN_NODE = ABSTRACT_NODE_FEATURE_COUNT + 7;
+    int TREE_NODE__MAIN = ABSTRACT_NODE_FEATURE_COUNT + 7;
 
     /**
      * The number of structural features of the '<em>Tree Node</em>' class.
@@ -592,13 +592,13 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__GROUP = TREE_NODE__GROUP;
 
     /**
-     * The feature id for the '<em><b>Main Node</b></em>' attribute.
+     * The feature id for the '<em><b>Main</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE__MAIN_NODE = TREE_NODE__MAIN_NODE;
+    int OUTPUT_TREE_NODE__MAIN = TREE_NODE__MAIN;
 
     /**
      * The feature id for the '<em><b>Default Value</b></em>' attribute.
@@ -1084,15 +1084,15 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_Group();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode <em>Main Node</em>}'.
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMain <em>Main</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Main Node</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMainNode()
+     * @return the meta object for the attribute '<em>Main</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMain()
      * @see #getTreeNode()
      * @generated
      */
-    EAttribute getTreeNode_MainNode();
+    EAttribute getTreeNode_Main();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
@@ -1461,12 +1461,12 @@ public interface XmlmapPackage extends EPackage {
         EAttribute TREE_NODE__GROUP = eINSTANCE.getTreeNode_Group();
 
         /**
-         * The meta object literal for the '<em><b>Main Node</b></em>' attribute feature.
+         * The meta object literal for the '<em><b>Main</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TREE_NODE__MAIN_NODE = eINSTANCE.getTreeNode_MainNode();
+        EAttribute TREE_NODE__MAIN = eINSTANCE.getTreeNode_Main();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.

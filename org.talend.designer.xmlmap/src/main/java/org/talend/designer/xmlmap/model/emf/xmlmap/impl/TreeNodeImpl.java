@@ -44,7 +44,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isKey <em>Key</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isGroup <em>Group</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isMainNode <em>Main Node</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isMain <em>Main</em>}</li>
  * </ul>
  * </p>
  *
@@ -182,24 +182,24 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
     protected boolean group = GROUP_EDEFAULT;
 
     /**
-     * The default value of the '{@link #isMainNode() <em>Main Node</em>}' attribute.
+     * The default value of the '{@link #isMain() <em>Main</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #isMainNode()
+     * @see #isMain()
      * @generated
      * @ordered
      */
-    protected static final boolean MAIN_NODE_EDEFAULT = false;
+    protected static final boolean MAIN_EDEFAULT = false;
 
     /**
-     * The cached value of the '{@link #isMainNode() <em>Main Node</em>}' attribute.
+     * The cached value of the '{@link #isMain() <em>Main</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #isMainNode()
+     * @see #isMain()
      * @generated
      * @ordered
      */
-    protected boolean mainNode = MAIN_NODE_EDEFAULT;
+    protected boolean main = MAIN_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -363,8 +363,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public boolean isMainNode() {
-        return mainNode;
+    public boolean isMain() {
+        return main;
     }
 
     /**
@@ -372,11 +372,11 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setMainNode(boolean newMainNode) {
-        boolean oldMainNode = mainNode;
-        mainNode = newMainNode;
+    public void setMain(boolean newMain) {
+        boolean oldMain = main;
+        main = newMain;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__MAIN_NODE, oldMainNode, mainNode));
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__MAIN, oldMain, main));
     }
 
     /**
@@ -415,8 +415,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return isKey();
             case XmlmapPackage.TREE_NODE__GROUP:
                 return isGroup();
-            case XmlmapPackage.TREE_NODE__MAIN_NODE:
-                return isMainNode();
+            case XmlmapPackage.TREE_NODE__MAIN:
+                return isMain();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -452,8 +452,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__GROUP:
                 setGroup((Boolean)newValue);
                 return;
-            case XmlmapPackage.TREE_NODE__MAIN_NODE:
-                setMainNode((Boolean)newValue);
+            case XmlmapPackage.TREE_NODE__MAIN:
+                setMain((Boolean)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -488,8 +488,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__GROUP:
                 setGroup(GROUP_EDEFAULT);
                 return;
-            case XmlmapPackage.TREE_NODE__MAIN_NODE:
-                setMainNode(MAIN_NODE_EDEFAULT);
+            case XmlmapPackage.TREE_NODE__MAIN:
+                setMain(MAIN_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -517,8 +517,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return key != KEY_EDEFAULT;
             case XmlmapPackage.TREE_NODE__GROUP:
                 return group != GROUP_EDEFAULT;
-            case XmlmapPackage.TREE_NODE__MAIN_NODE:
-                return mainNode != MAIN_NODE_EDEFAULT;
+            case XmlmapPackage.TREE_NODE__MAIN:
+                return main != MAIN_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -545,8 +545,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         result.append(key);
         result.append(", group: ");
         result.append(group);
-        result.append(", mainNode: ");
-        result.append(mainNode);
+        result.append(", main: ");
+        result.append(main);
         result.append(')');
         return result.toString();
     }
