@@ -25,38 +25,42 @@ imports="
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
 	
 	boolean addTaskID = ("true").equals(ElementParameterParser.getValue(node,"__ADD_TASKID__"));
+	boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 %>       
 int nb_line_<%=cid %> = 0;
-
-class Util_<%=cid%>{
-	public org.talend.mdm.webservice.WSUpdateMetadataItem makeUpdateMeteItm(String taskID,org.talend.mdm.webservice.WSItemPK wspk){
-		org.talend.mdm.webservice.WSUpdateMetadataItem wsUpdateMetadataItem = new org.talend.mdm.webservice.WSUpdateMetadataItem();
-        wsUpdateMetadataItem.setTaskId(taskID);
-        wsUpdateMetadataItem.setWsItemPK(wspk);
-        return wsUpdateMetadataItem;
-	}
-	public org.talend.mdm.webservice.WSUpdateMetadataItem[] makeUpdateMeteItms(java.util.List<String> taskIDs,org.talend.mdm.webservice.WSItemPK[] wspks){
-		java.util.List<org.talend.mdm.webservice.WSUpdateMetadataItem> wsUpdateMetadataItems = new java.util.ArrayList<org.talend.mdm.webservice.WSUpdateMetadataItem>();
-		int i = 0;
-        for(org.talend.mdm.webservice.WSItemPK wspk : wspks){
-        	wsUpdateMetadataItems.add(makeUpdateMeteItm(taskIDs.get(i),wspk));
-        	i++;
-        }
-        return wsUpdateMetadataItems.toArray(new org.talend.mdm.webservice.WSUpdateMetadataItem[wsUpdateMetadataItems.size()]);
-	}
-}
-Util_<%=cid%> util_<%=cid%> = new Util_<%=cid%>();
-<%if(isMassInsert){
-	if(withReport){%>
-java.util.List <org.talend.mdm.webservice.WSPutItemWithReport> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItemWithReport>();
-<%	}else{%>
-java.util.List <org.talend.mdm.webservice.WSPutItem> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItem>();
-<%
-	}
-	if(addTaskID){
-%>
-		java.util.List<String> taskIDs_<%=cid%> = new java.util.ArrayList<String>();
-<%	
+<%if(!usePartialUpdate){%>
+	<%if(addTaskID){%>
+		class Util_<%=cid%>{
+			public org.talend.mdm.webservice.WSUpdateMetadataItem makeUpdateMeteItm(String taskID,org.talend.mdm.webservice.WSItemPK wspk){
+				org.talend.mdm.webservice.WSUpdateMetadataItem wsUpdateMetadataItem = new org.talend.mdm.webservice.WSUpdateMetadataItem();
+		        wsUpdateMetadataItem.setTaskId(taskID);
+		        wsUpdateMetadataItem.setWsItemPK(wspk);
+		        return wsUpdateMetadataItem;
+			}
+			public org.talend.mdm.webservice.WSUpdateMetadataItem[] makeUpdateMeteItms(java.util.List<String> taskIDs,org.talend.mdm.webservice.WSItemPK[] wspks){
+				java.util.List<org.talend.mdm.webservice.WSUpdateMetadataItem> wsUpdateMetadataItems = new java.util.ArrayList<org.talend.mdm.webservice.WSUpdateMetadataItem>();
+				int i = 0;
+		        for(org.talend.mdm.webservice.WSItemPK wspk : wspks){
+		        	wsUpdateMetadataItems.add(makeUpdateMeteItm(taskIDs.get(i),wspk));
+		        	i++;
+		        }
+		        return wsUpdateMetadataItems.toArray(new org.talend.mdm.webservice.WSUpdateMetadataItem[wsUpdateMetadataItems.size()]);
+			}
+		}
+		Util_<%=cid%> util_<%=cid%> = new Util_<%=cid%>();
+	<%}%>
+	<%if(isMassInsert){
+		if(withReport){%>
+			java.util.List <org.talend.mdm.webservice.WSPutItemWithReport> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItemWithReport>();
+	<%	}else{%>
+			java.util.List <org.talend.mdm.webservice.WSPutItem> miList_<%=cid %> = new java.util.ArrayList<org.talend.mdm.webservice.WSPutItem>();
+	<%
+		}
+		if(addTaskID){
+	%>
+			java.util.List<String> taskIDs_<%=cid%> = new java.util.ArrayList<String>();
+	<%	
+		}
 	}
 }%>
 org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
@@ -78,6 +82,7 @@ org.talend.mdm.webservice.WSDataModelPK dataModel_<%=cid %> = new org.talend.mdm
 String input_<%=cid %>;
 
 org.talend.mdm.webservice.WSItemPK[] wspks_<%=cid %>;
+org.talend.mdm.webservice.WSItemPK wspk_<%=cid %>;
 
 List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
 

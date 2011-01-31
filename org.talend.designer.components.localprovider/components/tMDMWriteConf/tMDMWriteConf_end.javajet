@@ -19,11 +19,13 @@ imports="
 	
 	boolean addTaskID = ("true").equals(ElementParameterParser.getValue(node,"__ADD_TASKID__"));
 	String taskID = ElementParameterParser.getValue(node,"__TASKID__");
+	boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 %>
 	}//for
 }//if
 xmlFieldList_<%=cid%>.clear();
 <%
+if(!usePartialUpdate){
 	if(isMassInsert){
 		if(withReport){
 %> 
@@ -49,7 +51,8 @@ xmlFieldList_<%=cid%>.clear();
 	}
 <%
 		}
-	}%>
+	}
+}%>
  	
  	stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
  	
