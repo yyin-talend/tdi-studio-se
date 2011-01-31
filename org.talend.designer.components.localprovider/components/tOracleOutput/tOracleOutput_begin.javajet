@@ -182,6 +182,12 @@ if(useExistingConnection) {
 	if(("ORACLE_WALLET").equals(connectionType)) {
 	%>
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+		if(dbschema_<%=cid%>==null||"".equals(dbschema_<%=cid%>)) //get schema from connection
+			{
+		    oracle.jdbc.OracleConnection temp = (oracle.jdbc.OracleConnection)conn_<%=cid%>;
+			dbschema_<%=cid%>=temp.getUserName();
+			}
+	
 	<%
 	}else if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 	%>
