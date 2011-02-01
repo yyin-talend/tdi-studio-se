@@ -246,24 +246,21 @@ if(columnList != null && columnList.size() > 0) {
 			     if(conns_dynamic!=null && conns_dynamic.size()>0){
 			     	IConnection conn = conns_dynamic.get(0);
 %>
-                     		extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>,"+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")");
+                    extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>,"+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")");
 <%
 				}			
 			} else {
 %>
-				extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+				    extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
 <%
 			}
 %>
-                     if (i!=<%=numPerInsert%>-1) extendInsertValueStmt_<%=cid%>.append(",");
-
-
+                if (i!=<%=numPerInsert%>-1) extendInsertValueStmt_<%=cid%>.append(",");
                 }
 <%
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
-
 					if(!("".equals(insertColName.toString()))) {
 %>
 						insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
@@ -274,12 +271,11 @@ if(columnList != null && columnList.size() > 0) {
 					}	
 				if (supportDuplicateUpdate) {
 %>            
-				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+				    insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
 <%	
 				}
 %>
 					<%@ include file="../templates/_hintInsert.javajet" %>
-
 				    pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 <%
 					if(!("".equals(insertColName.toString()))) {
@@ -297,18 +293,17 @@ if(columnList != null && columnList.size() > 0) {
 				}
 		    if(isDynamic) {
 %>
-			rowCount<%=cid%> = 0;
+			    rowCount<%=cid%> = 0;
 <%
 		    } else {
 %>
-	            	int rowCount<%=cid%> = 0;	 
+	            int rowCount<%=cid%> = 0;	 
 <%
-		        }
-			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+		    }
+		} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
-
 					if(!("".equals(insertColName.toString()))) {
 %>
 						String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>, "<%=dbmsId %>")+") VALUES (<%=insertValueStmt.toString()%>, "+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=columnList.get(columnList.size()-1)%>)+")";
@@ -320,23 +315,24 @@ if(columnList != null && columnList.size() > 0) {
 				}
 				if (supportDuplicateUpdate) {
 %>            
-				insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
+					    insert_<%=cid%> += 	duplidateClause_<%=cid%>.toString();
 <%	
 				}
 				if(isDynamic) {
 %>
-					batchSize_<%=cid%> = <%=numPerInsert%>;
-		   			batchSizeCounter_<%=cid%>=0;
+					    batchSize_<%=cid%> = <%=numPerInsert%>;
+		   			    batchSizeCounter_<%=cid%>=0;
 <%
 				} else {
 %>
-					int batchSize_<%=cid%> = <%=numPerInsert%>;
-		   			int batchSizeCounter_<%=cid%>=0;
+					    int batchSize_<%=cid%> = <%=numPerInsert%>;
+		   			    int batchSizeCounter_<%=cid%>=0;
 <%
 				}
 %>
 		        <%@ include file="../templates/_hintInsert.javajet" %>
 		        pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+		        
 				
 <%
 	       	} 
@@ -1736,6 +1732,7 @@ if(columnList != null && columnList.size() > 0) {
                 		pstmt_<%=cid %>.executeBatch();
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
+            	    	if(pstmt_<%=cid %>.getUpdateCount() != -1)
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {

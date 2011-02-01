@@ -355,7 +355,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	            	    	<%
 	            	    	}
 	            	    	%>                         	    	
-            	    	}         	                	                	
+            	    	}
+            	    		
                 }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
@@ -415,6 +416,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			pstmt_<%=cid %>.executeBatch();                	
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
+	    		if(pstmt_<%=cid %>.getUpdateCount() != -1)
 	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
 	    	<%
 	    	}else if (("UPDATE").equals(dataAction)) {
