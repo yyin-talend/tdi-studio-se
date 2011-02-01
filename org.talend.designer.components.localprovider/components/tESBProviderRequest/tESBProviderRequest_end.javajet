@@ -11,7 +11,7 @@
 	String cid = node.getUniqueName();
 	String kListen = ElementParameterParser.getValue(node, "__KEEPLISTENING__");
 %>
-            java.util.Map<String, String> esbResponseMap = globalMap.get("esbResponseMap"); 
+            java.util.Map<String, String> esbResponseMap = (java.util.Map<String, String>) globalMap.get("esbResponseMap");
             String responseMessage_<%=cid%> = null;
             if (esbResponseMap.containsKey("response")) {
                 Object esbProviderOutputXml_<%=cid%> = esbResponseMap.get("response");

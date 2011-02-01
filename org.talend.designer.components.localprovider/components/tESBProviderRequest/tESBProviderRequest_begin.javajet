@@ -37,8 +37,8 @@ String result_<%=cid%> = null;
 
 int counter_<%=cid%> = 0;
 
-/*java.util.Map<String, String> esbResponseMap = new java.util.HashMap<String,String>(2);*/
-globalMap.put("esbResponseMap", new java.util.HashMap<String,String>(2)); //TODO
+/*java.util.Map<String, String> esbResponseMap = new java.util.HashMap<String, String>(2);*/
+globalMap.put("esbResponseMap", new java.util.HashMap<String, String>(2)); //TODO
 
 try {
 	routines.esb.ESBIntegration.MessagesExchange<String> messagesExchange_<%=cid%> = null;

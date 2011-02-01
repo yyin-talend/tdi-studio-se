@@ -34,7 +34,10 @@ if (null != metadatas && 0 < metadatas.size()) {
 
 	System.out.println("--- [tESBProviderResponse] request put to response: " + esbProviderResponseXml_<%=cid%>);
 
-	globalMap.get("esbResponseMap").put("response", esbProviderResponseXml_<%=cid%>);
+	java.util.HashMap<String, String> esbResponseMapResponse_<%=cid%> =
+		(java.util.HashMap<String, String>) globalMap.get("esbResponseMap");
+
+	esbResponseMapResponse_<%=cid%>.put("response", esbProviderResponseXml_<%=cid%>);
 <%
 					break; // TODO: ??? mutli-columns handling
 				}

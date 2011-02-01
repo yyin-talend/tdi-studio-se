@@ -33,13 +33,16 @@ if (null != metadatas && 0 < metadatas.size()) {
 	String esbProviderFaultXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
 
 	System.out.println("--- [tESBProviderFault] fault put to response: " + esbProviderFaultXml_<%=cid%>);
-	
-	String faultStr_<%=cid%> = globalMap.get("esbResponseMap").get("fault");
+
+	java.util.HashMap<String, String> esbResponseMapFault_<%=cid%> =
+		(java.util.HashMap<String, String>) globalMap.get("esbResponseMap");
+
+	String faultStr_<%=cid%> = esbResponseMapFault_<%=cid%>.get("fault");
 	if (faultStr_<%=cid%> == null) {
 		faultStr_<%=cid%> = "";
 	}
-	faultStr_<%=cid%> += "["+<%=cid%>+"]: " + esbProviderFaultXml_<%=cid%> +"\n";
-	globalMap.get("esbResponseMap").put("fault", faultStr_<%=cid%>);
+	faultStr_<%=cid%> += "[<%=cid%>]: " + esbProviderFaultXml_<%=cid%> +"\n";
+	esbResponseMapFault_<%=cid%>.put("fault", faultStr_<%=cid%>);
 <%
 					break; // TODO: ??? mutli-columns handling
 				}
