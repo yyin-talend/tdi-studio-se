@@ -210,7 +210,6 @@ abstract class  Manager {
     public void setNode(INode node){
     	this.node = node;
     }
-    
 	public String generateCode4TabelExist() {
 	    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	    String connection = getConnectionName();
@@ -219,6 +218,7 @@ abstract class  Manager {
 	    if (hasSchema()) {
 		    code.append("String dbschemaForSearch_" + cid + "= null;\r\n");
 		    code.append("if(dbSchema_" + cid + "== null || dbSchema_" + cid + ".trim().length() == 0) {\r\n");
+		   
 		    code.append("dbschemaForSearch_" + cid + "= " + getUserName4Search(useExistingConnection, connection)+ ";\r\n");
 		    code.append("} else {\r\n");
 		    code.append("dbschemaForSearch_" + cid + "= " + getShemaName4Search(useExistingConnection, connection)+ ";\r\n");
@@ -1011,7 +1011,14 @@ class OracleManager extends Manager {
         if(useExistingConnection) {
             javaCode.append(retrieveTable());
             javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
-        } else {
+        }
+         else if (("ORACLE_WALLET").equals(connectionType)) 
+        	{
+        	 javaCode.append(retrieveTable());
+        	 javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+          	 javaCode.append("java.sql.Connection conn_" + cid + "= java.sql.DriverManager.getConnection(" + getConnectionURL() + ");\r\n");
+        	}
+          else {
             javaCode.append(super.getConnection());
         }
         return javaCode.toString();
@@ -1657,9 +1664,6 @@ class ManagerFactory {
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_ORACLE__"));
              String jdbcURL = ElementParameterParser.getValue(node, "__JDBC_URL__");
             String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
-              System.out.println("dbcURL"+jdbcURL);
-              System.out.println("localServiceName"+localServiceName);
-              System.out.println("password"+password);
             manager = new OracleManager(host, port, dbName, tableName, dbSchema, userName, password, connectionType, useExistingConnection, connection,cid,jdbcURL,localServiceName);
             } else if(("POSTGRE").equals(dbType)) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
