@@ -8,6 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
     java.util.List
+	java.util.Map
 " 
 %>
 
@@ -27,6 +28,9 @@ String timeout=ElementParameterParser.getValue(node, "__TIMEOUT__");
 String messageSelector=ElementParameterParser.getValue(node, "__MSG_SELECTOR__");
 String processingMode = ElementParameterParser.getValue(node, "__PROCESSING_MODE__");
 String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+
+List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
+
 IMetadataTable metadata=null;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -37,6 +41,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	java.util.Hashtable props_<%=cid%> = new java.util.Hashtable();
 	props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, <%=contextProvider%>);
 	props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=url%>);
+	
+<%
+if(advProps.size() > 0){
+	for(Map<String, String> item : advProps){
+%>
+	props_<%=cid%>.put(<%=item.get("PROPERTY") %>, <%=item.get("VALUE") %>);
+<% 
+	} 
+}
+%>
+	
 	javax.naming.Context context_<%=cid%> = new javax.naming.InitialContext(props_<%=cid%>);
 	javax.jms.ConnectionFactory factory_<%=cid%> = (javax.jms.ConnectionFactory) context_<%=cid%>.lookup(<%=connFacName%>);
 	javax.jms.Connection connection_<%=cid%> = factory_<%=cid%>.createConnection(<%if("true".equals(userIdentity)){%><%=user %>, <%=pass %><%}%>);
