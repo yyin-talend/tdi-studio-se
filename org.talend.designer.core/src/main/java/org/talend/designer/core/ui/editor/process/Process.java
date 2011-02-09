@@ -1324,6 +1324,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         ProcessType processType = getProcessType();
         EmfHelper.visitChilds(processType);
 
+        loadProjectParameters(processType);
+
         // loadRoutinesDependencies(processType);
 
         try {
