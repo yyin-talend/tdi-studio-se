@@ -184,7 +184,7 @@ public final class ComponentProjectManager {
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
-                monitor.beginTask("Conifg project...", 4);
+                monitor.beginTask("Configure project...", 4);
                 try {
                     IJavaProject javaProject = JavaCore.create(project);
                     JavaUtils.addJavaNature(project, new SubProgressMonitor(monitor, 1));
@@ -295,4 +295,5 @@ public final class ComponentProjectManager {
     public IProject getProject() {
         return project;
     }
+
 }
