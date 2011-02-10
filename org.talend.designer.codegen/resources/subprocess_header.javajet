@@ -549,7 +549,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					%>
 					this.<%=column.getLabel() %> = readByteArray(dis);
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("Geometry") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List") || typeToGenerate.equals("Dynamic")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("Geometry") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List") || typeToGenerate.equals("Dynamic") || typeToGenerate.equals("Document")) {
 			 		hasAtLeastOneObjectType = true;
 					%>
 						this.<%=column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
@@ -639,7 +639,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					%>
 						writeByteArray(this.<%=column.getLabel() %>,dos);
 					<%
-				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("Geometry") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List") || typeToGenerate.equals("Dynamic")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("Geometry") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List") || typeToGenerate.equals("Dynamic") || typeToGenerate.equals("Document")) {
 					%>
        			    	dos.writeObject(this.<%=column.getLabel() %>);
 					<%
