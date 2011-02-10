@@ -256,8 +256,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				  
 				  if (<%=bReadRealValue%> && jxl.CellType.NUMBER == cell_<%=cid%>.getType()){				   
 				  	temp_row_<%= cid %>[i] = String.valueOf(((jxl.NumberCell)cell_<%=cid%>).getValue());
+					String content = cell_<%=cid%>.getContents();
+					if(content!=null && content.indexOf(".")==-1) {
+						temp_row_<%=cid%>[i] = content;
+					}
 				  } else{
 				    temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
+				    if(cell_<%=cid%>.getType() == jxl.CellType.NUMBER) {
+						String content = cell_<%=cid%>.getContents();
+						if(content!=null && content.indexOf(".")!=-1) {
+							jxl.NumberCell nc = (jxl.NumberCell)cell_<%=cid%>;
+							temp_row_<%=cid%>[i] = String.valueOf(nc.getValue());
+						}
+					}
 				  }
 					
 				}else{
