@@ -48,7 +48,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
         String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-        String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
+        String trustStorePassword = ElementParameterParser.getValue(node,"__PASS__");
         
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
