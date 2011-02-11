@@ -184,8 +184,7 @@ if(useExistingConnection) {
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
 		if(dbschema_<%=cid%>==null||"".equals(dbschema_<%=cid%>)) //get schema from connection
 			{
-		    oracle.jdbc.OracleConnection temp = (oracle.jdbc.OracleConnection)conn_<%=cid%>;
-			dbschema_<%=cid%>=temp.getUserName();
+			dbschema_<%=cid%>=conn_<%=cid%>.getMetaData().getUserName();
 			}
 	
 	<%
