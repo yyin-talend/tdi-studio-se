@@ -176,7 +176,7 @@ class="MomInput"
 					if ("Text".equals(msgBobyType)) {
 %>
 						String msgBody_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel()%>);
-						message_<%=cid%>.writeString(msgBody_<%=cid%>);
+						message_<%=cid%>.writeObject(msgBody_<%=cid%>);
 <%
 					} else if ("Bytes".equals(msgBobyType)) {
 %>
