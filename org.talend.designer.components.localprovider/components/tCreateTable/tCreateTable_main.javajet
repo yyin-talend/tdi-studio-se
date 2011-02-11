@@ -218,8 +218,7 @@ abstract class  Manager {
 	    if (hasSchema()) {
 		    code.append("String dbschemaForSearch_" + cid + "= null;\r\n");
 		    code.append("if(dbSchema_" + cid + "== null || dbSchema_" + cid + ".trim().length() == 0) {\r\n");
-		   
-		    code.append("dbschemaForSearch_" + cid + "= " + getUserName4Search(useExistingConnection, connection)+ ";\r\n");
+		  	code.append("dbschemaForSearch_" + cid + "= null" + ";\r\n");
 		    code.append("} else {\r\n");
 		    code.append("dbschemaForSearch_" + cid + "= " + getShemaName4Search(useExistingConnection, connection)+ ";\r\n");
 		    code.append("}\r\n");
@@ -1085,9 +1084,9 @@ class OracleManager extends Manager {
     
     protected String getUserName4Search(boolean useExistingConnection, String connection) {
         if (useExistingConnection) {
-            return "((String)globalMap.get(\"username_" + connection + "\")).toUpperCase()";
+          return "((String)globalMap.get(\"username_" + connection + "\")).toUpperCase()";
         } else {
-            return "((String)" + ElementParameterParser.getValue(node,"__USER__") + ").toUpperCase()";
+          return "((String)" + ElementParameterParser.getValue(node,"__USER__") + ").toUpperCase()";
         }    
     }
 
