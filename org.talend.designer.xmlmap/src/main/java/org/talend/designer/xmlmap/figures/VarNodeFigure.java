@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import java.util.List;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
@@ -71,6 +75,11 @@ public class VarNodeFigure extends ToolBarContainer {
             }
 
             public void mousePressed(MouseEvent me) {
+                IFigure parent = VarNodeFigure.this.getParent();
+                for (IFigure child : (List<IFigure>) parent.getChildren()) {
+                    child.setBackgroundColor(ColorConstants.white);
+                }
+                VarNodeFigure.this.setBackgroundColor(ColorConstants.yellow);
                 CenterVarFigure tabelFigure = (CenterVarFigure) VarNodeFigure.this.getParent().getParent().getParent();
                 tabelFigure.imageButtonsFigure.remove.setEnabled(true);
                 tabelFigure.imageButtonsFigure.move_up.setEnabled(true);

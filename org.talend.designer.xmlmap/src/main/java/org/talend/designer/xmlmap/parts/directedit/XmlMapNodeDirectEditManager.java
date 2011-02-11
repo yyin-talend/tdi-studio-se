@@ -94,7 +94,11 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             Control control = getCellEditor().getControl();
             if (control instanceof CCombo) {
                 CCombo combo = (CCombo) control;
-                combo.setText(varNodeModel.getType());
+                String type = varNodeModel.getType();
+                if (type == null) {
+                    type = "";
+                }
+                combo.setText(type);
             } else if (control instanceof Text) {
                 String variable = varNodeModel.getVariable();
                 if (variable == null) {
