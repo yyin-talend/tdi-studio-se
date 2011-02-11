@@ -19,6 +19,7 @@
 	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 %>
    	java.util.Set<String> keySet_<%=cid%> = map_<%=cid%>.keySet();
@@ -44,7 +45,7 @@
 		        if("org.exist.xmldb.RemoteXMLResource".equals(resource_<%=cid%>.getClass().getName())){
 			        java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(localFile_<%=cid%>);
 			        org.xmldb.api.modules.XMLResource xmlResource_<%=cid%> = (org.xmldb.api.modules.XMLResource)resource_<%=cid%>;
-			        fos_<%=cid%>.write(xmlResource_<%=cid%>.getContent().toString().getBytes());
+			        fos_<%=cid%>.write(xmlResource_<%=cid%>.getContent().toString().getBytes(<%=encoding%>));
 			        fos_<%=cid%>.close();
 		        }else if("org.exist.xmldb.RemoteBinaryResource".equals(resource_<%=cid%>.getClass().getName())){
 			        org.exist.xmldb.RemoteBinaryResource remoteBinaryResource_<%=cid%> = (org.exist.xmldb.RemoteBinaryResource)resource_<%=cid%>;
