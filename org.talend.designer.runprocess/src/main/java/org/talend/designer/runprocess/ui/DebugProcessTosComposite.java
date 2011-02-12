@@ -175,7 +175,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     private Double extend = new Double(0);
 
-    private boolean isRuning = true;
+    private boolean isRuning = false;
 
     /**
      * DOC Administrator DebugProcessComposite constructor comment.
@@ -557,19 +557,19 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             return;
         }
         menu.setVisible(false);
-        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID)) {
+        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID) && isRuning) {
             pause(ProcessView.PAUSE_ID);
         } else if (itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
             pause(ProcessView.RESUME_ID);
         } else if (itemDropDown.getData().equals(ProcessView.TRACEDEBUG_ID)) {
-            addInHistoryRunningList();
+            // bug 18852 fixed :
             if (isRuning) {
                 itemDropDown.setData(ProcessView.PAUSE_ID);
             } else {
                 itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                addInHistoryRunningList();
                 isRuning = true;
             }
-            // exec();
         }
     }
 
