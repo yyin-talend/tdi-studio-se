@@ -1271,12 +1271,6 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.RenameFieldNameFortLineChart"
-            id="org.talend.repository.model.migration.RenameFieldNameFortLineChart"
-            name="Rename field name for tLineChart">
-      </projecttask>     
-      <projecttask
-            beforeLogon="false"
             class="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
             description="This migration task should be run each time, not only first time after login."
             id="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
