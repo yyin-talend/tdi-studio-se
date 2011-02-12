@@ -24,7 +24,7 @@ String filePath = ElementParameterParser.getValue(node,"__GENERATED_IMAGE_PATH__
                 <%=ElementParameterParser.getValue(node,"__RANGE_AXIS_LABEL__")%>,
                 dataset<%=cid%>,
                 <%=ElementParameterParser.getValue(node,"__PLOT_ORIENTATION__")%>,
-                <%=ElementParameterParser.getValue(node,"__INCLUDE_LEGEND__")%>,
+                <%="true".equals(ElementParameterParser.getValue(node,"__INCLUDE_LEGEND__"))%>,
                 true,
                 false
                 );
