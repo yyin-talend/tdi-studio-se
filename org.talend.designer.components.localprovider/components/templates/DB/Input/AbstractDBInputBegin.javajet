@@ -60,11 +60,11 @@ imports="
 		    
 		    String dbquery_<%=cid%> = <%=dbInputBeginUtil.getQueryString(node)%>;
 		    
+		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
+		    
 		    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(dbquery_<%=cid%>);
 		    java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
 		    int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
-
-		    globalMap.put("<%=cid %>_QUERY",dbquery_<%=cid%>);
 
 <%
 		    List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
