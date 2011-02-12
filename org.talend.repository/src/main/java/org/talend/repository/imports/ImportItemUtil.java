@@ -961,6 +961,8 @@ public class ImportItemUtil {
 
             return false;
         }
+        // force to redo this migration task, even if already did before.
+        itemMigrationTasks.remove("org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask");
 
         // 2. Get all the migration tasks to apply on this item on import
         // (backwards compatibility)
