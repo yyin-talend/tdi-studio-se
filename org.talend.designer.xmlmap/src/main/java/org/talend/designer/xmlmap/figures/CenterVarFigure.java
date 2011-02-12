@@ -20,8 +20,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -56,14 +55,12 @@ public class CenterVarFigure extends Figure {
      * DOC hywang Comment method "createComponents".
      */
     protected void createComponents() {
-        Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
         header = new ToolBarContainer();
         header.setOpaque(true);
         header.setBackgroundColor(ColorConstants.tooltipBackground);
-        header.setBorder(new LineBorder());
+        header.setBorder(new RowBorder());
         header.setLayoutManager(new EqualWidthLayout());
         Label varText = new Label();
-        varText.setFont(cFont);
         imageButtonsFigure = new ButtonsImageToolBarFigure(table);
         header.add(varText);
         header.setVarText(varText);

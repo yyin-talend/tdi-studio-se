@@ -83,8 +83,8 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
                 }
                 selectedFigure = (Figure) figure;
                 String[] items = JavaTypesManager.getJavaTypesLabels();
-                directEditManager = new XmlMapNodeDirectEditManager(this, ComboBoxCellEditor.class, new XmlMapNodeCellEditorLocator(
-                        selectedFigure), items);
+                directEditManager = new XmlMapNodeDirectEditManager(this, ComboBoxCellEditor.class,
+                        new XmlMapNodeCellEditorLocator(selectedFigure), items);
             }
             // }
             directEditManager.show();
@@ -144,7 +144,6 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
         switch (type) {
         case Notification.SET:
             switch (featureId) {
-            case XmlmapPackage.VAR_NODE__NAME:
             case XmlmapPackage.VAR_NODE__EXPRESSION:
                 varNodeFigure.getExpression().setText(((VarNode) getModel()).getExpression());
                 break;
@@ -157,7 +156,7 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
                     checkImage.setImage(ImageProvider.getImage(EImage.UNCHECKED_ICON));
                 }
                 break;
-            case XmlmapPackage.VAR_NODE__VARIABLE:
+            case XmlmapPackage.VAR_NODE__NAME:
                 String newString = notification.getNewStringValue();
                 ((VarNodeFigure) getFigure()).getVariable().getVariableLabel().setText(newString);
                 break;

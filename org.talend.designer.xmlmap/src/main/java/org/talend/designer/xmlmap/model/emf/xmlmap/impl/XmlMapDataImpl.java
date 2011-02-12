@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.talend.designer.core.model.utils.emf.talendfile.impl.AbstractExternalDataImpl;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -83,7 +84,7 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * @generated
      * @ordered
      */
-    protected EList<Connection> connections;
+    protected EList<IConnection> connections;
 
     /**
      * <!-- begin-user-doc -->
@@ -145,9 +146,9 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
      * <!-- end-user-doc -->
      * @generated
      */
-    public EList<Connection> getConnections() {
+    public EList<IConnection> getConnections() {
         if (connections == null) {
-            connections = new EObjectContainmentEList<Connection>(Connection.class, this, XmlmapPackage.XML_MAP_DATA__CONNECTIONS);
+            connections = new EObjectContainmentEList<IConnection>(IConnection.class, this, XmlmapPackage.XML_MAP_DATA__CONNECTIONS);
         }
         return connections;
     }
@@ -215,7 +216,7 @@ public class XmlMapDataImpl extends AbstractExternalDataImpl implements XmlMapDa
                 return;
             case XmlmapPackage.XML_MAP_DATA__CONNECTIONS:
                 getConnections().clear();
-                getConnections().addAll((Collection<? extends Connection>)newValue);
+                getConnections().addAll((Collection<? extends IConnection>)newValue);
                 return;
         }
         super.eSet(featureID, newValue);

@@ -145,6 +145,20 @@ public class XmlmapSwitch<T> {
             case XmlmapPackage.CONNECTION: {
                 Connection connection = (Connection)theEObject;
                 T result = caseConnection(connection);
+                if (result == null) result = caseIConnection(connection);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.LOOKUP_CONNECTION: {
+                LookupConnection lookupConnection = (LookupConnection)theEObject;
+                T result = caseLookupConnection(lookupConnection);
+                if (result == null) result = caseIConnection(lookupConnection);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.ICONNECTION: {
+                IConnection iConnection = (IConnection)theEObject;
+                T result = caseIConnection(iConnection);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -288,6 +302,36 @@ public class XmlmapSwitch<T> {
     }
 
 				/**
+     * Returns the result of interpreting the object as an instance of '<em>Lookup Connection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Lookup Connection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseLookupConnection(LookupConnection object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>IConnection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>IConnection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseIConnection(IConnection object) {
+        return null;
+    }
+
+                /**
      * Returns the result of interpreting the object as an instance of '<em>Abstract External Data</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;

@@ -26,6 +26,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isKey <em>Key</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isGroup <em>Group</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isMain <em>Main</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -234,5 +236,37 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setMain(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Lookup Outgoing Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Lookup Outgoing Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Lookup Outgoing Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_LookupOutgoingConnections()
+     * @model
+     * @generated
+     */
+    EList<LookupConnection> getLookupOutgoingConnections();
+
+    /**
+     * Returns the value of the '<em><b>Lookup Incoming Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Lookup Incoming Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Lookup Incoming Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_LookupIncomingConnections()
+     * @model
+     * @generated
+     */
+    EList<LookupConnection> getLookupIncomingConnections();
 
 } // TreeNode

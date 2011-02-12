@@ -15,11 +15,15 @@ package org.talend.designer.xmlmap.figures;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 
@@ -49,20 +53,42 @@ public class VarNodeFigure extends ToolBarContainer {
     protected void createComponents() {
         this.setLayoutManager(new EqualWidthLayout());
         expression = new ExpressionFigure();
-        expression.setOpaque(true);
         expression.setText(varNode.getExpression());
-        expression.setBorder(new LineBorder());
+        CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        expression.setBorder(compoundBorder);
+
         type = new VarNodeTypeLabel();
-        type.setOpaque(true);
-        type.setText(varNode.getType());
-        type.setBorder(new LineBorder());
+        type.setText(getTypeDisplayValue(varNode));
+        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        type.setBorder(compoundBorder);
+
         variable = new VariableContainerFigure(varNode);
-        variable.setBorder(new LineBorder());
-        variable.setOpaque(true);
+        variable.setBorder(new RowBorder());
         this.add(expression);
         this.add(type);
         this.add(variable);
         Addlistener();
+
+    }
+
+    private String getTypeDisplayValue(VarNode varNode) {
+        JavaType javaType = JavaTypesManager.getJavaTypeFromId(varNode.getType());
+        Class primitiveClass = javaType.getPrimitiveClass();
+        Boolean nullable = varNode.isNullable();
+        String displayedValue = null;
+        if (primitiveClass != null && !nullable.equals(Boolean.TRUE)) {
+            displayedValue = primitiveClass.getSimpleName();
+        } else if (varNode.getType().equals(JavaTypesManager.DIRECTORY.getId())
+                || varNode.getType().equals(JavaTypesManager.FILE.getId())
+                || varNode.getType().equals(JavaTypesManager.VALUE_LIST.getId())) {
+            displayedValue = javaType.getLabel();
+        } else {
+            displayedValue = javaType.getNullableClass().getSimpleName();
+        }
+        if (displayedValue == null) {
+            displayedValue = JavaTypesManager.getDefaultJavaType().getLabel();
+        }
+        return displayedValue;
     }
 
     /**

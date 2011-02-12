@@ -80,7 +80,7 @@ public interface XmlMapData extends AbstractExternalData {
 
     /**
      * Returns the value of the '<em><b>Connections</b></em>' containment reference list.
-     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection}.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Connections</em>' reference list isn't clear,
@@ -92,6 +92,6 @@ public interface XmlMapData extends AbstractExternalData {
      * @model containment="true"
      * @generated
      */
-    EList<Connection> getConnections();
+    EList<IConnection> getConnections();
 
 } // XmlMapData

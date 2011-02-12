@@ -18,8 +18,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
+import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.ui.color.ColorInfo;
 import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
@@ -46,8 +45,7 @@ public class InputXmlTreeFigure extends GenericFigure {
         Label tableName = new Label();
         // tableName.setBorder(new LineBorder(ColorConstants.black));
         tableName.setText(xmlTree.getName());
-        Font erFont = new Font(null, "Arial", 9, SWT.BOLD); //$NON-NLS-1$
-        tableName.setFont(erFont);
+
         tableName.setOpaque(true);
         tableName.setBackgroundColor(ColorConstants.yellow);
         this.add(tableName);
@@ -73,13 +71,18 @@ public class InputXmlTreeFigure extends GenericFigure {
 
         private Label column1;
 
+        private Label column0;
+
         public ColumnTitleFigure() {
+            if (xmlTree.isLookup()) {
+                column0 = new Label();
+                column0.setText("Exp.key");
+                this.add(column0);
+            }
             column1 = new Label();
             column1.setText("Column");
-            // Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
-            // column1.setFont(cFont);
             this.add(column1);
-            this.setLayoutManager(new ToolbarLayout());
+            this.setLayoutManager(new EqualWidthLayout());
             setBackgroundColor(ColorConstants.menuBackground);
             setOpaque(true);
         }

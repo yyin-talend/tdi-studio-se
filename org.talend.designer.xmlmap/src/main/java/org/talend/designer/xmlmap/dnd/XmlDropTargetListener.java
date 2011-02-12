@@ -24,9 +24,12 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -90,7 +93,16 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
         if (transferedObj == null) {
             event.detail = DND.DROP_NONE;
         } else {
-            if (!(getTargetEditPart() instanceof OutputTreeNodeEditPart) && !(getTargetEditPart() instanceof VarNodeEditPart)) {
+            boolean isLookup = false;
+            if (getTargetEditPart() instanceof TreeNodeEditPart && !(getTargetEditPart() instanceof OutputTreeNodeEditPart)) {
+                TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
+                if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                    isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+                }
+            }
+
+            if (!(getTargetEditPart() instanceof OutputTreeNodeEditPart) && !(getTargetEditPart() instanceof VarNodeEditPart)
+                    && !isLookup) {
                 event.detail = DND.DROP_NONE;
             } else if (getTargetEditPart() instanceof OutputTreeNodeEditPart) {
                 OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
@@ -102,6 +114,20 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
                     event.detail = DND.DROP_NONE;
                 }
+                if (!model.getChildren().isEmpty() && targetFigure instanceof ExpressionFigure) {
+                    event.detail = DND.DROP_NONE;
+                }
+            } else if (getTargetEditPart() instanceof TreeNodeEditPart) {
+                if (!isLookup) {
+                    event.detail = DND.DROP_NONE;
+                }
+                TreeNodeEditPart nodePart = (TreeNodeEditPart) getTargetEditPart();
+                TreeNode model = (TreeNode) nodePart.getModel();
+
+                if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
+                    event.detail = DND.DROP_NONE;
+                }
+
                 if (!model.getChildren().isEmpty() && targetFigure instanceof ExpressionFigure) {
                     event.detail = DND.DROP_NONE;
                 }

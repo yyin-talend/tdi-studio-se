@@ -14,8 +14,10 @@ package org.talend.designer.xmlmap.util;
 
 import java.util.List;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -131,44 +133,74 @@ public class XmlMapUtil {
 
     }
 
-    public static void detachConnectionsTarget(TreeNode treeNode, XmlMapData mappData) {
-        detachConnectionsTarget(treeNode, mappData, true);
+    public static void detachConnectionsTarget(AbstractNode treeNode, XmlMapData mapData) {
+        detachConnectionsTarget(treeNode, mapData, true);
     }
 
-    public static void detachConnectionsTarget(TreeNode treeNode, XmlMapData mappData, boolean detachChildren) {
+    public static void detachConnectionsTarget(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
         for (Connection connection : treeNode.getOutgoingConnections()) {
             if (connection.getTarget() instanceof OutputTreeNode) {
-                OutputTreeNode target = (OutputTreeNode) connection.getTarget();
+                AbstractNode target = connection.getTarget();
                 if (target.getIncomingConnections().contains(connection)) {
                     target.getIncomingConnections().remove(connection);
-                    mappData.getConnections().remove(connection);
+                    mapData.getConnections().remove(connection);
                 }
             }
         }
-        if (detachChildren && !treeNode.getChildren().isEmpty()) {
-            for (int i = 0; i < treeNode.getChildren().size(); i++) {
-                TreeNode child = treeNode.getChildren().get(i);
-                detachConnectionsTarget(child, mappData);
+
+        // TreeNode detach children's connections
+        if (treeNode instanceof TreeNode) {
+            TreeNode inputTreeNode = (TreeNode) treeNode;
+            if (detachChildren && !inputTreeNode.getChildren().isEmpty()) {
+                for (int i = 0; i < inputTreeNode.getChildren().size(); i++) {
+                    TreeNode child = inputTreeNode.getChildren().get(i);
+                    detachConnectionsTarget(child, mapData);
+                }
             }
         }
     }
 
-    public static void detachConnectionsSouce(OutputTreeNode treeNode, XmlMapData mappData) {
-        detachConnectionsSouce(treeNode, mappData, true);
+    public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData) {
+        detachConnectionsSouce(treeNode, mapData, true);
     }
 
-    public static void detachConnectionsSouce(OutputTreeNode treeNode, XmlMapData mappData, boolean detachChildren) {
+    public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
         for (Connection connection : treeNode.getIncomingConnections()) {
-            TreeNode source = (TreeNode) connection.getSource();
+            AbstractNode source = connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
                 source.getOutgoingConnections().remove(connection);
-                mappData.getConnections().remove(connection);
+                mapData.getConnections().remove(connection);
             }
         }
-        if (detachChildren && !treeNode.getChildren().isEmpty()) {
-            for (int i = 0; i < treeNode.getChildren().size(); i++) {
-                TreeNode child = treeNode.getChildren().get(i);
-                detachConnectionsSouce((OutputTreeNode) child, mappData);
+        if (treeNode instanceof OutputTreeNode) {
+            OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
+            if (detachChildren && !outputTreeNode.getChildren().isEmpty()) {
+                for (int i = 0; i < outputTreeNode.getChildren().size(); i++) {
+                    TreeNode child = outputTreeNode.getChildren().get(i);
+                    detachConnectionsSouce(child, mapData);
+                }
+            }
+        }
+    }
+
+    public static void detachLookupTarget(TreeNode treeNode, XmlMapData mapData) {
+        for (LookupConnection connection : treeNode.getLookupOutgoingConnections()) {
+            if (connection.getTarget() instanceof TreeNode) {
+                TreeNode target = (TreeNode) connection.getTarget();
+                if (target.getLookupIncomingConnections().contains(connection)) {
+                    target.getLookupIncomingConnections().remove(connection);
+                    mapData.getConnections().remove(connection);
+                }
+            }
+        }
+    }
+
+    public static void detachLookupSource(TreeNode treeNode, XmlMapData mapData) {
+        for (LookupConnection connection : treeNode.getLookupIncomingConnections()) {
+            TreeNode source = (TreeNode) connection.getSource();
+            if (source.getLookupOutgoingConnections().contains(connection)) {
+                source.getLookupOutgoingConnections().remove(connection);
+                mapData.getConnections().remove(connection);
             }
         }
     }

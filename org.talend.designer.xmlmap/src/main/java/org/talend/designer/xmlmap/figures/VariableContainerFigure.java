@@ -51,7 +51,7 @@ public class VariableContainerFigure extends ToolBarContainer {
         }
         checkImage.setToolTip(nullableToolTip);
         variableLabel = new VarNodeTextLabel();
-        variableLabel.setText(varNode.getVariable());
+        variableLabel.setText(varNode.getName());
         this.add(checkImage);
         this.add(variableLabel);
         addCheckListener();

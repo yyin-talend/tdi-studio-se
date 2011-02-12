@@ -24,13 +24,10 @@ import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
-import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
@@ -52,8 +49,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class XmlMapEditor extends GraphicalEditor {
 
-    private RulerComposite rulerComp;
-
     private KeyHandler sharedKeyHandler;
 
     MapperManager mapperManager;
@@ -65,15 +60,15 @@ public class XmlMapEditor extends GraphicalEditor {
     }
 
     protected void createGraphicalViewer(final Composite parent) {
-        rulerComp = new RulerComposite(parent, SWT.BORDER);
+        // rulerComp = new RulerComposite(parent, SWT.BORDER);
         GraphicalViewer viewer = new XmlMapGraphicViewer();
-        viewer.createControl(rulerComp);
+        viewer.createControl(parent);
         setGraphicalViewer(viewer);
         configureGraphicalViewer();
         hookGraphicalViewer();
         initializeGraphicalViewer();
         // super.createGraphicalViewer(rulerComp);
-        rulerComp.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
+        // rulerComp.setGraphicalViewer( getGraphicalViewer());
     }
 
     /**

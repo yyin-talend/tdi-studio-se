@@ -456,13 +456,31 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__MAIN = ABSTRACT_NODE_FEATURE_COUNT + 7;
 
     /**
+     * The feature id for the '<em><b>Lookup Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 8;
+
+    /**
+     * The feature id for the '<em><b>Lookup Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__LOOKUP_INCOMING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 9;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 8;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 10;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -601,6 +619,24 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__MAIN = TREE_NODE__MAIN;
 
     /**
+     * The feature id for the '<em><b>Lookup Outgoing Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS = TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Lookup Incoming Connections</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__LOOKUP_INCOMING_CONNECTIONS = TREE_NODE__LOOKUP_INCOMING_CONNECTIONS;
+
+    /**
      * The feature id for the '<em><b>Default Value</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -683,22 +719,50 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE__INCOMING_CONNECTIONS = ABSTRACT_NODE__INCOMING_CONNECTIONS;
 
     /**
-     * The feature id for the '<em><b>Variable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int VAR_NODE__VARIABLE = ABSTRACT_NODE_FEATURE_COUNT + 0;
-
-    /**
      * The number of structural features of the '<em>Var Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 1;
+    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getIConnection()
+     * @generated
+     */
+    int ICONNECTION = 10;
+
+    /**
+     * The feature id for the '<em><b>Source</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ICONNECTION__SOURCE = 0;
+
+    /**
+     * The feature id for the '<em><b>Target</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ICONNECTION__TARGET = 1;
+
+    /**
+     * The number of structural features of the '<em>IConnection</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ICONNECTION_FEATURE_COUNT = 2;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
@@ -717,7 +781,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-	int CONNECTION__SOURCE = 0;
+	int CONNECTION__SOURCE = ICONNECTION__SOURCE;
 
 				/**
      * The feature id for the '<em><b>Target</b></em>' reference.
@@ -726,7 +790,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-	int CONNECTION__TARGET = 1;
+	int CONNECTION__TARGET = ICONNECTION__TARGET;
 
 				/**
      * The number of structural features of the '<em>Connection</em>' class.
@@ -735,9 +799,46 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-	int CONNECTION_FEATURE_COUNT = 2;
+	int CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 0;
 
 				/**
+     * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl <em>Lookup Connection</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getLookupConnection()
+     * @generated
+     */
+    int LOOKUP_CONNECTION = 9;
+
+                /**
+     * The feature id for the '<em><b>Source</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LOOKUP_CONNECTION__SOURCE = ICONNECTION__SOURCE;
+
+                /**
+     * The feature id for the '<em><b>Target</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LOOKUP_CONNECTION__TARGET = ICONNECTION__TARGET;
+
+                /**
+     * The number of structural features of the '<em>Lookup Connection</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LOOKUP_CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 0;
+
+                /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -745,7 +846,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getNodeType()
      * @generated
      */
-    int NODE_TYPE = 9;
+    int NODE_TYPE = 11;
 
 
     /**
@@ -1095,6 +1196,28 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_Main();
 
     /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Lookup Outgoing Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupOutgoingConnections()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EReference getTreeNode_LookupOutgoingConnections();
+
+    /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Lookup Incoming Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupIncomingConnections()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EReference getTreeNode_LookupIncomingConnections();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1126,17 +1249,6 @@ public interface XmlmapPackage extends EPackage {
     EClass getVarNode();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getVariable <em>Variable</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Variable</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#getVariable()
-     * @see #getVarNode()
-     * @generated
-     */
-    EAttribute getVarNode_Variable();
-
-    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1147,28 +1259,48 @@ public interface XmlmapPackage extends EPackage {
 	EClass getConnection();
 
 				/**
-     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource <em>Source</em>}'.
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection <em>Lookup Connection</em>}'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Lookup Connection</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
+     * @generated
+     */
+    EClass getLookupConnection();
+
+                /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>IConnection</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
+     * @generated
+     */
+    EClass getIConnection();
+
+                /**
+     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection#getSource <em>Source</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @return the meta object for the reference '<em>Source</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource()
-     * @see #getConnection()
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection#getSource()
+     * @see #getIConnection()
      * @generated
      */
-	EReference getConnection_Source();
+    EReference getIConnection_Source();
 
-				/**
-     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget <em>Target</em>}'.
+                /**
+     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection#getTarget <em>Target</em>}'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return the meta object for the reference '<em>Target</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget()
-     * @see #getConnection()
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection#getTarget()
+     * @see #getIConnection()
      * @generated
      */
-	EReference getConnection_Target();
+    EReference getIConnection_Target();
 
-				/**
+                /**
      * Returns the meta object for enum '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1469,6 +1601,22 @@ public interface XmlmapPackage extends EPackage {
         EAttribute TREE_NODE__MAIN = eINSTANCE.getTreeNode_Main();
 
         /**
+         * The meta object literal for the '<em><b>Lookup Outgoing Connections</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS = eINSTANCE.getTreeNode_LookupOutgoingConnections();
+
+        /**
+         * The meta object literal for the '<em><b>Lookup Incoming Connections</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference TREE_NODE__LOOKUP_INCOMING_CONNECTIONS = eINSTANCE.getTreeNode_LookupIncomingConnections();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1497,14 +1645,6 @@ public interface XmlmapPackage extends EPackage {
         EClass VAR_NODE = eINSTANCE.getVarNode();
 
         /**
-         * The meta object literal for the '<em><b>Variable</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute VAR_NODE__VARIABLE = eINSTANCE.getVarNode_Variable();
-
-        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
          * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1515,22 +1655,42 @@ public interface XmlmapPackage extends EPackage {
 		EClass CONNECTION = eINSTANCE.getConnection();
 
 								/**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl <em>Lookup Connection</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getLookupConnection()
+         * @generated
+         */
+        EClass LOOKUP_CONNECTION = eINSTANCE.getLookupConnection();
+
+                                /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getIConnection()
+         * @generated
+         */
+        EClass ICONNECTION = eINSTANCE.getIConnection();
+
+                                /**
          * The meta object literal for the '<em><b>Source</b></em>' reference feature.
          * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+         * <!-- end-user-doc -->
          * @generated
          */
-		EReference CONNECTION__SOURCE = eINSTANCE.getConnection_Source();
+        EReference ICONNECTION__SOURCE = eINSTANCE.getIConnection_Source();
 
-								/**
+                                /**
          * The meta object literal for the '<em><b>Target</b></em>' reference feature.
          * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+         * <!-- end-user-doc -->
          * @generated
          */
-		EReference CONNECTION__TARGET = eINSTANCE.getConnection_Target();
+        EReference ICONNECTION__TARGET = eINSTANCE.getIConnection_Target();
 
-								/**
+                                /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->

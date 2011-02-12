@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts.directedit;
 
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
 import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
@@ -25,22 +23,6 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
 
     public ExpressionCellEditor(Composite parent, CellEditorDialogBehavior cellEditorBehavior) {
         super(parent, cellEditorBehavior);
-        ((Composite) getControl()).addFocusListener(new FocusAdapter() {
-
-            public void focusLost(FocusEvent e) {
-                if (isActivated()) {
-                    fireApplyEditorValue();
-                    deactivate();
-                }
-            }
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                // TODO Auto-generated method stub
-                super.focusGained(e);
-            }
-
-        });
     }
 
 }

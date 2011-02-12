@@ -110,6 +110,14 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createConnectionAdapter();
             }
             @Override
+            public Adapter caseLookupConnection(LookupConnection object) {
+                return createLookupConnectionAdapter();
+            }
+            @Override
+            public Adapter caseIConnection(IConnection object) {
+                return createIConnectionAdapter();
+            }
+            @Override
             public Adapter caseAbstractExternalData(AbstractExternalData object) {
                 return createAbstractExternalDataAdapter();
             }
@@ -260,6 +268,34 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
     }
 
 				/**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection <em>Lookup Connection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
+     * @generated
+     */
+    public Adapter createLookupConnectionAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
+     * @generated
+     */
+    public Adapter createIConnectionAdapter() {
+        return null;
+    }
+
+                /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData <em>Abstract External Data</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;

@@ -34,12 +34,12 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
             ComboBoxCellEditor combo = (ComboBoxCellEditor) editor;
             int selectIndex = (Integer) combo.getValue();
             varNode = (VarNode) getHost().getModel();
-            command = new DirectEditCommand(varNode, EXMLMapNodeProperty.VARNODE_TYPE, combo.getItems()[selectIndex], true);
+            command = new DirectEditCommand(varNode, EXMLMapNodeProperty.VARNODE_TYPE, combo.getItems()[selectIndex], false);
         } else if (getHost().getModel() instanceof VarNode && (editor instanceof TextCellEditor)) {
             varNode = (VarNode) getHost().getModel();
             TextCellEditor text = (TextCellEditor) editor;
             String variable = ((Text) text.getControl()).getText();
-            command = new DirectEditCommand(varNode, EXMLMapNodeProperty.VARNODE_VARIABLE, variable, true);
+            command = new DirectEditCommand(varNode, EXMLMapNodeProperty.VARNODE_VARIABLE, variable, false);
         }
         return command;
     }

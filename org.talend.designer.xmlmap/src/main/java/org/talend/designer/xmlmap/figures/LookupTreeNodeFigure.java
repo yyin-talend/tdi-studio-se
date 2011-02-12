@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -28,7 +28,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputTreeNodeFigure extends TreeNodeFigure {
+public class LookupTreeNodeFigure extends TreeNodeFigure {
 
     private XmlTreeBranch treeBranch;
 
@@ -38,7 +38,7 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
 
     private Label nameLabel;
 
-    public OutputTreeNodeFigure(OutputTreeNodeEditPart treeNodePart) {
+    public LookupTreeNodeFigure(OutputTreeNodeEditPart treeNodePart) {
         this.treeNodePart = treeNodePart;
         this.treeNode = (OutputTreeNode) treeNodePart.getModel();
         createContent();
@@ -62,12 +62,19 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
         }
         // xml root
         else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof OutputXmlTree) {
+            /* column1,expression */
             expressionContainer = new Figure();
             expressionContainer.setLayoutManager(new ExpressionLayout());
             this.add(expressionContainer);
             ExpressionFigure figure = new ExpressionFigure();
-            expressionContainer.add(figure, 0);
 
+            // label.setText(((OutputTreeNode) childPart.getModel()).getExpression());
+            // figure.setBorder(new RowBorder());
+            expressionContainer.add(figure, 0);
+            // outputTreeNodeExpressionFigure.setOpaque(true);
+            // outputTreeNodeExpressionFigure.setBackgroundColor(ColorConstants.red);
+
+            /* column2, column */
             treeBranch = new XmlTreeRoot(new TreeBranchFigure(treeNode), XmlTreeBranch.STYLE_ROW_HANGING);
             treeBranch.setBorder(new RowBorder());
 
@@ -75,8 +82,15 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
             figure.setTreeNodePart(treeNodePart);
             treeBranch.setExpressionFigure(figure);
 
+            // outputTreeNodeNameFigure.generateSplitFigures();
+            // createTreeNode(root, treeNode.getChildren());
             this.add(treeBranch);
         }
+        /* column3,node status */
+        // Label nodeStatus = new Label();
+        // // nodeStatus.setText("element loop");
+        // nodeStatus.setBorder(new LineBorder());
+        // this.add(nodeStatus);
 
     }
 

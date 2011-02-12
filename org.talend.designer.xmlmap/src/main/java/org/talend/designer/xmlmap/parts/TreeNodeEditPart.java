@@ -12,13 +12,16 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
@@ -27,21 +30,28 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.swt.SWT;
 import org.talend.commons.ui.swt.geftree.figure.TreeBranch;
-import org.talend.designer.xmlmap.figures.OutputTreeNodeFigure;
+import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.TreeExpandSupportEditPolicy;
+import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -54,30 +64,23 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
 
     protected XmlTreeBranch treeBranchFigure;
 
+    protected XmlMapNodeDirectEditManager directEditManager;
+
     @Override
     protected IFigure createFigure() {
         TreeNode model = (TreeNode) getModel();
         IFigure figure = null;
+
         // nodes in xml tree
         if (XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
             String status = model.isLoop() ? String.valueOf(model.isLoop()) : "";
             figure = new XmlTreeBranch(new TreeBranchFigure(model), XmlTreeBranch.STYLE_ROW_HANGING);
-            // figure = new TreeBranch(new TreeBranchFigure(getTreeBranchName(model), "true"),
-            // TreeBranch.STYLE_HANGING);
             treeBranchFigure = (XmlTreeBranch) figure;
-
-            // for test
-            // if (model.getChildren().size() == 1) {
-            // figure.setOpaque(true);
-            // figure.setBackgroundColor(ColorConstants.green);
-            // }
 
         }
         // normal column and tree root
         else {
             figure = new TreeNodeFigure(this);
-            // figure.setLayoutManager(new EqualWidthLayout());
-            figure.setLayoutManager(new ToolbarLayout());
         }
         return figure;
     }
@@ -98,6 +101,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
         installEditPolicy(TreeExpandSupportEditPolicy.EXPAND_SUPPORT, new TreeExpandSupportEditPolicy());
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
         // to deleteNode
         // installEditPolicy(EditPolicy.COMPONENT_ROLE, new CustomComponentEditPolicy());
     }
@@ -111,7 +115,16 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
     @Override
     protected List getModelSourceConnections() {
         TreeNode model = (TreeNode) getModel();
-        return model.getOutgoingConnections();
+        List list = new ArrayList();
+        list.addAll(model.getOutgoingConnections());
+        list.addAll(model.getLookupOutgoingConnections());
+        return list;
+    }
+
+    @Override
+    protected List getModelTargetConnections() {
+        TreeNode model = (TreeNode) getModel();
+        return model.getLookupIncomingConnections();
     }
 
     public void expand(boolean expand) {
@@ -119,12 +132,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
             ((XmlTreeBranch) this.getFigure()).doExpandCollapse((XmlTreeBranch) (getFigure()));
         }
     }
-
-    // @Override
-    // public List getSourceConnections() {
-    // TreeNode model = (TreeNode) getModel();
-    // return model.getOutgoingConnections();
-    // }
 
     @Override
     public IFigure getContentPane() {
@@ -143,7 +150,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        return new ColumnAnchor(figure, true);
+        return new ColumnAnchor(figure, connection);
         // return new ChopboxAnchor(getFigure());
     }
 
@@ -154,7 +161,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        return new ColumnAnchor(figure, false);
+        return new ColumnAnchor(figure, connection);
         // return new ChopboxAnchor(getFigure());
     }
 
@@ -165,7 +172,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        return new ColumnAnchor(figure, true);
+        return new ColumnAnchor(figure, null);
         // return new ChopboxAnchor(getFigure());
     }
 
@@ -176,76 +183,81 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        return new ColumnAnchor(figure, false);
+        return new ColumnAnchor(figure, null);
         // return new ChopboxAnchor(getFigure());
-    }
-
-    public void notifyChanged(Notification notification) {
-        int type = notification.getEventType();
-        int featureId = notification.getFeatureID(XmlmapPackage.class);
-        switch (type) {
-        case Notification.SET:
-            switch (featureId) {
-            case XmlmapPackage.TREE_NODE__LOOP:
-            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                if (getFigure() instanceof TreeBranch) {
-                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
-                        branchFigure.updateStatus();
-                    }
-                }
-                break;
-            case XmlmapPackage.TREE_NODE__NAME:
-                if (getFigure() instanceof TreeBranch) {
-                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
-                        branchFigure.updataNameFigure();
-                    }
-                } else if (getFigure() instanceof TreeNodeFigure) {
-                    ((TreeNodeFigure) getFigure()).updateNameFigure();
-                }
-                break;
-            case XmlmapPackage.TREE_NODE__TYPE:
-                TreeNode treeNode = (TreeNode) getModel();
-                if (treeNode.eContainer() instanceof InputXmlTree || treeNode.eContainer() instanceof OutputXmlTree) {
-                    if (figure instanceof TreeNodeFigure) {
-                        ((TreeNodeFigure) figure).refreshChildren();
-                    }
-                }
-            }
-        case Notification.ADD:
-        case Notification.ADD_MANY:
-            switch (featureId) {
-            case XmlmapPackage.TREE_NODE__CHILDREN:
-                refreshChildren();
-                break;
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                refreshSourceConnections();
-                break;
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                refreshTargetConnections();
-                break;
-            }
-        case Notification.REMOVE:
-        case Notification.REMOVE_MANY:
-            switch (featureId) {
-            case XmlmapPackage.TREE_NODE__CHILDREN:
-                refreshChildren();
-            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
-                refreshSourceConnections();
-                break;
-            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
-                refreshTargetConnections();
-
-            }
-
-        }
-
     }
 
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
+        TreeNode treeNode = (TreeNode) getModel();
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+        boolean isLookup = false;
+        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+            isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+        }
+        if (isLookup) {
+            TreeNodeEditPart childPart = (TreeNodeEditPart) childEditPart;
+            TreeNodeEditPart parentPart = (TreeNodeEditPart) childEditPart.getParent();
+            IFigure parentFigure = parentPart.getFigure();
+            // when add one child node of a tree,should also add a label for firstColumn
+            /* 1.should find the related root TreeNodeFigure */
+            TreeNodeFigure rootTreeNodeFigure = findRootTreeNodeFigure(parentFigure);
+            /* 2.add label to first column of rootTreeNodeFigure */
+            if (childPart.getFigure() instanceof XmlTreeBranch && rootTreeNodeFigure != null) {
+                Figure rootTreeNodeExpressionFigure = rootTreeNodeFigure.getExpressionContainer();
+                ExpressionFigure expressionFigure = new ExpressionFigure();
+                expressionFigure.setText(((TreeNode) childPart.getModel()).getExpression());
+                XmlTreeBranch treeBranch = (XmlTreeBranch) childPart.getFigure();
+                expressionFigure.setTreeBranch(treeBranch);
+                expressionFigure.setTreeNodePart(childPart);
+
+                treeBranch.setExpressionFigure(expressionFigure);
+                Map<TreeNode, Integer> nodeAndIndex = new HashMap<TreeNode, Integer>();
+                int expressionIndex = getExpressionIndex((TreeNode) childPart.getModel(),
+                        getModelTreeRoot((TreeNode) childPart.getModel()), 0, nodeAndIndex);
+                rootTreeNodeExpressionFigure.add(expressionFigure, expressionIndex);
+                getViewer().getVisualPartMap().put(expressionFigure, childEditPart);
+            }
+        }
+
         super.addChildVisual(childEditPart, index);
+    }
+
+    protected TreeNodeFigure findRootTreeNodeFigure(IFigure parentFigure) {
+        TreeNodeFigure rootTreeNodeFigure = null;
+        if (parentFigure instanceof TreeNodeFigure) {
+            rootTreeNodeFigure = (TreeNodeFigure) parentFigure;
+        } else
+            rootTreeNodeFigure = findRootTreeNodeFigure(parentFigure.getParent());
+        return rootTreeNodeFigure;
+    }
+
+    protected int getExpressionIndex(TreeNode treeNode, TreeNode treeRoot, int index, Map<TreeNode, Integer> nodeAndIndex) {
+        for (int i = 0; i < treeRoot.getChildren().size(); i++) {
+            index++;
+            TreeNode treeNode2 = treeRoot.getChildren().get(i);
+            nodeAndIndex.put(treeNode2, new Integer(index));
+            if (treeNode == treeNode2) {
+                return index;
+            } else if (!treeNode2.getChildren().isEmpty()) {
+                index = getExpressionIndex(treeNode, (TreeNode) treeNode2, index, nodeAndIndex);
+                if (nodeAndIndex.get(treeNode) != null) {
+                    return index;
+                }
+            }
+
+        }
+        return index;
+
+    }
+
+    protected TreeNode getModelTreeRoot(TreeNode treeNode) {
+        if (treeNode.eContainer() instanceof OutputXmlTree || treeNode.eContainer() instanceof InputXmlTree) {
+            return treeNode;
+        } else {
+            return getModelTreeRoot((TreeNode) treeNode.eContainer());
+        }
+
     }
 
     public void refreshChildrenSourceConnections(TreeNodeEditPart rootPart, boolean expanded) {
@@ -313,6 +325,112 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         }
     }
 
+    public void notifyChanged(Notification notification) {
+        int type = notification.getEventType();
+        int featureId = notification.getFeatureID(XmlmapPackage.class);
+        switch (type) {
+        case Notification.SET:
+            switch (featureId) {
+            case XmlmapPackage.TREE_NODE__LOOP:
+            case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
+                if (getFigure() instanceof TreeBranch) {
+                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
+                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
+                        branchFigure.updateStatus();
+                    }
+                }
+                break;
+            case XmlmapPackage.TREE_NODE__NAME:
+                if (getFigure() instanceof TreeBranch) {
+                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
+                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
+                        branchFigure.updataNameFigure();
+                    }
+                } else if (getFigure() instanceof TreeNodeFigure) {
+                    ((TreeNodeFigure) getFigure()).updateNameFigure();
+                }
+                break;
+            case XmlmapPackage.TREE_NODE__TYPE:
+                TreeNode treeNode = (TreeNode) getModel();
+                if (treeNode.eContainer() instanceof InputXmlTree || treeNode.eContainer() instanceof OutputXmlTree) {
+                    if (figure instanceof TreeNodeFigure) {
+                        ((TreeNodeFigure) figure).refreshChildren();
+                    }
+                }
+            case XmlmapPackage.TREE_NODE__EXPRESSION:
+                if (getFigure() instanceof TreeNodeFigure) {
+                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
+                    if (outputFigure.getColumnExpressionFigure() != null) {
+                        outputFigure.getColumnExpressionFigure().setText(((TreeNode) getModel()).getExpression());
+                    }
+
+                } else if (getFigure() instanceof XmlTreeBranch) {
+                    ExpressionFigure expressionFigure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
+                    if (expressionFigure != null) {
+                        expressionFigure.setText(((TreeNode) getModel()).getExpression());
+                    }
+                }
+                break;
+
+            }
+        case Notification.ADD:
+        case Notification.ADD_MANY:
+            switch (featureId) {
+            case XmlmapPackage.TREE_NODE__CHILDREN:
+                refreshChildren();
+                break;
+            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+                refreshSourceConnections();
+                break;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
+                refreshTargetConnections();
+                break;
+            }
+        case Notification.REMOVE:
+        case Notification.REMOVE_MANY:
+            switch (featureId) {
+            case XmlmapPackage.TREE_NODE__CHILDREN:
+                refreshChildren();
+            case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+                refreshSourceConnections();
+                break;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
+                refreshTargetConnections();
+
+            }
+
+        }
+
+    }
+
+    @Override
+    public void performRequest(Request req) {
+        if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
+            if (directEditManager == null) {
+                Figure figure = null;
+                if (getFigure() instanceof TreeNodeFigure) {
+                    figure = ((TreeNodeFigure) getFigure()).getColumnExpressionFigure();
+                } else if (getFigure() instanceof XmlTreeBranch) {
+                    figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
+                }
+                if (figure != null) {
+                    directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure));
+                }
+            }
+            if (directEditManager != null) {
+                TreeNode outputTreeNode = (TreeNode) getModel();
+                if (outputTreeNode.getChildren().isEmpty()) {
+                    directEditManager.show();
+                }
+            }
+        }
+        super.performRequest(req);
+    }
+
     protected XmlTreeBranch getTreeBranchFigure() {
         return this.treeBranchFigure;
 
@@ -326,22 +444,13 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         this.rootAnchor = rootAnchor;
     }
 
-    public OutputTreeNodeFigure findRootOutputTreeNodeFigure(IFigure parentFigure) {
-        OutputTreeNodeFigure rootOutputTreeNodeFigure = null;
-        if (parentFigure instanceof OutputTreeNodeFigure) {
-            rootOutputTreeNodeFigure = (OutputTreeNodeFigure) parentFigure;
-        } else
-            rootOutputTreeNodeFigure = findRootOutputTreeNodeFigure(parentFigure.getParent());
-        return rootOutputTreeNodeFigure;
-    }
-
     class ColumnAnchor extends ChopboxAnchor {
 
-        private boolean isSource;
+        private ConnectionEditPart connectionPart;
 
-        public ColumnAnchor(IFigure owner, boolean isSource) {
+        public ColumnAnchor(IFigure owner, ConnectionEditPart connectionPart) {
             super(owner);
-            this.isSource = isSource;
+            this.connectionPart = connectionPart;
         }
 
         public IFigure getOwner() {
@@ -349,6 +458,17 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         }
 
         public Point getReferencePoint() {
+            if (connectionPart == null) {
+                return getOwner().getBounds().getLeft();
+            }
+            Object model = TreeNodeEditPart.this.getModel();
+            boolean loctionRight = false;
+            IConnection connection = (IConnection) connectionPart.getModel();
+            if (model == connection.getSource()
+                    && (connection.getTarget() instanceof OutputTreeNode || connection.getTarget() instanceof VarNode)) {
+                loctionRight = true;
+            }
+
             Point ref = null;
             if (getOwner() == null) {
                 return null;
@@ -356,7 +476,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 TreeNodeFigure nodeFigure = (TreeNodeFigure) getOwner();
                 // normal column
                 if (nodeFigure.getTreeBranch() == null) {
-                    if (isSource) {
+                    if (loctionRight) {
                         ref = getOwner().getBounds().getRight();
                     } else {
                         if (nodeFigure.getColumnExpressionFigure() != null) {
@@ -367,20 +487,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                     }
                     getOwner().translateToAbsolute(ref);
 
-                } else {
-                    // tree root
-                    // XmlTreeBranch treeBranch = nodeFigure.getTreeBranch();
-                    // Rectangle elembounds = treeBranch.getElement().getBounds().getCopy();
-                    // Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
-                    // elembounds.x = bounds.x;
-                    // elembounds.width = bounds.width;
-                    // if (isSource) {
-                    // ref = elembounds.getRight();
-                    // } else {
-                    // ref = elembounds.getLeft();
-                    // }
-                    // getOwner().translateToAbsolute(ref);
-
                 }
             } else if (getOwner() instanceof XmlTreeBranch) {
                 XmlTreeBranch treeBranch = (XmlTreeBranch) getOwner();
@@ -388,7 +494,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
                 elembounds.x = bounds.x;
                 elembounds.width = bounds.width;
-                if (isSource) {
+                if (loctionRight) {
                     ref = elembounds.getRight();
                 } else {
                     if (treeBranch.getExpressionFigure() != null) {
@@ -396,26 +502,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                     } else {
                         ref = elembounds.getLeft();
                     }
-
-                    // OutputTreeNodeFigure findRootOutputTreeNodeFigure = findRootOutputTreeNodeFigure(treeBranch);
-                    // if (findRootOutputTreeNodeFigure != null
-                    // && findRootOutputTreeNodeFigure.getTreeNodeExpressionFigure() != null) {
-                    // Figure expressionFigure = findRootOutputTreeNodeFigure.getTreeNodeExpressionFigure();
-                    // List children = expressionFigure.getChildren();
-                    // if (children != null) {
-                    // for (int i = 0; i < children.size(); i++) {
-                    // if (children.get(i) instanceof Label) {
-                    // Label label = (Label) children.get(i);
-                    // if (((TreeNode) getModel()).getExpression() != null
-                    // && ((TreeNode) getModel()).getExpression().equals(label.getText())) {
-                    // ref = label.getBounds().getLeft();
-                    // break;
-                    // }
-                    // }
-                    // }
-                    // }
-                    //
-                    // }
                 }
                 getOwner().translateToAbsolute(ref);
             } else {
@@ -439,8 +525,6 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
 
         @Override
         protected Rectangle getBox() {
-            Rectangle copy = getOwner().getBounds().getCopy();
-
             return super.getBox();
         }
     }

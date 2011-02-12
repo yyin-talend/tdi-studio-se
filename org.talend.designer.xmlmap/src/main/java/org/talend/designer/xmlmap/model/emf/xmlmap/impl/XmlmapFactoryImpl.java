@@ -70,6 +70,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
             case XmlmapPackage.OUTPUT_TREE_NODE: return createOutputTreeNode();
             case XmlmapPackage.VAR_NODE: return createVarNode();
             case XmlmapPackage.CONNECTION: return createConnection();
+            case XmlmapPackage.LOOKUP_CONNECTION: return createLookupConnection();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -196,6 +197,16 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
     }
 
 				/**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public LookupConnection createLookupConnection() {
+        LookupConnectionImpl lookupConnection = new LookupConnectionImpl();
+        return lookupConnection;
+    }
+
+                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated

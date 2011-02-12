@@ -20,8 +20,11 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
@@ -34,9 +37,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class DirectEditCommand extends Command {
 
-    private TreeNode model;
-
-    private VarNode varModel;
+    private AbstractNode model;
 
     private String expression;
 
@@ -46,39 +47,26 @@ public class DirectEditCommand extends Command {
 
     private Object newValue;
 
-    private boolean isModifyCell;
+    private boolean isExpression = true;
 
-    public DirectEditCommand(Object model, String expression) {
-        if (model instanceof TreeNode) {
-            this.model = (TreeNode) model;
-        }
-        if (model instanceof VarNode) {
-            this.varModel = (VarNode) model;
-        }
+    public DirectEditCommand(AbstractNode model, String expression) {
+        this.model = (AbstractNode) model;
         this.expression = expression;
     }
 
-    public DirectEditCommand(Object model, EXMLMapNodeProperty property, Object newValue, boolean isModifyCell) {
-        if (model instanceof TreeNode) {
-            this.model = (TreeNode) model;
-        }
-        if (model instanceof VarNode) {
-            this.varModel = (VarNode) model;
-        }
+    public DirectEditCommand(AbstractNode model, EXMLMapNodeProperty property, Object newValue, boolean isExpression) {
+        this.model = (AbstractNode) model;
         this.property = property;
         this.newValue = newValue;
-        this.isModifyCell = isModifyCell;
+        this.isExpression = isExpression;
     }
 
     @Override
     public void execute() {
         try {
             if (model != null) {
-                model.setExpression(expression);
-                // String[] splitExpressions = XmlMapUtil.splitExpressions(expression);
-                if (model instanceof OutputTreeNode) {
-                    OutputTreeNode outputNode = (OutputTreeNode) model;
-                    // match tree expression
+                if (isExpression) {
+                    model.setExpression(expression);
 
                     Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                             | Pattern.MULTILINE);
@@ -87,64 +75,118 @@ public class DirectEditCommand extends Command {
                     while (regexMatcher.find()) {
                         matched.add(regexMatcher.group().trim());
                     }
-                    EList<Connection> incomingConnections = ((OutputTreeNode) model).getIncomingConnections();
+                    EList<? extends IConnection> connections = null;
+                    if (model instanceof OutputTreeNode || model instanceof VarNode) {
+                        connections = model.getIncomingConnections();
+                    } else if (model instanceof TreeNode) {
+                        connections = ((TreeNode) model).getLookupIncomingConnections();
+                    }
 
+                    List usefullConnections = new ArrayList();
+
+                    XmlMapData mapperData = getMapperData(model);
                     if (!matched.isEmpty()) {
-                        XmlMapData mapperData = null;
                         for (int i = 0; i < matched.size(); i++) {
                             String convertToXpath = XmlMapUtil.convertToXpath(matched.get(i));
                             boolean found = false;
-                            for (Connection conn : incomingConnections) {
+                            for (IConnection conn : connections) {
                                 if (conn.getSource() instanceof TreeNode) {
                                     if (convertToXpath != null && convertToXpath.equals(((TreeNode) conn.getSource()).getXpath())) {
                                         found = true;
+                                        usefullConnections.add(conn);
                                         break;
                                     }
                                 }
                             }
                             if (!found) {
-                                if (mapperData == null) {
-                                    mapperData = getMapperData(model);
-                                }
                                 if (mapperData != null) {
                                     TreeNode sourceNode = findConnectionSource(mapperData.getInputTrees(), convertToXpath);
                                     if (sourceNode != null) {
-                                        Connection connection = XmlmapFactory.eINSTANCE.createConnection();
-                                        sourceNode.getOutgoingConnections().add(connection);
-                                        outputNode.getIncomingConnections().add(connection);
+                                        IConnection connection = null;
+                                        if (model instanceof OutputTreeNode || model instanceof VarNode) {
+                                            connection = XmlmapFactory.eINSTANCE.createConnection();
+                                            sourceNode.getOutgoingConnections().add((Connection) connection);
+                                            model.getIncomingConnections().add((Connection) connection);
+
+                                        } else if (model instanceof TreeNode) {
+                                            connection = XmlmapFactory.eINSTANCE.createLookupConnection();
+                                            sourceNode.getLookupOutgoingConnections().add((LookupConnection) connection);
+                                            ((TreeNode) model).getLookupIncomingConnections().add((LookupConnection) connection);
+                                        }
+                                        connection.setSource(sourceNode);
+                                        connection.setTarget(model);
                                         mapperData.getConnections().add(connection);
+                                        usefullConnections.add(connection);
                                     }
                                 }
-                                // connection.setSource(value);
+                            }
+                        }
+                    } else {
+                        if (!connections.isEmpty()) {
+                            if (model instanceof OutputTreeNode || model instanceof VarNode) {
+                                XmlMapUtil.detachConnectionsSouce(model, mapperData);
+                                model.getIncomingConnections().clear();
+                            } else if (model instanceof TreeNode) {
+                                XmlMapUtil.detachLookupSource((TreeNode) model, mapperData);
+                                ((TreeNode) model).getLookupIncomingConnections().clear();
                             }
                         }
                     }
-                }
-            } else if (varModel != null) {
-                if (isModifyCell) {
-                    switch (property) {
-                    case VARNODE_TYPE:
-                        varModel.setType((String) newValue);
-                        break;
-                    case VARNODE_VARIABLE:
-                        varModel.setVariable((String) newValue);
-                        break;
+                    List copyOfConnections = new ArrayList(connections);
+                    copyOfConnections.removeAll(usefullConnections);
+                    if (model instanceof OutputTreeNode || model instanceof VarNode) {
+                        for (IConnection connection : connections) {
+                            if (connection.getSource() != null) {
+                                if (connection.getSource().getOutgoingConnections().contains(connection)) {
+                                    connection.getSource().getOutgoingConnections().remove(connection);
+                                    mapperData.getConnections().remove(connection);
+                                }
+                            }
+                        }
+                        model.getIncomingConnections().removeAll(copyOfConnections);
+
+                    } else if (model instanceof TreeNode) {
+                        for (IConnection connection : connections) {
+                            if (connection.getSource() != null) {
+                                if (((TreeNode) connection.getSource()).getLookupOutgoingConnections().contains(connection)) {
+                                    ((TreeNode) connection.getSource()).getLookupOutgoingConnections().remove(connection);
+                                    mapperData.getConnections().remove(connection);
+                                }
+                            }
+                        }
+                        ((TreeNode) model).getLookupIncomingConnections().removeAll(copyOfConnections);
+
+                    }
+
+                } else {
+                    if (model instanceof VarNode) {
+                        VarNode varModel = (VarNode) model;
+                        switch (property) {
+                        case VARNODE_TYPE:
+                            varModel.setType((String) newValue);
+                            break;
+                        case VARNODE_VARIABLE:
+                            varModel.setName((String) newValue);
+                            break;
+                        }
                     }
                 }
-            }
 
+            }
         } catch (PatternSyntaxException ex) {
             // Syntax error in the regular expression
         }
 
     }
 
-    private XmlMapData getMapperData(TreeNode treeNode) {
-        TreeNode rootNode = null;
+    private XmlMapData getMapperData(AbstractNode treeNode) {
+        AbstractNode rootNode = null;
         if (treeNode instanceof OutputTreeNode) {
             rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) treeNode);
         } else if (treeNode instanceof TreeNode) {
-            rootNode = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+            rootNode = XmlMapUtil.getInputTreeNodeRoot((TreeNode) treeNode);
+        } else if (treeNode instanceof VarNode) {
+            return (XmlMapData) treeNode.eContainer().eContainer();
         }
         if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
             return (XmlMapData) rootNode.eContainer().eContainer();

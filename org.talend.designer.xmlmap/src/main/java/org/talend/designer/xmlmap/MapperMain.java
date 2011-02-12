@@ -125,6 +125,8 @@ public class MapperMain {
                         }
                     }
                     if (found != null) {
+                        // set in case talend type changed in metadata
+                        found.setType(column.getTalendType());
                         if (i != j) {
                             // do switch to keep the same sequence
                             TreeNode temp = nodes.get(j);
@@ -150,6 +152,14 @@ public class MapperMain {
                             treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
                             treeRoot.setNodeType(NodeType.ELEMENT);
                             children.add(treeRoot);
+                        }
+                    }
+                    // remove children and connections for children if not document
+                    else {
+                        EList<TreeNode> children = found.getChildren();
+                        if (!children.isEmpty()) {
+                            XmlMapUtil.detachConnectionsTarget(found, copyOfMapData);
+                            found.getChildren().clear();
                         }
                     }
 
@@ -204,6 +214,8 @@ public class MapperMain {
                         }
                     }
                     if (found != null) {
+                        // set in case talend type changed in metadata
+                        found.setType(column.getTalendType());
                         if (i != j) {
                             // do switch to keep the same sequence
                             OutputTreeNode temp = nodes.get(j);
@@ -229,6 +241,14 @@ public class MapperMain {
                             treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
                             treeRoot.setNodeType(NodeType.ELEMENT);
                             children.add(treeRoot);
+                        }
+                    }
+                    // remove children and connections for children if not document
+                    else {
+                        EList<TreeNode> children = found.getChildren();
+                        if (!children.isEmpty()) {
+                            XmlMapUtil.detachConnectionsSouce(found, copyOfMapData);
+                            found.getChildren().clear();
                         }
                     }
 

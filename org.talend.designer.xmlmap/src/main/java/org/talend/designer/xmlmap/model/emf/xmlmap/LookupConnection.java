@@ -10,14 +10,14 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Var Node</b></em>'.
+ * A representation of the model object '<em><b>Lookup Connection</b></em>'.
  * <!-- end-user-doc -->
  *
  *
- * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getVarNode()
+ * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getLookupConnection()
  * @model
  * @generated
  */
-public interface VarNode extends AbstractNode {
+public interface LookupConnection extends IConnection {
 
-} // VarNode
+} // LookupConnection

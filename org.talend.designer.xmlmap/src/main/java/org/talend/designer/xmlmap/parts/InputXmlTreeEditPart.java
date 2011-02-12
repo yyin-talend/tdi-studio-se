@@ -18,7 +18,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -85,6 +87,12 @@ public class InputXmlTreeEditPart extends BaseEditPart {
                 refreshChildren();
             }
         }
+    }
+
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
     }
 
 }

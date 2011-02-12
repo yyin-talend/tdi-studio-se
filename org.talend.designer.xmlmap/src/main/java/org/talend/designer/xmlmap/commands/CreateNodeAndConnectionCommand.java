@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.xmlmap.figures.CenterVarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -64,31 +65,34 @@ public class CreateNodeAndConnectionCommand extends Command {
     @Override
     public void execute() {
         NodeType nodeType = null;
-        OutputTreeNode parent = null;
+        OutputTreeNode targetOutputNode = null;
         VarNode targetVarNode = null;
+        TreeNode treeNode = null;
         if (targetEditPart.getModel() instanceof OutputTreeNode) {
-            parent = (OutputTreeNode) ((OutputTreeNodeEditPart) targetEditPart).getModel();
-        } else if (targetEditPart.getModel() instanceof VarNode) {
-            targetVarNode = (VarNode) targetEditPart.getModel();
-        }
-        if (parent != null) {
-            if (parent.eContainer() instanceof OutputXmlTree) {
-                update = true;
-            }
-        }
-
-        if (parent != null) {
-            OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parent);
+            targetOutputNode = (OutputTreeNode) ((OutputTreeNodeEditPart) targetEditPart).getModel();
+            OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(targetOutputNode);
             if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() != null
                     && outputTreeNodeRoot.eContainer().eContainer() instanceof XmlMapData) {
                 xmlMapData = (XmlMapData) outputTreeNodeRoot.eContainer().eContainer();
             }
-        } else if (targetVarNode != null) {
+        } else if (targetEditPart.getModel() instanceof VarNode) {
+            targetVarNode = (VarNode) targetEditPart.getModel();
             xmlMapData = (XmlMapData) targetVarNode.eContainer().eContainer();
+        } else if (targetEditPart.getModel() instanceof TreeNode) {
+            treeNode = (TreeNode) targetEditPart.getModel();
+            TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+            if (treeNodeRoot != null && treeNodeRoot.eContainer() != null
+                    && treeNodeRoot.eContainer().eContainer() instanceof XmlMapData) {
+                xmlMapData = (XmlMapData) treeNodeRoot.eContainer().eContainer();
+            }
+        }
+        if (targetOutputNode != null) {
+            if (targetOutputNode.eContainer() instanceof OutputXmlTree) {
+                update = true;
+            }
         }
 
-        /* add a new ouputNode */
-        if (!update && parent != null) {
+        if (!update && targetOutputNode != null) {
             Shell shell = targetEditPart.getViewer().getControl().getShell();
             DragAndDrogDialog selectDialog = new DragAndDrogDialog(shell);
             int open = selectDialog.open();
@@ -104,13 +108,13 @@ public class CreateNodeAndConnectionCommand extends Command {
                 return;
             }
 
-            if (!update && !parent.getIncomingConnections().isEmpty()) {
+            if (!update && !targetOutputNode.getIncomingConnections().isEmpty()) {
                 boolean canContinue = MessageDialog.openConfirm(null, "Warning",
                         "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
                 if (canContinue) {
-                    XmlMapUtil.detachConnectionsSouce(parent, xmlMapData);
-                    parent.getIncomingConnections().clear();
-                    parent.setExpression("");
+                    XmlMapUtil.detachConnectionsSouce(targetOutputNode, xmlMapData);
+                    targetOutputNode.getIncomingConnections().clear();
+                    targetOutputNode.setExpression("");
                 } else {
                     return;
                 }
@@ -125,15 +129,17 @@ public class CreateNodeAndConnectionCommand extends Command {
                     if (targetEditPart instanceof OutputTreeNodeEditPart) {
                         if (update) {
                             // update expression
-                            String expression = parent.getExpression();
+                            String expression = targetOutputNode.getExpression();
                             if (expression == null) {
                                 expression = XmlMapUtil.convertToExpression(sourceNode.getXpath());
                             } else {
                                 expression = expression + " " + XmlMapUtil.convertToExpression(sourceNode.getXpath());
                             }
-                            parent.setExpression(expression);
+                            targetOutputNode.setExpression(expression);
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
-                            parent.getIncomingConnections().add(conn);
+                            conn.setSource(sourceNode);
+                            conn.setTarget(targetOutputNode);
+                            targetOutputNode.getIncomingConnections().add(conn);
                             sourceNode.getOutgoingConnections().add(conn);
                             if (xmlMapData != null) {
                                 xmlMapData.getConnections().add(conn);
@@ -145,17 +151,20 @@ public class CreateNodeAndConnectionCommand extends Command {
                             targetNode.setName(sourceNode.getName());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             if (NodeType.ATTRIBUT.equals(nodeType)) {
-                                targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE
-                                        + sourceNode.getName());
+                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                        + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
                             } else {
-                                targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + sourceNode.getName());
+                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                        + sourceNode.getName());
                             }
                             targetNode.setNodeType(nodeType);
                             targetNode.setExpression(XmlMapUtil.convertToExpression(sourceNode.getXpath()));
 
-                            parent.getChildren().add(targetNode);
+                            targetOutputNode.getChildren().add(targetNode);
                             // add connection
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
+                            conn.setSource(sourceNode);
+                            conn.setTarget(targetNode);
                             // attach source and target
                             targetNode.getIncomingConnections().add(conn);
                             sourceNode.getOutgoingConnections().add(conn);
@@ -165,7 +174,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                         }
                     }
                     /* for varTable drag drop */
-                    if (targetEditPart instanceof VarNodeEditPart) {
+                    else if (targetEditPart instanceof VarNodeEditPart) {
                         VarNodeEditPart targetPart = (VarNodeEditPart) targetEditPart;
                         VarNode targetNode = (VarNode) targetPart.getModel();
                         if (update) {
@@ -202,27 +211,46 @@ public class CreateNodeAndConnectionCommand extends Command {
 
                         }
                     }
+                    /* for lookup connections */
+                    else if (targetEditPart instanceof TreeNodeEditPart) {
+                        TreeNode targetTreeNode = (TreeNode) targetEditPart.getModel();
+                        String expression = targetTreeNode.getExpression();
+                        if (expression == null) {
+                            expression = "";
+                        }
+                        expression = expression + " " + XmlMapUtil.convertToExpression(sourceNode.getXpath());
+                        targetTreeNode.setExpression(expression);
+
+                        LookupConnection conn = XmlmapFactory.eINSTANCE.createLookupConnection();
+                        conn.setSource(sourceNode);
+                        conn.setTarget(targetTreeNode);
+                        targetTreeNode.getLookupIncomingConnections().add(conn);
+                        sourceNode.getLookupOutgoingConnections().add(conn);
+                        if (xmlMapData != null) {
+                            xmlMapData.getConnections().add(conn);
+                        }
+                    }
                 } else if (o instanceof VarNodeEditPart) {
                     VarNodeEditPart sourceVarNode = (VarNodeEditPart) o;
                     VarNode sourceNode = (VarNode) sourceVarNode.getModel();
                     if (targetEditPart instanceof OutputTreeNodeEditPart) {
                         if (update) {
                             // update expression
-                            String expression = parent.getExpression();
+                            String expression = targetOutputNode.getExpression();
                             IFigure tableFigure = ((VarTableEditPart) sourceVarNode.getParent()).getFigure();
                             if (expression == null) {
                                 expression = ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
-                                        + sourceNode.getVariable();
+                                        + sourceNode.getName();
                             } else {
                                 expression = expression + " "
                                         + ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
-                                        + sourceNode.getVariable();
+                                        + sourceNode.getName();
                             }
-                            parent.setExpression(expression);
+                            targetOutputNode.setExpression(expression);
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
                             conn.setSource(sourceNode);
-                            conn.setTarget(parent);
-                            parent.getIncomingConnections().add(conn);
+                            conn.setTarget(targetOutputNode);
+                            targetOutputNode.getIncomingConnections().add(conn);
                             sourceNode.getOutgoingConnections().add(conn);
                             if (xmlMapData != null) {
                                 xmlMapData.getConnections().add(conn);
@@ -230,15 +258,16 @@ public class CreateNodeAndConnectionCommand extends Command {
                         } else {
                             // add target node
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-                            targetNode.setName(sourceNode.getVariable());
+                            targetNode.setName(sourceNode.getName());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             if (NodeType.ATTRIBUT.equals(nodeType)) {
-                                targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE
-                                        + sourceNode.getName());
+                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                        + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
                             } else {
-                                targetNode.setXpath(parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + sourceNode.getName());
+                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                                        + sourceNode.getName());
                             }
-                            String variable = sourceNode.getVariable();
+                            String variable = sourceNode.getName();
                             targetNode.setNodeType(nodeType);
                             if (sourceNode.eContainer() instanceof VarTable) {
                                 VarTable container = (VarTable) sourceNode.eContainer();
@@ -246,7 +275,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                             }
                             targetNode.setExpression(variable);
 
-                            parent.getChildren().add(targetNode);
+                            targetOutputNode.getChildren().add(targetNode);
                             // add connection
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
                             conn.setSource(sourceNode);

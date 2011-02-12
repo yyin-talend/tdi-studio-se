@@ -12,10 +12,15 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.ToolbarLayout;
+import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
+import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -32,7 +37,7 @@ public class TreeNodeFigure extends ToolBarContainer {
 
     private TreeNode treeNode;
 
-    protected Figure treeNodeExpressionFigure;
+    protected Figure expressionContainer;
 
     protected Label columnExpressionFigure;
 
@@ -49,8 +54,28 @@ public class TreeNodeFigure extends ToolBarContainer {
     }
 
     private void createContent() {
+        boolean isLookup = false;
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+            isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+        }
+
+        if (isLookup) {
+            this.setLayoutManager(new EqualWidthLayout());
+        } else {
+            this.setLayoutManager(new ToolbarLayout());
+        }
+
         // column
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+            if (isLookup) {
+                columnExpressionFigure = new Label();
+                columnExpressionFigure.setText(treeNode.getExpression());
+                CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+                columnExpressionFigure.setBorder(compoundBorder);
+                this.add(columnExpressionFigure);
+            }
+
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
             nameLabel.setBorder(new RowBorder());
@@ -58,10 +83,24 @@ public class TreeNodeFigure extends ToolBarContainer {
         }
         // xml root
         else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof InputXmlTree) {
-            String status = treeNode.isLoop() ? String.valueOf(treeNode.isLoop()) : "";
+            ExpressionFigure expressionFigure = null;
+            if (isLookup) {
+                expressionContainer = new Figure();
+                expressionContainer.setLayoutManager(new ExpressionLayout());
+                this.add(expressionContainer);
+                expressionFigure = new ExpressionFigure();
+                expressionContainer.add(expressionFigure, 0);
+            }
+
             treeBranch = new XmlTreeRoot(new TreeBranchFigure(treeNode), XmlTreeBranch.STYLE_ROW_HANGING);
             treeBranch.setBorder(new RowBorder());
             this.add(treeBranch);
+
+            if (expressionFigure != null) {
+                expressionFigure.setTreeBranch(treeBranch);
+                expressionFigure.setTreeNodePart(treeNodePart);
+                treeBranch.setExpressionFigure(expressionFigure);
+            }
         }
     }
 
@@ -77,8 +116,8 @@ public class TreeNodeFigure extends ToolBarContainer {
         return treeBranch;
     }
 
-    public Figure getTreeNodeExpressionFigure() {
-        return this.treeNodeExpressionFigure;
+    public Figure getExpressionContainer() {
+        return this.expressionContainer;
     }
 
     public Label getColumnExpressionFigure() {

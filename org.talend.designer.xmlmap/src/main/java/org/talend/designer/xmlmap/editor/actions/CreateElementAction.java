@@ -80,7 +80,7 @@ public class CreateElementAction extends SelectionAction {
                 parent.getOutgoingConnections().clear();
             } else {
 
-                XmlMapUtil.detachConnectionsSouce((OutputTreeNode) parent, mapperManager.getCopyOfMapData(), false);
+                XmlMapUtil.detachConnectionsSouce(parent, mapperManager.getCopyOfMapData(), false);
                 ((OutputTreeNode) parent).getIncomingConnections().clear();
             }
 

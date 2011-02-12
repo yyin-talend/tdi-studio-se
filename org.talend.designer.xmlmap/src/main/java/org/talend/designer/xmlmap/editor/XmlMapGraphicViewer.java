@@ -17,12 +17,12 @@ import java.util.Collection;
 import org.eclipse.draw2d.ExclusionSearch;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
 
 /**
  * DOC XYuser class global comment. Detailled comment
  */
-public class XmlMapGraphicViewer extends ScrollingGraphicalViewer {
+public class XmlMapGraphicViewer extends GraphicalViewerImpl {
 
     public IFigure findFigureAt(int x, int y, Collection exclude, final Conditional condition) {
         class ConditionalTreeSearch extends ExclusionSearch {

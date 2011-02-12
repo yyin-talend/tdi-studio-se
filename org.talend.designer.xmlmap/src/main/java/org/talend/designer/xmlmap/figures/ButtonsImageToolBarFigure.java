@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.ImageFigure;
@@ -26,6 +29,7 @@ import org.talend.designer.xmlmap.image.ImageInfo;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC hywang class global comment. Detailled comment
@@ -93,6 +97,8 @@ public class ButtonsImageToolBarFigure extends Figure {
             public void mousePressed(MouseEvent me) {
                 add.setBackgroundColor(ColorConstants.buttonDarkest);
                 VarNode newNode = XmlmapFactory.eINSTANCE.createVarNode();
+                newNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                newNode.setName(findUniqueColumnName("Var"));
                 parentTable.getNodes().add(newNode);
                 parentTable.setMinimized(false);
                 // VarTableContainerFigure varTableContainerFigure = ((CenterVarFigure)
@@ -210,6 +216,35 @@ public class ButtonsImageToolBarFigure extends Figure {
 
             }
         });
+    }
+
+    private String findUniqueColumnName(String baseName) {
+        if (baseName == null) {
+            throw new IllegalArgumentException("Base name can't null");
+        }
+        String uniqueName = baseName + 1;
+
+        int counter = 1;
+        boolean exists = true;
+        while (exists) {
+            exists = !checkValidColumnName(uniqueName);
+            if (!exists) {
+                break;
+            }
+            uniqueName = baseName + counter++;
+        }
+        return uniqueName;
+    }
+
+    private boolean checkValidColumnName(String newName) {
+        for (VarNode entry : parentTable.getNodes()) {
+            if (entry.getName().equals(newName)) {
+                return false;
+            }
+        }
+        Pattern regex = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*$", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE);//$NON-NLS-1$
+        Matcher regexMatcher = regex.matcher(newName);
+        return regexMatcher.matches();
     }
 
     private void setToolTips() {

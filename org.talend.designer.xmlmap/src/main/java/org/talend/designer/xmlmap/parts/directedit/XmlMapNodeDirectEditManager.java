@@ -30,6 +30,8 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior
 import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.figures.IComboCell;
 import org.talend.designer.xmlmap.figures.IExpressionBuilderCell;
 import org.talend.designer.xmlmap.figures.ITextCell;
@@ -87,20 +89,17 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
     @Override
     protected void initCellEditor() {
         if (treeNodeModel != null) {
-            getCellEditor().setValue(treeNodeModel.getExpression());
+            String expression = treeNodeModel.getExpression() == null ? "" : treeNodeModel.getExpression();
+            getCellEditor().setValue(expression);
             Text text = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
             text.selectAll();
         } else if (varNodeModel != null) {
             Control control = getCellEditor().getControl();
             if (control instanceof CCombo) {
                 CCombo combo = (CCombo) control;
-                String type = varNodeModel.getType();
-                if (type == null) {
-                    type = "";
-                }
-                combo.setText(type);
+                combo.setText(getTypeDisplayValue(varNodeModel));
             } else if (control instanceof Text) {
-                String variable = varNodeModel.getVariable();
+                String variable = varNodeModel.getName();
                 if (variable == null) {
                     variable = "";
                 }
@@ -108,12 +107,33 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 Text text = (Text) ((TextCellEditor) getCellEditor()).getControl();
                 text.selectAll();
             } else {
-                getCellEditor().setValue(varNodeModel.getExpression());
+                String expression = varNodeModel.getExpression() == null ? "" : varNodeModel.getExpression();
+                getCellEditor().setValue(expression);
                 Text text = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
                 text.selectAll();
             }
             // getCellEditor().setValue(varNodeModel.getExpression());
         }
+    }
+
+    private String getTypeDisplayValue(VarNode varNode) {
+        JavaType javaType = JavaTypesManager.getJavaTypeFromId(varNode.getType());
+        Class primitiveClass = javaType.getPrimitiveClass();
+        Boolean nullable = varNode.isNullable();
+        String displayedValue = null;
+        if (primitiveClass != null && !nullable.equals(Boolean.TRUE)) {
+            displayedValue = primitiveClass.getSimpleName();
+        } else if (varNode.getType().equals(JavaTypesManager.DIRECTORY.getId())
+                || varNode.getType().equals(JavaTypesManager.FILE.getId())
+                || varNode.getType().equals(JavaTypesManager.VALUE_LIST.getId())) {
+            displayedValue = javaType.getLabel();
+        } else {
+            displayedValue = javaType.getNullableClass().getSimpleName();
+        }
+        if (displayedValue == null) {
+            displayedValue = JavaTypesManager.getDefaultJavaType().getLabel();
+        }
+        return displayedValue;
     }
 
     protected CellEditor createCellEditorOn(Composite composite) {
@@ -171,9 +191,10 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
                 return !((CCombo) control).getText().equals(((VarNode) model).getType());
             } else if (control instanceof Text) {
-                return !((Text) control).getText().equals(((VarNode) model).getVariable());
+                return !((Text) control).getText().equals(((VarNode) model).getName());
             }
         }
-        return false;
+        return super.isDirty();
+
     }
 }

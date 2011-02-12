@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.ConnectionLayer;
+import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
@@ -25,7 +27,8 @@ import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.eclipse.gef.LayerConstants;
+import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.color.ColorInfo;
 import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
@@ -43,51 +46,29 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
     @Override
     protected IFigure createFigure() {
-        // Figure mainFigure = new FreeformLayer();
-        // figure.setBackgroundColor(ColorConstants.red);
-        // figure.setLayoutManager(new FreeformLayout());
         Figure mainFigure = new Figure();
 
-        // mainFigure.setLayoutManager(new ToolbarLayout() {
-        //
-        // @Override
-        // public void layout(IFigure parent) {
-        // super.layout(parent);
-        // List children = parent.getChildren();
-        // int numChildren = children.size();
-        // Rectangle clientArea = transposer.t(parent.getClientArea());
-        // int clientx = clientArea.x;
-        // int clienty = clientArea.y;
-        // int clientWidth = clientArea.width;
-        // for (int i = 0; i < numChildren; i++) {
-        // IFigure child = (IFigure) children.get(i);
-        // Rectangle newBounds = new Rectangle(clientx, clienty, -1, clientArea.height);
-        // int devideWidth = (clientWidth - (numChildren - 1) * spacing) / numChildren;
-        // newBounds.width = devideWidth;
-        // child.setBounds(transposer.t(newBounds));
-        // clientx += newBounds.width + spacing;
-        // }
-        // }
-        // });
-
-        EqualWidthLayout manager = new EqualWidthLayout();
-        manager.setUseParentHeight(true);
-        mainFigure.setLayoutManager(manager);
+        // EqualWidthLayout manager = new EqualWidthLayout();
+        // manager.setUseParentHeight(true);
+        // mainFigure.setLayoutManager(manager);
+        mainFigure.setLayoutManager(new XmlMapDataLayout());
 
         // input
         ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         leftFigure = new RectangleFigure();
         leftFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
         ToolbarLayout subManager = new ToolbarLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
         leftFigure.setLayoutManager(subManager);
-        leftFigure.setBorder(new MarginBorder(5));
+        leftFigure.setBorder(new MarginBorder(20));
         scrollPane.getViewport().setContents(leftFigure);
         mainFigure.add(scrollPane);
 
         // var
         scrollPane = new ScrollPane();
+        // scrollPane.setVerticalScrollBarVisibility(ScrollPane.ALWAYS);
         centerFigure = new RectangleFigure();
         centerFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
         // GridLayout centerLayout = new GridLayout();
@@ -96,7 +77,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         subManager.setSpacing(20);
         subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
-        centerFigure.setBorder(new MarginBorder(5));
+        centerFigure.setBorder(new MarginBorder(5, 100, 5, 100));
 
         scrollPane.getViewport().setContents(centerFigure);
         mainFigure.add(scrollPane);
@@ -109,7 +90,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         subManager.setSpacing(20);
         subManager.setVertical(true);
         rightFigure.setLayoutManager(subManager);
-        rightFigure.setBorder(new MarginBorder(5));
+        rightFigure.setBorder(new MarginBorder(20));
         scrollPane.getViewport().setContents(rightFigure);
         mainFigure.add(scrollPane);
 
@@ -141,7 +122,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
             centerFigure.add(child);
         }
 
-        // getContentPane().add(child, index);
     }
 
     @Override
@@ -153,4 +133,9 @@ public class XmlMapDataEditPart extends BaseEditPart {
         return children;
     }
 
+    @Override
+    protected void refreshVisuals() {
+        ConnectionLayer connectionLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
+        connectionLayer.setConnectionRouter(new FanRouter());
+    }
 }

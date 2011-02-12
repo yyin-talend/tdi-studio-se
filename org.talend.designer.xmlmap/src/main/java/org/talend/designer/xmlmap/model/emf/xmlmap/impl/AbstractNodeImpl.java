@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
@@ -252,7 +253,7 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      */
     public EList<Connection> getOutgoingConnections() {
         if (outgoingConnections == null) {
-            outgoingConnections = new EObjectWithInverseResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS, XmlmapPackage.CONNECTION__SOURCE);
+            outgoingConnections = new EObjectResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS);
         }
         return outgoingConnections;
     }
@@ -264,42 +265,9 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      */
     public EList<Connection> getIncomingConnections() {
         if (incomingConnections == null) {
-            incomingConnections = new EObjectWithInverseResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS, XmlmapPackage.CONNECTION__TARGET);
+            incomingConnections = new EObjectResolvingEList<Connection>(Connection.class, this, XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS);
         }
         return incomingConnections;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-        switch (featureID) {
-            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
-                return ((InternalEList<InternalEObject>)(InternalEList<?>)getOutgoingConnections()).basicAdd(otherEnd, msgs);
-            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
-                return ((InternalEList<InternalEObject>)(InternalEList<?>)getIncomingConnections()).basicAdd(otherEnd, msgs);
-        }
-        return super.eInverseAdd(otherEnd, featureID, msgs);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-        switch (featureID) {
-            case XmlmapPackage.ABSTRACT_NODE__OUTGOING_CONNECTIONS:
-                return ((InternalEList<?>)getOutgoingConnections()).basicRemove(otherEnd, msgs);
-            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
-                return ((InternalEList<?>)getIncomingConnections()).basicRemove(otherEnd, msgs);
-        }
-        return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
     /**

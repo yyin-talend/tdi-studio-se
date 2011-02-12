@@ -138,7 +138,6 @@ public interface AbstractNode extends EObject {
     /**
      * Returns the value of the '<em><b>Outgoing Connections</b></em>' reference list.
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
-     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource <em>Source</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Outgoing Connections</em>' reference list isn't clear,
@@ -147,8 +146,7 @@ public interface AbstractNode extends EObject {
      * <!-- end-user-doc -->
      * @return the value of the '<em>Outgoing Connections</em>' reference list.
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_OutgoingConnections()
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getSource
-     * @model opposite="source"
+     * @model
      * @generated
      */
     EList<Connection> getOutgoingConnections();
@@ -156,7 +154,6 @@ public interface AbstractNode extends EObject {
     /**
      * Returns the value of the '<em><b>Incoming Connections</b></em>' reference list.
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection}.
-     * It is bidirectional and its opposite is '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget <em>Target</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Incoming Connections</em>' reference list isn't clear,
@@ -165,8 +162,7 @@ public interface AbstractNode extends EObject {
      * <!-- end-user-doc -->
      * @return the value of the '<em>Incoming Connections</em>' reference list.
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_IncomingConnections()
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection#getTarget
-     * @model opposite="target"
+     * @model
      * @generated
      */
     EList<Connection> getIncomingConnections();

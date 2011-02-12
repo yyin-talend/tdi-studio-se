@@ -92,7 +92,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
                         XmlMapUtil.detachConnectionsTarget(treeNode, mapperManager.getCopyOfMapData());
                     } else {
                         docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
-                        XmlMapUtil.detachConnectionsSouce((OutputTreeNode) treeNode, mapperManager.getCopyOfMapData());
+                        XmlMapUtil.detachConnectionsSouce(treeNode, mapperManager.getCopyOfMapData());
                     }
                     // if (treeNode.isLoop() && treeNode instanceof OutputTreeNode) {
                     // OutputTreeNode selectedLoopOuputNode = (OutputTreeNode) treeNode;
