@@ -6,29 +6,32 @@
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
-	" 
+		" 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-%>
-<%
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if (conns!=null && !conns.isEmpty()){
-	for (IConnection conn : conns){
-if( conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
+List< ? extends IConnection> conns = node.getIncomingConnections();
 
-  String serieLabel<%=cid%> = <%=conn.getName() %>.series;
-  org.jfree.data.xy.XYSeries serie<%=cid%>;
-  if (series<%=cid%>.containsKey(serieLabel<%=cid%>)){
-    serie<%=cid%>=series<%=cid%>.get(serieLabel<%=cid%>);
-  } else {
-    serie<%=cid%>= new org.jfree.data.xy.XYSeries(serieLabel<%=cid%>, true, false);
-    series<%=cid%>.put(serieLabel<%=cid%>, serie<%=cid%>);
-  }
+if (conns != null && !conns.isEmpty()) {
 
-  serie<%=cid%>.add(<%=conn.getName() %>.x,<%=conn.getName() %>.y);
-<%}
+	for (IConnection conn : conns) {
+
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		%>
+			String serieLabel<%=cid%> = <%=conn.getName()%>.series;
+			org.jfree.data.xy.XYSeries serie<%=cid%>;
+
+			if (series<%=cid%>.containsKey(serieLabel<%=cid%>)) {
+				serie<%=cid%> = series<%=cid%>.get(serieLabel<%=cid%>);
+			} else {
+				serie<%=cid%> = new org.jfree.data.xy.XYSeries(serieLabel<%=cid%>, true, false);
+				series<%=cid%>.put(serieLabel<%=cid%>, serie<%=cid%>);
+			}
+			serie<%=cid%>.add(<%=conn.getName()%>.x, <%=conn.getName()%>.y);
+		<%
+		}
+	}
 }
-}%>
+%>
