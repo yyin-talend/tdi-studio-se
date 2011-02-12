@@ -66,25 +66,25 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
 
         // see the bug 7073,qli
         if (isDocumentationPluginLoaded) {
-            BooleanFieldEditor booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
-                    .getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
+            BooleanFieldEditor booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
+                    Messages.getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
             addField(booleanFieldEditor);
 
-            FileFieldEditor documentationLogo = new FileFieldEditor(ITalendCorePrefConstants.DOC_USER_LOGO, Messages
-                    .getString("DocumentationPreferencePage.userDocLogo"), getFieldEditorParent());
+            FileFieldEditor documentationLogo = new FileFieldEditor(ITalendCorePrefConstants.DOC_USER_LOGO,
+                    Messages.getString("DocumentationPreferencePage.userDocLogo"), getFieldEditorParent());
             addField(documentationLogo);
 
-            StringFieldEditor companyName = new StringFieldEditor(ITalendCorePrefConstants.DOC_COMPANY_NAME, Messages
-                    .getString("DocumentationPreferencePage.companyName"), getFieldEditorParent());
+            StringFieldEditor companyName = new StringFieldEditor(ITalendCorePrefConstants.DOC_COMPANY_NAME,
+                    Messages.getString("DocumentationPreferencePage.companyName"), getFieldEditorParent());
             addField(companyName);
         }
 
-        useCss = new BooleanFieldEditor(ITalendCorePrefConstants.USE_CSS_TEMPLATE, Messages
-                .getString("DocumentationPreferencePage.use_css_template"), getFieldEditorParent()); //$NON-NLS-1$
+        useCss = new BooleanFieldEditor(ITalendCorePrefConstants.USE_CSS_TEMPLATE,
+                Messages.getString("DocumentationPreferencePage.use_css_template"), getFieldEditorParent()); //$NON-NLS-1$
         addField(useCss);
 
-        documentCssFile = new FileFieldEditor(ITalendCorePrefConstants.CSS_FILE_PATH, Messages
-                .getString("DocumentationPreferencePage.css_file"), getFieldEditorParent()); //$NON-NLS-1$
+        documentCssFile = new FileFieldEditor(ITalendCorePrefConstants.CSS_FILE_PATH,
+                Messages.getString("DocumentationPreferencePage.css_file"), getFieldEditorParent()); //$NON-NLS-1$
         documentCssFile.setFileExtensions(new String[] { "*.css" }); //$NON-NLS-1$
         addField(documentCssFile);
         activateFields(getPreferenceStore().getBoolean(ITalendCorePrefConstants.USE_CSS_TEMPLATE));
@@ -140,9 +140,6 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
 
         public void propertyChange(PropertyChangeEvent event) {
             activateFields(String.valueOf(event.getNewValue()).equals("true")); //$NON-NLS-1$
-            if (!String.valueOf(event.getNewValue()).equals("true")) { //$NON-NLS-1$
-                documentCssFile.setStringValue(""); //$NON-NLS-1$
-            }
         }
     }
 

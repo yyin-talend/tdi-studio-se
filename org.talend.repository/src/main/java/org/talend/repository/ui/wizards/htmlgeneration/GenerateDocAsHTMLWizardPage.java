@@ -52,9 +52,9 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.generation.HTMLDocGenerator;
 import org.talend.repository.documentation.generation.JobHTMLScriptsManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -189,7 +189,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         composite1.setLayout(layout);
         composite1.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         String value = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.CSS_FILE_PATH);
-        if (value != null && !value.equals("")) { //$NON-NLS-1$
+        if (isCheck && value != null && !value.equals("")) { //$NON-NLS-1$
             cssFilePath = value;
         }
         String[] cssExtensions = { "*.css", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
@@ -203,8 +203,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
             public void widgetSelected(SelectionEvent e) {
                 cssField.setEditable(button.getSelection());
-                if (!button.getSelection()) {
-                    cssField.setText(""); //$NON-NLS-1$
+                if (button.getSelection()) {
+                    cssFilePath = cssField.getText();
                 }
                 updatePageCompletion();
             }
