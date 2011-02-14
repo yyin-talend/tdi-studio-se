@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -36,7 +36,8 @@ public enum EInternalTemplate {
     DEFAULT_TEMPLATE("default_template", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_HEADER("camel_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_FOOTER("camel_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-
+    CAMEL_RUNIF("camel_run_if", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    
     HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String templateName;

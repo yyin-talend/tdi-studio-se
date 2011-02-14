@@ -211,14 +211,26 @@ public class CodeGenerator implements ICodeGenerator {
                 if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
                     boolean displayMethodSize = isMethodSizeNeeded();
+                    NodesSubTree lastSubtree = null;
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
-                                ETypeGen.CAMEL));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, subTree));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
+                        lastSubtree = subTree;
+                        if(subTree.getRootNode().isStart()) {
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
+                        }
+                        if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
+                            if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.RUN_IF)) {
+                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
+                                componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                            ETypeGen.CAMEL));
+                            }
+                        } else {
+                            componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                        ETypeGen.CAMEL));
+                        }
                     }
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, lastSubtree));
                 }
 
             } else {
