@@ -531,7 +531,6 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
         for (ITableEntry tableEntry : refreshedTableEntriesList) {
             uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
-            uiManager.refreshBackground(false, false);
         }
 
     }

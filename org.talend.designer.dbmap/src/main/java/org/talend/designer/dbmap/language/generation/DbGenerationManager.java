@@ -254,7 +254,8 @@ public abstract class DbGenerationManager {
                 IMetadataTable metadataTable = connection.getMetadataTable();
                 if (metadataTable != null) {
                     columns.addAll(metadataTable.getListColumns());
-                    outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, metadataTable);
+                    // call this function seems no use now but only problems
+                    // outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, metadataTable);
                 }
             }
             sb.append("\""); //$NON-NLS-1$
