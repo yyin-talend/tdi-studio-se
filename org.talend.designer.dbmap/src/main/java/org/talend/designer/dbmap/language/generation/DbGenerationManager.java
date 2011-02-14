@@ -15,8 +15,10 @@ package org.talend.designer.dbmap.language.generation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -268,13 +270,14 @@ public abstract class DbGenerationManager {
                 for (int i = 0; i < lstSizeOutTableEntries; i++) {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
-                    for (IMetadataColumn column : columns) {
-                        if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
-                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
-                                    "." + column.getOriginalDbColumnName()); //$NON-NLS-1$
-                            break;
-                        }
-                    }
+                    expression = initExpression(component, dbMapEntry);
+                    // for (IMetadataColumn column : columns) {
+                    // if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
+                    //                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
+                    //                                    "." + column.getOriginalDbColumnName()); //$NON-NLS-1$
+                    // break;
+                    // }
+                    // }
                     if (i > 0) {
                         sb.append(DbMapSqlConstants.COMMA);
                         sb.append(DbMapSqlConstants.SPACE);
@@ -657,6 +660,44 @@ public abstract class DbGenerationManager {
             }
             sb.append(inputTable.getName());
         }
+    }
+
+    private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
+        String expression = dbMapEntry.getExpression();
+        if (expression != null) {
+            MapExpressionParser mapParser = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+            List<Map<String, String>> itemNameList = mapParser.parseInTableEntryLocations(expression);
+            for (Map<String, String> itemNamemap : itemNameList) {
+                Set<Entry<String, String>> set = itemNamemap.entrySet();
+                Iterator<Entry<String, String>> ite = set.iterator();
+                while (ite.hasNext()) {
+                    Entry<String, String> entry = ite.next();
+                    String columnValue = entry.getKey();
+                    String tableValue = entry.getValue();
+
+                    List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                    if (inputConnections == null) {
+                        return expression;
+                    }
+                    for (IConnection iconn : inputConnections) {
+                        IMetadataTable metadataTable = iconn.getMetadataTable();
+                        String tName = iconn.getName();
+                        if (tableValue.equals(tName) && metadataTable != null) {
+                            List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+                            for (IMetadataColumn co : lColumn) {
+                                if (columnValue.equals(co.getLabel())) {
+                                    expression = expression = expression.replaceFirst("." + co.getLabel(), //$NON-NLS-1$
+                                            "." + co.getOriginalDbColumnName()); //$NON-NLS-1$
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+        return expression;
     }
 
 }
