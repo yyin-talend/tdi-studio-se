@@ -394,8 +394,8 @@ public class ImportProjectsUtilities {
      */
     private static List<File> getXMLFilePath() {
         List<File> xmlListFile = new ArrayList<File>();
-        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl",
-                "org.talend.datacleansing.core.ui" };
+        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl", //$NON-NLS-1$
+                "org.talend.datacleansing.core.ui" }; //$NON-NLS-1$
         for (int i = 0; i < pluginIDs.length; i++) {
             Bundle bundle = Platform.getBundle(pluginIDs[i]);
             if (bundle != null) {
@@ -412,11 +412,11 @@ public class ImportProjectsUtilities {
                     String files[] = xmlFilePath.list(new FilenameFilter() {
 
                         public boolean accept(File arg0, String arg1) {
-                            return arg1.endsWith(".xml");
+                            return arg1.endsWith(".xml"); //$NON-NLS-1$
                         }
                     });
                     for (String file : files) {
-                        File xml = new File(url.getPath() + "/" + file);
+                        File xml = new File(url.getPath() + "/" + file); //$NON-NLS-1$
                         xmlListFile.add(xml);
                     }
                 }

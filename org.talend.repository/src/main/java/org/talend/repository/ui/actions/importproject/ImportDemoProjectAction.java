@@ -109,10 +109,10 @@ public final class ImportDemoProjectAction extends Action {
                         String demoFilePath = demoProjectBean.getDemoProjectFilePath();
                         EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
                         String pluginID = ResourcesPlugin.PLUGIN_ID;
-                        if (techName.equals("TALENDDEMOSPERL")) {
-                            pluginID = "org.talend.resources.perl";
-                        } else if (techName.equals("TDQEEDEMOJAVA")) {
-                            pluginID = "org.talend.datacleansing.core.ui";
+                        if (techName.equals("TALENDDEMOSPERL")) { //$NON-NLS-1$
+                            pluginID = "org.talend.resources.perl"; //$NON-NLS-1$
+                        } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
+                            pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
                         }
                         Bundle bundle = Platform.getBundle(pluginID);
 
