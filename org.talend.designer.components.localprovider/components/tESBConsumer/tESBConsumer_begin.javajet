@@ -21,15 +21,8 @@
 
 int nb_line_<%=cid%> = 0;
 
-javax.xml.namespace.QName esbServiceName_<%=cid%> =
-//		javax.xml.namespace.QName.valueOf(<%= ElementParameterParser.getValue(node, "__ESB_SERVICE_QNAME__")%>);
-		new javax.xml.namespace.QName("dummy");
-//System.out.println("service name: " + esbServiceName_<%=cid%>);
-
-javax.xml.namespace.QName esbPortName_<%=cid%> =
-//		javax.xml.namespace.QName.valueOf(<%= ElementParameterParser.getValue(node, "__ESB_PORT_QNAME__")%>);
-		new javax.xml.namespace.QName("dummy");
-//System.out.println("port name: " + esbPortName_<%=cid%>);
+javax.xml.namespace.QName esbServiceName_<%=cid%> =	new javax.xml.namespace.QName("<%=cid%>");
+javax.xml.namespace.QName esbPortName_<%=cid%> = new javax.xml.namespace.QName("<%=cid%>");
 
 String esbEndpoint_<%=cid%> = <%= ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>;
 System.out.println("endpoint: " + esbEndpoint_<%=cid%>);

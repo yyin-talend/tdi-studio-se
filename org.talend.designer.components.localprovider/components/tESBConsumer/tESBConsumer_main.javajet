@@ -19,7 +19,7 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
 %>
-	String esb_service_unput_<%=cid%> = null;
+	String esb_service_input_<%=cid%> = null;
 	String esb_service_output_<%=cid%> = null;
 	String esb_service_fault_<%=cid%> = null;
 <%
@@ -27,11 +27,11 @@
 	if(connsIn != null && connsIn.size() > 0) {
 		IConnection inMainCon = connsIn.get(0);
 %>
-		esb_service_unput_<%=cid%> = <%=inMainCon.getName()%>.soapBody;
+		esb_service_input_<%=cid%> = <%=inMainCon.getName()%>.soapBody;
 <%
 	}
 %>
-	if (null != esbService_<%=cid%> && null != esb_service_unput_<%=cid%>) {
+	if (null != esbService_<%=cid%> && null != esb_service_input_<%=cid%>) {
 	
 		try {
 
@@ -40,7 +40,7 @@
 							javax.xml.transform.Source.class, javax.xml.ws.Service.Mode.PAYLOAD);
 
 			javax.xml.transform.Source input_<%=cid%> = new javax.xml.transform.stream.StreamSource(
-					new java.io.ByteArrayInputStream(esb_service_unput_<%=cid%>.getBytes())
+					new java.io.ByteArrayInputStream(esb_service_input_<%=cid%>.getBytes())
 				);
 	
 			javax.xml.transform.Source output_<%=cid%> = dispatch_<%=cid%>.invoke(input_<%=cid%>);
@@ -76,9 +76,6 @@
 				<%=conn.getName()%>.soapBody = esb_service_output_<%=cid%>;
 			} else if (null != esb_service_fault_<%=cid%>) {
 				<%=conn.getName()%>.soapFault = esb_service_fault_<%=cid%>;
-//			} else {
-//				<%=conn.getName()%>.soapBody = esb_service_unput_<%=cid%>;
-//				<%=conn.getName()%>.soapFault = null;
 			}
 <%
 		}
