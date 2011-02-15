@@ -394,7 +394,8 @@ public class ImportProjectsUtilities {
      */
     private static List<File> getXMLFilePath() {
         List<File> xmlListFile = new ArrayList<File>();
-        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl" };
+        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl",
+                "org.talend.datacleansing.core.ui" };
         for (int i = 0; i < pluginIDs.length; i++) {
             Bundle bundle = Platform.getBundle(pluginIDs[i]);
             if (bundle != null) {

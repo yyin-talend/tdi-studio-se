@@ -111,6 +111,8 @@ public final class ImportDemoProjectAction extends Action {
                         String pluginID = ResourcesPlugin.PLUGIN_ID;
                         if (techName.equals("TALENDDEMOSPERL")) {
                             pluginID = "org.talend.resources.perl";
+                        } else if (techName.equals("TDQEEDEMOJAVA")) {
+                            pluginID = "org.talend.datacleansing.core.ui";
                         }
                         Bundle bundle = Platform.getBundle(pluginID);
 
