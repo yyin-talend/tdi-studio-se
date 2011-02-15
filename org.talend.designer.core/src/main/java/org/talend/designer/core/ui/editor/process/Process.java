@@ -3315,8 +3315,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 ExceptionHandler.process(e);
             }
         } else {
-            ProcessItem item = (ProcessItem) this.getProperty().getItem();
-            ProcessType process = item.getProcess();
+            ProcessType process = this.getProcessType();
             process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
         }
 
