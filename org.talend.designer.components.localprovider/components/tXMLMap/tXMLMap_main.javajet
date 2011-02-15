@@ -125,7 +125,7 @@ String xPathLoop_<%=cid %> = "<%=loopPath %>";
                 		String expression = varNode.getExpression();
                 		String resultExpression = matchXmlTreeExpr.generateExprCode(expression);
 						if(resultExpression!=null && !("").equals(resultExpression)){
-%>	<%=varsTableName %>.<%=varNode.getVariable() %> = <%=resultExpression %>;
+%>	<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
 <%
 						}
             		}

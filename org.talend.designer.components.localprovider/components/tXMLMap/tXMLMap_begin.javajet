@@ -338,7 +338,7 @@ class TreeNode_API_<%=cid %> {
 <%
             for(VarNode varNode : var.getNodes()){
                 String javaType = varNode.getType();
-%>	<%= JavaTypesManager.getTypeToGenerate(javaType, varNode.isNullable()) %> <%=varNode.getVariable() %>;
+%>	<%= JavaTypesManager.getTypeToGenerate(javaType, varNode.isNullable()) %> <%=varNode.getName() %>;
 <%
             }
 %>
