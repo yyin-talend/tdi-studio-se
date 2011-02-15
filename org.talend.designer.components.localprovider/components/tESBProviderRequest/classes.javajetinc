@@ -1,0 +1,349 @@
+/**
+ * queued message exchange
+ */
+class QueuedExchangeContextImpl<T> {
+
+	/**
+	 * Exchange timeout in seconds
+	 */
+	private static final long EXCHANGE_TIMEOUT = 50;
+
+	private final java.util.concurrent.Exchanger<Exception> exceptionExchange =
+		new java.util.concurrent.Exchanger<Exception>();
+	private final java.util.concurrent.CountDownLatch latch =
+		new java.util.concurrent.CountDownLatch(1);
+
+	private final T input;
+
+	private T output;
+	private Throwable fault;
+
+	public QueuedExchangeContextImpl(T inMsg) {
+		this.input = inMsg;
+	}
+
+	/**
+	 * Don't forget to call this method when you are done
+	 * with processing of the {@link QueuedExchangeContext}
+	 */
+	public void release() throws Exception {
+		latch.countDown();
+		Exception exception;
+		try {
+			exception = exceptionExchange.exchange(null, EXCHANGE_TIMEOUT,
+					java.util.concurrent.TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new Exception(e);
+		} catch (java.util.concurrent.TimeoutException e) {
+			throw new Exception(e);
+		}
+		if (exception != null) {
+			throw exception;
+		}
+	}
+
+	/**
+	 * This operation have to be called on the Web Service thread to send response if required
+	 * 
+	 * @throws InterruptedException
+	 */
+	public void completeQueuedProcessing() throws InterruptedException {
+		exceptionExchange.exchange(null);
+	}
+
+	/**
+	 * @throws InterruptedException
+	 */
+	void waitForRelease(long timeout, java.util.concurrent.TimeUnit unit)
+			throws InterruptedException {
+		latch.await(timeout, unit);
+	}
+
+	public T getInputMessage() {
+		System.out.println(System.currentTimeMillis() + " -> getInputMessage");
+		T request = input;
+		System.out.println("Recieved message");
+		System.out.println(System.currentTimeMillis() + " <- getInputMessage: ");
+		return request;
+	}
+
+	public void serveOutputMessage(T response) {
+		System.out.println(System.currentTimeMillis() + " -> serveOutputMessage");
+		this.output = response;
+		System.out.println(System.currentTimeMillis() + " <- serveOutputMessage");
+	}
+
+	public void serveOutputFault(Throwable fault) {
+		System.out.println(System.currentTimeMillis() + " -> serveOutputFault");
+		this.fault = fault;
+		System.out.println(System.currentTimeMillis() + " <- serveOutputFault");
+	}
+
+	public boolean isFault() {
+		return (fault != null);
+	}
+
+	public T getResponse() {
+		return output;
+	}
+
+	public Throwable getFault() {
+		return fault;
+	}
+
+}
+
+
+/**
+ * message exchange controller 
+ */
+class QueuedMessageHandlerImpl<T> {
+	private final int MAX_QUEUE_SIZE = 1000;
+
+	private final int WAIT_TIMEOUT_SECONDS = 120;
+
+	private final java.util.concurrent.BlockingQueue<QueuedExchangeContextImpl<?>> queue =
+		new java.util.concurrent.LinkedBlockingQueue<QueuedExchangeContextImpl<?>>(MAX_QUEUE_SIZE);
+
+	/**
+	 * This method add a newly created {@link QueuedExchangeContextImpl}
+	 * into the internal blocking queue where consumer thread is waiting for it.
+	 * Then it waits until the {@link QueuedExchangeContextImpl}
+	 * will be completed for request-response operations
+	 */
+	public QueuedExchangeContextImpl<T> invoke(T request) {
+		QueuedExchangeContextImpl<T> context =
+			new QueuedExchangeContextImpl<T>(request);
+		boolean inserted = queue.offer(context);
+		if (!inserted) {
+			try {
+				context.release();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// throw new Exception("Can't queue request, queue size of "
+			//		+ MAX_QUEUE_SIZE + " is exceeded");
+			context.serveOutputFault(new Exception("job pool overflow exceed"));
+		} else {
+			try {
+				context.waitForRelease(WAIT_TIMEOUT_SECONDS,
+						java.util.concurrent.TimeUnit.SECONDS);
+			} catch (InterruptedException ie) {
+				// throw new Exception(e);
+				context.serveOutputFault(
+						new Exception("job execution timeout", ie));
+			}
+		}
+		return context;
+	}
+
+	/**
+	 * Blocking method to obtain the next message from the queue
+	 *
+	 * @return
+	 * @throws InterruptedException
+	 */
+	@SuppressWarnings("unchecked")
+	public QueuedExchangeContextImpl<T> next() throws InterruptedException {
+		return (QueuedExchangeContextImpl<T>) queue.take();
+	}
+
+	public QueuedExchangeContextImpl<T> fetchNext() throws Exception {
+		return next();
+	}
+}
+
+/**
+ * web service provider implementation
+ */
+@javax.xml.ws.WebServiceProvider()
+@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
+@javax.jws.WebService(name = "TalendJobAsWebService",
+		targetNamespace = "http://talend.org/esb/service/job")
+@javax.jws.soap.SOAPBinding(parameterStyle = javax.jws.soap.SOAPBinding.ParameterStyle.BARE)
+class ESBProvider_<%=cid%> implements javax.xml.ws.Provider<javax.xml.soap.SOAPMessage> {
+
+	private javax.xml.parsers.DocumentBuilderFactory dbf = getDocumentBuilderFactory();
+
+	private QueuedMessageHandlerImpl<String> messageHandler;
+
+	public ESBProvider_<%=cid%>(QueuedMessageHandlerImpl<String> messageHandler) {
+		this.messageHandler = messageHandler;
+	}
+
+	@javax.jws.WebMethod(operationName = "invoke",
+			action = "http://talend.org/esb/service/job/invoke")
+	@javax.jws.WebResult(
+			name = "jobOutput",
+			targetNamespace = "http://talend.org/esb/service/job",
+			// targetNamespace = "",
+			partName = "response"
+		)
+	public javax.xml.soap.SOAPMessage invoke(
+			@javax.jws.WebParam(
+					name = "jobInput",
+					targetNamespace = "http://talend.org/esb/service/job",
+					// targetNamespace = "",
+					partName = "request"
+				) javax.xml.soap.SOAPMessage request) {
+
+		System.out.println(System.currentTimeMillis() + " -> handleMessage");
+
+		javax.xml.soap.SOAPMessage response;
+		try {
+			System.out.println(System.currentTimeMillis() + " -> 1");
+			org.w3c.dom.Document payload =
+				request.getSOAPBody().extractContentAsDocument();
+
+			javax.xml.transform.Transformer transformer =
+				javax.xml.transform.TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(
+					javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.setOutputProperty(
+					javax.xml.transform.OutputKeys.INDENT, "yes");
+			System.out.println(System.currentTimeMillis() + " -> 2");
+
+			java.io.StringWriter sw = new java.io.StringWriter();
+			transformer.transform(new javax.xml.transform.dom.DOMSource(payload),
+					new javax.xml.transform.stream.StreamResult(sw));
+			System.out.println(System.currentTimeMillis() + " -> 3");
+			String inputMessage = sw.toString();
+			// System.out.println("request:\n" + inputMessage + "\n");
+
+			QueuedExchangeContextImpl<String> messageExchange =
+				messageHandler.invoke(inputMessage);
+
+			try {
+				response = newMessage();
+				if (messageExchange.isFault()) {
+					Throwable jobError = messageExchange.getFault();
+					String faultTitle = "";
+					String faultDetails = "";
+					if (null == jobError.getCause()) {
+						faultTitle = "talend job error";
+						faultDetails = jobError.getMessage();
+						if (faultDetails == null) {
+							faultDetails = jobError.toString();
+						}
+					} else {
+						faultTitle = jobError.getMessage();
+						if (faultTitle == null) {
+							faultTitle = "talend job execution error";
+						}
+						Throwable jobErrorCause = jobError.getCause();
+						faultDetails = jobErrorCause.getMessage();
+						if (faultDetails == null) {
+							faultDetails = jobErrorCause.toString();
+						}
+					}
+
+					javax.xml.soap.SOAPFault fault = response.getSOAPBody().addFault();
+					fault.setFaultCode(
+							response.getSOAPPart().getEnvelope().createName(
+									// "Server", null, SOAPConstants.URI_NS_SOAP_ENVELOPE));
+									"businessFault", null,
+									ESBProvider_<%=cid%>.class.getAnnotation(
+											javax.jws.WebService.class).targetNamespace()));
+					fault.setFaultString(faultTitle);
+					setContent(fault.addDetail(), faultDetails);
+				} else {
+					String outputMessage = messageExchange.getResponse();
+					// System.out.println("response:\n" + outputMessage + "\n");
+					setContent(response.getSOAPBody(), outputMessage);
+				}
+				response.saveChanges();
+			} finally {
+				messageExchange.completeQueuedProcessing();
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		}
+
+		System.out.println(System.currentTimeMillis() + " <- handleMessage");
+		return response;
+	}
+
+	private javax.xml.soap.SOAPMessage newMessage() throws javax.xml.soap.SOAPException {
+		javax.xml.soap.MessageFactory factory = javax.xml.soap.MessageFactory.newInstance();
+		javax.xml.soap.SOAPMessage soapMessage = factory.createMessage();
+		soapMessage.setProperty(javax.xml.soap.SOAPMessage.CHARACTER_SET_ENCODING, "UTF-8");
+		soapMessage.setProperty(javax.xml.soap.SOAPMessage.WRITE_XML_DECLARATION, "false");
+		return soapMessage;
+	}
+
+	private void setContent(javax.xml.soap.SOAPElement soapElement, String content)
+			throws Exception {
+		org.w3c.dom.Document doc = null;
+		javax.xml.parsers.DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+		try {
+			doc = docBuilder.parse(new org.xml.sax.InputSource(
+					new java.io.StringReader(content)));
+		} catch (Exception e) {
+			System.out.println("talend job output is not XML - will be passed as text");
+		}
+
+		if (null == doc) {
+			soapElement.addTextNode(content);
+		} else {
+			soapElement.appendChild(
+					soapElement.getOwnerDocument().importNode(
+							doc.getDocumentElement(), true));
+		}
+	}
+
+	public javax.xml.parsers.DocumentBuilderFactory getDocumentBuilderFactory() {
+		ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(ESBProvider_<%=cid%>.class.getClassLoader());
+			javax.xml.parsers.DocumentBuilderFactory myBuilderFactory =
+				javax.xml.parsers.DocumentBuilderFactory.newInstance();
+			myBuilderFactory.setValidating(false);
+			myBuilderFactory.setNamespaceAware(true);
+			myBuilderFactory.setIgnoringElementContentWhitespace(true);
+			return myBuilderFactory;
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldClassLoader);
+		}
+	}
+}
+
+class HandlerThread_<%=cid%> extends Thread{
+	private final String TNS =
+		ESBProvider_<%=cid%>.class.getAnnotation(javax.jws.WebService.class).targetNamespace();
+	
+	private final String serviceName;
+
+	private javax.xml.ws.Endpoint endpoint;
+	QueuedMessageHandlerImpl<String> handler;
+	
+	public HandlerThread_<%=cid%>(QueuedMessageHandlerImpl<String> handler, String serviceName) {
+		this.handler = handler;	
+		this.serviceName = serviceName;
+	}
+
+	public void run() {
+		ESBProvider_<%=cid%> esbProvider = new ESBProvider_<%=cid%>(handler);
+
+		endpoint = javax.xml.ws.Endpoint.create(esbProvider);
+		@SuppressWarnings("serial")
+		java.util.Map<String, Object> map = new java.util.HashMap<String, Object>() {{
+				put(javax.xml.ws.Endpoint.WSDL_SERVICE,
+						new javax.xml.namespace.QName(TNS, serviceName));
+				put(javax.xml.ws.Endpoint.WSDL_PORT,
+						new javax.xml.namespace.QName(TNS, serviceName + "SoapBinding"));
+			}};
+		endpoint.setProperties(map);
+		endpoint.publish(endpointUrl);
+
+		System.out.println("web service [endpoint: " + endpointUrl + "] published");
+	}
+
+	public void stopEndpoint() {
+		if (null != endpoint) {
+			endpoint.stop();
+			System.out.println("web service [endpoint: " + endpointUrl + "] unpublished");
+		}
+	}
+}

@@ -31,6 +31,15 @@
 				<COLUMN NAME="payload" TYPE="id_String" LENGTH="4096" />
 			</TABLE>
 		</PARAMETER>
+		
+		<!-- web service fault title -->
+		<PARAMETER FIELD="TEXT"
+				NAME="ESB_FAULT_TITLE"
+				GROUP="ESB" NUM_ROW="100"
+				REQUIRED="true" SHOW="true">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>
+		
 	</PARAMETERS>
 	<CODEGENERATION>
 	</CODEGENERATION>

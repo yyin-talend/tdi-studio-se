@@ -31,13 +31,8 @@ if (null != metadatas && 0 < metadatas.size()) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 %>
 	String esbProviderResponseXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
-
 	System.out.println("--- [tESBProviderResponse] request put to response: " + esbProviderResponseXml_<%=cid%>);
-
-	java.util.HashMap<String, String> esbResponseMapResponse_<%=cid%> =
-		(java.util.HashMap<String, String>) globalMap.get("esbResponseMap");
-
-	esbResponseMapResponse_<%=cid%>.put("response", esbProviderResponseXml_<%=cid%>);
+	((QueuedExchangeContextImpl<String>)globalMap.get(uuid)).serveOutputMessage(esbProviderResponseXml_<%=cid%>);
 <%
 					break; // TODO: ??? mutli-columns handling
 				}

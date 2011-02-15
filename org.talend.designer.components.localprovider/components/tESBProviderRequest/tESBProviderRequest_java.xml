@@ -55,9 +55,9 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="org.talend.esb.tooling.component"
+			<!-- IMPORT NAME="org.talend.esb.tooling.component"
 					MODULE="org.talend.esb.tooling.component.jar"
-					REQUIRED="true"/>
+					REQUIRED="true"/ -->
 
 			<IMPORT NAME="commons-logging-1.1.1"
 					MODULE="commons-logging-1.1.1.jar"

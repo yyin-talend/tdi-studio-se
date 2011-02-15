@@ -13,23 +13,20 @@
 
 System.out.println("--- [tESBProviderRequest] Initializing the component");
 
-Class<?> clazz_<%=cid%> = this.getClass();
-
 //*** ESB context initialization
-routines.esb.ESBContext esbContext_<%=cid%> =
-		new routines.esb.ESBContext(
-			<%= ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>
-		);
-//System.out.println("esb context: " + esbContext_<%=cid%>);
+	final String endpointUrl = <%= ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>;
+	System.out.println("endpoint url: " + endpointUrl);
 //*** ESB context initialization finish
 
-//*** external processor(s) initialization
-routines.esb.Controller.initialize(clazz_<%=cid%>, "<%=cid%>", esbContext_<%=cid%>);
-//*** external processor(s) initialization finish
+<%@ include file="classes.javajetinc" %> 
 
-routines.esb.ESBIntegration.ExternalHandler<String> esbHandler_<%=cid%>
-		= (routines.esb.ESBIntegration.ExternalHandler<String>) routines
-			.esb.ESBIntegration.getExternalHandler(clazz_<%=cid%>, "<%=cid%>");
+//*** external processor(s) initialization
+	final QueuedMessageHandlerImpl<String> handler = new QueuedMessageHandlerImpl<String>();
+	HandlerThread_<%=cid%> handlerThread_<%=cid%> = new HandlerThread_<%=cid%>(handler, this.getClass().getSimpleName());
+	handlerThread_<%=cid%>.start();
+
+	globalMap.put("esbHandler", handler);
+//*** external processor(s) initialization finish
 
 
 String result_<%=cid%> = null;
@@ -37,11 +34,12 @@ String result_<%=cid%> = null;
 
 int counter_<%=cid%> = 0;
 
-/*java.util.Map<String, String> esbResponseMap = new java.util.HashMap<String, String>(2);*/
-globalMap.put("esbResponseMap", new java.util.HashMap<String, String>(2)); //TODO
+//globalMap.put("esbResponseMap", new java.util.HashMap<String, Object>(2)); //TODO
 
 try {
-	routines.esb.ESBIntegration.MessagesExchange<String> messagesExchange_<%=cid%> = null;
+	QueuedExchangeContextImpl<String> messagesExchange_<%=cid%> = null;
 	// This is a beginning of the ESB provider request component cycle
 	while(true) {
 		try {
+		  String uuid = java.util.UUID.randomUUID().toString();
+

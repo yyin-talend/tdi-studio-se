@@ -24,28 +24,28 @@ if (null != metadatas && 0 < metadatas.size()) {
 		if(null != conns && 0 < conns.size()) {
 			IConnection conn = conns.get(0);
 			if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+		String esbProviderFaultTitle_<%=cid%> = "[<%=cid%>]: " + <%= ElementParameterParser.getValue(node, "__ESB_FAULT_TITLE__")%>;
+		String esbProviderFaultXml_<%=cid%> = "";
+<%
 				List<IMetadataColumn> columns = metadata.getListColumns();
 				int sizeColumns = columns.size();
 				for (int i = 0; i < sizeColumns; i++) {
 					IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if ("payload".equals(column.getLabel())) {
 %>
-	String esbProviderFaultXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
+		esbProviderFaultXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
 
-	System.out.println("--- [tESBProviderFault] fault put to response: " + esbProviderFaultXml_<%=cid%>);
-
-	java.util.HashMap<String, String> esbResponseMapFault_<%=cid%> =
-		(java.util.HashMap<String, String>) globalMap.get("esbResponseMap");
-
-	String faultStr_<%=cid%> = esbResponseMapFault_<%=cid%>.get("fault");
-	if (faultStr_<%=cid%> == null) {
-		faultStr_<%=cid%> = "";
-	}
-	faultStr_<%=cid%> += "[<%=cid%>]: " + esbProviderFaultXml_<%=cid%> +"\n";
-	esbResponseMapFault_<%=cid%>.put("fault", faultStr_<%=cid%>);
 <%
-					break; // TODO: ??? mutli-columns handling
+						break;
+					}
 				}
+%>
+		System.out.println("--- [tESBProviderFault:<%=cid%>] fault put to response: " + esbProviderFaultXml_<%=cid%>);
+        ((QueuedExchangeContextImpl<String>)globalMap.get(uuid)).serveOutputFault(
+                        new Exception(esbProviderFaultTitle_<%=cid%>, new Exception(esbProviderFaultXml_<%=cid%>)));
+<%				
 			}
 		}
 	}
