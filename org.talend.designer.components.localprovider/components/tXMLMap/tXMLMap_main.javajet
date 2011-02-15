@@ -86,6 +86,19 @@ String xPathLoop_<%=cid %> = "<%=loopPath %>";
     java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
     String str_<%=cid %> = null;
     org.dom4j.Node node_<%=cid%> = null;
+<%
+for(OutputXmlTree outputTable : outputTables) {
+	String tableName = outputTable.getName();
+	for(OutputTreeNode outputNode: outputTable.getNodes()) {
+		if(("id_Document").equals(outputNode.getType())){
+%>
+    GenerateDocument_<%=tableName %> gen_Doc_<%=tableName %>_<%=cid %> = new GenerateDocument_<%=tableName %>();
+<%
+			break;
+		} // if(docuemnt)
+	}// for(outputNode)
+} // for (outputXMLTree)
+%>
     for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
     	nb_line_<%=cid%>++;
     	treeNodeAPI_<%=cid %>.clear();
@@ -161,8 +174,7 @@ String xPathLoop_<%=cid %> = "<%=loopPath %>";
         				if(("id_Document").equals(tableEntry.getType())){
         					String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-GenerateDocument_<%=tableName1 %> gen_Doc_<%=cid %> = new GenerateDocument_<%=tableName1 %>();
-gen_Doc_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>
+gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>
 <%
 for (InputXmlTree inputTable: inputTables) {
 %>, <%=inputTable.getName() %><%
@@ -171,8 +183,10 @@ for (VarTable var : varTables) {
 %>, <%=var.getName()%><%
 }
 %>);
+if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
 <%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
-<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=cid %>.getDocument());
+<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
+}
 <%
 						} else {
 							String resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
