@@ -82,14 +82,12 @@ public class ImportTreeFromXml extends SelectionAction {
             createTreeNode.setName(foxNode.getLabel());
             if (foxNode instanceof Element) {
                 createTreeNode.setNodeType(NodeType.ELEMENT);
-                createTreeNode.setXpath(xPath + XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel());
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
-                createTreeNode.setXpath(xPath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE + foxNode.getLabel());
             } else if (foxNode instanceof NameSpaceNode) {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
-                createTreeNode.setXpath(xPath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_NAMESPACE + foxNode.getLabel());
             }
+            createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
             if (foxNode.getDataType() != null) {
                 createTreeNode.setType(foxNode.getDataType());
             } else {

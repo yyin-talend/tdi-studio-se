@@ -519,7 +519,11 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         @Override
         public Point getLocation(Point reference) {
             Point referencePoint = getReferencePoint();
-            return new Point(referencePoint.x, referencePoint.y);
+            if (referencePoint != null) {
+                return new Point(referencePoint.x, referencePoint.y);
+            } else {
+                return new Point(0, 0);
+            }
 
         }
 

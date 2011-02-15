@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
@@ -28,6 +27,8 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.LayerConstants;
+import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.color.ColorInfo;
@@ -48,17 +49,18 @@ public class XmlMapDataEditPart extends BaseEditPart {
     protected IFigure createFigure() {
         Figure mainFigure = new Figure();
 
-        // EqualWidthLayout manager = new EqualWidthLayout();
-        // manager.setUseParentHeight(true);
+        EqualWidthLayout manager = new EqualWidthLayout();
+        manager.setUseParentHeight(true);
         // mainFigure.setLayoutManager(manager);
-        mainFigure.setLayoutManager(new XmlMapDataLayout());
+        XmlMapDataLayout manager2 = new XmlMapDataLayout();
+        mainFigure.setLayoutManager(manager2);
 
         // input
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         leftFigure = new RectangleFigure();
         leftFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
-        ToolbarLayout subManager = new ToolbarLayout();
+        ToolbarLayout subManager = new TreeContainerLayout(mainFigure, manager2);
         subManager.setSpacing(20);
         subManager.setVertical(true);
         leftFigure.setLayoutManager(subManager);
@@ -68,7 +70,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // var
         scrollPane = new ScrollPane();
-        // scrollPane.setVerticalScrollBarVisibility(ScrollPane.ALWAYS);
+        scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         centerFigure = new RectangleFigure();
         centerFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
         // GridLayout centerLayout = new GridLayout();
@@ -84,9 +86,13 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // output
         scrollPane = new ScrollPane();
+        scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         rightFigure = new RectangleFigure();
         rightFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
-        subManager = new ToolbarLayout();
+
+        // subManager = new ToolbarLayout();
+        subManager = new TreeContainerLayout(mainFigure, manager2);
+
         subManager.setSpacing(20);
         subManager.setVertical(true);
         rightFigure.setLayoutManager(subManager);
@@ -136,6 +142,8 @@ public class XmlMapDataEditPart extends BaseEditPart {
     @Override
     protected void refreshVisuals() {
         ConnectionLayer connectionLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
-        connectionLayer.setConnectionRouter(new FanRouter());
+        // connectionLayer.setOpaque(true);
+        // connectionLayer.setBackgroundColor(ColorConstants.green);
+        // connectionLayer.setConnectionRouter(new FanRouter());
     }
 }

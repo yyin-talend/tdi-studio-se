@@ -16,13 +16,20 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class LookupConnectionEditPart extends AbstractConnectionEditPart {
+
+    private LookupConnectionRouter cr;
 
     @Override
     public EditPart getSource() {
@@ -46,7 +53,28 @@ public class LookupConnectionEditPart extends AbstractConnectionEditPart {
         // connection.setBackgroundColor(ColorConstants.yellow);
         connection.setForegroundColor(ColorConstants.gray);
         connection.setLineWidth(1);
+        cr = new LookupConnectionRouter();
+        connection.setConnectionRouter(cr);
         return connection;
+    }
+
+    private int calculateConnOffset() {
+        LookupConnection model = (LookupConnection) getModel();
+        EList<LookupConnection> outgoingConnections = ((TreeNode) model.getSource()).getLookupOutgoingConnections();
+        int indexOf = outgoingConnections.indexOf(model);
+        if (indexOf != -1) {
+            return -(indexOf + 1) * XmlMapUtil.DEFAULT_OFFSET;
+        }
+        return 0;
+    }
+
+    @Override
+    public IFigure getFigure() {
+        IFigure figure = super.getFigure();
+        if (cr != null && cr.getOffset() == 0) {
+            cr.setOffset(calculateConnOffset());
+        }
+        return figure;
     }
 
 }

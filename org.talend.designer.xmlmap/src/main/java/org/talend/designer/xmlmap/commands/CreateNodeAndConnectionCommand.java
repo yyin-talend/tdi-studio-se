@@ -150,13 +150,15 @@ public class CreateNodeAndConnectionCommand extends Command {
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                             targetNode.setName(sourceNode.getName());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                            if (NodeType.ATTRIBUT.equals(nodeType)) {
-                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                        + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
-                            } else {
-                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                        + sourceNode.getName());
-                            }
+                            // if (NodeType.ATTRIBUT.equals(nodeType)) {
+                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                            // + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
+                            // } else {
+                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                            // + sourceNode.getName());
+                            // }
+                            targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(), nodeType));
+
                             targetNode.setNodeType(nodeType);
                             targetNode.setExpression(XmlMapUtil.convertToExpression(sourceNode.getXpath()));
 
@@ -183,7 +185,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                                 expression = "";
                             }
                             expression = expression + " " + XmlMapUtil.convertToExpression(sourceNode.getXpath());
-                            targetNode.setName(expression);
+                            if (targetNode.getName() == null || "".equals(targetNode.getName())) {
+                                targetNode.setName(sourceNode.getName());
+                            }
                             targetNode.setExpression(expression);
                             targetNode.setNullable(sourceNode.isNullable());
                             targetNode.setType(sourceNode.getType());
@@ -260,13 +264,16 @@ public class CreateNodeAndConnectionCommand extends Command {
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                             targetNode.setName(sourceNode.getName());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                            if (NodeType.ATTRIBUT.equals(nodeType)) {
-                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                        + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
-                            } else {
-                                targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                        + sourceNode.getName());
-                            }
+                            // if (NodeType.ATTRIBUT.equals(nodeType)) {
+                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                            // + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
+                            // } else {
+                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
+                            // + sourceNode.getName());
+                            // }
+                            //
+                            targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(), nodeType));
+
                             String variable = sourceNode.getName();
                             targetNode.setNodeType(nodeType);
                             if (sourceNode.eContainer() instanceof VarTable) {

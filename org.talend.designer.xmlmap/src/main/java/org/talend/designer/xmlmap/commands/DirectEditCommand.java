@@ -41,7 +41,7 @@ public class DirectEditCommand extends Command {
 
     private String expression;
 
-    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
+    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private EXMLMapNodeProperty property;
 
@@ -132,10 +132,10 @@ public class DirectEditCommand extends Command {
                             }
                         }
                     }
-                    List copyOfConnections = new ArrayList(connections);
+                    List<IConnection> copyOfConnections = new ArrayList<IConnection>(connections);
                     copyOfConnections.removeAll(usefullConnections);
                     if (model instanceof OutputTreeNode || model instanceof VarNode) {
-                        for (IConnection connection : connections) {
+                        for (IConnection connection : copyOfConnections) {
                             if (connection.getSource() != null) {
                                 if (connection.getSource().getOutgoingConnections().contains(connection)) {
                                     connection.getSource().getOutgoingConnections().remove(connection);
@@ -146,7 +146,7 @@ public class DirectEditCommand extends Command {
                         model.getIncomingConnections().removeAll(copyOfConnections);
 
                     } else if (model instanceof TreeNode) {
-                        for (IConnection connection : connections) {
+                        for (IConnection connection : copyOfConnections) {
                             if (connection.getSource() != null) {
                                 if (((TreeNode) connection.getSource()).getLookupOutgoingConnections().contains(connection)) {
                                     ((TreeNode) connection.getSource()).getLookupOutgoingConnections().remove(connection);

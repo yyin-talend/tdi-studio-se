@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -36,6 +37,7 @@ public class EqualWidthLayout extends ToolbarLayout {
         int x = clientArea.x;
         int y = clientArea.y;
         int availableHeight = clientArea.height;
+        int availableWidth = clientArea.width;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
@@ -92,25 +94,9 @@ public class EqualWidthLayout extends ToolbarLayout {
             child = (IFigure) children.get(i);
             if (prefMinSumHeight != 0)
                 amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
-            //
-            // int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
-            // if (matchWidth)
-            // width = transposer.t(child.getMaximumSize()).width;
-            // width = Math.max(minWidth, Math.min(clientArea.width, width));
+
             newBounds.width = devideWidth;
 
-            // int adjust = clientArea.width - width;
-            // switch (minorAlignment) {
-            // case ALIGN_TOPLEFT:
-            // adjust = 0;
-            // break;
-            // case ALIGN_CENTER:
-            // adjust /= 2;
-            // break;
-            // case ALIGN_BOTTOMRIGHT:
-            // break;
-            // }
-            // newBounds.x += adjust;
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
@@ -124,6 +110,18 @@ public class EqualWidthLayout extends ToolbarLayout {
             maxHeightInRow = Math.max(maxHeightInRow, newBounds.height);
         }
 
+        if (isUseParentHeight()) {
+            Viewport viewPort = getViewPort(parent);
+            if (viewPort != null) {
+                if (viewPort.getBounds().height < availableHeight) {
+                    availableHeight = viewPort.getBounds().height;
+                }
+                if (viewPort.getBounds().width < availableWidth) {
+                    availableWidth = viewPort.getBounds().width;
+                }
+            }
+        }
+
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
             if (isUseParentHeight()) {
@@ -134,6 +132,20 @@ public class EqualWidthLayout extends ToolbarLayout {
             }
         }
 
+    }
+
+    /**
+     * 
+     * Used for three main scrollPane to get the same size as the editor , maybe changed latter
+     * 
+     * @return
+     */
+    private Viewport getViewPort(IFigure figure) {
+        if (figure.getParent() instanceof Viewport) {
+            return (Viewport) figure.getParent();
+        } else {
+            return getViewPort(figure.getParent());
+        }
     }
 
     protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {

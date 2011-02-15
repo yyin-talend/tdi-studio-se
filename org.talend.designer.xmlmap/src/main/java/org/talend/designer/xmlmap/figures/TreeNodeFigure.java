@@ -69,7 +69,7 @@ public class TreeNodeFigure extends ToolBarContainer {
         // column
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
             if (isLookup) {
-                columnExpressionFigure = new Label();
+                columnExpressionFigure = new ExpressionFigure();
                 columnExpressionFigure.setText(treeNode.getExpression());
                 CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
                 columnExpressionFigure.setBorder(compoundBorder);

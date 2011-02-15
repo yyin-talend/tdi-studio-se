@@ -15,14 +15,15 @@ package org.talend.designer.xmlmap.figures.layout;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlMapDataLayout extends ToolbarLayout {
+public class XmlMapDataLayout extends EqualWidthLayout {
+
+    private int devideWidth;
 
     /*
      * (non-Javadoc)
@@ -34,24 +35,26 @@ public class XmlMapDataLayout extends ToolbarLayout {
         int numChildren = children.size();
         Viewport viewPort = getViewPort(parent);
         Rectangle clientArea = viewPort.getClientArea();
-        int hHint = parent.getClientArea(Rectangle.SINGLETON).height;
-        int wHint = parent.getClientArea(Rectangle.SINGLETON).width;
-        int devideWidth = (wHint - (numChildren - 1)) / numChildren;
+        devideWidth = (clientArea.width - (numChildren - 1) * spacing) / numChildren;
         int x = clientArea.x;
         for (int i = 0; i < numChildren; i++) {
             IFigure child = (IFigure) children.get(i);
-            Rectangle newBounds = new Rectangle(x, clientArea.y, devideWidth, hHint);
+            Rectangle newBounds = new Rectangle(x, clientArea.y, devideWidth, clientArea.height);
             child.setBounds(newBounds);
             x = x + devideWidth;
         }
     }
 
-    private Viewport getViewPort(IFigure figure) {
+    public Viewport getViewPort(IFigure figure) {
         if (figure.getParent() instanceof Viewport) {
             return (Viewport) figure.getParent();
         } else {
             return getViewPort(figure.getParent());
         }
+    }
+
+    public int getDevideWidth() {
+        return this.devideWidth;
     }
 
 }

@@ -47,11 +47,10 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
     private void createContent() {
         // normal column
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
-            columnExpressionFigure = new Label();
+            columnExpressionFigure = new ExpressionFigure();
             columnExpressionFigure.setText(treeNode.getExpression());
             CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
             columnExpressionFigure.setBorder(compoundBorder);
-            // columnExpressionFigure.setBorder(new RowBorder());
 
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());

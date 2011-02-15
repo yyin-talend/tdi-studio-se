@@ -138,7 +138,8 @@ public class MapperMain {
                         found.setName(column.getLabel());
                         found.setType(column.getTalendType());
                         found.setNullable(column.isNullable());
-                        found.setXpath(inputTree.getName() + XmlMapUtil.XPATH_SEPARATOR + found.getName());
+                        found.setXpath(XmlMapUtil.getXPath(inputTree.getName(), found.getName(), found.getNodeType()));
+
                         nodes.add(i, found);
                     }
 
@@ -149,8 +150,9 @@ public class MapperMain {
                             TreeNode treeRoot = XmlmapFactory.eINSTANCE.createTreeNode();
                             treeRoot.setName("root");
                             treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                            treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
                             treeRoot.setNodeType(NodeType.ELEMENT);
+                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(),
+                                    treeRoot.getNodeType()));
                             children.add(treeRoot);
                         }
                     }
@@ -227,7 +229,8 @@ public class MapperMain {
                         found.setName(column.getLabel());
                         found.setType(column.getTalendType());
                         found.setNullable(column.isNullable());
-                        found.setXpath(outputTree.getName() + XmlMapUtil.XPATH_SEPARATOR + found.getName());
+                        found.setXpath(XmlMapUtil.getXPath(outputTree.getName(), found.getName(), found.getNodeType()));
+
                         nodes.add(i, found);
                     }
 
@@ -238,8 +241,9 @@ public class MapperMain {
                             TreeNode treeRoot = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                             treeRoot.setName("root");
                             treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                            treeRoot.setXpath(found.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeRoot.getName());
                             treeRoot.setNodeType(NodeType.ELEMENT);
+                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(),
+                                    treeRoot.getNodeType()));
                             children.add(treeRoot);
                         }
                     }

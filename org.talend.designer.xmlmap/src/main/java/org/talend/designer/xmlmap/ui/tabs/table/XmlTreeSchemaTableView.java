@@ -73,7 +73,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
     }
 
     @Override
-    protected void createColumns(TableViewerCreator<TreeSchemaTableEntry> tableViewerCreator, Table table) {
+    protected void createColumns(final TableViewerCreator<TreeSchemaTableEntry> tableViewerCreator, Table table) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("XPath");
         column.setId(ID_COLUMN_XPATH);
@@ -100,6 +100,12 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
                         typedValue = xPath + bean.getName();
                     }
                     bean.setXPath(typedValue);
+                    if (!bean.getTreeNode().getChildren().isEmpty()) {
+                        XmlMapUtil.updateChildrenXPath(bean.getTreeNode(), bean.getName(),
+                                XmlMapUtil.getXPathLength(bean.getXPath()));
+                        // tableViewerCreator.getTableViewer().refresh();
+                        // refresh();
+                    }
                 }
             }
         });
@@ -250,6 +256,10 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
         column.setCellEditor(patternCellEditor, CellEditorValueAdapterFactory.getNullToEmptyStringTextAdapater());
 
         tableViewerCreator.setCellModifier(new XmlCellModifier(tableViewerCreator));
+    }
+
+    public void refresh() {
+        this.getTableViewerCreator().refresh();
     }
 
     private boolean currentBeanHasJavaDateType(Object element) {

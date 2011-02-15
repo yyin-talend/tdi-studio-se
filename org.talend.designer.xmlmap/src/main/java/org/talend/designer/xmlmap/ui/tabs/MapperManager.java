@@ -211,10 +211,10 @@ public class MapperManager implements ISelectionChangedListener {
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
                                         TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
                                         createTreeNode.setName("root");
-                                        createTreeNode.setXpath(treeNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                                + createTreeNode.getName());
                                         createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                                         createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
+                                                createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
                                     }
 
@@ -256,8 +256,9 @@ public class MapperManager implements ISelectionChangedListener {
                                     createTreeNode.setType(column.getTalendType());
                                     createTreeNode.setNullable(column.isNullable());
                                     createTreeNode.setPattern(column.getPattern());
-                                    createTreeNode.setXpath(inputTree.getName() + XmlMapUtil.XPATH_SEPARATOR
-                                            + createTreeNode.getName());
+                                    createTreeNode.setXpath(XmlMapUtil.getXPath(inputTree.getName(),
+                                            createTreeNode.getName(), createTreeNode.getNodeType()));
+
                                     inputTree.getNodes().add(index, createTreeNode);
                                     index = index + 1;
                                 }
@@ -342,10 +343,10 @@ public class MapperManager implements ISelectionChangedListener {
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
                                         OutputTreeNode createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                                         createTreeNode.setName("root");
-                                        createTreeNode.setXpath(treeNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                                                + createTreeNode.getName());
                                         createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                                         createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
+                                                createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
                                     }
 
@@ -388,8 +389,9 @@ public class MapperManager implements ISelectionChangedListener {
                                     createTreeNode.setType(column.getTalendType());
                                     createTreeNode.setNullable(column.isNullable());
                                     createTreeNode.setPattern(column.getPattern());
-                                    createTreeNode.setXpath(outputTree.getName() + XmlMapUtil.XPATH_SEPARATOR
-                                            + createTreeNode.getName());
+                                    createTreeNode.setXpath(XmlMapUtil.getXPath(outputTree.getName(),
+                                            createTreeNode.getName(), createTreeNode.getNodeType()));
+
                                     outputTree.getNodes().add(index, createTreeNode);
                                     index = index + 1;
                                 }

@@ -18,6 +18,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -36,7 +37,7 @@ public class XmlMapUtil {
 
     public static final String DEFAULT_DATA_TYPE = "id_String";
 
-    public static final String CHILDREN_SEPARATOR = ":";
+    public static final String CHILDREN_SEPARATOR = ":/";
 
     public static final String EXPRESSION_LEFT = "[";
 
@@ -45,6 +46,8 @@ public class XmlMapUtil {
     public static final String XPATH_ATTRIBUTE = "@";
 
     public static final String XPATH_NAMESPACE = "xmlns";
+
+    public static final int DEFAULT_OFFSET = 5;
 
     /**
      * 
@@ -57,33 +60,96 @@ public class XmlMapUtil {
         if (xPath == null) {
             return 0;
         }
-        return xPath.split(XPATH_SEPARATOR).length;
 
+        if (xPath.indexOf(CHILDREN_SEPARATOR) != -1) {
+
+            String childPath = xPath.substring(xPath.indexOf(CHILDREN_SEPARATOR) + 2, xPath.length());
+            return 2 + childPath.split(XPATH_SEPARATOR).length;
+
+        } else {
+            return xPath.split(XPATH_SEPARATOR).length;
+        }
+
+    }
+
+    public static String getXPath(String parentPath, String label, NodeType nodeType) {
+        if (parentPath == null || label == null) {
+            throw new IllegalArgumentException("Invalid xpath");
+        }
+        String newXPath = "";
+        String type = "";
+        if (NodeType.ATTRIBUT.equals(nodeType)) {
+            type = XPATH_ATTRIBUTE;
+        } else if (NodeType.NAME_SPACE.equals(nodeType)) {
+            type = XPATH_NAMESPACE;
+        }
+        // parentPath is tree xpath
+        if (parentPath.indexOf(CHILDREN_SEPARATOR) != -1) {
+            String[] split = parentPath.split(CHILDREN_SEPARATOR);
+            if (split.length != 2) {
+                throw new IllegalArgumentException("Invalid xpath");
+            }
+
+            newXPath = parentPath + XPATH_SEPARATOR + type + label;
+
+        }
+        // parentPath is normal column xpath
+        else {
+            if (parentPath.indexOf(XPATH_SEPARATOR) == -1) {
+                newXPath = parentPath + XPATH_SEPARATOR + label;
+            } else if (parentPath.split(XPATH_SEPARATOR).length == 2) {
+                newXPath = parentPath.replace(XPATH_SEPARATOR, EXPRESSION_SEPARATOR) + CHILDREN_SEPARATOR + label;
+            }
+        }
+        return newXPath;
     }
 
     public static String convertToExpression(String xPath) {
         if (xPath == null) {
             return xPath;
         }
-        String[] split = xPath.split(XPATH_SEPARATOR);
-        // normal column
-        if (split.length == 2) {
+
+        if (xPath.indexOf(CHILDREN_SEPARATOR) != -1) {
+            return EXPRESSION_LEFT + xPath + EXPRESSION_RIGHT;
+        } else {
             return xPath.replaceAll(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
-        } else if (split.length > 2) {
-            // separator after root
-            int indexOf = xPath.indexOf("/", xPath.indexOf("/") + 1);
-            if (indexOf != -1) {
-                String rootPath = xPath.substring(0, indexOf);
-                rootPath = rootPath.replace(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
-                String childrenPath = xPath.substring(indexOf, xPath.length());
-
-                return EXPRESSION_LEFT + rootPath + CHILDREN_SEPARATOR + childrenPath + EXPRESSION_RIGHT;
-
-            }
         }
 
-        return xPath.replaceAll(XPATH_SEPARATOR, EXPRESSION_SEPARATOR);
+    }
 
+    public static void updateChildrenXPath(TreeNode treeNode, String newName, int rootXpathLength) {
+        for (TreeNode child : treeNode.getChildren()) {
+            String xpath = child.getXpath();
+            if (xpath.split(CHILDREN_SEPARATOR).length == 2) {
+                String[] split = xpath.split(CHILDREN_SEPARATOR);
+                if (rootXpathLength == 2) {
+                    String[] subSplit = split[0].split(EXPRESSION_SEPARATOR);
+                    if (subSplit.length == 2) {
+                        String newXPath = subSplit[0] + EXPRESSION_SEPARATOR + newName + CHILDREN_SEPARATOR + split[1];
+                        child.setXpath(newXPath);
+                    }
+                } else {
+                    String[] subSplit = split[1].split(XPATH_SEPARATOR);
+                    if (subSplit.length >= 2) {
+                        // change to parent name
+                        subSplit[rootXpathLength - 2 - 1] = newName;
+                        String newXpath = split[0] + CHILDREN_SEPARATOR;
+                        for (String string : subSplit) {
+                            newXpath = newXpath + string + XPATH_SEPARATOR;
+                        }
+                        newXpath = newXpath.substring(0, newXpath.length() - 1);
+                        child.setXpath(newXpath);
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid xpath");
+            }
+
+            if (!child.getChildren().isEmpty()) {
+                updateChildrenXPath(child, newName, rootXpathLength);
+            }
+
+        }
     }
 
     /*
@@ -93,13 +159,12 @@ public class XmlMapUtil {
         if (expression == null) {
             return expression;
         }
-        if (expression.indexOf(EXPRESSION_LEFT) == 0 && expression.indexOf(EXPRESSION_RIGHT) == expression.length() - 1
-                && expression.indexOf(expression) != -1) {
-            expression = expression.substring(expression.indexOf(EXPRESSION_LEFT) + 1, expression.indexOf(EXPRESSION_RIGHT));
-            expression = expression.replace(CHILDREN_SEPARATOR, "");
 
+        if (expression.indexOf(CHILDREN_SEPARATOR) != -1) {
+            return expression.substring(1, expression.length() - 1);
+        } else {
+            return expression.replace(EXPRESSION_SEPARATOR, XPATH_SEPARATOR);
         }
-        return expression.replace(EXPRESSION_SEPARATOR, XPATH_SEPARATOR);
 
     }
 

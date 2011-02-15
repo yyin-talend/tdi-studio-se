@@ -17,6 +17,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -53,9 +54,12 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.add(tableName);
 
         tableColumnstitle = new ColumnTitleFigure();
-
         this.add(tableColumnstitle);
+
+        ScrollPane scroll = new ScrollPane();
+        scroll.setVerticalScrollBarVisibility(ScrollPane.NEVER);
         columnContainer = new Figure();
+        scroll.getViewport().setContents(columnContainer);
         ToolbarLayout layout = new ToolbarLayout();
         layout.setStretchMinorAxis(true);
         layout.setVertical(true);
@@ -63,6 +67,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
         columnContainer.setOpaque(true);
         columnContainer.setBackgroundColor(ColorConstants.white);
         this.add(columnContainer);
+        // this.add(scroll);
     }
 
     public IFigure getColumnContainer() {

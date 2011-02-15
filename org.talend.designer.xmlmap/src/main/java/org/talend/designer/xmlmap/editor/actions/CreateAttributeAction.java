@@ -85,8 +85,7 @@ public class CreateAttributeAction extends SelectionAction {
             if (open == Window.OK) {
                 treeNode.setName(dialog.getValue());
                 treeNode.setNodeType(NodeType.ATTRIBUT);
-                treeNode.setXpath(this.parent.getXpath() + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE
-                        + treeNode.getName());
+                treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
                 treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 parent.getChildren().add(treeNode);
             }
