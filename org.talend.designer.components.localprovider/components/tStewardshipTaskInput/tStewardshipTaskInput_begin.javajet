@@ -84,7 +84,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					
 					java.util.List<java.util.Map<String,String>> records_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
 					java.util.Map<String,String> recordTmp_<%=cid%>  = null;
-					java.util.List<org.talend.datastewardship.server.ws.StringArray> tgtRecord_<%=cid%> = TDSCWS_<%=cid%>.getResolvedTgtRecord(taskCols_<%=cid%>.get(0));
+					java.util.List<org.talend.datastewardship.server.ws.StringArray> tgtRecord_<%=cid%> = TDSCWS_<%=cid%>.getTgtRecord(taskCols_<%=cid%>.get(0));
 					recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
 					if(tgtRecord_<%=cid%> != null){
 						recordTmp_<%=cid%>.put("TARGET","true");
@@ -98,7 +98,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					records_<%=cid%>.add(recordTmp_<%=cid%>);// out of if statement is for return task info.
 					
 					<%if(!targetRecordOnly){%>
-						java.util.List<org.talend.datastewardship.server.ws.StringArrayArray> srcRecords_<%=cid%> = TDSCWS_<%=cid%>.getResolvedSrcRecord(taskCols_<%=cid%>.get(0));
+						java.util.List<org.talend.datastewardship.server.ws.StringArrayArray> srcRecords_<%=cid%> = TDSCWS_<%=cid%>.getSrcRecord(taskCols_<%=cid%>.get(0));
 			            for (org.talend.datastewardship.server.ws.StringArrayArray srcRecord_<%=cid%> : srcRecords_<%=cid%>) {
 			                java.util.List<org.talend.datastewardship.server.ws.StringArray> srcRecordItem_<%=cid%> = srcRecord_<%=cid%>.getItem();
 			                recordTmp_<%=cid%> = new java.util.HashMap<String,String>();
