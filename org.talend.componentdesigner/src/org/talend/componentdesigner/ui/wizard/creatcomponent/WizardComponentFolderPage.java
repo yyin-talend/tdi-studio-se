@@ -57,7 +57,7 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
      */
     public WizardComponentFolderPage(String pageName, ComponentPref componentPref) {
         super(pageName, componentPref);
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICorePerlService.class)) {
             isUsePerl = false;
         }
     }
