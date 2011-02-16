@@ -547,6 +547,7 @@ public class CLASS {
 				if(!("id_Dynamic".equals(column.getTalendType()))) {
 					Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
 					skeletonColumn.setOperator("=");
+					skeletonColumn.setDataType(column.getType());
 					stmtStructure.add(skeletonColumn);
 				}
             }
@@ -603,13 +604,13 @@ public class CLASS {
             	actionSQLMap.put(FIRST_UPDATE_COLUMN, new StringBuilder());
             } else {
 	            for(Column column : stmtStructure) {
-	                if(column.isReplaced()) {
+	            if(column.isReplaced()) {
 	                    List<Column> replacedColumns = column.getReplacement();
 	                    for(Column replacedColumn : replacedColumns) {
 	                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
 	                    }
 	                } else {
-	                    actionSQLMap = processSQLClause(column, actionSQLMap);                    
+	                    actionSQLMap = processSQLClause(column, actionSQLMap);        
 	                }
 	            }
             }
@@ -732,7 +733,7 @@ public class CLASS {
 		}
 		
         public String generateSetStmt(String typeToGenerate, String dbType, Column column, int index, String incomingConnName, String cid, int actionType, String dynamic) {
-		
+			
 			if(dynamic==null) {
 				dynamic="";
 			} else {
@@ -1002,7 +1003,8 @@ public class CLASS {
         //i.e: 
         //1.select * FROM user where ((true = true AND name is NULL) OR name = ?);
         //2.select * FROM user where ((true = false AND name is NULL) OR name = ?);
-        private void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
+        
+        public void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
             boolean whereSupportNull = false;
 
             //if node = null, it means some components have not support the "whereNULL" issue yet.
@@ -2252,14 +2254,14 @@ public class CLASS {
                 setStmt.append("} else {");
             }
             typeToGenerate = getGenerateType(typeToGenerate);
-            if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+            if(dbType.toLowerCase().equals("char") || typeToGenerate.equals("Character")) {
                 if(isObject) {
                     setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
                 } else {
                     setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
                 }
                 setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
-                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
+                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == \"\0\"){\r\n");
                 setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
@@ -2314,6 +2316,31 @@ public class CLASS {
         
         protected boolean hasSchema() {
             return true;
+        }
+        
+        public void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
+            boolean whereSupportNull = false;
+			String columnName = column.getColumnName();
+			String dataType = column.getDataType().toLowerCase();
+			if("char".equals(dataType))
+			{
+				columnName = "trim("+columnName+")";
+			}
+			
+            //if node = null, it means some components have not support the "whereNULL" issue yet.
+            if (node != null) {
+                whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
+            }
+            if (whereSupportNull && column.getColumn().isNullable()) {
+                updateWhereStmt.append("((" + getLProtectedChar(columnName) + columnName + getRProtectedChar(columnName)
+                        + " IS NULL AND " + getColumnIsNullCondition() +" " + column.getOperator() + " " + column.getSqlStmt() + ") ");
+                updateWhereStmt.append("OR " + getLProtectedChar(columnName) + columnName + getRProtectedChar(columnName)
+                        + column.getOperator() + column.getSqlStmt() + ")");
+            } else {
+                //if node = null, go this branch as the old behave
+                updateWhereStmt.append(getLProtectedChar(columnName) + columnName + getRProtectedChar(columnName) + " "
+                        + column.getOperator() + " " + column.getSqlStmt());
+            }
         }
     }
     
