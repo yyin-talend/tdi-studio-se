@@ -85,6 +85,24 @@ imports="
 <%
 	    }  
 	    
+	       public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
+%>
+			java.io.Reader reader_<%=cid%> = rs_<%=cid%>.getCharacterStream(<%=currentColNo%>);
+            StringBuffer sb_<%=cid%> = new StringBuffer();
+            int b_<%=cid%> = -1;
+            while ((b_<%=cid%> = reader_<%=cid%>.read()) != -1) {
+                sb_<%=cid%>.append((char) b_<%=cid%>);
+            }
+           	reader_<%=cid%>.close();
+            tmpContent_<%=cid%> = sb_<%=cid%>.toString();
+            if(tmpContent_<%=cid%> != null) {
+                <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> = null;
+            }
+<%
+	    }
+	    
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
 %>
 	        Object value = rs_<%=cid %>.getObject(<%=currentColNo%>);
