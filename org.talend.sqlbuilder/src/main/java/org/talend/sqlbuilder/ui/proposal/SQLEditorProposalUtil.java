@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
@@ -403,7 +404,7 @@ public class SQLEditorProposalUtil {
      * @return all Key words of SQL.
      */
     private String[] getAllKeywords() {
-        Mode mode = Modes.getMode(languageMode + ".xml"); //$NON-NLS-1$
+        Mode mode = Modes.getMode(languageMode + XmlUtil.FILE_XML_SUFFIX);
         String[] keywords = mode.getDefaultRuleSet().getKeywords().get("KEYWORD1"); //$NON-NLS-1$
         return keywords;
     }

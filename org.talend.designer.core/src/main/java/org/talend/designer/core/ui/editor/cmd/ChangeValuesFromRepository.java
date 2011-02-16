@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -48,6 +49,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -151,9 +153,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         this.value = value;
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
-        if (connection instanceof XmlFileConnectionImpl) {
-            if (((XmlFileConnectionImpl) connection).getXmlFilePath().endsWith(".xsd")
-                    || ((XmlFileConnectionImpl) connection).getXmlFilePath().endsWith(".xsd\""))
+        if (connection instanceof XmlFileConnection) {
+            if (XmlUtil.isXSDFile(TalendQuoteUtils.removeQuotes(((XmlFileConnection) connection).getXmlFilePath())))
                 dragAndDropAction = true;
         }
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$

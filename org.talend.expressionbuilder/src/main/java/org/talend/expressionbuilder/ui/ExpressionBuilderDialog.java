@@ -49,6 +49,7 @@ import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -466,7 +467,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         } else {
             jobName = "tXMLMap";
         }
-        IPath path = expressionFolder.getLocation().append(jobName + ".xml"); //$NON-NLS-1$
+        IPath path = expressionFolder.getLocation().append(jobName + XmlUtil.FILE_XML_SUFFIX);
         return path.toOSString();
     }
 

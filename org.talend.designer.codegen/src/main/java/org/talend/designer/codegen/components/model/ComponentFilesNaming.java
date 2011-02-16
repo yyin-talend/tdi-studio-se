@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.temp.ECodePart;
@@ -50,7 +51,7 @@ public final class ComponentFilesNaming implements IComponentFileNaming {
     }
 
     public String getMainXMLFileName(String componentName, String languageSuffix) {
-        return componentName + "_" + languageSuffix + ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
+        return componentName + "_" + languageSuffix + XmlUtil.FILE_XML_SUFFIX; //$NON-NLS-1$ 
     }
 
     public String getPropertiesFileName(String componentName) {

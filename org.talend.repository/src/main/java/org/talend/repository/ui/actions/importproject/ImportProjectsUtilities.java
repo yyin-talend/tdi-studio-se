@@ -57,6 +57,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.ui.branding.IBrandingService;
@@ -412,7 +413,7 @@ public class ImportProjectsUtilities {
                     String files[] = xmlFilePath.list(new FilenameFilter() {
 
                         public boolean accept(File arg0, String arg1) {
-                            return arg1.endsWith(".xml"); //$NON-NLS-1$
+                            return XmlUtil.isXMLFile(arg1);
                         }
                     });
                     for (String file : files) {

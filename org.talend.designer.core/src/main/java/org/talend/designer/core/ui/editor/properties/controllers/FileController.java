@@ -37,6 +37,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -46,6 +47,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.utils.PathExtractor;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -115,16 +117,16 @@ public class FileController extends AbstractElementPropertySectionController {
         try {
             if (propertyParam != null && propertyParam.getValue() != null && !"".equals(propertyParam.getValue())) {
                 Item linkedRepositoryItem = null;
-                IRepositoryViewObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                        propertyParam.getValue().toString());
+                IRepositoryViewObject repository = DesignerPlugin.getDefault().getProxyRepositoryFactory()
+                        .getLastVersion(propertyParam.getValue().toString());
                 if (repository != null && repository.getProperty() != null) {
                     linkedRepositoryItem = repository.getProperty().getItem();
                 }
                 if (linkedRepositoryItem != null && linkedRepositoryItem instanceof XmlFileConnectionItem) {
                     XmlFileConnectionItem xci = (XmlFileConnectionItem) linkedRepositoryItem;
                     XmlFileConnection cc = (XmlFileConnection) xci.getConnection();
-                    if (cc.getXmlFilePath() != null && cc.getXmlFilePath().endsWith(".xsd")
-                            || cc.getXmlFilePath().endsWith(".xsd\"")) {
+                    String xmlFilePath = cc.getXmlFilePath();
+                    if (xmlFilePath != null && XmlUtil.isXSDFile(TalendQuoteUtils.removeQuotes(xmlFilePath))) {
                         dragAndDropActionBool = true;
                     }
                 }

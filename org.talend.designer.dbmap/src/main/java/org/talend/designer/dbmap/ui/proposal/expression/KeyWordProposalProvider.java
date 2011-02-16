@@ -20,6 +20,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.commons.xml.XmlUtil;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -47,7 +48,7 @@ public class KeyWordProposalProvider implements IContentProposalProvider {
     }
 
     public String[] getKeyWords() {
-        Mode mode = Modes.getMode(languageMode + ".xml"); //$NON-NLS-1$
+        Mode mode = Modes.getMode(languageMode + XmlUtil.FILE_XML_SUFFIX);
         Object[] keywords = new Object[0];
 
         for (int i = 0; i < keyWorkKeysToLoad.length; i++) {

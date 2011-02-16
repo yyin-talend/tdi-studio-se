@@ -27,6 +27,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -1259,7 +1260,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     if (repositoryConnection instanceof XmlFileConnectionImpl) {
                         String filePath = ((XmlFileConnectionImpl) repositoryConnection).getXmlFilePath();
                         if (filePath != null) {
-                            if (filePath.toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$ 
+                            if (XmlUtil.isXSDFile(filePath)) {
                                 isXsdPath = true;
                             }
                         }
