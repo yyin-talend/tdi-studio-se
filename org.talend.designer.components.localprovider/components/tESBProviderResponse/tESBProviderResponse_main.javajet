@@ -30,9 +30,10 @@ if (null != metadatas && 0 < metadatas.size()) {
 					IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 %>
-	String esbProviderResponseXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
-	System.out.println("--- [tESBProviderResponse] request put to response: " + esbProviderResponseXml_<%=cid%>);
-	((QueuedExchangeContextImpl<String>)globalMap.get(uuid)).serveOutputMessage(esbProviderResponseXml_<%=cid%>);
+	Document esbProviderResponseDoc_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>; 
+	System.out.println("--- [tESBProviderResponse] request put to response: " + esbProviderResponseDoc_<%=cid%>);
+	((QueuedExchangeContextImpl<org.dom4j.Document>) globalMap.get(uuid))
+		.serveOutputMessage(esbProviderResponseDoc_<%=cid%>.getDocument());
 <%
 					break; // TODO: ??? mutli-columns handling
 				}
