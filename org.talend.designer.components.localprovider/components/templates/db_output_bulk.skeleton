@@ -604,7 +604,7 @@ public class CLASS {
             	actionSQLMap.put(FIRST_UPDATE_COLUMN, new StringBuilder());
             } else {
 	            for(Column column : stmtStructure) {
-	            if(column.isReplaced()) {
+	            	if(column.isReplaced()) {
 	                    List<Column> replacedColumns = column.getReplacement();
 	                    for(Column replacedColumn : replacedColumns) {
 	                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
