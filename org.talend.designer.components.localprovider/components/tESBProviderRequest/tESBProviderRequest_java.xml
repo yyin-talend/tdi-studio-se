@@ -29,7 +29,7 @@
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE"
 				REQUIRED="true" NUM_ROW="15">
 			<TABLE READONLY="true">
-				<COLUMN NAME="payload" TYPE="id_String" LENGTH="4096" />
+				<COLUMN NAME="payload" TYPE="id_Document" />
 			</TABLE>
 		</PARAMETER>
 
@@ -55,15 +55,14 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<!-- IMPORT NAME="org.talend.esb.tooling.component"
-					MODULE="org.talend.esb.tooling.component.jar"
-					REQUIRED="true"/ -->
-
 			<IMPORT NAME="commons-logging-1.1.1"
 					MODULE="commons-logging-1.1.1.jar"
 					REQUIRED="true"/>
 			<IMPORT NAME="cxf-bundle-2.3.1"
 					MODULE="cxf-bundle-2.3.1.jar"
+					REQUIRED="true"/>
+			<IMPORT NAME="dom4j-1.6.1"
+					MODULE="dom4j-1.6.1.jar"
 					REQUIRED="true"/>
 			<IMPORT NAME="geronimo-activation_1.1_spec-1.1"
 					MODULE="geronimo-activation_1.1_spec-1.1.jar"

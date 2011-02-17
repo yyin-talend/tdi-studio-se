@@ -21,7 +21,8 @@ System.out.println("--- [tESBProviderRequest] Initializing the component");
 <%@ include file="classes.javajetinc" %> 
 
 //*** external processor(s) initialization
-	final QueuedMessageHandlerImpl<String> handler = new QueuedMessageHandlerImpl<String>();
+	final QueuedMessageHandlerImpl<org.dom4j.Document> handler =
+		new QueuedMessageHandlerImpl<org.dom4j.Document>();
 	HandlerThread_<%=cid%> handlerThread_<%=cid%> = new HandlerThread_<%=cid%>(handler, this.getClass().getSimpleName());
 	handlerThread_<%=cid%>.start();
 
@@ -34,12 +35,12 @@ String result_<%=cid%> = null;
 
 int counter_<%=cid%> = 0;
 
-//globalMap.put("esbResponseMap", new java.util.HashMap<String, Object>(2)); //TODO
+//globalMap.put("esbResponseMap", new java.util.HashMap<String, Object>(2)); // TODO
 
 try {
-	QueuedExchangeContextImpl<String> messagesExchange_<%=cid%> = null;
+	QueuedExchangeContextImpl<org.dom4j.Document> messagesExchange_<%=cid%> = null;
 	// This is a beginning of the ESB provider request component cycle
 	while(true) {
 		try {
-		  String uuid = java.util.UUID.randomUUID().toString();
+			String uuid = java.util.UUID.randomUUID().toString();
 
