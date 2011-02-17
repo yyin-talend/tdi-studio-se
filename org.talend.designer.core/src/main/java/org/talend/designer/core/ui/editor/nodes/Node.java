@@ -1317,13 +1317,14 @@ public class Node extends Element implements IGraphicalNode {
      * @return List of Connection
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        List<IConnection> jobletOutputs = new ArrayList<IConnection>();
+
         if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
+            List<IConnection> jobletOutputs = new ArrayList<IConnection>();
             jobletOutputs.addAll(this.getNodeContainer().getOutputs());
-        } else {
-            jobletOutputs.addAll(this.outputs);
+            return jobletOutputs;
         }
-        return jobletOutputs;
+        return this.outputs;
+
     }
 
     /**
