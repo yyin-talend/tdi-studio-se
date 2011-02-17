@@ -28,7 +28,7 @@
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE"
 				REQUIRED="true" NUM_ROW="10">
 			<TABLE READONLY="true">
-				<COLUMN NAME="payload" TYPE="id_String" LENGTH="4096" />
+				<COLUMN NAME="payload" TYPE="id_Document" />
 			</TABLE>
 		</PARAMETER>
 		

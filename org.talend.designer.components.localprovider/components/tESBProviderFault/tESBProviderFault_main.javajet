@@ -26,7 +26,7 @@ if (null != metadatas && 0 < metadatas.size()) {
 			if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 		String esbProviderFaultTitle_<%=cid%> = "[<%=cid%>]: " + <%= ElementParameterParser.getValue(node, "__ESB_FAULT_TITLE__")%>;
-		String esbProviderFaultXml_<%=cid%> = "";
+		Document esbProviderFaultDoc_<%=cid%> = null;
 <%
 				List<IMetadataColumn> columns = metadata.getListColumns();
 				int sizeColumns = columns.size();
@@ -35,16 +35,17 @@ if (null != metadatas && 0 < metadatas.size()) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					if ("payload".equals(column.getLabel())) {
 %>
-		esbProviderFaultXml_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
+		esbProviderFaultDoc_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>;
 
 <%
 						break;
 					}
 				}
 %>
-		System.out.println("--- [tESBProviderFault:<%=cid%>] fault put to response: " + esbProviderFaultXml_<%=cid%>);
-        ((QueuedExchangeContextImpl<String>)globalMap.get(uuid)).serveOutputFault(
-                        new Exception(esbProviderFaultTitle_<%=cid%>, new Exception(esbProviderFaultXml_<%=cid%>)));
+		System.out.println("--- [tESBProviderFault:<%=cid%>] fault put to response: " + esbProviderFaultDoc_<%=cid%>);
+		((QueuedExchangeContextImpl<org.dom4j.Document>) globalMap.get(uuid)).serveOutputFault(
+			esbProviderFaultTitle_<%=cid%>,
+			(null == esbProviderFaultDoc_<%=cid%>) ? null : esbProviderFaultDoc_<%=cid%>.getDocument());
 <%				
 			}
 		}
