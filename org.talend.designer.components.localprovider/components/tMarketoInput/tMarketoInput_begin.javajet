@@ -45,6 +45,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             boolean setExcludeTypes = ("true").equals(ElementParameterParser.getValue(node,"__SET_EXCLUDE_TYPES__"));
 			List<Map<String, String>> includeTypesList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__INCLUDE_TYPES__");
 			List<Map<String, String>> excludeTypesList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__EXCLUDE_TYPES__");
+            boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 			List<String> includeTypes = null;
 			if(setIncludeTypes){
 				includeTypes = new ArrayList<String>();
@@ -95,7 +96,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 			}
 %>
 			org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,<%=secretKey%>,<%=clientAccessID%>);
-			client_<%=cid%>.setTimeout(<%=timeout%>); 
+			client_<%=cid%>.setTimeout(<%=timeout%>);
+		
 <%
 			if("getLead".equals(operation)){
 %>
@@ -105,7 +107,33 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 				leads_<%=cid%> = client_<%=cid%>.getLead("<%=leadKeyType%>",<%=leadKeyValue%>);
 				records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
 			}catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
-				client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+				try{
+					client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+				}catch(Exception ex_<%=cid%>){
+					<%
+			        if (dieOnError) {
+			        %>
+			            throw(ex_<%=cid%>);
+			        <%
+			        } else {
+			        %>
+			        	System.err.println(ex_<%=cid%>.getMessage());
+			        <%
+			        }
+			        %>
+				}
+			}catch(Exception ex_<%=cid%>){
+				<%
+		        if (dieOnError) {
+		        %>
+		            throw(ex_<%=cid%>);
+		        <%
+		        } else {
+		        %>
+		        	System.err.println(ex_<%=cid%>.getMessage());
+		        <%
+		        }
+		        %>
 			}
 			if(leads_<%=cid%> != null && records_<%=cid%>!=null){
 				for (int i_<%=cid%> = 0; i_<%=cid%> < leads_<%=cid%>.getCount(); i_<%=cid%>++) {
@@ -123,10 +151,27 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 			<%}%>
 			};
             while(true){
-            	com.marketo.www.mktows.ResultGetMultipleLeads leads_<%=cid%> = client_<%=cid%>.getMultipleLeads(includeAttributes_<%=cid%>, <%=batchSize%>, updatedAtCal_<%=cid%>, streamPosition_<%=cid%>);
-            	com.marketo.www.mktows.LeadRecord[] records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
-            	for (int i_<%=cid%> = 0; i_<%=cid%> < leads_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
-            		java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readLead(records_<%=cid%>[i_<%=cid%>]);
+            	com.marketo.www.mktows.ResultGetMultipleLeads leads_<%=cid%> = null;
+            	try{ 
+            		leads_<%=cid%> = client_<%=cid%>.getMultipleLeads(includeAttributes_<%=cid%>, <%=batchSize%>, updatedAtCal_<%=cid%>, streamPosition_<%=cid%>);
+            	}catch(Exception ex_<%=cid%>){
+					<%
+			        if (dieOnError) {
+			        %>
+			            throw(ex_<%=cid%>);
+			        <%
+			        } else {
+			        %>
+			        	System.err.println(ex_<%=cid%>.getMessage());
+				        break;
+			        <%
+			        }
+			        %>
+				}
+            	if(leads_<%=cid%> != null){
+	            	com.marketo.www.mktows.LeadRecord[] records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
+	            	for (int i_<%=cid%> = 0; i_<%=cid%> < leads_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
+	            		java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readLead(records_<%=cid%>[i_<%=cid%>]);
 <%
 			}else if("getLeadActivity".equals(operation)){
 %>
@@ -138,7 +183,35 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 	                activities_<%=cid%> = client_<%=cid%>.getLeadActivity("<%=leadKeyType%>",<%=leadKeyValue%>, <%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>,streamPosition_<%=cid%>);
 	                activityRecords_<%=cid%> = activities_<%=cid%>.getActivityRecordList();
 	            }catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
-					client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+					try{
+						client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
+					}catch(Exception ex_<%=cid%>){
+						<%
+				        if (dieOnError) {
+				        %>
+				            throw(ex_<%=cid%>);
+				        <%
+				        } else {
+				        %>
+				        	System.err.println(ex_<%=cid%>.getMessage());
+					        break;
+				        <%
+				        }
+				        %>
+					}
+				}catch(Exception ex_<%=cid%>){
+					<%
+			        if (dieOnError) {
+			        %>
+			            throw(ex_<%=cid%>);
+			        <%
+			        } else {
+			        %>
+			        	System.err.println(ex_<%=cid%>.getMessage());
+				        break;
+			        <%
+			        }
+			        %>
 				}
 				if(activities_<%=cid%> != null && activityRecords_<%=cid%> != null){
 	                for (int i_<%=cid%> = 0; i_<%=cid%> < activities_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
@@ -148,10 +221,27 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 %>
 			com.marketo.www.mktows.StreamPosition streamPosition_<%=cid%> = new com.marketo.www.mktows.StreamPosition();
             while(true){
-                com.marketo.www.mktows.ResultGetLeadChanges changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>);
-                com.marketo.www.mktows.LeadChangeRecord[] changeRecords_<%=cid%> = changes_<%=cid%>.getLeadChangeRecordList();
-                for (int i_<%=cid%> = 0; i_<%=cid%> < changes_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
-                    java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readChange(changeRecords_<%=cid%>[i_<%=cid%>]);
+                com.marketo.www.mktows.ResultGetLeadChanges changes_<%=cid%> = null;
+                try{
+                	changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>);
+                }catch(Exception ex_<%=cid%>){
+					<%
+			        if (dieOnError) {
+			        %>
+			            throw(ex_<%=cid%>);
+			        <%
+			        } else {
+			        %>
+			        	System.err.println(ex_<%=cid%>.getMessage());
+				        break;
+			        <%
+			        }
+			        %>
+				}
+                if(changes_<%=cid%> != null){
+	                com.marketo.www.mktows.LeadChangeRecord[] changeRecords_<%=cid%> = changes_<%=cid%>.getLeadChangeRecordList();
+	                for (int i_<%=cid%> = 0; i_<%=cid%> < changes_<%=cid%>.getReturnCount(); i_<%=cid%>++) {
+	                    java.util.Map<String, String> result_<%=cid%> = client_<%=cid%>.readChange(changeRecords_<%=cid%>[i_<%=cid%>]);
 <%
 			}
 			

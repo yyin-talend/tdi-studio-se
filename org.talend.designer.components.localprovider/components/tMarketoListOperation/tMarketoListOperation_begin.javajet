@@ -51,6 +51,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 				client_<%=cid%>.setTimeout(<%=timeout%>);
 				java.util.List<com.marketo.www.mktows.LeadKey> leadKeyList_<%=cid%> = new java.util.ArrayList<com.marketo.www.mktows.LeadKey>();
 				com.marketo.www.mktows.ResultListOperation resultListOperation_<%=cid%> = null;
+				
+				boolean whetherReject_<%=cid%> = false;
 <% 
 			}	
 		}

@@ -11,13 +11,28 @@ imports="
 	String cid = node.getUniqueName();
 	String operation = ElementParameterParser.getValue(node, "__OPERATION__");
 	boolean deDupenabled = ("true").equals(ElementParameterParser.getValue(node,"__DE_DUPENABLED__"));
+	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 %> 
 <%
 			if("syncMultipleLeads".equals(operation)){
 %>
 				if(leadRecordList_<%=cid%>.size()>0){
 					com.marketo.www.mktows.LeadRecord[] leadRecords_<%=cid%> = leadRecordList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadRecord[leadRecordList_<%=cid%>.size()]);
-					client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
+					try{
+						client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
+					}catch(Exception ex_<%=cid%>){
+						<%
+				        if (dieOnError) {
+				        %>
+				            throw(ex_<%=cid%>);
+				        <%
+				        } else {
+				        %>
+				        	System.err.println(ex_<%=cid%>.getMessage());
+				        <%
+				        }
+				        %>
+					}
 					leadRecordList_<%=cid%>.clear();
 				}
 <%				
