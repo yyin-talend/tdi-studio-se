@@ -2321,12 +2321,14 @@ public class CLASS {
         public void whereStmtSupportNull(StringBuilder updateWhereStmt, Column column) {
             boolean whereSupportNull = false;
 			String columnName = column.getColumnName();
-			String dataType = column.getDataType().toLowerCase();
-			if("char".equals(dataType))
+			String dataType = column.getDataType();
+			if(dataType!=null)
+			{
+			if("char".equals(dataType.toLowerCase()))
 			{
 				columnName = "trim("+columnName+")";
 			}
-			
+			}
             //if node = null, it means some components have not support the "whereNULL" issue yet.
             if (node != null) {
                 whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
