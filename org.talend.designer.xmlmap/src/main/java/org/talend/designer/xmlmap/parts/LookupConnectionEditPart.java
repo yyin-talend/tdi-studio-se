@@ -18,7 +18,6 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -27,7 +26,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class LookupConnectionEditPart extends AbstractConnectionEditPart {
+public class LookupConnectionEditPart extends BaseConnectionEditPart {
 
     private LookupConnectionRouter cr;
 

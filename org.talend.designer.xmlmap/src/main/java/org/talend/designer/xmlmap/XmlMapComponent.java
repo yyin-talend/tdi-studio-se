@@ -22,8 +22,11 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IExternalData;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -80,13 +83,22 @@ public class XmlMapComponent extends AbstractExternalNode {
     }
 
     public void renameInputConnection(String oldName, String newName) {
-        // TODO Auto-generated method stub
-
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
+            if (inputTree.getName() != null && inputTree.getName().equals(oldName)) {
+                inputTree.setName(newName);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, inputTree.getNodes(), inputTree.getName(), 1);
+            }
+        }
     }
 
     public void renameOutputConnection(String oldName, String newName) {
-        // TODO Auto-generated method stub
-
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        for (OutputXmlTree outputTree : externalEmfData.getOutputTrees()) {
+            if (outputTree.getName() != null && outputTree.getName().equals(oldName)) {
+                outputTree.setName(newName);
+            }
+        }
     }
 
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
@@ -102,7 +114,7 @@ public class XmlMapComponent extends AbstractExternalNode {
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
         // TODO Auto-generated method stub
-
+        System.out.println();
     }
 
     @Override

@@ -60,8 +60,13 @@ public class VarTableContainerFigure extends Figure {
                 if (isMinimized) {
                     result.setSize(wHint, 0);
                 } else if (!isMinimized) {
-                    for (int i = 0; i < children.size(); i++)
+                    for (int i = 0; i < children.size(); i++) {
+                        Dimension preferredSize2 = ((IFigure) children.get(i)).getPreferredSize();
                         result.union(((IFigure) children.get(i)).getBounds());
+                        if (result.width > preferredSize2.width) {
+                            result.width = preferredSize2.width;
+                        }
+                    }
                     result.resize(container.getInsets().getWidth(), container.getInsets().getHeight());
                 }
                 return result.getSize();

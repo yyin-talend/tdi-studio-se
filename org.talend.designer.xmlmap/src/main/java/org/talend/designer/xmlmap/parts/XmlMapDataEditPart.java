@@ -72,7 +72,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
         scrollPane = new ScrollPane();
         scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         centerFigure = new RectangleFigure();
-        centerFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
         // GridLayout centerLayout = new GridLayout();
         // centerFigure.setLayoutManager(centerLayout);
         subManager = new ToolbarLayout();
@@ -80,7 +79,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
         subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
         centerFigure.setBorder(new MarginBorder(5, 100, 5, 100));
-
         scrollPane.getViewport().setContents(centerFigure);
         mainFigure.add(scrollPane);
 
@@ -145,5 +143,17 @@ public class XmlMapDataEditPart extends BaseEditPart {
         // connectionLayer.setOpaque(true);
         // connectionLayer.setBackgroundColor(ColorConstants.green);
         // connectionLayer.setConnectionRouter(new FanRouter());
+    }
+
+    public IFigure getLeftFigure() {
+        return this.leftFigure;
+    }
+
+    public IFigure getCenterFigure() {
+        return this.centerFigure;
+    }
+
+    public IFigure getRightFigure() {
+        return this.rightFigure;
     }
 }

@@ -68,6 +68,11 @@ public class CreateNodeAndConnectionCommand extends Command {
         OutputTreeNode targetOutputNode = null;
         VarNode targetVarNode = null;
         TreeNode treeNode = null;
+
+        if (targetEditPart == null) {
+            return;
+        }
+
         if (targetEditPart.getModel() instanceof OutputTreeNode) {
             targetOutputNode = (OutputTreeNode) ((OutputTreeNodeEditPart) targetEditPart).getModel();
             OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(targetOutputNode);
@@ -186,10 +191,11 @@ public class CreateNodeAndConnectionCommand extends Command {
                             }
                             expression = expression + " " + XmlMapUtil.convertToExpression(sourceNode.getXpath());
                             if (targetNode.getName() == null || "".equals(targetNode.getName())) {
-                                targetNode.setName(sourceNode.getName());
+                                String findUniqueVarColumnName = XmlMapUtil.findUniqueVarColumnName(sourceNode.getName(),
+                                        xmlMapData.getVarTables().get(0));
+                                targetNode.setName(findUniqueVarColumnName);
                             }
-                            targetNode.setExpression(expression);
-                            targetNode.setNullable(sourceNode.isNullable());
+                            targetNode.setExpression(expression.trim());
                             targetNode.setType(sourceNode.getType());
                             // targetNode.setNodeType(sourceNode.getNodeType());
                             // targetNode.setXpath(sourceNode.getXpath());
@@ -264,14 +270,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                             targetNode.setName(sourceNode.getName());
                             targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                            // if (NodeType.ATTRIBUT.equals(nodeType)) {
-                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                            // + XmlMapUtil.XPATH_ATTRIBUTE + sourceNode.getName());
-                            // } else {
-                            // targetNode.setXpath(targetOutputNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR
-                            // + sourceNode.getName());
-                            // }
-                            //
+
                             targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(), nodeType));
 
                             String variable = sourceNode.getName();

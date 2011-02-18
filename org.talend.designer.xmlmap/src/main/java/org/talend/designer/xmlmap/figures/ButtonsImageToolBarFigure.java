@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.ImageFigure;
@@ -28,6 +25,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.xmlmap.image.ImageInfo;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -98,7 +96,7 @@ public class ButtonsImageToolBarFigure extends Figure {
                 add.setBackgroundColor(ColorConstants.buttonDarkest);
                 VarNode newNode = XmlmapFactory.eINSTANCE.createVarNode();
                 newNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                newNode.setName(findUniqueColumnName("Var"));
+                newNode.setName(XmlMapUtil.findUniqueVarColumnName("Var", parentTable));
                 parentTable.getNodes().add(newNode);
                 parentTable.setMinimized(false);
                 // VarTableContainerFigure varTableContainerFigure = ((CenterVarFigure)
@@ -132,6 +130,10 @@ public class ButtonsImageToolBarFigure extends Figure {
                 CenterVarFigure centerVarFigure = (CenterVarFigure) remove.getParent().getParent().getParent();
                 Figure columnsContainer = centerVarFigure.getVarTableContainerFigure().getColumnsContainer();
                 for (VarNode nodeToDelete : centerVarFigure.getSelectionNodes()) {
+                    XmlMapUtil.detachConnectionsSouce(nodeToDelete, (XmlMapData) parentTable.eContainer());
+                    nodeToDelete.getIncomingConnections().clear();
+                    XmlMapUtil.detachConnectionsTarget(nodeToDelete, (XmlMapData) parentTable.eContainer());
+                    nodeToDelete.getOutgoingConnections().clear();
                     parentTable.getNodes().remove(nodeToDelete);
                 }
                 if (columnsContainer.getChildren().isEmpty()) {
@@ -216,35 +218,6 @@ public class ButtonsImageToolBarFigure extends Figure {
 
             }
         });
-    }
-
-    private String findUniqueColumnName(String baseName) {
-        if (baseName == null) {
-            throw new IllegalArgumentException("Base name can't null");
-        }
-        String uniqueName = baseName + 1;
-
-        int counter = 1;
-        boolean exists = true;
-        while (exists) {
-            exists = !checkValidColumnName(uniqueName);
-            if (!exists) {
-                break;
-            }
-            uniqueName = baseName + counter++;
-        }
-        return uniqueName;
-    }
-
-    private boolean checkValidColumnName(String newName) {
-        for (VarNode entry : parentTable.getNodes()) {
-            if (entry.getName().equals(newName)) {
-                return false;
-            }
-        }
-        Pattern regex = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*$", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE);//$NON-NLS-1$
-        Matcher regexMatcher = regex.matcher(newName);
-        return regexMatcher.matches();
     }
 
     private void setToolTips() {

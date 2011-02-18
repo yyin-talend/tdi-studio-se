@@ -15,7 +15,6 @@ package org.talend.designer.xmlmap.figures;
 import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -52,16 +51,16 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
         this.treeNodePart = treeNodePart;
     }
 
-    @Override
-    public Dimension getPreferredSize(int wHint, int hHint) {
-        Dimension preferredSize = super.getPreferredSize(wHint, hHint);
-        return new Dimension(DEFAULT_SIZE, preferredSize.height);
-    }
-
-    @Override
-    public Dimension getMinimumSize(int w, int h) {
-        Dimension minimumSize = super.getMinimumSize(w, h);
-        return new Dimension(DEFAULT_SIZE, minimumSize.height);
-    }
+    // @Override
+    // public Dimension getPreferredSize(int wHint, int hHint) {
+    // Dimension preferredSize = super.getPreferredSize(wHint, hHint);
+    // return new Dimension(DEFAULT_SIZE, preferredSize.height);
+    // }
+    //
+    // @Override
+    // public Dimension getMinimumSize(int w, int h) {
+    // Dimension minimumSize = super.getMinimumSize(w, h);
+    // return new Dimension(DEFAULT_SIZE, minimumSize.height);
+    // }
 
 }

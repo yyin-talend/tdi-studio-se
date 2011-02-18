@@ -129,12 +129,12 @@ public class VarNodeFigure extends ToolBarContainer {
         return this.expression;
     }
 
-    public VarNodeTypeLabel getType() {
-        return this.type;
-    }
-
     public VariableContainerFigure getVariable() {
         return this.variable;
+    }
+
+    public void updateVarNodeType() {
+        this.type.setText(getTypeDisplayValue(varNode));
     }
 
 }

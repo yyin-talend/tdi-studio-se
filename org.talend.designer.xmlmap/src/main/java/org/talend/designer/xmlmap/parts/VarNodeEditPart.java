@@ -145,7 +145,7 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
         case Notification.SET:
             switch (featureId) {
             case XmlmapPackage.VAR_NODE__EXPRESSION:
-                varNodeFigure.getExpression().setText(((VarNode) getModel()).getExpression());
+                ((VarNodeFigure) getFigure()).getExpression().setText(((VarNode) getModel()).getExpression());
                 break;
             case XmlmapPackage.VAR_NODE__NULLABLE:
                 boolean newBoolean = notification.getNewBooleanValue();
@@ -157,17 +157,16 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
                 }
                 break;
             case XmlmapPackage.VAR_NODE__NAME:
-                String newString = notification.getNewStringValue();
-                ((VarNodeFigure) getFigure()).getVariable().getVariableLabel().setText(newString);
+                ((VarNodeFigure) getFigure()).getVariable().getVariableLabel().setText(((VarNode) getModel()).getName());
                 break;
             case XmlmapPackage.VAR_NODE__TYPE:
-                varNodeFigure.getType().setText(((VarNode) getModel()).getType());
-                refreshChildren();
-                refreshVisuals();
+                ((VarNodeFigure) getFigure()).updateVarNodeType();
+                // refreshChildren();
+                // refreshVisuals();
                 break;
             default:
-                refreshChildren();
-                refreshVisuals();
+                // refreshChildren();
+                // refreshVisuals();
             }
         case Notification.ADD:
             switch (featureId) {

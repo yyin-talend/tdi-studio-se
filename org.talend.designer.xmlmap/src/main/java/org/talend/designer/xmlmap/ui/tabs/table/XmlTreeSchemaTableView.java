@@ -46,7 +46,7 @@ import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
-import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -88,23 +88,23 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
             public void set(TreeSchemaTableEntry bean, Object value) {
                 if (isValidName) {
                     bean.setName((String) value);
-                    String xPath = bean.getXPath();
-                    xPath = xPath.substring(0, xPath.lastIndexOf(XmlMapUtil.XPATH_SEPARATOR) + 1);
-                    NodeType nodeType = bean.getTreeNode().getNodeType();
-                    String typedValue = null;
-                    if (NodeType.ATTRIBUT.equals(nodeType)) {
-                        typedValue = xPath + XmlMapUtil.XPATH_ATTRIBUTE + bean.getName();
-                    } else if (NodeType.NAME_SPACE.equals(nodeType)) {
-                        typedValue = xPath + XmlMapUtil.XPATH_NAMESPACE + bean.getName();
-                    } else {
-                        typedValue = xPath + bean.getName();
-                    }
-                    bean.setXPath(typedValue);
+                    // String xPath = bean.getXPath();
+                    // xPath = xPath.substring(0, xPath.lastIndexOf(XmlMapUtil.XPATH_SEPARATOR) + 1);
+                    // NodeType nodeType = bean.getTreeNode().getNodeType();
+                    // String typedValue = null;
+                    // if (NodeType.ATTRIBUT.equals(nodeType)) {
+                    // typedValue = xPath + XmlMapUtil.XPATH_ATTRIBUTE + bean.getName();
+                    // } else if (NodeType.NAME_SPACE.equals(nodeType)) {
+                    // typedValue = xPath + XmlMapUtil.XPATH_NAMESPACE + bean.getName();
+                    // } else {
+                    // typedValue = xPath + bean.getName();
+                    // }
+                    // bean.setXPath(typedValue);
+                    XmlMapData mapperData = XmlMapUtil.getXmlMapData(bean.getTreeNode());
+                    XmlMapUtil.updateXPathAndExpression(mapperData, bean.getTreeNode(), bean.getName(),
+                            XmlMapUtil.getXPathLength(bean.getXPath()), true);
                     if (!bean.getTreeNode().getChildren().isEmpty()) {
-                        XmlMapUtil.updateChildrenXPath(bean.getTreeNode(), bean.getName(),
-                                XmlMapUtil.getXPathLength(bean.getXPath()));
-                        // tableViewerCreator.getTableViewer().refresh();
-                        // refresh();
+                        refresh();
                     }
                 }
             }
@@ -259,7 +259,7 @@ public class XmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSche
     }
 
     public void refresh() {
-        this.getTableViewerCreator().refresh();
+        this.getTableViewerCreator().getTableViewer().refresh();
     }
 
     private boolean currentBeanHasJavaDateType(Object element) {

@@ -17,12 +17,11 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class ConnectionEditPart extends AbstractConnectionEditPart {
+public class ConnectionEditPart extends BaseConnectionEditPart {
 
     @Override
     public EditPart getSource() {

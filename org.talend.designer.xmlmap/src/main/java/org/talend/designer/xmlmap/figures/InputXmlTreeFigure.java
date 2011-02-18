@@ -56,16 +56,28 @@ public class InputXmlTreeFigure extends GenericFigure {
 
         ScrollPane scroll = new ScrollPane();
         scroll.setVerticalScrollBarVisibility(ScrollPane.NEVER);
+
         columnContainer = new Figure();
         scroll.getViewport().setContents(columnContainer);
-        ToolbarLayout layout = new ToolbarLayout();
+
+        scroll.getViewport().setOpaque(true);
+        scroll.getViewport().setBackgroundColor(ColorConstants.red);
+
+        ToolbarLayout layout = new ToolbarLayout() {
+
+            @Override
+            public void layout(IFigure parent) {
+                // TODO Auto-generated method stub
+                super.layout(parent);
+            }
+        };
         layout.setStretchMinorAxis(true);
         layout.setVertical(true);
         columnContainer.setLayoutManager(layout);
         columnContainer.setOpaque(true);
         columnContainer.setBackgroundColor(ColorConstants.white);
-        this.add(columnContainer);
-        // this.add(scroll);
+        // this.add(columnContainer);
+        this.add(scroll);
     }
 
     public IFigure getColumnContainer() {

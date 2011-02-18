@@ -272,14 +272,20 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 }
                 if (part.getSourceConnections() != null) {
                     for (Object conn : part.getSourceConnections()) {
-                        if (conn instanceof AbstractConnectionEditPart) {
-                            AbstractConnectionEditPart connectionEditPart = (AbstractConnectionEditPart) conn;
+                        if (conn instanceof BaseConnectionEditPart) {
+                            BaseConnectionEditPart connectionEditPart = (BaseConnectionEditPart) conn;
                             if (connectionEditPart.getFigure() instanceof PolylineConnection) {
                                 PolylineConnection connFigure = (PolylineConnection) connectionEditPart.getFigure();
                                 if (expanded) {
+                                    connectionEditPart.setNodeCollapsed(true);
                                     connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
                                 } else {
-                                    connFigure.setLineStyle(SWT.LINE_SOLID);
+                                    connectionEditPart.setNodeCollapsed(false);
+                                    if (!connectionEditPart.isDOTStyle()) {
+                                        connFigure.setLineStyle(SWT.LINE_SOLID);
+                                    } else {
+                                        connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
+                                    }
                                 }
                             }
                             connectionEditPart.refresh();
@@ -431,6 +437,14 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
         super.performRequest(req);
     }
 
+    private XmlMapDataEditPart getMapDataEditPart() {
+        List children2 = getViewer().getRootEditPart().getChildren();
+        if (children2.size() == 1 && children2.get(0) instanceof XmlMapDataEditPart) {
+            return (XmlMapDataEditPart) children2.get(0);
+        }
+        return null;
+    }
+
     protected XmlTreeBranch getTreeBranchFigure() {
         return this.treeBranchFigure;
 
@@ -461,12 +475,20 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
             if (connectionPart == null) {
                 return getOwner().getBounds().getLeft();
             }
+            XmlMapDataEditPart mapDataEditPart = getMapDataEditPart();
+
+            IFigure containerFigure = null;
+
             Object model = TreeNodeEditPart.this.getModel();
             boolean loctionRight = false;
             IConnection connection = (IConnection) connectionPart.getModel();
+            // if current is input tree node or var node ,get figure right location
             if (model == connection.getSource()
                     && (connection.getTarget() instanceof OutputTreeNode || connection.getTarget() instanceof VarNode)) {
                 loctionRight = true;
+                containerFigure = mapDataEditPart.getLeftFigure();
+            } else {
+                containerFigure = mapDataEditPart.getRightFigure();
             }
 
             Point ref = null;
@@ -508,6 +530,55 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
                 ref = getOwner().getBounds().getCenter();
                 getOwner().translateToAbsolute(ref);
             }
+
+            if (connectionPart instanceof BaseConnectionEditPart && connectionPart.getFigure() instanceof PolylineConnection) {
+                BaseConnectionEditPart baseConnectionPart = (BaseConnectionEditPart) connectionPart;
+                PolylineConnection connFigure = (PolylineConnection) connectionPart.getFigure();
+
+                org.eclipse.swt.graphics.Point avilableSize = getViewer().getControl().getSize();
+
+                if (ref != null) {
+                    if (ref.y < 0) {
+                        if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
+                            ref.y = 0;
+                        }
+                        if (loctionRight) {
+                            baseConnectionPart.setSourceConcained(false);
+                        } else {
+                            baseConnectionPart.setTargetContained(false);
+                        }
+                        if (baseConnectionPart.isDOTStyle()) {
+                            connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
+                        } else {
+                            connFigure.setLineStyle(SWT.LINE_SOLID);
+                        }
+                    } else if (ref.y > avilableSize.y) {
+                        if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
+                            ref.y = avilableSize.y;
+                        }
+                        if (loctionRight) {
+                            baseConnectionPart.setSourceConcained(false);
+                        } else {
+                            baseConnectionPart.setTargetContained(false);
+                        }
+                        if (baseConnectionPart.isDOTStyle()) {
+                            connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
+                        } else {
+                            connFigure.setLineStyle(SWT.LINE_SOLID);
+                        }
+                    } else {
+                        if (loctionRight) {
+                            baseConnectionPart.setSourceConcained(true);
+                        } else {
+                            baseConnectionPart.setTargetContained(true);
+                        }
+                        if (!baseConnectionPart.isDOTStyle()) {
+                            connFigure.setLineStyle(SWT.LINE_SOLID);
+                        }
+                    }
+                }
+            }
+
             return ref;
         }
 

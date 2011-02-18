@@ -57,6 +57,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.add(tableColumnstitle);
 
         ScrollPane scroll = new ScrollPane();
+        // scroll.setLayoutManager(new CustomScrollPaneLayout());
         scroll.setVerticalScrollBarVisibility(ScrollPane.NEVER);
         columnContainer = new Figure();
         scroll.getViewport().setContents(columnContainer);
@@ -66,8 +67,8 @@ public class OutputXmlTreeFigure extends GenericFigure {
         columnContainer.setLayoutManager(layout);
         columnContainer.setOpaque(true);
         columnContainer.setBackgroundColor(ColorConstants.white);
-        this.add(columnContainer);
-        // this.add(scroll);
+        // this.add(columnContainer);
+        this.add(scroll);
     }
 
     public IFigure getColumnContainer() {
