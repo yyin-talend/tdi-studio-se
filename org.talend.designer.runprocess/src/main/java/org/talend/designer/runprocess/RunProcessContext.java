@@ -856,6 +856,26 @@ public class RunProcessContext {
     }
 
     /**
+     * DOC ycbai Comment method "isLastData".
+     * 
+     * @param reader
+     * @param previousData
+     * @return
+     */
+    private boolean isEndData(String line) {
+        String temp = line.substring(line.indexOf("|") + 1);
+        temp = temp.substring(temp.indexOf("|") + 1);
+        temp = temp.substring(temp.indexOf("|") + 1);
+        temp = temp.substring(temp.indexOf("|") + 1);
+        temp = temp.substring(temp.indexOf("|") + 1);
+        if (temp.startsWith("end job")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Performance monitor. <br/>
      * 
      * $Id$
@@ -864,6 +884,8 @@ public class RunProcessContext {
     private class PerformanceMonitor implements Runnable {
 
         private volatile boolean stopThread;
+
+        private String lastData;
 
         private Set<IPerformance> performanceDataSet = new HashSet<IPerformance>();
 
@@ -900,6 +922,7 @@ public class RunProcessContext {
                 }
             } while (processSocket == null && !stopThread);
 
+            String preData = null;
             if (processSocket != null && !stopThread) {
                 try {
                     InputStream in = processSocket.getInputStream();
@@ -909,6 +932,9 @@ public class RunProcessContext {
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             if (line != null) {
                                 if (line.startsWith("0")) {
+                                    if (isEndData(line)) {
+                                        lastData = preData;
+                                    }
                                     // 0 = job information
                                     // 1 = connection information
                                     continue;
@@ -930,6 +956,7 @@ public class RunProcessContext {
                                 }
                             }
                         }
+                        preData = line;
                         final String data = line;
                         // // for feature:11356
                         // if (data != null && data.split("\\|").length == 2) {
@@ -949,6 +976,7 @@ public class RunProcessContext {
                                     performance.resetStatus();
                                 }
                                 performanceDataSet.add(performance);
+
                                 Display.getDefault().asyncExec(new Runnable() {
 
                                     public void run() {
@@ -958,15 +986,17 @@ public class RunProcessContext {
                                             } else {
                                                 performance.setPerformanceData(data);
                                             }
+                                            // clear status when run to the last data.
+                                            if (data.equals(lastData)) {
+                                                for (IPerformance performance : performanceDataSet) {
+                                                    performance.resetStatus();
+                                                }
+                                            }
                                         }
                                     }
                                 });
                             }
                         }
-                    }
-                    // clear status for running next time
-                    for (IPerformance performance : performanceDataSet) {
-                        performance.resetStatus();
                     }
                 } catch (Exception e) {
                     // Do nothing : process is ended
