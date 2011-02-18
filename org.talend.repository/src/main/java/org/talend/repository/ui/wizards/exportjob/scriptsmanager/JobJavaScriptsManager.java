@@ -63,12 +63,9 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -586,32 +583,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             boolean hasDynamicMetadata = false;
             if (resource.getItem() instanceof ProcessItem) {
-                ProcessItem processItem = (ProcessItem) resource.getItem();
-                final ProcessType process = processItem.getProcess();
-                if (process != null) {
-                    out: for (NodeType node : (List<NodeType>) process.getNode()) {
-                        // to check if node is db component , maybe need modification
-                        boolean isDbNode = false;
-                        for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
-                            if ("TYPE".equals(param.getName()) && "TEXT".equals(param.getField()) && param.getValue() != null
-                                    && !"".equals(param.getValue())) {
-                                isDbNode = true;
-                                break;
-                            }
-                        }
-                        if (isDbNode) {
-                            for (MetadataType metadataType : (List<MetadataType>) node.getMetadata()) {
-                                for (ColumnType column : (List<ColumnType>) metadataType.getColumn()) {
-                                    if ("id_Dynamic".equals(column.getType())) {
-                                        hasDynamicMetadata = true;
-                                        break out;
-                                    }
-                                }
-                            }
-                        }
+                List<JobInfo> list = new ArrayList<JobInfo>();
 
-                    }
-                }
+                hasDynamicMetadata = LastGenerationInfo.getInstance().isUseDynamic(resource.getItem().getProperty().getId(),
+                        resource.getItem().getProperty().getVersion());
+
             }
             if (hasDynamicMetadata) {
                 needMappingInSystemRoutine = true;

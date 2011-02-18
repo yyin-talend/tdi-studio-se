@@ -48,6 +48,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
@@ -504,6 +505,7 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
             boolean applyContextToChildren) throws ProcessorException {
+        LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         return ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren).getProcess();
     }
 
@@ -517,6 +519,7 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, IContext context, String version, boolean statistics, boolean trace,
             boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         return ProcessorUtilities.generateCode(process, context, version, statistics, trace, applyContextToChildren, monitor)
                 .getProcess();
     }
@@ -531,6 +534,7 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        LastGenerationInfo.getInstance().getUseDynamicMap().clear();
         return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor)
                 .getProcess();
     }
