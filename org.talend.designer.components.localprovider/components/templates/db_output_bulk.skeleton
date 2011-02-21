@@ -2254,7 +2254,7 @@ public class CLASS {
                 setStmt.append("} else {");
             }
             typeToGenerate = getGenerateType(typeToGenerate);
-            if(dbType.toLowerCase().equals("char") || typeToGenerate.equals("Character")) {
+            if( typeToGenerate.equals("String")&& dbType.toLowerCase().equals("char")) {
                 if(isObject) {
                     setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
                 } else {
@@ -2262,6 +2262,19 @@ public class CLASS {
                 }
                 setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
                 setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == \"\0\"){\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append("}");
+            }
+            else if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                if(isObject) {
+                    setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
+                } else {
+                    setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
+                }
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
                 setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
