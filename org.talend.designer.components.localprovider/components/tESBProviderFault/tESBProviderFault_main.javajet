@@ -43,7 +43,7 @@ if (null != metadatas && 0 < metadatas.size()) {
 				}
 %>
 		System.out.println("--- [tESBProviderFault:<%=cid%>] fault put to response: " + esbProviderFaultDoc_<%=cid%>);
-		((QueuedExchangeContextImpl<org.dom4j.Document>) globalMap.get(uuid)).serveOutputFault(
+		((QueuedExchangeContextImpl<org.dom4j.Document>) globalMap.get(uuid)).serveBusinessFault(
 			esbProviderFaultTitle_<%=cid%>,
 			(null == esbProviderFaultDoc_<%=cid%>) ? null : esbProviderFaultDoc_<%=cid%>.getDocument());
 <%				
