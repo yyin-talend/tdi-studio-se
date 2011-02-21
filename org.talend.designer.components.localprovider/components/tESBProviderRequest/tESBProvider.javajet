@@ -17,6 +17,7 @@ class QueuedExchangeContextImpl<T> {
 
 	private T output = null;
 	private T faultDetails = null;
+	private Throwable fault = null;
 	private String faultMessage = null;
 
 	public QueuedExchangeContextImpl(T inMsg) {
@@ -75,28 +76,48 @@ class QueuedExchangeContextImpl<T> {
 		System.out.println(System.currentTimeMillis() + " <- serveOutputMessage");
 	}
 
-	public void serveOutputFault(String faultMessage, T faultDetails) {
-		System.out.println(System.currentTimeMillis() + " -> serveOutputFault");
-		this.faultMessage = faultMessage;
+	public void serveBusinessFault(String faultMessage, T faultDetails) {
+		System.out.println(System.currentTimeMillis() + " -> serveBusinessFault");
+		this.faultMessage =
+			(null == faultMessage || 0 == faultMessage.trim().length())
+				? "talend job business fault" : faultMessage;
 		this.faultDetails = faultDetails;
-		System.out.println(System.currentTimeMillis() + " <- serveOutputFault");
+		System.out.println(System.currentTimeMillis() + " <- serveBusinessFault");
+	}
+
+	public void serveFault(String faultMessage, Throwable fault) {
+		System.out.println(System.currentTimeMillis() + " -> serveFault");
+		this.faultMessage =
+			(null == faultMessage || 0 == faultMessage.trim().length())
+				? "talend job error" : faultMessage;
+		this.fault = fault;
+		System.out.println(System.currentTimeMillis() + " <- serveFault");
 	}
 
 	public boolean isFault() {
 		return (faultMessage != null);
 	}
 
+	public boolean isBusinessFault() {
+		return isFault() && null == fault;
+	}
+	
 	public T getResponse() {
 		return output;
-	}
-
-	public T getFaultDetails() {
-		return faultDetails;
 	}
 
 	public String getFaultMessage() {
 		return faultMessage;
 	}
+
+	public T getBusinessFaultDetails() {
+		return faultDetails;
+	}
+
+	public Throwable getFault() {
+		return fault;
+	}
+	
 }
 
 /**
@@ -127,16 +148,18 @@ class QueuedMessageHandlerImpl<T> {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// throw new
-			// Exception("Can't queue request, queue size of "
-			// + MAX_QUEUE_SIZE + " is exceeded");
-			context.serveOutputFault("job pool overflow exceed", null);
+			// context.serveFault("job pool overflow exceed", null);
+			throw new RuntimeException(
+					"Can't queue request, queue size of "
+							+ MAX_QUEUE_SIZE + " is exceeded");
 		} else {
 			try {
 				context.waitForRelease(WAIT_TIMEOUT_SECONDS,
 						java.util.concurrent.TimeUnit.SECONDS);
 			} catch (InterruptedException ie) {
-				context.serveOutputFault("job execution timeout: " + ie.getMessage(), null);
+				// context.serveFault("job execution timeout", ie);
+				throw new RuntimeException(
+						"job execution timeout: " + ie.getMessage());
 			}
 		}
 		return context;
@@ -231,29 +254,39 @@ class ESBProvider_<%=cid%> implements
 					String faultString = messageExchange.getFaultMessage();
 					System.out.println("fault: " + faultString);
 					
-					org.dom4j.Document faultDoc = messageExchange.getFaultDetails();
-
-					javax.xml.soap.SOAPFactory soapFactory =
-						javax.xml.soap.SOAPFactory.newInstance();
-					javax.xml.soap.SOAPFault soapFault =
-						soapFactory.createFault(faultString,
-								new javax.xml.namespace.QName(TNS, "businessFault"));
-					if (null != faultDoc) {
-						org.dom4j.io.DOMWriter writer = new org.dom4j.io.DOMWriter();
-						org.w3c.dom.Document faultDetailDom = writer.write(faultDoc);
-						soapFault.addDetail().appendChild(
-								soapFault.getOwnerDocument().importNode(
-										faultDetailDom.getDocumentElement(), true));
-						
-						// print
-						java.io.ByteArrayOutputStream baosFault = new java.io.ByteArrayOutputStream();
-						factory.newTransformer().transform(
-								new org.dom4j.io.DocumentSource(faultDoc),
-								new javax.xml.transform.stream.StreamResult(baosFault)
-							);
-						System.out.println("fault details: " + baosFault.toString());
+					if (messageExchange.isBusinessFault()) {
+						org.dom4j.Document faultDoc = messageExchange.getBusinessFaultDetails();
+	
+						javax.xml.soap.SOAPFactory soapFactory =
+							javax.xml.soap.SOAPFactory.newInstance();
+						javax.xml.soap.SOAPFault soapFault =
+							soapFactory.createFault(faultString,
+									new javax.xml.namespace.QName(TNS, "businessFault"));
+						if (null != faultDoc) {
+							org.dom4j.io.DOMWriter writer = new org.dom4j.io.DOMWriter();
+							org.w3c.dom.Document faultDetailDom = writer.write(faultDoc);
+							soapFault.addDetail().appendChild(
+									soapFault.getOwnerDocument().importNode(
+											faultDetailDom.getDocumentElement(), true));
+							
+							// print
+							java.io.ByteArrayOutputStream baosFault = new java.io.ByteArrayOutputStream();
+							factory.newTransformer().transform(
+									new org.dom4j.io.DocumentSource(faultDoc),
+									new javax.xml.transform.stream.StreamResult(baosFault)
+								);
+							System.out.println("fault details: " + baosFault.toString());
+						}
+						throw new javax.xml.ws.soap.SOAPFaultException(soapFault);
+					} else {
+						Throwable error = messageExchange.getFault();
+						System.out.println("job error: " + error.getMessage());
+						if (error instanceof RuntimeException) {
+							throw (RuntimeException) error;
+						} else {
+							throw new RuntimeException(faultString, error);
+						}
 					}
-					throw new javax.xml.ws.soap.SOAPFaultException(soapFault);
 				} else {
 					org.dom4j.Document responseDoc = messageExchange.getResponse();
 

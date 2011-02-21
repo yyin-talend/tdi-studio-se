@@ -18,7 +18,7 @@ System.out.println("--- [tESBProviderRequest] Initializing the component");
 	System.out.println("endpoint url: " + endpointUrl);
 //*** ESB context initialization finish
 
-<%@ include file="classes.javajetinc" %> 
+<%@ include file="tESBProvider.javajet" %> 
 
 //*** external processor(s) initialization
 	final QueuedMessageHandlerImpl<org.dom4j.Document> handler =

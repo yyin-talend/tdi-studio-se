@@ -12,7 +12,7 @@
 	String kListen = ElementParameterParser.getValue(node, "__KEEPLISTENING__");
 %>
 		} catch (Throwable e) {
-			messagesExchange_<%=cid%>.serveOutputFault("talend job execution error: " + e.getMessage(), null);
+			messagesExchange_<%=cid%>.serveFault("talend job execution error", e);
 		} finally {
 			messagesExchange_<%=cid%>.release();
             // clear for next cycle
