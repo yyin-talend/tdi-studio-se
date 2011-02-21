@@ -235,16 +235,7 @@ class ESBProvider_<%=cid%> implements
 			org.dom4j.io.DocumentResult docResult = new org.dom4j.io.DocumentResult();
 			factory.newTransformer().transform(request, docResult);
 			org.dom4j.Document requestDoc = docResult.getDocument();
-
-
-			// print
-			java.io.ByteArrayOutputStream baosRequest = new java.io.ByteArrayOutputStream();
-			factory.newTransformer().transform(
-					new org.dom4j.io.DocumentSource(requestDoc),
-					new javax.xml.transform.stream.StreamResult(baosRequest)
-				);
-			System.out.println("request: " + baosRequest.toString());
-
+			System.out.println("request: " + requestDoc.asXML());
 
 			QueuedExchangeContextImpl<org.dom4j.Document> messageExchange =
 				messageHandler.invoke(requestDoc);
@@ -263,19 +254,12 @@ class ESBProvider_<%=cid%> implements
 							soapFactory.createFault(faultString,
 									new javax.xml.namespace.QName(TNS, "businessFault"));
 						if (null != faultDoc) {
+							System.out.println("business fault details: " + faultDoc.asXML());
 							org.dom4j.io.DOMWriter writer = new org.dom4j.io.DOMWriter();
 							org.w3c.dom.Document faultDetailDom = writer.write(faultDoc);
 							soapFault.addDetail().appendChild(
 									soapFault.getOwnerDocument().importNode(
 											faultDetailDom.getDocumentElement(), true));
-							
-							// print
-							java.io.ByteArrayOutputStream baosFault = new java.io.ByteArrayOutputStream();
-							factory.newTransformer().transform(
-									new org.dom4j.io.DocumentSource(faultDoc),
-									new javax.xml.transform.stream.StreamResult(baosFault)
-								);
-							System.out.println("fault details: " + baosFault.toString());
 						}
 						throw new javax.xml.ws.soap.SOAPFaultException(soapFault);
 					} else {
@@ -289,14 +273,7 @@ class ESBProvider_<%=cid%> implements
 					}
 				} else {
 					org.dom4j.Document responseDoc = messageExchange.getResponse();
-
-					// print
-					java.io.ByteArrayOutputStream baosResponse = new java.io.ByteArrayOutputStream();
-					factory.newTransformer().transform(
-							new org.dom4j.io.DocumentSource(responseDoc),
-							new javax.xml.transform.stream.StreamResult(baosResponse)
-						);
-					System.out.println("response: " + baosResponse.toString());
+					System.out.println("response: " + responseDoc.asXML());
 
 					return new org.dom4j.io.DocumentSource(responseDoc);
 				}
