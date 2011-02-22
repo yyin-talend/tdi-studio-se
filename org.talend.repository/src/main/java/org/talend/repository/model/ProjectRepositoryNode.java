@@ -707,10 +707,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     handleReferenced(refProject);
                 }
             } else if (parent == recBinNode) {
-                // List<IRepositoryObject> objects = factory.getRecycleBinItems(newProject);
                 List<RepositoryNode> foldersList = new ArrayList<RepositoryNode>();
                 if (newProject != null && newProject.getEmfProject() != null) {
-                    List<FolderItem> folderItems = newProject.getEmfProject().getFolders();
+                    List<FolderItem> folderItems = ProjectManager.getInstance().getFolders(newProject.getEmfProject());
                     for (FolderItem folder : new ArrayList<FolderItem>(folderItems)) {
                         addItemToRecycleBin(recBinNode, folder, foldersList);
                     }

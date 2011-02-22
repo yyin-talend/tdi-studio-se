@@ -225,11 +225,6 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
             try {
                 if (!instance.isLocalConnectionProvider()) {
                     instance.getRepositoryFactoryFromProvider().reloadProject(currentProject);
-                    // parent's folders info are transient, so need to set again each start.
-                    for (FolderItem curFolderItem : (List<FolderItem>) currentProject.getEmfProject().getFolders()) {
-                        fillParentsFolderInfos(curFolderItem);
-                        curFolderItem.setParent(currentProject.getEmfProject());
-                    }
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);

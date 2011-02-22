@@ -433,8 +433,8 @@ public class ImportItemUtil {
     }
 
     private void checkDeletedFolders() {
-        List<FolderItem> foldersList = (List<FolderItem>) ProjectManager.getInstance().getCurrentProject().getEmfProject()
-                .getFolders();
+        List<FolderItem> foldersList = (List<FolderItem>) ProjectManager.getInstance().getFolders(
+                ProjectManager.getInstance().getCurrentProject().getEmfProject());
         for (FolderItem folderItem : foldersList) {
             setPathToDeleteIfNeed(folderItem);
         }

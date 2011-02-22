@@ -15,6 +15,7 @@ package org.talend.repository.model.migration;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
@@ -35,12 +36,16 @@ public class AutoUpdateRelationsMigrationTask extends AbstractJobMigrationTask {
 
     @Override
     public ExecutionResult execute(Item item) {
-        RelationshipItemBuilder.getInstance().addOrUpdateItem(item, true);
+        try {
+            RelationshipItemBuilder.getInstance().addOrUpdateItem(item, true);
+        } catch (Exception e) {
+            ExceptionHandler.process(new Exception("Error in item:" + item.getProperty().getLabel(), e));
+        }
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2011, 02, 12, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2050, 02, 12, 12, 0, 0);
         return gc.getTime();
     }
 }
