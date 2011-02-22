@@ -481,16 +481,30 @@ public abstract class DbGenerationManager {
             if (sqlQuery.contains(context)) {
                 sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
             }
-        }
-        if (!sqlQuery.trim().endsWith("\"")) { //$NON-NLS-1$
-            sqlQuery = sqlQuery + "\""; //$NON-NLS-1$
-        } else {
-            if (sqlQuery.trim().endsWith("+ \"")) { //$NON-NLS-1$
-                sqlQuery = sqlQuery.substring(0, sqlQuery.lastIndexOf("+ \"")); //$NON-NLS-1$
+            if (queryColumnsName.contains(context)) {
+                queryColumnsName = queryColumnsName.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+        sqlQuery = handleQuery(sqlQuery);
+        queryColumnsName = handleQuery(queryColumnsName);
 
         return sqlQuery;
+    }
+
+    private String handleQuery(String query) {
+        if (query != null) {
+            if (query.trim().startsWith("\" +")) {
+                query = "\"" + query;
+            }
+            if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
+                query = query + "\""; //$NON-NLS-1$
+            } else {
+                if (query.trim().endsWith("+ \"")) { //$NON-NLS-1$
+                    query = query.substring(0, query.lastIndexOf("+ \"")); //$NON-NLS-1$
+                }
+            }
+        }
+        return query;
     }
 
     private boolean containWith(String expression, String pattern, boolean start) {

@@ -67,7 +67,7 @@
 				);
 				globalMap.put(
 					"<%=uniqueNameComponent %>"+"QUERY_COLUMNS_NAME" + "<%= connection.getUniqueName() %>",
-					"<%= gm.getQueryColumnsName() %>"
+					<%= gm.getQueryColumnsName() %>
 				);
 				<%
 				if(!tablesProcessed.contains(outputTable.getTableName())) {
