@@ -153,8 +153,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
         final IContextManager contextManager = getProcess().getContextManager();
         List<IContext> addGroupContext = ((JobContextManager) contextManager).getAddGroupContext();
-
         Map<ContextItem, List<IContext>> addContextGroupMap = ((JobContextManager) contextManager).getAddContextGroupMap();
+
+        List<IContext> removeGroupContext = ((JobContextManager) contextManager).getRemoveGroupContext();
+        Map<ContextItem, List<IContext>> removeContextGroupMap = ((JobContextManager) contextManager).getRemoveContextGroupMap();
+
+        Map<IContext, String> renameGroupContext = ((JobContextManager) contextManager).getRenameGroupContext();
+        Map<ContextItem, List<IContext>> renameContextGroupMap = ((JobContextManager) contextManager).getRenameContextGroupMap();
+
         List<IContext> listContext = contextManager.getListContext();
         for (ContextItem item : addContextGroupMap.keySet()) {
 
@@ -179,6 +185,70 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(context);
                     String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
                     result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD, item, remark);
+                    result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
+                    contextResults.add(result);
+                }
+            }
+        }
+
+        for (ContextItem item : removeContextGroupMap.keySet()) {
+
+            List<IContext> existedContextGroup = new ArrayList<IContext>();
+
+            if (removeGroupContext.size() > 0) {
+                for (int i = 0; i < removeGroupContext.size(); i++) {
+                    IContext context = removeGroupContext.get(i);
+                    boolean haveFound = false;
+                    for (int j = 0; j < listContext.size(); j++) {
+                        if (context.getName().equals(listContext.get(j).getName())) {
+                            haveFound = true;
+                            break;
+                        }
+                    }
+                    if (!haveFound) {
+                        removeGroupContext.remove(context);
+                    }
+                }
+            }
+
+            if (removeGroupContext.size() > 0) {
+                for (IContext context : removeGroupContext) {
+
+                    UpdateCheckResult result = new UpdateCheckResult(context);
+                    String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
+                    result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.DELETE, item, remark);
+                    result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
+                    contextResults.add(result);
+                }
+            }
+        }
+
+        for (ContextItem item : renameContextGroupMap.keySet()) {
+
+            if (renameGroupContext.size() > 0) {
+                for (IContext context : renameGroupContext.keySet()) {
+                    // IContext context = renameGroupContext.get(i);
+                    boolean haveFound = false;
+                    for (int j = 0; j < listContext.size(); j++) {
+                        if (renameGroupContext.get(context).equals(listContext.get(j).getName())) {
+                            haveFound = true;
+                            break;
+                        }
+                    }
+                    if (!haveFound) {
+                        renameGroupContext.remove(context);
+                    }
+                }
+            }
+
+            if (renameGroupContext.size() > 0) {
+                for (IContext context : renameGroupContext.keySet()) {
+
+                    UpdateCheckResult result = new UpdateCheckResult(context);
+                    String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
+                    result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.RENAME, item, remark);
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);

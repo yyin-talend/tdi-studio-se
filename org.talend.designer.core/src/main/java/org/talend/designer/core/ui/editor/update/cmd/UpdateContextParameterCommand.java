@@ -26,10 +26,12 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContext;
+import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
@@ -178,6 +180,43 @@ public class UpdateContextParameterCommand extends Command {
                         }
 
                         listContext.add(newContext);
+                    }
+                } else if (result.getResultType() == EUpdateResult.DELETE
+                        && result.getUpdateType() == EUpdateItemType.CONTEXT_GROUP && result.isChecked()) {
+                    IContext context = (IContext) updateObject;
+                    if (result.getParameter() instanceof ContextItem) {
+                        ContextItem item = (ContextItem) result.getParameter();
+                        List<IContext> listC = new ArrayList<IContext>(listContext);
+                        for (IContext con : listC) {
+                            if (con.getName().equals(context.getName())) {
+                                for (IContextParameter oldParam : con.getContextParameterList()) {
+                                    if (item.getProperty().getId().equals(oldParam.getSource())) {
+                                        listContext.remove(con);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    return;
+                } else if (result.getResultType() == EUpdateResult.RENAME
+                        && result.getUpdateType() == EUpdateItemType.CONTEXT_GROUP && result.isChecked()) {
+                    IContext context = (IContext) updateObject;
+                    IContextManager contextManager = process.getContextManager();
+                    Map<IContext, String> renameGroupContext = ((JobContextManager) contextManager).getRenameGroupContext();
+                    String oldName = renameGroupContext.get(context);
+                    if (result.getParameter() instanceof ContextItem) {
+                        ContextItem item = (ContextItem) result.getParameter();
+                        for (IContext con : listContext) {
+                            if (con.getName().equals(oldName)) {
+                                for (IContextParameter oldParam : con.getContextParameterList()) {
+                                    if (item.getProperty().getId().equals(oldParam.getSource())) {
+                                        con.setName(context.getName());
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
                 return;
