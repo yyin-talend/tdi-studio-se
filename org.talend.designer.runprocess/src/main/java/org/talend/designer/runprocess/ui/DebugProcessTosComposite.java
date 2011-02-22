@@ -929,15 +929,17 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                         itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
                     }
                     toolBar.setEnabled(b);
-                } else {
-
-                    toolBar.setEnabled(runnable);
-                    itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
-                    itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
-                    itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
-                    itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
-                    toolBar.getParent().layout();
                 }
+                // bug 18852
+                // else {
+                //
+                // toolBar.setEnabled(runnable);
+                // itemDropDown.setText(" " + Messages.getString("ProcessComposite.traceDebug"));
+                // itemDropDown.setData(ProcessView.TRACEDEBUG_ID);
+                // itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
+                // itemDropDown.setToolTipText(Messages.getString("ProcessComposite.traceDebug"));
+                // toolBar.getParent().layout();
+                // }
             }
         }
     }
