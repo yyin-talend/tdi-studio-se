@@ -194,7 +194,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         for (ContextItem item : removeContextGroupMap.keySet()) {
 
-            List<IContext> existedContextGroup = new ArrayList<IContext>();
+            List<IContext> notExistedContextGroup = new ArrayList<IContext>();
 
             if (removeGroupContext.size() > 0) {
                 for (int i = 0; i < removeGroupContext.size(); i++) {
@@ -207,9 +207,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
                     if (!haveFound) {
-                        removeGroupContext.remove(context);
+                        notExistedContextGroup.add(context);
                     }
                 }
+                removeGroupContext.removeAll(notExistedContextGroup);
             }
 
             if (removeGroupContext.size() > 0) {
@@ -225,14 +226,16 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
 
+        Map<IContext, String> temRenameGroupContext = new HashMap<IContext, String>();
+        temRenameGroupContext.putAll(renameGroupContext);
         for (ContextItem item : renameContextGroupMap.keySet()) {
 
             if (renameGroupContext.size() > 0) {
-                for (IContext context : renameGroupContext.keySet()) {
+                for (IContext context : temRenameGroupContext.keySet()) {
                     // IContext context = renameGroupContext.get(i);
                     boolean haveFound = false;
                     for (int j = 0; j < listContext.size(); j++) {
-                        if (renameGroupContext.get(context).equals(listContext.get(j).getName())) {
+                        if (temRenameGroupContext.get(context).equals(listContext.get(j).getName())) {
                             haveFound = true;
                             break;
                         }
