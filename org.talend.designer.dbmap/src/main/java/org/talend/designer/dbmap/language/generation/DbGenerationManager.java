@@ -62,7 +62,7 @@ public abstract class DbGenerationManager {
 
     private Set<String> aliasAlreadyDeclared = new HashSet<String>();
 
-    protected String queryColumnsName = "";
+    protected String queryColumnsName = "\"";
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -493,9 +493,6 @@ public abstract class DbGenerationManager {
 
     private String handleQuery(String query) {
         if (query != null) {
-            if (query.trim().startsWith("\" +")) {
-                query = "\"" + query;
-            }
             if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
                 query = query + "\""; //$NON-NLS-1$
             } else {
