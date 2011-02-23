@@ -1275,7 +1275,13 @@
             description="This migration task should be run each time, not only first time after login."
             id="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
             name="AutoUpdateRelationsMigrationTask">
-      </projecttask>     
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
+            id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
+            name="Change Routines Parameter">
+      </projecttask>
    </extension>
    
    <extension

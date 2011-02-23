@@ -720,4 +720,8 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
 
     }
+
+    public Set<String> getNeededRoutines() {
+        return null;
+    }
 }

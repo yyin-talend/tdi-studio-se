@@ -27,6 +27,8 @@ import org.talend.migration.IProjectMigrationTask;
 
 /**
  * DOC Administrator class global comment. Detailled comment
+ * 
+ * @deprecated
  */
 public class RelationShipIndexMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
@@ -128,5 +130,9 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2010, 7, 21, 12, 0, 0);
         return gc.getTime();
+    }
+
+    public boolean isDeprecated() {
+        return true;
     }
 }

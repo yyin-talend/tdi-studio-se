@@ -62,6 +62,8 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -92,12 +94,14 @@ import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
@@ -136,7 +140,6 @@ import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListC
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.core.ui.routine.RoutineItemRecord;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -169,7 +172,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     protected List<Note> notes = new ArrayList<Note>();
 
-    private List<RoutineItemRecord> routinesDependencies = new ArrayList<RoutineItemRecord>();
+    private List<RoutinesParameterType> routinesDependencies;
 
     private final String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
@@ -214,6 +217,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     protected byte[] screenshot = null;
 
     private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
+
+    private Set<String> neededRoutines;
 
     public Process(Property property) {
         this.property = property;
@@ -507,6 +512,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             generatingProcess = new DataProcess(this);
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
+        if (isProcessModified() || routinesDependencies == null || routinesDependencies.isEmpty()) {
+            checkRoutineDependencies();
+        }
         if (isProcessModified()) {
             List<INode> sortedFlow = sortNodes(nodes);
             if (sortedFlow.size() != nodes.size()) {
@@ -1081,7 +1089,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
                 processType);
-        saveRoutinesDependencies(getProcessType(), processType);
+        saveRoutinesDependencies(processType);
 
         EList nList = processType.getNode();
         EList cList = processType.getConnection();
@@ -1251,31 +1259,134 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void saveRoutinesDependencies(ProcessType oldProcess, ProcessType newprocess) {
-        /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
-        if (newprocess.getParameters() == null) {
-            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
-            newprocess.setParameters(parameterType);
+    private void checkRoutineDependencies() {
+        if (routinesDependencies == null) {
+            routinesDependencies = new ArrayList<RoutinesParameterType>();
         }
-        if (oldProcess.getParameters() != null) {
-            newprocess.getParameters().getRoutinesParameter().addAll(oldProcess.getParameters().getRoutinesParameter());
+        try {
+            List<String> possibleRoutines = new ArrayList<String>();
+            List<String> routinesToAdd = new ArrayList<String>();
+            String additionalString = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "." : "";
+
+            List<String> routinesAlreadySetup = new ArrayList<String>();
+
+            for (RoutinesParameterType routine : routinesDependencies) {
+                routinesAlreadySetup.add(routine.getName());
+            }
+
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            List<IRepositoryViewObject> routines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
+                    ERepositoryObjectType.ROUTINES);
+            // always add the system, others must be checked
+            for (IRepositoryViewObject object : routines) {
+                if (((RoutineItem) object.getProperty().getItem()).isBuiltIn() && routinesDependencies.isEmpty()) {
+                    routinesToAdd.add(object.getLabel());
+                } else if (!routinesAlreadySetup.contains(object.getLabel())) {
+                    possibleRoutines.add(object.getLabel());
+                }
+            }
+            for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                List<IRepositoryViewObject> refRoutines = factory.getAll(project, ERepositoryObjectType.ROUTINES);
+                for (IRepositoryViewObject object : refRoutines) {
+                    if (!((RoutineItem) object.getProperty().getItem()).isBuiltIn()) {
+                        if (!possibleRoutines.contains(object.getLabel()) && !routinesAlreadySetup.contains(object.getLabel())) {
+                            possibleRoutines.add(object.getLabel());
+                            routines.add(object);
+                        }
+                    }
+                }
+            }
+
+            // check possible routines to setup in process
+            for (IElementParameter param : (List<IElementParameter>) getElementParametersWithChildrens()) {
+                for (String routine : possibleRoutines) {
+                    if (!routinesToAdd.contains(routine) && param.getValue() != null && param.getValue() instanceof String
+                            && ((String) param.getValue()).contains(routine + additionalString)) {
+                        routinesToAdd.add(routine);
+                    }
+                    checkRoutinesInTable(routinesToAdd, additionalString, param, routine);
+                }
+            }
+
+            // check possible routines to setup in nodes
+            for (INode node : ((List<INode>) getGraphicalNodes())) {
+                for (IElementParameter param : (List<IElementParameter>) node.getElementParametersWithChildrens()) {
+                    for (String routine : possibleRoutines) {
+                        if (!routinesToAdd.contains(routine) && param.getValue() != null && param.getValue() instanceof String
+                                && ((String) param.getValue()).contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                        checkRoutinesInTable(routinesToAdd, additionalString, param, routine);
+                    }
+                }
+                // check possible routines to setup in connections
+                for (IConnection connection : ((List<IConnection>) node.getOutgoingSortedConnections())) {
+                    for (IElementParameter param : (List<IElementParameter>) connection.getElementParametersWithChildrens()) {
+                        for (String routine : possibleRoutines) {
+                            if (!routinesToAdd.contains(routine) && param.getValue() != null
+                                    && param.getValue() instanceof String
+                                    && ((String) param.getValue()).contains(routine + additionalString)) {
+                                routinesToAdd.add(routine);
+                            }
+                            checkRoutinesInTable(routinesToAdd, additionalString, param, routine);
+                        }
+                    }
+                }
+            }
+
+            for (IRepositoryViewObject object : routines) {
+                if (routinesToAdd.contains(object.getLabel())) {
+                    RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
+                    routinesParameterType.setId(object.getId());
+                    routinesParameterType.setName(object.getLabel());
+                    routinesDependencies.add(routinesParameterType);
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
-        // loadRoutinesDependencies(newprocess);
     }
 
-    // private void saveRoutinesDependencies(TalendFileFactory fileFact, ProcessType process) {
-    // process.getRoutinesDependencies().clear();
-    // for (RoutineItemRecord record : routinesDependencies) {
-    // ItemInforType itemInforType = fileFact.createItemInforType();
-    // itemInforType.setSystem(record.isSystem());
-    // if (record.isSystem()) {
-    // itemInforType.setIdOrName(record.getLabel());
-    // } else {
-    // itemInforType.setIdOrName(record.getId());
-    // }
-    // process.getRoutinesDependencies().add(itemInforType);
-    // }
-    // }
+    private void checkRoutinesInTable(List<String> routinesToAdd, String additionalString, IElementParameter param, String routine) {
+        if (param.getFieldType().equals(EParameterFieldType.TABLE) && param.getValue() != null) {
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+            for (Map<String, Object> currentLine : tableValues) {
+                for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
+                    Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
+                    String strValue = ""; //$NON-NLS-1$
+                    if (o instanceof Integer) {
+                        IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
+                        if (tmpParam.getListItemsValue().length == 0) {
+                            strValue = ""; //$NON-NLS-1$
+                        } else {
+                            strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
+                        }
+                    } else {
+                        if (o instanceof String) {
+                            strValue = (String) o;
+                        } else {
+                            if (o instanceof Boolean) {
+                                strValue = ((Boolean) o).toString();
+                            }
+                        }
+                    }
+                    if (!routinesToAdd.contains(routine) && strValue.contains(routine + additionalString)) {
+                        routinesToAdd.add(routine);
+                    }
+                }
+            }
+        }
+    }
+
+    private void saveRoutinesDependencies(ProcessType process) {
+        /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
+        if (process.getParameters() == null) {
+            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+            process.setParameters(parameterType);
+        }
+        checkRoutineDependencies();
+        process.getParameters().getRoutinesParameter().addAll(routinesDependencies);
+    }
 
     /**
      * DOC qzhang Comment method "createNodeType".
@@ -1324,9 +1435,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         ProcessType processType = getProcessType();
         EmfHelper.visitChilds(processType);
 
-        loadProjectParameters(processType);
+        if (processType.getParameters() != null) {
+            routinesDependencies = processType.getParameters().getRoutinesParameter();
+        }
 
-        // loadRoutinesDependencies(processType);
+        loadProjectParameters(processType);
 
         try {
             loadNodes(processType, nodesHashtable);
@@ -1431,28 +1544,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
-        }
-    }
-
-    /**
-     * 
-     * @deprecated have changed the model
-     */
-    private void loadRoutinesDependencies(ProcessType process) {
-        /* if process is joblet,parameters will be null,so that create a new parametertype for joblet */
-        if (process.getParameters() == null) {
-            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
-            process.setParameters(parameterType);
-        }
-        for (Iterator iter = process.getParameters().getRoutinesParameter().iterator(); iter.hasNext();) {
-            RoutinesParameterType itemInforType = (RoutinesParameterType) iter.next();
-
-            RoutineItemRecord record = new RoutineItemRecord();
-            record.setName(itemInforType.getName());
-            record.setLabel(itemInforType.getName());
-            record.setId(itemInforType.getId());
-
-            routinesDependencies.add(record);
         }
     }
 
@@ -3273,7 +3364,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.model.repository.IRepositoryViewObject#isDeleted()
      */
     public boolean isDeleted() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -3486,4 +3576,72 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return false;
     }
 
+    public Set<String> getNeededRoutines() {
+        // this value is initialized only for a duplicate process (for code generation)
+        if (neededRoutines != null && duplicate) {
+            return neededRoutines;
+        }
+        if (routinesDependencies == null || routinesDependencies.isEmpty()) {
+            checkRoutineDependencies();
+        }
+        // check in case routine dependencies hold invalid routines.
+        Iterator<RoutinesParameterType> iterator = routinesDependencies.iterator();
+        while (iterator.hasNext()) {
+            RoutinesParameterType routine = iterator.next();
+            if (StringUtils.isEmpty(routine.getId()) || StringUtils.isEmpty(routine.getName())) {
+                iterator.remove();
+            }
+        }
+        if (routinesDependencies.isEmpty()) {
+            checkRoutineDependencies();
+        }
+
+        Set<String> listRoutines = new HashSet<String>();
+        for (RoutinesParameterType routine : routinesDependencies) {
+            listRoutines.add(routine.getName());
+        }
+
+        IJobletProviderService jobletService = null;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
+            for (INode node : getGraphicalNodes()) {
+                if (jobletService.isJobletComponent(node)) {
+                    listRoutines.addAll(getJobletRoutines(((JobletProcessItem) jobletService.getJobletComponentItem(node)
+                            .getItem()).getJobletProcess()));
+                }
+            }
+        }
+        return listRoutines;
+    }
+
+    private Set<String> getJobletRoutines(ProcessType processType) {
+        Set<String> listRoutines = new HashSet<String>();
+        for (RoutinesParameterType routine : (List<RoutinesParameterType>) processType.getParameters().getRoutinesParameter()) {
+            listRoutines.add(routine.getName());
+        }
+
+        IJobletProviderService jobletService = null;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
+            for (NodeType node : (List<NodeType>) processType.getNode()) {
+                ProcessType process = jobletService.getJobletProcess(node);
+                if (process != null) {
+                    listRoutines.addAll(getJobletRoutines(process));
+                }
+            }
+        }
+        return listRoutines;
+    }
+
+    public void setNeededRoutines(Set<String> neededRoutines) {
+        this.neededRoutines = neededRoutines;
+    }
+
+    public List<RoutinesParameterType> getRoutineDependencies() {
+        return routinesDependencies;
+    }
+
+    public void setRoutineDependencies(List<RoutinesParameterType> routinesDependencies) {
+        this.routinesDependencies = routinesDependencies;
+    }
 }

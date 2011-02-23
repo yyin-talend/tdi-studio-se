@@ -728,4 +728,8 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
 
     }
 
+    public Set<String> getNeededRoutines() {
+        return null;
+    }
+
 }

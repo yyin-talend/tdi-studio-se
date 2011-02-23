@@ -32,6 +32,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
+ * @deprecated
  */
 public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTask {
 
@@ -97,6 +99,11 @@ public class AddRoutineDependenciesMigrationTask extends AbstractJobMigrationTas
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2010, 7, 22, 12, 0, 0);
         return gc.getTime();
+    }
+
+    @Override
+    public boolean isDeprecated() {
+        return true;
     }
 
 }

@@ -214,12 +214,17 @@ public class CodeView extends ViewPart {
         viewMainAction.setChecked(true);
     }
 
-    public static void refreshCodeView(IElement element) {
+    public static void refreshCodeView(final IElement element) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView(CodeView.ID);
         if (view != null) {
-            CodeView codeView = (CodeView) view;
-            codeView.refresh(element);
+            final CodeView codeView = (CodeView) view;
+            codeView.getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
+
+                public void run() {
+                    codeView.refresh(element);
+                }
+            });
         }
     }
 

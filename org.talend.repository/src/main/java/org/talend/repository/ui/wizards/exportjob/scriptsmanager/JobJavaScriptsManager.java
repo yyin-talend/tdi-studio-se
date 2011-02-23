@@ -1030,13 +1030,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process) {
-        Set<String> allRoutinesId = new HashSet<String>();
+        Set<String> allRoutinesNames = new HashSet<String>();
         for (ExportFileResource resource : process) {
             if (resource.getItem() instanceof ProcessItem) {
                 Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
                         resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
                 if (routinesNeededForJob != null) {
-                    allRoutinesId.addAll(routinesNeededForJob);
+                    allRoutinesNames.addAll(routinesNeededForJob);
                 }
             }
 
@@ -1046,30 +1046,38 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
 
-        toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
-
-        for (String id : allRoutinesId) {
-            boolean isSystem = false;
-            for (IRepositoryViewObject curRoutine : toReturn) {
-                if (curRoutine.getLabel().equals(id)) {
-                    isSystem = true;
-                    break;
-                }
-            }
-            if (!isSystem) {
-                try {
-                    IRepositoryViewObject routine = factory.getLastVersion(id);
-                    if (routine != null) {
-                        toReturn.add(routine);
-                    } else {
-                        throw new PersistenceException("routine (id or name)[" + id + "] not found");
+        if (allRoutinesNames.isEmpty()) {
+            toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
+        } else {
+            List<IRepositoryViewObject> availableRoutines;
+            try {
+                availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
+                        ERepositoryObjectType.ROUTINES);
+                for (IRepositoryViewObject object : availableRoutines) {
+                    if (allRoutinesNames.contains(object.getLabel())) {
+                        allRoutinesNames.remove(object.getLabel());
+                        toReturn.add(object);
                     }
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
                 }
+                if (allRoutinesNames.isEmpty()) {
+                    return toReturn;
+                }
+                for (org.talend.core.model.general.Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                    for (IRepositoryViewObject object : factory.getAll(project, ERepositoryObjectType.ROUTINES)) {
+                        if (allRoutinesNames.contains(object.getLabel())) {
+                            allRoutinesNames.remove(object.getLabel());
+                            toReturn.add(object);
+                        }
+                    }
+                    if (allRoutinesNames.isEmpty()) {
+                        return toReturn;
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
             }
         }
-
         return toReturn;
     }
 

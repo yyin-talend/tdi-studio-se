@@ -87,4 +87,8 @@ public class CleanFoldersMigrationTask extends AbstractMigrationTask implements 
     public boolean isApplicableOnItems() {
         return false;
     }
+
+    public boolean isDeprecated() {
+        return false;
+    }
 }

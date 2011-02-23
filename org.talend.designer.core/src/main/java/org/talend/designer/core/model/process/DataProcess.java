@@ -2696,9 +2696,9 @@ public class DataProcess {
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
         ((Process) duplicatedProcess).setGeneratingProcess(this);
-        if (duplicatedProcess instanceof IProcess2) {
-            ((IProcess2) duplicatedProcess).setProcessModified(false);
-        }
+        ((Process) duplicatedProcess).setProcessModified(false);
+        ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
+        ((Process) duplicatedProcess).setRoutineDependencies(process.getRoutineDependencies());
 
         copyElementParametersValue(graphicalNodeList.get(0).getProcess(), duplicatedProcess);
 

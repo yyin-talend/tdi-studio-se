@@ -768,4 +768,8 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         // TODO Auto-generated method stub
 
     }
+
+    public Set<String> getNeededRoutines() {
+        return null;
+    }
 }

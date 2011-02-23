@@ -354,6 +354,18 @@ public class ImportItemUtil {
         hasJoblets = false;
         statAndLogsSettingsReloaded = false;
         implicitSettingsReloaded = false;
+
+        Collections.sort(itemRecords, new Comparator<ItemRecord>() {
+
+            public int compare(ItemRecord o1, ItemRecord o2) {
+                if (o1.getProperty().getItem() instanceof RoutineItem) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
         monitor.beginTask(Messages.getString("ImportItemWizardPage.ImportSelectedItems"), itemRecords.size() * 2 + 1); //$NON-NLS-1$
 
         RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Import Items") { //$NON-NLS-1$
@@ -723,7 +735,7 @@ public class ImportItemUtil {
             IProjectMigrationTask task = GetTasksHelper.getInstance().getProjectTask(taskId);
             if (task == null) {
                 log.warn(Messages.getString("ImportItemUtil.taskLogWarn", taskId)); //$NON-NLS-1$
-            } else {
+            } else if (!task.isDeprecated()) {
                 toExecute.add(task);
             }
 
